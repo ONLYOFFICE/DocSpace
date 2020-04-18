@@ -24,20 +24,18 @@
 */
 
 
+using ASC.Common;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Tenants;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
+using ASC.Web.Core;
+using ASC.Web.Core.Calendars;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using ASC.Web.Core.Calendars;
-using ASC.Core;
-using ASC.CRM.Core.Dao;
-using ASC.CRM.Core;
-using ASC.Projects.Engine;
-using ASC.Web.Core;
-using ASC.Web.CRM.Core;
-using Autofac;
-using ASC.CRM.Resources;
-using ASC.CRM.Core.Enums;
-using ASC.Core.Tenants;
 
 namespace ASC.Api.CRM
 {
@@ -48,9 +46,24 @@ namespace ASC.Api.CRM
         {
         }
 
+        public WebItemSecurity WebItemSecurity { get; }
+        public DaoFactory DaoFactory { get; }
+        public TenantManager TenantManager { get; }
+        public TenantUtil TenantUtil { get; }
 
-        public CRMCalendar(Guid userId)
+        public CRMCalendar(WebItemSecurity webItemSecurity,
+                           DaoFactory daoFactory,
+                           AuthContext authContext,
+                           TimeZoneConverter timeZoneConverter,
+                           TenantManager tenantManager,
+                           TenantUtil tenantUtil
+                           ) : base(authContext, timeZoneConverter)
         {
+            TenantUtil = tenantUtil;
+            TenantManager = tenantManager;
+            WebItemSecurity = webItemSecurity;
+            DaoFactory = daoFactory;
+
             Context.HtmlBackgroundColor = "";
             Context.HtmlTextColor = "";
             Context.CanChangeAlertType = false;
@@ -61,55 +74,52 @@ namespace ASC.Api.CRM
             Name = CRMCommonResource.ProductName;
             Description = "";
             SharingOptions = new SharingOptions();
-            SharingOptions.PublicItems.Add(new SharingOptions.PublicItem {Id = userId, IsGroup = false});
+//            SharingOptions.PublicItems.Add(new SharingOptions.PublicItem { Id = userId, IsGroup = false });
         }
 
         public override List<IEvent> LoadEvents(Guid userId, DateTime startDate, DateTime endDate)
         {
-            using (var scope = DIHelper.Resolve())
+            var events = new List<IEvent>();
+
+            if (
+                !WebItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID))
             {
-                var _daoFactory = scope.Resolve<DaoFactory>();
-                var events = new List<IEvent>();
-
-                if (
-                    !WebItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID))
-                {
-                    return events;
-                }
-
-                var tasks = _daoFactory.GetTaskDao().GetTasks(String.Empty, userId, 0, false, DateTime.MinValue,
-                    DateTime.MinValue, EntityType.Any, 0, 0, 0, null);
-
-                foreach (var t in tasks)
-                {
-                    if (t.DeadLine == DateTime.MinValue) continue;
-
-                    var allDayEvent = t.DeadLine.Hour == 0 && t.DeadLine.Minute == 0;
-                    var utcDate = allDayEvent ? t.DeadLine.Date : TenantUtil.DateTimeToUtc(t.DeadLine);
-
-                    var e = new Event
-                    {
-                        AlertType = EventAlertType.Never,
-                        AllDayLong = allDayEvent,
-                        CalendarId = Id,
-                        UtcStartDate = utcDate,
-                        UtcEndDate = utcDate,
-                        Id = "crm_task_" + t.ID.ToString(CultureInfo.InvariantCulture),
-                        Name = Web.CRM.Resources.CRMCommonResource.ProductName + ": " + t.Title,
-                        Description = t.Description
-                    };
-
-                    if (IsVisibleEvent(startDate, endDate, e.UtcStartDate, e.UtcEndDate))
-                        events.Add(e);
-                }
-
                 return events;
             }
+
+            var tasks = DaoFactory.GetTaskDao().GetTasks(String.Empty, userId, 0, false, DateTime.MinValue,
+                DateTime.MinValue, EntityType.Any, 0, 0, 0, null);
+
+            foreach (var t in tasks)
+            {
+                if (t.DeadLine == DateTime.MinValue) continue;
+
+                var allDayEvent = t.DeadLine.Hour == 0 && t.DeadLine.Minute == 0;
+                var utcDate = allDayEvent ? t.DeadLine.Date : TenantUtil.DateTimeToUtc(t.DeadLine);
+
+                var e = new Event
+                {
+                    AlertType = EventAlertType.Never,
+                    AllDayLong = allDayEvent,
+                    CalendarId = Id,
+                    UtcStartDate = utcDate,
+                    UtcEndDate = utcDate,
+                    Id = "crm_task_" + t.ID.ToString(CultureInfo.InvariantCulture),
+                    Name = CRMCommonResource.ProductName + ": " + t.Title,
+                    Description = t.Description
+                };
+
+                if (IsVisibleEvent(startDate, endDate, e.UtcStartDate, e.UtcEndDate))
+                    events.Add(e);
+            }
+
+            return events;
+
         }
 
         public override TimeZoneInfo TimeZone
         {
-            get { return TenantManager.GetCurrentTenant().TimeZone; }
+            get { return TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone); }
         }
 
         private bool IsVisibleEvent(DateTime startDate, DateTime endDate, DateTime eventStartDate, DateTime eventEndDate)
@@ -117,6 +127,22 @@ namespace ASC.Api.CRM
             return (startDate <= eventStartDate && eventStartDate <= endDate) ||
                    (startDate <= eventEndDate && eventEndDate <= endDate) ||
                    (eventStartDate < startDate && eventEndDate > endDate);
+        }
+    }
+
+
+    public static class CRMCalendarDaoExtention
+    {
+        public static DIHelper AddCRMCalendarService(this DIHelper services)
+        {
+            services.TryAddScoped<CRMCalendar>();
+            services.TryAddScoped<TimeZoneConverter>();
+
+            return services.AddWebItemManagerSecurity()
+                            .AddDaoFactoryService()
+                            .AddAuthContextService()
+                            .AddTenantManagerService()
+                            .AddTenantUtilService();
         }
     }
 }

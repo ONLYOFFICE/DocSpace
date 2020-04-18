@@ -44,7 +44,7 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_case"; } }
 
-        public static CasesWrapper GetTasksWrapper(IServiceProvider serviceProvider, Cases item)
+        public static CasesWrapper GetCasesWrapper(IServiceProvider serviceProvider, Cases item)
         {
             var tenantManager = serviceProvider.GetService<TenantManager>();
 

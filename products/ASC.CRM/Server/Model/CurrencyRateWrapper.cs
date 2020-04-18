@@ -26,8 +26,11 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Api.Core;
 using ASC.Api.CRM.Wrappers;
+using ASC.Common;
 using ASC.CRM.Core;
+using ASC.Web.Api.Models;
 
 namespace ASC.Api.CRM
 {
@@ -35,18 +38,12 @@ namespace ASC.Api.CRM
     ///  Currency rate
     /// </summary>
     [DataContract(Name = "currencyRate", Namespace = "")]
-    public class CurrencyRateWrapper 
+    public class CurrencyRateWrapper
     {
-        public CurrencyRateWrapper(int id)
+        public CurrencyRateWrapper()
         {
         }
 
-        public CurrencyRateWrapper(CurrencyRate currencyRate)
-        {
-            FromCurrency = currencyRate.FromCurrency;
-            ToCurrency = currencyRate.ToCurrency;
-            Rate = currencyRate.Rate;
-        }
 
         [DataMember(Name = "id")]
         public int Id { get; set; }
@@ -62,12 +59,43 @@ namespace ASC.Api.CRM
 
         public static CurrencyRateWrapper GetSample()
         {
-            return new CurrencyRateWrapper(1)
+            return new CurrencyRateWrapper
             {
+                Id = 1,
                 FromCurrency = "EUR",
                 ToCurrency = "USD",
                 Rate = (decimal)1.1
             };
         }
     }
+
+    public class CurrencyRateWrapperHelper
+    {
+        public CurrencyRateWrapperHelper()
+        {
+        }
+
+        public CurrencyRateWrapper Get(CurrencyRate currencyRate)
+        {
+            return new CurrencyRateWrapper
+            {
+                FromCurrency = currencyRate.FromCurrency,
+                ToCurrency = currencyRate.ToCurrency,
+                Rate = currencyRate.Rate
+            };
+        }
+    }
+
+    public static class CurrencyRateWrapperHelperExtension
+    {
+        public static DIHelper AddCurrencyRateWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<CurrencyRateWrapperHelper>();
+
+            return services;
+        }
+    }
+
+
+
 }

@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
@@ -240,9 +241,9 @@ namespace ASC.Web.CRM.Classes
 
                 var voipEngine = new VoipEngine(DaoFactory,
                                                 CRMSecurity,
-                                                TenantUtil, 
-                                                SecurityContext, 
-                                                null, 
+                                                TenantUtil,
+                                                SecurityContext,
+                                                null,
                                                 TenantManager,
                                                 VoipDao);
 
@@ -327,4 +328,33 @@ namespace ASC.Web.CRM.Classes
             public string CallID { get; set; }
         }
     }
+
+
+
+    public static class VoipEngineExtension
+    {
+        public static DIHelper AddVoipEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<TwilioController>();
+
+            return services.AddDaoFactoryService()
+                           .AddCRMSecurityService()
+                           .AddTenantUtilService()
+                           .AddSecurityContextService()
+                           .AddTenantManagerService();
+        }
+    }
+
+    //public VoipEngine(DaoFactory daoFactory,
+    //             CRMSecurity cRMSecurity,
+    //             TenantUtil tenantUtil,
+    //             SecurityContext securityContext,
+    //             IOptionsMonitor<ILog> logger,
+    //             TenantManager tenantManager,
+    //             VoipDao voipDao)
+
+
+
+
+
 }

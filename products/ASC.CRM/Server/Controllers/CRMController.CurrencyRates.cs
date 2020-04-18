@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
@@ -51,7 +52,7 @@ namespace ASC.Api.CRM
         [Read(@"currency/rates")]
         public IEnumerable<CurrencyRateWrapper> GetCurrencyRates()
         {
-            return DaoFactory.GetCurrencyRateDao().GetAll().ConvertAll(ToCurrencyRateWrapper);
+            return DaoFactory.GetCurrencyRateDao().GetAll().ConvertAll(x => CurrencyRateWrapperHelper.Get(x));
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace ASC.Api.CRM
 
             var currencyRate = DaoFactory.GetCurrencyRateDao().GetByID(id);
 
-            return ToCurrencyRateWrapper(currencyRate);
+            return CurrencyRateWrapperHelper.Get(currencyRate);
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace ASC.Api.CRM
 
             var currencyRate = DaoFactory.GetCurrencyRateDao().GetByCurrencies(fromCurrency, toCurrency);
 
-            return ToCurrencyRateWrapper(currencyRate);
+            return CurrencyRateWrapperHelper.Get(currencyRate);
         }
 
         /// <summary>
@@ -116,7 +117,7 @@ namespace ASC.Api.CRM
             currencyRate.ID = DaoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
             MessageService.Send( MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
 
-            return ToCurrencyRateWrapper(currencyRate);
+            return CurrencyRateWrapperHelper.Get(currencyRate);
         }
 
         /// <summary>
@@ -147,7 +148,7 @@ namespace ASC.Api.CRM
             currencyRate.ID = DaoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
             MessageService.Send( MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
 
-            return ToCurrencyRateWrapper(currencyRate);
+            return CurrencyRateWrapperHelper.Get(currencyRate);
         }
 
         /// <summary>
@@ -168,8 +169,8 @@ namespace ASC.Api.CRM
             ValidateCurrencyRates(rates);
 
             currency = currency.ToUpper();
-
-            if (Global.TenantSettings.DefaultCurrency.Abbreviation != currency)
+            
+            if (SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation != currency)
             {
                 var cur = CurrencyProvider.Get(currency);
 
@@ -188,7 +189,7 @@ namespace ASC.Api.CRM
                 MessageService.Send( MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
             }
 
-            return rates.Select(ToCurrencyRateWrapper).ToList();
+            return rates.Select(x => CurrencyRateWrapperHelper.Get(x)).ToList();
         }
 
         /// <summary>
@@ -230,7 +231,7 @@ namespace ASC.Api.CRM
                 existingRates.Add(rate);
             }
 
-            return existingRates.Select(ToCurrencyRateWrapper).ToList();
+            return existingRates.Select(x => CurrencyRateWrapperHelper.Get(x)).ToList();
         }
 
         /// <summary>
@@ -252,10 +253,10 @@ namespace ASC.Api.CRM
 
             DaoFactory.GetCurrencyRateDao().Delete(id);
 
-            return ToCurrencyRateWrapper(currencyRate);
+            return CurrencyRateWrapperHelper.Get(currencyRate);
         }
 
-        private static void ValidateCurrencyRates(IEnumerable<CurrencyRate> rates)
+        private void ValidateCurrencyRates(IEnumerable<CurrencyRate> rates)
         {
             var currencies = new List<string>();
 
@@ -269,7 +270,7 @@ namespace ASC.Api.CRM
             ValidateCurrencies(currencies.ToArray());
         }
         
-        private static void ValidateCurrencies(string[] currencies)
+        private void ValidateCurrencies(string[] currencies)
         {
             if (currencies.Any(string.IsNullOrEmpty))
                 throw new ArgumentException();
@@ -288,10 +289,6 @@ namespace ASC.Api.CRM
             if (rate < 0 || rate > MaxRateValue)
                 throw new ArgumentException(string.Format(CRMErrorsResource.InvalidCurrencyRate, rate));
         }
-
-        private static CurrencyRateWrapper ToCurrencyRateWrapper(CurrencyRate currencyRate)
-        {
-            return new CurrencyRateWrapper(currencyRate);
-        }
+       
     }
 }

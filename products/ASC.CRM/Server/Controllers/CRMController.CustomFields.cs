@@ -55,7 +55,7 @@ namespace ASC.Api.CRM
         [Read(@"{entityType:(contact|person|company|opportunity|case)}/customfield/definitions")]
         public IEnumerable<CustomFieldWrapper> GetCustomFieldDefinitions(string entityType)
         {
-            return DaoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)).ConvertAll(ToCustomFieldWrapper).ToSmartList();
+            return DaoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)).ConvertAll(ToCustomFieldWrapper);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace ASC.Api.CRM
         [Read(@"{entityType:(contact|person|company|opportunity|case)}/{entityid:int}/customfield")]
         public IEnumerable<CustomFieldBaseWrapper> GetCustomFieldForSubject(string entityType, int entityid)
         {
-            return DaoFactory.GetCustomFieldDao().GetEnityFields(ToEntityType(entityType), entityid, false).ConvertAll(ToCustomFieldBaseWrapper).ToItemList();
+            return DaoFactory.GetCustomFieldDao().GetEnityFields(ToEntityType(entityType), entityid, false).ConvertAll(ToCustomFieldBaseWrapper);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace ASC.Api.CRM
             var result = ToCustomFieldWrapper(customField);
             DaoFactory.GetCustomFieldDao().DeleteField(fieldid);
 
-            FactoryIndexer<FieldsWrapper>.DeleteAsync(customField);
+            FactoryIndexerFieldsWrapper.DeleteAsync(Web.CRM.Core.Search.FieldsWrapper.GetEventsWrapper(ServiceProvider, customField));
 
             var messageAction = GetCustomFieldDeletedAction(ToEntityType(entityType));
             MessageService.Send( messageAction, MessageTarget.Create(customField.ID), result.Label);

@@ -24,7 +24,10 @@
 */
 
 
+using ASC.Api.Documents;
+using ASC.Common.Web;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Services.DocumentService;
@@ -43,28 +46,30 @@ namespace ASC.Api.CRM
         /// <returns>Report files</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Read(@"report/files")]
-        public IEnumerable<FileWrapper> GetFiles()
+        public IEnumerable<FileWrapper<int>> GetFiles()
         {
             if (!Global.CanCreateReports)
                 throw CRMSecurity.CreateSecurityException();
 
-            var reportDao = DaoFactory.ReportDao;
+            var reportDao = DaoFactory.GetReportDao();
 
             var files = reportDao.GetFiles();
 
             if (!files.Any())
             {
-                var sampleSettings = CRMReportSampleSettings.LoadForCurrentUser();
+                var settings = SettingsManager.Load<CRMReportSampleSettings>();
 
-                if (sampleSettings.NeedToGenerate)
+                if (settings.NeedToGenerate)
                 {
                     files = reportDao.SaveSampleReportFiles();
-                    sampleSettings.NeedToGenerate = false;
-                    sampleSettings.SaveForCurrentUser();
+
+                    settings.NeedToGenerate = false;
+
+                    SettingsManager.Save<CRMReportSampleSettings>(settings);
                 }
             }
 
-            return files.ConvertAll(file => new FileWrapper(file)).OrderByDescending(file => file.Id);
+            return files.ConvertAll(file => FileWrapperHelper.Get<int>(file)).OrderByDescending(file => file.Id);
         }
 
         /// <summary>Delete the report file with the ID specified in the request</summary>
@@ -82,11 +87,11 @@ namespace ASC.Api.CRM
 
             if (fileid < 0) throw new ArgumentException();
 
-            var file = DaoFactory.ReportDao.GetFile(fileid);
+            var file = DaoFactory.GetReportDao().GetFile(fileid);
 
             if (file == null) throw new ItemNotFoundException("File not found");
 
-            DaoFactory.ReportDao.DeleteFile(fileid);
+            DaoFactory.GetReportDao().DeleteFile(fileid);
         }
 
         /// <summary>Get the state of the report generation task</summary>
@@ -100,7 +105,8 @@ namespace ASC.Api.CRM
             if (!Global.CanCreateReports)
                 throw CRMSecurity.CreateSecurityException();
 
-            return DocbuilderReportsUtility.Status(ReportOrigin.CRM);
+            return DocbuilderReportsUtility.Status(ReportOrigin.CRM, HttpContextAccessor, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID);
+
         }
 
         /// <summary>Terminate the report generation task</summary>
@@ -113,7 +119,7 @@ namespace ASC.Api.CRM
             if (!Global.CanCreateReports)
                 throw CRMSecurity.CreateSecurityException();
 
-            DocbuilderReportsUtility.Terminate(ReportOrigin.CRM);
+            DocbuilderReportsUtility.Terminate(ReportOrigin.CRM, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID);
         }
 
         /// <summary>Check data availability for a report</summary>

@@ -30,6 +30,7 @@ using ASC.Core.Users;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
 using System;
 using System.Collections.Generic;
@@ -94,13 +95,19 @@ namespace ASC.Api.CRM.Wrappers
     {
         public CasesWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity cRMSecurity)
+                           CRMSecurity cRMSecurity,
+                           DaoFactory daoFactory,
+                           ContactBaseWrapperHelper contactBaseWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             CRMSecurity = cRMSecurity;
+            DaoFactory = daoFactory;
+            ContactBaseWrapperHelper = contactBaseWrapperHelper;
         }
 
+        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public DaoFactory DaoFactory { get; }
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
@@ -124,8 +131,28 @@ namespace ASC.Api.CRM.Wrappers
                                         .Select(item => EmployeeWraperHelper.Get(item.Key));
             }
 
-            return result;
+            result.CustomFields = DaoFactory
+            .GetCustomFieldDao()
+            .GetEnityFields(EntityType.Case, cases.ID, false)
+            .ConvertAll(item => new CustomFieldBaseWrapper(item));
 
+            result.Members = new List<ContactBaseWrapper>();
+
+            var memberIDs = DaoFactory.GetCasesDao().GetMembers(cases.ID);
+            var membersList = DaoFactory.GetContactDao().GetContacts(memberIDs);
+
+            var membersWrapperList = new List<ContactBaseWrapper>();
+
+            foreach (var member in membersList)
+            {
+                if (member == null) continue;
+
+                membersWrapperList.Add(ContactBaseWrapperHelper.Get(member));
+            }
+
+            result.Members = membersWrapperList;
+         
+            return result;
         }
     }
 

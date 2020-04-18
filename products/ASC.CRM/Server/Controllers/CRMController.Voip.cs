@@ -24,14 +24,19 @@
 */
 
 
+using ASC.Api.Core;
 using ASC.Api.CRM.Wrappers;
 using ASC.Api.Utils;
+using ASC.Common.Web;
 using ASC.Core.Tenants;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.VoipService;
 using ASC.VoipService.Dao;
 using ASC.VoipService.Twilio;
+using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Studio.Utility;
 using System;
@@ -45,9 +50,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 namespace ASC.Api.CRM
 {
     public partial class CRMController
-    {
-        #region Numbers 
-
+    {        
         /// <summary>
         ///  
         /// </summary>
@@ -78,7 +81,7 @@ namespace ASC.Api.CRM
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
             var listPhones =  VoipProvider.GetExistingPhoneNumbers();
-            var buyedPhones = DaoFactory.VoipDao.GetNumbers();
+            var buyedPhones = DaoFactory.GetVoipDao().GetNumbers();
 
             return listPhones.Where(r => buyedPhones.All(b => r.Id != b.Id)).ToList();
         }
@@ -95,7 +98,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            return DaoFactory.VoipDao.GetNumbers();
+            return DaoFactory.GetVoipDao().GetNumbers();
         }
         /// <summary>
         ///  
@@ -115,7 +118,7 @@ namespace ASC.Api.CRM
             SetDefaultAudio(newPhone);
 
             VoipProvider.UpdateSettings(newPhone);
-            return DaoFactory.VoipDao.SaveOrUpdateNumber(newPhone);
+            return DaoFactory.GetVoipDao().SaveOrUpdateNumber(newPhone);
         }
 
         /// <summary>
@@ -137,7 +140,7 @@ namespace ASC.Api.CRM
 
             VoipProvider.UpdateSettings(newPhone);
 
-            return DaoFactory.VoipDao.SaveOrUpdateNumber(newPhone);
+            return DaoFactory.GetVoipDao().SaveOrUpdateNumber(newPhone);
         }
 
         public void SetDefaultAudio(VoipPhone newPhone)
@@ -176,12 +179,12 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var phone = dao.GetNumber(numberId).NotFoundIfNull();
 
             VoipProvider.DisablePhone(phone);
             dao.DeleteNumber(numberId);
-            new SignalRHelper(phone.Number).Reload();
+            new SignalRHelper(phone.Number, SignalrServiceClient).Reload();
 
             return phone;
         }
@@ -196,7 +199,7 @@ namespace ASC.Api.CRM
         [Read(@"voip/numbers/{numberId:\w+}")]
         public VoipPhone GetNumber(string numberId)
         {
-            return DaoFactory.VoipDao.GetNumber(numberId).NotFoundIfNull();
+            return DaoFactory.GetVoipDao().GetNumber(numberId).NotFoundIfNull();
         }
 
         /// <summary>
@@ -208,7 +211,7 @@ namespace ASC.Api.CRM
         [Read(@"voip/numbers/current")]
         public VoipPhone GetCurrentNumber()
         {
-            return DaoFactory.VoipDao.GetCurrentNumber().NotFoundIfNull();
+            return DaoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
         }
 
         /// <summary>
@@ -235,7 +238,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var number = dao.GetNumber(numberId).NotFoundIfNull();
 
             number.Alias = Update.IfNotEmptyAndNotEquals(number.Alias, alias);
@@ -284,7 +287,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var numbers = dao.GetNumbers();
 
             if (queue != null)
@@ -332,7 +335,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var number = dao.GetNumbers().FirstOrDefault(r => r.Settings.Queue != null);
             if (number != null)
             {
@@ -380,7 +383,7 @@ namespace ASC.Api.CRM
             return result;
         }
 
-        private static VoipUpload GetVoipUpload(Uri link, string fileName, AudioType audioType, bool isDefault = false)
+        private VoipUpload GetVoipUpload(Uri link, string fileName, AudioType audioType, bool isDefault = false)
         {
             return new VoipUpload
             {
@@ -416,7 +419,7 @@ namespace ASC.Api.CRM
             if (!store.IsFile("voip", path)) throw new ItemNotFoundException();
             store.Delete("voip", path);
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var numbers = dao.GetNumbers();
 
             var defAudio = StorageFactory.GetStorage("", "crm").ListFiles("voip", "default/" + audioType.ToString().ToLower(), "*.*", true).FirstOrDefault();
@@ -458,11 +461,7 @@ namespace ASC.Api.CRM
 
             return result;
         }
-
-        #endregion
-
-        #region Operators
-
+             
         /// <summary>
         ///  
         /// </summary>
@@ -473,7 +472,7 @@ namespace ASC.Api.CRM
         [Read(@"voip/numbers/{numberId:\w+}/oper")]
         public IEnumerable<Guid> GetOperators(string numberId)
         {
-            return DaoFactory.VoipDao.GetNumber(numberId).Settings.Operators.Select(r => r.Id);
+            return DaoFactory.GetVoipDao().GetNumber(numberId).Settings.Operators.Select(r => r.Id);
         }
 
         /// <summary>
@@ -489,12 +488,12 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            if (DaoFactory.VoipDao.GetNumbers().SelectMany(r => r.Settings.Operators).Any(r => operators.Contains(r.Id)))
+            if (DaoFactory.GetVoipDao().GetNumbers().SelectMany(r => r.Settings.Operators).Any(r => operators.Contains(r.Id)))
             {
                 throw new ArgumentException("Duplicate", "operators");
             }
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var phone = dao.GetNumber(numberId);
             var lastOper = phone.Settings.Operators.LastOrDefault();
             var startOperId = lastOper != null ? Convert.ToInt32(lastOper.PostFix) + 1 : 100;
@@ -518,7 +517,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var phone = dao.GetNumber(numberId);
             var startOperId = 100;
 
@@ -547,7 +546,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin && !operatorId.Equals(SecurityContext.CurrentAccount.ID)) throw CRMSecurity.CreateSecurityException();
 
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var phone = dao.GetNumbers().FirstOrDefault(r => r.Settings.Operators.Exists(a => a.Id == operatorId)).NotFoundIfNull();
 
             var oper = phone.Settings.Operators.Find(r => r.Id == operatorId);
@@ -581,16 +580,13 @@ namespace ASC.Api.CRM
 
             if (allowOutgoingCalls.HasValue)
             {
-                new SignalRHelper(phone.Number).Reload(operatorId.ToString());
+                new SignalRHelper(phone.Number, SignalrServiceClient).Reload(operatorId.ToString());
             }
 
             return oper;
         }
 
-        #endregion
-
-        #region Calls
-
+        
         /// <summary>
         ///  
         /// </summary>
@@ -601,7 +597,7 @@ namespace ASC.Api.CRM
         [Create(@"voip/call")]
         public VoipCallWrapper MakeCall(string to, string contactId)
         {
-            var number = DaoFactory.VoipDao.GetCurrentNumber().NotFoundIfNull();
+            var number = DaoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
             if (!number.Settings.Caller.AllowOutgoingCalls) throw new SecurityException(CRMErrorsResource.AccessDenied);
 
             var contactPhone = to.TrimStart('+');
@@ -611,11 +607,11 @@ namespace ASC.Api.CRM
 
             if (contact == null)
             {
-                contact = ToContactWrapper(new VoipEngine(DaoFactory).CreateContact(contactPhone));
+                contact = ToContactWrapper(VoipEngine.CreateContact(contactPhone));
             }
 
             contact = GetContactWithFotos(contact);
-            var call = number.Call(to, contact.ID.ToString(CultureInfo.InvariantCulture));
+            var call = number.Call(to, contact.Id.ToString(CultureInfo.InvariantCulture));
             return new VoipCallWrapper(call, contact);
         }
 
@@ -628,7 +624,7 @@ namespace ASC.Api.CRM
         [Create(@"voip/call/{callId:\w+}/answer")]
         public VoipCallWrapper AnswerCall(string callId)
         {
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
             var number = dao.GetCurrentNumber().NotFoundIfNull();
             number.AnswerQueueCall(call.Id);
@@ -644,7 +640,7 @@ namespace ASC.Api.CRM
         [Create(@"voip/call/{callId:\w+}/reject")]
         public VoipCallWrapper RejectCall(string callId)
         {
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
             var number = dao.GetCurrentNumber().NotFoundIfNull();
             number.RejectQueueCall(call.Id);
@@ -660,13 +656,13 @@ namespace ASC.Api.CRM
         [Create(@"voip/call/{callId:\w+}/redirect")]
         public VoipCallWrapper ReditectCall(string callId, string to)
         {
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
             var number = dao.GetCurrentNumber().NotFoundIfNull();
 
             if (call.ContactId != 0)
             {
-                var contact = DaoFactory.ContactDao.GetByID(call.ContactId);
+                var contact = DaoFactory.GetContactDao().GetByID(call.ContactId);
                 var managers = CRMSecurity.GetAccessSubjectGuidsTo(contact);
 
                 if (!managers.Contains(Guid.Parse(to)))
@@ -689,7 +685,7 @@ namespace ASC.Api.CRM
         [Create(@"voip/call/{callId:\w+}")]
         public VoipCallWrapper SaveCall(string callId, string from, string to, Guid answeredBy, VoipCallStatus? status, string contactId, decimal? price)
         {
-            var dao = DaoFactory.VoipDao;
+            var dao = DaoFactory.GetVoipDao();
             
             var call = dao.GetCall(callId) ?? new VoipCall();
 
@@ -709,15 +705,18 @@ namespace ASC.Api.CRM
                     }
                     else 
                     {
-                        new VoipEngine(DaoFactory).GetContact(call);
+                        VoipEngine.GetContact(call);
                     }
 
                     if (call.ContactId == 0)
                     {
                         contactPhone = contactPhone.TrimStart('+');
+                        
                         var person = CreatePerson(contactPhone, TenantUtil.DateTimeFromUtc(DateTime.UtcNow).ToString("yyyy-MM-dd hh:mm"), null, 0, null, ShareType.None, new List<Guid> { SecurityContext.CurrentAccount.ID }, null, null);
-                        DaoFactory.ContactInfoDao.Save(new ContactInfo { ContactID = person.ID, IsPrimary = true, InfoType = ContactInfoType.Phone, Data = contactPhone });
-                        call.ContactId = person.ID;
+                        
+                        DaoFactory.GetContactInfoDao().Save(new ContactInfo { ContactID = person.Id, IsPrimary = true, InfoType = ContactInfoType.Phone, Data = contactPhone });
+                        
+                        call.ContactId = person.Id;
                     }
                 }
             }
@@ -762,7 +761,7 @@ namespace ASC.Api.CRM
         [Create(@"voip/price/{callId:\w+}")]
         public void SavePrice(string callId)
         {
-            new VoipEngine(DaoFactory).SaveAdditionalInfo(callId);
+            VoipEngine.SaveAdditionalInfo(callId);
         }
 
         /// <summary>
@@ -774,7 +773,7 @@ namespace ASC.Api.CRM
         [Read(@"voip/call")]
         public IEnumerable<VoipCallWrapper> GetCalls(string callType, ApiDateTime from, ApiDateTime to, Guid? agent, int? client, int? contactID)
         {
-            var voipDao = DaoFactory.VoipDao;
+            var voipDao = DaoFactory.GetVoipDao();
 
             var filter = new VoipCallFilter
                 {
@@ -784,17 +783,17 @@ namespace ASC.Api.CRM
                     Agent = agent,
                     Client = client,
                     ContactID = contactID,
-                    SortBy = _context.SortBy,
-                    SortOrder = !_context.SortDescending,
-                    SearchText = _context.FilterValue,
-                    Offset = _context.StartIndex,
-                    Max = _context.Count,
+                    SortBy = ApiContext.SortBy,
+                    SortOrder = !.ApiContext.SortDescending,
+                    SearchText = ApiContext.FilterValue,
+                    Offset = ApiContext.StartIndex,
+                    Max = ApiContext.Count,
                 };
 
-            _context.SetDataPaginated();
-            _context.SetDataFiltered();
-            _context.SetDataSorted();
-            _context.TotalCount = voipDao.GetCallsCount(filter);
+            ApiContext.SetDataPaginated();
+            ApiContext.SetDataFiltered();
+            ApiContext.SetDataSorted();
+            ApiContext.TotalCount = voipDao.GetCallsCount(filter);
 
             var defaultSmallPhoto = ContactPhotoManager.GetSmallSizePhoto(-1, false);            
             var calls = voipDao.GetCalls(filter).Select(
@@ -826,7 +825,7 @@ namespace ASC.Api.CRM
         [Read(@"voip/call/missed")]
         public IEnumerable<VoipCallWrapper> GetMissedCalls()
         {
-            var voipDao = DaoFactory.VoipDao;
+            var voipDao = DaoFactory.GetVoipDao();
             var defaultSmallPhoto = ContactPhotoManager.GetSmallSizePhoto(-1, false);   
 
             var calls = voipDao.GetMissedCalls(SecurityContext.CurrentAccount.ID, 10, DateTime.UtcNow.AddDays(-7)).Select(
@@ -847,10 +846,10 @@ namespace ASC.Api.CRM
                     return new VoipCallWrapper(r, contact);
                 }).ToList();
 
-            _context.SetDataPaginated();
-            _context.SetDataFiltered();
-            _context.SetDataSorted();
-            _context.TotalCount = calls.Count;
+            ApiContext.SetDataPaginated();
+            ApiContext.SetDataFiltered();
+            ApiContext.SetDataSorted();
+            ApiContext.TotalCount = calls.Count;
 
             return calls;
         }
@@ -864,9 +863,9 @@ namespace ASC.Api.CRM
         [Read(@"voip/call/{callId:\w+}")]
         public VoipCallWrapper GetCall(string callId)
         {
-            var call = DaoFactory.VoipDao.GetCall(callId);
+            var call = DaoFactory.GetVoipDao().GetCall(callId);
 
-            new VoipEngine(DaoFactory).GetContact(call);
+            VoipEngine.GetContact(call);
 
             if (call.ContactId == 0) return new VoipCallWrapper(call);
 
@@ -876,12 +875,10 @@ namespace ASC.Api.CRM
             return new VoipCallWrapper(call, contact);
         }
 
-        #endregion
-
-        private static ContactWrapper GetContactWithFotos(ContactWrapper contact)
+        private ContactWrapper GetContactWithFotos(ContactWrapper contact)
         {
-            contact.SmallFotoUrl = ContactPhotoManager.GetSmallSizePhoto(contact.ID, contact.IsCompany);
-            contact.MediumFotoUrl = ContactPhotoManager.GetMediumSizePhoto(contact.ID, contact.IsCompany);
+            contact.SmallFotoUrl = ContactPhotoManager.GetSmallSizePhoto(contact.Id, contact.IsCompany);
+            contact.MediumFotoUrl = ContactPhotoManager.GetMediumSizePhoto(contact.Id, contact.IsCompany);
 
             return contact;
         }

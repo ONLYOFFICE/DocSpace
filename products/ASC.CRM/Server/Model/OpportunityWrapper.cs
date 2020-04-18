@@ -26,12 +26,16 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.Web;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
+using ASC.Web.CRM.Classes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace ASC.Api.CRM.Wrappers
@@ -131,12 +135,23 @@ namespace ASC.Api.CRM.Wrappers
     {
         public OpportunityWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity cRMSecurity)
+                           CRMSecurity cRMSecurity,
+                           DaoFactory daoFactory,
+                           CurrencyProvider currencyProvider,
+                           ContactBaseWrapperHelper contactBaseWrapperHelper
+                           )
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             CRMSecurity = cRMSecurity;
+            DaoFactory = daoFactory;
+            ContactBaseWrapperHelper = contactBaseWrapperHelper;
+            CurrencyProvider = currencyProvider;
         }
+
+        public CurrencyProvider CurrencyProvider  {get;}
+        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public DaoFactory DaoFactory { get; }
 
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
@@ -144,7 +159,7 @@ namespace ASC.Api.CRM.Wrappers
 
         public OpportunityWrapper Get(Deal deal)
         {
-            return new OpportunityWrapper
+            var dealWrapper = new OpportunityWrapper
             {
                 Id = deal.ID,
                 CreateBy = EmployeeWraperHelper.Get(deal.CreateBy),
@@ -160,6 +175,45 @@ namespace ASC.Api.CRM.Wrappers
                 ExpectedCloseDate = ApiDateTimeHelper.Get(deal.ExpectedCloseDate),
                 CanEdit = CRMSecurity.CanEdit(deal)
             };
+
+            if (deal.ContactID > 0)
+                dealWrapper.Contact = ContactBaseWrapperHelper.Get(DaoFactory.GetContactDao().GetByID(deal.ContactID));
+
+            if (deal.DealMilestoneID > 0)
+            {
+                var dealMilestone = DaoFactory.GetDealMilestoneDao().GetByID(deal.DealMilestoneID);
+
+                if (dealMilestone == null)
+                    throw new ItemNotFoundException();
+
+                dealWrapper.Stage = new DealMilestoneBaseWrapper(dealMilestone);
+            }
+
+            dealWrapper.AccessList = CRMSecurity.GetAccessSubjectTo(deal)
+                                                .Select(item => EmployeeWraperHelper.Get(item.Key)).ToItemList();
+
+            dealWrapper.IsPrivate = CRMSecurity.IsPrivate(deal);
+
+            if (!string.IsNullOrEmpty(deal.BidCurrency))
+                dealWrapper.BidCurrency = ToCurrencyInfoWrapper(CurrencyProvider.Get(deal.BidCurrency));
+
+            dealWrapper.CustomFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, deal.ID, false).ConvertAll(item => new CustomFieldBaseWrapper(item)).ToSmartList();
+
+            dealWrapper.Members = new List<ContactBaseWrapper>();
+
+            var memberIDs = DaoFactory.GetDealDao().GetMembers(deal.ID);
+            var membersList = DaoFactory.GetContactDao().GetContacts(memberIDs);
+            var membersWrapperList = new List<ContactBaseWrapper>();
+
+            foreach (var member in membersList)
+            {
+                if (member == null) continue;
+                membersWrapperList.Add(ContactBaseWrapperHelper.Get(member));
+            }
+
+            dealWrapper.Members = membersWrapperList;
+
+            return dealWrapper;
         }
     }
 
@@ -171,8 +225,10 @@ namespace ASC.Api.CRM.Wrappers
 
             return services.AddApiDateTimeHelper()
                            .AddEmployeeWraper()
-                           .AddCRMSecurityService();
+                           .AddCRMSecurityService()
+                           .AddDaoFactoryService()
+                           .AddContactBaseWrapperHelperService()
+                           .AddCurrencyProviderService();
         }
     }
-
 }

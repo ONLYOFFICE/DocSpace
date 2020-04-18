@@ -714,7 +714,7 @@ namespace ASC.Api.CRM
             var contactStatus = ToContactStatusWrapper(listItem);
 
             dao.DeleteItem(ListType.ContactStatus, contactStatusid, 0);
-            MessageService.Send( MessageAction.ContactTemperatureLevelDeleted, MessageTarget.Create(contactStatus.ID), contactStatus.Title);
+            MessageService.Send( MessageAction.ContactTemperatureLevelDeleted, MessageTarget.Create(contactStatus.Id), contactStatus.Title);
 
             return contactStatus;
         }
@@ -948,8 +948,8 @@ namespace ASC.Api.CRM
 
             result.ForEach(x =>
                 {
-                    if (relativeItemsCount.ContainsKey(x.ID))
-                        x.RelativeItemsCount = relativeItemsCount[x.ID];
+                    if (relativeItemsCount.ContainsKey(x.Id))
+                        x.RelativeItemsCount = relativeItemsCount[x.Id];
                 });
             return result;
         }
@@ -971,8 +971,8 @@ namespace ASC.Api.CRM
 
             result.ForEach(x =>
                 {
-                    if (relativeItemsCount.ContainsKey(x.ID))
-                        x.RelativeItemsCount = relativeItemsCount[x.ID];
+                    if (relativeItemsCount.ContainsKey(x.Id))
+                        x.RelativeItemsCount = relativeItemsCount[x.Id];
                 });
             return result;
         }
@@ -994,8 +994,8 @@ namespace ASC.Api.CRM
 
             result.ForEach(x =>
                 {
-                    if (relativeItemsCount.ContainsKey(x.ID))
-                        x.RelativeItemsCount = relativeItemsCount[x.ID];
+                    if (relativeItemsCount.ContainsKey(x.Id))
+                        x.RelativeItemsCount = relativeItemsCount[x.Id];
                 });
             return result;
         }
@@ -1017,8 +1017,8 @@ namespace ASC.Api.CRM
 
             result.ForEach(x =>
                 {
-                    if (relativeItemsCount.ContainsKey(x.ID))
-                        x.RelativeItemsCount = relativeItemsCount[x.ID];
+                    if (relativeItemsCount.ContainsKey(x.Id))
+                        x.RelativeItemsCount = relativeItemsCount[x.Id];
                 });
 
             return result;
@@ -1041,8 +1041,8 @@ namespace ASC.Api.CRM
 
             result.ForEach(x =>
                 {
-                    if (relativeItemsCount.ContainsKey(x.ID))
-                        x.RelativeItemsCount = relativeItemsCount[x.ID];
+                    if (relativeItemsCount.ContainsKey(x.Id))
+                        x.RelativeItemsCount = relativeItemsCount[x.Id];
                 });
 
             return result;

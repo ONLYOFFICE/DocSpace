@@ -6,14 +6,11 @@
 
   <ItemGroup>
     <Compile Remove="Classes\BasePage.cs" />
-    <Compile Remove="Classes\ContactPhotoManager.cs" />
     <Compile Remove="Classes\SocialMedia\SocialMediaAccountNotFound.cs" />
     <Compile Remove="Classes\SocialMedia\SocialMediaImageDescription.cs" />
     <Compile Remove="Classes\SocialMedia\SocialMediaUI.cs" />
     <Compile Remove="Classes\SocialMedia\TwitterApiHelper.cs" />
-    <Compile Remove="Classes\TwilioController.cs" />
     <Compile Remove="Configuration\SearchHandler.cs" />
-    <Compile Remove="Configuration\VoipModule.cs" />
     <Compile Remove="Controllers\CRMApi.Cases.cs" />
     <Compile Remove="Controllers\CRMApi.cs" />
     <Compile Remove="Controllers\CRMApi.CurrencyRates.cs" />
@@ -34,7 +31,6 @@
     <Compile Remove="HttpHandlers\ImportFileHandler.cs" />
     <Compile Remove="HttpHandlers\OrganisationLogoHandler.cs" />
     <Compile Remove="HttpHandlers\WebToLeadFromHandler.ashx.cs" />
-    <Compile Remove="Model\VoipCallWrapper.cs" />
     <Compile Remove="Utils\ExportToCSV.cs" />
     <Compile Remove="Utils\MailSender.cs" />
     <Compile Remove="Utils\PdfQueueWorker.cs" />
@@ -48,11 +44,13 @@
   <ItemGroup>
     <PackageReference Include="LumenWorks.Framework.IO" Version="3.8.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+    <PackageReference Include="Twilio.AspNet.Core" Version="5.33.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.VoipService\ASC.VoipService.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Studio\ASC.Web.Studio.csproj" />
     <ProjectReference Include="..\..\ASC.Files\Server\ASC.Files.csproj" />

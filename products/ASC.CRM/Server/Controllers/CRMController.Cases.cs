@@ -39,7 +39,6 @@ using ASC.Web.Files.Services.WCFService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using EnumExtension = ASC.Web.CRM.Classes.EnumExtension;
 
 namespace ASC.Api.CRM
 {
@@ -64,9 +63,9 @@ namespace ASC.Api.CRM
             var cases = DaoFactory.GetCasesDao().CloseCases(caseid);
             if (cases == null) throw new ItemNotFoundException();
 
-            MessageService.Send( MessageAction.CaseClosed, MessageTarget.Create(cases.ID), cases.Title);
+            MessageService.Send(MessageAction.CaseClosed, MessageTarget.Create(cases.ID), cases.Title);
 
-            return ToCasesWrapper(cases);
+            return CasesWrapperHelper.Get(cases);
         }
 
         /// <summary>
@@ -88,9 +87,9 @@ namespace ASC.Api.CRM
             var cases = DaoFactory.GetCasesDao().ReOpenCases(caseid);
             if (cases == null) throw new ItemNotFoundException();
 
-            MessageService.Send( MessageAction.CaseOpened, MessageTarget.Create(cases.ID), cases.Title);
+            MessageService.Send(MessageAction.CaseOpened, MessageTarget.Create(cases.ID), cases.Title);
 
-            return ToCasesWrapper(cases);
+            return CasesWrapperHelper.Get(cases);
         }
 
         /// <summary>
@@ -133,13 +132,15 @@ namespace ASC.Api.CRM
             var casesID = DaoFactory.GetCasesDao().CreateCases(title);
 
             var cases = new Cases
-                {
-                    ID = casesID,
-                    Title = title,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
-                    CreateOn = DateTime.UtcNow
-                };
-            FactoryIndexer<Web.CRM.Core.Search.CasesWrapper>.IndexAsync(cases);
+            {
+                ID = casesID,
+                Title = title,
+                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateOn = DateTime.UtcNow
+            };
+
+            FactoryIndexerCasesWrapper.IndexAsync(Web.CRM.Core.Search.CasesWrapper.GetCasesWrapper(ServiceProvider, cases));
+
             SetAccessToCases(cases, isPrivate, accessList, isNotify, false);
 
             var membersList = members != null ? members.ToList() : new List<int>();
@@ -160,7 +161,7 @@ namespace ASC.Api.CRM
                 }
             }
 
-            return ToCasesWrapper(DaoFactory.GetCasesDao().GetByID(casesID));
+            return CasesWrapperHelper.Get(DaoFactory.GetCasesDao().GetByID(casesID));
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace ASC.Api.CRM
 
             DaoFactory.GetCasesDao().UpdateCases(cases);
 
-            if (CRMSecurity.IsAdmin || cases.CreateBy == Core.SecurityContext.CurrentAccount.ID)
+            if (CRMSecurity.IsAdmin || cases.CreateBy == SecurityContext.CurrentAccount.ID)
             {
                 SetAccessToCases(cases, isPrivate, accessList, isNotify, false);
             }
@@ -234,7 +235,7 @@ namespace ASC.Api.CRM
                 }
             }
 
-            return ToCasesWrapper(cases);
+            return CasesWrapperHelper.Get(cases);
         }
 
         /// <summary>
@@ -258,7 +259,7 @@ namespace ASC.Api.CRM
             var cases = DaoFactory.GetCasesDao().GetByID(caseid);
             if (cases == null) throw new ItemNotFoundException();
 
-            if (!(CRMSecurity.IsAdmin || cases.CreateBy == Core.SecurityContext.CurrentAccount.ID)) throw CRMSecurity.CreateSecurityException();
+            if (!(CRMSecurity.IsAdmin || cases.CreateBy == SecurityContext.CurrentAccount.ID)) throw CRMSecurity.CreateSecurityException();
 
             return SetAccessToCases(cases, isPrivate, accessList, false, true);
         }
@@ -283,7 +284,7 @@ namespace ASC.Api.CRM
                 if (isMessageServicSende)
                 {
                     var users = GetUsersByIdList(accessListLocal);
-                    MessageService.Send( MessageAction.CaseRestrictedAccess, MessageTarget.Create(cases.ID), cases.Title, users.Select(x => x.DisplayUserName(false)));
+                    MessageService.Send(MessageAction.CaseRestrictedAccess, MessageTarget.Create(cases.ID), cases.Title, users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
                 }
             }
             else
@@ -291,11 +292,11 @@ namespace ASC.Api.CRM
                 CRMSecurity.MakePublic(cases);
                 if (isMessageServicSende)
                 {
-                    MessageService.Send( MessageAction.CaseOpenedAccess, MessageTarget.Create(cases.ID), cases.Title);
+                    MessageService.Send(MessageAction.CaseOpenedAccess, MessageTarget.Create(cases.ID), cases.Title);
                 }
             }
 
-            return ToCasesWrapper(cases);
+            return CasesWrapperHelper.Get(cases);
         }
 
         /// <summary>
@@ -324,7 +325,7 @@ namespace ASC.Api.CRM
             {
                 if (c == null) throw new ItemNotFoundException();
 
-                if (!(CRMSecurity.IsAdmin || c.CreateBy == Core.SecurityContext.CurrentAccount.ID)) continue;
+                if (!(CRMSecurity.IsAdmin || c.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToCases(c, isPrivate, accessList, false, true);
                 result.Add(c);
@@ -367,7 +368,7 @@ namespace ASC.Api.CRM
             {
                 if (casese == null) throw new ItemNotFoundException();
 
-                if (!(CRMSecurity.IsAdmin || casese.CreateBy == Core.SecurityContext.CurrentAccount.ID)) continue;
+                if (!(CRMSecurity.IsAdmin || casese.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToCases(casese, isPrivate, accessList, false, true);
                 result.Add(casese);
@@ -392,7 +393,7 @@ namespace ASC.Api.CRM
             var cases = DaoFactory.GetCasesDao().GetByID(caseid);
             if (cases == null || !CRMSecurity.CanAccessTo(cases)) throw new ItemNotFoundException();
 
-            return ToCasesWrapper(cases);
+            return CasesWrapperHelper.Get(cases);
         }
 
         /// <summary>
@@ -415,7 +416,7 @@ namespace ASC.Api.CRM
 
             var searchString = ApiContext.FilterValue;
 
-            if (EnumExtension.TryParse(ApiContext.SortBy, true, out sortBy))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out sortBy))
             {
                 casesOrderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
             }
@@ -474,7 +475,7 @@ namespace ASC.Api.CRM
             }
 
             ApiContext.SetTotalCount(totalCount);
-            return result.ToSmartList();
+            return result;
         }
 
         /// <summary>
@@ -494,13 +495,14 @@ namespace ASC.Api.CRM
             if (caseid <= 0) throw new ArgumentException();
 
             var cases = DaoFactory.GetCasesDao().DeleteCases(caseid);
+
             if (cases == null) throw new ItemNotFoundException();
 
-            FactoryIndexer<Web.CRM.Core.Search.CasesWrapper>.DeleteAsync(cases);
+            FactoryIndexerCasesWrapper.DeleteAsync(Web.CRM.Core.Search.CasesWrapper.GetCasesWrapper(ServiceProvider, cases));
 
-            MessageService.Send( MessageAction.CaseDeleted, MessageTarget.Create(cases.ID), cases.Title);
+            MessageService.Send(MessageAction.CaseDeleted, MessageTarget.Create(cases.ID), cases.Title);
 
-            return ToCasesWrapper(cases);
+            return CasesWrapperHelper.Get(cases);
         }
 
         /// <summary>
@@ -524,7 +526,7 @@ namespace ASC.Api.CRM
 
             if (caseses == null || !caseses.Any()) return new List<CasesWrapper>();
 
-            MessageService.Send( MessageAction.CasesDeleted, MessageTarget.Create(casesids), caseses.Select(c => c.Title));
+            MessageService.Send(MessageAction.CasesDeleted, MessageTarget.Create(casesids), caseses.Select(c => c.Title));
 
             return ToListCasesWrappers(caseses);
         }
@@ -550,7 +552,7 @@ namespace ASC.Api.CRM
 
             caseses = DaoFactory.GetCasesDao().DeleteBatchCases(caseses);
 
-            MessageService.Send( MessageAction.CasesDeleted, MessageTarget.Create(caseses.Select(c => c.ID)), caseses.Select(c => c.Title));
+            MessageService.Send(MessageAction.CasesDeleted, MessageTarget.Create(caseses.Select(c => c.ID)), caseses.Select(c => c.Title));
 
             return ToListCasesWrappers(caseses);
         }
@@ -598,7 +600,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetCasesDao().AddMember(caseid, contactid);
 
             var messageAction = contact is Company ? MessageAction.CaseLinkedCompany : MessageAction.CaseLinkedPerson;
-            MessageService.Send( messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
+            MessageService.Send(messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
 
             return ToContactWrapper(contact);
         }
@@ -631,7 +633,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetCasesDao().RemoveMember(caseid, contactid);
 
             var messageAction = contact is Company ? MessageAction.CaseUnlinkedCompany : MessageAction.CaseUnlinkedPerson;
-            MessageService.Send( messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
+            MessageService.Send(messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
 
             return result;
         }
@@ -659,7 +661,7 @@ namespace ASC.Api.CRM
                 {
                     if (item.Title.IndexOf(prefix, StringComparison.Ordinal) != -1)
                     {
-                        result.Add(ToCasesWrapper(item));
+                        result.Add(CasesWrapperHelper.Get(item));
                     }
                 }
 
@@ -672,7 +674,7 @@ namespace ASC.Api.CRM
 
                 foreach (var item in findedCases)
                 {
-                    result.Add(ToCasesWrapper(item));
+                    result.Add(CasesWrapperHelper.Get(item));
                 }
             }
 
@@ -701,53 +703,26 @@ namespace ASC.Api.CRM
             }
 
             var contacts = DaoFactory
-                .ContactDao
+                .GetContactDao()
                 .GetContacts(contactIDs.Distinct().ToArray())
                 .ToDictionary(item => item.ID, ToContactBaseWrapper);
 
             foreach (var cases in items)
             {
-                var casesWrapper = new CasesWrapper(cases)
-                    {
-                        CustomFields = customFields.ContainsKey(cases.ID)
-                                           ? customFields[cases.ID]
-                                           : new List<CustomFieldBaseWrapper>(),
-                        Members = casesMembers.ContainsKey(cases.ID)
+                var casesWrapper = CasesWrapperHelper.Get(cases);
+
+                casesWrapper.CustomFields = customFields.ContainsKey(cases.ID)
+                                   ? customFields[cases.ID]
+                                   : new List<CustomFieldBaseWrapper>();
+
+                casesWrapper.Members = casesMembers.ContainsKey(cases.ID)
                                       ? casesMembers[cases.ID].Where(contacts.ContainsKey).Select(item => contacts[item])
-                                      : new List<ContactBaseWrapper>()
-                    };
+                                      : new List<ContactBaseWrapper>();
 
                 result.Add(casesWrapper);
             }
 
             return result;
-        }
-
-        private CasesWrapper ToCasesWrapper(Cases cases)
-        {
-            var casesWrapper = new CasesWrapper(cases)
-                {
-                    CustomFields = DaoFactory
-                        .CustomFieldDao
-                        .GetEnityFields(EntityType.Case, cases.ID, false)
-                        .ConvertAll(item => new CustomFieldBaseWrapper(item))
-                        .ToSmartList(),
-                    Members = new List<ContactBaseWrapper>()
-                };
-
-            var memberIDs = DaoFactory.GetCasesDao().GetMembers(cases.ID);
-            var membersList = DaoFactory.GetContactDao().GetContacts(memberIDs);
-
-            var membersWrapperList = new List<ContactBaseWrapper>();
-
-            foreach (var member in membersList)
-            {
-                if (member == null) continue;
-                membersWrapperList.Add(ToContactBaseWrapper(member));
-            }
-
-            casesWrapper.Members = membersWrapperList;
-            return casesWrapper;
         }
 
         private IEnumerable<UserInfo> GetUsersByIdList(IEnumerable<Guid> ids)

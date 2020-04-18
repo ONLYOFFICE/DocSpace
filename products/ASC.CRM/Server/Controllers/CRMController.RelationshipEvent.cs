@@ -24,7 +24,9 @@
 */
 
 
+using ASC.Api.Core;
 using ASC.Api.CRM.Wrappers;
+using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
@@ -105,7 +107,7 @@ namespace ASC.Api.CRM
 
             OrderBy eventOrderBy;
 
-            if (Web.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out eventByType))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out eventByType))
             {
                 eventOrderBy = new OrderBy(eventByType, !ApiContext.SortDescending);
             }
@@ -151,7 +153,7 @@ namespace ASC.Api.CRM
                     null));
             }
 
-            return result.ToSmartList();
+            return result;
         }
 
         /// <summary>
@@ -174,7 +176,7 @@ namespace ASC.Api.CRM
 
             var item = DaoFactory.GetRelationshipEventDao().GetByID(id);
             if (item == null) throw new ItemNotFoundException();
-            var wrapper = ToRelationshipEventWrapper(item);
+            var wrapper = RelationshipEventWrapperHelper.Get(item);
 
             DaoFactory.GetRelationshipEventDao().DeleteItem(id);
 
@@ -198,14 +200,14 @@ namespace ASC.Api.CRM
         ///     File info
         /// </returns>
         [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/text")]
-        public FileWrapper CreateTextFile(string entityType, int entityid, string title, string content)
+        public FileWrapper<int> CreateTextFile(string entityType, int entityid, string title, string content)
         {
             if (title == null) throw new ArgumentNullException("title");
             if (content == null) throw new ArgumentNullException("content");
 
             var folderid = GetRootFolderID();
 
-            FileWrapper result;
+            FileWrapper<int> result;
 
             var extension = ".txt";
             if (!string.IsNullOrEmpty(content))
@@ -227,69 +229,70 @@ namespace ASC.Api.CRM
             return result;
         }
 
-        /// <summary>
-        /// Upload file 
-        /// </summary>
-        /// <short>Upload file</short>
-        /// <category>Files</category>
-        /// <remarks>
-        /// <![CDATA[
-        ///  Upload can be done in 2 different ways:
-        ///  <ol>
-        /// <li>Single file upload. You should set Content-Type &amp; Content-Disposition header to specify filename and content type, and send file in request body</li>
-        /// <li>Using standart multipart/form-data method</li>
-        /// </ol>]]>
-        /// </remarks>
-        /// <param name="entityType">Entity type</param>
-        /// <param name="entityid">Entity ID</param>
-        /// <param name="file" visible="false">Request Input stream</param>
-        /// <param name="contentType" visible="false">Content-Type Header</param>
-        /// <param name="contentDisposition" visible="false">Content-Disposition Header</param>
-        /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
-        /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
-        /// <returns>
-        /// File info
-        /// </returns>
-        [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/upload")]
-        public FileWrapper UploadFileInCRM(
-            string entityType,
-            int entityid,
-            Stream file,
-            ContentType contentType,
-            ContentDisposition contentDisposition,
-            IEnumerable<System.Web.HttpPostedFileBase> files,
-            bool storeOriginalFileFlag
-            )
+        ///// <summary>
+        ///// Upload file 
+        ///// </summary>
+        ///// <short>Upload file</short>
+        ///// <category>Files</category>
+        ///// <remarks>
+        ///// <![CDATA[
+        /////  Upload can be done in 2 different ways:
+        /////  <ol>
+        ///// <li>Single file upload. You should set Content-Type &amp; Content-Disposition header to specify filename and content type, and send file in request body</li>
+        ///// <li>Using standart multipart/form-data method</li>
+        ///// </ol>]]>
+        ///// </remarks>
+        ///// <param name="entityType">Entity type</param>
+        ///// <param name="entityid">Entity ID</param>
+        ///// <param name="file" visible="false">Request Input stream</param>
+        ///// <param name="contentType" visible="false">Content-Type Header</param>
+        ///// <param name="contentDisposition" visible="false">Content-Disposition Header</param>
+        ///// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
+        ///// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
+        ///// <returns>
+        ///// File info
+        ///// </returns>
+        //[Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/upload")]
+        //public FileWrapper<int> UploadFileInCRM(
+        //    string entityType,
+        //    int entityid,
+        //    Stream file,
+        //    ContentType contentType,
+        //    ContentDisposition contentDisposition,
+        //    IEnumerable<System.Web.HttpPostedFileBase> files,
+        //    bool storeOriginalFileFlag
+        //    )
+        //{
+        //    FilesSettings.StoreOriginalFilesSetting = storeOriginalFileFlag;
+
+        //    var folderid = GetRootFolderID();
+
+        //    var fileNames = new List<string>();
+
+        //    FileWrapper<int> uploadedFile = null;
+        //    if (files != null && files.Any())
+        //    {
+        //        //For case with multiple files
+        //        foreach (var postedFile in files)
+        //        {
+        //            uploadedFile = SaveFile(folderid, postedFile.InputStream, postedFile.FileName);
+        //            fileNames.Add(uploadedFile.Title);
+        //        }
+        //    }
+        //    else if (file != null)
+        //    {
+        //        uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
+        //        fileNames.Add(uploadedFile.Title);
+        //    }
+
+        //    return uploadedFile;
+        //}
+
+        private FileWrapper<int> SaveFile(int folderid, Stream file, string fileName)
         {
-            FilesSettings.StoreOriginalFiles = storeOriginalFileFlag;
+            var resultFile = FileUploader.Exec<int>(folderid, fileName, file.Length, file);
 
-            var folderid = GetRootFolderID();
-
-            var fileNames = new List<string>();
-
-            FileWrapper uploadedFile = null;
-            if (files != null && files.Any())
-            {
-                //For case with multiple files
-                foreach (var postedFile in files)
-                {
-                    uploadedFile = SaveFile(folderid, postedFile.InputStream, postedFile.FileName);
-                    fileNames.Add(uploadedFile.Title);
-                }
-            }
-            else if (file != null)
-            {
-                uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
-                fileNames.Add(uploadedFile.Title);
-            }
-
-            return uploadedFile;
-        }
-
-        private static FileWrapper SaveFile(object folderid, Stream file, string fileName)
-        {
-            var resultFile = FileUploader.Exec(folderid.ToString(), fileName, file.Length, file);
-            return new FileWrapper(resultFile);
+            return FileWrapperHelper.Get<int>(resultFile);
         }
 
         /// <summary>
@@ -371,7 +374,7 @@ namespace ASC.Api.CRM
                     Content = content,
                     ContactID = contactId,
                     CreateOn = created,
-                    CreateBy = Core.SecurityContext.CurrentAccount.ID
+                    CreateBy = SecurityContext.CurrentAccount.ID
                 };
 
             var category = DaoFactory.GetListItemDao().GetByID(categoryId);
@@ -388,7 +391,7 @@ namespace ASC.Api.CRM
             if (fileId != null)
             {
                 var fileIds = fileId.ToList();
-                var files = FilesDaoFactory.GetFileDao().GetFiles(fileIds.Cast<object>().ToArray());
+                var files = FilesDaoFactory.GetFileDao<int>().GetFiles(fileIds.ToArray());
 
                 if (needNotify)
                 {
@@ -424,7 +427,7 @@ namespace ASC.Api.CRM
                 NotifyClient.SendAboutAddRelationshipEventAdd(item, fileListInfoHashtable, DaoFactory, notifyUserList.ToArray());
             }
 
-            var wrapper = ToRelationshipEventWrapper(item);
+            var wrapper = RelationshipEventWrapperHelper.Get(item);
 
             var historyCreatedAction = GetHistoryCreatedAction(entityTypeObj, contactId);
             MessageService.Send( historyCreatedAction, MessageTarget.Create(item.ID), entityTitle, category.Title);
@@ -448,7 +451,7 @@ namespace ASC.Api.CRM
         {
             if (entityid <= 0 || fileids == null) throw new ArgumentException();
 
-            var files = FilesDaoFactory.GetFileDao().GetFiles(fileids.Cast<object>().ToArray());
+            var files = FilesDaoFactory.GetFileDao<int>().GetFiles(fileids.ToArray());
 
             var folderid = GetRootFolderID();
 
@@ -467,15 +470,15 @@ namespace ASC.Api.CRM
                     var relationshipEvent1 = DaoFactory.GetRelationshipEventDao().AttachFiles(entityid, EntityType.Any, 0, fileids.ToArray());
                     var messageAction = entityObj is Company ? MessageAction.CompanyAttachedFiles : MessageAction.PersonAttachedFiles;
                     MessageService.Send( messageAction, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
-                    return ToRelationshipEventWrapper(relationshipEvent1);
+                    return RelationshipEventWrapperHelper.Get(relationshipEvent1);
                 case EntityType.Opportunity:
                     var relationshipEvent2 = DaoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
                     MessageService.Send( MessageAction.OpportunityAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
-                    return ToRelationshipEventWrapper(relationshipEvent2);
+                    return RelationshipEventWrapperHelper.Get(relationshipEvent2);
                 case EntityType.Case:
                     var relationshipEvent3 = DaoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
                     MessageService.Send( MessageAction.CaseAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
-                    return ToRelationshipEventWrapper(relationshipEvent3);
+                    return RelationshipEventWrapperHelper.Get(relationshipEvent3);
                 default:
                     throw new ArgumentException();
             }
@@ -490,7 +493,7 @@ namespace ASC.Api.CRM
         ///   Root folder ID
         /// </returns>
         [Read(@"files/root")]
-        public object GetRootFolderID()
+        public int GetRootFolderID()
         {
             return DaoFactory.GetFileDao().GetRoot();
         }
@@ -506,7 +509,7 @@ namespace ASC.Api.CRM
         ///    File list
         /// </returns>
         [Read(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files")]
-        public IEnumerable<FileWrapper> GetFiles(string entityType, int entityid)
+        public IEnumerable<FileWrapper<int>> GetFiles(string entityType, int entityid)
         {
             if (entityid <= 0) throw new ArgumentException();
 
@@ -515,10 +518,10 @@ namespace ASC.Api.CRM
             switch (entityTypeObj)
             {
                 case EntityType.Contact:
-                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(new[] {entityid}, EntityType.Any, 0).ConvertAll(file => new FileWrapper(file));
+                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(new[] {entityid}, EntityType.Any, 0).ConvertAll(file => FileWrapperHelper.Get<int>(file));
                 case EntityType.Opportunity:
                 case EntityType.Case:
-                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => new FileWrapper(file));
+                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => FileWrapperHelper.Get<int>(file));
                 default:
                     throw new ArgumentException();
             }
@@ -536,13 +539,13 @@ namespace ASC.Api.CRM
         ///    File Info
         /// </returns>
         [Delete(@"files/{fileid:int}")]
-        public FileWrapper DeleteCRMFile(int fileid)
+        public FileWrapper<int> DeleteCRMFile(int fileid)
         {
             if (fileid < 0) throw new ArgumentException();
 
-            var file = FilesDaoFactory.GetFileDao().GetFile(fileid);
+            var file = FilesDaoFactory.GetFileDao<int>().GetFile(fileid);
             if (file == null) throw new ItemNotFoundException();
-            var result = new FileWrapper(file);
+            var result = FileWrapperHelper.Get<int>(file);
 
             var _eventsDao = DaoFactory.GetRelationshipEventDao();
             var eventIDs = _eventsDao.RemoveFile(file);
@@ -656,7 +659,7 @@ namespace ASC.Api.CRM
 
             foreach (var item in itemList)
             {
-                var eventObjWrap = new RelationshipEventWrapper(item);
+                var eventObjWrap = RelationshipEventWrapperHelper.Get(item);
 
                 if (contacts.ContainsKey(item.ContactID))
                 {
@@ -673,7 +676,8 @@ namespace ASC.Api.CRM
                     }
                 }
 
-                eventObjWrap.Files = files.ContainsKey(item.ID) ? files[item.ID].ConvertAll(file => new FileWrapper(file)) : new List<FileWrapper>();
+                eventObjWrap.Files = files.ContainsKey(item.ID) ? files[item.ID].ConvertAll(file =>
+                FileWrapperHelper.Get<int>(file)) : new List<FileWrapper<int>>();
 
                 if (categories.ContainsKey(item.CategoryID))
                 {
@@ -682,38 +686,6 @@ namespace ASC.Api.CRM
 
                 result.Add(eventObjWrap);
             }
-
-            return result;
-        }
-
-        private RelationshipEventWrapper ToRelationshipEventWrapper(RelationshipEvent relationshipEvent)
-        {
-            var result = new RelationshipEventWrapper(relationshipEvent);
-
-            var historyCategory = DaoFactory.GetListItemDao().GetByID(relationshipEvent.CategoryID);
-
-            if (historyCategory != null)
-            {
-                result.Category = new HistoryCategoryBaseWrapper(historyCategory);
-            }
-
-            if (relationshipEvent.EntityID > 0)
-            {
-                result.Entity = ToEntityWrapper(relationshipEvent.EntityType, relationshipEvent.EntityID);
-            }
-
-            result.Files = DaoFactory.GetRelationshipEventDao().GetFiles(relationshipEvent.ID).ConvertAll(file => new FileWrapper(file));
-
-            if (relationshipEvent.ContactID > 0)
-            {
-                var relativeContact = DaoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
-                if (relativeContact != null)
-                {
-                    result.Contact = ToContactBaseWrapper(relativeContact);
-                }
-            }
-
-            result.CanEdit = CRMSecurity.CanAccessTo(relationshipEvent);
 
             return result;
         }

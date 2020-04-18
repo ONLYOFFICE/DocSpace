@@ -27,6 +27,8 @@
 using ASC.Common.Threading.Progress;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
@@ -51,7 +53,7 @@ namespace ASC.Api.CRM
         [Read(@"settings/currency")]
         public IEnumerable<CurrencyInfoWrapper> GetAvaliableCurrency()
         {
-            return CurrencyProvider.GetAll().ConvertAll(item => new CurrencyInfoWrapper(item)).ToItemList();
+            return CurrencyProvider.GetAll().ConvertAll(item => CurrencyInfoWrapperHelper.Get(item));
         }
 
         /// <summary>
@@ -95,7 +97,7 @@ namespace ASC.Api.CRM
             if (cur == null) throw new ArgumentException();
 
             var table = CurrencyProvider.MoneyConvert(cur);
-            table.ToList().ForEach(tableItem => result.Add(ToCurrencyRateInfoWrapper(tableItem.Key, tableItem.Value)));
+            table.ToList().ForEach(tableItem => result.Add(CurrencyRateInfoWrapperHelper.Get(tableItem.Key, tableItem.Value)));
             return result;
         }
 
@@ -111,10 +113,12 @@ namespace ASC.Api.CRM
         /// <exception cref="SecurityException"></exception>
         [Update(@"contact/status/settings")]
         public Boolean? UpdateCRMContactStatusSettings(Boolean? changeContactStatusGroupAuto)
-        {
-            var tenantSettings = Global.TenantSettings;
+        {            
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+
             tenantSettings.ChangeContactStatusGroupAuto = changeContactStatusGroupAuto;
-            tenantSettings.Save();
+
+            SettingsManager.Save<CRMSettings>(tenantSettings);
 
             MessageService.Send( MessageAction.ContactTemperatureLevelSettingsUpdated);
 
@@ -134,9 +138,11 @@ namespace ASC.Api.CRM
         [Update(@"contact/mailtohistory/settings")]
         public Boolean UpdateCRMWriteMailToHistorySettings(Boolean writeMailToHistoryAuto)
         {
-            var tenantSettings = Global.TenantSettings;
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+
             tenantSettings.WriteMailToHistoryAuto = writeMailToHistoryAuto;
-            tenantSettings.Save();
+
+            SettingsManager.Save<CRMSettings>(tenantSettings);
             //MessageService.Send( MessageAction.ContactTemperatureLevelSettingsUpdated);
 
             return writeMailToHistoryAuto;
@@ -155,9 +161,10 @@ namespace ASC.Api.CRM
         [Update(@"contact/tag/settings")]
         public Boolean? UpdateCRMContactTagSettings(Boolean? addTagToContactGroupAuto)
         {
-            var tenantSettings = Global.TenantSettings;
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
             tenantSettings.AddTagToContactGroupAuto = addTagToContactGroupAuto;
-            tenantSettings.Save();
+
+            SettingsManager.Save<CRMSettings>(tenantSettings);
 
             MessageService.Send( MessageAction.ContactsTagSettingsUpdated);
 
@@ -177,10 +184,14 @@ namespace ASC.Api.CRM
         public Boolean SetIsPortalConfigured(Boolean? configured, Guid? webFormKey)
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
-            var tenantSettings = Global.TenantSettings;
+
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+
             tenantSettings.IsConfiguredPortal = configured ?? true;
             tenantSettings.WebFormKey = webFormKey ?? Guid.NewGuid();
-            tenantSettings.Save();
+
+            SettingsManager.Save<CRMSettings>(tenantSettings);
+
             return tenantSettings.IsConfiguredPortal;
         }
 
@@ -196,14 +207,16 @@ namespace ASC.Api.CRM
         public String UpdateOrganisationSettingsCompanyName(String companyName)
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
-            var tenantSettings = Global.TenantSettings;
+
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+
             if (tenantSettings.InvoiceSetting == null)
             {
                 tenantSettings.InvoiceSetting = InvoiceSetting.DefaultSettings;
             }
             tenantSettings.InvoiceSetting.CompanyName = companyName;
 
-            tenantSettings.Save();
+            SettingsManager.Save<CRMSettings>(tenantSettings);
 
             MessageService.Send( MessageAction.OrganizationProfileUpdatedCompanyName, companyName);
 
@@ -227,7 +240,7 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var tenantSettings = Global.TenantSettings;
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
 
             if (tenantSettings.InvoiceSetting == null)
             {
@@ -246,7 +259,7 @@ namespace ASC.Api.CRM
 
             tenantSettings.InvoiceSetting.CompanyAddress = companyAddress;
 
-            tenantSettings.Save();
+            SettingsManager.Save<CRMSettings>(tenantSettings);
 
             MessageService.Send( MessageAction.OrganizationProfileUpdatedAddress);
 
@@ -266,7 +279,9 @@ namespace ASC.Api.CRM
         public Int32 UpdateOrganisationSettingsLogo(bool reset)
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+
             int companyLogoID;
+
             if (!reset)
             {
                 companyLogoID = OrganisationLogoManager.TryUploadOrganisationLogoFromTmp(DaoFactory);
@@ -280,14 +295,16 @@ namespace ASC.Api.CRM
                 companyLogoID = 0;
             }
 
-            var tenantSettings = Global.TenantSettings;
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+
             if (tenantSettings.InvoiceSetting == null)
             {
                 tenantSettings.InvoiceSetting = InvoiceSetting.DefaultSettings;
             }
             tenantSettings.InvoiceSetting.CompanyLogoID = companyLogoID;
 
-            tenantSettings.Save();
+            SettingsManager.Save<CRMSettings>(tenantSettings);
+
             MessageService.Send( MessageAction.OrganizationProfileUpdatedInvoiceLogo);
 
             return companyLogoID;
@@ -310,7 +327,8 @@ namespace ASC.Api.CRM
             }
             else
             {
-                var tenantSettings = Global.TenantSettings;
+                var tenantSettings = SettingsManager.Load<CRMSettings>();
+
                 if (tenantSettings.InvoiceSetting == null)
                 {
                     return string.Empty;
@@ -332,10 +350,12 @@ namespace ASC.Api.CRM
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-            var tenantSettings = Global.TenantSettings;
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+
             tenantSettings.WebFormKey = Guid.NewGuid();
 
-            tenantSettings.Save();
+            SettingsManager.Save<CRMSettings>(tenantSettings);
+
             MessageService.Send( MessageAction.WebsiteContactFormUpdatedKey);
 
             return tenantSettings.WebFormKey.ToString();
@@ -366,7 +386,7 @@ namespace ASC.Api.CRM
             Global.SaveDefaultCurrencySettings(cur);
             MessageService.Send( MessageAction.CrmDefaultCurrencyUpdated);
 
-            return ToCurrencyInfoWrapper(cur);
+            return CurrencyInfoWrapperHelper.Get(cur);
         }
 
         /// <visible>false</visible>
@@ -395,7 +415,9 @@ namespace ASC.Api.CRM
             }
 
             new ImportFromCSVManager().StartImport(entityTypeObj, csvFileURI, jsonSettings);
+            
             return "";
+
         }
 
         /// <visible>false</visible>
@@ -451,7 +473,9 @@ namespace ASC.Api.CRM
         public IProgressItem GetExportStatus()
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            
             return ExportToCsv.GetStatus(false);
+        
         }
 
         /// <visible>false</visible>
@@ -459,8 +483,11 @@ namespace ASC.Api.CRM
         public IProgressItem CancelExport()
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+
             ExportToCsv.Cancel(false);
+
             return ExportToCsv.GetStatus(false);
+
         }
 
         /// <visible>false</visible>
@@ -485,8 +512,11 @@ namespace ASC.Api.CRM
         [Update(@"export/partial/cancel")]
         public IProgressItem CancelPartialExport()
         {
+            
             ExportToCsv.Cancel(true);
+            
             return ExportToCsv.GetStatus(true);
+
         }
 
         /// <visible>false</visible>
@@ -529,17 +559,6 @@ namespace ASC.Api.CRM
             }
 
             return ExportToCsv.Start(filterObject, fileName);
-        }
-
-
-        protected CurrencyInfoWrapper ToCurrencyInfoWrapper(CurrencyInfo currencyInfo)
-        {
-            return currencyInfo == null ? null : new CurrencyInfoWrapper(currencyInfo);
-        }
-
-        protected CurrencyRateInfoWrapper ToCurrencyRateInfoWrapper(CurrencyInfo currencyInfo, Decimal rate)
-        {
-            return currencyInfo == null ? null : new CurrencyRateInfoWrapper(currencyInfo, rate);
         }
     }
 }

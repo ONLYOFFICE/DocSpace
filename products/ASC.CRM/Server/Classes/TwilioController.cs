@@ -24,17 +24,22 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Notify.Signalr;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.VoipService;
 using ASC.VoipService.Twilio;
-using ASC.Web.CRM.Core;
 using ASC.Web.Studio.Utility;
 using Autofac;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,14 +47,36 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+using System.Web.Http;
+using Twilio.AspNet.Common;
+using Twilio.AspNet.Core;
 using Twilio.TwiML;
 
 namespace ASC.Web.CRM.Classes
 {
-    [ValidateRequest]
+
+    [ServiceFilter(typeof(ValidateRequestAttribute))]
     public class TwilioController : ApiController
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC");
+        public TwilioController(IOptionsMonitor<ILog> logger,
+                                DaoFactory daoFactory,
+                                VoipEngine voipEngine,
+                                TenantManager tenantManager,
+                                SecurityContext securityContext)
+        {
+            TenantManager = tenantManager;
+            Log = logger.Get("ASC");
+            DaoFactory = daoFactory;
+            VoipEngine = voipEngine;
+            SecurityContext = securityContext;
+        }
+
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public VoipEngine VoipEngine { get; }
+        public DaoFactory DaoFactory { get; }
+
+        private readonly ILog Log;
         private static readonly object LockObj = new object();
 
         [System.Web.Http.HttpPost]
@@ -59,13 +86,12 @@ namespace ASC.Web.CRM.Classes
             {
                 lock (LockObj)
                 {
-                    using (var scope = DIHelper.Resolve())
-                    {
-                        var daoFactory = scope.Resolve<DaoFactory>();
-                        request.AddAdditionalFields(callerId, contactId);
-                        var response = request.IsInbound ? Inbound(request, daoFactory) : Outbound(request, daoFactory);
-                        return GetHttpResponse(response);
-                    }
+                    request.AddAdditionalFields(callerId, contactId);
+
+                    var response = request.IsInbound ? Inbound(request, DaoFactory) : Outbound(request, DaoFactory);
+
+                    return GetHttpResponse(response);
+
                 }
             }
             catch (Exception e)
@@ -80,14 +106,11 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                using (var scope = DIHelper.Resolve())
-                {
-                    request.AddAdditionalFields(callerId);
+                request.AddAdditionalFields(callerId);
 
-                    new VoipEngine(scope.Resolve<DaoFactory>()).SaveOrUpdateCall(CallFromTwilioRequest(request));
+                VoipEngine.SaveOrUpdateCall(CallFromTwilioRequest(request));
 
-                    return GetHttpResponse(new VoiceResponse());
-                }
+                return GetHttpResponse(new VoiceResponse());
             }
             catch (Exception e)
             {
@@ -101,32 +124,27 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                using (var scope = DIHelper.Resolve())
+                request.AddAdditionalFields(callerId, contactId, reject);
+
+                var call = CallFromTwilioRequest(request);
+                call = VoipEngine.SaveOrUpdateCall(call);
+
+                var parentCall = DaoFactory.GetVoipDao().GetCall(call.ParentID);
+
+                if (!string.IsNullOrEmpty(request.RecordingSid))
                 {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var voipEngine = new VoipEngine(daoFactory);
-
-                    request.AddAdditionalFields(callerId, contactId, reject);
-
-                    var call = CallFromTwilioRequest(request);
-                    call = voipEngine.SaveOrUpdateCall(call);
-
-                    var parentCall = daoFactory.VoipDao.GetCall(call.ParentID);
-
-                    if (!string.IsNullOrEmpty(request.RecordingSid))
+                    if (parentCall.VoipRecord == null || string.IsNullOrEmpty(parentCall.VoipRecord.Id))
                     {
-                        if (parentCall.VoipRecord == null || string.IsNullOrEmpty(parentCall.VoipRecord.Id))
-                        {
-                            parentCall.VoipRecord = new VoipRecord {Id = request.RecordingSid};
-                        }
-
-                        daoFactory.VoipDao.SaveOrUpdateCall(parentCall);
+                        parentCall.VoipRecord = new VoipRecord { Id = request.RecordingSid };
                     }
 
-                    voipEngine.SaveAdditionalInfo(parentCall.Id);
-
-                    return GetHttpResponse(request.Dial());
+                    DaoFactory.GetVoipDao().SaveOrUpdateCall(parentCall);
                 }
+
+                VoipEngine.SaveAdditionalInfo(parentCall.Id);
+
+                return GetHttpResponse(request.Dial());
+
             }
             catch (Exception e)
             {
@@ -140,19 +158,15 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                using (var scope = DIHelper.Resolve())
+                request.AddAdditionalFields(callerId, contactId);
+
+                if (request.QueueResult != "bridged" && request.QueueResult != "redirected")
                 {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var voipEngine = new VoipEngine(daoFactory);
-
-                    request.AddAdditionalFields(callerId, contactId);
-                    if (request.QueueResult != "bridged" && request.QueueResult != "redirected")
-                    {
-                        MissCall(request, voipEngine);
-                    }
-
-                    return GetHttpResponse(request.Enqueue(request.QueueResult));
+                    MissCall(request, VoipEngine);
                 }
+
+                return GetHttpResponse(request.Enqueue(request.QueueResult));
+
             }
             catch (Exception e)
             {
@@ -181,22 +195,18 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                using (var scope = DIHelper.Resolve())
+                request.AddAdditionalFields(callerId, contactId, reject);
+
+                if (Convert.ToBoolean(request.Reject))
                 {
-                    var voipEngine = new VoipEngine(scope.Resolve<DaoFactory>());
-                    request.AddAdditionalFields(callerId, contactId, reject);
-
-                    if (Convert.ToBoolean(request.Reject))
-                    {
-                        MissCall(request, voipEngine);
-                        return GetHttpResponse(request.Leave());
-                    }
-
-
-                    voipEngine.AnswerCall(CallFromTwilioRequest(request));
-
-                    return GetHttpResponse(request.Dequeue());
+                    MissCall(request, VoipEngine);
+                    return GetHttpResponse(request.Leave());
                 }
+
+                VoipEngine.AnswerCall(CallFromTwilioRequest(request));
+
+                return GetHttpResponse(request.Dequeue());
+
             }
             catch (Exception e)
             {
@@ -210,32 +220,30 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                using (var scope = DIHelper.Resolve())
+
+                request.AddAdditionalFields(callerId, contactId, redirectTo: redirectTo);
+                if (Convert.ToInt32(request.QueueTime) == 0)
                 {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var voipEngine = new VoipEngine(daoFactory);
+                    var history = CallFromTwilioRequest(request);
 
-                    request.AddAdditionalFields(callerId, contactId, redirectTo: redirectTo);
-                    if (Convert.ToInt32(request.QueueTime) == 0)
+                    history.ParentID = history.Id;
+
+                    VoipEngine.SaveOrUpdateCall(history);
+
+                    var to = request.RedirectTo;
+                    if (string.IsNullOrEmpty(to))
                     {
-                        var history = CallFromTwilioRequest(request);
-                        history.ParentID = history.Id;
-                        voipEngine.SaveOrUpdateCall(history);
-
-                        var to = request.RedirectTo;
-                        if (string.IsNullOrEmpty(to))
-                        {
-                            request.GetSignalRHelper()
-                                .Enqueue(request.CallSid, callerId.HasValue ? callerId.Value.ToString() : "");
-                        }
-                        else
-                        {
-                            request.GetSignalRHelper().Incoming(request.CallSid, to);
-                        }
+                        request.GetSignalRHelper()
+                            .Enqueue(request.CallSid, callerId.HasValue ? callerId.Value.ToString() : "");
                     }
-
-                    return GetHttpResponse(request.Wait());
+                    else
+                    {
+                        request.GetSignalRHelper().Incoming(request.CallSid, to);
+                    }
                 }
+
+                return GetHttpResponse(request.Wait());
+
             }
             catch (Exception e)
             {
@@ -279,16 +287,12 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                using (var scope = DIHelper.Resolve())
-                {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var voipEngine = new VoipEngine(daoFactory);
-                    request.AddAdditionalFields(callerId, contactId);
+                request.AddAdditionalFields(callerId, contactId);
 
-                    MissCall(request, voipEngine);
+                MissCall(request, VoipEngine);
 
-                    return GetHttpResponse(request.VoiceMail());
-                }
+                return GetHttpResponse(request.VoiceMail());
+
             }
             catch (Exception e)
             {
@@ -299,7 +303,7 @@ namespace ASC.Web.CRM.Classes
 
         private VoiceResponse Inbound(TwilioVoiceRequest request, DaoFactory daoFactory)
         {
-            SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().OwnerId);
+            SecurityContext.AuthenticateMe(TenantManager.GetCurrentTenant().OwnerId);
             var call = SaveCall(request, VoipCallStatus.Incoming, daoFactory);
 
             return request.Inbound(call, daoFactory);
@@ -311,7 +315,8 @@ namespace ASC.Web.CRM.Classes
 
             var history = CallFromTwilioRequest(request);
             history.ParentID = history.Id;
-            new VoipEngine(daoFactory).SaveOrUpdateCall(history);
+
+            VoipEngine.SaveOrUpdateCall(history);
 
             return request.Outbound();
         }
@@ -320,7 +325,8 @@ namespace ASC.Web.CRM.Classes
         {
             var call = CallFromTwilioRequest(request);
             call.Status = status;
-            return daoFactory.VoipDao.SaveOrUpdateCall(call);
+
+            return DaoFactory.GetVoipDao().SaveOrUpdateCall(call);
         }
 
         private void MissCall(TwilioVoiceRequest request, VoipEngine voipEngine)
@@ -369,7 +375,7 @@ namespace ASC.Web.CRM.Classes
         }
 
 
-        private static HttpResponseMessage GetHttpResponse(VoiceResponse response)
+        private HttpResponseMessage GetHttpResponse(VoiceResponse response)
         {
             Log.Info(response);
             return new HttpResponseMessage { Content = new StringContent(response.ToString(), Encoding.UTF8, "application/xml") };
@@ -378,6 +384,33 @@ namespace ASC.Web.CRM.Classes
 
     public class TwilioVoiceRequest : VoiceRequest
     {
+        public TwilioVoiceRequest(TwilioResponseHelper twilioResponseHelper,
+                                  CommonLinkUtility commonLinkUtility,
+                                  DaoFactory daoFactory,
+                                  SecurityContext securityContext,
+                                  CRMSecurity cRMSecurity,
+                                  VoipEngine voipEngine,
+                                  SignalrServiceClient signalrServiceClient)
+        {
+
+            DaoFactory = daoFactory;
+            CommonLinkUtility = commonLinkUtility;
+            TwilioResponseHelper = twilioResponseHelper;
+            SecurityContext = securityContext;
+            CRMSecurity = cRMSecurity;
+            VoipEngine = voipEngine;
+            SignalrServiceClient = signalrServiceClient;
+
+        }
+
+        public SignalrServiceClient SignalrServiceClient { get; }
+
+        public VoipEngine VoipEngine { get; }
+        public CRMSecurity CRMSecurity { get; }
+        public TwilioResponseHelper TwilioResponseHelper { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+        public DaoFactory DaoFactory { get; }
+        public SecurityContext SecurityContext { get; }
         public Guid CallerId { get; set; }
         public int ContactId { get; set; }
         public string ParentCallSid { get; set; }
@@ -390,25 +423,21 @@ namespace ASC.Web.CRM.Classes
 
         public bool Pause { get { return GetSettings().Pause; } }
 
-        private TwilioResponseHelper twilioResponseHelper;
         private TwilioResponseHelper GetTwilioResponseHelper()
         {
-            return twilioResponseHelper ?? (twilioResponseHelper = new TwilioResponseHelper(GetSettings(), CommonLinkUtility.GetFullAbsolutePath("")));
+            return TwilioResponseHelper;
         }
 
         private VoipSettings settings;
         private VoipSettings GetSettings()
         {
-            using (var scope = DIHelper.Resolve())
-            {
-                return settings ?? (settings = scope.Resolve<DaoFactory>().VoipDao.GetNumber(IsInbound ? To : From).Settings);
-            }
+            return settings ?? (settings = DaoFactory.GetVoipDao().GetNumber(IsInbound ? To : From).Settings);
         }
 
         private SignalRHelper signalRHelper;
         public SignalRHelper GetSignalRHelper()
         {
-            return signalRHelper ?? (signalRHelper = new SignalRHelper(IsInbound ? To : From));
+            return signalRHelper ?? (signalRHelper = new SignalRHelper(IsInbound ? To : From, SignalrServiceClient));
         }
 
         public bool IsInbound
@@ -446,7 +475,7 @@ namespace ASC.Web.CRM.Classes
                 : call.To;
 
             Contact contact;
-            var contacts = new VoipEngine(daoFactory).GetContacts(contactPhone, daoFactory);
+            var contacts = VoipEngine.GetContacts(contactPhone, daoFactory);
             var managers = contacts.SelectMany(CRMSecurity.GetAccessSubjectGuidsTo).ToList();
             var agent = GetSignalRHelper().GetAgent(managers);
 
@@ -458,7 +487,7 @@ namespace ASC.Web.CRM.Classes
 
                 contact = contacts.FirstOrDefault(CRMSecurity.CanAccessTo);
 
-                daoFactory.VoipDao.SaveOrUpdateCall(call);
+                DaoFactory.GetVoipDao().SaveOrUpdateCall(call);
             }
             else
             {
@@ -467,9 +496,9 @@ namespace ASC.Web.CRM.Classes
 
             if (contact == null)
             {
-                contact = new VoipEngine(daoFactory).CreateContact(call.From.TrimStart('+'));
+                contact = VoipEngine.CreateContact(call.From.TrimStart('+'));
                 call.ContactId = contact.ID;
-                daoFactory.VoipDao.SaveOrUpdateCall(call);
+                DaoFactory.GetVoipDao().SaveOrUpdateCall(call);
             }
 
             return GetTwilioResponseHelper().Inbound(agent);
@@ -488,11 +517,64 @@ namespace ASC.Web.CRM.Classes
 
     public class ValidateRequestAttribute : ActionFilterAttribute
     {
+        public ValidateRequestAttribute(ConsumerFactory consumerFactory, IHttpContextAccessor httpContextAccessor)
+        {
+            ConsumerFactory = consumerFactory;
+            HttpContext = httpContextAccessor?.HttpContext;
+        }
+
+        public HttpContext HttpContext { get; }
+        public ConsumerFactory ConsumerFactory { get; }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (!new RequestValidationHelper().IsValidRequest(filterContext.HttpContext, ConsumerFactory.Get<Web.Core.Sms.TwilioProvider>()["twilioAuthToken"], HttpContext.Current.Request.GetUrlRewriter().AbsoluteUri))
-                filterContext.Result = new Twilio.AspNet.Mvc.HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            if (!new RequestValidationHelper().IsValidRequest(filterContext.HttpContext, ConsumerFactory.Get<Web.Core.Sms.TwilioProvider>()["twilioAuthToken"], HttpContext.Request.GetUrlRewriter().AbsoluteUri))
+                filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+
             base.OnActionExecuting(filterContext);
+
         }
     }
+
+    public static class TwilioControllerExtension
+    {
+        public static DIHelper AddTwilioControllerService(this DIHelper services)
+        {
+            services.TryAddScoped<TwilioController>();
+
+            return services.AddDaoFactoryService()
+                           .AddVoipEngineService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
+
+        }
+    }
+
+    public static class TwilioVoiceRequestExtension
+    {
+        public static DIHelper AddTwilioVoiceRequestService(this DIHelper services)
+        {
+            services.TryAddScoped<TwilioVoiceRequest>();
+
+            return services.AddCommonLinkUtilityService()
+                            .AddDaoFactoryService()
+                            .AddSecurityContextService()
+                            .AddCRMSecurityService()
+                            .AddSignalrServiceClient();
+
+        }
+    }
+
+
+    public static class ValidateRequestAttributeExtension
+    {
+        public static DIHelper AddValidateRequestAttributeService(this DIHelper services)
+        {
+            services.TryAddScoped<ValidateRequestAttribute>();
+
+            return services.AddConsumerFactoryService();
+
+        }
+    }
+
 }

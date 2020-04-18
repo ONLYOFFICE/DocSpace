@@ -24,14 +24,18 @@
 */
 
 using ASC.Api.Core;
+using ASC.Common;
+using ASC.Core.Common.Settings;
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
 using ASC.Web.CRM.Classes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace ASC.Api.CRM.Wrappers
@@ -41,34 +45,12 @@ namespace ASC.Api.CRM.Wrappers
     ///  Invoice
     /// </summary>
     [DataContract(Name = "invoiceBase", Namespace = "")]
-    public class InvoiceBaseWrapper 
+    public class InvoiceBaseWrapper
     {
-        public InvoiceBaseWrapper(int id)
+        public InvoiceBaseWrapper()
         {
-        }
 
-        public InvoiceBaseWrapper(Invoice invoice)
-        {
-            Status = new InvoiceStatusWrapper(invoice.Status);
-            Number = invoice.Number;
-            IssueDate = (ApiDateTime) invoice.IssueDate;
-            TemplateType = invoice.TemplateType;
-            DueDate = (ApiDateTime) invoice.DueDate;
-            Currency = !String.IsNullOrEmpty(invoice.Currency) ?
-                new CurrencyInfoWrapper(CurrencyProvider.Get(invoice.Currency)) :
-                new CurrencyInfoWrapper(Global.TenantSettings.DefaultCurrency);
-            ExchangeRate = invoice.ExchangeRate;
-            Language = invoice.Language;
-            PurchaseOrderNumber = invoice.PurchaseOrderNumber;
-            Terms = invoice.Terms;
-            Description = invoice.Description;
-            FileID = invoice.FileID;
-            CreateOn = (ApiDateTime)invoice.CreateOn;
-            CreateBy = EmployeeWraper.Get(invoice.CreateBy);
-            CanEdit = CRMSecurity.CanEdit(invoice);
-            CanDelete = CRMSecurity.CanDelete(invoice);
         }
-
 
         [DataMember(Name = "id")]
         public int Id { get; set; }
@@ -134,48 +116,114 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
 
+    public class InvoiceBaseWrapperHelper
+    {
+        public InvoiceBaseWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
+                           EmployeeWraperHelper employeeWraperHelper,
+                           CRMSecurity cRMSecurity,
+                           SettingsManager settingsManager,
+                           CurrencyProvider currencyProvider,
+                           InvoiceStatusWrapperHelper invoiceStatusWrapperHelper,
+                           DaoFactory daoFactory)
+        {
+            ApiDateTimeHelper = apiDateTimeHelper;
+            EmployeeWraperHelper = employeeWraperHelper;
+            CRMSecurity = cRMSecurity;
+            SettingsManager = settingsManager;
+            CurrencyProvider = currencyProvider;
+            InvoiceStatusWrapperHelper = invoiceStatusWrapperHelper;
+            DaoFactory = daoFactory;
+        }
+
+        public InvoiceStatusWrapperHelper InvoiceStatusWrapperHelper { get; }
+        public CurrencyProvider CurrencyProvider { get; }
+        public SettingsManager SettingsManager { get; }
+        public CRMSecurity CRMSecurity { get; }
+        public ApiDateTimeHelper ApiDateTimeHelper { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public DaoFactory DaoFactory { get; }
+
+        public InvoiceBaseWrapper Get(Invoice invoice)
+        {
+            
+            var result = new InvoiceBaseWrapper
+            {
+                Id = invoice.ID,
+                Status = InvoiceStatusWrapperHelper.Get(invoice.Status),
+                Number = invoice.Number,
+                IssueDate = ApiDateTimeHelper.Get(invoice.IssueDate),
+                TemplateType = invoice.TemplateType,
+                DueDate = ApiDateTimeHelper.Get(invoice.DueDate),
+                Currency = !String.IsNullOrEmpty(invoice.Currency) ?
+    new CurrencyInfoWrapper(CurrencyProvider.Get(invoice.Currency)) :
+    new CurrencyInfoWrapper(SettingsManager.Load<CRMSettings>().DefaultCurrency),
+                ExchangeRate = invoice.ExchangeRate,
+                Language = invoice.Language,
+                PurchaseOrderNumber = invoice.PurchaseOrderNumber,
+                Terms = invoice.Terms,
+                Description = invoice.Description,
+                FileID = invoice.FileID,
+                CreateOn = ApiDateTimeHelper.Get(invoice.CreateOn),
+                CreateBy = EmployeeWraperHelper.Get(invoice.CreateBy),
+                CanEdit = CRMSecurity.CanEdit(invoice),
+                CanDelete = CRMSecurity.CanDelete(invoice)
+            };
+
+            if (invoice.ContactID > 0)
+            {
+                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
+            }
+
+            if (invoice.ConsigneeID > 0)
+            {
+                result.Consignee = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
+            }
+
+            if (invoice.EntityID > 0)
+            {
+                result.Entity = ToEntityWrapper(invoice.EntityType, invoice.EntityID);
+            }
+
+            result.Cost = invoice.GetInvoiceCost(DaoFactory);
+
+            return result;
+
+        }
+    }
+
+    public static class InvoiceBaseWrapperHelperExtension
+    {
+        public static DIHelper AddInvoiceBaseWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoiceBaseWrapperHelper>();
+
+            return services.AddApiDateTimeHelper()
+                           .AddEmployeeWraper()
+                           .AddCRMSecurityService()
+                           .AddSettingsManagerService()
+                           .AddCurrencyProviderService()
+                           .AddInvoiceStatusWrapperHelperService();
+        }
+    }
+
     /// <summary>
     ///  Invoice
     /// </summary>
     [DataContract(Name = "invoice", Namespace = "")]
     public class InvoiceWrapper : InvoiceBaseWrapper
     {
-        public InvoiceWrapper(int id)
-            : base(id)
+        public InvoiceWrapper()
         {
         }
 
-        public InvoiceWrapper(Invoice invoice)
-            : base(invoice.ID)
-        {
-            Status = new InvoiceStatusWrapper(invoice.Status);
-            Number = invoice.Number;
-            IssueDate = (ApiDateTime) invoice.IssueDate;
-            TemplateType = invoice.TemplateType;
-            DueDate = (ApiDateTime) invoice.DueDate;
-            Currency = !String.IsNullOrEmpty(invoice.Currency) ? 
-                new CurrencyInfoWrapper(CurrencyProvider.Get(invoice.Currency)) :
-                new CurrencyInfoWrapper(Global.TenantSettings.DefaultCurrency);
-            ExchangeRate = invoice.ExchangeRate;
-            Language = invoice.Language;
-            PurchaseOrderNumber = invoice.PurchaseOrderNumber;
-            Terms = invoice.Terms;
-            Description = invoice.Description;
-            FileID = invoice.FileID;
-            CreateOn = (ApiDateTime)invoice.CreateOn;
-            CreateBy = EmployeeWraper.Get(invoice.CreateBy);
-            CanEdit = CRMSecurity.CanEdit(invoice);
-            CanDelete = CRMSecurity.CanDelete(invoice);
-        }
-        
         [DataMember]
         public List<InvoiceLineWrapper> InvoiceLines { get; set; }
 
         public static InvoiceWrapper GetSample()
         {
-            return new InvoiceWrapper(0)
+            return new InvoiceWrapper
             {
-                Status = new InvoiceStatusWrapper(InvoiceStatus.Draft),
+                Status = InvoiceStatusWrapper.GetSample(),
                 Number = string.Empty,
                 IssueDate = ApiDateTime.GetSample(),
                 TemplateType = InvoiceTemplateType.Eur,
@@ -192,8 +240,108 @@ namespace ASC.Api.CRM.Wrappers
                 CanEdit = true,
                 CanDelete = true,
                 Cost = 0,
-                InvoiceLines = new List<InvoiceLineWrapper>{ InvoiceLineWrapper.GetSample() }
+                InvoiceLines = new List<InvoiceLineWrapper> { InvoiceLineWrapper.GetSample() }
             };
+        }
+    }
+
+
+    public class InvoiceWrapperHelper
+    {
+        public InvoiceWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
+                                    EmployeeWraperHelper employeeWraperHelper,
+                                    CRMSecurity cRMSecurity,
+                                    SettingsManager settingsManager,
+                                    CurrencyProvider currencyProvider,
+                                    InvoiceStatusWrapperHelper invoiceStatusWrapperHelper,
+                                    InvoiceLineWrapperHelper invoiceLineWrapperHelper,
+                                    DaoFactory daoFactory,
+                                    CurrencyInfoWrapperHelper currencyInfoWrapperHelper,
+                                    CurrencyRateInfoWrapperHelper currencyRateInfoWrapperHelper)
+        {
+            ApiDateTimeHelper = apiDateTimeHelper;
+            EmployeeWraperHelper = employeeWraperHelper;
+            CRMSecurity = cRMSecurity;
+            SettingsManager = settingsManager;
+            CurrencyProvider = currencyProvider;
+            InvoiceStatusWrapperHelper = invoiceStatusWrapperHelper;
+            DaoFactory = daoFactory;
+            InvoiceLineWrapperHelper = invoiceLineWrapperHelper;
+            CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
+            CurrencyRateInfoWrapperHelper = currencyRateInfoWrapperHelper;
+        }
+
+        public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
+        public CurrencyRateInfoWrapperHelper CurrencyRateInfoWrapperHelper { get; }
+        public DaoFactory DaoFactory { get; }
+        public InvoiceLineWrapperHelper InvoiceLineWrapperHelper { get; }
+        public InvoiceStatusWrapperHelper InvoiceStatusWrapperHelper { get; }
+        public CurrencyProvider CurrencyProvider { get; }
+        public SettingsManager SettingsManager { get; }
+        public ApiDateTimeHelper ApiDateTimeHelper { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public CRMSecurity CRMSecurity { get; }
+     
+        public InvoiceWrapper Get(Invoice invoice)
+        {
+            var result = new InvoiceWrapper
+            {
+                Id = invoice.ID,
+                Status = InvoiceStatusWrapperHelper.Get(invoice.Status),
+                Number = invoice.Number,
+                IssueDate = ApiDateTimeHelper.Get(invoice.IssueDate),
+                TemplateType = invoice.TemplateType,
+                DueDate = ApiDateTimeHelper.Get(invoice.DueDate),
+                Currency = !String.IsNullOrEmpty(invoice.Currency) ?
+                CurrencyInfoWrapperHelper.Get(CurrencyProvider.Get(invoice.Currency)) :
+                CurrencyInfoWrapperHelper.Get(SettingsManager.Load<CRMSettings>().DefaultCurrency),
+                ExchangeRate = invoice.ExchangeRate,
+                Language = invoice.Language,
+                PurchaseOrderNumber = invoice.PurchaseOrderNumber,
+                Terms = invoice.Terms,
+                Description = invoice.Description,
+                FileID = invoice.FileID,
+                CreateOn = ApiDateTimeHelper.Get(invoice.CreateOn),
+                CreateBy = EmployeeWraperHelper.Get(invoice.CreateBy),
+                CanEdit = CRMSecurity.CanEdit(invoice),
+                CanDelete = CRMSecurity.CanDelete(invoice),
+            };
+                        
+            if (invoice.ContactID > 0)
+            {
+                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
+            }
+
+            if (invoice.ConsigneeID > 0)
+            {
+                result.Consignee = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
+            }
+
+            if (invoice.EntityID > 0)
+            {
+                result.Entity = ToEntityWrapper(invoice.EntityType, invoice.EntityID);
+            }
+
+            result.Cost = invoice.GetInvoiceCost(DaoFactory);
+
+            result.InvoiceLines = invoice.GetInvoiceLines(DaoFactory).Select(x => InvoiceLineWrapperHelper.Get(x)).ToList();
+
+            return result;
+        }
+    }
+
+    public static class InvoiceWrapperHelperExtension
+    {
+        public static DIHelper AddInvoiceWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoiceWrapperHelper>();
+
+            return services.AddCurrencyProviderService()
+                           .AddSettingsManagerService()
+                           .AddApiDateTimeHelper()
+                           .AddEmployeeWraper()
+                           .AddCRMSecurityService()
+                           .AddInvoiceStatusWrapperHelperService();
         }
     }
 
@@ -201,31 +349,11 @@ namespace ASC.Api.CRM.Wrappers
     ///  Invoice Item
     /// </summary>
     [DataContract(Name = "invoiceItem", Namespace = "")]
-    public class InvoiceItemWrapper 
+    public class InvoiceItemWrapper
     {
-        public InvoiceItemWrapper(int id)
+        public InvoiceItemWrapper()
         {
         }
-
-        public InvoiceItemWrapper(InvoiceItem invoiceItem)
-        {
-            Title = invoiceItem.Title;
-            StockKeepingUnit = invoiceItem.StockKeepingUnit;
-            Description = invoiceItem.Description;
-            Price = invoiceItem.Price;
-            Quantity = invoiceItem.Quantity;
-            StockQuantity = invoiceItem.StockQuantity;
-            TrackInvenory = invoiceItem.TrackInventory;
-
-            CreateOn = (ApiDateTime)invoiceItem.CreateOn;
-            CreateBy = EmployeeWraper.Get(invoiceItem.CreateBy);
-            Currency = !String.IsNullOrEmpty(invoiceItem.Currency) ?
-                new CurrencyInfoWrapper(CurrencyProvider.Get(invoiceItem.Currency)) :
-                new CurrencyInfoWrapper(Global.TenantSettings.DefaultCurrency);
-            CanEdit = CRMSecurity.CanEdit(invoiceItem);
-            CanDelete = CRMSecurity.CanDelete(invoiceItem);
-        }
-
 
         [DataMember]
         public string Title { get; set; }
@@ -243,10 +371,7 @@ namespace ASC.Api.CRM.Wrappers
         public CurrencyInfoWrapper Currency { get; set; }
 
         [DataMember]
-        public int Quantity { get; set; }
-
-        [DataMember]
-        public int StockQuantity { get; set; }
+        public decimal StockQuantity { get; set; }
 
         [DataMember]
         public bool TrackInvenory { get; set; }
@@ -269,6 +394,82 @@ namespace ASC.Api.CRM.Wrappers
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public bool CanDelete { get; set; }
     }
+    
+    public class InvoiceItemWrapperHelper
+    {
+        public InvoiceItemWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
+                                    EmployeeWraperHelper employeeWraperHelper,
+                                   CRMSecurity cRMSecurity,
+                                   SettingsManager settingsManager,
+                                   CurrencyProvider currencyProvider,
+                                   DaoFactory daoFactory,
+                                   CurrencyInfoWrapperHelper currencyInfoWrapperHelper)
+        {
+            ApiDateTimeHelper = apiDateTimeHelper;
+            EmployeeWraperHelper = employeeWraperHelper;
+            CRMSecurity = cRMSecurity;
+            SettingsManager = settingsManager;
+            CurrencyProvider = currencyProvider;
+            DaoFactory = daoFactory;
+            CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
+        }
+
+        public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
+        public DaoFactory DaoFactory { get; }
+        public CurrencyProvider CurrencyProvider { get; }
+        public SettingsManager SettingsManager { get; }
+        public ApiDateTimeHelper ApiDateTimeHelper { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public CRMSecurity CRMSecurity { get; }
+
+        public InvoiceItemWrapper Get(InvoiceItem invoiceItem)
+        {
+            var result =  new InvoiceItemWrapper {                
+
+                Title = invoiceItem.Title,
+                StockKeepingUnit = invoiceItem.StockKeepingUnit,
+                Description = invoiceItem.Description,
+                Price = invoiceItem.Price,
+                StockQuantity = invoiceItem.StockQuantity,
+                TrackInvenory = invoiceItem.TrackInventory,
+                CreateOn = ApiDateTimeHelper.Get(invoiceItem.CreateOn),
+                CreateBy = EmployeeWraperHelper.Get(invoiceItem.CreateBy),
+                Currency = !String.IsNullOrEmpty(invoiceItem.Currency) ?
+                CurrencyInfoWrapperHelper.Get(CurrencyProvider.Get(invoiceItem.Currency)) :
+                CurrencyInfoWrapperHelper.Get(SettingsManager.Load<CRMSettings>().DefaultCurrency),
+                CanEdit = CRMSecurity.CanEdit(invoiceItem),
+                CanDelete = CRMSecurity.CanDelete(invoiceItem)
+            };
+
+            if (invoiceItem.InvoiceTax1ID > 0)
+            {
+                result.InvoiceTax1 = ToInvoiceTaxWrapper(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax1ID));
+            }
+            if (invoiceItem.InvoiceTax2ID > 0)
+            {
+                result.InvoiceTax2 = ToInvoiceTaxWrapper(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax2ID));
+            }
+
+
+            return result;
+
+        }
+
+    }
+
+    public static class InvoiceItemWrapperHelperExtension
+    {
+        public static DIHelper AddInvoiceItemWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoiceWrapperHelper>();
+
+            return services.AddCurrencyProviderService()
+                           .AddSettingsManagerService()
+                           .AddApiDateTimeHelper()
+                           .AddEmployeeWraper()
+                           .AddCRMSecurityService();
+        }
+    }
 
     /// <summary>
     ///  Invoice Tax
@@ -280,19 +481,6 @@ namespace ASC.Api.CRM.Wrappers
         public InvoiceTaxWrapper()
         {
         }
-
-        public InvoiceTaxWrapper(InvoiceTax invoiceTax)
-            : base(invoiceTax.ID)
-        {
-            Name = invoiceTax.Name;
-            Description = invoiceTax.Description;
-            Rate = invoiceTax.Rate;
-            CreateOn = (ApiDateTime)invoiceTax.CreateOn;
-            CreateBy = EmployeeWraper.Get(invoiceTax.CreateBy);
-            CanEdit = CRMSecurity.CanEdit(invoiceTax);
-            CanDelete = CRMSecurity.CanDelete(invoiceTax);
-        }
-
 
         [DataMember(Name = "id")]
         public int Id { get; set; }
@@ -319,30 +507,57 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
 
+    public class InvoiceTaxWrapperHelper
+    {
+        public InvoiceTaxWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
+                                      EmployeeWraperHelper employeeWraperHelper,
+                                      CRMSecurity cRMSecurity)
+        {
+            ApiDateTimeHelper = apiDateTimeHelper;
+            EmployeeWraperHelper = employeeWraperHelper;
+            CRMSecurity = cRMSecurity;
+        }
+
+        public ApiDateTimeHelper ApiDateTimeHelper { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public CRMSecurity CRMSecurity { get; }
+
+        public InvoiceTaxWrapper Get(InvoiceTax invoiceTax)
+        {
+            return new InvoiceTaxWrapper
+            {
+                Id = invoiceTax.ID,
+                Name = invoiceTax.Name,
+                Description = invoiceTax.Description,
+                Rate = invoiceTax.Rate,
+                CreateOn = ApiDateTimeHelper.Get(invoiceTax.CreateOn),
+                CreateBy = EmployeeWraperHelper.Get(invoiceTax.CreateBy),
+                CanEdit = CRMSecurity.CanEdit(invoiceTax),
+                CanDelete = CRMSecurity.CanDelete(invoiceTax)
+            };
+        }
+    }
+
+    public static class InvoiceTaxWrapperHelperExtension
+    {
+        public static DIHelper AddInvoiceTaxWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoiceTaxWrapperHelper>();
+
+            return services;
+        }
+    }
+
     /// <summary>
     ///  Invoice Line
     /// </summary>
     [DataContract(Name = "invoiceLine", Namespace = "")]
     public class InvoiceLineWrapper
     {
-        public InvoiceLineWrapper(int id)
-            : base(id)
+        public InvoiceLineWrapper()
         {
         }
 
-        public InvoiceLineWrapper(InvoiceLine invoiceLine)
-            : base(invoiceLine.ID)
-        {
-            InvoiceID = invoiceLine.InvoiceID;
-            InvoiceItemID = invoiceLine.InvoiceItemID;
-            InvoiceTax1ID = invoiceLine.InvoiceTax1ID;
-            InvoiceTax2ID = invoiceLine.InvoiceTax2ID;
-            SortOrder = invoiceLine.SortOrder;
-            Description = invoiceLine.Description;
-            Quantity = invoiceLine.Quantity;
-            Price = invoiceLine.Price;
-            Discount = invoiceLine.Discount;
-        }
 
         [DataMember(Name = "id")]
         public int Id { get; set; }
@@ -366,7 +581,7 @@ namespace ASC.Api.CRM.Wrappers
         public string Description { get; set; }
 
         [DataMember]
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
 
         [DataMember]
         public decimal Price { get; set; }
@@ -376,17 +591,51 @@ namespace ASC.Api.CRM.Wrappers
 
         public static InvoiceLineWrapper GetSample()
         {
-            return new InvoiceLineWrapper(0)
-                {
-                    Description = string.Empty,
-                    Discount = (decimal)0.00,
-                    InvoiceID = 0,
-                    InvoiceItemID = 0,
-                    InvoiceTax1ID = 0,
-                    InvoiceTax2ID = 0,
-                    Price = (decimal)0.00,
-                    Quantity = 0
-                };
+            return new InvoiceLineWrapper
+            {
+                Description = string.Empty,
+                Discount = (decimal)0.00,
+                InvoiceID = 0,
+                InvoiceItemID = 0,
+                InvoiceTax1ID = 0,
+                InvoiceTax2ID = 0,
+                Price = (decimal)0.00,
+                Quantity = 0
+            };
+        }
+    }
+
+    public class InvoiceLineWrapperHelper
+    {
+        public InvoiceLineWrapperHelper()
+        {
+        }
+
+        public InvoiceLineWrapper Get(InvoiceLine invoiceLine)
+        {
+            return new InvoiceLineWrapper
+            {
+                Id = invoiceLine.ID,
+                InvoiceID = invoiceLine.InvoiceID,
+                InvoiceItemID = invoiceLine.InvoiceItemID,
+                InvoiceTax1ID = invoiceLine.InvoiceTax1ID,
+                InvoiceTax2ID = invoiceLine.InvoiceTax2ID,
+                SortOrder = invoiceLine.SortOrder,
+                Description = invoiceLine.Description,
+                Quantity = invoiceLine.Quantity,
+                Price = invoiceLine.Price,
+                Discount = invoiceLine.Discount
+            };
+        }
+    }
+
+    public static class InvoiceLineWrapperHelperExtension
+    {
+        public static DIHelper AddInvoiceLineWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoiceLineWrapperHelper>();
+
+            return services;
         }
     }
 
@@ -398,19 +647,7 @@ namespace ASC.Api.CRM.Wrappers
     {
         public InvoiceStatusWrapper()
         {
-                
-        }
 
-        public InvoiceStatusWrapper(int id)
-            : base(id)
-        {
-            Title = ((InvoiceStatus)id).ToLocalizedString();
-        }
-
-        public InvoiceStatusWrapper(InvoiceStatus status)
-            : base((int)status)
-        {
-            Title = status.ToLocalizedString();
         }
 
         [DataMember(Name = "id")]
@@ -418,6 +655,41 @@ namespace ASC.Api.CRM.Wrappers
 
         [DataMember]
         public string Title { get; set; }
+
+        public static InvoiceStatusWrapper GetSample()
+        {
+            return new InvoiceStatusWrapper
+            {
+                Id = (int)InvoiceStatus.Draft,
+                Title = InvoiceStatus.Draft.ToLocalizedString()
+            };
+        }
+
     }
 
+    public class InvoiceStatusWrapperHelper
+    {
+        public InvoiceStatusWrapperHelper()
+        {
+        }
+
+        public InvoiceStatusWrapper Get(InvoiceStatus status)
+        {
+            return new InvoiceStatusWrapper
+            {
+                Id = (int)status,
+                Title = status.ToLocalizedString()
+            };
+        }
+    }
+
+    public static class InvoiceStatusWrapperHelperExtension
+    {
+        public static DIHelper AddInvoiceStatusWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoiceStatusWrapperHelper>();
+
+            return services;
+        }
+    }
 }

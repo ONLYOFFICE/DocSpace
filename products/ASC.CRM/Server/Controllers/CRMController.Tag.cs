@@ -26,9 +26,11 @@
 
 using ASC.Api.Core;
 using ASC.Api.CRM.Wrappers;
+using ASC.Common.Web;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using System;
@@ -97,7 +99,7 @@ namespace ASC.Api.CRM
             var contact = DaoFactory.GetContactDao().GetByID(contactid);
             if (contact == null || !CRMSecurity.CanAccessTo(contact))
                 throw new ItemNotFoundException();
-            return DaoFactory.GetTagDao().GetEntityTags(EntityType.Contact, contactid).ToItemList();
+            return DaoFactory.GetTagDao().GetEntityTags(EntityType.Contact, contactid);
         }
 
         /// <summary>
@@ -205,7 +207,7 @@ namespace ASC.Api.CRM
             string tagName)
         {
             var contacts = DaoFactory
-                .ContactDao
+                .GetContactDao()
                 .GetContacts(ApiContext.FilterValue,
                              tags,
                              contactStage,
@@ -256,7 +258,7 @@ namespace ASC.Api.CRM
             string tagName)
         {
             var deals = DaoFactory
-                .DealDao
+                .GetDealDao()
                 .GetDeals(
                     ApiContext.FilterValue,
                     responsibleid,
@@ -503,6 +505,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetTagDao().DeleteTagFromEntity(entityTypeObj, entityid, tagName);
 
             var messageAction = GetTagDeletedAction(entityTypeObj, entityid);
+
             MessageService.Send( messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
 
             return tagName;
@@ -535,8 +538,6 @@ namespace ASC.Api.CRM
 
             if (contactInst is Person && entityTypeObj == EntityType.Company) throw new Exception(CRMErrorsResource.ContactIsNotCompany);
             if (contactInst is Company && entityTypeObj == EntityType.Person) throw new Exception(CRMErrorsResource.ContactIsNotPerson);
-
-
 
             var contactIDsForDeleteTag = new List<int>();
 

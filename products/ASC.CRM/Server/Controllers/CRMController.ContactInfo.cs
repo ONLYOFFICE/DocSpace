@@ -26,6 +26,7 @@
 
 using ASC.Api.CRM.Wrappers;
 using ASC.Common.Web;
+using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -57,7 +58,7 @@ namespace ASC.Api.CRM
         [Read(@"contact/data/{infoType}/category")]
         public IEnumerable<string> GetContactInfoCategory(ContactInfoType infoType)
         {
-            return Enum.GetNames(ContactInfo.GetCategory(infoType)).ToItemList();
+            return Enum.GetNames(ContactInfo.GetCategory(infoType));
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace ASC.Api.CRM
         [Read(@"contact/data/infoType")]
         public IEnumerable<string> GetContactInfoType()
         {
-            return Enum.GetNames(typeof(ContactInfoType)).ToItemList();
+            return Enum.GetNames(typeof(ContactInfoType));
         }
 
         /// <summary>
@@ -177,7 +178,8 @@ namespace ASC.Api.CRM
             MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
             var contactInfoWrapper = ToContactInfoWrapper(contactInfo);
-            contactInfoWrapper.ID = contactInfoID;
+            contactInfoWrapper.Id = contactInfoID;
+
             return contactInfoWrapper;
         }
 
@@ -281,7 +283,7 @@ namespace ASC.Api.CRM
             for (var index = 0; index < itemsList.Count; index++)
             {
                 var infoWrapper = itemsList[index];
-                infoWrapper.ID = ids[index];
+                infoWrapper.Id = ids[index];
             }
             return itemsList;
         }
@@ -447,7 +449,7 @@ namespace ASC.Api.CRM
             for (var index = 0; index < itemsList.Count; index++)
             {
                 var infoWrapper = itemsList[index];
-                infoWrapper.ID = ids[index];
+                infoWrapper.Id = ids[index];
             }
             return itemsList;
         }
@@ -508,22 +510,18 @@ namespace ASC.Api.CRM
             {
                 FactoryIndexer<EmailWrapper>.DeleteAsync(EmailWrapper.ToEmailWrapper(contact, new List<ContactInfo> { contactInfo}));
             }
+
             FactoryIndexer<InfoWrapper>.DeleteAsync(contactInfo);
 
             return wrapper;
         }
 
 
-        private static ContactInfoWrapper ToContactInfoWrapper(ContactInfo contactInfo)
-        {
-            return new ContactInfoWrapper(contactInfo);
-        }
-
         private static ContactInfo FromContactInfoWrapper(ContactInfoWrapper contactInfoWrapper)
         {
             return new ContactInfo
                 {
-                    ID = contactInfoWrapper.ID,
+                    ID = contactInfoWrapper.Id,
                     Category = contactInfoWrapper.Category,
                     Data = contactInfoWrapper.Data,
                     InfoType = contactInfoWrapper.InfoType,

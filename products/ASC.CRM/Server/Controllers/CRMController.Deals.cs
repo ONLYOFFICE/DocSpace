@@ -41,6 +41,7 @@ using ASC.Web.Files.Services.WCFService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.CRM.Classes;
 
 namespace ASC.Api.CRM
 {
@@ -65,7 +66,7 @@ namespace ASC.Api.CRM
             var deal = DaoFactory.GetDealDao().GetByID(opportunityid);
             if (deal == null || !CRMSecurity.CanAccessTo(deal)) throw new ItemNotFoundException();
 
-            return ToOpportunityWrapper(deal);
+            return OpportunityWrapperHelper.Get(deal);
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetDealDao().EditDeal(deal);
             MessageService.Send( MessageAction.OpportunityUpdatedStage, MessageTarget.Create(deal.ID), deal.Title);
 
-            return ToOpportunityWrapper(deal);
+            return OpportunityWrapperHelper.Get(deal);
         }
 
         /// <summary>
@@ -118,7 +119,7 @@ namespace ASC.Api.CRM
         public OpportunityWrapper SetAccessToDeal(int opportunityid, bool isPrivate, IEnumerable<Guid> accessList)
         {
             if (opportunityid <= 0) throw new ArgumentException();
-
+           
             var deal = DaoFactory.GetDealDao().GetByID(opportunityid);
             if (deal == null) throw new ItemNotFoundException();
 
@@ -148,7 +149,7 @@ namespace ASC.Api.CRM
                 if (isMessageServicSende)
                 {
                     var users = GetUsersByIdList(accessListLocal);
-                    MessageService.Send( MessageAction.OpportunityRestrictedAccess, MessageTarget.Create(deal.ID), deal.Title, users.Select(x => x.DisplayUserName(false)));
+                    MessageService.Send( MessageAction.OpportunityRestrictedAccess, MessageTarget.Create(deal.ID), deal.Title, users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
                 }
             }
             else
@@ -160,7 +161,7 @@ namespace ASC.Api.CRM
                 }
             }
 
-            return ToOpportunityWrapper(deal);
+            return OpportunityWrapperHelper.Get(deal);
         }
 
         /// <summary>
@@ -363,7 +364,7 @@ namespace ASC.Api.CRM
 
             OrderBy dealsOrderBy;
 
-            if (Web.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out dealSortedByType))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out dealSortedByType))
             {
                 dealsOrderBy = new OrderBy(dealSortedByType, !ApiContext.SortDescending);
             }
@@ -424,7 +425,7 @@ namespace ASC.Api.CRM
             else
             {
                 totalCount = DaoFactory
-                    .DealDao
+                    .GetDealDao()
                     .GetDealsCount(searchString,
                                    responsibleid,
                                    opportunityStagesid,
@@ -438,7 +439,7 @@ namespace ASC.Api.CRM
 
             ApiContext.SetTotalCount(totalCount);
 
-            return result.ToSmartList();
+            return result;
         }
 
         /// <summary>
@@ -462,7 +463,7 @@ namespace ASC.Api.CRM
 
             MessageService.Send( MessageAction.OpportunityDeleted, MessageTarget.Create(deal.ID), deal.Title);
 
-            return ToOpportunityWrapper(deal);
+            return OpportunityWrapperHelper.Get(deal);
         }
 
         /// <summary>
@@ -558,7 +559,7 @@ namespace ASC.Api.CRM
                 }
             }
 
-            return ToOpportunityWrapper(deal);
+            return OpportunityWrapperHelper.Get(deal);
         }
 
         /// <summary>
@@ -656,7 +657,7 @@ namespace ASC.Api.CRM
                 }
             }
 
-            return ToOpportunityWrapper(deal);
+            return OpportunityWrapperHelper.Get(deal);
         }
 
         /// <summary>
@@ -680,7 +681,7 @@ namespace ASC.Api.CRM
 
             var result = ToListContactWrapper(DaoFactory.GetContactDao().GetContacts(contactIDs)).ToList();
 
-            result.ForEach(item => { if (item.ID == opportunity.ContactID) item.CanEdit = false; });
+            result.ForEach(item => { if (item.Id == opportunity.ContactID) item.CanEdit = false; });
 
             return result;
         }
@@ -773,7 +774,7 @@ namespace ASC.Api.CRM
                 {
                     if (item.Title.IndexOf(prefix, StringComparison.Ordinal) != -1)
                     {
-                        result.Add(ToOpportunityWrapper(item));
+                        result.Add(OpportunityWrapperHelper.Get(item));
                     }
                 }
 
@@ -785,7 +786,7 @@ namespace ASC.Api.CRM
                 var findedDeals = DaoFactory.GetDealDao().GetDealsByPrefix(prefix, 0, maxItemCount, contactID, internalSearch);
                 foreach (var item in findedDeals)
                 {
-                    result.Add(ToOpportunityWrapper(item));
+                    result.Add(OpportunityWrapperHelper.Get(item));
                 }
             }
 
@@ -884,7 +885,7 @@ namespace ASC.Api.CRM
 
             foreach (var deal in deals)
             {
-                var dealWrapper = new OpportunityWrapper(deal);
+                var dealWrapper = OpportunityWrapperHelper.Get(deal);
 
                 if (contacts.ContainsKey(deal.ContactID))
                 {
@@ -895,8 +896,8 @@ namespace ASC.Api.CRM
                                                ? customFields[deal.ID]
                                                : new List<CustomFieldBaseWrapper>();
 
-                dealWrapper.Members = dealMembers.ContainsKey(dealWrapper.ID)
-                                          ? dealMembers[dealWrapper.ID].Where(contacts.ContainsKey).Select(item => contacts[item])
+                dealWrapper.Members = dealMembers.ContainsKey(dealWrapper.Id)
+                                          ? dealMembers[dealWrapper.Id].Where(contacts.ContainsKey).Select(item => contacts[item])
                                           : new List<ContactBaseWrapper>();
 
                 if (dealMilestones.ContainsKey(deal.DealMilestoneID))
@@ -908,7 +909,7 @@ namespace ASC.Api.CRM
 
                 if (dealWrapper.IsPrivate)
                 {
-                    dealWrapper.AccessList = CRMSecurity.GetAccessSubjectTo(deal).Select(item => EmployeeWraper.Get(item.Key)).ToItemList();
+                    dealWrapper.AccessList = CRMSecurity.GetAccessSubjectTo(deal).Select(item => EmployeeWraperHelper.Get(item.Key));
                 }
 
                 if (!string.IsNullOrEmpty(deal.BidCurrency))
@@ -920,50 +921,6 @@ namespace ASC.Api.CRM
             }
 
             return result;
-        }
-
-        private OpportunityWrapper ToOpportunityWrapper(Deal deal)
-        {
-            var dealWrapper = new OpportunityWrapper(deal);
-
-            if (deal.ContactID > 0)
-                dealWrapper.Contact = ToContactBaseWrapper(DaoFactory.GetContactDao().GetByID(deal.ContactID));
-
-            if (deal.DealMilestoneID > 0)
-            {
-                var dealMilestone = DaoFactory.GetDealMilestoneDao().GetByID(deal.DealMilestoneID);
-
-                if (dealMilestone == null)
-                    throw new ItemNotFoundException();
-
-                dealWrapper.Stage = new DealMilestoneBaseWrapper(dealMilestone);
-            }
-
-            dealWrapper.AccessList = CRMSecurity.GetAccessSubjectTo(deal)
-                                                .Select(item => EmployeeWraper.Get(item.Key)).ToItemList();
-
-            dealWrapper.IsPrivate = CRMSecurity.IsPrivate(deal);
-
-            if (!string.IsNullOrEmpty(deal.BidCurrency))
-                dealWrapper.BidCurrency = ToCurrencyInfoWrapper(CurrencyProvider.Get(deal.BidCurrency));
-
-            dealWrapper.CustomFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, deal.ID, false).ConvertAll(item => new CustomFieldBaseWrapper(item)).ToSmartList();
-
-            dealWrapper.Members = new List<ContactBaseWrapper>();
-
-            var memberIDs = DaoFactory.GetDealDao().GetMembers(deal.ID);
-            var membersList = DaoFactory.GetContactDao().GetContacts(memberIDs);
-            var membersWrapperList = new List<ContactBaseWrapper>();
-
-            foreach (var member in membersList)
-            {
-                if (member == null) continue;
-                membersWrapperList.Add(ToContactBaseWrapper(member));
-            }
-
-            dealWrapper.Members = membersWrapperList;
-
-            return dealWrapper;
-        }
+        }        
     }
 }

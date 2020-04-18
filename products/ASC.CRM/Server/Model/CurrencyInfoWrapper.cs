@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Common;
 using ASC.CRM.Core;
 
 namespace ASC.Api.CRM
@@ -38,16 +39,8 @@ namespace ASC.Api.CRM
     {
         public CurrencyInfoWrapper()
         {
-        }
 
-        public CurrencyInfoWrapper(CurrencyInfo currencyInfo)
-        {
-            Abbreviation = currencyInfo.Abbreviation;
-            CultureName = currencyInfo.CultureName;
-            Symbol = currencyInfo.Symbol;
-            Title = currencyInfo.Title;
-            IsConvertable = currencyInfo.IsConvertable;
-            IsBasic = currencyInfo.IsBasic;
+
         }
 
         [DataMember]
@@ -71,16 +64,51 @@ namespace ASC.Api.CRM
         public static CurrencyInfoWrapper GetSample()
         {
             return new CurrencyInfoWrapper
-                {
-                    Title = "Chinese Yuan",
-                    Abbreviation = "CNY",
-                    Symbol = "¥",
-                    CultureName = "CN",
-                    IsConvertable = true,
-                    IsBasic = false
-                };
+            {
+                Title = "Chinese Yuan",
+                Abbreviation = "CNY",
+                Symbol = "¥",
+                CultureName = "CN",
+                IsConvertable = true,
+                IsBasic = false
+            };
         }
     }
+
+    public class CurrencyInfoWrapperHelper
+    {
+        public CurrencyInfoWrapperHelper()
+        {
+        }
+
+
+
+        public CurrencyInfoWrapper Get(CurrencyInfo currencyInfo)
+        {
+            if (currencyInfo == null) return null;
+
+            return new CurrencyInfoWrapper
+            {
+                Abbreviation = currencyInfo.Abbreviation,
+                CultureName = currencyInfo.CultureName,
+                Symbol = currencyInfo.Symbol,
+                Title = currencyInfo.Title,
+                IsConvertable = currencyInfo.IsConvertable,
+                IsBasic = currencyInfo.IsBasic
+            };
+        }
+    }
+
+    public static class CurrencyInfoWrapperExtension
+    {
+        public static DIHelper AddCurrencyInfoWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<CurrencyInfoWrapperHelper>();
+
+            return services;
+        }
+    }
+
 
 
     /// <summary>
@@ -93,12 +121,50 @@ namespace ASC.Api.CRM
         {
         }
 
-        public CurrencyRateInfoWrapper(CurrencyInfo currencyInfo, Decimal rate) : base(currencyInfo)
-        {
-            Rate = rate;
-        }
+        //public CurrencyRateInfoWrapper(CurrencyInfo currencyInfo, Decimal rate)
+        //    : base(currencyInfo)
+        //{
+        //    Rate = rate;
+        //}
 
         [DataMember]
-        public Decimal Rate { get; set; }
+        public decimal Rate { get; set; }
+    }
+
+
+    public class CurrencyRateInfoWrapperHelper
+    {
+        public CurrencyRateInfoWrapperHelper(CurrencyInfoWrapperHelper currencyInfoWrapperHelper)
+        {
+            CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
+        }
+
+        public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
+
+        public CurrencyRateInfoWrapper Get(CurrencyInfo currencyInfo, decimal rate)
+        {
+            var currencyInfoWrapper = CurrencyInfoWrapperHelper.Get(currencyInfo);
+
+            return new CurrencyRateInfoWrapper
+            {
+                Abbreviation = currencyInfoWrapper.Abbreviation,
+                CultureName = currencyInfoWrapper.CultureName,
+                Symbol = currencyInfoWrapper.Symbol,
+                Title = currencyInfoWrapper.Title,
+                IsConvertable = currencyInfoWrapper.IsConvertable,
+                IsBasic = currencyInfoWrapper.IsBasic,
+                Rate = rate
+            };
+        }
+    }
+
+    public static class CurrencyRateInfoWrapperExtension
+    {
+        public static DIHelper AddCurrencyRateInfoWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<CurrencyRateInfoWrapper>();
+
+            return services;
+        }
     }
 }

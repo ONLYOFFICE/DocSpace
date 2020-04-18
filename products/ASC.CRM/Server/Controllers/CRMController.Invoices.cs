@@ -26,8 +26,10 @@
 
 using ASC.Api.Core;
 using ASC.Api.CRM.Wrappers;
+using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.Core;
+using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -62,7 +64,7 @@ namespace ASC.Api.CRM
                 throw CRMSecurity.CreateSecurityException();
             }
 
-            return ToInvoiceWrapper(invoice);
+            return InvoiceWrapperHelper.Get(invoice);
         }
 
         /// <summary>
@@ -78,11 +80,11 @@ namespace ASC.Api.CRM
             sample.Number = DaoFactory.GetInvoiceDao().GetNewInvoicesNumber();
             sample.Terms = DaoFactory.GetInvoiceDao().GetSettings().Terms ?? string.Empty;
 
-            sample.IssueDate = (ApiDateTime)DateTime.UtcNow;
-            sample.DueDate = (ApiDateTime)DateTime.UtcNow.AddDays(30);
-            sample.CreateOn = (ApiDateTime)DateTime.UtcNow;
+            sample.IssueDate = ApiDateTimeHelper.Get(DateTime.UtcNow);
+            sample.DueDate = ApiDateTimeHelper.Get(DateTime.UtcNow.AddDays(30));
+            sample.CreateOn = ApiDateTimeHelper.Get(DateTime.UtcNow);
 
-            sample.Currency = new CurrencyInfoWrapper(Global.TenantSettings.DefaultCurrency);
+            sample.Currency = CurrencyInfoWrapperHelper.Get(SettingsManager.Load<CRMSettings>().DefaultCurrency);
 
             sample.InvoiceLines.First().Quantity = 1;
 
@@ -216,7 +218,7 @@ namespace ASC.Api.CRM
 
             ApiContext.SetTotalCount(totalCount);
 
-            return result.ToSmartList();
+            return result;
         }
 
         /// <summary>
@@ -342,7 +344,7 @@ namespace ASC.Api.CRM
 
             var listInvoiceBaseWrappers = ToListInvoiceBaseWrappers(updatedInvoices);
 
-            return new KeyValuePair<IEnumerable<InvoiceBaseWrapper>,IEnumerable<InvoiceItemWrapper>>(listInvoiceBaseWrappers,invoiceItemsUpdated.ConvertAll(i => ToInvoiceItemWrapper(i)));
+            return new KeyValuePair<IEnumerable<InvoiceBaseWrapper>,IEnumerable<InvoiceItemWrapper>>(listInvoiceBaseWrappers,invoiceItemsUpdated.ConvertAll(i => InvoiceItemWrapperHelper.Get(i)));
         }
 
         /// <summary>
@@ -361,7 +363,9 @@ namespace ASC.Api.CRM
             if (invoice == null) throw new ItemNotFoundException();
 
             MessageService.Send( MessageAction.InvoiceDeleted, MessageTarget.Create(invoice.ID), invoice.Number);
-            return ToInvoiceBaseWrapper(invoice);
+
+            return InvoiceBaseWrapperHelper.Get(invoice);
+
         }
 
         /// <summary>
@@ -499,7 +503,8 @@ namespace ASC.Api.CRM
             CreateInvoiceLines(invoiceLinesList, invoice);
 
             DaoFactory.GetInvoiceDao().UpdateInvoiceJsonData(invoice, billingAddressID, deliveryAddressID);
-            return ToInvoiceWrapper(invoice);
+            
+            return InvoiceWrapperHelper.Get(invoice);
         }
 
 
@@ -669,10 +674,10 @@ namespace ASC.Api.CRM
 
             if (Global.CanDownloadInvoices)
             {
-                PdfQueueWorker.StartTask(HttpContext.Current, TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
             }
 
-            return ToInvoiceWrapper(invoice);
+            return InvoiceWrapperHelper.Get(invoice);
         }
 
         /// <summary>
@@ -683,7 +688,7 @@ namespace ASC.Api.CRM
         /// <category>Invoices</category>
         /// <returns>File</returns>
         [Read(@"invoice/{invoiceid:int}/pdf")]
-        public FileWrapper GetInvoicePdfExistOrCreate(int invoiceid)
+        public FileWrapper<int> GetInvoicePdfExistOrCreate(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
 
@@ -766,7 +771,9 @@ namespace ASC.Api.CRM
         public Boolean GetInvoiceByNumberExistence(string number)
         {
             if (String.IsNullOrEmpty(number)) throw new ArgumentException();
+            
             return DaoFactory.GetInvoiceDao().IsExist(number);
+        
         }
 
         /// <summary>
@@ -783,11 +790,12 @@ namespace ASC.Api.CRM
 
             var invoice = DaoFactory.GetInvoiceDao().GetByNumber(number);
             if (invoice == null) throw new ItemNotFoundException();
+
             if (!CRMSecurity.CanAccessTo(invoice)) {
                 throw CRMSecurity.CreateSecurityException();
             }
 
-            return new InvoiceWrapper(invoice);
+            return InvoiceWrapperHelper.Get(invoice);
         }
 
         /// <summary>
@@ -833,7 +841,7 @@ namespace ASC.Api.CRM
                     inventoryStock,
                     fromIndex, count,
                     invoiceOrderBy)
-                                   .ConvertAll(ToInvoiceItemWrapper);
+                                   .ConvertAll(x => InvoiceItemWrapperHelper.Get(x));
 
                 ApiContext.SetDataPaginated();
                 ApiContext.SetDataFiltered();
@@ -847,7 +855,7 @@ namespace ASC.Api.CRM
                     inventoryStock,
                     0, 0,
                     null)
-                                   .ConvertAll(ToInvoiceItemWrapper);
+                                   .ConvertAll(x => InvoiceItemWrapperHelper.Get(x));
             }
 
             int totalCount;
@@ -866,7 +874,7 @@ namespace ASC.Api.CRM
 
             ApiContext.SetTotalCount(totalCount);
 
-            return result.ToSmartList();
+            return result;
         }
 
         /// <summary>
@@ -884,7 +892,7 @@ namespace ASC.Api.CRM
             var invoiceItem = DaoFactory.GetInvoiceItemDao().GetByID(invoiceitemid);
             if (invoiceItem == null) throw new ItemNotFoundException();
 
-            return ToInvoiceItemWrapper(invoiceItem);
+            return InvoiceItemWrapperHelper.Get(invoiceItem);
         }
 
         /// <summary>
@@ -930,7 +938,9 @@ namespace ASC.Api.CRM
 
             if (invoiceId <= 0)
                 throw new ArgumentException();
+        
             var invoice = DaoFactory.GetInvoiceDao().GetByID(invoiceId);
+            
             CRMSecurity.DemandCreateOrUpdate(invoiceLine, invoice);
 
             invoiceLine.ID = DaoFactory.GetInvoiceLineDao().SaveOrUpdateInvoiceLine(invoiceLine);
@@ -938,10 +948,10 @@ namespace ASC.Api.CRM
             DaoFactory.GetInvoiceDao().UpdateInvoiceJsonDataAfterLinesUpdated(invoice);
             if (Global.CanDownloadInvoices)
             {
-                PdfQueueWorker.StartTask(HttpContext.Current, TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
             }
 
-            return ToInvoiceLineWrapper(invoiceLine);
+            return InvoiceLineWrapperHelper.Get(invoiceLine);
         }
 
         /// <summary>
@@ -997,12 +1007,13 @@ namespace ASC.Api.CRM
             DaoFactory.GetInvoiceLineDao().SaveOrUpdateInvoiceLine(invoiceLine);
 
             DaoFactory.GetInvoiceDao().UpdateInvoiceJsonDataAfterLinesUpdated(invoice);
+
             if (Global.CanDownloadInvoices)
             {
-                PdfQueueWorker.StartTask(HttpContext.Current, TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
             }
 
-            return ToInvoiceLineWrapper(invoiceLine);
+            return InvoiceLineWrapperHelper.Get(invoiceLine);
         }
 
         /// <summary>
@@ -1026,36 +1037,13 @@ namespace ASC.Api.CRM
             DaoFactory.GetInvoiceLineDao().DeleteInvoiceLine(id);
 
             DaoFactory.GetInvoiceDao().UpdateInvoiceJsonDataAfterLinesUpdated(invoice);
+
             if (Global.CanDownloadInvoices)
             {
-                PdfQueueWorker.StartTask(HttpContext.Current, TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
             }
 
             return id;
-        }
-
-        private InvoiceBaseWrapper ToInvoiceBaseWrapper(Invoice invoice)
-        {
-            var result = new InvoiceBaseWrapper(invoice);
-
-            if (invoice.ContactID > 0)
-            {
-                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
-            }
-
-            if (invoice.ConsigneeID > 0)
-            {
-                result.Consignee = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
-            }
-
-            if (invoice.EntityID > 0)
-            {
-                result.Entity = ToEntityWrapper(invoice.EntityType, invoice.EntityID);
-            }
-
-            result.Cost = invoice.GetInvoiceCost(DaoFactory);
-
-            return result;
         }
 
         /// <summary>
@@ -1097,7 +1085,6 @@ namespace ASC.Api.CRM
                     Description = description,
                     Price = price,
                     StockKeepingUnit = sku,
-                    Quantity = quantity,
                     StockQuantity = stockQuantity,
                     TrackInventory = trackInventory,
                     InvoiceTax1ID = invoiceTax1id,
@@ -1105,9 +1092,10 @@ namespace ASC.Api.CRM
                 };
 
             invoiceItem = DaoFactory.GetInvoiceItemDao().SaveOrUpdateInvoiceItem(invoiceItem);
+
             MessageService.Send( MessageAction.InvoiceItemCreated, MessageTarget.Create(invoiceItem.ID), invoiceItem.Title);
 
-            return ToInvoiceItemWrapper(invoiceItem);
+            return InvoiceItemWrapperHelper.Get(invoiceItem);
         }
 
         /// <summary>
@@ -1153,7 +1141,6 @@ namespace ASC.Api.CRM
                     Description = description,
                     Price = price,
                     StockKeepingUnit = sku,
-                    Quantity = quantity,
                     StockQuantity = stockQuantity,
                     TrackInventory = trackInventory,
                     InvoiceTax1ID = invoiceTax1id,
@@ -1163,7 +1150,7 @@ namespace ASC.Api.CRM
             invoiceItem = DaoFactory.GetInvoiceItemDao().SaveOrUpdateInvoiceItem(invoiceItem);
             MessageService.Send( MessageAction.InvoiceItemUpdated, MessageTarget.Create(invoiceItem.ID), invoiceItem.Title);
 
-            return ToInvoiceItemWrapper(invoiceItem);
+            return InvoiceItemWrapperHelper.Get(invoiceItem);
         }
 
         /// <summary>
@@ -1186,7 +1173,9 @@ namespace ASC.Api.CRM
             if (invoiceItem == null) throw new ItemNotFoundException();
 
             MessageService.Send( MessageAction.InvoiceItemDeleted, MessageTarget.Create(invoiceItem.ID), invoiceItem.Title);
-            return ToInvoiceItemWrapper(invoiceItem);
+
+            return InvoiceItemWrapperHelper.Get(invoiceItem);
+
         }
 
         /// <summary>
@@ -1208,8 +1197,8 @@ namespace ASC.Api.CRM
 
             var items = DaoFactory.GetInvoiceItemDao().DeleteBatchInvoiceItems(ids.ToArray());
             MessageService.Send( MessageAction.InvoiceItemsDeleted, MessageTarget.Create(ids), items.Select(x => x.Title));
-
-            return items.ConvertAll(ToInvoiceItemWrapper);
+                        
+            return items.ConvertAll(x => InvoiceItemWrapperHelper.Get(x));
         }
 
         /// <summary>
@@ -1221,7 +1210,7 @@ namespace ASC.Api.CRM
         [Read(@"invoice/tax")]
         public IEnumerable<InvoiceTaxWrapper> GetInvoiceTaxes()
         {
-            return DaoFactory.GetInvoiceTaxDao().GetAll().ConvertAll(ToInvoiceTaxWrapper);
+            return DaoFactory.GetInvoiceTaxDao().GetAll().ConvertAll(x => InvoiceTaxWrapperHelper.Get(x));
         }
 
         /// <summary>
@@ -1256,7 +1245,7 @@ namespace ASC.Api.CRM
             invoiceTax = DaoFactory.GetInvoiceTaxDao().SaveOrUpdateInvoiceTax(invoiceTax);
             MessageService.Send( MessageAction.InvoiceTaxCreated, MessageTarget.Create(invoiceTax.ID), invoiceTax.Name);
 
-            return ToInvoiceTaxWrapper(invoiceTax);
+            return InvoiceTaxWrapperHelper.Get(invoiceTax);
         }
 
         /// <summary>
@@ -1295,7 +1284,7 @@ namespace ASC.Api.CRM
             invoiceTax = DaoFactory.GetInvoiceTaxDao().SaveOrUpdateInvoiceTax(invoiceTax);
             MessageService.Send( MessageAction.InvoiceTaxUpdated, MessageTarget.Create(invoiceTax.ID), invoiceTax.Name);
 
-            return ToInvoiceTaxWrapper(invoiceTax);
+            return InvoiceTaxWrapperHelper.Get(invoiceTax);
         }
 
         /// <summary>
@@ -1318,7 +1307,8 @@ namespace ASC.Api.CRM
             if (invoiceTax == null) throw new ItemNotFoundException();
 
             MessageService.Send( MessageAction.InvoiceTaxDeleted, MessageTarget.Create(invoiceTax.ID), invoiceTax.Name);
-            return ToInvoiceTaxWrapper(invoiceTax);
+
+            return InvoiceTaxWrapperHelper.Get(invoiceTax);
         }
 
         /// <summary>
@@ -1412,59 +1402,7 @@ namespace ASC.Api.CRM
 
             dao.SetInvoiceLastModifedDate(invoiceid, lastModifedDate);
         }
-
-        private InvoiceWrapper ToInvoiceWrapper(Invoice invoice)
-        {
-            var result = new InvoiceWrapper(invoice);
-
-            if (invoice.ContactID > 0)
-            {
-                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
-            }
-
-            if (invoice.ConsigneeID > 0)
-            {
-                result.Consignee = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
-            }
-
-            if (invoice.EntityID > 0)
-            {
-                result.Entity = ToEntityWrapper(invoice.EntityType, invoice.EntityID);
-            }
-
-            result.Cost = invoice.GetInvoiceCost(DaoFactory);
-
-            result.InvoiceLines = invoice.GetInvoiceLines(DaoFactory).Select(ToInvoiceLineWrapper).ToList();
-
-            return result;
-        }
-
-        private InvoiceItemWrapper ToInvoiceItemWrapper(InvoiceItem invoiceItem)
-        {
-            var result = new InvoiceItemWrapper(invoiceItem);
-
-            if (invoiceItem.InvoiceTax1ID > 0)
-            {
-                result.InvoiceTax1 = ToInvoiceTaxWrapper(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax1ID));
-            }
-            if (invoiceItem.InvoiceTax2ID > 0)
-            {
-                result.InvoiceTax2 = ToInvoiceTaxWrapper(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax2ID));
-            }
-
-            return result;
-        }
-
-        private InvoiceTaxWrapper ToInvoiceTaxWrapper(InvoiceTax invoiceTax)
-        {
-            return new InvoiceTaxWrapper(invoiceTax);
-        }
-
-        private InvoiceLineWrapper ToInvoiceLineWrapper(InvoiceLine invoiceLine)
-        {
-            return new InvoiceLineWrapper(invoiceLine);
-        }
-
+        
         private IEnumerable<InvoiceBaseWrapper> ToListInvoiceBaseWrappers(ICollection<Invoice> items)
         {
             if (items == null || items.Count == 0) return new List<InvoiceWrapper>();
@@ -1481,7 +1419,7 @@ namespace ASC.Api.CRM
 
             foreach (var invoice in items)
             {
-                var invoiceWrapper = new InvoiceBaseWrapper(invoice);
+                var invoiceWrapper = InvoiceBaseWrapperHelper.Get(invoice);
 
                 if (contacts.ContainsKey(invoice.ContactID))
                 {

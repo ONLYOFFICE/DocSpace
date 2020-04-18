@@ -169,14 +169,17 @@ namespace ASC.Api.CRM.Wrappers
         public TaskWrapperHelper(ApiDateTimeHelper apiDateTimeHelper, 
                                  EmployeeWraperHelper employeeWraperHelper,
                                  CRMSecurity cRMSecurity,
-                                 DaoFactory daoFactory)
+                                 DaoFactory daoFactory,
+                                 ContactBaseWrapperHelper contactBaseWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             CRMSecurity = cRMSecurity;
             DaoFactory = daoFactory;
+            ContactBaseWrapperHelper = contactBaseWrapperHelper;
         }
 
+        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
@@ -201,7 +204,7 @@ namespace ASC.Api.CRM.Wrappers
 
             if (task.ContactID > 0)
             {
-                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(task.ContactID));
+                result.Contact = ContactBaseWrapperHelper.Get(DaoFactory.GetContactDao().GetByID(task.ContactID));
             }
 
             if (task.EntityID > 0)

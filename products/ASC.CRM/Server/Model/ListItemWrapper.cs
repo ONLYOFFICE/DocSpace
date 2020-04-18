@@ -25,6 +25,7 @@
 
 
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 using System;
@@ -390,8 +391,9 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "listItem", Namespace = "")]
     public abstract class ListItemWrapper 
     {
-        protected ListItemWrapper(int id)
+        protected ListItemWrapper()
         {
+
         }
 
         protected ListItemWrapper(ListItem listItem)
