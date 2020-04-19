@@ -32,8 +32,11 @@
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
     "react-onclickoutside": "^6.9.0",
+    "react-player": "^1.15.3",
     "react-svg": "^11.0.9",
-    "react-window-infinite-loader": "^1.0.5"
+    "react-viewer": "^3.2.1",
+    "react-window-infinite-loader": "^1.0.5",
+    "screenfull": "^5.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.3",
