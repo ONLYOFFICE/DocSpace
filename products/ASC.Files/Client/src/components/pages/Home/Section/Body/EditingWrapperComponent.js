@@ -39,7 +39,7 @@ height: 56px;
 `;
 
 const EditingWrapperComponent = props => {
-    const { /*loading,*/ itemTitle, okIcon, cancelIcon, renameTitle, onKeyUpUpdateItem, onClickUpdateItem, cancelUpdateItem } = props;
+    const { isLoading, itemTitle, okIcon, cancelIcon, renameTitle, onKeyUpUpdateItem, onClickUpdateItem, cancelUpdateItem } = props;
 
     return(
       <EditingWrapper>
@@ -52,19 +52,19 @@ const EditingWrapperComponent = props => {
           isAutoFocussed={true}
           onChange={renameTitle}
           onKeyUp={onKeyUpUpdateItem}
-          //isDisabled={loading}
+          isDisabled={isLoading}
         />
         <Button
           className='edit-button'
           size='medium'
-          //isDisabled={loading}
+          isDisabled={isLoading}
           onClick={onClickUpdateItem}
           icon={okIcon}
         />
         <Button
           className='edit-button'
           size='medium'
-          //isDisabled={loading}
+          isDisabled={isLoading}
           onClick={cancelUpdateItem}
           icon={cancelIcon}
         />

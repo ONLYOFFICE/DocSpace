@@ -36,20 +36,20 @@ class FilesRowContent extends React.PureComponent {
   }
 
   updateItem = () => {
-    const { fileAction, updateFile, renameFolder, item } = this.props;
+    const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
+    
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
-    //this.setState({ loading: true });
-
+    onLoading(true);
     if (originalTitle === itemTitle)
       return this.completeAction();
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction())
+        .then(() => this.completeAction()).finally(() => onLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction());
+        .then(() => this.completeAction().finally(() => onLoading(false)));
   };
 
   createItem = () => {
@@ -161,7 +161,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   render() {
-    const { t, item, fileAction } = this.props;
+    const { t, item, fileAction, isLoading } = this.props;
     const { itemTitle, editingId/*, loading*/ } = this.state;
     const {
       contentLength,
@@ -220,7 +220,7 @@ class FilesRowContent extends React.PureComponent {
 
     return isEdit
       ? <EditingWrapperComponent
-          //loading={loading}
+          isLoading={isLoading}
           itemTitle={itemTitle}
           okIcon={okIcon}
           cancelIcon={cancelIcon}

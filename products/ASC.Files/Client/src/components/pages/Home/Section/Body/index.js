@@ -520,6 +520,7 @@ class SectionBodyContent extends React.PureComponent {
       selection,
       fileAction,
       onLoading,
+      isLoading,
       currentFolderCount,
     } = this.props;
     const { editingId } = this.state;
@@ -587,6 +588,7 @@ class SectionBodyContent extends React.PureComponent {
                     culture={settings.culture}
                     onEditComplete={this.onEditComplete.bind(this, item)}
                     onLoading={onLoading}
+                    isLoading={isLoading}
                   />
                 </SimpleFilesRow>
               );

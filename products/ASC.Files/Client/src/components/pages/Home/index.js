@@ -141,6 +141,7 @@ class PureHome extends React.Component {
           sectionBodyContent={
             <SectionBodyContent
               selected={selected}
+              isLoading={isLoading}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
             />
