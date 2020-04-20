@@ -43,8 +43,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         {
         }
 
-        private const string MM_ALIAS = "mm";
-
         public override Expression<Func<MailMail, bool>> GetExpression()
         {
             var exp = base.GetExpression();

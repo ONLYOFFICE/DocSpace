@@ -319,7 +319,7 @@ namespace ASC.Mail.Core.Engine
                             SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
                                 .SetMessageId(compose.Id)
                                 .Build(),
-                            "AttachCount",
+                            "AttachmentsCount",
                             count);
                     }
                 }
@@ -341,7 +341,7 @@ namespace ASC.Mail.Core.Engine
                             SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
                                 .SetMessageId(compose.Id)
                                 .Build(),
-                            "AttachCount",
+                            "AttachmentsCount",
                             count);
                     }
                 }

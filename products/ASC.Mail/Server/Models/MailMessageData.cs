@@ -32,7 +32,6 @@ using System.IO;
 using System.Net.Mail;
 using System.Runtime.Serialization;
 using System.Text;
-using ASC.Api.Core;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Utils;

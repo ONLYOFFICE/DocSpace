@@ -349,7 +349,7 @@ namespace ASC.Mail.Core.Engine
                 // message was correctly send - lets update its chains id
                 var draftChainId = message.ChainId;
                 // before moving message from draft to sent folder - lets recalculate its correct chain id
-                var chainInfo = MessageEngine.DetectChain(DaoFactory, draft.Mailbox,
+                var chainInfo = MessageEngine.DetectChain(draft.Mailbox,
                     message.MimeMessageId, message.MimeReplyToId, message.Subject);
 
                 message.ChainId = chainInfo.Id;

@@ -40,17 +40,14 @@ using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Mail.Core.Engine;
 using ASC.Common;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using ASC.Api.Core.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Middleware;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Autofac;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Api.Core;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Engine
 {
@@ -62,7 +59,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
         public const string DOMAIN = "gmail.com";
 
         private static readonly string TestFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-           @"..\..\Data\");
+           @"..\..\..\Data\");
         private const string EML1_FILE_NAME = @"bad_encoding.eml";
         private static readonly string Eml1Path = TestFolderPath + EML1_FILE_NAME;
 
@@ -133,7 +130,8 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
-                        .AddCoreSettingsService();
+                        .AddCoreSettingsService()
+                        .AddApiDateTimeHelper();
 
                     var builder = new ContainerBuilder();
                     var container = builder.Build();
@@ -217,6 +215,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
+
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -260,6 +261,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -412,8 +416,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
+            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
 
             for (var i = 0; i < count; i++)
             {
@@ -452,6 +458,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -475,9 +485,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
                 FromMessage = 0
             };
 
-            bool hasMore;
-
-            var chains0 = messageEngine.GetConversations(filter, out hasMore);
+            var chains0 = messageEngine.GetConversations(filter, out bool hasMore);
 
             Assert.IsNotEmpty(chains0);
             Assert.AreEqual(page_size, chains0.Count);
@@ -486,7 +494,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var last = chains0.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -498,7 +506,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var first = chainsNext.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -520,6 +528,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -553,7 +565,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var last = chains0.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -565,7 +577,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var first = chainsNext.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -585,6 +597,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -608,7 +624,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
                 FromMessage = 0
             };
 
-
             var chains0 = messageEngine.GetConversations(filter, out bool hasMore);
 
             Assert.IsNotEmpty(chains0);
@@ -618,7 +633,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var last = chains0.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -630,7 +645,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var first = chainsNext.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -650,6 +665,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -673,9 +692,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
                 FromMessage = 0
             };
 
-            bool hasMore;
-
-            var chains0 = messageEngine.GetConversations(filter, out hasMore);
+            var chains0 = messageEngine.GetConversations(filter, out bool hasMore);
 
             Assert.IsNotEmpty(chains0);
             Assert.AreEqual(page_size, chains0.Count);
@@ -684,7 +701,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var last = chains0.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -696,7 +713,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var first = chainsNext.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -716,6 +733,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -747,7 +768,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var last = chains1.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -761,7 +782,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             last = chains2.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -775,7 +796,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var first = chains3.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -792,7 +813,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             first = chains2Prev.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -813,6 +834,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -845,7 +870,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var last = chains0.Last();
 
-            filter.FromDate = last.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
             filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
@@ -859,7 +884,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var first = chainsNext.First();
 
-            filter.FromDate = first.ChainDate;
+            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
             filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
@@ -880,6 +905,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
+
             var mailBoxSettingEngine = scope.ServiceProvider.GetService<MailBoxSettingEngine>();
             var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();

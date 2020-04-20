@@ -51,6 +51,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Expressions;
 using ASC.Web.Files.Api;
 using ASC.Files.Core.Security;
@@ -1099,7 +1100,7 @@ namespace ASC.Mail.Core.Engine
                     SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
                         .SetMessageId(mailId)
                         .Build(),
-                    "AttachCount",
+                    "AttachmentsCount",
                     count);
             }
 
@@ -1147,12 +1148,7 @@ namespace ASC.Mail.Core.Engine
             return mailId;
         }
 
-        public ChainInfo DetectChain(MailBoxData mailbox, string mimeMessageId, string mimeReplyToId, string subject)
-        {
-            return DetectChain(DaoFactory, mailbox, mimeMessageId, mimeReplyToId, subject);
-        }
-
-        public ChainInfo DetectChain(IDaoFactory daoFactory, MailBoxData mailbox, string mimeMessageId,
+        public ChainInfo DetectChain(MailBoxData mailbox, string mimeMessageId,
             string mimeReplyToId, string subject)
         {
             var chainId = mimeMessageId; //Chain id is equal to root conversataions message - MimeMessageId
@@ -1423,30 +1419,36 @@ namespace ASC.Mail.Core.Engine
             // if mime_message_id == chain_id - message is first in chain, because it isn't reply
             if (!string.IsNullOrEmpty(mimeMessageId) && mimeMessageId != chainId)
             {
-                var chains = DaoFactory.ChainDao.GetChains(SimpleConversationsExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
+                var query = SimpleConversationsExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
                     .SetMailboxId(mailbox.MailBoxId)
                     .SetChainId(mimeMessageId)
-                    .Build())
+                    .Build();
+
+                var chains = DaoFactory.ChainDao.GetChains(query)
                     .Select(x => new {id = x.Id, folder = x.Folder})
                     .ToArray();
 
                 if (chains.Any())
                 {
-                    DaoFactory.MailInfoDao.SetFieldValue(
-                        SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
+                    var updateQuery = SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
                             .SetChainId(mimeMessageId)
-                            .Build(),
+                            .Build();
+
+                    DaoFactory.MailInfoDao.SetFieldValue(
+                        updateQuery,
                         "ChainId",
                         chainId);
 
                     chainsForUpdate = chains.Concat(chainsForUpdate).ToArray();
 
-                    var newChainsForUpdate =
-                        DaoFactory.MailInfoDao.GetMailInfoList(
-                            SimpleMessagesExp.CreateBuilder(Tenant, User)
+                    var getQuery = SimpleMessagesExp.CreateBuilder(Tenant, User)
                                 .SetMailboxId(mailbox.MailBoxId)
                                 .SetChainId(chainId)
-                                .Build())
+                                .Build();
+
+                    var newChainsForUpdate =
+                        DaoFactory.MailInfoDao
+                            .GetMailInfoList(getQuery)
                             .ConvertAll(x => new
                             {
                                 id = chainId,
@@ -2115,23 +2117,41 @@ namespace ASC.Mail.Core.Engine
         {
             if (string.IsNullOrEmpty(chainId)) return;
 
-            var chainInfo = DaoFactory.MailDb.MailMail
-                .Where(m => m.Tenant == Tenant
-                    && m.IdUser == User
-                    && m.IsRemoved == false
-                    && m.ChainId == chainId
-                    && m.IdMailbox == mailboxId
-                    && m.Folder == (int)folder)
-                .GroupBy(m => m.Id)
-                .Select(g => new
+            var folderId = (int)folder;
+
+            var chainQuery = DaoFactory.MailDb.MailMail
+                .Where(m => m.Tenant == Tenant)
+                .Where(m => m.IdUser == User)
+                .Where(m => m.IsRemoved == false)
+                .Where(m => m.ChainId == chainId)
+                .Where(m => m.IdMailbox == mailboxId)
+                .Where(m => m.Folder == folderId)
+                //.GroupBy(m => m.Id)
+                .Select(m => new { m.Id, m.DateSent, m.Unread, m.AttachmentsCount, m.Importance });
+                //.GroupBy
+                /*.Select(g => new
                 {
                     length = g.Count(),
                     date = g.Max(m => m.DateSent),
                     unread = g.Max(m => m.Unread),
                     attach_count = g.Max(m => m.AttachmentsCount),
                     importance = g.Max(m => m.Importance)
-                })
-                .FirstOrDefault();
+                });*/
+
+            var str = chainQuery.ToSql();//.ToString();
+
+            var chainInfoList = chainQuery.ToList(); //.FirstOrDefault();
+
+            var chainInfo = chainInfoList
+                    .GroupBy(m => m.Id)
+                    .Select(g => new
+                    {
+                        length = g.Count(),
+                        date = g.Max(m => m.DateSent),
+                        unread = g.Max(m => m.Unread),
+                        attach_count = g.Max(m => m.AttachmentsCount),
+                        importance = g.Max(m => m.Importance)
+                    }).FirstOrDefault();
 
             if (chainInfo == null)
                 throw new InvalidDataException("Conversation is absent in MAIL_MAIL");
@@ -2157,7 +2177,9 @@ namespace ASC.Mail.Core.Engine
                 var result = DaoFactory.ChainDao.Delete(deletQuery);
 
                 Log.DebugFormat(
-                    "UpdateChain() row deleted from chain table tenant='{0}', user_id='{1}', id_mailbox='{2}', folder='{3}', chain_id='{4}' result={5}",
+                    "UpdateChain() row deleted from chain table tenant='{0}', " +
+                    "user_id='{1}', id_mailbox='{2}', folder='{3}', " +
+                    "chain_id='{4}' result={5}",
                     tenant, user, mailboxId, folder, chainId, result);
 
                 var unreadConvDiff = chainUnreadFlag ? -1 : (int?)null;
@@ -2560,7 +2582,7 @@ namespace ASC.Mail.Core.Engine
                         SimpleMessagesExp.CreateBuilder(tenant, user)
                             .SetMessageId(messageId)
                             .Build(),
-                        "AttachCount",
+                        "AttachmentsCount",
                         attachCount);
 
                     UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
@@ -2677,7 +2699,7 @@ namespace ASC.Mail.Core.Engine
                     SimpleMessagesExp.CreateBuilder(tenant, user)
                         .SetMessageId(messageId)
                         .Build(),
-                    "AttachCount",
+                    "AttachmentsCount",
                     attachCount);
 
                 UpdateMessageChainAttachmentsFlag(tenant, user, messageId);

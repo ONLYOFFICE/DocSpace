@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using ASC.Common;
 using ASC.Core;
@@ -54,9 +55,10 @@ namespace ASC.Mail.Core.Dao
             var query = MailDb.MailMail
                 .Where(exp.GetExpression());
 
-            if (exp.TagIds != null && exp.TagIds.Any())
+            //TODO: Fix
+            /*if (exp.TagIds != null && exp.TagIds.Any())
             {
-                query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
+                query = query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
                     (m, tm) => new
                     {
                         Mail = m,
@@ -65,27 +67,28 @@ namespace ASC.Mail.Core.Dao
                     .Where(g => exp.TagIds.Contains(g.Xtags.IdTag))
                     .GroupBy(g => g.Mail.Id)
                     .Where(g => g.Count() == exp.TagIds.Count);
-            }
+            }*/
 
-            if (exp.UserFolderId.HasValue)
+            //TODO: Fix
+            /*if (exp.UserFolderId.HasValue)
             {
-                query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
+                query = query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
                     (m, x) => new
                     {
                         Mail = m,
                         XuserFolder = x
                     })
                     .Where(g => g.XuserFolder.IdFolder == exp.UserFolderId.Value);
-            }
+            }*/
 
-            if(exp.StartIndex.HasValue)
+            if (exp.StartIndex.HasValue)
             {
-                query.Skip(exp.StartIndex.Value);
+                query = query.Skip(exp.StartIndex.Value);
             }
 
             if (exp.Limit.HasValue)
             {
-                query.Take(exp.Limit.Value);
+                query = query.Take(exp.Limit.Value);
             }
 
             if (!string.IsNullOrEmpty(exp.OrderBy))
@@ -105,7 +108,7 @@ namespace ASC.Mail.Core.Dao
                     sortField = "ChainDate";
                 }
 
-                query.OrderBy(sortField, exp.OrderAsc.GetValueOrDefault());
+                query = query.OrderBy(sortField, exp.OrderAsc.GetValueOrDefault());
             }
 
             var list = query
@@ -237,7 +240,7 @@ namespace ASC.Mail.Core.Dao
 
         public int SetFieldValue<T>(IMessagesExp exp, string field, T value)
         {
-            Type type = typeof(T);
+            Type type = typeof(MailMail);
             PropertyInfo pi = type.GetProperty(field);
 
             if (pi == null)
@@ -329,7 +332,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        protected MailInfo ToMailInfo(MailMail r, string labelsString)
+        protected static MailInfo ToMailInfo(MailMail r, string labelsString)
         {
             var mailInfo = new MailInfo
             {
