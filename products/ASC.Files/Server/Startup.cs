@@ -86,7 +86,8 @@ namespace ASC.Files
                 .AddEncryptionControllerService()
                 .AddFileHandlerService()
                 .AddChunkedUploaderHandlerService()
-                .AddThirdPartyAppHandlerService();
+                .AddThirdPartyAppHandlerService()
+                .AddDocuSignHandlerService();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
@@ -144,6 +145,13 @@ namespace ASC.Files
                 appBranch =>
                 {
                     appBranch.UseThirdPartyAppHandler();
+                });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("DocuSignHandler.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseDocuSignHandler();
                 });
 
             app.UseStaticFiles();
