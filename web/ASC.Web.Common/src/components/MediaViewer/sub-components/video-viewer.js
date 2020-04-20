@@ -10,6 +10,11 @@ import { Icons } from "asc-web-components";
 
 const StyledControls = styled.div`
     height: 40px;
+    display: block;
+    position: absolute;
+    z-index: 400;
+    top: calc(50% + 113px);
+    left: calc(50% - 187px);
     
 `;
 const StyledVideoControlBtn = styled.div`
@@ -20,7 +25,6 @@ const StyledVideoControlBtn = styled.div`
     width: 40px;
     border-radius: 2px;
     cursor: pointer;
-    background-color: rgba(200,200,200, 1);
     text-align: center;
     &:hover{
         background-color: rgba(200,200,200,0.2);
@@ -230,6 +234,18 @@ const StyledVideoViewer = styled.div`
       background: black;
       opacity: 0.5;
     }
+
+    .playerWrapper{
+      width: 400px;
+      height: 226px;
+      left: calc(50% - 200px);
+      top: calc(50% - 113px);
+
+      position: absolute;
+      z-index: 400;
+      padding-bottom: 40px;
+      background-color: rgba(11,11,11,0.7);
+    }
 `;
 
 class ValumeBtn extends Component{
@@ -331,7 +347,7 @@ class VideoViewer extends Component {
   handleSetPlaybackRate = e => {
     this.setState({ playbackRate: parseFloat(e.target.value) })
   }
-
+ 
   handleTogglePIP = () => {
     this.setState({ pip: !this.state.pip })
   }
@@ -409,55 +425,56 @@ class VideoViewer extends Component {
 
     return (
         <StyledVideoViewer>
-          <div className = "videoViewerOverlay">
-            <div className='player-wrapper'>
-                <ReactPlayer
-                  ref={this.ref}
-                  className='react-player'
-                  width='100%'
-                  height='100%'
-                  url={url}
-                  pip={pip}
-                  playing={playing}
-                  controls={controls}
-                  light={light}
-                  loop={loop}
-                  playbackRate={playbackRate}
-                  volume={volume}
-                  muted={muted}
-                  onReady={() => console.log('onReady')}
-                  onStart={() => console.log('onStart')}
-                  onPlay={this.handlePlay}
-                  onEnablePIP={this.handleEnablePIP}
-                  onDisablePIP={this.handleDisablePIP}
-                  onPause={this.handlePause}
-                  onBuffer={() => console.log('onBuffer')}
-                  onSeek={e => console.log('onSeek', e)}
-                  onEnded={this.handleEnded}
-                  onError={e => console.log('onError', e)}
-                  onProgress={this.handleProgress}
-                  onDuration={this.handleDuration}
-                />
+          <div className = "videoViewerOverlay"></div>
+          <div>
+            <div className='playerWrapper'>
+              <ReactPlayer
+                ref={this.ref}
+                className='react-player'
+                width='100%'
+                height='100%'
+                url={"https://www.youtube.com/watch?v=jNgP6d9HraI"}
+                pip={pip}
+                playing={playing}
+                controls={controls}
+                light={light}
+                loop={loop}
+                playbackRate={playbackRate}
+                volume={volume}
+                muted={muted}
+                onReady={() => console.log('onReady')}
+                onStart={() => console.log('onStart')}
+                onPlay={this.handlePlay}
+                onEnablePIP={this.handleEnablePIP}
+                onDisablePIP={this.handleDisablePIP}
+                onPause={this.handlePause}
+                onBuffer={() => console.log('onBuffer')}
+                onSeek={e => console.log('onSeek', e)}
+                onEnded={this.handleEnded}
+                onError={e => console.log('onError', e)}
+                onProgress={this.handleProgress}
+                onDuration={this.handleDuration}
+              />
             </div>
             <Controls>
               <PlayBtn onClick={this.handlePlayPause} playing={playing} />
               <Progress
-                  value={played}
-                  width = "200"
-                  onMouseDown={this.handleSeekMouseDown}
-                  onChange={this.handleSeekChange}
-                  onMouseUp={this.handleSeekMouseUp}
-                />
-                <span><Duration seconds={duration * (1 - played)} /></span>
-                <ValumeBtn
-                  width = {64}
-                  muted = {muted}
-                  volume={muted ? 0 : volume}
-                  onChangeMute = {this.handleToggleMuted}
-                  onChange={this.handleVolumeChange}
-                />
-                
-                <FullScreenBtn onClick={this.handleClickFullscreen}/>
+                value={played}
+                width="200"
+                onMouseDown={this.handleSeekMouseDown}
+                onChange={this.handleSeekChange}
+                onMouseUp={this.handleSeekMouseUp}
+              />
+              <span><Duration seconds={duration * (1 - played)} /></span>
+              <ValumeBtn
+                width={64}
+                muted={muted}
+                volume={muted ? 0 : volume}
+                onChangeMute={this.handleToggleMuted}
+                onChange={this.handleVolumeChange}
+              />
+
+              <FullScreenBtn onClick={this.handleClickFullscreen} />
             </Controls>
           </div>
         </StyledVideoViewer>
