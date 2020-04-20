@@ -85,7 +85,8 @@ namespace ASC.Files
                 .AddDocumentsControllerService()
                 .AddEncryptionControllerService()
                 .AddFileHandlerService()
-                .AddChunkedUploaderHandlerService();
+                .AddChunkedUploaderHandlerService()
+                .AddThirdPartyAppHandlerService();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
@@ -136,6 +137,13 @@ namespace ASC.Files
                 appBranch =>
                 {
                     appBranch.UseChunkedUploaderHandler();
+                });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("ThirdPartyAppHandler.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseThirdPartyAppHandler();
                 });
 
             app.UseStaticFiles();

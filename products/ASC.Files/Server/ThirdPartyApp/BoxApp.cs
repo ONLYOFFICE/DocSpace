@@ -109,7 +109,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public SetupInfo SetupInfo { get; }
         public TokenHelper TokenHelper { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
-        public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
+        public ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
@@ -137,7 +137,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             SetupInfo setupInfo,
             TokenHelper tokenHelper,
             DocumentServiceConnector documentServiceConnector,
-            ThirdPartyAppHandler thirdPartyAppHandler,
+            ThirdPartyAppHandlerService thirdPartyAppHandlerService,
             IServiceProvider serviceProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
@@ -165,7 +165,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             SetupInfo = setupInfo;
             TokenHelper = tokenHelper;
             DocumentServiceConnector = documentServiceConnector;
-            ThirdPartyAppHandler = thirdPartyAppHandler;
+            ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
             Logger = option.CurrentValue;
         }
@@ -251,7 +251,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             Logger.Debug("BoxApp: get file stream url " + fileId);
 
-            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandler.HandlerPath));
+            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandlerService.HandlerPath));
             if (uriBuilder.Uri.IsLoopback)
             {
                 uriBuilder.Host = Dns.GetHostName();

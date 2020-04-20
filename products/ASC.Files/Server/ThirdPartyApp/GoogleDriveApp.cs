@@ -116,7 +116,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public GoogleLoginProvider GoogleLoginProvider { get; }
         public TokenHelper TokenHelper { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
-        public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
+        public ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public GoogleDriveApp()
@@ -147,7 +147,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             GoogleLoginProvider googleLoginProvider,
             TokenHelper tokenHelper,
             DocumentServiceConnector documentServiceConnector,
-            ThirdPartyAppHandler thirdPartyAppHandler,
+            ThirdPartyAppHandlerService thirdPartyAppHandlerService,
             IServiceProvider serviceProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
@@ -180,7 +180,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             GoogleLoginProvider = googleLoginProvider;
             TokenHelper = tokenHelper;
             DocumentServiceConnector = documentServiceConnector;
-            ThirdPartyAppHandler = thirdPartyAppHandler;
+            ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
         }
 
@@ -257,7 +257,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             Logger.Debug("GoogleDriveApp: get file stream url " + fileId);
 
-            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandler.HandlerPath));
+            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandlerService.HandlerPath));
             if (uriBuilder.Uri.IsLoopback)
             {
                 uriBuilder.Host = Dns.GetHostName();
