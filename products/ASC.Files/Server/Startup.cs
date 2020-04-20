@@ -9,6 +9,7 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Web.Files;
+using ASC.Web.Files.HttpHandlers;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -83,7 +84,8 @@ namespace ASC.Files
             diHelper
                 .AddDocumentsControllerService()
                 .AddEncryptionControllerService()
-                .AddFileHandlerService();
+                .AddFileHandlerService()
+                .AddChunkedUploaderHandlerService();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
@@ -127,6 +129,13 @@ namespace ASC.Files
                 appBranch =>
                 {
                     appBranch.UseFileHandler();
+                });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseChunkedUploaderHandler();
                 });
 
             app.UseStaticFiles();
