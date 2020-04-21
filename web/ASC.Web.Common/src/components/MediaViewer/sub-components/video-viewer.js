@@ -14,7 +14,7 @@ const StyledControls = styled.div`
     position: absolute;
     z-index: 400;
     top: calc(50% + 113px);
-    left: calc(50% - 187px);
+    left: calc(50% - 200px);
     
 `;
 const StyledVideoControlBtn = styled.div`
@@ -222,8 +222,24 @@ const StyledValumeContainer = styled.div`
       margin: 22px -12px;
     }
 `;
+const StyledDuration = styled.div`
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    margin: 5px;
+    width: 60px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
 
+    &:hover{
+      background-color: rgba(200,200,200,0.2);
+    }
+`;
 const StyledVideoViewer = styled.div`
+
+    color: #d1d1d1;
+
     .videoViewerOverlay{
       position: fixed;
       z-index: 400;
@@ -460,12 +476,12 @@ class VideoViewer extends Component {
               <PlayBtn onClick={this.handlePlayPause} playing={playing} />
               <Progress
                 value={played}
-                width="200"
+                width={180}
                 onMouseDown={this.handleSeekMouseDown}
                 onChange={this.handleSeekChange}
                 onMouseUp={this.handleSeekMouseUp}
               />
-              <span><Duration seconds={duration * (1 - played)} /></span>
+              <StyledDuration>-<Duration seconds={duration * (1 - played)} /></StyledDuration>
               <ValumeBtn
                 width={64}
                 muted={muted}
