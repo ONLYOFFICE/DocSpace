@@ -98,7 +98,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 // using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveDomainTimeout))
 
-                using (var tx = DaoFactory.BeginTransaction())
+                using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     var groups = DaoFactory.ServerGroupDao.GetList(_domain.Id);
 

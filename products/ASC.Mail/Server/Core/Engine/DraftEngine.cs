@@ -59,6 +59,7 @@ using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 using ASC.ElasticSearch;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Common;
+using System.Data;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -344,68 +345,66 @@ namespace ASC.Mail.Core.Engine
 
         private void ReleaseSendingDraftOnSuccess(MailDraftData draft, MailMessage message)
         {
-            using (var tx = DaoFactory.BeginTransaction())
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            // message was correctly send - lets update its chains id
+            var draftChainId = message.ChainId;
+            // before moving message from draft to sent folder - lets recalculate its correct chain id
+            var chainInfo = MessageEngine.DetectChain(draft.Mailbox,
+                message.MimeMessageId, message.MimeReplyToId, message.Subject);
+
+            message.ChainId = chainInfo.Id;
+
+            if (message.ChainId.Equals(message.MimeMessageId))
+                message.MimeReplyToId = null;
+
+            if (!draftChainId.Equals(message.ChainId))
             {
-                // message was correctly send - lets update its chains id
-                var draftChainId = message.ChainId;
-                // before moving message from draft to sent folder - lets recalculate its correct chain id
-                var chainInfo = MessageEngine.DetectChain(draft.Mailbox,
-                    message.MimeMessageId, message.MimeReplyToId, message.Subject);
-
-                message.ChainId = chainInfo.Id;
-
-                if (message.ChainId.Equals(message.MimeMessageId))
-                    message.MimeReplyToId = null;
-
-                if (!draftChainId.Equals(message.ChainId))
-                {
-                    DaoFactory.MailInfoDao.SetFieldValue(
-                        SimpleMessagesExp.CreateBuilder(Tenant, User)
-                            .SetMessageId(message.Id)
-                            .Build(),
-                        "ChainId",
-                        message.ChainId);
-
-                    MessageEngine.UpdateChain(draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
-                        draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-                    DaoFactory.CrmLinkDao.UpdateCrmLinkedChainId(draftChainId, draft.Mailbox.MailBoxId, message.ChainId);
-                }
-
-                MessageEngine.UpdateChain(message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
-                    draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-                var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
-
-                if (!listObjects.Any())
-                    return;
-
-                MessageEngine.SetFolder(DaoFactory, listObjects, FolderType.Sent);
-
                 DaoFactory.MailInfoDao.SetFieldValue(
                     SimpleMessagesExp.CreateBuilder(Tenant, User)
-                        .SetMessageId(draft.Id)
+                        .SetMessageId(message.Id)
                         .Build(),
-                    "FolderRestore",
-                    FolderType.Sent);
+                    "ChainId",
+                    message.ChainId);
 
-                tx.Commit();
+                MessageEngine.UpdateChain(draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                    draft.Mailbox.TenantId, draft.Mailbox.UserId);
+
+                DaoFactory.CrmLinkDao.UpdateCrmLinkedChainId(draftChainId, draft.Mailbox.MailBoxId, message.ChainId);
             }
+
+            MessageEngine.UpdateChain(message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                draft.Mailbox.TenantId, draft.Mailbox.UserId);
+
+            var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
+
+            if (!listObjects.Any())
+                return;
+
+            MessageEngine.SetFolder(DaoFactory, listObjects, FolderType.Sent);
+
+            DaoFactory.MailInfoDao.SetFieldValue(
+                SimpleMessagesExp.CreateBuilder(Tenant, User)
+                    .SetMessageId(draft.Id)
+                    .Build(),
+                "FolderRestore",
+                FolderType.Sent);
+
+            tx.Commit();
         }
 
         private void ReleaseSendingDraftOnFailure(MailDraftData draft)
         {
-            using (var tx = DaoFactory.BeginTransaction())
-            {
-                var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-                if (!listObjects.Any())
-                    return;
+            var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
 
-                MessageEngine.SetFolder(DaoFactory, listObjects, FolderType.Draft);
+            if (!listObjects.Any())
+                return;
 
-                tx.Commit();
-            }
+            MessageEngine.SetFolder(DaoFactory, listObjects, FolderType.Draft);
+
+            tx.Commit();
         }
 
         private void SaveIcsAttachment(MailDraftData draft, MimeMessage mimeMessage)

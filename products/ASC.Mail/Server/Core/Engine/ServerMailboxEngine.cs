@@ -320,7 +320,7 @@ namespace ASC.Mail.Core.Engine
 
             var utcNow = DateTime.UtcNow;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 var mailbox = new Mailbox
                 {
@@ -537,7 +537,7 @@ namespace ASC.Mail.Core.Engine
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 address.Id = DaoFactory.ServerAddressDao.Save(address);
 
@@ -601,7 +601,7 @@ namespace ASC.Mail.Core.Engine
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 DaoFactory.ServerAddressDao.Delete(addressId);
                 engine.RemoveAlias(aliasEmail);
@@ -634,64 +634,63 @@ namespace ASC.Mail.Core.Engine
 
             var utcNow = DateTime.UtcNow;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            foreach (var serverGroup in serverGroups)
             {
-                foreach (var serverGroup in serverGroups)
+                var addresses = DaoFactory.ServerAddressDao.GetGroupAddresses(serverGroup.Id);
+
+                var index = addresses.FindIndex(a => a.Id == serverMailboxAddress.Id);
+
+                if (index < 0)
+                    continue;
+
+                addresses.RemoveAt(index);
+
+                if (addresses.Count == 0)
                 {
-                    var addresses = DaoFactory.ServerAddressDao.GetGroupAddresses(serverGroup.Id);
+                    DaoFactory.ServerGroupDao.Delete(serverGroup.Id);
 
-                    var index = addresses.FindIndex(a => a.Id == serverMailboxAddress.Id);
+                    DaoFactory.ServerAddressDao.DeleteAddressesFromMailGroup(serverGroup.Id);
 
-                    if (index < 0)
-                        continue;
-
-                    addresses.RemoveAt(index);
-
-                    if (addresses.Count == 0)
-                    {
-                        DaoFactory.ServerGroupDao.Delete(serverGroup.Id);
-
-                        DaoFactory.ServerAddressDao.DeleteAddressesFromMailGroup(serverGroup.Id);
-
-                        serverEngine.RemoveAlias(serverGroup.Address);
-                    }
-                    else
-                    {
-                        DaoFactory.ServerAddressDao.DeleteAddressFromMailGroup(serverGroup.Id, serverMailboxAddress.Id);
-
-                        var goTo = string.Join(",",
-                            addresses.Select(m => string.Format("{0}@{1}", m.AddressName, serverDomain.Name)));
-
-                        var serverAddress = new Alias
-                        {
-                            Name = "",
-                            Address = serverGroup.Address,
-                            Goto = goTo,
-                            Domain = serverDomain.Name,
-                            Active = true,
-                            Islist = true,
-                            Modified = utcNow,
-                            Created = serverGroup.DateCreated
-                        };
-
-                        serverEngine.SaveAlias(serverAddress);
-                    }
+                    serverEngine.RemoveAlias(serverGroup.Address);
                 }
-
-                DaoFactory.ServerAddressDao.Delete(serverMailboxAddresses.Select(a => a.Id).ToList());
-
-                foreach (var mailboxAddress in serverMailboxAddresses)
+                else
                 {
-                    serverEngine.RemoveAlias(string.Format("{0}@{1}", mailboxAddress.AddressName, serverDomain.Name));
+                    DaoFactory.ServerAddressDao.DeleteAddressFromMailGroup(serverGroup.Id, serverMailboxAddress.Id);
+
+                    var goTo = string.Join(",",
+                        addresses.Select(m => string.Format("{0}@{1}", m.AddressName, serverDomain.Name)));
+
+                    var serverAddress = new Alias
+                    {
+                        Name = "",
+                        Address = serverGroup.Address,
+                        Goto = goTo,
+                        Domain = serverDomain.Name,
+                        Active = true,
+                        Islist = true,
+                        Modified = utcNow,
+                        Created = serverGroup.DateCreated
+                    };
+
+                    serverEngine.SaveAlias(serverAddress);
                 }
-
-                MailboxEngine.RemoveMailBox(mailBox, false);
-
-                serverEngine.RemoveMailbox(string.Format("{0}@{1}", serverMailboxAddress.AddressName,
-                    serverDomain.Name));
-
-                tx.Commit();
             }
+
+            DaoFactory.ServerAddressDao.Delete(serverMailboxAddresses.Select(a => a.Id).ToList());
+
+            foreach (var mailboxAddress in serverMailboxAddresses)
+            {
+                serverEngine.RemoveAlias(string.Format("{0}@{1}", mailboxAddress.AddressName, serverDomain.Name));
+            }
+
+            MailboxEngine.RemoveMailBox(mailBox, false);
+
+            serverEngine.RemoveMailbox(string.Format("{0}@{1}", serverMailboxAddress.AddressName,
+                serverDomain.Name));
+
+            tx.Commit();
         }
 
         public MailOperationStatus RemoveMailbox(int id)
@@ -755,19 +754,18 @@ namespace ASC.Mail.Core.Engine
 
             var server = DaoFactory.ServerDao.Get(Tenant);
 
-            using (var tx = DaoFactory.BeginTransaction())
-            {
-                var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-                engine.ChangePassword(mailbox.Address, trimPwd);
+            var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-                mailbox.Password = trimPwd;
-                mailbox.SmtpPassword = trimPwd;
+            engine.ChangePassword(mailbox.Address, trimPwd);
 
-                DaoFactory.MailboxDao.SaveMailBox(mailbox);
+            mailbox.Password = trimPwd;
+            mailbox.SmtpPassword = trimPwd;
 
-                tx.Commit();
-            }
+            DaoFactory.MailboxDao.SaveMailBox(mailbox);
+
+            tx.Commit();
         }
 
         public static ServerMailboxData ToMailboxData(Mailbox mailbox, ServerDomainAddressData address,

@@ -198,7 +198,7 @@ namespace ASC.Mail.Core.Engine
                 DateCreated = utcNow
             };
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 address.Id = DaoFactory.ServerAddressDao.Save(address);
 
@@ -266,7 +266,7 @@ namespace ASC.Mail.Core.Engine
             string groupEmail;
             List<ServerDomainAddressData> newGroupMemberDataList;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 DaoFactory.ServerAddressDao.AddAddressesToMailGroup(mailgroupId, new List<int> { addressId });
 
@@ -321,7 +321,6 @@ namespace ASC.Mail.Core.Engine
             if (mailgroupId < 0)
                 throw new ArgumentException(@"Invalid mailgroup id.", "mailgroupId");
 
-
             var group = DaoFactory.ServerGroupDao.Get(mailgroupId);
 
             if (group == null)
@@ -349,7 +348,7 @@ namespace ASC.Mail.Core.Engine
 
             var utcNow = DateTime.UtcNow;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 DaoFactory.ServerAddressDao.DeleteAddressFromMailGroup(mailgroupId, addressId);
 
@@ -395,7 +394,7 @@ namespace ASC.Mail.Core.Engine
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 DaoFactory.ServerGroupDao.Delete(id);
 

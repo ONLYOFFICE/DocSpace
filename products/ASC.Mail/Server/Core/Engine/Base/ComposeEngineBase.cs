@@ -278,7 +278,7 @@ namespace ASC.Mail.Core.Engine
 
             long usedQuota;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 compose.Id = MessageEngine.MailSave(compose.Mailbox, message, compose.Id, message.Folder, message.Folder, null,
                     string.Empty, string.Empty, false, out usedQuota);

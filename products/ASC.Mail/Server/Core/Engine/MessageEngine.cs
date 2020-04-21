@@ -359,7 +359,7 @@ namespace ASC.Mail.Core.Engine
             var ids2Update = new List<int>();
             List<MailInfo> chainedMessages;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 chainedMessages = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
 
@@ -480,7 +480,7 @@ namespace ASC.Mail.Core.Engine
 
         public bool SetImportant(List<int> ids, bool importance)
         {
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 var exp = SimpleMessagesExp.CreateBuilder(Tenant, User)
                         .SetMessageIds(ids)
@@ -516,7 +516,7 @@ namespace ASC.Mail.Core.Engine
             if (!mailInfoList.Any())
                 return;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 Restore(DaoFactory, mailInfoList);
                 tx.Commit();
@@ -635,7 +635,7 @@ namespace ASC.Mail.Core.Engine
                 folder = FolderType.UserFolder;
             }
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 SetFolder(DaoFactory, ids, folder, userFolderId);
                 tx.Commit();
@@ -840,7 +840,7 @@ namespace ASC.Mail.Core.Engine
 
             if (!mailInfoList.Any()) return;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 usedQuota = SetRemoved(DaoFactory, mailInfoList);
                 tx.Commit();
@@ -945,7 +945,7 @@ namespace ASC.Mail.Core.Engine
 
             var ids = mailInfoList.Select(m => m.Id).ToList();
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 DaoFactory.MailInfoDao.SetFieldValue(
                     SimpleMessagesExp.CreateBuilder(Tenant, User)
@@ -1000,7 +1000,7 @@ namespace ASC.Mail.Core.Engine
         {
             int id;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 id = MailSave(mailbox, message, messageId,
                     folder, folderRestore, userFolderId,
@@ -1870,7 +1870,7 @@ namespace ASC.Mail.Core.Engine
             if (!listObjects.Any())
                 return;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 SetFolder(DaoFactory, listObjects, folder, userFolderId);
                 tx.Commit();
@@ -1920,7 +1920,7 @@ namespace ASC.Mail.Core.Engine
             if (!listObjects.Any())
                 return;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 Restore(DaoFactory, listObjects);
                 tx.Commit();
@@ -1964,7 +1964,7 @@ namespace ASC.Mail.Core.Engine
             if (!listObjects.Any())
                 return;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 usedQuota = SetRemoved(DaoFactory, listObjects);
                 tx.Commit();
@@ -1978,8 +1978,6 @@ namespace ASC.Mail.Core.Engine
 
             IndexEngine.Remove(listObjects.Select(info => info.Id).ToList(), Tenant, new Guid(User));
         }
-
-        private const string MM_ALIAS = "mm";
 
         public void SetConversationsImportanceFlags(int tenant, string user, bool important, List<int> ids)
         {
@@ -1999,7 +1997,7 @@ namespace ASC.Mail.Core.Engine
             if (!chainsInfo.Any())
                 throw new Exception("no chain messages belong to current user");
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 Expression<Func<Dao.Entities.MailMail, bool>> exp = t => true;
                 foreach (var chain in chainsInfo)
@@ -2044,7 +2042,7 @@ namespace ASC.Mail.Core.Engine
 
         public void UpdateMessageChainAttachmentsFlag(int tenant, string user, int messageId)
         {
-            UpdateMessageChainFlag(tenant, user, messageId, "AttachCount", "HasAttachments");
+            UpdateMessageChainFlag(tenant, user, messageId, "AttachmentsCount", "HasAttachments");
         }
 
         public void UpdateMessageChainUnreadFlag(int tenant, string user, int messageId)
@@ -2683,7 +2681,7 @@ namespace ASC.Mail.Core.Engine
             long usedQuota;
             int attachCount;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 var exp = new ConcreteMessageAttachmentsExp(messageId, tenant, user, attachmentIds,
                     onlyEmbedded: null);

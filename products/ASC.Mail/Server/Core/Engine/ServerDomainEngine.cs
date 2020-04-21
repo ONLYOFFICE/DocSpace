@@ -42,6 +42,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 using Microsoft.Extensions.Options;
 using ASC.Common;
 using ASC.Mail.Server.Utils;
+using System.Data;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -275,73 +276,72 @@ namespace ASC.Mail.Core.Engine
 
             var dnsLookup = new DnsLookup();
 
-                var server = DaoFactory.ServerDao.Get(Tenant);
+            var server = DaoFactory.ServerDao.Get(Tenant);
 
-                var freeDns = GetOrCreateUnusedDnsData(server);
+            var freeDns = GetOrCreateUnusedDnsData(server);
 
-                if (freeDns.Id != dnsId)
-                    throw new InvalidDataException("This dkim public key is already in use. Please reopen wizard again.");
+            if (freeDns.Id != dnsId)
+                throw new InvalidDataException("This dkim public key is already in use. Please reopen wizard again.");
 
-                if (!CoreBaseSettings.Standalone &&
-                    !dnsLookup.IsDomainTxtRecordExists(domainName, freeDns.DomainCheckRecord.Value))
-                {
-                    throw new InvalidOperationException("txt record is not correct.");
-                }
+            if (!CoreBaseSettings.Standalone &&
+                !dnsLookup.IsDomainTxtRecordExists(domainName, freeDns.DomainCheckRecord.Value))
+            {
+                throw new InvalidOperationException("txt record is not correct.");
+            }
 
-                var isVerified = freeDns.CheckDnsStatus(domainName);
+            var isVerified = freeDns.CheckDnsStatus(domainName);
 
-                using (var tx = DaoFactory.BeginTransaction())
-                {
-                    var utcNow = DateTime.UtcNow;
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-                    var mailServerEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+            var utcNow = DateTime.UtcNow;
 
-                    var mailServerDomain = new Server.Core.Entities.Domain
-                    {
-                        DomainName = domainName,
-                        Active = true,
-                        Description = string.Format("Domain created in UtcTime: {0}, for tenant: {1}", utcNow, Tenant),
-                        Created = utcNow,
-                        Modified = utcNow
-                    };
+            var mailServerEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-                    mailServerEngine.SaveDomain(mailServerDomain);
+            var mailServerDomain = new Server.Core.Entities.Domain
+            {
+                DomainName = domainName,
+                Active = true,
+                Description = string.Format("Domain created in UtcTime: {0}, for tenant: {1}", utcNow, Tenant),
+                Created = utcNow,
+                Modified = utcNow
+            };
 
-                    var serverDomain = new ServerDomain
-                    {
-                        Id = 0,
-                        Tenant = Tenant,
-                        Name = domainName,
-                        IsVerified = isVerified,
-                        DateAdded = utcNow,
-                        DateChecked = utcNow
-                    };
+            mailServerEngine.SaveDomain(mailServerDomain);
 
-                    serverDomain.Id = DaoFactory.ServerDomainDao
-                        .Save(serverDomain);
+            var serverDomain = new ServerDomain
+            {
+                Id = 0,
+                Tenant = Tenant,
+                Name = domainName,
+                IsVerified = isVerified,
+                DateAdded = utcNow,
+                DateChecked = utcNow
+            };
 
-                    var serverDns = DaoFactory.ServerDnsDao
-                        .GetById(freeDns.Id);
+            serverDomain.Id = DaoFactory.ServerDomainDao
+                .Save(serverDomain);
 
-                    var mailServerDkim = new Server.Core.Entities.Dkim
-                    {
-                        DomainName = domainName,
-                        Selector = serverDns.DkimSelector,
-                        PrivateKey = serverDns.DkimPrivateKey,
-                        PublicKey = serverDns.DkimPublicKey
-                    };
+            var serverDns = DaoFactory.ServerDnsDao
+                .GetById(freeDns.Id);
 
-                    mailServerEngine.SaveDkim(mailServerDkim);
+            var mailServerDkim = new Server.Core.Entities.Dkim
+            {
+                DomainName = domainName,
+                Selector = serverDns.DkimSelector,
+                PrivateKey = serverDns.DkimPrivateKey,
+                PublicKey = serverDns.DkimPublicKey
+            };
 
-                    serverDns.DomainId = serverDomain.Id;
-                    serverDns.TimeModified = utcNow;
+            mailServerEngine.SaveDkim(mailServerDkim);
 
-                    DaoFactory.ServerDnsDao.Save(serverDns);
+            serverDns.DomainId = serverDomain.Id;
+            serverDns.TimeModified = utcNow;
 
-                    tx.Commit();
+            DaoFactory.ServerDnsDao.Save(serverDns);
 
-                    return ToServerDomainData(serverDomain, freeDns);
-                }
+            tx.Commit();
+
+            return ToServerDomainData(serverDomain, freeDns);
         }
 
         public MailOperationStatus RemoveDomain(int id)

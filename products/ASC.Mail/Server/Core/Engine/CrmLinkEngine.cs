@@ -41,6 +41,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Utils;
 //using ASC.Web.CRM.Core;
 using Microsoft.Extensions.Options;
+using System.Data;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -135,7 +136,7 @@ namespace ASC.Mail.Core.Engine
 
             }
 
-            using var tx = DaoFactory.BeginTransaction();
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
             DaoFactory.CrmLinkDao.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
 
@@ -157,7 +158,7 @@ namespace ASC.Mail.Core.Engine
 
         public void MarkChainAsCrmLinked(int messageId, List<CrmContactData> contactIds)
         {
-            using var tx = DaoFactory.BeginTransaction();
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
             var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
@@ -168,7 +169,7 @@ namespace ASC.Mail.Core.Engine
 
         public void UnmarkChainAsCrmLinked(int messageId, IEnumerable<CrmContactData> contactIds)
         {
-            using var tx = DaoFactory.BeginTransaction();
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
             var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 

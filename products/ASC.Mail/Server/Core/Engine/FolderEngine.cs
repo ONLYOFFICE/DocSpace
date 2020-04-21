@@ -37,7 +37,6 @@ using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
-using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -212,7 +211,7 @@ namespace ASC.Mail.Core.Engine
 
         public void RecalculateFolders(Action<MailOperationRecalculateMailboxProgress> callback = null)
         {
-            using var tx = DaoFactory.BeginTransaction();
+            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
             var folderTypes = Enum.GetValues(typeof(FolderType)).Cast<int>();
 

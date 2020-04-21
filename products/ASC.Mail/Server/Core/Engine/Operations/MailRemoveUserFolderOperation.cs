@@ -37,6 +37,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Mail.Models;
 using ASC.ElasticSearch;
+using System.Data;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -114,7 +115,7 @@ namespace ASC.Mail.Core.Engine.Operations
             if (folder == null)
                 return;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 //Find folder sub-folders
                 var expTree = SimpleUserFoldersTreeExp.CreateBuilder()

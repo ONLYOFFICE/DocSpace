@@ -181,7 +181,7 @@ namespace ASC.Mail.Core.Engine
 
         public ContactCard SaveContactCard(ContactCard contactCard)
         {
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 var contactId = DaoFactory.ContactDao.SaveContact(contactCard.ContactInfo);
 
@@ -243,7 +243,7 @@ namespace ASC.Mail.Core.Engine
             if (!contactChanged && !newContactItems.Any() && !removedContactItems.Any())
                 return contactCard;
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 if (contactChanged)
                 {

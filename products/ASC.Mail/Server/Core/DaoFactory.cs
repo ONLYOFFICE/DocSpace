@@ -29,6 +29,7 @@ using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Mail.Core
 {
@@ -147,8 +148,8 @@ namespace ASC.Mail.Core
             ImapSpecialMailboxDao = imapSpecialMailboxDao;
         }
 
-        public IDbContextTransaction BeginTransaction() {
-            return MailDb.Database.BeginTransaction();
+        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel? level = null) {
+            return level.HasValue ? MailDb.Database.BeginTransaction(level.Value) : MailDb.Database.BeginTransaction();
         }
     }
 

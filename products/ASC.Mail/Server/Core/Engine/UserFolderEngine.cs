@@ -147,7 +147,7 @@ namespace ASC.Mail.Core.Engine
                     string.Format("Folder with name \"{0}\" already exists", newUserFolder.Name));
             }
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 newUserFolder.Id = DaoFactory.UserFolderDao.Save(newUserFolder);
 
@@ -227,7 +227,7 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 newUserFolder.TimeModified = utsNow;
                 DaoFactory.UserFolderDao.Save(newUserFolder);
@@ -259,8 +259,6 @@ namespace ASC.Mail.Core.Engine
 
             return ToMailUserFolderData(newUserFolder);
         }
-
-        
 
         public void SetFolderMessages(uint userFolderId, List<int> ids)
         {
