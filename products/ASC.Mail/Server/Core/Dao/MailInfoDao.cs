@@ -225,15 +225,19 @@ namespace ASC.Mail.Core.Dao
 
         public T GetFieldMaxValue<T>(IMessagesExp exp, string field)
         {
-            Type type = typeof(T);
+            Type type = typeof(MailMail);
             PropertyInfo pi = type.GetProperty(field);
 
             if (pi == null)
                 throw new ArgumentException("Field not found");
 
+            var x = Expression.Parameter(typeof(MailMail), "x");
+            var body = Expression.PropertyOrField(x, field);
+            var lambda = Expression.Lambda<Func<MailMail, T>>(body, x);
+
             var max = MailDb.MailMail
                 .Where(exp.GetExpression())
-                .Max(m => pi.GetValue(m));
+                .Max(lambda.Compile());
 
             return (T)max;
         }
