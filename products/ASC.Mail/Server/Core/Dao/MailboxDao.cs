@@ -101,17 +101,20 @@ namespace ASC.Mail.Core.Dao
 
         public Tuple<int, int> GetRangeMailboxes(IMailboxExp exp)
         {
-            var range = MailDb.MailMailbox
+            var mbIds = MailDb.MailMailbox
                  .Where(exp.GetExpression())
-                 .GroupBy(mb => mb.Id)
-                 .Select(mb => new
-                 {
-                     Min = (int)mb.Min(o => o.Id),
-                     Max = (int)mb.Max(o => o.Id)
-                 })
-                 .SingleOrDefault();
+                 .OrderBy(mb => mb.Id)
+                 .Select(mb => (int)mb.Id)
+                 .ToList();
 
-            return new Tuple<int, int>(range.Min, range.Max);
+            var exists = mbIds.Any();
+
+            var min = exists ? mbIds.First() : 0;
+            var max = exists ? mbIds.Last() : 0;
+
+            var result = new Tuple<int, int>(min, max);
+
+            return result;
         }
 
         public List<Tuple<int, string>> GetMailUsers(IMailboxExp exp)
