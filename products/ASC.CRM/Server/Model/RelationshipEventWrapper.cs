@@ -30,6 +30,7 @@ using ASC.Common;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,67 @@ namespace ASC.Api.CRM.Wrappers
             };
         }
     }
+
+
+    public class EntityWrapperHelper
+    {
+        public EntityWrapperHelper(DaoFactory daoFactory)
+        {
+            DaoFactory = daoFactory;
+        }
+
+        public DaoFactory DaoFactory { get; }
+        
+        public EntityWrapper Get(EntityType entityType, int entityID)
+        {
+            if (entityID == 0) return null;
+
+            var result = new EntityWrapper
+            {
+                EntityId = entityID
+            };
+
+            switch (entityType)
+            {
+                case EntityType.Case:
+                    var caseObj = DaoFactory.GetCasesDao().GetByID(entityID);
+                    if (caseObj == null)
+                        return null;
+
+                    result.EntityType = "case";
+                    result.EntityTitle = caseObj.Title;
+
+                    break;
+                case EntityType.Opportunity:
+                    var dealObj = DaoFactory.GetDealDao().GetByID(entityID);
+                    if (dealObj == null)
+                        return null;
+
+                    result.EntityType = "opportunity";
+                    result.EntityTitle = dealObj.Title;
+
+                    break;
+                default:
+                    return null;
+            }
+
+            return result;
+        }
+    }
+
+
+    public static class EntityWrapperHelperExtension
+    {
+        public static DIHelper AddEntityWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddTransient<EntityWrapperHelper>();
+
+            return services;
+        }
+    }
+
+
+
 
     [DataContract(Name = "historyEvent", Namespace = "")]
     public class RelationshipEventWrapper
@@ -116,10 +178,11 @@ namespace ASC.Api.CRM.Wrappers
         public RelationshipEventWrapperHelper(
                            ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           ContactBaseWrapperHelper contactBaseWrapperHelper,
+                           ContactWrapperHelper contactBaseWrapperHelper,
                            FileWrapperHelper fileWrapperHelper,
                            CRMSecurity cRMSecurity,
-                           DaoFactory daoFactory)
+                           DaoFactory daoFactory,
+                           EntityWrapperHelper entityWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -127,15 +190,16 @@ namespace ASC.Api.CRM.Wrappers
             DaoFactory = daoFactory;
             ContactBaseWrapperHelper = contactBaseWrapperHelper;
             FileWrapperHelper = fileWrapperHelper;
+            EntityWrapperHelper = entityWrapperHelper;
         }
 
         public FileWrapperHelper FileWrapperHelper { get; }
-        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public ContactWrapperHelper ContactBaseWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
-
+        public EntityWrapperHelper EntityWrapperHelper { get; }
         public RelationshipEventWrapper Get(RelationshipEvent relationshipEvent)
         {
             var result = new RelationshipEventWrapper
@@ -158,7 +222,7 @@ namespace ASC.Api.CRM.Wrappers
 
             if (relationshipEvent.EntityID > 0)
             {
-                result.Entity = ToEntityWrapper(relationshipEvent.EntityType, relationshipEvent.EntityID);
+                result.Entity = EntityWrapperHelper.Get(relationshipEvent.EntityType, relationshipEvent.EntityID);
             }
 
             result.Files = DaoFactory.GetRelationshipEventDao().GetFiles(relationshipEvent.ID).ConvertAll(file => FileWrapperHelper.Get<int>(file));
@@ -168,7 +232,7 @@ namespace ASC.Api.CRM.Wrappers
                 var relativeContact = DaoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
                 if (relativeContact != null)
                 {
-                    result.Contact = ContactBaseWrapperHelper.Get(relativeContact);
+                    result.Contact = ContactBaseWrapperHelper.GetContactBaseWrapper(relativeContact);
                 }
             }
 
@@ -188,7 +252,7 @@ namespace ASC.Api.CRM.Wrappers
             return services.AddApiDateTimeHelper()
                            .AddEmployeeWraper()
                            .AddCRMSecurityService()
-                           .AddContactBaseWrapperHelperService()
+                           .AddContactWrapperHelperService()
                            .AddFileWrapperHelperService();
         }
     }

@@ -38,11 +38,10 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core.Files;
-using ASC.Web.CRM.Core;
+using ASC.Web.Core.Users;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
-using Autofac;
 using Ionic.Zip;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -108,8 +107,13 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    TenantManager tenantManager,
                                    Global global,
-                                   ExportDataCache exportDataCache)
+                                   ExportDataCache exportDataCache,
+                                   CommonLinkUtility commonLinkUtility,
+                                   DisplayUserSettings displayUserSettings,
+                                   NotifyClient notifyClient,
+                                   DaoFactory daoFactory)
         {
+            DaoFactory = daoFactory;
             UserManager = userManager;
             FileUtility = fileUtility;
 
@@ -117,9 +121,9 @@ namespace ASC.Web.CRM.Classes
 
             _author = securityContext.CurrentAccount;
             _dataStore = global.GetStore();
-            _notifyClient = NotifyClient.Instance;
+            _notifyClient = notifyClient;
             _filterObject = filterObject;
-            
+
             _log = logger.Get("ASC.CRM");
 
             Id = ExportToCsv.GetKey(filterObject != null);
@@ -132,10 +136,15 @@ namespace ASC.Web.CRM.Classes
 
             ExportDataCache = exportDataCache;
             SecurityContext = securityContext;
-        }
-        
-        public SecurityContext SecurityContext { get; }
 
+            CommonLinkUtility = commonLinkUtility;
+        }
+
+     
+        public TenantManager TenantManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+        public SecurityContext SecurityContext { get; }
+        public DaoFactory DaoFactory { get; }
         public ExportDataCache ExportDataCache { get; }
 
         public UserManager UserManager { get; }
@@ -155,7 +164,7 @@ namespace ASC.Web.CRM.Classes
         private readonly ILog _log;
 
         private int _totalCount;
-                
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -163,7 +172,7 @@ namespace ASC.Web.CRM.Classes
             var exportDataOperation = obj as ExportDataOperation;
 
             if (exportDataOperation == null) return false;
-
+            
             return Id == exportDataOperation.Id;
         }
 
@@ -175,19 +184,19 @@ namespace ASC.Web.CRM.Classes
         public object Clone()
         {
             var cloneObj = new ExportDataOperation
-                {
-                    Id = Id,
-                    Status = Status,
-                    Error = Error,
-                    Percentage = Percentage,
-                    IsCompleted = IsCompleted,
-                    FileName = FileName,
-                    FileUrl = FileUrl
-                };
+            {
+                Id = Id,
+                Status = Status,
+                Error = Error,
+                Percentage = Percentage,
+                IsCompleted = IsCompleted,
+                FileName = FileName,
+                FileUrl = FileUrl
+            };
 
             return cloneObj;
         }
-              
+
         public object Id { get; set; }
 
         public object Status { get; set; }
@@ -201,7 +210,7 @@ namespace ASC.Web.CRM.Classes
         public string FileName { get; set; }
 
         public string FileUrl { get; set; }
-                
+
         private String WrapDoubleQuote(String value)
         {
             return "\"" + value.Trim().Replace("\"", "\"\"") + "\"";
@@ -246,27 +255,23 @@ namespace ASC.Web.CRM.Classes
             try
             {
                 Status = ProgressStatus.Started;
-                
-                CoreContext.TenantManager.SetCurrentTenant(_tenantId);
+
+                TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_author);
 
-                using (var scope = DIHelper.Resolve())
-                {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var userCulture = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
+                var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
 
-                    System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
+                System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
+                System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
 
-                    _log.Debug("Start Export Data");
+                _log.Debug("Start Export Data");
 
-                    ExportDataCache.Insert((string) Id, (ExportDataOperation) Clone());
+                ExportDataCache.Insert((string)Id, (ExportDataOperation)Clone());
 
-                    if (_filterObject == null)
-                        ExportAllData(daoFactory);
-                    else
-                        ExportPartData(daoFactory);
-                }
+                if (_filterObject == null)
+                    ExportAllData(daoFactory);
+                else
+                    ExportPartData(daoFactory);
 
                 Complete(100, ProgressStatus.Done, null);
 
@@ -275,7 +280,7 @@ namespace ASC.Web.CRM.Classes
             catch (OperationCanceledException)
             {
                 Complete(0, ProgressStatus.Done, null);
-                
+
                 _log.Debug("Export is cancel");
             }
             catch (Exception ex)
@@ -286,7 +291,7 @@ namespace ASC.Web.CRM.Classes
             }
             finally
             {
-                ExportDataCache.ResetAll((string) Id);
+                ExportDataCache.ResetAll((string)Id);
             }
         }
 
@@ -297,20 +302,20 @@ namespace ASC.Web.CRM.Classes
             Status = status;
             Error = error;
 
-            ExportDataCache.Insert((string) Id, (ExportDataOperation)Clone());
+            ExportDataCache.Insert((string)Id, (ExportDataOperation)Clone());
         }
 
         private void ExportAllData(DaoFactory daoFactory)
         {
             using (var stream = TempStream.Create())
             {
-                var contactDao = daoFactory.ContactDao;
-                var contactInfoDao = daoFactory.ContactInfoDao;
-                var dealDao = daoFactory.DealDao;
-                var casesDao = daoFactory.CasesDao;
-                var taskDao = daoFactory.TaskDao;
-                var historyDao = daoFactory.RelationshipEventDao;
-                var invoiceItemDao = daoFactory.InvoiceItemDao;
+                var contactDao = daoFactory.GetContactDao();
+                var contactInfoDao = daoFactory.GetContactInfoDao();
+                var dealDao = daoFactory.GetDealDao();
+                var casesDao = daoFactory.GetCasesDao();
+                var taskDao = daoFactory.GetTaskDao();
+                var historyDao = daoFactory.GetRelationshipEventDao();
+                var invoiceItemDao = daoFactory.GetInvoiceItemDao();
 
                 _totalCount += contactDao.GetAllContactsCount();
                 _totalCount += dealDao.GetDealsCount();
@@ -406,9 +411,9 @@ namespace ASC.Web.CRM.Classes
 
             if (items is List<Contact>)
             {
-                var contactInfoDao = daoFactory.ContactInfoDao;
+                var contactInfoDao = daoFactory.GetContactInfoDao();
 
-                var contacts = (List<Contact>) items;
+                var contacts = (List<Contact>)items;
 
                 var contactInfos = new StringDictionary();
 
@@ -416,7 +421,7 @@ namespace ASC.Web.CRM.Classes
                               .ForEach(item =>
                                   {
                                       var contactInfoKey = String.Format("{0}_{1}_{2}", item.ContactID,
-                                                                         (int) item.InfoType,
+                                                                         (int)item.InfoType,
                                                                          item.Category);
 
                                       if (contactInfos.ContainsKey(contactInfoKey))
@@ -429,23 +434,23 @@ namespace ASC.Web.CRM.Classes
             }
             else if (items is List<Deal>)
             {
-                fileContent = ExportDealsToCsv((List<Deal>) items, daoFactory);
+                fileContent = ExportDealsToCsv((List<Deal>)items, daoFactory);
             }
             else if (items is List<ASC.CRM.Core.Entities.Cases>)
             {
-                fileContent = ExportCasesToCsv((List<ASC.CRM.Core.Entities.Cases>) items, daoFactory);
+                fileContent = ExportCasesToCsv((List<ASC.CRM.Core.Entities.Cases>)items, daoFactory);
             }
             else if (items is List<RelationshipEvent>)
             {
-                fileContent = ExportHistoryToCsv((List<RelationshipEvent>) items, daoFactory);
+                fileContent = ExportHistoryToCsv((List<RelationshipEvent>)items, daoFactory);
             }
             else if (items is List<Task>)
             {
-                fileContent = ExportTasksToCsv((List<Task>) items, daoFactory);
+                fileContent = ExportTasksToCsv((List<Task>)items, daoFactory);
             }
             else if (items is List<InvoiceItem>)
             {
-                fileContent = ExportInvoiceItemsToCsv((List<InvoiceItem>) items, daoFactory);
+                fileContent = ExportInvoiceItemsToCsv((List<InvoiceItem>)items, daoFactory);
             }
             else
                 throw new ArgumentException();
@@ -455,11 +460,11 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportContactsToCsv(IReadOnlyCollection<Contact> contacts, StringDictionary contactInfos, DaoFactory daoFactory)
         {
-            var key = (string) Id;
-            var listItemDao = daoFactory.ListItemDao;
-            var tagDao = daoFactory.TagDao;
-            var customFieldDao = daoFactory.CustomFieldDao;
-            var contactDao = daoFactory.ContactDao;
+            var key = (string)Id;
+            var listItemDao = daoFactory.GetListItemDao();
+            var tagDao = daoFactory.GetTagDao();
+            var customFieldDao = daoFactory.GetCustomFieldDao();
+            var contactDao = daoFactory.GetContactDao();
 
             var dataTable = new DataTable();
 
@@ -520,17 +525,17 @@ namespace ASC.Web.CRM.Classes
                     if (infoTypeEnum == ContactInfoType.Address)
                         dataTable.Columns.AddRange((from AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart))
                                                     select new DataColumn
-                                                        {
-                                                            Caption = String.Format(localTitle + " {0}", addressPartEnum.ToLocalizedString().ToLower()),
-                                                            ColumnName = String.Format("contactInfo_{0}_{1}_{2}", (int)infoTypeEnum, categoryEnum, (int)addressPartEnum)
-                                                        }).ToArray());
+                                                    {
+                                                        Caption = String.Format(localTitle + " {0}", addressPartEnum.ToLocalizedString().ToLower()),
+                                                        ColumnName = String.Format("contactInfo_{0}_{1}_{2}", (int)infoTypeEnum, categoryEnum, (int)addressPartEnum)
+                                                    }).ToArray());
 
                     else
                         dataTable.Columns.Add(new DataColumn
-                            {
-                                Caption = localTitle,
-                                ColumnName = String.Format("contactInfo_{0}_{1}", (int)infoTypeEnum, categoryEnum)
-                            });
+                        {
+                            Caption = localTitle,
+                            ColumnName = String.Format("contactInfo_{0}_{1}", (int)infoTypeEnum, categoryEnum)
+                        });
                 }
 
             var fieldsDescription = customFieldDao.GetFieldsDescription(EntityType.Company);
@@ -550,10 +555,10 @@ namespace ASC.Web.CRM.Classes
 
                     dataTable.Columns.Add(
                         new DataColumn
-                            {
-                                Caption = item.Label,
-                                ColumnName = "customField_" + item.ID
-                            }
+                        {
+                            Caption = item.Label,
+                            ColumnName = "customField_" + item.ID
+                        }
                         );
                 });
 
@@ -586,13 +591,13 @@ namespace ASC.Web.CRM.Classes
                 {
                     ExportDataCache.ResetAll(key);
 
-                    throw new OperationCanceledException();                   
+                    throw new OperationCanceledException();
                 }
 
-                ExportDataCache.Insert(key, (ExportDataOperation) Clone());
+                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
-                
+
                 var isCompany = contact is Company;
 
                 var compPersType = (isCompany) ? CRMContactResource.Company : CRMContactResource.Person;
@@ -713,11 +718,11 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportDealsToCsv(IEnumerable<Deal> deals, DaoFactory daoFactory)
         {
-            var key = (string) Id;
-            var tagDao = daoFactory.TagDao;
-            var customFieldDao = daoFactory.CustomFieldDao;
-            var dealMilestoneDao = daoFactory.DealMilestoneDao;
-            var contactDao = daoFactory.ContactDao;
+            var key = (string)Id;
+            var tagDao = daoFactory.GetTagDao();
+            var customFieldDao = daoFactory.GetCustomFieldDao();
+            var dealMilestoneDao = daoFactory.GetDealMilestoneDao();
+            var contactDao = daoFactory.GetContactDao();
 
             var dataTable = new DataTable();
 
@@ -801,10 +806,10 @@ namespace ASC.Web.CRM.Classes
                     if (item.FieldType == CustomFieldType.Heading) return;
 
                     dataTable.Columns.Add(new DataColumn
-                        {
-                            Caption = item.Label,
-                            ColumnName = "customField_" + item.ID
-                        });
+                    {
+                        Caption = item.Label,
+                        ColumnName = "customField_" + item.ID
+                    });
                 });
 
             var customFieldEntity = new Dictionary<int, List<CustomField>>();
@@ -829,7 +834,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ExportDataCache.Insert(key, (ExportDataOperation) Clone());
+                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
 
@@ -898,9 +903,9 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportCasesToCsv(IEnumerable<ASC.CRM.Core.Entities.Cases> cases, DaoFactory daoFactory)
         {
-            var key = (string) Id;
-            var tagDao = daoFactory.TagDao;
-            var customFieldDao = daoFactory.CustomFieldDao;
+            var key = (string)Id;
+            var tagDao = daoFactory.GetTagDao();
+            var customFieldDao = daoFactory.GetCustomFieldDao();
 
             var dataTable = new DataTable();
 
@@ -924,10 +929,10 @@ namespace ASC.Web.CRM.Classes
                     if (item.FieldType == CustomFieldType.Heading) return;
 
                     dataTable.Columns.Add(new DataColumn
-                        {
-                            Caption = item.Label,
-                            ColumnName = "customField_" + item.ID
-                        });
+                    {
+                        Caption = item.Label,
+                        ColumnName = "customField_" + item.ID
+                    });
                 });
 
             var customFieldEntity = new Dictionary<int, List<CustomField>>();
@@ -952,7 +957,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ExportDataCache.Insert(key, (ExportDataOperation) Clone());
+                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
 
@@ -976,11 +981,11 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportHistoryToCsv(IEnumerable<RelationshipEvent> events, DaoFactory daoFactory)
         {
-            var key = (string) Id;
-            var listItemDao = daoFactory.ListItemDao;
-            var dealDao = daoFactory.DealDao;
-            var casesDao = daoFactory.CasesDao;
-            var contactDao = daoFactory.ContactDao;
+            var key = (string)Id;
+            var listItemDao = daoFactory.GetListItemDao();
+            var dealDao = daoFactory.GetDealDao();
+            var casesDao = daoFactory.GetCasesDao();
+            var contactDao = daoFactory.GetContactDao();
 
             var dataTable = new DataTable();
 
@@ -1027,7 +1032,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ExportDataCache.Insert(key, (ExportDataOperation) Clone());
+                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
 
@@ -1095,11 +1100,11 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportTasksToCsv(IEnumerable<Task> tasks, DaoFactory daoFactory)
         {
-            var key = (string) Id;
-            var listItemDao = daoFactory.ListItemDao;
-            var dealDao = daoFactory.DealDao;
-            var casesDao = daoFactory.CasesDao;
-            var contactDao = daoFactory.ContactDao;
+            var key = (string)Id;
+            var listItemDao = daoFactory.GetListItemDao();
+            var dealDao = daoFactory.GetDealDao();
+            var casesDao = daoFactory.GetCasesDao();
+            var contactDao = daoFactory.GetContactDao();
 
             var dataTable = new DataTable();
 
@@ -1161,7 +1166,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ExportDataCache.Insert(key, (ExportDataOperation) Clone());
+                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
 
@@ -1201,7 +1206,7 @@ namespace ASC.Web.CRM.Classes
                         item.DeadLine == DateTime.MinValue
                             ? ""
                             : item.DeadLine.ToShortString(),
-                        CoreContext.UserManager.GetUsers(item.ResponsibleID).DisplayUserName(false),
+                        UserManager.GetUsers(item.ResponsibleID).DisplayUserName(false,),
                         contactTitle,
                         item.IsClosed
                             ? CRMTaskResource.TaskStatus_Closed
@@ -1217,8 +1222,8 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportInvoiceItemsToCsv(IEnumerable<InvoiceItem> invoiceItems, DaoFactory daoFactory)
         {
-            var key = (string) Id;
-            var taxes = daoFactory.InvoiceTaxDao.GetAll();
+            var key = (string)Id;
+            var taxes = daoFactory.GetInvoiceTaxDao().GetAll();
             var dataTable = new DataTable();
 
             dataTable.Columns.AddRange(new[]
@@ -1292,7 +1297,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ExportDataCache.Insert(key, (ExportDataOperation) Clone());
+                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
 
@@ -1348,12 +1353,12 @@ namespace ASC.Web.CRM.Classes
         private readonly object Locker = new object();
 
         private readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromSeconds(60), true);
-        
+
         public ExportToCsv(SecurityContext securityContext,
                            ExportDataCache exportDataCache,
                            TenantManager tenantManager)
         {
-            SecurityContext = securityContext;            
+            SecurityContext = securityContext;
             ExportDataCache = exportDataCache;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
         }
@@ -1363,7 +1368,6 @@ namespace ASC.Web.CRM.Classes
         public ExportDataCache ExportDataCache { get; }
 
         public SecurityContext SecurityContext { get; }
-
 
         public IProgressItem GetStatus(bool partialDataExport)
         {
@@ -1380,7 +1384,7 @@ namespace ASC.Web.CRM.Classes
 
                 var operation = Queue.GetStatus(key);
 
-                if (operation == null )
+                if (operation == null)
                 {
                     var fromCache = ExportDataCache.Get(key);
 

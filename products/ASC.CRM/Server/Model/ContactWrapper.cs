@@ -26,8 +26,10 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.Web;
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
@@ -52,44 +54,6 @@ namespace ASC.Api.CRM.Wrappers
 
         }
 
-        public static PersonWrapper ToPersonWrapperQuick(Person person)
-        {
-            var result = new PersonWrapper(person.ID);
-
-            result.DisplayName = person.GetTitle();
-            result.IsPrivate = CRMSecurity.IsPrivate(person);
-            result.IsShared = person.ShareType == ShareType.ReadWrite || person.ShareType == ShareType.Read;
-            result.ShareType = person.ShareType;
-
-            if (result.IsPrivate)
-            {
-                result.AccessList = CRMSecurity.GetAccessSubjectTo(person)
-                                        .Select(item => EmployeeWraper.Get(item.Key));
-            }
-            result.Currency = !String.IsNullOrEmpty(person.Currency) ?
-                new CurrencyInfoWrapper(CurrencyProvider.Get(person.Currency)) :
-                null;
-
-            result.SmallFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=1", PathProvider.BaseAbsolutePath, person.ID, false).ToLower();
-            result.MediumFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=2", PathProvider.BaseAbsolutePath, person.ID, false).ToLower();
-            result.IsCompany = false;
-            result.CanEdit = CRMSecurity.CanEdit(person);
-            //result.CanDelete = CRMSecurity.CanDelete(contact);
-
-            result.CreateBy = EmployeeWraper.Get(person.CreateBy);
-            result.Created = (ApiDateTime)person.CreateOn;
-            result.About = person.About;
-            result.Industry = person.Industry;
-
-
-            result.FirstName = person.FirstName;
-            result.LastName = person.LastName;
-            result.Title = person.JobTitle;
-
-            return result;
-        }
-
-
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String FirstName { get; set; }
 
@@ -104,7 +68,7 @@ namespace ASC.Api.CRM.Wrappers
 
         public new static PersonWrapper GetSample()
         {
-            return new PersonWrapper(0)
+            return new PersonWrapper
             {
                 IsPrivate = true,
                 IsShared = false,
@@ -121,7 +85,6 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-
     public class PersonWrapperHelper
     {
         public PersonWrapperHelper()
@@ -130,19 +93,25 @@ namespace ASC.Api.CRM.Wrappers
 
         public PersonWrapper Get(Person person)
         {
-
-            FirstName = person.FirstName;
-            LastName = person.LastName;
-            Title = person.JobTitle;
-
-
             return new PersonWrapper
             {
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 Title = person.JobTitle
-        };
+            };
         }
+
+        public PersonWrapper GetQuick(Person person)
+        {
+            return new PersonWrapper
+            {
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                Title = person.JobTitle
+            };
+        }
+
+
     }
 
     public static class PersonWrapperHelperHelperExtension
@@ -155,81 +124,24 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /// <summary>
     ///  Company
     /// </summary>
     [DataContract(Name = "company", Namespace = "")]
     public class CompanyWrapper : ContactWrapper
     {
-        public CompanyWrapper(int id) :
-            base(id)
+        public CompanyWrapper()
         {
         }
 
-        public CompanyWrapper(Company company)
-            : base(company)
-        {
-            CompanyName = company.CompanyName;
-            //  PersonsCount = Global.DaoFactory.ContactDao.GetMembersCount(company.ID);
-        }
+        //public CompanyWrapper(Company company)
+        //    : base(company)
+        //{
+        //    CompanyName = company.CompanyName;
+        //    //  PersonsCount = Global.DaoFactory.ContactDao.GetMembersCount(company.ID);
+        //}
 
 
-        public static CompanyWrapper ToCompanyWrapperQuick(Company company)
-        {
-            var result = new CompanyWrapper(company.ID);
-
-            result.DisplayName = company.GetTitle();
-            result.IsPrivate = CRMSecurity.IsPrivate(company);
-            result.IsShared = company.ShareType == ShareType.ReadWrite || company.ShareType == ShareType.Read;
-            result.ShareType = company.ShareType;
-
-            if (result.IsPrivate)
-            {
-                result.AccessList = CRMSecurity.GetAccessSubjectTo(company)
-                                        .Select(item => EmployeeWraper.Get(item.Key));
-            }
-            result.Currency = !String.IsNullOrEmpty(company.Currency) ?
-                new CurrencyInfoWrapper(CurrencyProvider.Get(company.Currency)) :
-                null;
-
-            result.SmallFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=1", PathProvider.BaseAbsolutePath, company.ID, true).ToLower();
-            result.MediumFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=2", PathProvider.BaseAbsolutePath, company.ID, true).ToLower();
-            result.IsCompany = true;
-            result.CanEdit = CRMSecurity.CanEdit(company);
-            //result.CanDelete = CRMSecurity.CanDelete(contact);
-
-
-            result.CompanyName = company.CompanyName;
-
-            result.CreateBy = EmployeeWraper.Get(company.CreateBy);
-            result.Created = (ApiDateTime)company.CreateOn;
-            result.About = company.About;
-            result.Industry = company.Industry;
-
-            return result;
-        }
 
 
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
@@ -243,7 +155,7 @@ namespace ASC.Api.CRM.Wrappers
 
         public new static CompanyWrapper GetSample()
         {
-            return new CompanyWrapper(0)
+            return new CompanyWrapper
             {
                 IsPrivate = true,
                 IsShared = false,
@@ -260,18 +172,19 @@ namespace ASC.Api.CRM.Wrappers
     [KnownType(typeof(CompanyWrapper))]
     public abstract class ContactWrapper : ContactBaseWrapper
     {
-        protected ContactWrapper()
+        public ContactWrapper()
         {
+
         }
 
-        protected ContactWrapper(Contact contact)
-            : base(contact)
-        {
-            CreateBy = EmployeeWraper.Get(contact.CreateBy);
-            Created = (ApiDateTime)contact.CreateOn;
-            About = contact.About;
-            Industry = contact.Industry;
-        }
+        //protected ContactWrapper(Contact contact)
+        //    : base(contact)
+        //{
+        //    CreateBy = EmployeeWraper.Get(contact.CreateBy);
+        //    Created = (ApiDateTime)contact.CreateOn;
+        //    About = contact.About;
+        //    Industry = contact.Industry;
+        //}
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public IEnumerable<Address> Addresses { get; set; }
@@ -312,7 +225,7 @@ namespace ASC.Api.CRM.Wrappers
 
         public new static ContactWrapper GetSample()
         {
-            return new PersonWrapper(0)
+            return new PersonWrapper
             {
                 IsPrivate = true,
                 IsShared = false,
@@ -338,38 +251,6 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithEmailWrapper : ContactBaseWrapper
     {
-        protected ContactBaseWithEmailWrapper()
-        {
-        }
-
-        public ContactBaseWithEmailWrapper(Contact contact)
-            : base(contact)
-        {
-        }
-
-        public ContactBaseWithEmailWrapper(ContactWrapper contactWrapper)
-        {
-            AccessList = contactWrapper.AccessList;
-            CanEdit = contactWrapper.CanEdit;
-            DisplayName = contactWrapper.DisplayName;
-            IsCompany = contactWrapper.IsCompany;
-            IsPrivate = contactWrapper.IsPrivate;
-            IsShared = contactWrapper.IsShared;
-            ShareType = contactWrapper.ShareType;
-            MediumFotoUrl = contactWrapper.MediumFotoUrl;
-            SmallFotoUrl = contactWrapper.SmallFotoUrl;
-
-            if (contactWrapper.CommonData != null && contactWrapper.CommonData.Count() != 0)
-            {
-                Email = contactWrapper.CommonData.FirstOrDefault(item => item.InfoType == ContactInfoType.Email && item.IsPrimary);
-            }
-            else
-            {
-                Email = null;
-            }
-        }
-
-
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public ContactInfoWrapper Email { get; set; }
     }
@@ -378,43 +259,23 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithPhoneWrapper : ContactBaseWrapper
     {
-        protected ContactBaseWithPhoneWrapper(int id)
-            : base(id)
-        {
-        }
-
-        public ContactBaseWithPhoneWrapper(Contact contact)
-            : base(contact)
-        {
-        }
-
-        public ContactBaseWithPhoneWrapper(ContactWrapper contactWrapper)
-            : base(contactWrapper.ID)
-        {
-            AccessList = contactWrapper.AccessList;
-            CanEdit = contactWrapper.CanEdit;
-            DisplayName = contactWrapper.DisplayName;
-            IsCompany = contactWrapper.IsCompany;
-            IsPrivate = contactWrapper.IsPrivate;
-            IsShared = contactWrapper.IsShared;
-            ShareType = contactWrapper.ShareType;
-            MediumFotoUrl = contactWrapper.MediumFotoUrl;
-            SmallFotoUrl = contactWrapper.SmallFotoUrl;
-
-            if (contactWrapper.CommonData != null && contactWrapper.CommonData.Count() != 0)
-            {
-                Phone = contactWrapper.CommonData.FirstOrDefault(item => item.InfoType == ContactInfoType.Phone && item.IsPrimary);
-            }
-            else
-            {
-                Phone = null;
-            }
-        }
-
-
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public ContactInfoWrapper Phone { get; set; }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -501,7 +362,6 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-
     [DataContract(Name = "contact_task", Namespace = "")]
     public class ContactWithTaskWrapper
     {
@@ -512,40 +372,37 @@ namespace ASC.Api.CRM.Wrappers
         public ContactWrapper Contact { get; set; }
     }
 
-
-
-
-
-
-
-
-
-
-    public class ContactBaseWrapperHelper
+    public class ContactWrapperHelper
     {
-        public ContactBaseWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
+        public ContactWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
                            CRMSecurity cRMSecurity,
                            CurrencyProvider currencyProvider,
                            PathProvider pathProvider,
-                           CurrencyInfoWrapperHelper currencyInfoWrapperHelper)
+                           CurrencyInfoWrapperHelper currencyInfoWrapperHelper,
+                           DaoFactory daoFactory,
+                           ContactInfoWrapperHelper contactInfoWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
-            EmployeeWraperHelper = employeeWraperHelper;
+            EmployeeWrapperHelper = employeeWraperHelper;
             CRMSecurity = cRMSecurity;
             CurrencyProvider = currencyProvider;
             PathProvider = pathProvider;
             CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
+            DaoFactory = daoFactory;
+            ContactInfoWrapperHelper = contactInfoWrapperHelper;
         }
 
+        public ContactInfoWrapperHelper ContactInfoWrapperHelper { get; }
+        public DaoFactory DaoFactory { get; }
         public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public EmployeeWraperHelper EmployeeWrapperHelper { get; }
         public CurrencyProvider CurrencyProvider { get; }
         public PathProvider PathProvider { get; }
 
-        public ContactBaseWrapper GetQuick(Contact contact)
+        public ContactBaseWrapper GetContactBaseWrapperQuick(Contact contact)
         {
             var result = new ContactBaseWrapper
             {
@@ -560,52 +417,157 @@ namespace ASC.Api.CRM.Wrappers
                 MediumFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=2", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower(),
                 IsCompany = contact is Company,
                 CanEdit = CRMSecurity.CanEdit(contact),
-        //        CanDelete = CRMSecurity.CanDelete(contact),
+                //        CanDelete = CRMSecurity.CanDelete(contact),
             };
 
             if (result.IsPrivate)
             {
                 result.AccessList = CRMSecurity.GetAccessSubjectTo(contact)
-                                        .Select(item => EmployeeWraperHelper.Get(item.Key));
+                                        .Select(item => EmployeeWrapperHelper.Get(item.Key));
             }
 
             return result;
         }
 
 
-        public ContactBaseWrapper Get(Contact contact)
+        public ContactBaseWrapper GetContactBaseWrapper(Contact contact)
         {
-            var result = new ContactBaseWrapper
-            {
-                Id = contact.ID,
-                DisplayName = contact.GetTitle(),
-                IsPrivate = CRMSecurity.IsPrivate(contact),
-                IsShared = contact.ShareType == ShareType.ReadWrite || contact.ShareType == ShareType.Read,
-                ShareType = contact.ShareType,
-                Currency = !String.IsNullOrEmpty(contact.Currency) ?
-                CurrencyInfoWrapperHelper.Get(CurrencyProvider.Get(contact.Currency)) : null,
-                SmallFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=1", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower(),
-                MediumFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=2", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower(),
-                IsCompany = contact is Company,
-                CanEdit = CRMSecurity.CanEdit(contact),
-                CanDelete = CRMSecurity.CanDelete(contact),
-            };
+            var result = GetContactBaseWrapperQuick(contact);
 
-            if (result.IsPrivate)
+            result.CanDelete = CRMSecurity.CanDelete(contact);
+
+            return result;
+        }
+
+        public ContactBaseWithPhoneWrapper GetContactBaseWithPhoneWrapper(Contact contact)
+        {
+            if (contact == null) return null;
+
+            var result = (ContactBaseWithPhoneWrapper)GetContactBaseWrapper(contact);
+
+            result.Phone = ContactInfoWrapperHelper.Get(DaoFactory.GetContactInfoDao().GetList(contact.ID, ContactInfoType.Phone, null, true).FirstOrDefault());
+
+            return result;
+        }
+
+        public ContactBaseWithEmailWrapper GetContactBaseWithEmailWrapper(Contact contact)
+        {
+            if (contact == null) return null;
+
+            var result = (ContactBaseWithEmailWrapper)GetContactBaseWrapper(contact);
+
+            result.Email = ContactInfoWrapperHelper.Get(DaoFactory.GetContactInfoDao().GetList(contact.ID, ContactInfoType.Email, null, true).FirstOrDefault());
+
+            return result;
+        }
+
+        public ContactWrapper GetContactWrapper(Contact contact)
+        {
+            ContactWrapper result;
+
+            var person = contact as Person;
+            if (person != null)
             {
-                result.AccessList = CRMSecurity.GetAccessSubjectTo(contact)
-                                        .Select(item => EmployeeWraperHelper.Get(item.Key));
+                var peopleWrapper = (PersonWrapper)GetContactBaseWrapper(contact);
+
+                peopleWrapper.FirstName = person.FirstName;
+                peopleWrapper.LastName = person.LastName;
+                peopleWrapper.Title = person.JobTitle;
+
+                if (person.CompanyID > 0)
+                {
+                    peopleWrapper.Company = GetContactBaseWrapper(DaoFactory.GetContactDao().GetByID(person.CompanyID));
+                }
+
+                result = peopleWrapper;
             }
+            else
+            {
+                var company = contact as Company;
+
+                if (company != null)
+                {
+                    result = (CompanyWrapper)GetContactBaseWrapper(company);
+                    ((CompanyWrapper)result).CompanyName = company.CompanyName;
+                    ((CompanyWrapper)result).PersonsCount = DaoFactory.GetContactDao().GetMembersCount(result.Id);
+                }
+                else throw new ArgumentException();
+            }
+
+            if (contact.StatusID > 0)
+            {
+                var listItem = DaoFactory.GetListItemDao().GetByID(contact.StatusID);
+                if (listItem == null) throw new ItemNotFoundException();
+
+                result.ContactStatus = new ContactStatusBaseWrapper(listItem);
+            }
+
+            result.TaskCount = DaoFactory.GetTaskDao().GetTasksCount(contact.ID);
+            result.HaveLateTasks = DaoFactory.GetTaskDao().HaveLateTask(contact.ID);
+
+            var contactInfos = new List<ContactInfoWrapper>();
+            var addresses = new List<Address>();
+
+            var data = DaoFactory.GetContactInfoDao().GetList(contact.ID, null, null, null);
+
+            foreach (var contactInfo in data)
+            {
+                if (contactInfo.InfoType == ContactInfoType.Address)
+                {
+                    addresses.Add(new Address(contactInfo));
+                }
+                else
+                {
+                    contactInfos.Add(ContactInfoWrapperHelper.Get(contactInfo));
+                }
+            }
+
+            result.Addresses = addresses;
+            result.CommonData = contactInfos;
+
+            result.CustomFields = DaoFactory.GetCustomFieldDao()
+                                            .GetEnityFields(contact is Person ? EntityType.Person : EntityType.Company, contact.ID, false)
+                                            .ConvertAll(item => new CustomFieldBaseWrapper(item));
+            return result;
+        }
+
+
+        public CompanyWrapper GetCompanyWrapperQuick(Company company)
+        {
+            var result = (CompanyWrapper)GetContactBaseWrapperQuick(company);
+
+            result.CompanyName = company.CompanyName;
+
+            result.CreateBy = EmployeeWrapperHelper.Get(company.CreateBy);
+            result.Created = ApiDateTimeHelper.Get(company.CreateOn);
+            result.About = company.About;
+            result.Industry = company.Industry;
+
+            return result;
+        }
+
+        public PersonWrapper GetPersonWrapperQuick(Person person)
+        {
+            var result = (PersonWrapper)GetContactBaseWrapperQuick(person);
+
+            result.CreateBy = EmployeeWrapperHelper.Get(person.CreateBy);
+            result.Created = ApiDateTimeHelper.Get(person.CreateOn);
+            result.About = person.About;
+            result.Industry = person.Industry;
+
+            result.FirstName = person.FirstName;
+            result.LastName = person.LastName;
+            result.Title = person.JobTitle;
 
             return result;
         }
     }
 
-    public static class ContactBaseWrapperHelperExtension
+    public static class ContactWrapperHelperExtension
     {
-        public static DIHelper AddContactBaseWrapperHelperService(this DIHelper services)
+        public static DIHelper AddContactWrapperHelperService(this DIHelper services)
         {
-            services.TryAddTransient<ContactBaseWrapperHelper>();
+            services.TryAddTransient<ContactWrapperHelper>();
 
             return services.AddApiDateTimeHelper()
                            .AddEmployeeWraper()
@@ -614,7 +576,5 @@ namespace ASC.Api.CRM.Wrappers
                            .AddCRMPathProviderService();
         }
     }
-
-
 
 }

@@ -48,15 +48,19 @@ namespace ASC.Web.CRM.Classes
                                    CRMSecurity cRMSecurity,
                                    FileSizeComment fileSizeComment,
                                    WebItemSecurity webItemSecurity,
-                                   MessageTarget messageTarget)
+                                   MessageTarget messageTarget,
+                                   MessageService messageService)
         {
             SetupInfo = setupInfo;
             FileSizeComment = fileSizeComment;
             CRMSecurity = cRMSecurity;
             WebItemSecurity = webItemSecurity;
             MessageTarget = messageTarget;
+            MessageService = messageService;
         }
 
+        public MessageService MessageService { get; }
+        public DaoFactory DaoFactory { get; }
         public MessageTarget MessageTarget { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public FileSizeComment FileSizeComment { get; }
@@ -72,12 +76,10 @@ namespace ASC.Web.CRM.Classes
             Contact contact = null;
             if (contactId != 0)
             {
-                using (var scope = DIHelper.Resolve())
-                {
-                    contact = scope.Resolve<DaoFactory>().ContactDao.GetByID(contactId);
-                    if (!CRMSecurity.CanEdit(contact))
-                        throw CRMSecurity.CreateSecurityException();
-                }
+                contact = DaoFactory.GetContactDao().GetByID(contactId);
+
+                if (!CRMSecurity.CanEdit(contact))
+                    throw CRMSecurity.CreateSecurityException();
             }
 
             var fileUploadResult = new FileUploadResult();
@@ -135,7 +137,7 @@ namespace ASC.Web.CRM.Classes
             if (contact != null)
             {
                 var messageAction = contact is Company ? MessageAction.CompanyUpdatedPhoto : MessageAction.PersonUpdatedPhoto;
-                MessageService.Send(context.Request, messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+                MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
             }
 
             return fileUploadResult;

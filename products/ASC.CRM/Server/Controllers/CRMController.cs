@@ -59,12 +59,11 @@ namespace ASC.Api.CRM
                          IHttpContextAccessor httpContextAccessor,
                          InvoiceSetting invoiceSetting,
                          OrganisationLogoManager organisationLogoManager,
-                         ContactBaseWrapperHelper contactBaseWrapperHelper,
+                         ContactWrapperHelper contactBaseWrapperHelper,
                          ContactPhotoManager contactPhotoManager,
                          CommonLinkUtility commonLinkUtility,
                          StorageFactory storageFactory,
                          TenantUtil tenantUtil,
-                         IVoipProvider voipProvider,
                          SignalrServiceClient signalrServiceClient,
                          VoipEngine voipEngine,
 
@@ -85,16 +84,20 @@ namespace ASC.Api.CRM
                          InvoiceBaseWrapperHelper invoiceBaseWrapperHelper,
                          InvoiceLineWrapperHelper invoiceLineWrapperHelper,
                          InvoiceTaxWrapperHelper invoiceTaxWrapperHelper,
+                         ContactInfoWrapperHelper contactInfoWrapperHelper,
+
                          RelationshipEventWrapperHelper relationshipEventWrapperHelper,
                          DocbuilderReportsUtility docbuilderReportsUtility,
 
+                         FactoryIndexer<Web.CRM.Core.Search.InfoWrapper> factoryIndexerInfoWrapper,
+                         FactoryIndexer<Web.CRM.Core.Search.EmailWrapper> factoryIndexerEmailWrapper,
                          FactoryIndexer<Web.CRM.Core.Search.CasesWrapper> factoryIndexerCasesWrapper,
                          FactoryIndexer<Web.CRM.Core.Search.FieldsWrapper> factoryIndexerFieldsWrapper)
         {
 
             VoipEngine = voipEngine;
             SignalrServiceClient = signalrServiceClient;
-            //            voipProvider = VoipDao.GetProvider();
+             
 
             TenantUtil = tenantUtil;
             StorageFactory = storageFactory;
@@ -118,8 +121,12 @@ namespace ASC.Api.CRM
             CurrencyRateWrapperHelper = currencyRateWrapperHelper;
             CasesWrapperHelper = casesWrapperHelper;
             ServiceProvider = serviceProvider;
+
             FactoryIndexerCasesWrapper = factoryIndexerCasesWrapper;
             FactoryIndexerFieldsWrapper = factoryIndexerFieldsWrapper;
+            FactoryIndexerInfoWrapper = factoryIndexerInfoWrapper;
+            FactoryIndexerEmailWrapper = factoryIndexerEmailWrapper;
+
             InvoiceWrapperHelper = invoiceWrapperHelper;
             InvoiceItemWrapperHelper = invoiceItemWrapperHelper;
             InvoiceBaseWrapperHelper = invoiceBaseWrapperHelper;
@@ -145,9 +152,11 @@ namespace ASC.Api.CRM
             DocbuilderReportsUtility = docbuilderReportsUtility;
             InvoiceSetting = invoiceSetting;
 
-            ContactBaseWrapperHelper = contactBaseWrapperHelper;
+            ContactWrapperHelper = contactBaseWrapperHelper;
         }
 
+
+        public ContactInfoWrapperHelper ContactInfoWrapperHelper { get; }
 
         public VoipEngine VoipEngine { get; }
         public SignalrServiceClient SignalrServiceClient { get; }
@@ -156,7 +165,7 @@ namespace ASC.Api.CRM
         public StorageFactory StorageFactory { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public ContactPhotoManager ContactPhotoManager { get; }
-        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public ContactWrapperHelper ContactWrapperHelper { get; }
         public OrganisationLogoManager OrganisationLogoManager { get; }
         public InvoiceSetting InvoiceSetting { get; }
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
@@ -177,6 +186,10 @@ namespace ASC.Api.CRM
         public InvoiceBaseWrapperHelper InvoiceBaseWrapperHelper { get; }
         public InvoiceItemWrapperHelper InvoiceItemWrapperHelper { get; }
         public InvoiceWrapperHelper InvoiceWrapperHelper { get; }
+
+
+        public FactoryIndexer<Web.CRM.Core.Search.InfoWrapper> FactoryIndexerInfoWrapper { get; }
+        public FactoryIndexer<Web.CRM.Core.Search.EmailWrapper> FactoryIndexerEmailWrapper { get; }
         public FactoryIndexer<Web.CRM.Core.Search.FieldsWrapper> FactoryIndexerFieldsWrapper { get; }
         public FactoryIndexer<Web.CRM.Core.Search.CasesWrapper> FactoryIndexerCasesWrapper { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -202,7 +215,6 @@ namespace ASC.Api.CRM
         public MessageTarget MessageTarget { get; }
         public CRMSecurity CRMSecurity { get; }
         public DaoFactory DaoFactory { get; }
-
 
         private static EntityType ToEntityType(string entityTypeStr)
         {
@@ -235,6 +247,9 @@ namespace ASC.Api.CRM
             return entityType;
         }
 
+
+
+
         private string GetEntityTitle(EntityType entityType, int entityId, bool checkAccess, out DomainObject entity)
         {
             switch (entityType)
@@ -242,7 +257,7 @@ namespace ASC.Api.CRM
                 case EntityType.Contact:
                 case EntityType.Company:
                 case EntityType.Person:
-                    var conatct = (entity = DaoFactory.GetContactDao().GetByID(entityId)) as Contact;
+                    var conatct = (entity = DaoFactory.GetContactDao().GetByID(entityId)) as ASC.CRM.Core.Entities.Contact;
                     if (conatct == null || (checkAccess && !CRMSecurity.CanAccessTo(conatct)))
                         throw new ItemNotFoundException();
                     return conatct.GetTitle();

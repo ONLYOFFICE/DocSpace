@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
@@ -673,5 +674,15 @@ namespace ASC.Web.CRM.Classes
         }
 
         #endregion
+    }
+
+    public static class ContactPhotoManagerExtension
+    {
+        public static DIHelper AddContactPhotoManagerService(this DIHelper services)
+        {
+            services.TryAddTransient<ContactPhotoManager>();
+            
+            return services;
+        }
     }
 }

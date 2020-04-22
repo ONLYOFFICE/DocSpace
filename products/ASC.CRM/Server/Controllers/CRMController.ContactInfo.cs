@@ -93,7 +93,7 @@ namespace ASC.Api.CRM
             return DaoFactory.GetContactInfoDao().GetList(contactid, null, null, null)
                 .OrderByDescending(info => info.ID)
                 .ToList()
-                .ConvertAll(ToContactInfoWrapper);
+                .ConvertAll(x => ContactInfoWrapperHelper.Get(x));
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace ASC.Api.CRM
 
             if (contactInfo == null || contactInfo.ContactID != contactid) throw new ArgumentException();
 
-            return ToContactInfoWrapper(contactInfo);
+            return ContactInfoWrapperHelper.Get(contactInfo);
         }
 
         /// <summary>
@@ -177,7 +177,9 @@ namespace ASC.Api.CRM
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
             MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
-            var contactInfoWrapper = ToContactInfoWrapper(contactInfo);
+
+            var contactInfoWrapper = ContactInfoWrapperHelper.Get(contactInfo);
+
             contactInfoWrapper.Id = contactInfoID;
 
             return contactInfoWrapper;
@@ -235,7 +237,7 @@ namespace ASC.Api.CRM
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
             MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
-            return ToContactInfoWrapper(contactInfo);
+            return ContactInfoWrapperHelper.Get(contactInfo);
         }
 
         /// <summary>
@@ -346,7 +348,8 @@ namespace ASC.Api.CRM
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
             MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
-            var contactInfoWrapper = ToContactInfoWrapper(contactInfo);
+            var contactInfoWrapper = ContactInfoWrapperHelper.Get(contactInfo);
+
             return contactInfoWrapper;
         }
 
@@ -402,7 +405,7 @@ namespace ASC.Api.CRM
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
             MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
-            return ToContactInfoWrapper(contactInfo);
+            return ContactInfoWrapperHelper.Get(contactInfo);
         }
 
         /// <summary>
@@ -499,7 +502,7 @@ namespace ASC.Api.CRM
             var contactInfo = DaoFactory.GetContactInfoDao().GetByID(id);
             if (contactInfo == null) throw new ItemNotFoundException();
 
-            var wrapper = ToContactInfoWrapper(contactInfo);
+            var wrapper = ContactInfoWrapperHelper.Get(contactInfo);
 
             DaoFactory.GetContactInfoDao().Delete(id);
 
@@ -508,14 +511,13 @@ namespace ASC.Api.CRM
 
             if (contactInfo.InfoType == ContactInfoType.Email)
             {
-                FactoryIndexer<EmailWrapper>.DeleteAsync(EmailWrapper.ToEmailWrapper(contact, new List<ContactInfo> { contactInfo}));
+                FactoryIndexerEmailWrapper.DeleteAsync(EmailWrapper.GetEmailWrapper(TenantManager.CurrentTenant.TenantId, contact, new List<ContactInfo> { contactInfo}));
             }
 
-            FactoryIndexer<InfoWrapper>.DeleteAsync(contactInfo);
+            FactoryIndexerInfoWrapper.DeleteAsync(InfoWrapper.Get(ServiceProvider, contactInfo));
 
             return wrapper;
         }
-
 
         private static ContactInfo FromContactInfoWrapper(ContactInfoWrapper contactInfoWrapper)
         {

@@ -39,8 +39,9 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "historyCategoryBase", Namespace = "")]
     public class HistoryCategoryBaseWrapper : ListItemWrapper
     {
-        public HistoryCategoryBaseWrapper() : base(0)
+        public HistoryCategoryBaseWrapper()
         {
+
         }
 
         public HistoryCategoryBaseWrapper(ListItem listItem)
@@ -60,7 +61,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new HistoryCategoryBaseWrapper
                 {
-                    ID = 30,
                     Title = "Lunch",
                     SortOrder = 10,
                     Color = String.Empty,
@@ -89,7 +89,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new HistoryCategoryWrapper
                 {
-                    ID = 30,
                     Title = "Lunch",
                     SortOrder = 10,
                     Color = String.Empty,
@@ -108,12 +107,10 @@ namespace ASC.Api.CRM.Wrappers
     public class DealMilestoneBaseWrapper : ListItemWrapper
     {
         public DealMilestoneBaseWrapper()
-            : base(0)
         {
         }
 
         public DealMilestoneBaseWrapper(DealMilestone dealMilestone)
-            : base(dealMilestone.ID)
         {
             SuccessProbability = dealMilestone.Probability;
             StageType = dealMilestone.Status;
@@ -132,7 +129,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new DealMilestoneBaseWrapper
                 {
-                    ID = 30,
                     Title = "Discussion",
                     SortOrder = 2,
                     Color = "#B9AFD3",
@@ -162,7 +158,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new DealMilestoneWrapper
                 {
-                    ID = 30,
                     Title = "Discussion",
                     SortOrder = 2,
                     Color = "#B9AFD3",
@@ -182,7 +177,6 @@ namespace ASC.Api.CRM.Wrappers
     public class TaskCategoryBaseWrapper : ListItemWrapper
     {
         public TaskCategoryBaseWrapper()
-            : base(0)
         {
         }
 
@@ -199,7 +193,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new TaskCategoryBaseWrapper
                 {
-                    ID = 30,
                     Title = "Appointment",
                     SortOrder = 2,
                     Description = "",
@@ -227,7 +220,7 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new TaskCategoryWrapper
                 {
-                    ID = 30,
+                    Id = 30,
                     Title = "Appointment",
                     SortOrder = 2,
                     Description = "",
@@ -244,8 +237,7 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "contactStatusBase", Namespace = "")]
     public class ContactStatusBaseWrapper : ListItemWrapper
     {
-        public ContactStatusBaseWrapper() :
-            base(0)
+        public ContactStatusBaseWrapper() 
         {
         }
 
@@ -258,7 +250,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new ContactStatusBaseWrapper
                 {
-                    ID = 30,
                     Title = "Cold",
                     SortOrder = 2,
                     Description = ""
@@ -285,7 +276,6 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new ContactStatusWrapper
                 {
-                    ID = 30,
                     Title = "Cold",
                     SortOrder = 2,
                     Description = "",
@@ -301,9 +291,9 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "contactTypeBase", Namespace = "")]
     public class ContactTypeBaseWrapper : ListItemWrapper
     {
-        public ContactTypeBaseWrapper() :
-            base(0)
+        public ContactTypeBaseWrapper()
         {
+
         }
 
         public ContactTypeBaseWrapper(ListItem listItem)
@@ -315,7 +305,7 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new ContactTypeBaseWrapper
                 {
-                    ID = 30,
+                    Id = 30,
                     Title = "Client",
                     SortOrder = 2,
                     Description = ""
@@ -342,7 +332,7 @@ namespace ASC.Api.CRM.Wrappers
         {
             return new ContactTypeWrapper
                 {
-                    ID = 30,
+                    Id= 30,
                     Title = "Client",
                     SortOrder = 2,
                     Description = "",

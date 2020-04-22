@@ -124,7 +124,10 @@ namespace ASC.Api.CRM.Wrappers
                            SettingsManager settingsManager,
                            CurrencyProvider currencyProvider,
                            InvoiceStatusWrapperHelper invoiceStatusWrapperHelper,
-                           DaoFactory daoFactory)
+                           CurrencyInfoWrapperHelper currencyInfoWrapperHelper,
+                           DaoFactory daoFactory,
+                           ContactWrapperHelper contactWrapperHelper,
+                           EntityWrapperHelper entityWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -133,8 +136,14 @@ namespace ASC.Api.CRM.Wrappers
             CurrencyProvider = currencyProvider;
             InvoiceStatusWrapperHelper = invoiceStatusWrapperHelper;
             DaoFactory = daoFactory;
+            CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
+            ContactWrapperHelper = contactWrapperHelper;
+            EntityWrapperHelper = entityWrapperHelper;
         }
 
+        public EntityWrapperHelper EntityWrapperHelper { get; }
+        public ContactWrapperHelper ContactWrapperHelper { get; }
+        public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
         public InvoiceStatusWrapperHelper InvoiceStatusWrapperHelper { get; }
         public CurrencyProvider CurrencyProvider { get; }
         public SettingsManager SettingsManager { get; }
@@ -155,8 +164,8 @@ namespace ASC.Api.CRM.Wrappers
                 TemplateType = invoice.TemplateType,
                 DueDate = ApiDateTimeHelper.Get(invoice.DueDate),
                 Currency = !String.IsNullOrEmpty(invoice.Currency) ?
-    new CurrencyInfoWrapper(CurrencyProvider.Get(invoice.Currency)) :
-    new CurrencyInfoWrapper(SettingsManager.Load<CRMSettings>().DefaultCurrency),
+                            CurrencyInfoWrapperHelper.Get(CurrencyProvider.Get(invoice.Currency)) :
+                            CurrencyInfoWrapperHelper.Get(SettingsManager.Load<CRMSettings>().DefaultCurrency),
                 ExchangeRate = invoice.ExchangeRate,
                 Language = invoice.Language,
                 PurchaseOrderNumber = invoice.PurchaseOrderNumber,
@@ -171,17 +180,17 @@ namespace ASC.Api.CRM.Wrappers
 
             if (invoice.ContactID > 0)
             {
-                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
+                result.Contact = ContactWrapperHelper.GetContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
             }
 
             if (invoice.ConsigneeID > 0)
             {
-                result.Consignee = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
+                result.Consignee = ContactWrapperHelper.GetContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
             }
 
             if (invoice.EntityID > 0)
             {
-                result.Entity = ToEntityWrapper(invoice.EntityType, invoice.EntityID);
+                result.Entity = EntityWrapperHelper.Get(invoice.EntityType, invoice.EntityID);
             }
 
             result.Cost = invoice.GetInvoiceCost(DaoFactory);
@@ -257,7 +266,9 @@ namespace ASC.Api.CRM.Wrappers
                                     InvoiceLineWrapperHelper invoiceLineWrapperHelper,
                                     DaoFactory daoFactory,
                                     CurrencyInfoWrapperHelper currencyInfoWrapperHelper,
-                                    CurrencyRateInfoWrapperHelper currencyRateInfoWrapperHelper)
+                                    CurrencyRateInfoWrapperHelper currencyRateInfoWrapperHelper,
+                                    ContactWrapperHelper contactWrapperHelper,
+                                    EntityWrapperHelper entityWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -269,8 +280,11 @@ namespace ASC.Api.CRM.Wrappers
             InvoiceLineWrapperHelper = invoiceLineWrapperHelper;
             CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
             CurrencyRateInfoWrapperHelper = currencyRateInfoWrapperHelper;
+            ContactWrapperHelper = contactWrapperHelper;
+            EntityWrapperHelper = entityWrapperHelper;
         }
 
+        public ContactWrapperHelper ContactWrapperHelper { get; }
         public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
         public CurrencyRateInfoWrapperHelper CurrencyRateInfoWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
@@ -281,7 +295,7 @@ namespace ASC.Api.CRM.Wrappers
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
         public CRMSecurity CRMSecurity { get; }
-     
+        public EntityWrapperHelper EntityWrapperHelper { get; }
         public InvoiceWrapper Get(Invoice invoice)
         {
             var result = new InvoiceWrapper
@@ -309,17 +323,17 @@ namespace ASC.Api.CRM.Wrappers
                         
             if (invoice.ContactID > 0)
             {
-                result.Contact = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
+                result.Contact = ContactWrapperHelper.GetContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ContactID));
             }
 
             if (invoice.ConsigneeID > 0)
             {
-                result.Consignee = ToContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
+                result.Consignee = ContactWrapperHelper.GetContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID));
             }
 
             if (invoice.EntityID > 0)
             {
-                result.Entity = ToEntityWrapper(invoice.EntityType, invoice.EntityID);
+                result.Entity = EntityWrapperHelper.Get(invoice.EntityType, invoice.EntityID);
             }
 
             result.Cost = invoice.GetInvoiceCost(DaoFactory);
@@ -327,6 +341,7 @@ namespace ASC.Api.CRM.Wrappers
             result.InvoiceLines = invoice.GetInvoiceLines(DaoFactory).Select(x => InvoiceLineWrapperHelper.Get(x)).ToList();
 
             return result;
+
         }
     }
 
@@ -403,7 +418,8 @@ namespace ASC.Api.CRM.Wrappers
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,
                                    DaoFactory daoFactory,
-                                   CurrencyInfoWrapperHelper currencyInfoWrapperHelper)
+                                   CurrencyInfoWrapperHelper currencyInfoWrapperHelper,
+                                   InvoiceTaxWrapperHelper invoiceTaxWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -412,7 +428,10 @@ namespace ASC.Api.CRM.Wrappers
             CurrencyProvider = currencyProvider;
             DaoFactory = daoFactory;
             CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
+            InvoiceTaxWrapperHelper = invoiceTaxWrapperHelper;
         }
+
+        public InvoiceTaxWrapperHelper InvoiceTaxWrapperHelper { get; }
 
         public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
@@ -443,13 +462,12 @@ namespace ASC.Api.CRM.Wrappers
 
             if (invoiceItem.InvoiceTax1ID > 0)
             {
-                result.InvoiceTax1 = ToInvoiceTaxWrapper(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax1ID));
+                result.InvoiceTax1 = InvoiceTaxWrapperHelper.Get(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax1ID));
             }
             if (invoiceItem.InvoiceTax2ID > 0)
             {
-                result.InvoiceTax2 = ToInvoiceTaxWrapper(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax2ID));
+                result.InvoiceTax2 = InvoiceTaxWrapperHelper.Get(DaoFactory.GetInvoiceTaxDao().GetByID(invoiceItem.InvoiceTax2ID));
             }
-
 
             return result;
 

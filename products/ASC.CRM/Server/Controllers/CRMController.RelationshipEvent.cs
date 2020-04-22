@@ -36,6 +36,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -229,64 +230,65 @@ namespace ASC.Api.CRM
             return result;
         }
 
-        ///// <summary>
-        ///// Upload file 
-        ///// </summary>
-        ///// <short>Upload file</short>
-        ///// <category>Files</category>
-        ///// <remarks>
-        ///// <![CDATA[
-        /////  Upload can be done in 2 different ways:
-        /////  <ol>
-        ///// <li>Single file upload. You should set Content-Type &amp; Content-Disposition header to specify filename and content type, and send file in request body</li>
-        ///// <li>Using standart multipart/form-data method</li>
-        ///// </ol>]]>
-        ///// </remarks>
-        ///// <param name="entityType">Entity type</param>
-        ///// <param name="entityid">Entity ID</param>
-        ///// <param name="file" visible="false">Request Input stream</param>
-        ///// <param name="contentType" visible="false">Content-Type Header</param>
-        ///// <param name="contentDisposition" visible="false">Content-Disposition Header</param>
-        ///// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
-        ///// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
-        ///// <returns>
-        ///// File info
-        ///// </returns>
-        //[Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/upload")]
-        //public FileWrapper<int> UploadFileInCRM(
-        //    string entityType,
-        //    int entityid,
-        //    Stream file,
-        //    ContentType contentType,
-        //    ContentDisposition contentDisposition,
-        //    IEnumerable<System.Web.HttpPostedFileBase> files,
-        //    bool storeOriginalFileFlag
-        //    )
-        //{
-        //    FilesSettings.StoreOriginalFilesSetting = storeOriginalFileFlag;
+        /// <summary>
+        /// Upload file 
+        /// </summary>
+        /// <short>Upload file</short>
+        /// <category>Files</category>
+        /// <remarks>
+        /// <![CDATA[
+        ///  Upload can be done in 2 different ways:
+        ///  <ol>
+        /// <li>Single file upload. You should set Content-Type &amp; Content-Disposition header to specify filename and content type, and send file in request body</li>
+        /// <li>Using standart multipart/form-data method</li>
+        /// </ol>]]>
+        /// </remarks>
+        /// <param name="entityType">Entity type</param>
+        /// <param name="entityid">Entity ID</param>
+        /// <param name="file" visible="false">Request Input stream</param>
+        /// <param name="contentType" visible="false">Content-Type Header</param>
+        /// <param name="contentDisposition" visible="false">Content-Disposition Header</param>
+        /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
+        /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
+        /// <returns>
+        /// File info
+        /// </returns>
+        [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/upload")]
+        public FileWrapper<int> UploadFileInCRM(
+            string entityType,
+            int entityid,
+            Stream file,
+            ContentType contentType,
+            ContentDisposition contentDisposition,
+            IEnumerable<IFormFile> files,
+            bool storeOriginalFileFlag
+            )
+        {
+            FilesSettings.StoreOriginalFilesSetting = storeOriginalFileFlag;
 
-        //    var folderid = GetRootFolderID();
+            var folderid = GetRootFolderID();
 
-        //    var fileNames = new List<string>();
+            var fileNames = new List<string>();
 
-        //    FileWrapper<int> uploadedFile = null;
-        //    if (files != null && files.Any())
-        //    {
-        //        //For case with multiple files
-        //        foreach (var postedFile in files)
-        //        {
-        //            uploadedFile = SaveFile(folderid, postedFile.InputStream, postedFile.FileName);
-        //            fileNames.Add(uploadedFile.Title);
-        //        }
-        //    }
-        //    else if (file != null)
-        //    {
-        //        uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
-        //        fileNames.Add(uploadedFile.Title);
-        //    }
+            FileWrapper<int> uploadedFile = null;
+            if (files != null && files.Any())
+            {
+                //For case with multiple files
+                foreach (var postedFile in files)
+                {
+                    using var fileStream = postedFile.OpenReadStream();
+                    uploadedFile = SaveFile(folderid, fileStream, postedFile.FileName);
+                    fileNames.Add(uploadedFile.Title);
+                }
+            }
+            else if (file != null)
+            {
+                uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
+                fileNames.Add(uploadedFile.Title);
+            }
 
-        //    return uploadedFile;
-        //}
+            return uploadedFile;
+        }
 
         private FileWrapper<int> SaveFile(int folderid, Stream file, string fileName)
         {
@@ -655,7 +657,7 @@ namespace ASC.Api.CRM
 
             var files = DaoFactory.GetRelationshipEventDao().GetFiles(eventIDs.ToArray());
 
-            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, ToContactBaseWrapper);
+            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
 
             foreach (var item in itemList)
             {
@@ -712,6 +714,7 @@ namespace ASC.Api.CRM
                     break;
                 case EntityType.Opportunity:
                     var dealObj = DaoFactory.GetDealDao().GetByID(entityID);
+        
                     if (dealObj == null)
                         return null;
 

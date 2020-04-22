@@ -98,7 +98,7 @@ namespace ASC.Web.CRM.Core.Search
 
         private string data;
 
-        public static InfoWrapper FromCompany(IServiceProvider serviceProvider, ContactInfo cf)
+        public static InfoWrapper Get(IServiceProvider serviceProvider, ContactInfo cf)
         {
             var logger = serviceProvider.GetService<IOptionsMonitor<ILog>>();
             var tenantManager = serviceProvider.GetService<TenantManager>();

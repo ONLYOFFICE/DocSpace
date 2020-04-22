@@ -32,6 +32,7 @@ using ASC.Common.Threading.Progress;
 using ASC.Common.Web;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
+using ASC.CRM.Core.Enums;
 
 namespace ASC.Web.CRM.Classes
 {

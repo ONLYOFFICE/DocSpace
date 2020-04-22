@@ -55,7 +55,7 @@ using Twilio.TwiML;
 namespace ASC.Web.CRM.Classes
 {
 
-    [ServiceFilter(typeof(ValidateRequestAttribute))]
+    [ServiceFilter(typeof(ValidateRequestFilter))]
     public class TwilioController : ApiController
     {
         public TwilioController(IOptionsMonitor<ILog> logger,
@@ -515,9 +515,9 @@ namespace ASC.Web.CRM.Classes
         internal VoiceResponse VoiceMail() { return GetTwilioResponseHelper().VoiceMail(); }
     }
 
-    public class ValidateRequestAttribute : ActionFilterAttribute
+    public class ValidateRequestFilter : ActionFilterAttribute
     {
-        public ValidateRequestAttribute(ConsumerFactory consumerFactory, IHttpContextAccessor httpContextAccessor)
+        public ValidateRequestFilter(ConsumerFactory consumerFactory, IHttpContextAccessor httpContextAccessor)
         {
             ConsumerFactory = consumerFactory;
             HttpContext = httpContextAccessor?.HttpContext;
@@ -566,11 +566,11 @@ namespace ASC.Web.CRM.Classes
     }
 
 
-    public static class ValidateRequestAttributeExtension
+    public static class ValidateRequestFilterExtension
     {
         public static DIHelper AddValidateRequestAttributeService(this DIHelper services)
         {
-            services.TryAddScoped<ValidateRequestAttribute>();
+            services.TryAddScoped<ValidateRequestFilter>();
 
             return services.AddConsumerFactoryService();
 

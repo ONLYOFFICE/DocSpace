@@ -1414,7 +1414,7 @@ namespace ASC.Api.CRM
             contactIDs.ToList().AddRange(items.Select(item => item.ConsigneeID));
 
             var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.Distinct().ToArray())
-                                     .ToDictionary(item => item.ID, ToContactBaseWithEmailWrapper);
+                                     .ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
 
 
             foreach (var invoice in items)

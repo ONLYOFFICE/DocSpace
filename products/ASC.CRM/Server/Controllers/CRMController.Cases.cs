@@ -705,7 +705,7 @@ namespace ASC.Api.CRM
             var contacts = DaoFactory
                 .GetContactDao()
                 .GetContacts(contactIDs.Distinct().ToArray())
-                .ToDictionary(item => item.ID, ToContactBaseWrapper);
+                .ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
 
             foreach (var cases in items)
             {

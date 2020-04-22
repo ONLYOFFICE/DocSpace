@@ -106,7 +106,5 @@ namespace ASC.Web.CRM.Core.Search
             return services
                 .AddFactoryIndexerService<ContactsWrapper>();
         }
-    }
-
-  
+    }  
 }

@@ -97,7 +97,7 @@ namespace ASC.Api.CRM.Wrappers
                            EmployeeWraperHelper employeeWraperHelper,
                            CRMSecurity cRMSecurity,
                            DaoFactory daoFactory,
-                           ContactBaseWrapperHelper contactBaseWrapperHelper)
+                           ContactWrapperHelper contactBaseWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -106,7 +106,7 @@ namespace ASC.Api.CRM.Wrappers
             ContactBaseWrapperHelper = contactBaseWrapperHelper;
         }
 
-        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public ContactWrapperHelper ContactBaseWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
@@ -147,7 +147,7 @@ namespace ASC.Api.CRM.Wrappers
             {
                 if (member == null) continue;
 
-                membersWrapperList.Add(ContactBaseWrapperHelper.Get(member));
+                membersWrapperList.Add(ContactBaseWrapperHelper.GetContactBaseWrapper(member));
             }
 
             result.Members = membersWrapperList;

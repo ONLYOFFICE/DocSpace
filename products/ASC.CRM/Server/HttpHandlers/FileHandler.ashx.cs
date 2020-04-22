@@ -24,112 +24,104 @@
 */
 
 
+using ASC.Common;
+using ASC.Common.Logging;
 using ASC.CRM.Resources;
 using ASC.Web.CRM.Classes;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
-    public class FileHandler 
+    public class FileHandler
     {
-        public FileHandler(Global global)
+        public FileHandler(RequestDelegate next,
+                           Global global,
+                           ContactPhotoManager contactPhotoManager,
+                           IOptionsMonitor<ILog> logger)
         {
+            _next = next;
             Global = global;
+            ContactPhotoManager = contactPhotoManager;
+            Logger = logger.Get("ASC");
         }
 
+        public ILog Logger { get; }
+        public ContactPhotoManager ContactPhotoManager { get; }
         public Global Global { get; }
 
-        public void ProcessRequest(HttpContext context)
+        private readonly RequestDelegate _next;
+
+        public async Task InvokeAsync(HttpContext context)
         {
             var action = context.Request.Query["action"];
 
             switch (action)
             {
                 case "contactphotoulr":
-                    ResponceContactPhotoUrl(context);
+                    {
+                        var contactId = Convert.ToInt32(context.Request.Query["cid"]);
+                        var isCompany = Convert.ToBoolean(context.Request.Query["isc"]);
+                        var photoSize = Convert.ToInt32(context.Request.Query["ps"]);
+
+                        string photoUrl = string.Empty;
+
+                        switch (photoSize)
+                        {
+                            case 1:
+                                photoUrl = ContactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
+                                break;
+                            case 2:
+                                photoUrl = ContactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
+                                break;
+                            case 3:
+                                photoUrl = ContactPhotoManager.GetBigSizePhoto(contactId, isCompany);
+                                break;
+                            default:
+                                throw new Exception(CRMErrorsResource.ContactPhotoSizeUnknown);
+                        }
+
+                        context.Response.Clear();
+
+                        await context.Response.WriteAsync(photoUrl);                       
+                    }
                     break;
                 case "mailmessage":
-                    ResponceMailMessageContent(context);
+                    {
+                        var messageId = Convert.ToInt32(context.Request.Query["message_id"]);
+
+                        var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
+
+                        string messageContent = string.Empty;
+
+                        using (var streamReader = new StreamReader(Global.GetStore().GetReadStream("mail_messages", filePath)))
+                        {
+                            messageContent = streamReader.ReadToEnd();
+                        }
+
+                        context.Response.Clear();
+
+                        await context.Response.WriteAsync(messageContent);
+                    }
                     break;
                 default:
                     throw new ArgumentException(String.Format("action='{0}' is not defined", action));
             }
         }
+    }
 
-        private void ResponceContactPhotoUrl(HttpContext context)
+
+    public static class FileHandlerExtension
+    {
+        public static DIHelper AddFileHandlerService(this DIHelper services)
         {
-            var contactId = Convert.ToInt32(context.Request.Query["cid"]);
-            var isCompany = Convert.ToBoolean(context.Request.Query["isc"]);
-            var photoSize = Convert.ToInt32(context.Request.Query["ps"]);
+            services.TryAddTransient<FileHandler>();
 
-            String photoUrl = String.Empty;
-
-            switch (photoSize)
-            {
-                case 1:
-                    photoUrl = ContactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
-                    break;
-                case 2:
-                    photoUrl = ContactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
-                    break;
-                case 3:
-                    photoUrl = ContactPhotoManager.GetBigSizePhoto(contactId, isCompany);
-                    break;
-                default:
-                    throw new Exception(CRMErrorsResource.ContactPhotoSizeUnknown);
-            }
-
-            context.Response.Clear();
-            context.Response.Write(photoUrl);
-
-            try
-            {
-                context.Response.Flush();
-                context.Response.SuppressContent = true;
-                context.ApplicationInstance.CompleteRequest();
-            }
-            catch (HttpException ex)
-            {
-                LogManager.GetLogger("ASC").Error("ResponceContactPhotoUrl", ex);
-            }
-        }
-
-        private void ResponceMailMessageContent(HttpContext context)
-        {
-            var messageId = Convert.ToInt32(context.Request.Query["message_id"]);
-
-            var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
-
-            String messageContent = String.Empty;
-
-            using (var streamReader = new StreamReader(Global.GetStore().GetReadStream("mail_messages", filePath)))
-            {
-                messageContent = streamReader.ReadToEnd();
-            }
-
-            context.Response.Clear();
-            context.Response.Write(messageContent);
-
-            try
-            {
-                context.Response.Flush();
-                context.Response.SuppressContent = true;
-                context.ApplicationInstance.CompleteRequest();
-            }
-            catch (HttpException ex)
-            {
-                LogManager.GetLogger("ASC").Error("ResponceMailMessageContent", ex);
-            }
-        }
-
-        public bool IsReusable
-        {
-            get
-            {
-                return false;
-            }
+            return services.AddGlobalService()
+                           .AddContactPhotoManagerService();                           
         }
     }
-}
+} 

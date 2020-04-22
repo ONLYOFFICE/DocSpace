@@ -174,6 +174,7 @@ namespace ASC.Api.CRM.Wrappers
 
         public ContactInfoWrapper Get(ContactInfo contactInfo)
         {
+            if (contactInfo == null) return null;
 
             return new ContactInfoWrapper
             {

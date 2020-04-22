@@ -26,21 +26,39 @@
 
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
-using ASC.Web.CRM.Core;
+using ASC.Files.Core;
 using ASC.Web.Studio.Core;
-using Autofac;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.Classes
 {
     public class FileUploaderHandler : FileUploadHandler
     {
-        public FileUploaderHandler(SetupInfo setupInfo)
+        public FileUploaderHandler(SetupInfo setupInfo,
+                                   DaoFactory daoFactory,
+                                   FileSizeComment fileSizeComment,
+                                   IServiceProvider serviceProvider,
+                                   TenantExtra tenantExtra,
+                                   TenantStatisticsProvider tenantStatisticsProvider)
         {
             SetupInfo = setupInfo;
+            DaoFactory = daoFactory;
+            FileSizeComment = fileSizeComment;
+            ServiceProvider = serviceProvider;
+            TenantExtra = tenantExtra;
+            TenantStatisticsProvider = tenantStatisticsProvider;
+            
         }
 
+        public TenantExtra TenantExtra { get; }
+        public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public FileSizeComment FileSizeComment { get; }
+        public DaoFactory DaoFactory { get; }
         public SetupInfo SetupInfo { get; }
 
         public override FileUploadResult ProcessUpload(HttpContext context)
@@ -54,33 +72,29 @@ namespace ASC.Web.CRM.Classes
             if (String.IsNullOrEmpty(file.FileName) || file.ContentLength == 0)
                 throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
 
-            if (0 < SetupInfo.MaxUploadSize && SetupInfo.MaxUploadSize < file.ContentLength)
+            if (0 < SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticsProvider) && SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticsProvider) < file.ContentLength)
                 throw FileSizeComment.FileSizeException;
 
             var fileName = file.FileName.LastIndexOf('\\') != -1
                 ? file.FileName.Substring(file.FileName.LastIndexOf('\\') + 1)
                 : file.FileName;
 
-            using (var scope = DIHelper.Resolve())
-            {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                var document = new File
-                {
-                    Title = fileName,
-                    FolderID = daoFactory.FileDao.GetRoot(),
-                    ContentLength = file.ContentLength
-                };
+            var document = ServiceProvider.GetService<File<int>>();
 
-                document = daoFactory.FileDao.SaveFile(document, file.InputStream);
+            document.Title = fileName;
+            document.FolderID = DaoFactory.GetFileDao().GetRoot();
+            document.ContentLength = file.ContentLength;
 
-                fileUploadResult.Data = document.ID;
-                fileUploadResult.FileName = document.Title;
-                fileUploadResult.FileURL = document.DownloadUrl;
-                fileUploadResult.Success = true;
+            document = DaoFactory.GetFileDao().SaveFile(document, file.InputStream);
+
+            fileUploadResult.Data = document.ID;
+            fileUploadResult.FileName = document.Title;
+            fileUploadResult.FileURL = document.DownloadUrl;
+            fileUploadResult.Success = true;
 
 
-                return fileUploadResult;
-            }
+            return fileUploadResult;
+
         }
     }
 }

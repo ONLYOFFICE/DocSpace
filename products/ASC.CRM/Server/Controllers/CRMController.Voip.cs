@@ -607,12 +607,15 @@ namespace ASC.Api.CRM
 
             if (contact == null)
             {
-                contact = ToContactWrapper(VoipEngine.CreateContact(contactPhone));
+                contact = ContactWrapperHelper.GetContactWrapper(VoipEngine.CreateContact(contactPhone));
             }
 
             contact = GetContactWithFotos(contact);
+        
             var call = number.Call(to, contact.Id.ToString(CultureInfo.InvariantCulture));
+
             return new VoipCallWrapper(call, contact);
+        
         }
 
         /// <summary>
@@ -627,8 +630,11 @@ namespace ASC.Api.CRM
             var dao = DaoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
             var number = dao.GetCurrentNumber().NotFoundIfNull();
+            
             number.AnswerQueueCall(call.Id);
+            
             return new VoipCallWrapper(call);
+
         }
 
         /// <summary>
@@ -784,7 +790,7 @@ namespace ASC.Api.CRM
                     Client = client,
                     ContactID = contactID,
                     SortBy = ApiContext.SortBy,
-                    SortOrder = !.ApiContext.SortDescending,
+                    SortOrder = !ApiContext.SortDescending,
                     SearchText = ApiContext.FilterValue,
                     Offset = ApiContext.StartIndex,
                     Max = ApiContext.Count,
@@ -800,19 +806,28 @@ namespace ASC.Api.CRM
                 r =>
                     {
                         ContactWrapper contact;
+                
                         if (r.ContactId != 0)
                         {
                             contact = r.ContactIsCompany
-                                          ? (ContactWrapper)new CompanyWrapper(r.ContactId) {DisplayName = r.ContactTitle}
-                                          : new PersonWrapper(r.ContactId) {DisplayName = r.ContactTitle};
-                            contact.SmallFotoUrl = ContactPhotoManager.GetSmallSizePhoto(contact.ID, contact.IsCompany);
+                                          ? (ContactWrapper)new CompanyWrapper() {DisplayName = r.ContactTitle, Id = r.ContactId }
+                                          : new PersonWrapper() {
+                                                                    DisplayName = r.ContactTitle, 
+                                                                    Id = r.ContactId 
+                                                                };
+
+                            contact.SmallFotoUrl = ContactPhotoManager.GetSmallSizePhoto(contact.Id, contact.IsCompany);                        
+                        
                         }
                         else
                         {
-                            contact = new PersonWrapper(-1) { SmallFotoUrl = defaultSmallPhoto };
+                            contact = new PersonWrapper() { SmallFotoUrl = defaultSmallPhoto, Id = -1 };
                         }            
+                        
                         return new VoipCallWrapper(r, contact);
+
                     }).ToList();
+
             return calls;
         }
 
@@ -832,18 +847,23 @@ namespace ASC.Api.CRM
                 r =>
                 {
                     ContactWrapper contact;
+                    
                     if (r.ContactId != 0)
                     {
                         contact = r.ContactIsCompany
-                                      ? (ContactWrapper)new CompanyWrapper(r.ContactId) { DisplayName = r.ContactTitle }
-                                      : new PersonWrapper(r.ContactId) { DisplayName = r.ContactTitle };
-                        contact.SmallFotoUrl = ContactPhotoManager.GetSmallSizePhoto(contact.ID, contact.IsCompany);
+                                      ? (ContactWrapper)new CompanyWrapper() { DisplayName = r.ContactTitle, Id = r.ContactId }
+                                      : new PersonWrapper() { DisplayName = r.ContactTitle, Id = r.ContactId };
+                        
+                        contact.SmallFotoUrl = ContactPhotoManager.GetSmallSizePhoto(contact.Id, contact.IsCompany);
+
                     }
                     else
                     {
-                        contact = new PersonWrapper(-1) { SmallFotoUrl = defaultSmallPhoto };
+                        contact = new PersonWrapper() { SmallFotoUrl = defaultSmallPhoto, Id = -1 };
                     }
+
                     return new VoipCallWrapper(r, contact);
+                
                 }).ToList();
 
             ApiContext.SetDataPaginated();

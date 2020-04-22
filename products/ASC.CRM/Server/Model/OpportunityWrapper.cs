@@ -138,7 +138,7 @@ namespace ASC.Api.CRM.Wrappers
                            CRMSecurity cRMSecurity,
                            DaoFactory daoFactory,
                            CurrencyProvider currencyProvider,
-                           ContactBaseWrapperHelper contactBaseWrapperHelper
+                           ContactWrapperHelper contactBaseWrapperHelper
                            )
         {
             ApiDateTimeHelper = apiDateTimeHelper;
@@ -150,7 +150,7 @@ namespace ASC.Api.CRM.Wrappers
         }
 
         public CurrencyProvider CurrencyProvider  {get;}
-        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public ContactWrapperHelper ContactBaseWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
 
         public CRMSecurity CRMSecurity { get; }
@@ -177,7 +177,7 @@ namespace ASC.Api.CRM.Wrappers
             };
 
             if (deal.ContactID > 0)
-                dealWrapper.Contact = ContactBaseWrapperHelper.Get(DaoFactory.GetContactDao().GetByID(deal.ContactID));
+                dealWrapper.Contact = ContactBaseWrapperHelper.GetContactBaseWrapper(DaoFactory.GetContactDao().GetByID(deal.ContactID));
 
             if (deal.DealMilestoneID > 0)
             {
@@ -208,7 +208,7 @@ namespace ASC.Api.CRM.Wrappers
             foreach (var member in membersList)
             {
                 if (member == null) continue;
-                membersWrapperList.Add(ContactBaseWrapperHelper.Get(member));
+                membersWrapperList.Add(ContactBaseWrapperHelper.GetContactBaseWrapper(member));
             }
 
             dealWrapper.Members = membersWrapperList;
@@ -227,7 +227,7 @@ namespace ASC.Api.CRM.Wrappers
                            .AddEmployeeWraper()
                            .AddCRMSecurityService()
                            .AddDaoFactoryService()
-                           .AddContactBaseWrapperHelperService()
+                           .AddContactWrapperHelperService()
                            .AddCurrencyProviderService();
         }
     }

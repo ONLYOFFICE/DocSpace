@@ -1,6 +1,5 @@
 ﻿using ASC.Api.Core;
 using ASC.Api.CRM.Wrappers;
-using ASC.Common;
 using ASC.Common.Web;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
@@ -9,10 +8,7 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Services.NotifyService;
-using ASC.Web.Files.Services.WCFService;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +40,7 @@ namespace ASC.Api.CRM
                 throw CRMSecurity.CreateSecurityException();
             }
 
-            return TaskWrapperHelper.Get(task);
+            return TaskWrapperHelper.GetTaskWrapper(task);
         }
 
         /// <summary>
@@ -89,7 +85,7 @@ namespace ASC.Api.CRM
 
             OrderBy taskOrderBy;
 
-            if (Web.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out taskSortedByType))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out taskSortedByType))
             {
                 taskOrderBy = new OrderBy(taskSortedByType, !ApiContext.SortDescending);
             }
@@ -190,7 +186,7 @@ namespace ASC.Api.CRM
 
             MessageService.Send(MessageAction.CrmTaskOpened, MessageTarget.Create(task.ID), task.Title);
 
-            return TaskWrapperHelper.Get(task);
+            return TaskWrapperHelper.GetTaskWrapper(task);
 
         }
 
@@ -214,7 +210,7 @@ namespace ASC.Api.CRM
             var task = DaoFactory.GetTaskDao().GetByID(taskid);
             MessageService.Send(MessageAction.CrmTaskClosed, MessageTarget.Create(task.ID), task.Title);
 
-            return TaskWrapperHelper.Get(task);
+            return TaskWrapperHelper.GetTaskWrapper(task);
 
         }
 
@@ -240,7 +236,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetTaskDao().DeleteTask(taskid);
             MessageService.Send(MessageAction.CrmTaskDeleted, MessageTarget.Create(task.ID), task.Title);
 
-            return TaskWrapperHelper.Get(task);
+            return TaskWrapperHelper.GetTaskWrapper(task);
 
         }
 
@@ -331,7 +327,7 @@ namespace ASC.Api.CRM
 
             MessageService.Send(MessageAction.CrmTaskCreated, MessageTarget.Create(task.ID), task.Title);
 
-            return TaskWrapperHelper.Get(task);
+            return TaskWrapperHelper.GetTaskWrapper(task);
         }
 
         /// <summary>
@@ -531,7 +527,7 @@ namespace ASC.Api.CRM
 
             MessageService.Send(MessageAction.CrmTaskUpdated, MessageTarget.Create(task.ID), task.Title);
 
-            return TaskWrapperHelper.Get(task);
+            return TaskWrapperHelper.GetTaskWrapper(task);
         }
 
         /// <visible>false</visible>
@@ -643,8 +639,8 @@ namespace ASC.Api.CRM
             }
 
             var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => new TaskCategoryBaseWrapper(x));
-            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, ToContactBaseWithEmailWrapper);
-            var restrictedContacts = DaoFactory.GetContactDao().GetRestrictedContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, ToContactBaseWithEmailWrapper);
+            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
+            var restrictedContacts = DaoFactory.GetContactDao().GetRestrictedContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
 
             foreach (var item in itemList)
             {
@@ -686,14 +682,5 @@ namespace ASC.Api.CRM
 
 
     }
-
-  
-
-    //public CRMController(CRMSecurity cRMSecurity,
-    //                     DaoFactory daoFactory,
-    //                     ApiContext apiContext,
-    //                     MessageTarget messageTarget,
-    //                     NotifyClient notifyClient,
-    //                     TaskWrapperHelper taskWrapperHelper)
 
 }

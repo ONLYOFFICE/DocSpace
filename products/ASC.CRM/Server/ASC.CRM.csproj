@@ -25,20 +25,6 @@
     <Compile Remove="Controllers\CRMApi.Utils.cs" />
     <Compile Remove="Controllers\CRMApiBase.cs" />
     <Compile Remove="Controllers\CRMBootstrap.cs" />
-    <Compile Remove="HttpHandlers\ContactPhotoHandler.cs" />
-    <Compile Remove="HttpHandlers\FileHandler.ashx.cs" />
-    <Compile Remove="HttpHandlers\FileUploaderHandler.cs" />
-    <Compile Remove="HttpHandlers\ImportFileHandler.cs" />
-    <Compile Remove="HttpHandlers\OrganisationLogoHandler.cs" />
-    <Compile Remove="HttpHandlers\WebToLeadFromHandler.ashx.cs" />
-    <Compile Remove="Utils\ExportToCSV.cs" />
-    <Compile Remove="Utils\MailSender.cs" />
-    <Compile Remove="Utils\PdfQueueWorker.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="HttpHandlers\filehandler.ashx" />
-    <None Remove="HttpHandlers\webtoleadfromhandler.ashx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -190,7 +176,6 @@
 
   <ItemGroup>
     <Folder Include="Classes\SocialMedia\" />
-    <Folder Include="HttpHandlers\" />
   </ItemGroup>
 
 

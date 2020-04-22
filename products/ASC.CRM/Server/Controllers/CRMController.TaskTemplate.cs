@@ -340,11 +340,11 @@ namespace ASC.Api.CRM
                     ContainerID = taskTemplate.ContainerID,
                     DeadLineIsFixed = taskTemplate.DeadLineIsFixed,
                     Description = taskTemplate.Description,
-                    ID = taskTemplate.ID,
+                    Id = taskTemplate.ID,
                     isNotify = taskTemplate.isNotify,
                     Title = taskTemplate.Title,
                     OffsetTicks = taskTemplate.Offset.Ticks,
-                    Responsible = EmployeeWraper.Get(taskTemplate.ResponsibleID)
+                    Responsible = EmployeeWraperHelper.Get(taskTemplate.ResponsibleID)
                 };
         }
 
@@ -362,12 +362,12 @@ namespace ASC.Api.CRM
                     {
                         Title = item.Title,
                         EntityType = item.EntityType.ToString(),
-                        ID = item.ID
+                        Id = item.ID
                     };
 
-                if (taskTemplateDictionary.ContainsKey(taskTemplateContainer.ID))
+                if (taskTemplateDictionary.ContainsKey(taskTemplateContainer.Id))
                 {
-                    taskTemplateContainer.Items = taskTemplateDictionary[taskTemplateContainer.ID];
+                    taskTemplateContainer.Items = taskTemplateDictionary[taskTemplateContainer.Id];
                 }
 
                 result.Add(taskTemplateContainer);

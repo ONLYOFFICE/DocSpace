@@ -29,6 +29,7 @@ using ASC.Common;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
 using System;
 using System.Runtime.Serialization;
@@ -41,18 +42,6 @@ namespace ASC.Api.CRM.Wrappers
     [DataContract(Name = "task", Namespace = "")]
     public class TaskWrapper
     {
-        //public TaskWrapper(Task task)
-        //{
-        //    CreateBy = EmployeeWraper.Get(task.CreateBy);
-        //    Created = (ApiDateTime)task.CreateOn;
-        //    Title = task.Title;
-        //    Description = task.Description;
-        //    DeadLine = (ApiDateTime)task.DeadLine;
-        //    Responsible = EmployeeWraper.Get(task.ResponsibleID);
-        //    IsClosed = task.IsClosed;
-        //    AlertValue = task.AlertValue;
-        //}
-
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
@@ -120,7 +109,7 @@ namespace ASC.Api.CRM.Wrappers
 
         }
 
-        
+
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public String Title { get; set; }
 
@@ -165,28 +154,43 @@ namespace ASC.Api.CRM.Wrappers
 
     public class TaskWrapperHelper
     {
-        
-        public TaskWrapperHelper(ApiDateTimeHelper apiDateTimeHelper, 
+
+        public TaskWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
                                  EmployeeWraperHelper employeeWraperHelper,
                                  CRMSecurity cRMSecurity,
                                  DaoFactory daoFactory,
-                                 ContactBaseWrapperHelper contactBaseWrapperHelper)
+                                 ContactWrapperHelper contactBaseWrapperHelper,
+                                 EntityWrapperHelper entityWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             CRMSecurity = cRMSecurity;
             DaoFactory = daoFactory;
             ContactBaseWrapperHelper = contactBaseWrapperHelper;
+            EntityWrapperHelper = entityWrapperHelper;
         }
 
-        public ContactBaseWrapperHelper ContactBaseWrapperHelper { get; }
+        public ContactWrapperHelper ContactBaseWrapperHelper { get; }
         public CRMSecurity CRMSecurity { get; }
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
         public DaoFactory DaoFactory { get; }
+        public EntityWrapperHelper EntityWrapperHelper { get; }
 
-        public TaskWrapper Get(Task task)
-        {            
+        public TaskBaseWrapper GetTaskBaseWrapper(Task task)
+        {
+            return new TaskBaseWrapper { 
+                Title = task.Title,
+                Description = task.Description,
+                DeadLine = ApiDateTimeHelper.Get(task.DeadLine),
+                Responsible = EmployeeWraperHelper.Get(task.ResponsibleID),
+                IsClosed = task.IsClosed,
+                AlertValue = task.AlertValue
+            };
+        }
+
+        public TaskWrapper GetTaskWrapper(Task task)
+        {
             var result = new TaskWrapper
             {
                 Title = task.Title,
@@ -199,17 +203,24 @@ namespace ASC.Api.CRM.Wrappers
 
             if (task.CategoryID > 0)
             {
-                result.Category = GetTaskCategoryByID(task.CategoryID);
+                var categoryItem = DaoFactory.GetListItemDao().GetByID(task.CategoryID);
+
+                result.Category = new TaskCategoryWrapper(categoryItem)
+                {
+                    RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, categoryItem.ID)
+                };
+                
             }
 
             if (task.ContactID > 0)
             {
-                result.Contact = ContactBaseWrapperHelper.Get(DaoFactory.GetContactDao().GetByID(task.ContactID));
+                result.Contact = ContactBaseWrapperHelper.GetContactBaseWithEmailWrapper(DaoFactory.GetContactDao().GetByID(task.ContactID));
             }
 
             if (task.EntityID > 0)
             {
-                result.Entity = ToEntityWrapper(task.EntityType, task.EntityID);
+                
+                result.Entity = EntityWrapperHelper.Get(task.EntityType, task.EntityID);
             }
 
             result.CanEdit = CRMSecurity.CanEdit(task);
@@ -230,10 +241,3 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 }
-
-//private TaskWrapper ToTaskWrapper(Task task)
-//{
-//    var result = new TaskWrapper(task);
-
-//    return result;
-//}

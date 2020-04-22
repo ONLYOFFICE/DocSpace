@@ -187,7 +187,7 @@ namespace ASC.CRM.Core.Dao
                 FactoryIndexerEmailWrapper.Update(new EmailWrapper { Id = contactInfo.ContactID, EmailInfoWrapper = infos.Select(r => EmailInfoWrapper.FromContactInfo(TenantID, r)).ToList() }, UpdateAction.Replace, r => r.EmailInfoWrapper);
             }
                         
-            FactoryIndexerInfoWrapper.UpdateAsync(InfoWrapper.FromCompany(ServiceProvider, contactInfo));
+            FactoryIndexerInfoWrapper.UpdateAsync(InfoWrapper.Get(ServiceProvider, contactInfo));
 
             return result;
         }
@@ -224,7 +224,7 @@ namespace ASC.CRM.Core.Dao
 
             contactInfo.ID = id;
                         
-            FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.FromCompany(ServiceProvider, contactInfo));
+            FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.Get(ServiceProvider, contactInfo));
 
             if (contactInfo.InfoType == ContactInfoType.Email)
             {
@@ -326,7 +326,7 @@ namespace ASC.CRM.Core.Dao
                 
                 foreach (var item in items.Where(r => r.InfoType != ContactInfoType.Email))
                 {
-                    FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.FromCompany(ServiceProvider, item));
+                    FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.Get(ServiceProvider, item));
                 }
             }
 
@@ -356,7 +356,7 @@ namespace ASC.CRM.Core.Dao
             
                 foreach (var item in items.Where(r => r.InfoType != ContactInfoType.Email))
                 {
-                    FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.FromCompany(ServiceProvider, item));
+                    FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.Get(ServiceProvider, item));
                 }
             
             }
