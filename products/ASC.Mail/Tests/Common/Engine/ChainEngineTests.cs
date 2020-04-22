@@ -957,7 +957,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             {
                 FolderId = (int)FolderType.Inbox,
                 UserFolderId = null,
-                MailboxId = TestMailbox.MailBoxId,
+                MailboxId = testMailbox2.MailBoxId,
                 Unread = true,
                 To = new List<string> { testMailbox2.EMail.Address },
                 Cc = new List<string>(),
