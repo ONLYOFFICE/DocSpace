@@ -138,7 +138,7 @@ namespace ASC.Mail.Core.Dao
                 Tags = chain.Tags
             };
 
-            MailDb.MailChain.Add(mailChain);
+            var entry = MailDb.AddOrUpdate(c => c.MailChain, mailChain);
 
             var count = MailDb.SaveChanges();
 
@@ -158,7 +158,7 @@ namespace ASC.Mail.Core.Dao
 
         public int SetFieldValue<T>(IConversationsExp exp, string field, T value)
         {
-            Type type = typeof(T);
+            Type type = typeof(MailChain);
             PropertyInfo pi = type.GetProperty(field);
 
             if (pi == null)
