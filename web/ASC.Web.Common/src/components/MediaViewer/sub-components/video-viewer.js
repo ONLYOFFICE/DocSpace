@@ -12,7 +12,7 @@ const StyledControls = styled.div`
     height: 40px;
     display: block;
     position: absolute;
-    z-index: 400;
+    z-index: 4001;
     top: calc(50% + 113px);
     left: calc(50% - 200px);
     
@@ -86,12 +86,12 @@ const StyledProgress = styled.div`
   .fill{
     width: ${props => 100 * props.value}%;
     position:absolute;
-    z-index:50;
+    
     top:calc(50% - 3px);
     height:6px;
     background: #d1d1d1;
     border-radius: 2px;
-    z-index:50;
+    
   }
   input[type='range'] {
       display: block;
@@ -103,7 +103,7 @@ const StyledProgress = styled.div`
       margin:0;
       -webkit-appearance: none;
       position:relative;
-      z-index:1000;
+      
   }
 
   input[type='range']::-webkit-slider-thumb {
@@ -117,7 +117,7 @@ const StyledProgress = styled.div`
       border-radius: 50%;
       
       cursor: pointer;
-      z-index:5000;
+      
   }
   input[type=range]::-moz-range-thumb {
       position:relative;
@@ -129,7 +129,7 @@ const StyledProgress = styled.div`
       border-radius: 50%;
       margin-top: -3px;
       cursor: pointer;
-      z-index:5000;
+     
   }
   input[type=range]::-ms-thumb {
       position:relative;
@@ -141,7 +141,7 @@ const StyledProgress = styled.div`
       border-radius: 50%;
       margin-top: -3px;
       cursor: pointer;
-      z-index:5000;
+      
   }
 
   input[type='range']::-webkit-slider-runnable-track {
@@ -152,7 +152,7 @@ const StyledProgress = styled.div`
     -webkit-appearance: none;
     text-align: right;
     pointer-events: none;
-    z-index:5000;
+    
   }
   input[type="range"]::-moz-range-track  {
     margin: 12px 0;
@@ -162,7 +162,7 @@ const StyledProgress = styled.div`
     -webkit-appearance: none;
     text-align: right;
     pointer-events: none;
-    z-index:5000;
+    
   }
   input[type=range]::-ms-track { 
     border-color: transparent;
@@ -175,7 +175,7 @@ const StyledProgress = styled.div`
     -webkit-appearance: none;
     text-align: right;
     pointer-events: none;
-    z-index:5000;
+    
   }
 `;
 
@@ -240,25 +240,13 @@ const StyledVideoViewer = styled.div`
 
     color: #d1d1d1;
 
-    .videoViewerOverlay{
-      position: fixed;
-      z-index: 400;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      opacity: 0.5;
-    }
-
     .playerWrapper{
       width: 400px;
       height: 226px;
       left: calc(50% - 200px);
       top: calc(50% - 113px);
-
+      z-index: 4001;
       position: absolute;
-      z-index: 400;
       padding-bottom: 40px;
       background-color: rgba(11,11,11,0.7);
     }
@@ -441,7 +429,6 @@ class VideoViewer extends Component {
 
     return (
         <StyledVideoViewer>
-          <div className = "videoViewerOverlay"></div>
           <div>
             <div className='playerWrapper'>
               <ReactPlayer

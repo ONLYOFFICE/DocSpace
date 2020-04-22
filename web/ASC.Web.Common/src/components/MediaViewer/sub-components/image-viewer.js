@@ -7,6 +7,17 @@ import styled from "styled-components";
 
 const StyledViewer = styled(Viewer)`
 
+    .react-viewer-footer{
+        bottom: 5px!important;
+        z-index: 4001!important;
+    }
+    .react-viewer-canvas{
+        z-index: 4000!important;
+    }
+    .react-viewer-navbar,
+    .react-viewer-mask{
+        display: none
+    }
     .react-viewer-attribute{
         display: none;
     }
@@ -19,7 +30,7 @@ const StyledViewer = styled(Viewer)`
     }
 
     .react-viewer-btn{
-        background-color: none;
+        background-color: transparent;
         &:hover{
             background-color: rgba(200, 200, 200, 0.2);
         }
@@ -42,43 +53,8 @@ const StyledViewer = styled(Viewer)`
             background: none;
         }
     }
-
-
 `
 
-const NextButton = styled.div`
-   
-    height: 40px;
-    background-color: rgba(11, 11, 11, 0.7);
-    border-radius: 50%;
-
-    &:hover{
-        background-color: rgba(200, 200, 200, 0.2);
-    }
-
-    &:before{
-        content:'';
-        top: 12px;
-        left: ${props => props.orientation == "left" ? '9px;' : '15px;'};
-        position: absolute;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        display: inline-block;
-        padding: 7px;
-        transform: ${props => props.orientation == "left" ? 'rotate(-45deg)' : 'rotate(135deg)'};
-        -webkit-transform: ${props => props.orientation == "left" ? 'rotate(-45deg)' : 'rotate(135deg)'};
-    }
-  
-`;
-
-
-
-const MediaScrollButton = props => {
-  //console.log("Backdrop render");
-  return (
-    <NextButton {...props} />
-  );
-}
 
 var customToolbar = [
     {
@@ -106,7 +82,7 @@ var customToolbar = [
         actionType: 6,
         render:  <Icons.RotateIcon size="medium" isfill={true} color="#fff"/>
     },
-    {
+    /*{
         key: 'prev',
         actionType: 3,
         render:  <MediaScrollButton orientation = "right" />
@@ -116,7 +92,7 @@ var customToolbar = [
         actionType: 4,
         render:  <MediaScrollButton orientation = "left"/>
         
-    },
+    },*/
 ];
 
 class ImageViewer extends React.Component {
