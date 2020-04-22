@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -37,37 +38,54 @@ using ASC.Files.Resources;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.HttpHandlers
 {
-    public class ThirdPartyAppHandler //: IHttpHandler
+    public class ThirdPartyAppHandler
     {
         public RequestDelegate Next { get; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public ThirdPartyAppHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        {
+            Next = next;
+            ServiceProvider = serviceProvider;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
+            thirdPartyAppHandlerService.Invoke(context);
+            await Next.Invoke(context);
+        }
+    }
+
+    public class ThirdPartyAppHandlerService
+    {
         public AuthContext AuthContext { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         private ILog Log { get; set; }
 
         public string HandlerPath { get; set; }
 
-        public ThirdPartyAppHandler(
-            RequestDelegate next,
+        public ThirdPartyAppHandlerService(
             IOptionsMonitor<ILog> optionsMonitor,
             AuthContext authContext,
             BaseCommonLinkUtility baseCommonLinkUtility,
             CommonLinkUtility commonLinkUtility)
         {
-            Next = next;
             AuthContext = authContext;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
             CommonLinkUtility = commonLinkUtility;
             Log = optionsMonitor.CurrentValue;
             HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
         }
 
-        public async Task Invoke(HttpContext context)
+        public void Invoke(HttpContext context)
         {
             Log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
 
@@ -80,13 +98,11 @@ namespace ASC.Web.Files.HttpHandlers
 
                 if (app.Request(context))
                 {
-                    await Next.Invoke(context);
                     return;
                 }
             }
             catch (ThreadAbortException)
             {
-                await Next.Invoke(context);
                 //Thats is responce ending
                 return;
             }
@@ -111,7 +127,23 @@ namespace ASC.Web.Files.HttpHandlers
                 redirectUrl += HttpUtility.UrlEncode(message);
             }
             context.Response.Redirect(redirectUrl, true);
-            await Next.Invoke(context);
+        }
+    }
+
+    public static class ThirdPartyAppHandlerExtention
+    {
+        public static DIHelper AddThirdPartyAppHandlerService(this DIHelper services)
+        {
+            services.TryAddScoped<ThirdPartyAppHandlerService>();
+            return services
+                .AddCommonLinkUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddAuthContextService();
+        }
+
+        public static IApplicationBuilder UseThirdPartyAppHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ThirdPartyAppHandler>();
         }
     }
 }

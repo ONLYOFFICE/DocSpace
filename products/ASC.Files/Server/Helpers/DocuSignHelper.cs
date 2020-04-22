@@ -315,7 +315,7 @@ namespace ASC.Web.Files.Helpers
                 //        new RecipientEvent {RecipientEventStatusCode = "AuthenticationFailed"},
                 //        new RecipientEvent {RecipientEventStatusCode = "AutoResponded"},
                 //    },
-                Url = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandler.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=webhook"),
+                Url = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=webhook"),
             };
 
             Log.Debug("DocuSign hook url: " + eventNotification.Url);
@@ -367,7 +367,7 @@ namespace ASC.Web.Files.Helpers
             var envelopeId = envelopeSummary.EnvelopeId;
             var url = envelopesApi.CreateSenderView(accountId, envelopeId, new ReturnUrlRequest
             {
-                ReturnUrl = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandler.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=redirect")
+                ReturnUrl = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=redirect")
             });
             Log.Debug("DocuSign senderView: " + url.Url);
 

@@ -65,8 +65,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using static ASC.Web.Core.Files.DocumentService;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SecurityContext = ASC.Core.SecurityContext;

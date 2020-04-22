@@ -43,8 +43,6 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
-using static ASC.Web.Core.Files.DocumentService;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
