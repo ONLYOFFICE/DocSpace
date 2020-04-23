@@ -34,12 +34,13 @@ class PureArticleMainButtonContent extends React.Component {
   onFileChange = (e) => {
     const files = e.target.files;
 
-    for (let file of files) {
-      this.uploadFile(file);
+    for(let i = 0; i<files.length; i++) {
+      const isLatestFile = i === files.length - 1;
+      this.uploadFile(files[i], isLatestFile);
     }
   };
 
-  uploadFile = file => {
+  uploadFile = (file, isLatestFile) => {
     const { onLoading, filter, currentFolderId } = this.props;
 
     const fileName = file.name;
@@ -73,7 +74,7 @@ class PureArticleMainButtonContent extends React.Component {
           api.files.uploadFile(location, requestsDataArray[i]).then((res) => {
             if (i + 1 !== requestsDataArray.length) {
               sendRequestFunc(i + 1);
-            } else {
+            } else if (isLatestFile) {
               onLoading(true);
 
               const newFilter = filter.clone();
