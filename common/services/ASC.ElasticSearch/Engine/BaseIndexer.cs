@@ -75,7 +75,7 @@ namespace ASC.ElasticSearch
         }
     }
 
-    public class BaseIndexer<T> : IIndexer where T : Wrapper
+    public abstract class BaseIndexer<T> : IIndexer where T : Wrapper
     {
         private static readonly object Locker = new object();
 
@@ -271,7 +271,7 @@ namespace ASC.ElasticSearch
             return false;
         }
 
-        void IIndexer.Check()
+        public void Check()
         {
             var data = ServiceProvider.GetService<T>();
             if (!CheckExist(data)) return;
@@ -332,7 +332,7 @@ namespace ASC.ElasticSearch
             }
         }
 
-        async Task IIndexer.ReIndex()
+        public async Task ReIndex()
         {
             Clear();
             //((IIndexer) this).IndexAll();
@@ -708,6 +708,8 @@ namespace ASC.ElasticSearch
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
+
+        public abstract void IndexAll();
     }
 
     static class CamelCaseExtension

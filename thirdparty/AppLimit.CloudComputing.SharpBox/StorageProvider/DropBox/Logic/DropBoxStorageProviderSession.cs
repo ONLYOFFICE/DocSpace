@@ -1,5 +1,4 @@
-﻿using System;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.API;
+﻿using AppLimit.CloudComputing.SharpBox.StorageProvider.API;
 using AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Context;
 
 namespace AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox.Logic

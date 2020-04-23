@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files", "products\ASC.F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppLimit.CloudComputing.SharpBox", "thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj", "{5B53855C-4347-4402-B750-76C6295A35D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Files.Service", "products\ASC.Files\Service\ASC.Files.Service\ASC.Files.Service.csproj", "{725944D5-FDDC-45A9-802C-E2724DBD29F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,6 +146,10 @@ Global
 		{5B53855C-4347-4402-B750-76C6295A35D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B53855C-4347-4402-B750-76C6295A35D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B53855C-4347-4402-B750-76C6295A35D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{725944D5-FDDC-45A9-802C-E2724DBD29F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{725944D5-FDDC-45A9-802C-E2724DBD29F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{725944D5-FDDC-45A9-802C-E2724DBD29F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{725944D5-FDDC-45A9-802C-E2724DBD29F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

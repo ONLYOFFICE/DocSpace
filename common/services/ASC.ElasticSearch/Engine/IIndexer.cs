@@ -23,14 +23,14 @@
  *
 */
 
-
 using System.Threading.Tasks;
 
 namespace ASC.ElasticSearch
 {
-    internal interface IIndexer
+    public interface IIndexer
     {
         string IndexName { get; }
+        void IndexAll();
 
         void Check();
 

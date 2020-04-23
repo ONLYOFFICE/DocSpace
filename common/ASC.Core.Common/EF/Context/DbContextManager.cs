@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 
 using ASC.Common;
-
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF

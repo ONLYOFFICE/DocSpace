@@ -33,8 +33,6 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
