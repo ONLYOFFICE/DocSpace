@@ -30,3 +30,69 @@ export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2
 });
+
+/**
+ * Enum for filter type.
+ * @readonly
+ */
+export const FilterType = Object.freeze({
+  None: 0,
+  FilesOnly: 1,
+  FoldersOnly: 2,
+  DocumentsOnly: 3,
+  PresentationsOnly: 4,
+  SpreadsheetsOnly: 5,
+  ImagesOnly: 7,
+  ByUser: 8,
+  ByDepartment: 9,
+  ArchiveOnly: 10,
+  ByExtension: 11,
+  MediaOnly: 12,
+});
+
+/**
+ * Enum for file type.
+ * @readonly
+ */
+export const FileType = Object.freeze({
+  Unknown: 0,
+  Archive: 1,
+  Video: 2,
+  Audio: 3,
+  Image: 4,
+  Spreadsheet: 5,
+  Presentation: 6,
+  Document: 7
+});
+
+/**
+ * Enum for file action.
+ * @readonly
+ */
+export const FileAction = Object.freeze({
+  Create: 0,
+  Rename: 1
+});
+
+/**
+ * Enum for root folders type.
+ * @readonly
+ */
+export const FolderType = Object.freeze({
+  DEFAULT: 0,
+  COMMON: 1,
+  BUNCH: 2,
+  TRASH: 3,
+  USER: 5,
+  SHARE: 6,
+  Projects: 8
+});
+
+export const ShareAccessRights = Object.freeze({
+  FullAccess: 1,
+  ReadOnly: 2,
+  DenyAccess: 3,
+  Review: 5,
+  Comment: 6,
+  FormFilling: 7
+})

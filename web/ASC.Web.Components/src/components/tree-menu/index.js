@@ -3,11 +3,23 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Tree from 'rc-tree';
+import Badge from "../badge";
+
+const StyledTreeContainer = styled.div`
+    display: flex;
+
+    .tree_bage {
+        display: inline-table;
+        z-index: 1;
+        overflow: unset;
+        padding: 3px;
+    }
+`;
 
 const StyledTreeMenu = styled(Tree)`
-
     margin: 0;
     padding: 0;
+    width: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
     &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
@@ -27,13 +39,12 @@ const StyledTreeMenu = styled(Tree)`
     }
     .rc-tree-child-tree-open {
         display: block;
-
+        margin-left: 8px;
         li:first-child{
             margin-top: 6px;
+            margin-left: 0;
         }
-        span.rc-tree-iconEle{
-            margin: 3px 7px 3px 20px;
-        }
+        
     }
     .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
     .rc-tree-treenode-disabled > a,
@@ -69,62 +80,88 @@ const StyledTreeMenu = styled(Tree)`
         `
         : ''
     }
+    .rc-tree-title {
+        width: ${props => props.badgeLabel && 'calc(100% - 60px) !important'};
+    }
   
 `;
 
-const TreeMenu = props => {
+const TreeMenu = React.forwardRef((props, ref) => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style } = props;
+        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBadgeClick, loadData } = props;
+
+    const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
     const onTreeNodeSelect = (data, e) => {
         const result = e.selected ? data : [e.node.props.eventKey];
         onSelect(result, e);
     }
     return (
-        <StyledTreeMenu
+        <StyledTreeContainer
             className={className}
             id={id}
             style={style}
-            checkable={!!checkable}
-            draggable={!!draggable}
-            disabled={!!disabled}
-            multiple={!!multiple}
-            showLine={!!showLine}
-            showIcon={!!showIcon}
-            defaultExpandAll={!!defaultExpandAll}
-            defaultExpandParent={!!defaultExpandParent}
-            icon={icon}
-
-            selectedKeys={selectedKeys}
-            defaultSelectedKeys={defaultSelectedKeys}
-            defaultExpandedKeys={defaultExpandedKeys}
-            defaultCheckedKeys={defaultCheckedKeys}
-
-            onDragStart={onDragStart}
-            onDrop={onDrop}
-            onDragEnd={onDragEnd}
-            onDragLeave={onDragLeave}
-            onDragOver={onDragOver}
-
-            switcherIcon={switcherIcon}
-            onSelect={onTreeNodeSelect}
-            onDragEnter={onDragEnter}
-
-            onCheck={onCheck}
-            onExpand={onExpand}
-
-            onLoad={onLoad}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onRightClick={onRightClick}
         >
-            {children}
-        </StyledTreeMenu>
+            <StyledTreeMenu
+                ref={ref}
+                {...expandedKeysProp}
+                loadData={loadData}
+                checkable={!!checkable}
+                draggable={!!draggable}
+                disabled={!!disabled}
+                multiple={!!multiple}
+                showLine={!!showLine}
+                showIcon={!!showIcon}
+                defaultExpandAll={!!defaultExpandAll}
+                defaultExpandParent={!!defaultExpandParent}
+                icon={icon}
 
+                selectedKeys={selectedKeys}
+                defaultSelectedKeys={defaultSelectedKeys}
+                defaultExpandedKeys={defaultExpandedKeys}
+                defaultCheckedKeys={defaultCheckedKeys}
+
+                onDragStart={onDragStart}
+                onDrop={onDrop}
+                onDragEnd={onDragEnd}
+                onDragLeave={onDragLeave}
+                onDragOver={onDragOver}
+
+                switcherIcon={switcherIcon}
+                onSelect={onTreeNodeSelect}
+                onDragEnter={onDragEnter}
+
+                onCheck={onCheck}
+                onExpand={onExpand}
+
+                onLoad={onLoad}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onRightClick={onRightClick}
+
+                badgeLabel={badgeLabel}
+            >
+                {children}
+            </StyledTreeMenu>
+                {badgeLabel && (                
+                    <Badge
+                        className="tree_bage"
+                        label={badgeLabel}
+                        backgroundColor="#ED7309"
+                        color="#FFFFFF"
+                        fontSize="11px"
+                        fontWeight={800}
+                        borderRadius="11px"
+                        padding="0 5px"
+                        maxWidth="50px"
+                        onClick={onBadgeClick}
+                    />
+                )}
+        </StyledTreeContainer>
     );
-}
+})
 
 TreeMenu.propTypes = {
     checkable: PropTypes.bool,
@@ -139,6 +176,8 @@ TreeMenu.propTypes = {
     icon: PropTypes.func,
     onDragStart: PropTypes.func,
     onDrop: PropTypes.func,
+    onBadgeClick: PropTypes.func,
+    loadData: PropTypes.func,
 
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
@@ -146,7 +185,10 @@ TreeMenu.propTypes = {
     ]),
     className: PropTypes.string,
     id: PropTypes.string,
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    badgeLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
+
+TreeMenu.displayName = "TreeMenu";
 
 export default TreeMenu

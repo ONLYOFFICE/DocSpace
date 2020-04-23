@@ -149,6 +149,10 @@ import OrigAddDepartmentIcon from './add.department.react.svg';
 import OrigAddEmployeeIcon from './add.employee.react.svg';
 import OrigAddGuestIcon from './add.guest.react.svg';
 
+import OrigSpreadsheetIcon from './spreadsheet.react.svg';
+
+import OrigKeyIcon from './key.react.svg';
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   'AZSortingIcon'
@@ -650,6 +654,11 @@ export const SkypeIcon = createStyledIcon(
   OrigSkypeIcon,
   'SkypeIcon'
 );
+export const SpreadsheetIcon = createStyledIcon(
+  OrigSpreadsheetIcon,
+  'SpreadsheetIcon'
+);
+
 export const StarIcon = createStyledIcon(
   OrigStarIcon,
   'StarIcon'
@@ -726,4 +735,9 @@ export const ShareTwitterIcon = createStyledIcon(
 export const ShareLinkedInIcon = createStyledIcon(
   OrigShareLinkedInIcon,
   'ShareLinkedInIcon'
+);
+
+export const KeyIcon = createStyledIcon(
+  OrigKeyIcon,
+  'KeyIcon'
 );

@@ -12,4 +12,5 @@ export { default as Layout } from './Layout';
 export { default as ProfileMenu } from './ProfileMenu';
 export { default as ErrorContainer } from './ErrorContainer';
 export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as FilterInput } from './FilterInput';
 export { default as MediaViewer } from './MediaViewer';

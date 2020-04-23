@@ -668,15 +668,15 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> CreateFolder(string folderId, string title)
+        public FolderWrapper<string> CreateFolder(string folderId, FolderModel folderModel)
         {
-            return FilesControllerHelperString.CreateFolder(folderId, title);
+            return FilesControllerHelperString.CreateFolder(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId:int}")]
-        public FolderWrapper<int> CreateFolder(int folderId, string title)
+        public FolderWrapper<int> CreateFolder(int folderId, FolderModel folderModel)
         {
-            return FilesControllerHelperInt.CreateFolder(folderId, title);
+            return FilesControllerHelperInt.CreateFolder(folderId, folderModel.Title);
         }
 
 
@@ -689,9 +689,9 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<int> CreateFile(string title)
+        public FileWrapper<int> CreateFile([FromBody]FileModelFull model)
         {
-            return CreateFile(GlobalFolderHelper.FolderMy, title);
+            return CreateFile(GlobalFolderHelper.FolderMy, model);
         }
 
         /// <summary>
@@ -704,15 +704,15 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file", DisableFormat = true)]
-        public FileWrapper<string> CreateFile(string folderId, string title)
+        public FileWrapper<string> CreateFile(string folderId, [FromBody]FileModelFull model)
         {
-            return FilesControllerHelperString.CreateFile(folderId, title);
+            return FilesControllerHelperString.CreateFile(folderId, model.Title);
         }
 
         [Create("{folderId:int}/file")]
-        public FileWrapper<int> CreateFile(int folderId, string title)
+        public FileWrapper<int> CreateFile(int folderId, [FromBody]FileModelFull model)
         {
-            return FilesControllerHelperInt.CreateFile(folderId, title);
+            return FilesControllerHelperInt.CreateFile(folderId, model.Title);
         }
 
         /// <summary>
@@ -726,15 +726,15 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
         [Update("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> RenameFolder(string folderId, string title)
+        public FolderWrapper<string> RenameFolder(string folderId, FolderModel folderModel)
         {
-            return FilesControllerHelperString.RenameFolder(folderId, title);
+            return FilesControllerHelperString.RenameFolder(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId:int}")]
-        public FolderWrapper<int> RenameFolder(int folderId, string title)
+        public FolderWrapper<int> RenameFolder(int folderId, FolderModel folderModel)
         {
-            return FilesControllerHelperInt.RenameFolder(folderId, title);
+            return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
         }
 
         /// <summary>
@@ -801,15 +801,15 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("file/{fileId}", DisableFormat = true)]
-        public FileWrapper<string> UpdateFile(string fileId, string title, int lastVersion)
+        public FileWrapper<string> UpdateFile(string fileId, int lastVersion, [FromBody]FileModelFull model)
         {
-            return FilesControllerHelperString.UpdateFile(fileId, title, lastVersion);
+            return FilesControllerHelperString.UpdateFile(fileId,  model.Title, lastVersion);
         }
 
         [Update("file/{fileId:int}")]
-        public FileWrapper<int> UpdateFile(int fileId, string title, int lastVersion)
+        public FileWrapper<int> UpdateFile(int fileId, int lastVersion, [FromBody]FileModelFull model)
         {
-            return FilesControllerHelperInt.UpdateFile(fileId, title, lastVersion);
+            return FilesControllerHelperInt.UpdateFile(fileId, model.Title, lastVersion);
         }
 
         /// <summary>

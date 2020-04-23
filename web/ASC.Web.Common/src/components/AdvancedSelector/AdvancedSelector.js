@@ -84,7 +84,7 @@ class AdvancedSelector extends React.Component {
 
   render() {
     const { displayType } = this.state;
-    const { isOpen, id, className, style } = this.props;
+    const { isOpen, id, className, style, withoutAside } = this.props;
 
     //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
 
@@ -95,14 +95,16 @@ class AdvancedSelector extends React.Component {
             <DropDown open={isOpen} className="dropdown-container" clickOutsideAction={this.onClose}>
               <Selector {...this.props} displayType={displayType} />
             </DropDown>
-        : 
-        <>
-          <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
-          <Aside visible={isOpen} scale={false} className="aside-container">
-            <Selector {...this.props} displayType={displayType} />
-          </Aside>
-        </>
-        }
+        : withoutAside ? (
+          <Selector {...this.props} displayType={displayType} />
+        ) : (
+          <>
+            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+            <Aside visible={isOpen} scale={false} className="aside-container">
+              <Selector {...this.props} displayType={displayType} />
+            </Aside>
+          </>
+        )}
       </div>
     );
   }
@@ -136,6 +138,7 @@ AdvancedSelector.propTypes = {
   allowAnyClickClose: PropTypes.bool,
   hasNextPage: PropTypes.bool,
   isNextPageLoading: PropTypes.bool,
+  withoutAside: PropTypes.bool,
 
   onSearchChanged: PropTypes.func,
   onSelect: PropTypes.func,

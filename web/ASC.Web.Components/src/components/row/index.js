@@ -49,7 +49,7 @@ const StyledElement = styled.div`
 
 const StyledOptionButton = styled.div`
   display: flex;
-  width: 32px;
+  width: ${props => props.spacerWidth && props.spacerWidth};
 
   .expandButton > div:first-child {
     padding-top: 8px;
@@ -70,11 +70,12 @@ class Row extends React.Component {
     //console.log("Row render");
     const {
       checked,
-      element,
       children,
-      data,
+      contextButtonSpacerWidth,
       contextOptions,
-      onSelect
+      data,
+      element,
+      onSelect,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -106,10 +107,10 @@ class Row extends React.Component {
         )}
         {renderElement && <StyledElement>{element}</StyledElement>}
         <StyledContent>{children}</StyledContent>
-        <StyledOptionButton>
-          {renderContext 
-          ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
-          : (<div className="expandButton">{' '}</div>)}
+        <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
+          {renderContext
+            ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
+            : (<div className="expandButton">{' '}</div>)}
         </StyledOptionButton>
       </StyledRow>
     );
@@ -120,6 +121,7 @@ Row.propTypes = {
   checked: PropTypes.bool,
   children: PropTypes.element,
   className: PropTypes.string,
+  contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
   data: PropTypes.object,
   element: PropTypes.element,
@@ -127,6 +129,10 @@ Row.propTypes = {
   needForUpdate: PropTypes.func,
   onSelect: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+};
+
+Row.defaultProps = {
+  contextButtonSpacerWidth: '32px'
 };
 
 export default Row;

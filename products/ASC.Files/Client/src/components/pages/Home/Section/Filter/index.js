@@ -1,180 +1,202 @@
 import React from "react";
 import { connect } from "react-redux";
-import { FilterInput } from "asc-web-components";
 import { fetchFiles } from "../../../../../store/files/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store } from 'asc-web-common';
-const { isAdmin } = store.auth.selectors;
+import { constants, FilterInput } from 'asc-web-common';
+import store from "../../../../../store/store";
+import isEqual from "lodash/isEqual";
 
-const getEmployeeStatus = filterValues => {
-  const employeeStatus = result(
+const { FilterType } = constants;
+
+const getFilterType = filterValues => {
+  const filterType = result(
     find(filterValues, value => {
-      return value.group === "filter-status";
+      return value.group === "filter-filterType";
     }),
     "key"
   );
 
-  return employeeStatus ? +employeeStatus : null;
+  return filterType ? +filterType : null;
 };
 
-const getActivationStatus = filterValues => {
-  const activationStatus = result(
+const getAuthorType = filterValues => {
+  const authorType = result(
     find(filterValues, value => {
-      return value.group === "filter-email";
+      return value.group === "filter-author";
     }),
     "key"
   );
 
-  return activationStatus ? +activationStatus : null;
+  return authorType ? authorType : null;
 };
 
-const getRole = filterValues => {
-  const employeeStatus = result(
-    find(filterValues, value => {
-      return value.group === "filter-type";
-    }),
-    "key"
-  );
-
-  return employeeStatus || null;
+const getSelectedItem = (filterValues, type) => {
+  const selectedItem = filterValues.find(item => item.key === type);
+  return selectedItem || null;
 };
 
-const getGroup = filterValues => {
-  const groupId = result(
+const getSearchParams = filterValues => {
+  const searchParams = result(
     find(filterValues, value => {
-      return value.group === "filter-group";
+      return value.group === "filter-folders";
     }),
     "key"
   );
 
-  return groupId || null;
+  return searchParams || 'true';
 };
 
 class SectionFilterContent extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false
+    }
+
+  }
   componentDidMount() {
-    const { location, filter, onLoading, fetchFiles } = this.props;
+    const { location, filter, onLoading, selectedFolderId, filterColumnCount } = this.props;
 
     const newFilter = getFilterByLocation(location);
 
     if (!newFilter || newFilter.equals(filter)) return;
-
+    this.setState({ isReady: true })
     onLoading(true);
-    fetchFiles(newFilter).finally(() => onLoading(false));
+    fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      .finally(() => onLoading(false));
   }
 
   onFilter = data => {
-    const { onLoading, fetchFiles, filter } = this.props;
+    const { onLoading, filter, selectedFolderId } = this.props;
 
-    const employeeStatus = getEmployeeStatus(data.filterValues);
-    const activationStatus = getActivationStatus(data.filterValues);
-    const role = getRole(data.filterValues);
-    const group = getGroup(data.filterValues);
+    const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
+    const authorType = getAuthorType(data.filterValues);
+    const withSubfolders = getSearchParams(data.filterValues);
+
+
+    const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
+    const selectedFilterItem = {};
+    if (selectedItem) {
+      selectedFilterItem.key = selectedItem.selectedItem.key;
+      selectedFilterItem.label = selectedItem.selectedItem.label;
+      selectedFilterItem.type = selectedItem.typeSelector;
+    }
 
     const newFilter = filter.clone();
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
-    newFilter.employeeStatus = employeeStatus;
-    newFilter.activationStatus = activationStatus;
-    newFilter.role = role;
+    newFilter.filterType = filterType;
     newFilter.search = search;
-    newFilter.group = group;
+    newFilter.authorType = authorType;
+    newFilter.withSubfolders = withSubfolders;
+    newFilter.selectedItem = selectedFilterItem;
 
     onLoading(true);
-    fetchFiles(newFilter).finally(() => onLoading(false));
+    fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      .finally(() => onLoading(false));
   };
 
   getData = () => {
-    const { user, folders, t, settings } = this.props;
-    const { guestCaption, userCaption, groupCaption } = settings.customNames;
+    const { t, customNames, user, selectedItem } = this.props;
+    const { usersCaption, groupsCaption } = customNames;
 
-    const options = !isAdmin(user)
-      ? []
-      : [
-        {
-          key: "filter-status",
-          group: "filter-status",
-          label: t("UserStatus"),
-          isHeader: true
-        },
-        {
-          key: "1",
-          group: "filter-status",
-          label: t("LblActive")
-        },
-        {
-          key: "2",
-          group: "filter-status",
-          label: t("LblTerminated")
-        }
-      ];
-
-    const groupOptions = folders.map(group => {
-      return {
-        key: group.id,
-        inSubgroup: true,
-        group: "filter-group",
-        label: group.name
-      };
-    });
+    const options = [
+      {
+        key: "filter-filterType",
+        group: "filter-filterType",
+        label: t("Type"),
+        isHeader: true
+      },
+      {
+        key: FilterType.FoldersOnly.toString(),
+        group: "filter-filterType",
+        label: t("Folders")
+      },
+      {
+        key: FilterType.DocumentsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Documents")
+      },
+      {
+        key: FilterType.PresentationsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Presentations")
+      },
+      {
+        key: FilterType.SpreadsheetsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Spreadsheets")
+      },
+      {
+        key: FilterType.ImagesOnly.toString(),
+        group: "filter-filterType",
+        label: t("Images")
+      },
+      {
+        key: FilterType.MediaOnly.toString(),
+        group: "filter-filterType",
+        label: t("Media")
+      },
+      {
+        key: FilterType.ArchiveOnly.toString(),
+        group: "filter-filterType",
+        label: t("Archives")
+      },
+      {
+        key: FilterType.FilesOnly.toString(),
+        group: "filter-filterType",
+        label: t("AllFiles")
+      }
+    ];
 
     const filterOptions = [
       ...options,
       {
-        key: "filter-email",
-        group: "filter-email",
-        label: t("Email"),
-        isHeader: true
+        key: "filter-author",
+        group: "filter-author",
+        label: t("Author"),
+        isHeader: true,
       },
-      {
-        key: "1",
-        group: "filter-email",
-        label: t("LblActive")
-      },
-      {
-        key: "2",
-        group: "filter-email",
-        label: t("LblPending")
-      },
-      {
-        key: "filter-type",
-        group: "filter-type",
-        label: t("UserType"),
-        isHeader: true
-      },
-      { key: "admin", group: "filter-type", label: t("Administrator") },
       {
         key: "user",
-        group: "filter-type",
-        label: userCaption
+        group: "filter-author",
+        label: usersCaption,
+        isSelector: true,
+        defaultOptionLabel: t("DefaultOptionLabel"),
+        defaultSelectLabel: t("LblSelect"),
+        groupsCaption,
+        defaultOption: user,
+        selectedItem
       },
       {
-        key: "guest",
-        group: "filter-type",
-        label: guestCaption
+        key: "group",
+        group: "filter-author",
+        label: groupsCaption,
+        defaultSelectLabel: t("LblSelect"),
+        isSelector: true,
+        selectedItem
       },
       {
-        key: "filter-other",
-        group: "filter-other",
-        label: t("LblOther"),
+        key: "filter-folders",
+        group: "filter-folders",
+        label: t("Folders"),
         isHeader: true
       },
       {
-        key: "filter-type-group",
-        group: "filter-other",
-        subgroup: "filter-group",
-        label: groupCaption,
-        defaultSelectLabel: t("LblSelect")
+        key: "false",
+        group: "filter-folders",
+        label: t('NoSubfolders')
       },
-      ...groupOptions
     ];
 
     //console.log("getData (filterOptions)", filterOptions);
@@ -186,8 +208,12 @@ class SectionFilterContent extends React.Component {
     const { t } = this.props;
 
     return [
-      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true }
+      { key: "lastModifiedDate", label: t("ByLastModifiedDate"), default: true },
+      { key: "creationDate", label: t("ByCreationDate"), default: true },
+      { key: "title", label: t("ByTitle"), default: true },
+      { key: "type", label: t("ByType"), default: true },
+      { key: "size", label: t("BySize"), default: true },
+      { key: "author", label: t("ByAuthor"), default: true },
     ];
   };
 
@@ -201,33 +227,33 @@ class SectionFilterContent extends React.Component {
 
     selectedFilterData.inputValue = filter.search;
 
-    if (filter.employeeStatus) {
+    if (filter.filterType >= 0) {
       selectedFilterData.filterValues.push({
-        key: `${filter.employeeStatus}`,
-        group: "filter-status"
+        key: `${filter.filterType}`,
+        group: "filter-filterType"
       });
     }
 
-    if (filter.activationStatus) {
+    if (filter.authorType) {
       selectedFilterData.filterValues.push({
-        key: `${filter.activationStatus}`,
-        group: "filter-email"
+        key: `${filter.authorType}`,
+        group: "filter-author"
       });
     }
 
-    if (filter.role) {
+    if (filter.withSubfolders === 'false') {
       selectedFilterData.filterValues.push({
-        key: filter.role,
-        group: "filter-type"
+        key: filter.withSubfolders,
+        group: "filter-folders"
       });
     }
 
-    if (filter.group) {
-      selectedFilterData.filterValues.push({
-        key: filter.group,
-        group: "filter-group"
-      });
-    }
+    // if (filter.group) {
+    //   selectedFilterData.filterValues.push({
+    //     key: filter.group,
+    //     group: "filter-group"
+    //   });
+    // }
 
     return selectedFilterData;
   };
@@ -240,9 +266,15 @@ class SectionFilterContent extends React.Component {
   };
 
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (!isEqual(this.props.filter, nextProps.filter) || this.props.selectedFolderId !== nextProps.selectedFolderId || this.state.isReady !== nextState.isReady);
+  }
+  
+
   render() {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, i18n } = this.props;
+    const filterColumnCount = window.innerWidth < 500 ? {} : {filterColumnCount: 3} 
     return (
       <FilterInput
         getFilterData={this.getData}
@@ -254,6 +286,8 @@ class SectionFilterContent extends React.Component {
         placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
         language={i18n.language}
+        isReady={this.state.isReady}
+        {...filterColumnCount}
       />
     );
   }
@@ -262,9 +296,10 @@ class SectionFilterContent extends React.Component {
 function mapStateToProps(state) {
   return {
     user: state.auth.user,
-    folders: state.files.folders,
     filter: state.files.filter,
-    settings: state.auth.settings
+    customNames: state.auth.settings.customNames,
+    selectedFolderId: state.files.selectedFolder.id,
+    selectedItem: state.files.filter.selectedItem
   };
 }
 

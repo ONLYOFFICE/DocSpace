@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import TreeMenu from '.';
@@ -127,6 +127,7 @@ const TreeMenuStory = props => {
         checkable={boolean('checkable', false)}
         draggable={boolean('draggable', false)}
         disabled={boolean('disabled', false)}
+        badgeLabel={number('badgeLabel')}
         multiple={boolean('multiple', false)}
         showIcon={boolean('showIcon', true)}
 

@@ -3,12 +3,13 @@ import { connect } from "react-redux";
 import { fetchFiles } from "../../../../../store/files/actions";
 import { Paging } from "asc-web-components";
 import { useTranslation } from 'react-i18next';
+import store from "../../../../../store/store";
 
 const SectionPagingContent = ({
-  fetchFiles,
   filter,
   onLoading,
-  selectedCount
+  selectedCount,
+  selectedFolderId
 }) => {
   const { t } = useTranslation();
   const onNextClick = useCallback(
@@ -23,9 +24,10 @@ const SectionPagingContent = ({
       newFilter.page++;
 
       onLoading(true);
-      fetchFiles(newFilter).finally(() => onLoading(false));
+      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+        .finally(() => onLoading(false));
     },
-    [filter, fetchFiles, onLoading]
+    [filter, selectedFolderId, onLoading]
   );
 
   const onPrevClick = useCallback(
@@ -41,9 +43,10 @@ const SectionPagingContent = ({
       newFilter.page--;
 
       onLoading(true);
-      fetchFiles(newFilter).finally(() => onLoading(false));
+      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+        .finally(() => onLoading(false));
     },
-    [filter, fetchFiles, onLoading]
+    [filter, selectedFolderId, onLoading]
   );
 
   const onChangePageSize = useCallback(
@@ -55,9 +58,10 @@ const SectionPagingContent = ({
       newFilter.pageCount = pageItem.key;
 
       onLoading(true);
-      fetchFiles(newFilter).finally(() => onLoading(false));
+      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+        .finally(() => onLoading(false));
     },
-    [filter, fetchFiles, onLoading]
+    [filter, selectedFolderId, onLoading]
   );
 
   const onChangePage = useCallback(
@@ -68,9 +72,10 @@ const SectionPagingContent = ({
       newFilter.page = pageItem.key;
 
       onLoading(true);
-      fetchFiles(newFilter).finally(() => onLoading(false));
+      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      .finally(() => onLoading(false));
     },
-    [filter, fetchFiles, onLoading]
+    [filter, selectedFolderId, onLoading]
   );
 
   const countItems = useMemo(
@@ -96,7 +101,7 @@ const SectionPagingContent = ({
     const totalPages = Math.ceil(filter.total / filter.pageCount);
     return [...Array(totalPages).keys()].map(
       item => {
-        return { key: item, label: t('PageOfTotalPage', { page: item+1, totalPage: totalPages }) };
+        return { key: item, label: t('PageOfTotalPage', { page: item + 1, totalPage: totalPages }) };
       }
     );
   }, [filter.total, filter.pageCount, t]);
@@ -119,28 +124,29 @@ const SectionPagingContent = ({
   return filter.total < filter.pageCount ? (
     <></>
   ) : (
-    <Paging
-      previousLabel={t("PreviousPage")}
-      nextLabel={t("NextPage")}
-      pageItems={pageItems}
-      onSelectPage={onChangePage}
-      countItems={countItems}
-      onSelectCount={onChangePageSize}
-      displayItems={false}
-      disablePrevious={!filter.hasPrev()}
-      disableNext={!filter.hasNext()}
-      previousAction={onPrevClick}
-      nextAction={onNextClick}
-      openDirection="top"
-      selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
-      selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
-    />
-  );
+      <Paging
+        previousLabel={t("PreviousPage")}
+        nextLabel={t("NextPage")}
+        pageItems={pageItems}
+        onSelectPage={onChangePage}
+        countItems={countItems}
+        onSelectCount={onChangePageSize}
+        displayItems={false}
+        disablePrevious={!filter.hasPrev()}
+        disableNext={!filter.hasNext()}
+        previousAction={onPrevClick}
+        nextAction={onNextClick}
+        openDirection="top"
+        selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
+        selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
+      />
+    );
 };
 
 function mapStateToProps(state) {
   return {
-    filter: state.files.filter
+    filter: state.files.filter,
+    selectedFolderId: state.files.selectedFolder.id
   };
 }
 

@@ -220,6 +220,7 @@ const TreeNodeMenu = styled(TreeNode)`
         mix-blend-mode: normal;
         border-radius: 3px;
         z-index: 0;
+        width: 108%;
     }
     
 `;

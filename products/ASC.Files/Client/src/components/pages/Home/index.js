@@ -34,12 +34,12 @@ class PureHome extends React.Component {
   }
 
   renderGroupButtonMenu = () => {
-    const { files, selection, selected, setSelected } = this.props;
+    const { files, selection, selected, setSelected, folders } = this.props;
 
     const headerVisible = selection.length > 0;
     const headerIndeterminate =
-      headerVisible && selection.length > 0 && selection.length < files.length;
-    const headerChecked = headerVisible && selection.length === files.length;
+      headerVisible && selection.length > 0 && selection.length < files.length + folders.length;
+    const headerChecked = headerVisible && selection.length === files.length + folders.length;
 
     /*console.log(`renderGroupButtonMenu()
       headerVisible=${headerVisible} 
@@ -98,7 +98,8 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      selected
+      selected,
+      isLoading
     } = this.state;
     const { t } = this.props;
     return (
@@ -113,11 +114,18 @@ class PureHome extends React.Component {
           fontColor={"#999"}
         />
         <PageLayout
-          withBodyScroll={true}
-          withBodyAutoFocus={true}
+          withBodyScroll
+          withBodyAutoFocus
+
+          //showProgressBar
+          //progressBarMaxValue
+          //progressBarValue
+          //progressBarDropDownContent
+          //progressBarLabel={`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
+
           articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent />}
-          articleBodyContent={<ArticleBodyContent />}
+          articleMainButtonContent={<ArticleMainButtonContent/>}
+          articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
           sectionHeaderContent={
             <SectionHeaderContent
               isHeaderVisible={isHeaderVisible}
@@ -148,9 +156,9 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = (props) => { 
+const Home = (props) => {
   changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>); 
+  return (<I18nextProvider i18n={i18n}><HomeContainer {...props} /></I18nextProvider>);
 }
 
 Home.propTypes = {
@@ -162,6 +170,7 @@ Home.propTypes = {
 function mapStateToProps(state) {
   return {
     files: state.files.files,
+    folders: state.files.folders,
     selection: state.files.selection,
     selected: state.files.selected,
     isLoaded: state.auth.isLoaded

@@ -92,7 +92,10 @@ class GroupSelector extends React.Component {
       onSelect,
       onCancel,
       t,
-      searchPlaceHolderLabel
+      searchPlaceHolderLabel,
+      displayType,
+      withoutAside,
+      embeddedComponent
     } = this.props;
 
     return (
@@ -105,7 +108,7 @@ class GroupSelector extends React.Component {
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         size={"compact"}
-        displayType={"auto"}
+        displayType={displayType}
         selectedOptions={selectedOptions}
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
@@ -119,6 +122,8 @@ class GroupSelector extends React.Component {
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onCancel={onCancel}
+        withoutAside={withoutAside}
+        embeddedComponent={embeddedComponent}
       />
     );
   }
@@ -137,10 +142,15 @@ GroupSelector.propTypes = {
   style: PropTypes.object,
   t: PropTypes.func,
   useFake: PropTypes.bool,
+  displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
+  withoutAside: PropTypes.bool,
+  embeddedComponent: PropTypes.any
 };
 
 GroupSelector.defaultProps = {
-  useFake: false
+  useFake: false,
+  displayType: "auto",
+  withoutAside: false
 };
 
 const ExtendedGroupSelector = withTranslation()(GroupSelector);

@@ -67,7 +67,8 @@ const Selector = props => {
     onSearchChanged,
     onGroupChanged,
     size,
-    allowGroupSelection
+    allowGroupSelection,
+    embeddedComponent
   } = props;
 
   //console.log("options", options);
@@ -570,6 +571,7 @@ const Selector = props => {
       isMultiSelect={isMultiSelect}
       allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
+      className="selector-wrapper"
     >
       <Column className="column-options" displayType={displayType} size={size}>
         <Header className="header-options">
@@ -697,6 +699,7 @@ const Selector = props => {
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}
         onClick={onAddClick}
+        embeddedComponent={embeddedComponent}
       />
     </StyledSelector>
   );
@@ -731,7 +734,9 @@ Selector.propTypes = {
   onSelect: PropTypes.func,
   onSearchChanged: PropTypes.func,
   onGroupChanged: PropTypes.func,
-  getOptionTooltipContent: PropTypes.func
+  getOptionTooltipContent: PropTypes.func,
+
+  embeddedComponent: PropTypes.any
 };
 
 Selector.defaultProps = {

@@ -20,14 +20,13 @@ import {
   Paging,
   IconButton,
   toastr,
-  FilterInput,
   Button,
   RequestLoader,
   Loader,
   EmptyScreenContainer,
   Icons
 } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import { FilterInput, PeopleSelector } from "asc-web-common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
@@ -358,185 +357,185 @@ class PureAdminsSettings extends Component {
         {showLoader ? (
           <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
-          <>
-            <RequestLoader
-              visible={isLoading}
-              zIndex={256}
-              loaderSize="16px"
-              loaderColor={"#999"}
-              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize="12px"
-              fontColor={"#999"}
-              className="page_loader"
-            />
-
-            <ToggleContentContainer>
-              <div className="buttons_container">
-                <div className="people-admin_container">
-                  <Button
-                    id="people-admin-selector_button"
-                    size="medium"
-                    primary={true}
-                    label={t("SetPeopleAdmin")}
-                    isDisabled={isLoading}
-                    onClick={this.onShowGroupSelector}
-                  />
-                  <PeopleSelector
-                    id="people-admin-selector"
-                    isOpen={showSelector}
-                    isMultiSelect={true}
-                    role="user"
-                    onSelect={this.onSelect}
-                    onCancel={this.onCancelSelector}
-                    defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
-                    groupsCaption={groupsCaption}
-                  />
-                </div>
-                <div className="full-admin_container">
-                  <Button
-                    id="full-admin-selector_button"
-                    size="medium"
-                    primary={true}
-                    label={t("SetPortalAdmin")}
-                    isDisabled={isLoading}
-                    onClick={this.onShowFullAdminGroupSelector}
-                  />
-                  <PeopleSelector
-                    id="full-admin-selector"
-                    isOpen={showFullAdminSelector}
-                    isMultiSelect={true}
-                    role="user"
-                    onSelect={this.onSelectFullAdmin}
-                    onCancel={this.onCancelSelector}
-                    defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
-                    groupsCaption={groupsCaption}
-                  />
-                </div>
-              </div>
-
-              <FilterInput
-                className="filter_container"
-                getFilterData={() => []}
-                getSortData={this.getSortData}
-                onFilter={this.onFilter}
-                directionAscLabel={t("DirectionAscLabel")}
-                directionDescLabel={t("DirectionDescLabel")}
+            <>
+              <RequestLoader
+                visible={isLoading}
+                zIndex={256}
+                loaderSize="16px"
+                loaderColor={"#999"}
+                label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+                fontSize="12px"
+                fontColor={"#999"}
+                className="page_loader"
               />
 
-              {admins.length > 0 ? (
-                <>
-                  <div className="wrapper">
-                    <RowContainer manualHeight={`${admins.length * 50}px`}>
-                      {admins.map(user => {
-                        const element = (
-                          <Avatar
-                            size="small"
-                            role={getUserRole(user)}
-                            userName={user.displayName}
-                            source={user.avatar}
-                          />
-                        );
-                        const nameColor =
-                          user.status === "pending" ? "#A3A9AE" : "#333333";
-
-                        return (
-                          <Row
-                            key={user.id}
-                            status={user.status}
-                            data={user}
-                            element={element}
-                          >
-                            <RowContent disableSideInfo={true}>
-                              <Link
-                                containerWidth="120px"
-                                type="page"
-                                title={user.displayName}
-                                isBold={true}
-                                fontSize="15px"
-                                color={nameColor}
-                                href={user.profileUrl}
-                              >
-                                {user.displayName}
-                              </Link>
-                              <div style={{ maxWidth: 120 }} />
-
-                              <Text>
-                                {user.isAdmin
-                                  ? t("AccessRightsFullAccess")
-                                  : t("PeopleAdmin")}
-                              </Text>
-
-                              {!user.isOwner ? (
-                                <IconButton
-                                  className="remove_icon"
-                                  size="16"
-                                  isDisabled={isLoading}
-                                  onClick={this.onChangeAdmin.bind(
-                                    this,
-                                    [user.id],
-                                    false,
-                                    "00000000-0000-0000-0000-000000000000"
-                                  )}
-                                  iconName={"CatalogTrashIcon"}
-                                  isFill={true}
-                                  isClickable={false}
-                                />
-                              ) : (
-                                <div />
-                              )}
-                            </RowContent>
-                          </Row>
-                        );
-                      })}
-                    </RowContainer>
-                  </div>
-                  <div className="wrapper">
-                    <Paging
-                      previousLabel={t("PreviousPage")}
-                      nextLabel={t("NextPage")}
-                      openDirection="top"
-                      countItems={this.countItems()}
-                      pageItems={this.pageItems()}
-                      displayItems={false}
-                      selectedPageItem={this.selectedPageItem()}
-                      selectedCountItem={this.selectedCountItem()}
-                      onSelectPage={this.onChangePage}
-                      onSelectCount={this.onChangePageSize}
-                      previousAction={this.onPrevClick}
-                      nextAction={this.onNextClick}
-                      disablePrevious={!filter.hasPrev()}
-                      disableNext={!filter.hasNext()}
+              <ToggleContentContainer>
+                <div className="buttons_container">
+                  <div className="people-admin_container">
+                    <Button
+                      id="people-admin-selector_button"
+                      size="medium"
+                      primary={true}
+                      label={t("SetPeopleAdmin")}
+                      isDisabled={isLoading}
+                      onClick={this.onShowGroupSelector}
+                    />
+                    <PeopleSelector
+                      id="people-admin-selector"
+                      isOpen={showSelector}
+                      isMultiSelect={true}
+                      role="user"
+                      onSelect={this.onSelect}
+                      onCancel={this.onCancelSelector}
+                      defaultOption={me}
+                      defaultOptionLabel={t("MeLabel")}
+                      groupsCaption={groupsCaption}
                     />
                   </div>
-                </>
-              ) : (
-                <EmptyScreenContainer
-                  imageSrc="products/people/images/empty_screen_filter.png"
-                  imageAlt="Empty Screen Filter image"
-                  headerText={t("NotFoundTitle")}
-                  descriptionText={t("NotFoundDescription")}
-                  buttons={
-                    <>
-                      <Icons.CrossIcon
-                        size="small"
-                        style={{ marginRight: "4px" }}
-                      />
-                      <Link
-                        type="action"
-                        isHovered={true}
-                        onClick={this.onResetFilter}
-                      >
-                        {t("ClearButton")}
-                      </Link>
-                    </>
-                  }
+                  <div className="full-admin_container">
+                    <Button
+                      id="full-admin-selector_button"
+                      size="medium"
+                      primary={true}
+                      label={t("SetPortalAdmin")}
+                      isDisabled={isLoading}
+                      onClick={this.onShowFullAdminGroupSelector}
+                    />
+                    <PeopleSelector
+                      id="full-admin-selector"
+                      isOpen={showFullAdminSelector}
+                      isMultiSelect={true}
+                      role="user"
+                      onSelect={this.onSelectFullAdmin}
+                      onCancel={this.onCancelSelector}
+                      defaultOption={me}
+                      defaultOptionLabel={t("MeLabel")}
+                      groupsCaption={groupsCaption}
+                    />
+                  </div>
+                </div>
+
+                <FilterInput
+                  className="filter_container"
+                  getFilterData={() => []}
+                  getSortData={this.getSortData}
+                  onFilter={this.onFilter}
+                  directionAscLabel={t("DirectionAscLabel")}
+                  directionDescLabel={t("DirectionDescLabel")}
                 />
-              )}
-            </ToggleContentContainer>
-          </>
-        )}
+
+                {admins.length > 0 ? (
+                  <>
+                    <div className="wrapper">
+                      <RowContainer manualHeight={`${admins.length * 50}px`}>
+                        {admins.map(user => {
+                          const element = (
+                            <Avatar
+                              size="small"
+                              role={getUserRole(user)}
+                              userName={user.displayName}
+                              source={user.avatar}
+                            />
+                          );
+                          const nameColor =
+                            user.status === "pending" ? "#A3A9AE" : "#333333";
+
+                          return (
+                            <Row
+                              key={user.id}
+                              status={user.status}
+                              data={user}
+                              element={element}
+                            >
+                              <RowContent disableSideInfo={true}>
+                                <Link
+                                  containerWidth='50%'
+                                  type="page"
+                                  title={user.displayName}
+                                  isBold={true}
+                                  fontSize="15px"
+                                  color={nameColor}
+                                  href={user.profileUrl}
+                                >
+                                  {user.displayName}
+                                </Link>
+                                <></>
+                                <Text containerWidth='10%'>
+                                  {user.isAdmin
+                                    ? t("AccessRightsFullAccess")
+                                    : t("PeopleAdmin")}
+                                </Text>
+                                {!user.isOwner
+                                  ? (
+                                    <IconButton
+                                      containerWidth='5%'
+                                      className="remove_icon"
+                                      size="16"
+                                      isDisabled={isLoading}
+                                      onClick={this.onChangeAdmin.bind(
+                                        this,
+                                        [user.id],
+                                        false,
+                                        "00000000-0000-0000-0000-000000000000"
+                                      )}
+                                      iconName={"CatalogTrashIcon"}
+                                      isFill={true}
+                                      isClickable={false}
+                                    />)
+                                  : (
+                                    <div containerWidth='5%'/>
+                                  )}
+                              </RowContent>
+                            </Row>
+                          );
+                        })}
+                      </RowContainer>
+                    </div>
+                    <div className="wrapper">
+                      <Paging
+                        previousLabel={t("PreviousPage")}
+                        nextLabel={t("NextPage")}
+                        openDirection="top"
+                        countItems={this.countItems()}
+                        pageItems={this.pageItems()}
+                        displayItems={false}
+                        selectedPageItem={this.selectedPageItem()}
+                        selectedCountItem={this.selectedCountItem()}
+                        onSelectPage={this.onChangePage}
+                        onSelectCount={this.onChangePageSize}
+                        previousAction={this.onPrevClick}
+                        nextAction={this.onNextClick}
+                        disablePrevious={!filter.hasPrev()}
+                        disableNext={!filter.hasNext()}
+                      />
+                    </div>
+                  </>
+                ) : (
+                    <EmptyScreenContainer
+                      imageSrc="products/people/images/empty_screen_filter.png"
+                      imageAlt="Empty Screen Filter image"
+                      headerText={t("NotFoundTitle")}
+                      descriptionText={t("NotFoundDescription")}
+                      buttons={
+                        <>
+                          <Icons.CrossIcon
+                            size="small"
+                            style={{ marginRight: "4px" }}
+                          />
+                          <Link
+                            type="action"
+                            isHovered={true}
+                            onClick={this.onResetFilter}
+                          >
+                            {t("ClearButton")}
+                          </Link>
+                        </>
+                      }
+                    />
+                  )}
+              </ToggleContentContainer>
+            </>
+          )}
       </>
     );
   }

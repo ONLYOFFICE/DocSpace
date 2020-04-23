@@ -404,7 +404,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
-            return FileStorageService.DeleteFile("delete", folderId, false, deleteAfter, immediately)
+            return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
                     .Select(FileOperationWraperHelper.Get);
         }
 

@@ -10,65 +10,63 @@
     ]
   },
   "dialogs": {
-    "InviteDialog": {
-      "Resource": [
-        "HelpAnswerLinkInviteSettings",
-        "CopyToClipboard",
-        "CloseButton",
-        "GetShortenLink",
-        "LoadingProcessing",
-        "InviteUsersAsCollaborators",
-        "InviteLinkTitle"
-      ],
+  "DeleteDialog":{
+    "Resource": [
+      "OKButton",
+      "CancelButton",
+      "ConfirmationTitle"
+    ],
     "ResourceJS": [
       "LinkCopySuccess"
-    ]
-  },
-  "ChangeEmailDialog":{
-    "Resource": [
-      "EmailChangeTitle",
-      "EnterEmail",
-      "EmailActivationDescription",
-      "SendButton"
-    ]
-  },
-  "DeleteSelfProfileDialog":{
-    "Resource": [
-      "DeleteProfileTitle",
-      "DeleteProfileInfo",
-      "CloseButton",
-      "SendButton"
-    ]
-  },
-  "ChangePhoneDialog":{
-    "Resource": [
-      "SendButton",
-      "MobilePhoneChangeTitle",
-      "MobilePhoneEraseDescription"
-    ]
-  },
-  "DeleteProfileEverDialog":{
-    "Resource": [
-      "Confirmation",
-      "DeleteUserConfirmation",
-      "Warning",
-      "DeleteUserDataConfirmation"      
     ],
-    "PeopleResource": [
-      "SuccessfullyDeleteUserInfoMessage"
+    "UserControlsCommonResource": [
+      "QuestionDeleteFile"
     ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
+    "FeedResource": [
+      "FilesModule",
+      "FoldersModule"
     ]
   },
-  "ChangePasswordDialog":{
+  "EmptyTrashDialog": {
     "Resource": [
-      "PasswordChangeTitle",
-      "MessageSendPasswordChangeInstructionsOnEmail",
-      "SendButton"
+      "OKButton",
+      "CancelButton",
+      "ConfirmationTitle"
     ]
   }
 },
+  "panels": {
+    "SharingPanel": {
+      "Resource": [
+        "Owner",
+        "SharingSettingsTitle",
+        "AddGroupsForSharingButton",
+        "AccessRightsFullAccess"
+      ],
+      "UserControlsCommonResource" : [
+        "LinkText",
+        "AddShareMessage"
+      ],
+      "ResourceJS": [
+        "AddButton"
+      ]
+    },
+    "AddUsersPanel": {
+      "UserControlsCommonResource" : [
+        "LinkText"
+      ]
+    },
+    "AddGroupsPanel": {
+      "Resource": [
+        "AddGroupsForSharingButton"
+      ]
+    },
+    "EmbeddingPanel" : {
+      "UserControlsCommonResource" : [
+      "Size"
+    ]
+  }
+  },
   "pages": {
     "Profile": {
       "Resource": [

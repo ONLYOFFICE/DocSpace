@@ -138,6 +138,7 @@ class ComboButton extends React.Component {
         onClick={onClick}
         scaled={scaled}
         size={size}
+        className="combo-button"
       >
         {innerContainer &&
           <StyledOptionalItem className={innerContainerClassName} color={defaultIconColor}>

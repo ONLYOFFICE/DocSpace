@@ -1,135 +1,96 @@
-import React from 'react';
-import { utils } from 'asc-web-components';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
+import { toastr } from "asc-web-components";
+import TreeFolders from "./TreeFolders";
 import {
-  TreeMenu,
-  TreeNode,
-  Icons
-} from "asc-web-components";
-import { selectFolder } from '../../../store/files/actions';
-
-const getItems = data => {
-  return data.map(item => {
-    if (item.children && item.children.length) {
-      return (
-        <TreeNode
-          title={item.title}
-          key={item.key}
-          icon={
-            item.root ? (
-              <Icons.CatalogFolderIcon
-                size="scale"
-                isfill={true}
-                color="#657077"
-              />
-            ) : (
-                ""
-              )
-          }
-        >
-          {getItems(item.children)}
-        </TreeNode>
-      );
-    }
-    return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
-    );
-  });
-};
+  setFilter,
+  fetchFiles,
+  setTreeFolders
+} from "../../../store/files/actions";
+import store from "../../../store/store";
+import { api } from "asc-web-common";
+const { files } = api;
 
 class ArticleBodyContent extends React.Component {
+  state = { expandedKeys: this.props.filter.treeFolders };
 
-  shouldComponentUpdate(nextProps) {
-    if(!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
-      return true;
-    }
+  componentDidMount() {
+    const newFilter = this.props.filter.clone();
+    const folderId = newFilter.folder;
 
-    if(!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
-      return true;
-    }
+    let expandedKeys = [];
+    files
+      .getFolder(folderId)
+      .then(data => {
+        for (let item of data.pathParts) {
+          expandedKeys.push(item.toString());
+        }
 
-    return false;
+        expandedKeys.pop();
+
+        fetchFiles(folderId, newFilter, store.dispatch).catch(err =>
+          toastr.error("Something went wrong", err)
+        );
+      })
+      .catch(err => toastr.error("Something went wrong", err))
+      .finally(() => this.setState({ expandedKeys }));
   }
 
-  onSelect = data => {
-    this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
-  };
-
-  switcherIcon = obj => {
-    if (obj.isLeaf) {
-      return null;
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.filter.treeFolders.length !==
+      prevProps.filter.treeFolders.length ||
+      this.state.expandedKeys.length !== this.props.filter.treeFolders.length
+    ) {
+      this.setState({ expandedKeys: this.props.filter.treeFolders });
     }
-    if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
-    } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
-    }
-  };
+  }
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const {
+      data,
+      selectedKeys,
+      fakeNewDocuments,
+      currentModule,
+      filter,
+      setFilter,
+      setTreeFolders,
+      onLoading,
+      isLoading
+    } = this.props;
 
-    //console.log("FilesTreeMenu", this.props);
-
+    //console.log("Article Body render", this.props, this.state.expandedKeys);
     return (
-      <TreeMenu
-        className="files-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
+      <TreeFolders
         selectedKeys={selectedKeys}
-      >
-        {getItems(data)}
-      </TreeMenu>
+        fakeNewDocuments={fakeNewDocuments}
+        currentModule={currentModule}
+        data={data}
+        filter={filter}
+        setFilter={setFilter}
+        setTreeFolders={setTreeFolders}
+        expandedKeys={this.state.expandedKeys}
+        onLoading={onLoading}
+        isLoading={isLoading}
+      />
     );
-  };
-};
-
-const getTreeGroups = (groups, departments) => {
-  const treeData = [
-      {
-          key: "root",
-          title: departments,
-          root: true,
-          children: groups.map(g => {
-              return {
-                  key: g.id, title: g.name, root: false
-              };
-          }) || []
-      }
-  ];
-
-  return treeData;
-};
+  }
+}
 
 function mapStateToProps(state) {
+  const { treeFolders, selectedFolder, filter } = state.files;
+  const currentFolderId = selectedFolder.id.toString();
+  const fakeNewDocuments = 8;
+
   return {
-    data: getTreeGroups(state.files.folders, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder] : ["root"]
+    data: treeFolders,
+    selectedKeys: selectedFolder ? [currentFolderId] : [""],
+    fakeNewDocuments,
+    currentModule: currentFolderId,
+    filter
   };
 }
 
-export default connect(mapStateToProps, { selectFolder })(ArticleBodyContent);
+export default connect(mapStateToProps, { setFilter, setTreeFolders })(
+  ArticleBodyContent
+);

@@ -76,6 +76,7 @@ const StyledDropdownItem = styled.div`
         ${disabledAndHeaderStyle}
 
         text-transform: uppercase;
+        break-before: column;
       `
     }
 

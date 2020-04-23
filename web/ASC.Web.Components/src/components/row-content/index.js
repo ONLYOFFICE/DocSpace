@@ -35,8 +35,10 @@ const MainContainerWrapper = styled.div`
   display: flex;
   align-self: center;
   margin-right: auto;
+
+  width: ${props => props.mainContainerWidth ? props.mainContainerWidth : '140px'};
   min-width: 140px;
-  width: 28%;
+  
 
   ${props => !props.disableSideInfo && `
     @media ${tablet} {
@@ -79,8 +81,8 @@ const SideContainerWrapper = styled.div`
     vertical-align: middle;
   }
 
-  width: ${props => props.containerWidth ? props.containerWidth : '100px'};
-  min-width: 100px;
+  width: ${props => props.containerWidth ? props.containerWidth : '40px'};
+  min-width: ${props => props.containerMinWidth ? props.containerMinWidth : '40px'};
   color: ${props => props.color && props.color};
 
   ${props => !props.disableSideInfo && `
@@ -122,7 +124,7 @@ const getSideInfo = content => {
 
 const RowContent = props => {
   //console.log("RowContent render");
-  const { children, disableSideInfo, id, className, style, sideColor } = props;
+  const { children, disableSideInfo, id, className, style, sideColor, onClick } = props;
 
   const sideInfo = getSideInfo(children);
 
@@ -131,8 +133,11 @@ const RowContent = props => {
       disableSideInfo={disableSideInfo}
       id={id}
       className={className}
-      style={style}>
-      <MainContainerWrapper disableSideInfo={disableSideInfo}>
+      style={style}
+      onClick={onClick}>
+      <MainContainerWrapper
+        disableSideInfo={disableSideInfo}
+        mainContainerWidth={children[0].props && children[0].props.containerWidth}>
         <MainContainer>
           {children[0]}
         </MainContainer>
@@ -143,7 +148,11 @@ const RowContent = props => {
       {children.map((element, index) => {
         if (index > 1) {
           return (
-            <SideContainerWrapper disableSideInfo={disableSideInfo} key={'side-' + index} containerWidth={element.props && element.props.containerWidth} >
+            <SideContainerWrapper
+              disableSideInfo={disableSideInfo}
+              key={'side-' + index}
+              containerWidth={element.props && element.props.containerWidth}
+              containerMinWidth={element.props && element.props.containerMinWidth} >
               {element}
             </SideContainerWrapper>
           );
@@ -160,10 +169,11 @@ const RowContent = props => {
 
 RowContent.propTypes = {
   children: PropTypes.node.isRequired,
-  disableSideInfo: PropTypes.bool,
-  sideColor: PropTypes.string,
   className: PropTypes.string,
+  disableSideInfo: PropTypes.bool,
   id: PropTypes.string,
+  onClick: PropTypes.func,
+  sideColor: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
