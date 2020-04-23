@@ -281,17 +281,13 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var id in userFolderIds.Select(id => (uint)id))
             {
-                int totalMess;
-                totalUfMessList.TryGetValue(id, out totalMess);
+                totalUfMessList.TryGetValue(id, out int totalMess);
 
-                int unreadMess;
-                unreadUfMessUfList.TryGetValue(id, out unreadMess);
+                unreadUfMessUfList.TryGetValue(id, out int unreadMess);
 
-                int totalConv;
-                totalUfConvList.TryGetValue(id, out totalConv);
+                totalUfConvList.TryGetValue(id, out int totalConv);
 
-                int unreadConv;
-                unreadUfConvUfList.TryGetValue(id, out unreadConv);
+                unreadUfConvUfList.TryGetValue(id, out int unreadConv);
 
                 SetFolderCounters(id,
                     unreadMess, totalMess, unreadConv, totalConv);

@@ -107,7 +107,7 @@ namespace ASC.Mail.Core.Dao
                 .SingleOrDefault();
 
             if (mailFolder == null)
-                return -1;
+                return 0;
 
             if (unreadMessDiff.HasValue)
             {

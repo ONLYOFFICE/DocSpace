@@ -77,48 +77,69 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<uint, int> GetChainUserFolderCount(bool? unread = null)
         {
-            var dictionary = (from t in MailDb.MailUserFolderXMail
-                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
-                              from ufxm in UFxMail
-                              join c in MailDb.MailChain on ufxm.ChainId equals c.Id
-                              where t.Tenant == Tenant && t.IdUser == UserId && (unread.HasValue && ufxm.Unread == unread.Value)
-                              group t by new
-                              {
-                                  t.IdFolder,
-                                  c.Id
-                              } into Chains
-                              select new
-                              {
-                                  FolderId = Chains.Key.IdFolder,
-                                  Count = Chains.Count()
-                              })
-                              .ToList()
-                              .ToDictionary(o => o.FolderId, o => o.Count);
+            var query = MailDb.MailUserFolderXMail
+                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+                (x, m) => new
+                {
+                    UFxMail = x,
+                    Mail = m
+                })
+                .Join(MailDb.MailChain, x => x.Mail.ChainId, c => c.Id,
+                (x, c) => new
+                {
+                    x.UFxMail,
+                    x.Mail,
+                    Chain = c
+                })
+                .Where(t => t.UFxMail.Tenant == Tenant)
+                .Where(t => t.UFxMail.IdUser == UserId);
+
+            if (unread.HasValue)
+            {
+                query = query.Where(t => t.Mail.Unread == unread.Value);
+            }
+
+            var dictionary = query
+                .GroupBy(t => new { t.UFxMail.IdFolder, t.Chain.Id })
+                .Select(g => new { g.Key.IdFolder, g.Key.Id })
+                .ToList()
+                .GroupBy(g => g.IdFolder)
+                .ToDictionary(g => g.Key, g => g.Count());
 
             return dictionary;
         }
 
         public Dictionary<uint, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            var dictionary = (from t in MailDb.MailUserFolderXMail
-                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
-                              from ufxm in UFxMail
-                              join c in MailDb.MailChain on ufxm.ChainId equals c.Id
-                              where t.Tenant == Tenant && t.IdUser == UserId 
-                                && userFolderIds.Contains((int)t.IdFolder)
-                                && (unread.HasValue && ufxm.Unread == unread.Value)
-                              group t by new
-                              {
-                                  t.IdFolder,
-                                  c.Id
-                              } into Chains
-                              select new
-                              {
-                                  FolderId = Chains.Key.IdFolder,
-                                  Count = Chains.Count()
-                              })
-                             .ToList()
-                             .ToDictionary(o => o.FolderId, o => o.Count);
+            var query = MailDb.MailUserFolderXMail
+                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+                (x, m) => new
+                {
+                    UFxMail = x,
+                    Mail = m
+                })
+                .Join(MailDb.MailChain, x => x.Mail.ChainId, c => c.Id, 
+                (x, c) => new 
+                {
+                    x.UFxMail,
+                    x.Mail,
+                    Chain = c
+                })
+                .Where(t => t.UFxMail.Tenant == Tenant)
+                .Where(t => t.UFxMail.IdUser == UserId)
+                .Where(t => userFolderIds.Contains((int)t.UFxMail.IdFolder));
+
+            if (unread.HasValue)
+            {
+                query = query.Where(t => t.Mail.Unread == unread.Value);
+            }
+
+            var dictionary = query
+                 .GroupBy(t => new { t.UFxMail.IdFolder, t.Chain.Id })
+                 .Select(g => new { g.Key.IdFolder, g.Key.Id })
+                 .ToList()
+                 .GroupBy(g => g.IdFolder)
+                 .ToDictionary(g => g.Key, g => g.Count());
 
             return dictionary;
         }

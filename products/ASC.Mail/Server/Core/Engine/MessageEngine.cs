@@ -59,6 +59,8 @@ using ASC.Web.Files.Utils;
 using ASC.Common.Web;
 using ASC.Mail.Exceptions;
 using ASC.Web.Core.Files;
+using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -2109,6 +2111,14 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public class TempData {
+            public long Length { get; set; }
+            public DateTime Date { get; set; }
+            public int Unread { get; set; }
+            public int AttachCount { get; set; }
+            public int Importance { get; set; }
+        }
+
         // Method for updating chain flags, date and length.
         public void UpdateChain(string chainId, FolderType folder, uint? userFolderId, int mailboxId,
             int tenant, string user)
@@ -2117,17 +2127,38 @@ namespace ASC.Mail.Core.Engine
 
             var folderId = (int)folder;
 
-            var chainQuery = DaoFactory.MailDb.MailMail
+            //var p1 = new SqlParameter("@p1", Tenant);
+            //var p2 = new SqlParameter("@p2", User);
+            //var p3 = new SqlParameter("@p3", false);
+            //var p4 = new SqlParameter("@p4", chainId);
+            //var p5 = new SqlParameter("@p5", mailboxId);
+            //var p6 = new SqlParameter("@p6", folderId);
+
+            var chainInfo = DaoFactory.MailDb.ExecuteQuery<TempData>(
+                $"SELECT COUNT(*) as Length, " +
+                $"MAX(m.date_sent) as Date, " +
+                $"MAX(m.unread) as Unread, " +
+                $"MAX(m.attachments_count) as AttachCount, " +
+                $"MAX(m.importance) as Importance " +
+                $"FROM mail_mail m " +
+                $"WHERE m.tenant = {Tenant} " +
+                $"AND m.id_user = '{User}' " +
+                $"AND m.is_removed = 0 " +
+                $"AND m.chain_id = '{chainId}' " +
+                $"AND m.id_mailbox = {mailboxId} " +
+                $"AND m.folder = {(int)folder}")
+                .FirstOrDefault();
+
+            /*var chainQuery = DaoFactory.MailDb.MailMail
                 .Where(m => m.Tenant == Tenant)
                 .Where(m => m.IdUser == User)
                 .Where(m => m.IsRemoved == false)
                 .Where(m => m.ChainId == chainId)
                 .Where(m => m.IdMailbox == mailboxId)
                 .Where(m => m.Folder == folderId)
-                //.GroupBy(m => m.Id)
-                .Select(m => new { m.Id, m.DateSent, m.Unread, m.AttachmentsCount, m.Importance });
-                //.GroupBy
-                /*.Select(g => new
+                //.Select(m => new { m.Id, m.DateSent, m.Unread, m.AttachmentsCount, m.Importance });
+                .GroupBy(m => m.Id)
+                .Select(g => new
                 {
                     length = g.Count(),
                     date = g.Max(m => m.DateSent),
@@ -2136,11 +2167,11 @@ namespace ASC.Mail.Core.Engine
                     importance = g.Max(m => m.Importance)
                 });*/
 
-            var str = chainQuery.ToSql();//.ToString();
+            //var str = chainQuery.ToSql();//.ToString();
 
-            var chainInfoList = chainQuery.ToList(); //.FirstOrDefault();
+            //var chainInfoList = chainQuery.ToList(); //.FirstOrDefault();
 
-            var chainInfo = chainInfoList
+            /*var chainInfo = chainInfoList
                     .GroupBy(m => m.Id)
                     .Select(g => new
                     {
@@ -2149,10 +2180,13 @@ namespace ASC.Mail.Core.Engine
                         unread = g.Max(m => m.Unread),
                         attach_count = g.Max(m => m.AttachmentsCount),
                         importance = g.Max(m => m.Importance)
-                    }).FirstOrDefault();
+                    }).FirstOrDefault();*/
 
-            if (chainInfo == null)
-                throw new InvalidDataException("Conversation is absent in MAIL_MAIL");
+            //var chainInfo = chainQuery.FirstOrDefault();
+
+            if (chainInfo == null) {
+              throw new InvalidDataException("Conversation is absent in MAIL_MAIL");
+            }
 
             var query = SimpleConversationsExp.CreateBuilder(tenant, user)
                 .SetMailboxId(mailboxId)
@@ -2164,7 +2198,7 @@ namespace ASC.Mail.Core.Engine
 
             var chainUnreadFlag = storedChainInfo.Any(c => c.Unread);
 
-            if (0 == chainInfo.length)
+            if (0 == chainInfo.Length)
             {
                 var deletQuery = SimpleConversationsExp.CreateBuilder(tenant, user)
                     .SetFolder((int)folder)
@@ -2195,7 +2229,7 @@ namespace ASC.Mail.Core.Engine
 
                 DaoFactory.MailInfoDao.SetFieldValue(updateQuery,
                     "ChainDate",
-                    chainInfo.date);
+                    chainInfo.Date);
 
                 var tags = DaoFactory.TagMailDao.GetChainTags(chainId, folder, mailboxId);
 
@@ -2206,10 +2240,10 @@ namespace ASC.Mail.Core.Engine
                     User = user,
                     MailboxId = mailboxId,
                     Folder = folder,
-                    Length = chainInfo.length,
-                    Unread = chainInfo.unread,
-                    HasAttachments = chainInfo.attach_count > 0,
-                    Importance = chainInfo.importance,
+                    Length = (int)chainInfo.Length,
+                    Unread = chainInfo.Unread == 1,
+                    HasAttachments = chainInfo.AttachCount > 0,
+                    Importance = chainInfo.Importance == 1,
                     Tags = tags
                 };
 
@@ -2228,13 +2262,13 @@ namespace ASC.Mail.Core.Engine
                 if (!storedChainInfo.Any())
                 {
                     totalConvDiff = 1;
-                    unreadConvDiff = chainInfo.unread ? 1 : (int?)null;
+                    unreadConvDiff = chainInfo.Unread == 1 ? 1 : (int?)null;
                 }
                 else
                 {
-                    if (chainUnreadFlag != chainInfo.unread)
+                    if (chainUnreadFlag != (chainInfo.Unread == 1))
                     {
-                        unreadConvDiff = chainInfo.unread ? 1 : -1;
+                        unreadConvDiff = chainInfo.Unread == 1 ? 1 : -1;
                     }
                 }
 

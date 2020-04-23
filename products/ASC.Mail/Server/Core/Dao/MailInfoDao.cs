@@ -129,6 +129,7 @@ namespace ASC.Mail.Core.Dao
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
+                //TODO: Fix 
                 query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
                     (m, tm) => new
                     {
@@ -142,6 +143,7 @@ namespace ASC.Mail.Core.Dao
 
             if (exp.UserFolderId.HasValue)
             {
+                //TODO: Fix 
                 query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
                     (m, x) => new
                     {
@@ -173,45 +175,58 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<uint, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            var dictionary = (from t in MailDb.MailUserFolderXMail
-                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
-                              from ufxm in UFxMail
-                              where t.Tenant == Tenant && t.IdUser == UserId
-                                && userFolderIds.Contains((int)t.IdFolder)
-                                && (unread.HasValue && ufxm.Unread == unread.Value)
-                              group t by t.IdFolder into UFCounters
-                              select new
-                              {
-                                  FolderId = UFCounters.Key,
-                                  Count = UFCounters.Count()
-                              })
-                             .ToList()
-                             .ToDictionary(o => o.FolderId, o => o.Count);
+            var query = MailDb.MailUserFolderXMail
+                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+                (x, m) => new
+                {
+                    UFxMail = x,
+                    Mail = m
+                })
+                .Where(t => t.UFxMail.Tenant == Tenant)
+                .Where(t => t.UFxMail.IdUser == UserId)
+                .Where(t => userFolderIds.Contains((int)t.UFxMail.IdFolder));
+
+            if (unread.HasValue) {
+                query = query.Where(t => t.Mail.Unread == unread.Value);
+            }
+
+            var dictionary = query
+                .ToList()
+                .GroupBy(t => t.UFxMail.IdFolder)
+                .ToDictionary(g => g.Key, g => g.Count());
 
             return dictionary;
         }
 
         public Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null)
         {
-            var dictionary = (from t in MailDb.MailUserFolderXMail
-                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
-                              from ufxm in UFxMail
-                              where t.Tenant == Tenant && t.IdUser == UserId
-                                && (unread.HasValue && ufxm.Unread == unread.Value)
-                              group t by t.IdFolder into UFCounters
-                              select new
-                              {
-                                  FolderId = UFCounters.Key,
-                                  Count = UFCounters.Count()
-                              })
-                             .ToList()
-                             .ToDictionary(o => o.FolderId, o => o.Count);
+            var query = MailDb.MailUserFolderXMail
+                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+                (x, m) => new
+                {
+                    UFxMail = x,
+                    Mail = m
+                })
+                .Where(t => t.UFxMail.Tenant == Tenant)
+                .Where(t => t.UFxMail.IdUser == UserId);
+
+            if (unread.HasValue)
+            {
+                query = query.Where(t => t.Mail.Unread == unread.Value);
+            }
+
+            var dictionary = query
+                .ToList()
+                .GroupBy(t => t.UFxMail.IdFolder)
+                .ToDictionary(g => g.Key, g => g.Count());
 
             return dictionary;
         }
 
         public Tuple<int, int> GetRangeMails(IMessagesExp exp)
         {
+            //TODO: fix: make one query
+
             var max = MailDb.MailMail
                 .Where(exp.GetExpression())
                 .Max(m => m.Id);
