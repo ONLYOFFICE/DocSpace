@@ -124,7 +124,7 @@ class PureHome extends React.Component {
           //progressBarLabel={`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
 
           articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent/>}
+          articleMainButtonContent={<ArticleMainButtonContent onLoading={this.onLoading} />}
           articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
           sectionHeaderContent={
             <SectionHeaderContent
