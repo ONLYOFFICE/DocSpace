@@ -305,3 +305,12 @@ export function setShareFiles(fileId, shareTo, access, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
   return request({ method: "put", url: `/files/file/${fileId}/share`, data });
 }
+
+export function startUploadSession(folderId, fileName, fileSize, relativePath) {
+  const data = { fileName, fileSize, relativePath };
+  return request({ method: "post", url: `/files/${folderId}/upload/create_session.json`, data });
+}
+
+export function uploadFile(url, data) {
+  return axios.post(url, data);
+}
