@@ -507,7 +507,7 @@ namespace ASC.ElasticSearch
         public object GetState(TenantUtil tenantUtil)
         {
             var indices = CoreBaseSettings.Standalone ?
-                Client.Instance.CatIndices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records.Select(r => new
+                Client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records.Select(r => new
                 {
                     r.Index,
                     r.DocsCount,
@@ -534,7 +534,7 @@ namespace ASC.ElasticSearch
             return new
             {
                 state,
-                indices,
+                //indices,
                 status = CheckState()
             };
         }

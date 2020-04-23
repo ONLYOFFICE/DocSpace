@@ -238,26 +238,26 @@ namespace ASC.ElasticSearch
 
         public void Flush()
         {
-            Client.Instance.Flush(new FlushRequest(IndexName));
+            Client.Instance.Indices.Flush(new FlushRequest(IndexName));
         }
 
         public void Refresh()
         {
-            Client.Instance.Refresh(new RefreshRequest(IndexName));
+            Client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
         }
 
         internal bool CheckExist(T data)
         {
             try
             {
-                var isExist = BaseIndexerHelper.IsExist.GetOrAdd(data.IndexName, (k) => Client.Instance.IndexExists(k).Exists);
+                var isExist = BaseIndexerHelper.IsExist.GetOrAdd(data.IndexName, (k) => Client.Instance.Indices.Exists(k).Exists);
                 if (isExist) return true;
 
                 lock (Locker)
                 {
                     if (isExist) return true;
 
-                    isExist = Client.Instance.IndexExists(data.IndexName).Exists;
+                    isExist = Client.Instance.Indices.Exists(data.IndexName).Exists;
 
                     _ = BaseIndexerHelper.IsExist.TryUpdate(data.IndexName, IsExist, false);
 
@@ -277,11 +277,11 @@ namespace ASC.ElasticSearch
             if (!CheckExist(data)) return;
 
             var result = false;
-            var currentMappings = Client.Instance.GetMapping<T>(r => r.Index(data.IndexName));
+            var currentMappings = Client.Instance.Indices.GetMapping<T>(r => r.Index(data.IndexName));
             var newMappings = GetMappings(data).Invoke(new CreateIndexDescriptor(data.IndexName));
 
             var newMappingDict = new Dictionary<string, string>();
-            var props = newMappings.Mappings.SelectMany(r => r.Value.Properties).ToList();
+            var props = newMappings.Mappings.Properties.ToList();
             foreach (var prop in props.Where(r => r.Key.Property != null && r.Key.Property.Name != "Document"))
             {
                 var propKey = prop.Key.Property.Name.ToLowerCamelCase();
@@ -303,7 +303,7 @@ namespace ASC.ElasticSearch
 
             foreach (var ind in currentMappings.Indices)
             {
-                foreach (var prop in ind.Value.Mappings.SelectMany(r => r.Value.Properties).Where(r => r.Key.Name != "document"))
+                foreach (var prop in ind.Value.Mappings.Properties.Where(r => r.Key.Name != "document"))
                 {
                     var key = ind.Key.Name + "." + prop.Key.Name.ToLowerCamelCase();
 
@@ -350,7 +350,7 @@ namespace ASC.ElasticSearch
             WebstudioDbContext.SaveChanges();
 
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
-            Client.Instance.DeleteIndex(Wrapper.IndexName);
+            Client.Instance.Indices.Delete(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
             CreateIfNotExist(ServiceProvider.GetService<T>());
         }
@@ -396,11 +396,11 @@ namespace ASC.ElasticSearch
 
                     if (!columns.Any() && !nestedColumns.Any())
                     {
-                        Client.Instance.CreateIndex(data.IndexName);
+                        Client.Instance.Indices.Create(data.IndexName);
                     }
                     else
                     {
-                        Client.Instance.CreateIndex(data.IndexName, GetMappings(data));
+                        Client.Instance.Indices.Create(data.IndexName, GetMappings(data));
                     }
 
                     IsExist = true;

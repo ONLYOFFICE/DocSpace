@@ -107,7 +107,7 @@ namespace ASC.ElasticSearch
 
                             if (result.IsValid)
                             {
-                                client.PutPipeline("attachments", p => p
+                                client.Ingest.PutPipeline("attachments", p => p
                                 .Processors(pp => pp
                                     .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
                                 ));
