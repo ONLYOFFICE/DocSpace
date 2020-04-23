@@ -12,6 +12,18 @@ storiesOf('Components|MediaViewer', module)
     .addDecorator(withReadme(Readme))
     .add('base', () => (
         <Section>
-            <MediaViewer />
+            <MediaViewer 
+                allowConvert = {true}
+                playlist = {
+                    [
+                        {
+                            id: 0,
+                            src: "",
+                            title: ""
+                        }
+                    ]
+                }
+                extsMediaPreviewed ={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm"]}
+                extsImagePreviewed ={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]}/>
         </Section>
     ));

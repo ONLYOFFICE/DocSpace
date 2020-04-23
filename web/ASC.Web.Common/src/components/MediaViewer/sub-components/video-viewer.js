@@ -289,7 +289,7 @@ const MULTIPLE_SOURCES = [
 
 class VideoViewer extends Component {
   state = {
-    url: null,
+    url: this.props.url,
     pip: false,
     playing: true,
     controls: false,
@@ -436,7 +436,7 @@ class VideoViewer extends Component {
                 className='react-player'
                 width='100%'
                 height='100%'
-                url={"https://www.youtube.com/watch?v=jNgP6d9HraI"}
+                url={url}
                 pip={pip}
                 playing={playing}
                 controls={controls}

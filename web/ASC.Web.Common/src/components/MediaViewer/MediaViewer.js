@@ -70,7 +70,7 @@ const StyledMediaViewer = styled.div`
 `;
 const ScrollButton = styled.div`
    
-    cursore: pointer;
+    cursor: pointer;
     z-index: 4001;
     position: fixed;
     top: calc(50% - 20px);
@@ -135,6 +135,8 @@ const MediaScrollButton = props => {
     <ScrollButton {...props} />
   );
 }
+var audio = 1;
+var video = 2;
 
 class MediaViewer extends React.Component {
     constructor(props) {
@@ -142,29 +144,126 @@ class MediaViewer extends React.Component {
 
         this.state = {
             visible: true,
-          };
+            allowConvert: true,
+            playlist: this.props.playlist,
+            playlistPos: 0,
+        };
     }
+    
+    
+    mapSupplied = {
+        ".aac": { supply: "m4a", type: audio },
+        ".flac": { supply: "mp3", type: audio },
+        ".m4a": { supply: "m4a", type: audio },
+        ".mp3": { supply: "mp3", type: audio },
+        ".oga": { supply: "oga", type: audio },
+        ".ogg": { supply: "oga", type: audio },
+        ".wav": { supply: "wav", type: audio },
+
+        ".f4v": { supply: "m4v", type: video },
+        ".m4v": { supply: "m4v", type: video },
+        ".mov": { supply: "m4v", type: video },
+        ".mp4": { supply: "m4v", type: video },
+        ".ogv": { supply: "ogv", type: video },
+        ".webm": { supply: "webmv", type: video },
+        ".wmv": { supply: "m4v", type: video, convertable: true },
+        ".avi": { supply: "m4v", type: video, convertable: true },
+        ".mpeg": { supply: "m4v", type: video, convertable: true },
+        ".mpg": { supply: "m4v", type: video, convertable: true }
+    };
+    canImageView = function (ext) {
+        return this.props.extsImagePreviewed.indexOf(ext) != -1;
+    };
+    canPlay = (fileTitle, allowConvert) => {
+
+        var ext = fileTitle[0] === "." ? fileTitle : this.getFileExtension(fileTitle);
+
+        var supply = this.mapSupplied[ext];
+
+        var canConv = allowConvert || this.props.allowConvert;
+
+        return !!supply &&  this.props.extsMediaPreviewed.indexOf(ext) != -1
+            && (!supply.convertable || canConv);
+    };
+    getFileExtension = (fileTitle) => {
+        if (typeof fileTitle == "undefined" || fileTitle == null) {
+            return "";
+        }
+        fileTitle = fileTitle.trim();
+        var posExt = fileTitle.lastIndexOf(".");
+        return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
+    };
+
+    prevMedia = () => {
+       
+        let currentPlaylistPos = this.state.playlistPos;
+        currentPlaylistPos--;
+        if (currentPlaylistPos < 0)
+        currentPlaylistPos = this.state.playlist.length - 1;
+
+        this.setState({
+            playlistPos: currentPlaylistPos
+        });
+
+    };
+    nextMedia = () => {
+
+        let currentPlaylistPos = this.state.playlistPos;
+        currentPlaylistPos = (currentPlaylistPos + 1) % this.state.playlist.length;
+
+        this.setState({
+            playlistPos: currentPlaylistPos
+        });
+    };
 
     render(){
+        let currentPlaylistPos = this.state.playlistPos;
+        let fileTitle = this.state.playlist[currentPlaylistPos].title;
+        let url = this.state.playlist[currentPlaylistPos].src;
+        let isImage = false;
+        
+        var ext = this.getFileExtension(fileTitle) ? this.getFileExtension(fileTitle) : this.getFileExtension(url);
+
+        if (!this.canPlay(ext) && !this.canImageView(ext)) {
+            console.log("ERROR")
+        }
+
+        if (this.canImageView(ext)) {
+            isImage = true;
+        } else {
+            isImage = false; 
+        }
+        console.log(ext, isImage)
+
         return(
             <StyledMediaViewer>
                
                <div className = "videoViewerOverlay"></div>
-               <MediaScrollButton orientation = "right" />
-               <MediaScrollButton orientation = "left" />
+               <MediaScrollButton orientation = "right" onClick={this.prevMedia}/>
+               <MediaScrollButton orientation = "left" onClick={this.nextMedia}/>
                 <div>
                     <div className = "details">
-                        <div className = "title">123.123</div>
+                        <div className = "title">{fileTitle}</div>
                         <VideoControlBtn  onClick={this.props.onClick} className = "mediaPlayerClose">
                             <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
                         </VideoControlBtn>
                     </div>
                 </div>
-                <StyledVideoViewer />
+                {isImage ?
+                    <ImageViewer 
+                        visible={this.state.visible}
+                        onClose={() => { this.setState({ visible: false }); } }
+                        images={[
+                            {src: url, alt: ''}
+                        ]}
+                    /> 
+                    :
+                    <StyledVideoViewer url = {url}/>
+                }
                 <div className = "mediaViewerToolbox"></div>
                 <span>
-                    <VideoControlBtn>
-                        <Icons.CatalogTrashIcon size="medium" isfill={true} color="#fff" />
+                    <VideoControlBtn> 
+                        <Icons.CatalogTrashIcon  size="medium" isfill={true} color="#fff" />
                     </VideoControlBtn>
 
                     <VideoControlBtn>
