@@ -93,14 +93,11 @@ namespace ASC.Mail.Core.Dao
             if (!string.IsNullOrEmpty(mail.CalendarUid))
                 mailMail.CalendarUid = mail.CalendarUid;
 
-            var result = MailDb.Entry(mailMail);
-            result.State = mailMail.Id == 0
-                ? EntityState.Added
-                : EntityState.Modified;
+            var entry = MailDb.AddOrUpdate(m => m.MailMail, mailMail);
 
             MailDb.SaveChanges();
 
-            return (int)result.Entity.Id;
+            return entry.Id;
         }
 
         public Core.Entities.Mail GetMail(IMessageExp exp)

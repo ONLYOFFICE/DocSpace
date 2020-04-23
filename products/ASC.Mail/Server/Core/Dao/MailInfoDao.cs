@@ -252,7 +252,9 @@ namespace ASC.Mail.Core.Dao
 
             var max = MailDb.MailMail
                 .Where(exp.GetExpression())
-                .Max(lambda.Compile());
+                .Select(lambda.Compile())
+                .DefaultIfEmpty<T>()
+                .Max();
 
             return (T)max;
         }

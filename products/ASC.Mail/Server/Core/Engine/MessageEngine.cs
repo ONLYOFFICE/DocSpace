@@ -2044,7 +2044,31 @@ namespace ASC.Mail.Core.Engine
 
         public void UpdateMessageChainAttachmentsFlag(int tenant, string user, int messageId)
         {
-            UpdateMessageChainFlag(tenant, user, messageId, "AttachmentsCount", "HasAttachments");
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, tenant, user));
+
+            if (mail == null)
+                return;
+
+            var maxQuery = SimpleMessagesExp.CreateBuilder(tenant, user)
+                    .SetChainId(mail.ChainId)
+                    .SetMailboxId(mail.MailboxId)
+                    .SetFolder((int)mail.Folder)
+                    .Build();
+
+            var maxValue = DaoFactory.MailInfoDao.GetFieldMaxValue<int>(
+                maxQuery,
+                "AttachmentsCount");
+
+            var updateQuery = SimpleConversationsExp.CreateBuilder(tenant, user)
+                    .SetChainId(mail.ChainId)
+                    .SetMailboxId(mail.MailboxId)
+                    .SetFolder((int)mail.Folder)
+                    .Build();
+
+            DaoFactory.ChainDao.SetFieldValue(
+                updateQuery,
+                "HasAttachments",
+                (maxValue > 0));
         }
 
         public void UpdateMessageChainUnreadFlag(int tenant, string user, int messageId)
@@ -2064,12 +2088,14 @@ namespace ASC.Mail.Core.Engine
             if (mail == null)
                 return;
 
-            var maxValue = DaoFactory.MailInfoDao.GetFieldMaxValue<bool>(
-                SimpleMessagesExp.CreateBuilder(tenant, user)
+            var maxQuery = SimpleMessagesExp.CreateBuilder(tenant, user)
                     .SetChainId(mail.ChainId)
                     .SetMailboxId(mail.MailboxId)
                     .SetFolder((int)mail.Folder)
-                    .Build(),
+                    .Build();
+
+            var maxValue = DaoFactory.MailInfoDao.GetFieldMaxValue<bool>(
+                maxQuery,
                 fieldFrom);
 
             DaoFactory.ChainDao.SetFieldValue(
@@ -2247,10 +2273,12 @@ namespace ASC.Mail.Core.Engine
                     Tags = tags
                 };
 
-                var result = DaoFactory.ChainDao.SaveChain(chain);
+                DaoFactory.ChainDao.SaveChain(chain);
+
+                /*var result = DaoFactory.ChainDao.SaveChain(chain);
 
                 if (result <= 0)
-                    throw new InvalidOperationException("Invalid insert into mail_chain");
+                    throw new InvalidOperationException("Invalid insert into mail_chain");*/
 
                 Log.DebugFormat(
                     "UpdateChain() row inserted to chain table tenant='{0}', user_id='{1}', id_mailbox='{2}', folder='{3}', chain_id='{4}'",

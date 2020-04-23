@@ -80,9 +80,12 @@ namespace ASC.Mail.Core.Dao
 
         public int GetAttachmentsMaxFileNumber(IAttachmentsExp exp)
         {
-            var max = MailDb.MailAttachment
+            var list = MailDb.MailAttachment
                    .Where(exp.GetExpression())
-                   .Max(a => a.FileNumber);
+                   .Select(a => a.FileNumber)
+                   .ToList();
+
+            var max = list.Any() ? list.Max() : 0;
 
             return max;
         }
