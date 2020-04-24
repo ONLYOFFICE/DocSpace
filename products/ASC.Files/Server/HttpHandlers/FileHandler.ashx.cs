@@ -65,8 +65,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using static ASC.Web.Core.Files.DocumentService;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -691,14 +689,12 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(file.Title));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(file.Title);
 
-                using (var stream = fileDao.GetFileStream(file))
-                {
-                    context.Response.Headers.Add("Content-Length",
-                                               stream.CanSeek
-                                                   ? stream.Length.ToString(CultureInfo.InvariantCulture)
-                                                   : file.ContentLength.ToString(CultureInfo.InvariantCulture));
-                    stream.StreamCopyTo(context.Response.Body);
-                }
+                using var stream = fileDao.GetFileStream(file);
+                context.Response.Headers.Add("Content-Length",
+                    stream.CanSeek
+                    ? stream.Length.ToString(CultureInfo.InvariantCulture)
+                    : file.ContentLength.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body, StreamExtension.BufferSize);
             }
             catch (Exception ex)
             {
@@ -848,7 +844,7 @@ namespace ASC.Web.Files
             using (var readStream = store.GetReadStream(FileConstant.StorageDomainTmp, path))
             {
                 context.Response.Headers.Add("Content-Length", readStream.Length.ToString(CultureInfo.InvariantCulture));
-                readStream.StreamCopyTo(context.Response.Body);
+                await readStream.CopyToAsync(context.Response.Body, StreamExtension.BufferSize);
             }
 
             store.Delete(FileConstant.StorageDomainTmp, path);
@@ -939,7 +935,7 @@ namespace ASC.Web.Files
                 using (var stream = fileDao.GetDifferenceStream(file))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    stream.StreamCopyTo(context.Response.Body);
+                    await stream.CopyToAsync(context.Response.Body, StreamExtension.BufferSize);
                 }
             }
             catch (Exception ex)
