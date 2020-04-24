@@ -13,8 +13,9 @@ const StyledControls = styled.div`
     display: block;
     position: absolute;
     z-index: 4001;
-    top: calc(50% + 113px);
-    left: calc(50% - 200px);
+    ${props => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
+    top: ${props => props.top}px;
+    left: ${props => props.left}px;
     
 `;
 const StyledVideoControlBtn = styled.div`
@@ -241,10 +242,11 @@ const StyledVideoViewer = styled.div`
     color: #d1d1d1;
 
     .playerWrapper{
-      width: 400px;
-      height: 226px;
-      left: calc(50% - 200px);
-      top: calc(50% - 113px);
+      display: ${props => props.isVideo ? "block" : "none"};
+      width: ${props => props.width}px;
+      height: ${props => props.height}px;
+      left: ${props => props.left}px;
+      top: ${props => props.top}px;
       z-index: 4001;
       position: absolute;
       padding-bottom: 40px;
@@ -311,9 +313,16 @@ class VideoViewer extends Component {
       pip: false
     })
   }
-
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.url !== prevProps.url) {
+      this.setState(
+        {
+          url: this.props.url
+        }
+      );
+    }
+  }
   handlePlayPause = () => {
-      console.log('handlePlayPause')
     this.setState({ playing: !this.state.playing })
   }
 
@@ -427,8 +436,35 @@ class VideoViewer extends Component {
     const { url, playing, controls, light, volume, muted, loop, played, loaded, duration, playbackRate, pip } = this.state
     const SEPARATOR = ' · '
 
+    var screenSize = {
+      w : window.innerWidth,
+      h : window.innerHeight
+    };
+
+    let width = screenSize.w * 0.65;
+    let height = screenSize.h * 0.65;
+
+    var centerAreaOx = screenSize.w / 2 + document.documentElement.scrollLeft;
+    var centerAreaOy = screenSize.h / 2 + document.documentElement.scrollTop;
+
+    if(document.getElementsByTagName('video')[0]){
+      
+      width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth /1.5 || 480 : screenSize.w - 300 ;
+      height = this.props.isVideo ? document.getElementsByTagName('video')[0].videoHeight /1.5 || 270 : 0;
+
+    }
+    let left = centerAreaOx - width / 2;
+    let top = this.props.isVideo ? centerAreaOy - height / 2 : centerAreaOy - 20;
+
+
     return (
-        <StyledVideoViewer>
+        <StyledVideoViewer
+            isVideo = {this.props.isVideo}
+            width = {width}
+            height = {height}
+            left = {left}
+            top = {top}
+        >
           <div>
             <div className='playerWrapper'>
               <ReactPlayer
@@ -459,11 +495,15 @@ class VideoViewer extends Component {
                 onDuration={this.handleDuration}
               />
             </div>
-            <Controls>
+            <Controls
+              left = {left}
+              top = {top+height}
+              isVideo = {this.props.isVideo}
+            >
               <PlayBtn onClick={this.handlePlayPause} playing={playing} />
               <Progress
                 value={played}
-                width={180}
+                width={width - 220}
                 onMouseDown={this.handleSeekMouseDown}
                 onChange={this.handleSeekChange}
                 onMouseUp={this.handleSeekMouseUp}
@@ -476,8 +516,8 @@ class VideoViewer extends Component {
                 onChangeMute={this.handleToggleMuted}
                 onChange={this.handleVolumeChange}
               />
+              {this.props.isVideo && <FullScreenBtn onClick={this.handleClickFullscreen} />}
 
-              <FullScreenBtn onClick={this.handleClickFullscreen} />
             </Controls>
           </div>
         </StyledVideoViewer>

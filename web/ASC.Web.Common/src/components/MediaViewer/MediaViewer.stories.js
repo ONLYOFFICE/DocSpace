@@ -14,6 +14,8 @@ storiesOf('Components|MediaViewer', module)
         <Section>
             <MediaViewer 
                 allowConvert = {true}
+                canDelete = {(fileId) => {return true}}
+
                 playlist = {
                     [
                         {

@@ -221,7 +221,8 @@ class MediaViewer extends React.Component {
         let fileTitle = this.state.playlist[currentPlaylistPos].title;
         let url = this.state.playlist[currentPlaylistPos].src;
         let isImage = false;
-        
+        var isVideo = false;
+
         var ext = this.getFileExtension(fileTitle) ? this.getFileExtension(fileTitle) : this.getFileExtension(url);
 
         if (!this.canPlay(ext) && !this.canImageView(ext)) {
@@ -232,8 +233,8 @@ class MediaViewer extends React.Component {
             isImage = true;
         } else {
             isImage = false; 
+            isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
         }
-        console.log(ext, isImage)
 
         return(
             <StyledMediaViewer>
@@ -258,7 +259,7 @@ class MediaViewer extends React.Component {
                         ]}
                     /> 
                     :
-                    <StyledVideoViewer url = {url}/>
+                    <StyledVideoViewer url = {url} isVideo={isVideo}/>
                 }
                 <div className = "mediaViewerToolbox"></div>
                 <span>
