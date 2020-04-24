@@ -166,7 +166,7 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickLinkEdit = item => {
-    return false;
+    return window.open(`./doceditor?fileId=${item.id}`, "_blank");
   }
 
   getFilesContextOptions = (item, viewer) => {
@@ -202,7 +202,7 @@ class SectionBodyContent extends React.PureComponent {
           key: "edit",
           label: "Edit",
           onClick: this.onClickLinkEdit.bind(this, item),
-          disabled: true
+          disabled: false
         }
         : null,
       isFile

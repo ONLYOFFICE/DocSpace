@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
+import DocEditor from "./components/pages/DocEditor";
 import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline } from "asc-web-common";
 
 const App = ({ settings }) => {
@@ -17,6 +18,7 @@ const App = ({ settings }) => {
           <Switch>
             <Redirect exact from="/" to={`${homepage}`} />
             <PrivateRoute exact path={[homepage, `${homepage}/filter`]} component={Home} />
+            <PrivateRoute exact path={`${homepage}/doceditor`} component={DocEditor} />
             <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
             <PrivateRoute component={Error404} />
           </Switch>
