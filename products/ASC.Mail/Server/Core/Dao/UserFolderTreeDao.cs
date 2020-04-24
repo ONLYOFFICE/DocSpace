@@ -31,6 +31,7 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,12 +77,15 @@ namespace ASC.Mail.Core.Dao
         public int InsertFullPathToRoot(uint folderId, uint parentId)
         {
             var treeItems = MailDb.MailUserFolderTree
-                .Where(t => t.FolderId == parentId);
+                .AsNoTracking()
+                .Where(t => t.FolderId == parentId)
+                .Select(t => new MailUserFolderTree { 
+                    FolderId = folderId,
+                    ParentId = t.ParentId,
+                    Level = t.Level + 1
+                });
 
-            foreach (var t in treeItems)
-            {
-                t.Level += 1;
-            }
+            MailDb.AddRange(treeItems);
 
             var result = MailDb.SaveChanges();
 
@@ -125,6 +129,7 @@ namespace ASC.Mail.Core.Dao
             foreach (var subFolder in subFolders)
             {
                 var newTreeItems = MailDb.MailUserFolderTree
+                    .AsNoTracking()
                     .Where(t => t.FolderId == toFolderId)
                     .Select(t => new MailUserFolderTree
                     {
@@ -133,11 +138,7 @@ namespace ASC.Mail.Core.Dao
                         Level = t.Level + 1 + subFolder.Value
                     });
 
-                foreach (var treeItem in newTreeItems)
-                {
-                    MailDb.AddOrUpdate(r => r.MailUserFolderTree, treeItem);
-                }
-
+                MailDb.MailUserFolderTree.AddRange(newTreeItems);
             }
 
             MailDb.SaveChanges();

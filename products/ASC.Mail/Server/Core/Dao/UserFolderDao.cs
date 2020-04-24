@@ -182,11 +182,11 @@ namespace ASC.Mail.Core.Dao
                 ModifiedOn = folder.TimeModified
             };
 
-            var entry = MailDb.MailUserFolder.Add(mailUserFolder);
+            var entry = MailDb.AddOrUpdate(t => t.MailUserFolder, mailUserFolder);
 
             MailDb.SaveChanges();
 
-            return entry.Entity.Id;
+            return entry.Id;
         }
 
         public int Remove(uint id)
