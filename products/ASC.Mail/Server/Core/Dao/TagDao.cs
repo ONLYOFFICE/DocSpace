@@ -214,11 +214,11 @@ namespace ASC.Mail.Core.Dao
                 CrmId = tag.CrmId
             };
 
-            var saveResult = MailDb.MailTag.Add(dbTag).Entity;
+            var entry = MailDb.AddOrUpdate(t => t.MailTag, dbTag);
 
             MailDb.SaveChanges();
 
-            return saveResult.Id;
+            return entry.Id;
         }
 
         public int DeleteTag(int id)

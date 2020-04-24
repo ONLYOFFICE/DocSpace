@@ -134,13 +134,12 @@ namespace ASC.Mail.Core.Dao
         {
             var now = DateTime.UtcNow;
 
-            var list = ids.ConvertAll(id => new MailMail
-            {
-                Id = id,
-                TimeModified = now
-            });
+            var mails = MailDb.MailMail.Where(m => ids.Contains(m.Id));
 
-            MailDb.MailMail.UpdateRange(list);
+            foreach (var mail in mails)
+            {
+                mail.TimeModified = now;
+            }
 
             var result = MailDb.SaveChanges();
 
