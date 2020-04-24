@@ -3,6 +3,15 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import * as fakeFiles from "./fake";
 
+export function openEdit(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}/openedit`
+  };
+
+  return request(options);
+}
+
 export function getFolderInfo(folderId) {
   const options = {
     method: "get",
