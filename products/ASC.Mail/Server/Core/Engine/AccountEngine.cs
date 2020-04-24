@@ -116,7 +116,8 @@ namespace ASC.Mail.Core.Engine
         public List<AccountInfo> GetAccountInfoList()
         {
             var accountInfoList = CacheEngine.Get(UserId);
-            if (accountInfoList != null)
+
+            if (accountInfoList != null && accountInfoList.Any())
                 return accountInfoList;
 
             accountInfoList = new List<AccountInfo>();
