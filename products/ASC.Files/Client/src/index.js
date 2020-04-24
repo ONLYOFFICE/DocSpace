@@ -36,7 +36,7 @@ if (token) {
         }
       }
       else {
-        return Promise.resolve(FilesFilter.getDefault());
+        return Promise.resolve();
       }
     })
     .then(filter => {
@@ -64,6 +64,8 @@ if (token) {
       }
     })
     .then(data => {
+      if (!data) return Promise.resolve();
+
       if (data instanceof FilesFilter) return Promise.resolve(data);
       const { filter, itemId, type } = data;
       const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
@@ -78,6 +80,8 @@ if (token) {
     })
     .catch(err => Promise.resolve(FilesFilter.getDefault()))
     .then(data => {
+      if (!data) return Promise.resolve();
+
       if (data instanceof FilesFilter) return Promise.resolve(data);
       const result = data[0];
       const filter = data[1];
@@ -91,6 +95,8 @@ if (token) {
       return Promise.resolve(filter);
     })
     .then(filter => {
+      if (!filter) return Promise.resolve();
+      
       const folderId = filter.folder;
       return fetchFiles(folderId, filter, store.dispatch);
     })
