@@ -432,6 +432,25 @@ class VideoViewer extends Component {
     this.player = player
   }
 
+  resizePlayer = (videoSize, screenSize) => {
+    var ratio = videoSize.h / videoSize.w;
+    console.log("===",videoSize,screenSize)
+    if (videoSize.h > screenSize.h) {
+        videoSize.h = screenSize.h;
+        videoSize.w = videoSize.h / ratio;
+    }
+    if (videoSize.w > screenSize.w) {
+        videoSize.w = screenSize.w;
+        videoSize.h = videoSize.w * ratio;
+    }
+    
+    return {
+        width: videoSize.w,
+        height: videoSize.h
+    };
+    
+  };
+
   render () {
     const { url, playing, controls, light, volume, muted, loop, played, loaded, duration, playbackRate, pip } = this.state
     const SEPARATOR = ' · '
@@ -440,22 +459,32 @@ class VideoViewer extends Component {
       w : window.innerWidth,
       h : window.innerHeight
     };
+    screenSize.h -= 48 + 48 + 40;
 
-    let width = screenSize.w * 0.65;
-    let height = screenSize.h * 0.65;
+    let width = screenSize.w ;
+    let height = screenSize.h ;
 
     var centerAreaOx = screenSize.w / 2 + document.documentElement.scrollLeft;
     var centerAreaOy = screenSize.h / 2 + document.documentElement.scrollTop;
 
     if(document.getElementsByTagName('video')[0]){
-      
-      width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth /1.5 || 480 : screenSize.w - 300 ;
-      height = this.props.isVideo ? document.getElementsByTagName('video')[0].videoHeight /1.5 || 270 : 0;
+      width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth || 480 : screenSize.w - 300 ;
+      height = this.props.isVideo ? document.getElementsByTagName('video')[0].videoHeight || 270 : 0;
+      console.log(width,height)
+      let resize = this.resizePlayer(
+        {
+          w: width,
+          h: height
+        },
+        screenSize
+      )
+      width = resize.width;
+      height = resize.height;
 
     }
-    let left = centerAreaOx - width / 2;
-    let top = this.props.isVideo ? centerAreaOy - height / 2 : centerAreaOy - 20;
 
+    let left = centerAreaOx - width / 2;
+    let top = this.props.isVideo ? centerAreaOy - height / 2 + 48  : centerAreaOy + 48;
 
     return (
         <StyledVideoViewer
