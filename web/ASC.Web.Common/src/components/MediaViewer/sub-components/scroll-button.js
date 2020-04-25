@@ -4,7 +4,7 @@ import styled from "styled-components";
 const ScrollButton = styled.div`
    
     cursor: pointer;
-    z-index: 4001;
+    z-index: 4005;
     position: fixed;
     top: calc(50% - 20px);
    

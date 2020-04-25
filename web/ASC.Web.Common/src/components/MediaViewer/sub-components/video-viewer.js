@@ -4,6 +4,8 @@ import screenfull from 'screenfull'
 
 import ReactPlayer from 'react-player'
 import Duration from './duration'
+import Progress from './progress'
+
 import styled from "styled-components"
 import { Icons } from "asc-web-components";
 
@@ -72,131 +74,6 @@ class FullScreenBtn extends Component{
   }
 }
 
-const StyledProgress = styled.div`
-  display: inline-block;
-
-  .slider-container{
-    display:inline-block;
-    border-radius: 2px;
-    position:relative;	
-    width: ${props => props.width}px;
-    height:6px;
-    background:rgba(200,200,200,0.2);
-    margin:15px 0;
-  }
-  .fill{
-    width: ${props => 100 * props.value}%;
-    position:absolute;
-    
-    top:calc(50% - 3px);
-    height:6px;
-    background: #d1d1d1;
-    border-radius: 2px;
-    
-  }
-  input[type='range'] {
-      display: block;
-      overflow: visible;
-      background: transparent;
-      width: ${props => props.width}px;
-      height:6px;
-      outline:none;
-      margin:0;
-      -webkit-appearance: none;
-      position:relative;
-      
-  }
-
-  input[type='range']::-webkit-slider-thumb {
-      position:relative;
-      appearance: none;
-	    box-sizing: content-box;
-      width: 12px;
-      height: 12px;
-      margin-top: -3px;
-      background: white;
-      border-radius: 50%;
-      
-      cursor: pointer;
-      
-  }
-  input[type=range]::-moz-range-thumb {
-      position:relative;
-      appearance: none;
-	    box-sizing: content-box;
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-      margin-top: -3px;
-      cursor: pointer;
-     
-  }
-  input[type=range]::-ms-thumb {
-      position:relative;
-      appearance: none;
-	    box-sizing: content-box;
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-      margin-top: -3px;
-      cursor: pointer;
-      
-  }
-
-  input[type='range']::-webkit-slider-runnable-track {
-    margin: 12px 0;
-    height: 6px;
-    border-radius: 2px;
-    cursor: pointer;
-    -webkit-appearance: none;
-    text-align: right;
-    pointer-events: none;
-    
-  }
-  input[type="range"]::-moz-range-track  {
-    margin: 12px 0;
-    height: 6px;
-    border-radius: 2px;
-    cursor: pointer;
-    -webkit-appearance: none;
-    text-align: right;
-    pointer-events: none;
-    
-  }
-  input[type=range]::-ms-track { 
-    border-color: transparent;
-    color: transparent;
-    
-    margin: 12px 0;
-    height: 6px;
-    border-radius: 2px;
-    cursor: pointer;
-    -webkit-appearance: none;
-    text-align: right;
-    pointer-events: none;
-    
-  }
-`;
-
-const Progress = props => {
-  return (
-    <StyledProgress {...props} >
-      <div className="slider-container">
-        <div className="fill"></div>
-        <input
-          type='range' min={0} max={0.999999} step='any'
-          value={props.value}
-          onMouseDown={props.handleSeekMouseDown}
-          onChange={props.handleSeekChange}
-          onMouseUp={props.handleSeekMouseUp}
-        />
-      </div>
-    </StyledProgress>
-  );
-}
-
 const StyledValumeContainer = styled.div`
     display: inline-block;
     position: relative;
@@ -251,6 +128,10 @@ const StyledVideoViewer = styled.div`
       position: absolute;
       padding-bottom: 40px;
       background-color: rgba(11,11,11,0.7);
+
+      video{
+        z-index: 4000;
+      }
     }
 `;
 
@@ -296,7 +177,7 @@ class VideoViewer extends Component {
     playing: true,
     controls: false,
     light: false,
-    volume: 0.8,
+    volume: 0.3,
     muted: false,
     played: 0,
     loaded: 0,
