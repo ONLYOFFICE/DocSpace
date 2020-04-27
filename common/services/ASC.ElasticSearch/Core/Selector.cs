@@ -29,13 +29,11 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 
-using Microsoft.Extensions.DependencyInjection;
-
 using Nest;
 
 namespace ASC.ElasticSearch
 {
-    public class Selector<T> where T : Wrapper
+    public class Selector<T> where T : class, ISearchItem
     {
         private readonly QueryContainerDescriptor<T> queryContainerDescriptor = new QueryContainerDescriptor<T>();
         private SortDescriptor<T> sortContainerDescriptor = new SortDescriptor<T>();
@@ -199,7 +197,7 @@ namespace ASC.ElasticSearch
 
         public Selector<T> MatchAll(string value)
         {
-            Match(() => ServiceProvider.GetService<T>().GetContentProperties(), value);
+            //Match(() => ServiceProvider.GetService<T>().GetContentProperties(), value); TODO:
 
             return this;
         }

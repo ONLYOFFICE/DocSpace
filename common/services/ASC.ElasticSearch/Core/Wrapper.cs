@@ -29,12 +29,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using ASC.ElasticSearch.Core;
+
 using Nest;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.ElasticSearch
 {
+    public interface ISearchItem
+    {
+        public int Id { get; set; }
+        public int TenantId { get; set; }
+        public string IndexName { get; }
+    }
+    public interface ISearchItemDocument : ISearchItem
+    {
+        public Document Document { get; set; }
+    }
+
     public abstract class Wrapper
     {
         protected internal abstract string Table { get; }
@@ -129,7 +143,7 @@ namespace ASC.ElasticSearch
                     .Where(r => r.GetCustomAttribute<JoinAttribute>() != null)
                     .ToList();
 
-                if (!joins.Any()) return (Wrapper) result;
+                if (!joins.Any()) return (Wrapper)result;
 
                 data = data.Skip(i).ToArray();
 
@@ -159,7 +173,7 @@ namespace ASC.ElasticSearch
                     }
                     else
                     {
-                        newArray = new List<object[]> {data};
+                        newArray = new List<object[]> { data };
                     }
 
                     var newArrayValue = newArray.ConvertAll(joinWrapper.GetDataConverter(joinSub));
@@ -190,7 +204,7 @@ namespace ASC.ElasticSearch
                     data = data.Skip(skipCount).ToArray();
                 }
 
-                return (Wrapper) result;
+                return (Wrapper)result;
             };
         }
 
@@ -285,7 +299,7 @@ namespace ASC.ElasticSearch
 
             var conditions = Columns.OfType<ColumnConditionAttribute>();
 
-            foreach (var con in conditions.Where(r=> r.Value != null))
+            foreach (var con in conditions.Where(r => r.Value != null))
             {
                 result.Add(alias + "." + con.ColumnName, con.Value);
             }
@@ -298,7 +312,7 @@ namespace ASC.ElasticSearch
             return char.ToLowerInvariant(value[0]) + value.Substring(1);
         }
 
-        internal Func<PropertiesDescriptor<T>, IPromise<IProperties>> GetProperties<T>() where T : Wrapper
+        internal Func<PropertiesDescriptor<T>, IPromise<IProperties>> GetProperties<T>() where T : class, ISearchItem
         {
             var analyzers = GetAnalyzers();
 

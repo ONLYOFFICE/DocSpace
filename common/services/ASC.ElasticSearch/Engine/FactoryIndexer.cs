@@ -64,7 +64,7 @@ namespace ASC.ElasticSearch
             FactoryIndexer = factoryIndexer;
         }
 
-        public bool Support<T>(T t) where T : Wrapper
+        public bool Support<T>(T t) where T : class, ISearchItem
         {
             if (!FactoryIndexer.CheckState()) return false;
 
@@ -97,7 +97,7 @@ namespace ASC.ElasticSearch
 
     }
 
-    public class FactoryIndexer<T> where T : Wrapper
+    public class FactoryIndexer<T> where T : class, ISearchItem
     {
         private static readonly TaskScheduler Scheduler = new LimitedConcurrencyLevelTaskScheduler(10);
 
@@ -129,6 +129,8 @@ namespace ASC.ElasticSearch
             Indexer = baseIndexer;
             Client = client;
             ServiceProvider = serviceProvider;
+
+            Indexer.CreateIfNotExist(ServiceProvider.GetService<T>());
         }
 
         public bool TrySelect(Expression<Func<Selector<T>, Selector<T>>> expression, out IReadOnlyCollection<T> result)
@@ -572,9 +574,10 @@ namespace ASC.ElasticSearch
                 .AddFactoryIndexerService();
         }
 
-        public static DIHelper AddFactoryIndexerService<T>(this DIHelper services) where T : Wrapper
+        public static DIHelper AddFactoryIndexerService<T>(this DIHelper services) where T : class, ISearchItem
         {
             services.TryAddScoped<FactoryIndexer<T>>();
+            services.TryAddScoped<Selector<T>>();
 
             return services
                 .AddFactoryIndexerHelperService()

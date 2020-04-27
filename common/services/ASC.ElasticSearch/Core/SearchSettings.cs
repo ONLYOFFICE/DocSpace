@@ -145,7 +145,7 @@ namespace ASC.ElasticSearch.Core
             //}
         }
 
-        public bool CanSearchByContent<T>(int tenantId) where T : Wrapper
+        public bool CanSearchByContent<T>(int tenantId) where T : class, ISearchItem
         {
             if (!SearchByContentEnabled) return false;
 

@@ -1,10 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.ElasticSearch;
+
+using Nest;
+
+using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
+
 namespace ASC.Files.Core.EF
 {
+    [ElasticsearchType(RelationName = Tables.Folder)]
     [Table("files_folder")]
-    public class DbFolder : IDbFile, IDbSearch
+    public class DbFolder : IDbFile, IDbSearch, ISearchItem
     {
         public int Id { get; set; }
 
@@ -32,5 +39,11 @@ namespace ASC.Files.Core.EF
         public int TenantId { get; set; }
         public int FoldersCount { get; set; }
         public int FilesCount { get; set; }
+
+        [NotMapped]
+        public string IndexName
+        {
+            get => Tables.Folder;
+        }
     }
 }

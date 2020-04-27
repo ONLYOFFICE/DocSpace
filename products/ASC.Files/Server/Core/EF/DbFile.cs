@@ -1,14 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
+using ASC.ElasticSearch;
 
 using Microsoft.EntityFrameworkCore;
 
+using Nest;
+
+using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
+
 namespace ASC.Files.Core.EF
 {
+    public static class Tables
+    {
+        public const string File = "file";
+        public const string Tree = "tree";
+        public const string Folder = "folder";
+    }
+
+    [ElasticsearchType(RelationName = Tables.File)]
     [Table("files_file")]
-    public class DbFile : BaseEntity, IDbFile, IDbSearch
+    public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     {
         public int Id { get; set; }
         public int Version { get; set; }
@@ -22,6 +36,7 @@ namespace ASC.Files.Core.EF
         [Column("folder_id")]
         public int FolderId { get; set; }
 
+        [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
 
         [Column("content_length")]
@@ -50,11 +65,24 @@ namespace ASC.Files.Core.EF
 
         [Column("converted_type")]
         public string ConvertedType { get; set; }
-
         public string Comment { get; set; }
         public string Changes { get; set; }
         public bool Encrypted { get; set; }
         public ForcesaveType Forcesave { get; set; }
+
+
+        [Nested]
+        [NotMapped]
+        public List<DbFolderTree> Folders { get; set; }
+
+        [NotMapped]
+        public string IndexName
+        {
+            get => Tables.File;
+        }
+
+        [NotMapped]
+        public Document Document { get; set; }
 
         public override object[] GetKeys()
         {

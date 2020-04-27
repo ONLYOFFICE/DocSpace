@@ -30,7 +30,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,8 +43,6 @@ using ASC.ElasticSearch.Core;
 using ASC.ElasticSearch.Service;
 
 using Autofac;
-
-using Elasticsearch.Net;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -69,13 +66,13 @@ namespace ASC.ElasticSearch
             }, CacheNotifyAction.Any);
         }
 
-        public void Clear<T>(T t) where T : Wrapper
+        public void Clear<T>(T t) where T : class, ISearchItem
         {
             Notify.Publish(new SearchItem() { Id = t.IndexName }, CacheNotifyAction.Any);
         }
     }
 
-    public abstract class BaseIndexer<T> : IIndexer where T : Wrapper
+    public class BaseIndexer<T> : IIndexer where T : class, ISearchItem
     {
         private static readonly object Locker = new object();
 
@@ -114,12 +111,13 @@ namespace ASC.ElasticSearch
         {
             BeforeIndex(data);
 
-            Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
+            var r = Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
+            var d = 0;
         }
 
         internal void Index(List<T> data, bool immediately = true)
         {
-            CreateIfNotExist(data[0]);
+            //CreateIfNotExist(data[0]);
 
             if (typeof(T).IsSubclassOf(typeof(WrapperWithDoc)))
             {
@@ -204,25 +202,22 @@ namespace ASC.ElasticSearch
 
         internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            CreateIfNotExist(data);
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
         }
 
         internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            CreateIfNotExist(data);
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            CreateIfNotExist(data);
+            //CreateIfNotExist(data);
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            CreateIfNotExist(data);
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
         }
 
@@ -271,67 +266,6 @@ namespace ASC.ElasticSearch
             return false;
         }
 
-        public void Check()
-        {
-            var data = ServiceProvider.GetService<T>();
-            if (!CheckExist(data)) return;
-
-            var result = false;
-            var currentMappings = Client.Instance.Indices.GetMapping<T>(r => r.Index(data.IndexName));
-            var newMappings = GetMappings(data).Invoke(new CreateIndexDescriptor(data.IndexName));
-
-            var newMappingDict = new Dictionary<string, string>();
-            var props = newMappings.Mappings.Properties.ToList();
-            foreach (var prop in props.Where(r => r.Key.Property != null && r.Key.Property.Name != "Document"))
-            {
-                var propKey = prop.Key.Property.Name.ToLowerCamelCase();
-                var key = newMappings.Index.Name + "." + propKey;
-                if (prop.Key.Property.CustomAttributes.Any())
-                {
-                    newMappingDict.Add(key, props.Any(r => r.Key == propKey && r.Value is INestedProperty) ? FieldType.Nested.GetStringValue() : prop.Value.Type);
-                }
-
-
-                if (prop.Value is ObjectProperty obj)
-                {
-                    foreach (var objProp in obj.Properties)
-                    {
-                        newMappingDict.Add(key + "." + objProp.Key.Property.Name.ToLowerCamelCase(), objProp.Value.Type);
-                    }
-                }
-            }
-
-            foreach (var ind in currentMappings.Indices)
-            {
-                foreach (var prop in ind.Value.Mappings.Properties.Where(r => r.Key.Name != "document"))
-                {
-                    var key = ind.Key.Name + "." + prop.Key.Name.ToLowerCamelCase();
-
-                    if (!newMappingDict.Contains(new KeyValuePair<string, string>(key, prop.Value.Type)))
-                    {
-                        result = true;
-                        break;
-                    }
-
-                    var nested = prop.Value as NestedProperty ?? prop.Value as ObjectProperty;
-
-                    if (nested != null)
-                    {
-                        if (nested.Properties.Any(nProp => !newMappingDict.Contains(new KeyValuePair<string, string>(key + "." + nProp.Key.Name.ToLowerCamelCase(), nProp.Value.Type))))
-                        {
-                            result = true;
-                        }
-                    }
-                }
-            }
-
-
-            if (result)
-            {
-                Clear();
-            }
-        }
-
         public async Task ReIndex()
         {
             Clear();
@@ -352,7 +286,6 @@ namespace ASC.ElasticSearch
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
             Client.Instance.Indices.Delete(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
-            CreateIfNotExist(ServiceProvider.GetService<T>());
         }
 
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
@@ -375,15 +308,13 @@ namespace ASC.ElasticSearch
 
         private void BeforeIndex(T data)
         {
-            CreateIfNotExist(data);
-
             if (data is WrapperWithDoc wrapperWithDoc)
             {
                 wrapperWithDoc.InitDocument(SearchSettingsHelper.CanSearchByContent<T>(data.TenantId), Log);
             }
         }
 
-        private void CreateIfNotExist(T data)
+        public void CreateIfNotExist(T data)
         {
             try
             {
@@ -391,17 +322,38 @@ namespace ASC.ElasticSearch
 
                 lock (Locker)
                 {
-                    var columns = data.GetAnalyzers();
-                    var nestedColumns = data.GetNested();
+                    Func<AnalyzersDescriptor, IPromise<IAnalyzers>> analyzers = b =>
+                    {
+                        foreach (var c in Enum.GetNames(typeof(Analyzer)))
+                        {
+                            var c1 = c;
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                        }
 
-                    if (!columns.Any() && !nestedColumns.Any())
-                    {
-                        Client.Instance.Indices.Create(data.IndexName);
-                    }
-                    else
-                    {
-                        Client.Instance.Indices.Create(data.IndexName, GetMappings(data));
-                    }
+                        foreach (var c in Enum.GetNames(typeof(CharFilter)))
+                        {
+                            if (c == CharFilter.io.ToString()) continue;
+
+                            var charFilters = new List<string>() { CharFilter.io.ToString(), c };
+                            var c1 = c;
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
+                        }
+
+                        if (data is WrapperWithDoc)
+                        {
+                            b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                        }
+
+                        return b;
+                    };
+
+                    var createIndexResponse = Client.Instance.Indices.Create(data.IndexName,
+                        c =>
+                        c.Map<T>(m => m.AutoMap())
+                        .Settings(r => r.Analysis(a =>
+                                        a.Analyzers(analyzers)
+                                        .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
+                                        .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
 
                     IsExist = true;
                 }
@@ -410,92 +362,6 @@ namespace ASC.ElasticSearch
             {
                 Log.Error("CreateIfNotExist", e);
             }
-        }
-
-        public Func<CreateIndexDescriptor, ICreateIndexRequest> GetMappings(T data)
-        {
-            var columns = data.GetAnalyzers();
-            var nestedColumns = data.GetNested();
-
-            Func<AnalyzersDescriptor, IPromise<IAnalyzers>> analyzers = b =>
-            {
-                foreach (var c in Enum.GetNames(typeof(Analyzer)))
-                {
-                    var c1 = c;
-                    b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
-                }
-
-                foreach (var c in columns)
-                {
-                    if (c.Value.CharFilter == CharFilter.io) continue;
-                    var charFilters = new List<string>();
-                    foreach (var r in Enum.GetValues(typeof(CharFilter)))
-                    {
-                        if ((c.Value.CharFilter & (CharFilter)r) == (CharFilter)r) charFilters.Add(r.ToString());
-                    }
-
-                    var c1 = c;
-                    b.Custom(c1.Key, ca => ca.Tokenizer(c1.Value.Analyzer.ToString()).Filters(c1.Value.Filter.ToString()).CharFilters(charFilters));
-                }
-
-                if (data is WrapperWithDoc)
-                {
-                    b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
-                }
-
-                return b;
-            };
-
-            Func<PropertiesDescriptor<T>, IPromise<IProperties>> nestedSelector = p =>
-            {
-                foreach (var c in nestedColumns)
-                {
-                    var isNested = c.Key.IsGenericType;
-                    Type prop;
-                    MethodInfo nested;
-                    Type typeDescriptor;
-
-                    if (isNested)
-                    {
-                        prop = c.Key.GenericTypeArguments[0];
-                        nested = p.GetType().GetMethod("Nested");
-                        typeDescriptor = typeof(NestedPropertyDescriptor<,>);
-                    }
-                    else
-                    {
-                        prop = c.Key;
-                        nested = p.GetType().GetMethod("Object");
-                        typeDescriptor = typeof(ObjectTypeDescriptor<,>);
-                    }
-
-                    var desc = typeDescriptor.MakeGenericType(typeof(T), prop);
-
-                    var methods = desc.GetMethods();
-                    var name = methods.FirstOrDefault(r => r.Name == "Name" && r.GetParameters().FirstOrDefault(q => q.ParameterType == typeof(PropertyName)) != null);
-                    var autoMap = methods.FirstOrDefault(r => r.Name == "AutoMap" && r.GetParameters().Length == 2);
-                    var props = methods.FirstOrDefault(r => r.Name == "Properties");
-                    if (name == null || autoMap == null || props == null) continue;
-
-                    var param = Expression.Parameter(desc, "a");
-                    var nameFunc = Expression.Call(param, name, Expression.Constant(new PropertyName(c.Value.ToLowerCamelCase()))); //a.Name(value(Nest.PropertyName))
-                    var autoMapFunc = Expression.Call(param, autoMap, Expression.Constant(null, typeof(IPropertyVisitor)), Expression.Constant(0)); //a.AutoMap()
-
-                    var inst = (Wrapper)Activator.CreateInstance(prop);
-                    var instMethods = prop.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic);
-                    var getProperties = instMethods.First(r => r.Name == "GetProperties").MakeGenericMethod(prop);
-                    var propsFunc = Expression.Call(param, props, Expression.Constant(getProperties.Invoke(inst, null))); //a.AutoMap()
-
-                    var nestedFunc = Expression.Lambda(Expression.Block(nameFunc, autoMapFunc, propsFunc), param).Compile();
-                    var fooRef = nested.MakeGenericMethod(prop);
-                    fooRef.Invoke(p, new object[] { nestedFunc });//p.Nested<Wrapper>(r=> r.Name(c.Value.ToLowerCamelCase()).AutoMap().Properties(getProperties()))
-                }
-
-                return p;
-            };
-
-            return c =>
-               c.Settings(r => r.Analysis(a => a.Analyzers(analyzers).CharFilters(d => d.HtmlStrip(CharFilter.html.ToString()).Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е")))))
-                .Mappings(r => r.Map<T>(m => m.AutoMap<T>().Properties(data.GetProperties<T>()).Properties(nestedSelector)));
         }
 
         private IIndexRequest<T> GetMeta(IndexDescriptor<T> request, T data, bool immediately = true)
@@ -709,7 +575,10 @@ namespace ASC.ElasticSearch
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
 
-        public abstract void IndexAll();
+        public void IndexAll()
+        {
+
+        }
     }
 
     static class CamelCaseExtension
@@ -736,7 +605,7 @@ namespace ASC.ElasticSearch
             return services.AddKafkaService();
         }
 
-        public static DIHelper AddBaseIndexerService<T>(this DIHelper services) where T : Wrapper
+        public static DIHelper AddBaseIndexerService<T>(this DIHelper services) where T : class, ISearchItem
         {
             services.TryAddScoped<BaseIndexer<T>>();
 

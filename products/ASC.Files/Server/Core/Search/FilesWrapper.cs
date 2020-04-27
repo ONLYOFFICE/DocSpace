@@ -35,6 +35,7 @@ using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
+using ASC.Files.Core.EF;
 using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 
@@ -163,12 +164,12 @@ namespace ASC.Web.Files.Core.Search
     {
         public static DIHelper AddFilesWrapperService(this DIHelper services)
         {
-            services.TryAddTransient<FilesWrapper>();
+            services.TryAddTransient<DbFile>();
             return services
                 .AddTenantManagerService()
                 .AddFileUtilityService()
                 .AddDaoFactoryService()
-                .AddFactoryIndexerService<FilesWrapper>();
+                .AddFactoryIndexerService<DbFile>();
         }
     }
 }

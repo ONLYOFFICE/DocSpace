@@ -31,6 +31,8 @@ using System.Reflection;
 
 using ASC.Common;
 using ASC.Core;
+using ASC.ElasticSearch;
+using ASC.Files.Core.EF;
 using ASC.Files.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
@@ -46,6 +48,8 @@ namespace ASC.Web.Files.Configuration
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
+        public IServiceProvider ServiceProvider { get; }
+
         //public SubscriptionManager SubscriptionManager { get; }
 
         public ProductEntryPoint()
@@ -97,6 +101,7 @@ namespace ASC.Web.Files.Configuration
                     UserOpportunities = userOpportunities,
                     CanNotBeDisabled = true,
                 };
+
             //SearchHandlerManager.Registry(new SearchHandler());
         }
 
@@ -177,7 +182,8 @@ namespace ASC.Web.Files.Configuration
                 .AddAuthContextService()
                 .AddUserManagerService()
                 .AddGlobalService()
-                .AddFilesSubscriptionManagerService();
+                .AddFilesSubscriptionManagerService()
+                .AddFactoryIndexerService<DbFile>();
         }
     }
 }

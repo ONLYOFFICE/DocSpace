@@ -33,7 +33,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.ElasticSearch;
-using ASC.Web.Files.Core.Search;
+using ASC.Files.Core.EF;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -117,7 +117,7 @@ namespace ASC.Files.Service
         private void CheckIfChange()
         {
             using var scope = ServiceProvider.CreateScope();
-            var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<FilesWrapper>>();
+            var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFile>>();
             IsStarted = true;
 
             var products = new[] { filesWrapper }.ToList();
@@ -130,7 +130,7 @@ namespace ASC.Files.Service
 
                     Log.DebugFormat("Product check {0}", product.Indexer.IndexName);
                     Indexing = product.Indexer.IndexName;
-                    product.Indexer.Check();
+                    //product.Indexer.Check();
                 }
                 catch (Exception e)
                 {
@@ -151,8 +151,8 @@ namespace ASC.Files.Service
             IsStarted = true;
 
             using var scope = ServiceProvider.CreateScope();
-            var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<FilesWrapper>>();
-            var foldersWrapper = scope.ServiceProvider.GetService<FactoryIndexer<FoldersWrapper>>();
+            var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFile>>();
+            var foldersWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFolder>>();
             var products = new[] { (IIndexer)filesWrapper, (IIndexer)foldersWrapper }.ToList();
 
             if (reindex)

@@ -30,6 +30,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
+using ASC.Files.Core.EF;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -61,9 +62,9 @@ namespace ASC.Web.Files.Core.Search
     {
         public static DIHelper AddFoldersWrapperService(this DIHelper services)
         {
-            services.TryAddTransient<FoldersWrapper>();
+            services.TryAddTransient<DbFolder>();
             return services
-                .AddFactoryIndexerService<FoldersWrapper>();
+                .AddFactoryIndexerService<DbFolder>();
         }
     }
 }

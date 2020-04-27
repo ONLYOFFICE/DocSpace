@@ -30,9 +30,8 @@ namespace ASC.ElasticSearch
     public interface IIndexer
     {
         string IndexName { get; }
-        void IndexAll();
 
-        void Check();
+        void IndexAll();
 
         Task ReIndex();
     }
