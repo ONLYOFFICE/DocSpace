@@ -4,5 +4,6 @@
   "NewSpreadsheet": "Новая таблица",
   "NewPresentation": "Новая презентация",
   "NewFolder": "Новая папка",
-  "Upload": "Загрузить"
+  "UploadFiles": "Загрузить файлы",
+  "UploadFolder": "Загрузить папку"
 }

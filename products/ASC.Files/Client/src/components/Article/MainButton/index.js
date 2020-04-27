@@ -4,8 +4,12 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { MainButton, DropDownItem, toastr } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { setAction, fetchFiles } from "../../../store/files/actions";
-import { isCanCreate } from "../../../store/files/selectors";
+import {
+  setAction,
+  fetchFiles,
+  setTreeFolders,
+} from "../../../store/files/actions";
+import { isCanCreate, loopTreeFolders } from "../../../store/files/selectors";
 import store from "../../../store/store";
 import i18n from "../i18n";
 import { utils, constants, api } from "asc-web-common";
@@ -19,33 +23,73 @@ class PureArticleMainButtonContent extends React.Component {
   };
 
   onCreate = (format) => {
-    this.props.setAction(
-      {
-        type: FileAction.Create,
-        extension: format,
-        id: -1
-  });
-}
-
-  onUploadFileClick = () => {
-    this.inputElement.click();
+    this.props.setAction({
+      type: FileAction.Create,
+      extension: format,
+      id: -1,
+    });
   };
 
-  onFileChange = (e) => {
-    const files = e.target.files;
+  onUploadFileClick = () => this.inputFilesElement.click();
 
-    for(let i = 0; i<files.length; i++) {
-      const isLatestFile = i === files.length - 1;
-      this.uploadFile(files[i], isLatestFile);
-    }
+  onUploadFolderClick = () => this.inputFolderElement.click();
+
+  sendChunk = (
+    files,
+    location,
+    requestsDataArray,
+    isLatestFile,
+    indexOfFile
+  ) => {
+    const {
+      onLoading,
+      filter,
+      currentFolderId,
+      treeFolders,
+      setTreeFolders,
+    } = this.props;
+
+    const sendRequestFunc = (i) => {
+      api.files.uploadFile(location, requestsDataArray[i]).then(() => {
+        if (i + 1 !== requestsDataArray.length) {
+          sendRequestFunc(i + 1);
+        } else if (isLatestFile) {
+          onLoading(true);
+          const newFilter = filter.clone();
+          fetchFiles(currentFolderId, newFilter, store.dispatch, treeFolders)
+            .then((data) => {
+              const path = data.selectedFolder.pathParts;
+              const newTreeFolders = treeFolders;
+              const folders = data.selectedFolder.folders;
+              const foldersCount = data.selectedFolder.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+              setTreeFolders(newTreeFolders);
+            })
+            .catch((err) => toastr.error(err))
+            .finally(() => {
+              onLoading(false);
+              return;
+            });
+        } else {
+          this.startSessionFunc(files, indexOfFile + 1);
+        }
+      });
+    };
+
+    sendRequestFunc(0);
   };
 
-  uploadFile = (file, isLatestFile) => {
-    const { onLoading, filter, currentFolderId } = this.props;
+  startSessionFunc = (files, indexOfFile) => {
+    const { currentFolderId } = this.props;
+    const file = files[indexOfFile];
+    const isLatestFile = indexOfFile === files.length - 1;
 
     const fileName = file.name;
     const fileSize = file.size;
-    const relativePath = "";
+    //if(fileSize === 0) {toastr.error("Size 0"); return}
+    const relativePath = file.webkitRelativePath
+      ? file.webkitRelativePath.slice(0, -file.name.length)
+      : "";
 
     let location;
     const requestsDataArray = [];
@@ -69,27 +113,21 @@ class PureArticleMainButtonContent extends React.Component {
           chunk++;
         }
       })
-      .then(() => {
-        const sendRequestFunc = (i) => {
-          api.files.uploadFile(location, requestsDataArray[i]).then((res) => {
-            if (i + 1 !== requestsDataArray.length) {
-              sendRequestFunc(i + 1);
-            } else if (isLatestFile) {
-              onLoading(true);
+      .then(() =>
+        this.sendChunk(
+          files,
+          location,
+          requestsDataArray,
+          isLatestFile,
+          indexOfFile
+        )
+      );
+  };
 
-              const newFilter = filter.clone();
-              fetchFiles(currentFolderId, newFilter, store.dispatch)
-                .catch(err => toastr.error(err))
-                .finally(() => {
-                  onLoading(false);
-                  return;
-                });
-            }
-          });
-        };
-
-        sendRequestFunc(0);
-      });
+  onFileChange = (e) => {
+    const files = e.target.files;
+    //console.log("files", files);
+    this.startSessionFunc(files, 0);
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -106,7 +144,7 @@ class PureArticleMainButtonContent extends React.Component {
 
 
   render() {
-    console.log("Files ArticleMainButtonContent render");
+    //console.log("Files ArticleMainButtonContent render");
     const { t, isCanCreate } = this.props;
 
     return (
@@ -138,8 +176,13 @@ class PureArticleMainButtonContent extends React.Component {
         <DropDownItem isSeparator />
         <DropDownItem
           icon="ActionsUploadIcon"
-          label={t('Upload')}
+          label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
+        />
+        <DropDownItem
+          icon="ActionsUploadIcon"
+          label={t("UploadFolder")}
+          onClick={this.onUploadFolderClick}
         />
         <input
           id="customFile"
@@ -147,7 +190,17 @@ class PureArticleMainButtonContent extends React.Component {
           multiple
           type="file"
           onChange={this.onFileChange}
-          ref={(input) => (this.inputElement = input)}
+          ref={(input) => (this.inputFilesElement = input)}
+          style={{ display: "none" }}
+        />
+        <input
+          id="customFile"
+          className="custom-file-input"
+          webkitdirectory=""
+          mozdirectory=""
+          type="file"
+          onChange={this.onFileChange}
+          ref={(input) => (this.inputFolderElement = input)}
           style={{ display: "none" }}
         />
       </MainButton>
@@ -168,15 +221,18 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { selectedFolder, filter } = state.files;
+  const { selectedFolder, filter, treeFolders } = state.files;
   const { settings, user } = state.auth;
 
   return {
     settings,
     isCanCreate: isCanCreate(selectedFolder, user),
     currentFolderId: selectedFolder.id,
-    filter
+    filter,
+    treeFolders,
   };
 };
 
-export default connect(mapStateToProps, { setAction })(withRouter(ArticleMainButtonContent));
+export default connect(mapStateToProps, { setAction, setTreeFolders })(
+  withRouter(ArticleMainButtonContent)
+);
