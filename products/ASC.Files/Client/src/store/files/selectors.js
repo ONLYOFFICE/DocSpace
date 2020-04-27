@@ -185,14 +185,15 @@ const removeTreeFolder = (folders, newItems, foldersCount) => {
 
 const addTreeFolder = (folders, newItems, foldersCount) => {
   let array;
+  const newItemFolders = newItems.folders ? newItems.folders : [];
   for (let folder of folders) {
     let currentFolder;
-    if(newItems.folders) {
-      currentFolder = newItems.folders.find((x) => x.id === folder.id);
+    if(newItemFolders) {
+      currentFolder = newItemFolders.find((x) => x.id === folder.id);
     }
 
     if (folders.length < 1 || !currentFolder) {
-      array = [...newItems.folders, ...[folder]].sort((prev, next) =>
+      array = [...newItemFolders, ...[folder]].sort((prev, next) =>
         prev.title.toLowerCase() < next.title.toLowerCase() ? -1 : 1
       );
       newItems.folders = array;
@@ -208,13 +209,16 @@ export const loopTreeFolders = (path, item, folders, foldersCount, currentFolder
     const newItems = item.find((x) => x.id === path[0]);
     newPath.shift();
     if (path.length === 0) {
+      let foldersLength = newItems.folders ? newItems.folders.length : 0;
       //new Date(prev.updated) > new Date(next.updated) ? -1 : 1;
-      if(folders.length > newItems.folders.length) {
+      if (folders.length > foldersLength) {
         addTreeFolder(folders, newItems, foldersCount);
-      } else if(folders.length < newItems.folders.length) {
+      } else if (folders.length < foldersLength) {
         removeTreeFolder(folders, newItems, foldersCount);
-      } else {
+      } else if (folders.length > 0 && newItems.length > 0) {
         renameTreeFolder(folders, newItems, currentFolder);
+      } else {
+        return;
       }
       return;
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { MainButton, DropDownItem, toastr } from "asc-web-components";
+import { MainButton, DropDownItem, toastr, utils } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   setAction,
@@ -12,14 +12,15 @@ import {
 import { isCanCreate, loopTreeFolders } from "../../../store/files/selectors";
 import store from "../../../store/store";
 import i18n from "../i18n";
-import { utils, constants, api } from "asc-web-common";
+import { utils as commonUtils, constants, api } from "asc-web-common";
 
-const { changeLanguage } = utils;
+const { changeLanguage } = commonUtils;
 const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
   state = {
-    uploadPercentage: 0,
+    files: [],
+    uploadPercentage: 0
   };
 
   onCreate = (format) => {
@@ -34,44 +35,40 @@ class PureArticleMainButtonContent extends React.Component {
 
   onUploadFolderClick = () => this.inputFolderElement.click();
 
-  sendChunk = (
-    files,
-    location,
-    requestsDataArray,
-    isLatestFile,
-    indexOfFile
-  ) => {
-    const {
-      onLoading,
-      filter,
-      currentFolderId,
-      treeFolders,
-      setTreeFolders,
-    } = this.props;
+  updateFiles = () => {
+    const { onLoading, filter, currentFolderId, treeFolders, setTreeFolders } = this.props;
 
-    const sendRequestFunc = (i) => {
-      api.files.uploadFile(location, requestsDataArray[i]).then(() => {
-        if (i + 1 !== requestsDataArray.length) {
-          sendRequestFunc(i + 1);
+    onLoading(true);
+    const newFilter = filter.clone();
+    fetchFiles(currentFolderId, newFilter, store.dispatch, treeFolders)
+      .then((data) => {
+        const path = data.selectedFolder.pathParts;
+        const newTreeFolders = treeFolders;
+        const folders = data.selectedFolder.folders;
+        const foldersCount = data.selectedFolder.foldersCount;
+        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+        setTreeFolders(newTreeFolders);
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        onLoading(false);
+      });
+  }
+
+  sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile) => {
+    const sendRequestFunc = index => {
+      api.files.uploadFile(location, requestsDataArray[index]).then(res => {
+        if(res.data.data && res.data.data.uploaded) {
+          files[indexOfFile].uploaded = true;
+          this.setState({ files });
+        }
+        if (index + 1 !== requestsDataArray.length) {
+          sendRequestFunc(index + 1);
         } else if (isLatestFile) {
-          onLoading(true);
-          const newFilter = filter.clone();
-          fetchFiles(currentFolderId, newFilter, store.dispatch, treeFolders)
-            .then((data) => {
-              const path = data.selectedFolder.pathParts;
-              const newTreeFolders = treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            })
-            .catch((err) => toastr.error(err))
-            .finally(() => {
-              onLoading(false);
-              return;
-            });
+          this.updateFiles();
+          return;
         } else {
-          this.startSessionFunc(files, indexOfFile + 1);
+          this.startSessionFunc(indexOfFile + 1);
         }
       });
     };
@@ -79,14 +76,35 @@ class PureArticleMainButtonContent extends React.Component {
     sendRequestFunc(0);
   };
 
-  startSessionFunc = (files, indexOfFile) => {
-    const { currentFolderId } = this.props;
+  startSessionFunc = indexOfFile => {
+    const { files } = this.state;
+    const { currentFolderId, t } = this.props;
     const file = files[indexOfFile];
     const isLatestFile = indexOfFile === files.length - 1;
 
+    if(file.size === 0) {
+      toastr.error(t("ErrorUploadMessage"));
+      if(isLatestFile) {
+        let uploadedFile = false;
+        for(let item of files) {
+          if(item.uploaded) {
+            uploadedFile = true;
+            break;
+          }
+        }
+        
+        if(uploadedFile) {
+          this.updateFiles();
+          return;
+        }
+        return;
+      } else {
+        this.startSessionFunc(indexOfFile + 1);
+      }
+    }
+
     const fileName = file.name;
     const fileSize = file.size;
-    //if(fileSize === 0) {toastr.error("Size 0"); return}
     const relativePath = file.webkitRelativePath
       ? file.webkitRelativePath.slice(0, -file.name.length)
       : "";
@@ -127,7 +145,9 @@ class PureArticleMainButtonContent extends React.Component {
   onFileChange = (e) => {
     const files = e.target.files;
     //console.log("files", files);
-    this.startSessionFunc(files, 0);
+    if(files) {
+      this.setState({ files }, () => this.startSessionFunc(0));
+    }
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -138,6 +158,11 @@ class PureArticleMainButtonContent extends React.Component {
     if (nextState.uploadPercentage !== this.state.uploadPercentage) {
       return true;
     }
+
+    if (!utils.array.isArrayEqual(nextState.files, this.state.files)) {
+      return true;
+    }
+
     return false;
   }
 
