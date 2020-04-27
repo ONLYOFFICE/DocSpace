@@ -74,7 +74,7 @@
 //                TenantId = CURRENT_TENANT,
 //                User = User,
 //                Name = "Test Contact Name",
-//                ContactType = (int) ContactType.Personal,
+//                ContactType = (int)ContactType.Personal,
 //                Description = "Some test description",
 //                InfoList = new List<MailContactInfoWrapper>
 //                {

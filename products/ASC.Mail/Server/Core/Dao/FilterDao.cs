@@ -95,12 +95,9 @@ namespace ASC.Mail.Core.Dao
 
         public int Delete(int id)
         {
-            var filter = new MailFilter
-            {
-                Id = id,
-                Tenant = Tenant,
-                IdUser = UserId
-            };
+            var filter = MailDb.MailFilter
+               .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Id == id)
+               .SingleOrDefault();
 
             MailDb.MailFilter.Remove(filter);
 
