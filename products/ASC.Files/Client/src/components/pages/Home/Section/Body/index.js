@@ -26,7 +26,7 @@ import {
   setAction,
   setTreeFolders
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -91,7 +91,7 @@ class SectionBodyContent extends React.PureComponent {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
           const folders = data.selectedFolder.folders;
-          this.loop(path, newTreeFolders, item.parentId, folders);
+          loopTreeFolders(path, newTreeFolders, folders, null, item);
           setTreeFolders(newTreeFolders);
         }
       }).finally(() => onLoading(false))
@@ -119,21 +119,6 @@ class SectionBodyContent extends React.PureComponent {
       .then(() => toastr.success(`File moved to recycle bin`));
   }
 
-  loop = (path, item, folderId, folders, foldersCount) => {
-    const newPath = path;
-    while (path.length !== 0) {
-      const newItems = item.find(x => x.id === path[0]);
-      newPath.shift();
-      if (path.length === 0) {
-        const currentItem = item.find(x => x.id === folderId);
-        currentItem.folders = folders;
-        currentItem.foldersCount = foldersCount;
-        return;
-      }
-      this.loop(newPath, newItems.folders, folderId, folders, foldersCount);
-    }
-  };
-
   onDeleteFolder = (folderId, currentFolderId) => {
     const { deleteFolder, filter, treeFolders, setTreeFolders, onLoading } = this.props;
     onLoading(true);
@@ -145,7 +130,7 @@ class SectionBodyContent extends React.PureComponent {
           const newTreeFolders = treeFolders;
           const folders = data.selectedFolder.folders;
           const foldersCount = data.selectedFolder.foldersCount;
-          this.loop(path, newTreeFolders, currentFolderId, folders, foldersCount);
+          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
           setTreeFolders(newTreeFolders);
         })
       )
