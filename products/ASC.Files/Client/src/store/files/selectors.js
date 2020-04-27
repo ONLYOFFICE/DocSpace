@@ -204,6 +204,9 @@ const addTreeFolder = (folders, newItems, foldersCount) => {
 }
 
 export const loopTreeFolders = (path, item, folders, foldersCount, currentFolder) => {
+  if (currentFolder.id === -1) {
+    return;
+  }
   const newPath = path;
   while (path.length !== 0) {
     const newItems = item.find((x) => x.id === path[0]);

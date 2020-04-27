@@ -308,7 +308,7 @@ class SectionBodyContent extends React.PureComponent {
             fontSize="26px"
             fontWeight="800"
             noHover
-            onClick={() => console.log("Create document click")}
+            onClick={this.onCreate.bind(this, "docx")}
           >
             +
           </Link>
@@ -531,13 +531,15 @@ class SectionBodyContent extends React.PureComponent {
       });
     }
 
-    return currentFolderCount === 0 ? (
+
+
+    return !fileAction.id && currentFolderCount === 0 ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
           this.renderEmptyFolderContainer()
         )
-    ) : items.length === 0 ? (
+    ) : !fileAction.id && items.length === 0 ? (
       this.renderEmptyFilterContainer()
     ) : (
           <RowContainer useReactWindow={false}>
