@@ -161,7 +161,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   render() {
-    const { t, item, fileAction, isLoading } = this.props;
+    const { t, item, fileAction, isLoading, isTrashFolder } = this.props;
     const { itemTitle, editingId/*, loading*/ } = this.state;
     const {
       contentLength,
@@ -217,6 +217,7 @@ class FilesRowContent extends React.PureComponent {
     />;
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
+    const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
 
     return isEdit
       ? <EditingWrapperComponent
@@ -240,10 +241,10 @@ class FilesRowContent extends React.PureComponent {
             type='page'
             title={titleWithoutExt}
             fontWeight="bold"
-            onClick={this.onFilesClick}
             fontSize='15px'
+            {...linkStyles}
             color="#333"
-            isTextOverflow={true}
+            isTextOverflow
           >
             {titleWithoutExt}
           </Link>
@@ -369,10 +370,14 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
+  const { filter, fileAction, selectedFolder, treeFolders } = state.files;
+  const indexOfTrash = 3;
+
   return {
-    filter: state.files.filter,
-    fileAction: state.files.fileAction,
-    parentFolder: state.files.selectedFolder.id
+    filter,
+    fileAction,
+    parentFolder: selectedFolder.id,
+    isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id
   }
 }
 
