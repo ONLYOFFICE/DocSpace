@@ -234,7 +234,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   onBackToParentFolder = () => {
-    fetchFiles(this.props.parentId, this.props.filter, filesStore.dispatch);
+    const { onLoading, parentId, filter } = this.props;
+    onLoading(true);
+    fetchFiles(parentId, filter, filesStore.dispatch).finally(() =>
+      onLoading(false)
+    );
   };
 
   
