@@ -49,7 +49,7 @@ class FilesRowContent extends React.PureComponent {
       ? updateFile(fileAction.id, itemTitle)
         .then(() => this.completeAction()).finally(() => onLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction().finally(() => onLoading(false)));
+        .then(() => this.completeAction()).finally(() => onLoading(false));
   };
 
   createItem = () => {
