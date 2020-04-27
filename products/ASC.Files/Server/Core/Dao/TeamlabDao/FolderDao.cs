@@ -956,7 +956,7 @@ namespace ASC.Files.Core.Data
 
         #endregion
 
-        protected IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
+        protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
         {
             var q = Query(FilesDbContext.Folders);
             if (where != null)

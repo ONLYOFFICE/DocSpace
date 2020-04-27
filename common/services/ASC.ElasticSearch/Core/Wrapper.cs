@@ -44,6 +44,7 @@ namespace ASC.ElasticSearch
         public int TenantId { get; set; }
         public string IndexName { get; }
     }
+
     public interface ISearchItemDocument : ISearchItem
     {
         public Document Document { get; set; }

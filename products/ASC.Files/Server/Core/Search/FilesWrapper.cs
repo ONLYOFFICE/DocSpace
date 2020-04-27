@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
@@ -40,9 +41,71 @@ using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    public class FactoryIndexerFile : FactoryIndexer<DbFile>
+    {
+        public IDaoFactory DaoFactory { get; }
+
+        public FactoryIndexerFile(
+            IOptionsMonitor<ILog> options,
+            FactoryIndexerHelper factoryIndexerSupport,
+            TenantManager tenantManager,
+            SearchSettingsHelper searchSettingsHelper,
+            FactoryIndexer factoryIndexer,
+            BaseIndexer<DbFile> baseIndexer,
+            Client client,
+            IServiceProvider serviceProvider,
+            IDaoFactory daoFactory)
+            : base(options, factoryIndexerSupport, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, client, serviceProvider)
+        {
+            DaoFactory = daoFactory;
+        }
+
+        public override void IndexAll()
+        {
+            var fileDao = DaoFactory.GetFileDao<int>() as FileDao;
+
+            (int, int, int) getCount(DateTime lastIndexed)
+            {
+                var q = fileDao.GetFileQuery(r => r.ModifiedOn >= lastIndexed)
+                    .Where(r => r.CurrentVersion)
+                    .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
+                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
+
+                var count = q.GroupBy(a => a.f.Id).Count();
+                var min = q.Min(r => r.f.Id);
+                var max = q.Max(r => r.f.Id);
+
+                return (count, max, min);
+            }
+
+            List<DbFile> getData(long i, long step, DateTime lastIndexed) =>
+                fileDao.GetFileQuery(r => r.ModifiedOn >= lastIndexed)
+                    .Where(r => r.CurrentVersion)
+                    .Where(r => r.Id >= i && r.Id <= i + step)
+                    .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
+                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active)
+                    .Select(r => r.f)
+                    .ToList();
+
+            try
+            {
+                foreach (var data in Indexer.IndexAll(getCount, getData))
+                {
+                    Index(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                throw;
+            }
+        }
+    }
+
     public sealed class FilesWrapper : WrapperWithDoc
     {
         [Column("title", 1)]
@@ -165,11 +228,10 @@ namespace ASC.Web.Files.Core.Search
         public static DIHelper AddFilesWrapperService(this DIHelper services)
         {
             services.TryAddTransient<DbFile>();
+            services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
+
             return services
-                .AddTenantManagerService()
-                .AddFileUtilityService()
-                .AddDaoFactoryService()
-                .AddFactoryIndexerService<DbFile>();
+                .AddFactoryIndexerService<DbFile>(false);
         }
     }
 }

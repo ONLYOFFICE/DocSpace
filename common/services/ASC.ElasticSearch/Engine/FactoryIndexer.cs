@@ -110,6 +110,8 @@ namespace ASC.ElasticSearch
         public BaseIndexer<T> Indexer { get; }
         public Client Client { get; }
         public IServiceProvider ServiceProvider { get; }
+        public string IndexName { get => Indexer.IndexName; }
+
 
         public FactoryIndexer(
             IOptionsMonitor<ILog> options,
@@ -426,6 +428,11 @@ namespace ASC.ElasticSearch
             task.Start(Scheduler);
             return task;
         }
+
+        public virtual void IndexAll()
+        {
+            return;
+        }
     }
 
     public class FactoryIndexer
@@ -574,9 +581,13 @@ namespace ASC.ElasticSearch
                 .AddFactoryIndexerService();
         }
 
-        public static DIHelper AddFactoryIndexerService<T>(this DIHelper services) where T : class, ISearchItem
+        public static DIHelper AddFactoryIndexerService<T>(this DIHelper services, bool addBase = true) where T : class, ISearchItem
         {
-            services.TryAddScoped<FactoryIndexer<T>>();
+            if (addBase)
+            {
+                services.TryAddScoped<FactoryIndexer<T>>();
+            }
+
             services.TryAddScoped<Selector<T>>();
 
             return services

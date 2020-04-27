@@ -484,7 +484,6 @@ namespace ASC.Files.Core.Data
             }
 
             FactoryIndexer.IndexAsync(InitDocument(toInsert));
-            //FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
 
             return GetFile(file.ID);
         }
@@ -510,6 +509,8 @@ namespace ASC.Files.Core.Data
                 }
             }
 
+            DbFile toUpdate = null;
+
             List<int> parentFoldersIds;
             lock (syncRoot)
             {
@@ -524,7 +525,7 @@ namespace ASC.Files.Core.Data
                 if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
-                var toUpdate = FilesDbContext.Files
+                toUpdate = FilesDbContext.Files
                     .Where(r => r.Id == file.ID && r.Version == file.Version)
                     .FirstOrDefault();
 
@@ -571,7 +572,6 @@ namespace ASC.Files.Core.Data
                 }
 
                 toUpdate.Folders = parentFolders;
-                FactoryIndexer.IndexAsync(InitDocument(toUpdate));
             }
 
             if (fileStream != null)
@@ -591,7 +591,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            //FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(InitDocument(toUpdate));
 
             return GetFile(file.ID);
         }
@@ -674,7 +674,7 @@ namespace ASC.Files.Core.Data
             if (deleteFolder)
                 DeleteFolder(fileId);
 
-            //var wrapper = ServiceProvider.GetService<FilesWrapper>();
+            var wrapper = ServiceProvider.GetService<FilesWrapper>();
             //wrapper.Id = fileId;
             //            FactoryIndexer.DeleteAsync(wrapper);
         }
@@ -1336,7 +1336,7 @@ namespace ASC.Files.Core.Data
 
         private DbFile InitDocument(DbFile dbFile)
         {
-            //if (FactoryIndexer.CanSearchByContent()) return dbFile;
+            if (!FactoryIndexer.CanSearchByContent()) return dbFile;
 
             var file = ServiceProvider.GetService<File<int>>();
             file.ID = dbFile.Id;

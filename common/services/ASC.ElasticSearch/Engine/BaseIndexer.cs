@@ -39,6 +39,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch.Core;
 using ASC.ElasticSearch.Service;
 
@@ -72,13 +73,15 @@ namespace ASC.ElasticSearch
         }
     }
 
-    public class BaseIndexer<T> : IIndexer where T : class, ISearchItem
+    public class BaseIndexer<T> where T : class, ISearchItem
     {
         private static readonly object Locker = new object();
 
         protected internal T Wrapper { get { return ServiceProvider.GetService<T>(); } }
 
         public string IndexName { get { return Wrapper.IndexName; } }
+
+        private const int QueryLimit = 1000;
 
         public bool IsExist { get; set; }
         public Client Client { get; }
@@ -111,8 +114,7 @@ namespace ASC.ElasticSearch
         {
             BeforeIndex(data);
 
-            var r = Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
-            var d = 0;
+            Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
         }
 
         internal void Index(List<T> data, bool immediately = true)
@@ -575,9 +577,46 @@ namespace ASC.ElasticSearch
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
 
-        public void IndexAll()
+        public IEnumerable<List<T>> IndexAll(Func<DateTime, (int, int, int)> getCount, Func<long, long, DateTime, List<T>> getData)
         {
+            var lastIndexed = WebstudioDbContext.WebstudioIndex
+                .Where(r => r.IndexName == Wrapper.IndexName)
+                .Select(r => r.LastModified)
+                .FirstOrDefault();
 
+            var (count, max, min) = getCount(lastIndexed);
+            Log.Debug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}");
+
+            if (count != 0)
+            {
+                var step = (max - min + 1) / count;
+
+                if (step == 0)
+                {
+                    step = 1;
+                }
+
+                if (step < QueryLimit)
+                {
+                    step = QueryLimit;
+                }
+
+                for (var i = min; i <= max; i += step)
+                {
+                    yield return getData(i, step, lastIndexed);
+                    //FactoryIndexer<T>.Index(data.Cast<T>().ToList());
+                }
+            }
+
+
+            WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
+            {
+                IndexName = Wrapper.IndexName
+            });
+
+            WebstudioDbContext.SaveChanges();
+
+            Log.Debug($"index completed {Wrapper.IndexName}");
         }
     }
 

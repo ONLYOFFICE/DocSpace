@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -92,7 +91,8 @@ namespace ASC.Files.Service
                     Thread.Sleep(10000);
                 }
 
-                CheckIfChange();
+                Timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
+
             }, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
 
             task.Start();
@@ -114,37 +114,6 @@ namespace ASC.Files.Service
             return Task.CompletedTask;
         }
 
-        private void CheckIfChange()
-        {
-            using var scope = ServiceProvider.CreateScope();
-            var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFile>>();
-            IsStarted = true;
-
-            var products = new[] { filesWrapper }.ToList();
-
-            products.ForEach(product =>
-            {
-                try
-                {
-                    if (!IsStarted) return;
-
-                    Log.DebugFormat("Product check {0}", product.Indexer.IndexName);
-                    Indexing = product.Indexer.IndexName;
-                    //product.Indexer.Check();
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                    Log.ErrorFormat("Product check {0}", product.Indexer.IndexName);
-                }
-            });
-
-            IsStarted = false;
-            Indexing = null;
-
-            Timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
-        }
-
         private void IndexAll(bool reindex = false)
         {
             Timer.Change(-1, -1);
@@ -153,48 +122,47 @@ namespace ASC.Files.Service
             using var scope = ServiceProvider.CreateScope();
             var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFile>>();
             var foldersWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFolder>>();
-            var products = new[] { (IIndexer)filesWrapper, (IIndexer)foldersWrapper }.ToList();
 
-            if (reindex)
-            {
-                products.ForEach(product =>
-                {
-                    try
-                    {
-                        if (!IsStarted) return;
-
-                        Log.DebugFormat("Product reindex {0}", product.IndexName);
-                        product.ReIndex();
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e);
-                        Log.ErrorFormat("Product reindex {0}", product.IndexName);
-                    }
-                });
-            }
-
-            products.ForEach(product =>
-            {
-                try
-                {
-                    if (!IsStarted) return;
-
-                    Log.DebugFormat("Product {0}", product.IndexName);
-                    Indexing = product.IndexName;
-                    product.IndexAll();
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                    Log.ErrorFormat("Product {0}", product.IndexName);
-                }
-            });
+            IndexProduct(filesWrapper, reindex);
+            IndexProduct(foldersWrapper, reindex);
 
             Timer.Change(Period, Period);
             LastIndexed = DateTime.UtcNow;
             IsStarted = false;
             Indexing = null;
+        }
+
+        public void IndexProduct<T>(FactoryIndexer<T> product, bool reindex) where T : class, ISearchItem
+        {
+            if (reindex)
+            {
+                try
+                {
+                    if (!IsStarted) return;
+
+                    Log.DebugFormat("Product reindex {0}", product.IndexName);
+                    product.Indexer.ReIndex();
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                    Log.ErrorFormat("Product reindex {0}", product.IndexName);
+                }
+            }
+
+            try
+            {
+                if (!IsStarted) return;
+
+                Log.DebugFormat("Product {0}", product.IndexName);
+                Indexing = product.IndexName;
+                product.IndexAll();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                Log.ErrorFormat("Product {0}", product.IndexName);
+            }
         }
     }
 

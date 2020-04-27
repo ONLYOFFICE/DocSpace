@@ -18,6 +18,7 @@ namespace ASC.Files.Core.EF
         [Column("parent_id")]
         public int ParentId { get; set; }
 
+        [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
 
         [Column("folder_type")]

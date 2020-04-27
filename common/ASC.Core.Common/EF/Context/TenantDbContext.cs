@@ -28,11 +28,7 @@ namespace ASC.Core.Common.EF.Context
 
             modelBuilder.AddCoreSettings();
 
-            modelBuilder.Entity<DbTenant>()
-                .HasOne(r => r.Partner)
-                .WithOne(r => r.Tenant)
-                .HasForeignKey<DbTenantPartner>(r => new { r.TenantId })
-                .HasPrincipalKey<DbTenant>(r => new { r.Id });
+            modelBuilder.AddDbTenant();
         }
     }
 

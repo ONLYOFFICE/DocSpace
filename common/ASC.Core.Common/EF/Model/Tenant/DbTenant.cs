@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using ASC.Core.Tenants;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
@@ -38,5 +41,17 @@ namespace ASC.Core.Common.EF.Model
         public bool Calls { get; set; }
 
         public DbTenantPartner Partner { get; set; }
+    }
+
+    public static class DbTenantExtension
+    {
+        public static void AddDbTenant(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbTenant>()
+                .HasOne(r => r.Partner)
+                .WithOne(r => r.Tenant)
+                .HasForeignKey<DbTenantPartner>(r => new { r.TenantId })
+                .HasPrincipalKey<DbTenant>(r => new { r.Id });
+        }
     }
 }

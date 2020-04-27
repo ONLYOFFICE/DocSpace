@@ -100,7 +100,7 @@ namespace ASC.Files.Core.Data
             return set.Where(r => r.TenantId == TenantID);
         }
 
-        protected IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
+        protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
         {
             return Query(FilesDbContext.Files)
                 .Where(where);

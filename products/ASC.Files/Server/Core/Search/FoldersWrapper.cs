@@ -25,17 +25,82 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
+    {
+        public IDaoFactory DaoFactory { get; }
+
+        public FactoryIndexerFolder(
+            IOptionsMonitor<ILog> options,
+            FactoryIndexerHelper factoryIndexerSupport,
+            TenantManager tenantManager,
+            SearchSettingsHelper searchSettingsHelper,
+            FactoryIndexer factoryIndexer,
+            BaseIndexer<DbFolder> baseIndexer,
+            Client client,
+            IServiceProvider serviceProvider,
+            IDaoFactory daoFactory)
+            : base(options, factoryIndexerSupport, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, client, serviceProvider)
+        {
+            DaoFactory = daoFactory;
+        }
+
+        public override void IndexAll()
+        {
+            var folderDao = DaoFactory.GetFileDao<int>() as FolderDao;
+
+            (int, int, int) getCount(DateTime lastIndexed)
+            {
+                var q = folderDao.GetFolderQuery(r => r.ModifiedOn >= lastIndexed)
+                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
+                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
+
+                var count = q.GroupBy(a => a.f.Id).Count();
+                var min = q.Min(r => r.f.Id);
+                var max = q.Max(r => r.f.Id);
+
+                return (count, max, min);
+            }
+
+            List<DbFolder> getData(long i, long step, DateTime lastIndexed) =>
+                folderDao.GetFolderQuery(r => r.ModifiedOn >= lastIndexed)
+                    .Where(r => r.Id >= i && r.Id <= i + step)
+                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
+                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active)
+                    .Select(r => r.f)
+                    .ToList();
+
+            try
+            {
+                foreach (var data in Indexer.IndexAll(getCount, getData))
+                {
+                    Index(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                throw;
+            }
+        }
+    }
+
     public sealed class FoldersWrapper : Wrapper
     {
         [Column("title", 1)]
@@ -63,8 +128,10 @@ namespace ASC.Web.Files.Core.Search
         public static DIHelper AddFoldersWrapperService(this DIHelper services)
         {
             services.TryAddTransient<DbFolder>();
+            services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
+
             return services
-                .AddFactoryIndexerService<DbFolder>();
+                .AddFactoryIndexerService<DbFolder>(false);
         }
     }
 }
