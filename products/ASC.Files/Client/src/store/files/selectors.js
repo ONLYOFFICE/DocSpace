@@ -218,7 +218,7 @@ export const loopTreeFolders = (path, item, folders, foldersCount, currentFolder
       }
       return;
     }
-    loopTreeFolders(newPath, newItems.folders, folders, foldersCount);
+    loopTreeFolders(newPath, newItems.folders, folders, foldersCount, currentFolder);
   }
 }
 
