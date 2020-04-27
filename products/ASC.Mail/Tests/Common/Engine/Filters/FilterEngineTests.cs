@@ -54,7 +54,7 @@ using ASC.Mail.Enums.Filter;
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
     [TestFixture]
-    internal class CrudFiltersTests
+    internal class FilterEngineTests
     {
         private const int CURRENT_TENANT = 0;
         public const string PASSWORD = "123456";
