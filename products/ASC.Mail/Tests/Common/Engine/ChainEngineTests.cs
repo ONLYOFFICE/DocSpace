@@ -32,7 +32,6 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.ElasticSearch;
 using ASC.Mail.Aggregator.Tests.Common.Utils;
-using ASC.Mail.Aggregator.Tests.Utils;
 using ASC.Mail.Models;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
@@ -827,9 +826,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             Assert.AreEqual(chains1.Last().Id, chains1Prev.Last().Id);
         }
 
-        [Test, IgnoreIfFullTextSearch(enabled: false)]
+        [Test]
         public void Paging25Total28UnreadTest()
         {
+            if (!TestHelper.IgnoreIfFullTextSearch(false, ServiceProvider))
+                return;
+
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -897,9 +899,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
         }
 
-        [Test, IgnoreIfFullTextSearch(enabled: false)]
+        [Test]
         public void ReadUnreadSameChainInDifferentMailboxesTest()
         {
+            if (!TestHelper.IgnoreIfFullTextSearch(false, ServiceProvider))
+                return;
+
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();

@@ -29,7 +29,11 @@ using System.Linq;
 using System.Text;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.ElasticSearch;
+using ASC.Mail.Models;
 using ASC.Mail.Utils;
+using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Utils
 {
@@ -87,6 +91,23 @@ namespace ASC.Mail.Aggregator.Tests.Common.Utils
                 "Isadmin123");
 
             return userManager.SaveUserInfo(user);
+        }
+
+        public static bool IgnoreIfFullTextSearch(bool enabled, IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+
+            var t = serviceProvider.GetService<MailWrapper>();
+            var factoryIndexerHelper = serviceProvider.GetService<FactoryIndexerHelper>();
+
+            if (enabled == factoryIndexerHelper.Support(t))
+            {
+                Assert.Ignore("Test is Ignored until FullTextSearch {0} ", !enabled ? "is not started" : "is started");
+
+                return false;
+            }
+
+            return true;
         }
     }
 }
