@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop } from "asc-web-components";
+import { Backdrop, ProgressBar } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { ARTICLE_PINNED_KEY } from "../../constants";
@@ -196,23 +196,29 @@ class PageLayoutComponent extends React.PureComponent {
               <SectionFilter className="section-header_filter">{this.state.sectionFilterContent}</SectionFilter>
             )}
             {this.state.isSectionBodyAvailable && (
-              <SectionBody 
-                showProgressBar={showProgressBar}
-                progressBarValue={progressBarValue}
-                progressBarLabel={progressBarLabel}
-                progressBarDropDownContent={progressBarDropDownContent}
-                withScroll={withBodyScroll}
-                autoFocus={withBodyAutoFocus}
-                pinned={this.state.isArticlePinned}
-              >
-                {this.state.isSectionFilterAvailable && (
-              <SectionFilter className="section-body_filter">{this.state.sectionFilterContent}</SectionFilter>
-            )}
-                {this.state.sectionBodyContent}
-                {this.state.isSectionPagingAvailable && (
-                  <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
+              <>
+                <SectionBody 
+                  withScroll={withBodyScroll}
+                  autoFocus={withBodyAutoFocus}
+                  pinned={this.state.isArticlePinned}
+                >
+                  {this.state.isSectionFilterAvailable && (
+                <SectionFilter className="section-body_filter">{this.state.sectionFilterContent}</SectionFilter>
+              )}
+                  {this.state.sectionBodyContent}
+                  {this.state.isSectionPagingAvailable && (
+                    <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
+                  )}
+                </SectionBody>
+                {showProgressBar && (
+                  <ProgressBar
+                    className="layout-progress-bar"
+                    label={progressBarLabel}
+                    percent={progressBarValue}
+                    dropDownContent={progressBarDropDownContent}
+                  />
                 )}
-              </SectionBody>
+              </>
             )}
 
             {this.state.isArticleAvailable && (
