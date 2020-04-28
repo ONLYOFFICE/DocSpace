@@ -60,7 +60,7 @@ class SectionBody extends React.Component {
 
   render() {
     //console.log("PageLayout SectionBody render");
-    const { children, withScroll, autoFocus, pinned, showProgressBar, progressBarMaxValue, progressBarValue, progressBarDropDownContent, progressBarLabel } = this.props;
+    const { children, withScroll, autoFocus, pinned, showProgressBar, progressBarValue, progressBarDropDownContent, progressBarLabel } = this.props;
 
     const focusProps = autoFocus ? {
       ref: this.focusRef,
@@ -82,9 +82,8 @@ class SectionBody extends React.Component {
                 <ProgressBar
                   className="layout-progress-bar"
                   label={progressBarLabel}
-                  value={progressBarValue}
+                  percent={progressBarValue}
                   width={width}
-                  maxValue={progressBarMaxValue}
                   dropDownContent={progressBarDropDownContent}
                 />
               )}
@@ -108,7 +107,6 @@ SectionBody.propTypes = {
   autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
   showProgressBar: PropTypes.bool,
-  progressBarMaxValue: PropTypes.number,
   progressBarValue: PropTypes.number,
   progressBarLabel: PropTypes.string,
   progressBarDropDownContent: PropTypes.any,

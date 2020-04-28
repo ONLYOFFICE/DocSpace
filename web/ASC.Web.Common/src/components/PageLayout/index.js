@@ -148,7 +148,7 @@ class PageLayoutComponent extends React.PureComponent {
   };
 
   render() {
-    const { showProgressBar, progressBarMaxValue, progressBarValue, progressBarDropDownContent, withBodyScroll, withBodyAutoFocus, progressBarLabel } = this.props;
+    const { showProgressBar, progressBarValue, progressBarDropDownContent, withBodyScroll, withBodyAutoFocus, progressBarLabel } = this.props;
     return (
       <>
         {this.state.isBackdropAvailable && (
@@ -198,7 +198,6 @@ class PageLayoutComponent extends React.PureComponent {
             {this.state.isSectionBodyAvailable && (
               <SectionBody 
                 showProgressBar={showProgressBar}
-                progressBarMaxValue={progressBarMaxValue}
                 progressBarValue={progressBarValue}
                 progressBarLabel={progressBarLabel}
                 progressBarDropDownContent={progressBarDropDownContent}
@@ -275,7 +274,6 @@ PageLayoutComponent.propTypes = {
   t: PropTypes.func,
 
   showProgressBar: PropTypes.bool,
-  progressBarMaxValue: PropTypes.number,
   progressBarValue: PropTypes.number,
   progressBarDropDownContent: PropTypes.any,
   progressBarLabel: PropTypes.string
