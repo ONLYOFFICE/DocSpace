@@ -128,7 +128,6 @@ namespace ASC.Core
             ITenantService tenantService,
             IQuotaService quotaService,
             ITariffService tariffService,
-            IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
         {
@@ -137,6 +136,16 @@ namespace ASC.Core
             TariffService = tariffService;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
+        }
+
+        public TenantManager(
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings) : this(tenantService, quotaService, tariffService, coreBaseSettings, coreSettings)
+        {
             HttpContext = httpContextAccessor?.HttpContext;
         }
 

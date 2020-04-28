@@ -1334,7 +1334,7 @@ namespace ASC.Files.Core.Data
             return file;
         }
 
-        private DbFile InitDocument(DbFile dbFile)
+        internal protected DbFile InitDocument(DbFile dbFile)
         {
             if (!FactoryIndexer.CanSearchByContent()) return dbFile;
 
@@ -1386,7 +1386,7 @@ namespace ASC.Files.Core.Data
                 .AddAuthContextService()
                 .AddGlobalStoreService()
                 .AddGlobalSpaceService()
-                .AddFactoryIndexerService<DbFile>()
+                .AddFilesWrapperService()
                 .AddGlobalFolderService()
                 .AddChunkedUploadSessionHolderService()
                 .AddFolderDaoService();

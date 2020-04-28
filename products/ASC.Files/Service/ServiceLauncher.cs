@@ -33,6 +33,8 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Web.Files.Core.Search;
+using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,10 +48,10 @@ namespace ASC.Files.Service
         private ICacheNotify<AscCacheItem> Notify { get; }
         public IServiceProvider ServiceProvider { get; }
         private bool IsStarted { get; set; }
-        private string Indexing { get; set; }
+        //private string Indexing { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
-        private DateTime? LastIndexed { get; set; }
+        //private DateTime? LastIndexed { get; set; }
         private TimeSpan Period { get { return TimeSpan.FromMinutes(1); } }//Settings.Default.Period
 
         public ServiceLauncher(IOptionsMonitor<ILog> options, ICacheNotify<AscCacheItem> notify, IServiceProvider serviceProvider)
@@ -57,6 +59,7 @@ namespace ASC.Files.Service
             Log = options.Get("ASC.Indexer");
             Notify = notify;
             ServiceProvider = serviceProvider;
+            CancellationTokenSource = new CancellationTokenSource();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -132,7 +135,7 @@ namespace ASC.Files.Service
             Indexing = null;
         }
 
-        public void IndexProduct<T>(FactoryIndexer<T> product, bool reindex) where T : class, ISearchItem
+        public void IndexProduct(IFactoryIndexer product, bool reindex)
         {
             if (reindex)
             {
@@ -141,7 +144,7 @@ namespace ASC.Files.Service
                     if (!IsStarted) return;
 
                     Log.DebugFormat("Product reindex {0}", product.IndexName);
-                    product.Indexer.ReIndex();
+                    product.ReIndex();
                 }
                 catch (Exception e)
                 {
@@ -172,7 +175,11 @@ namespace ASC.Files.Service
         {
             services.TryAddSingleton<ServiceLauncher>();
 
-            return services;
+            return services
+                .AddFileConverterService()
+                .AddKafkaService()
+                .AddFilesWrapperService()
+                .AddFoldersWrapperService();
         }
     }
 }

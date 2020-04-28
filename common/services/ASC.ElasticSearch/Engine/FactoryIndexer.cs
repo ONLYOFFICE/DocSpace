@@ -97,7 +97,14 @@ namespace ASC.ElasticSearch
 
     }
 
-    public class FactoryIndexer<T> where T : class, ISearchItem
+    public interface IFactoryIndexer
+    {
+        void IndexAll();
+        string IndexName { get; }
+        void ReIndex();
+    }
+
+    public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
     {
         private static readonly TaskScheduler Scheduler = new LimitedConcurrencyLevelTaskScheduler(10);
 
@@ -432,6 +439,11 @@ namespace ASC.ElasticSearch
         public virtual void IndexAll()
         {
             return;
+        }
+
+        public void ReIndex()
+        {
+            Indexer.ReIndex();
         }
     }
 

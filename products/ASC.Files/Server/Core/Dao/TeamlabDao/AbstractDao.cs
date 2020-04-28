@@ -53,8 +53,10 @@ namespace ASC.Files.Core.Data
 
         public FilesDbContext FilesDbContext { get; }
 
-        protected internal int TenantID { get; }
+        private int tenantID;
+        protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
         public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
         public TenantUtil TenantUtil { get; }
         public SetupInfo SetupInfo { get; }
         public TenantExtra TenantExtra { get; }
@@ -81,8 +83,8 @@ namespace ASC.Files.Core.Data
         {
             cache = AscCache.Memory;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
             UserManager = userManager;
+            TenantManager = tenantManager;
             TenantUtil = tenantUtil;
             SetupInfo = setupInfo;
             TenantExtra = tenantExtra;

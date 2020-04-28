@@ -67,7 +67,9 @@ namespace ASC.Web.Files.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = folderDao.GetFolderQuery(r => r.ModifiedOn >= lastIndexed)
+                var q =
+                    folderDao.FilesDbContext.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
                     .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
                     .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
 
@@ -79,7 +81,8 @@ namespace ASC.Web.Files.Core.Search
             }
 
             List<DbFolder> getData(long i, long step, DateTime lastIndexed) =>
-                folderDao.GetFolderQuery(r => r.ModifiedOn >= lastIndexed)
+                    folderDao.FilesDbContext.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
                     .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active)
@@ -131,7 +134,8 @@ namespace ASC.Web.Files.Core.Search
             services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
 
             return services
-                .AddFactoryIndexerService<DbFolder>(false);
+                .AddFactoryIndexerService<DbFolder>(false)
+                .AddDaoFactoryService();
         }
     }
 }

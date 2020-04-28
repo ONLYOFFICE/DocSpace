@@ -70,7 +70,8 @@ namespace ASC.Web.Files.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = fileDao.GetFileQuery(r => r.ModifiedOn >= lastIndexed)
+                var q = fileDao.FilesDbContext.Files
+                    .Where(r => r.ModifiedOn >= lastIndexed)
                     .Where(r => r.CurrentVersion)
                     .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
                     .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
@@ -83,7 +84,8 @@ namespace ASC.Web.Files.Core.Search
             }
 
             List<DbFile> getData(long i, long step, DateTime lastIndexed) =>
-                fileDao.GetFileQuery(r => r.ModifiedOn >= lastIndexed)
+                fileDao.FilesDbContext.Files
+                    .Where(r => r.ModifiedOn >= lastIndexed)
                     .Where(r => r.CurrentVersion)
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
@@ -95,6 +97,12 @@ namespace ASC.Web.Files.Core.Search
             {
                 foreach (var data in Indexer.IndexAll(getCount, getData))
                 {
+                    data.ForEach(r =>
+                    {
+                        TenantManager.SetCurrentTenant(r.TenantId);
+                        fileDao.InitDocument(r);
+                        TenantManager.CurrentTenant = null;
+                    });
                     Index(data);
                 }
             }

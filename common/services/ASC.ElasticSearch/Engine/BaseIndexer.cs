@@ -112,16 +112,15 @@ namespace ASC.ElasticSearch
 
         internal void Index(T data, bool immediately = true)
         {
-            BeforeIndex(data);
-
             Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
         }
 
         internal void Index(List<T> data, bool immediately = true)
         {
             //CreateIfNotExist(data[0]);
+            if (!data.Any()) return;
 
-            if (typeof(T).IsSubclassOf(typeof(WrapperWithDoc)))
+            if (data[0] is ISearchItemDocument)
             {
                 var currentLength = 0L;
                 var portion = new List<T>();
@@ -131,9 +130,6 @@ namespace ASC.ElasticSearch
                 {
                     var t = data[i];
                     var runBulk = i == data.Count - 1;
-
-                    BeforeIndex(t);
-
 
                     if (!(t is WrapperWithDoc wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                     {
@@ -177,7 +173,7 @@ namespace ASC.ElasticSearch
                         Client.Instance.Bulk(r => r.IndexMany(portion1, GetMeta));
                         for (var j = portionStart; j < i; j++)
                         {
-                            if (data[j] is WrapperWithDoc doc && doc.Document != null)
+                            if (data[j] is ISearchItemDocument doc && doc.Document != null)
                             {
                                 doc.Document.Data = null;
                                 doc.Document = null;
@@ -193,11 +189,6 @@ namespace ASC.ElasticSearch
             }
             else
             {
-                foreach (var item in data)
-                {
-                    BeforeIndex(item);
-                }
-
                 Client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
             }
         }
@@ -306,14 +297,6 @@ namespace ASC.ElasticSearch
             var result = Client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
             total = result.Total;
             return result.Documents;
-        }
-
-        private void BeforeIndex(T data)
-        {
-            if (data is WrapperWithDoc wrapperWithDoc)
-            {
-                wrapperWithDoc.InitDocument(SearchSettingsHelper.CanSearchByContent<T>(data.TenantId), Log);
-            }
         }
 
         public void CreateIfNotExist(T data)

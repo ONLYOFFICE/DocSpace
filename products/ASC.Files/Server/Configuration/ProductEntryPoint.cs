@@ -31,12 +31,11 @@ using System.Reflection;
 
 using ASC.Common;
 using ASC.Core;
-using ASC.ElasticSearch;
-using ASC.Files.Core.EF;
 using ASC.Files.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Search;
 
 namespace ASC.Web.Files.Configuration
 {
@@ -183,7 +182,7 @@ namespace ASC.Web.Files.Configuration
                 .AddUserManagerService()
                 .AddGlobalService()
                 .AddFilesSubscriptionManagerService()
-                .AddFactoryIndexerService<DbFile>();
+                .AddFilesWrapperService();
         }
     }
 }
