@@ -48,10 +48,10 @@ namespace ASC.Files.Service
         private ICacheNotify<AscCacheItem> Notify { get; }
         public IServiceProvider ServiceProvider { get; }
         private bool IsStarted { get; set; }
-        //private string Indexing { get; set; }
+        private string Indexing { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
-        //private DateTime? LastIndexed { get; set; }
+        private DateTime? LastIndexed { get; set; }
         private TimeSpan Period { get { return TimeSpan.FromMinutes(1); } }//Settings.Default.Period
 
         public ServiceLauncher(IOptionsMonitor<ILog> options, ICacheNotify<AscCacheItem> notify, IServiceProvider serviceProvider)

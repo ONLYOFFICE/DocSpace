@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -37,7 +37,6 @@ using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
@@ -104,28 +103,6 @@ namespace ASC.Web.Files.Core.Search
         }
     }
 
-    public sealed class FoldersWrapper : Wrapper
-    {
-        [Column("title", 1)]
-        public string Title { get; set; }
-
-        [ColumnLastModified("modified_on")]
-        public override DateTime LastModifiedOn { get; set; }
-
-        protected override string Table { get { return "files_folder"; } }
-
-        public static FoldersWrapper GetFolderWrapper<T>(IServiceProvider serviceProvider, Folder<T> d)
-        {
-            var tenantManager = serviceProvider.GetService<TenantManager>();
-
-            return new FoldersWrapper
-            {
-                Id = Convert.ToInt32(d.ID),
-                Title = d.Title,
-                TenantId = tenantManager.GetCurrentTenant().TenantId
-            };
-        }
-    }
     public static class FoldersWrapperExtention
     {
         public static DIHelper AddFoldersWrapperService(this DIHelper services)

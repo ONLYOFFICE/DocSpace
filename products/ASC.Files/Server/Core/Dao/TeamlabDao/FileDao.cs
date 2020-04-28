@@ -674,9 +674,11 @@ namespace ASC.Files.Core.Data
             if (deleteFolder)
                 DeleteFolder(fileId);
 
-            var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            //wrapper.Id = fileId;
-            //            FactoryIndexer.DeleteAsync(wrapper);
+            var toDeleteFile = toDeleteFiles.FirstOrDefault(r => r.CurrentVersion);
+            if (toDeleteFile != null)
+            {
+                FactoryIndexer.DeleteAsync(toDeleteFile);
+            }
         }
 
         public bool IsExist(string title, object folderId)
@@ -712,6 +714,8 @@ namespace ASC.Files.Core.Data
         {
             if (fileId == default) return default;
 
+            List<DbFile> toUpdate;
+
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -720,7 +724,7 @@ namespace ASC.Files.Core.Data
                     .Distinct()
                     .ToList();
 
-                var toUpdate = Query(FilesDbContext.Files)
+                toUpdate = Query(FilesDbContext.Files)
                     .Where(r => r.Id == fileId)
                     .ToList();
 
@@ -733,10 +737,6 @@ namespace ASC.Files.Core.Data
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
                     }
-
-                    FactoryIndexer.Update(f,
-                        UpdateAction.Replace,
-                        w => w.Folders);
                 }
 
                 FilesDbContext.SaveChanges();
@@ -746,20 +746,19 @@ namespace ASC.Files.Core.Data
                 RecalculateFilesCount(toFolderId);
             }
 
-            var parentFoldersIds =
+            var parentFolders =
                 FilesDbContext.Tree
                 .Where(r => r.FolderId == toFolderId)
                 .OrderByDescending(r => r.Level)
-                .Select(r => r.ParentId)
                 .ToList();
 
-            var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            wrapper.Id = fileId;
-            wrapper.Folders = parentFoldersIds.Select(r => new FilesFoldersWrapper() { FolderId = r.ToString() }).ToList();
+            var toUpdateFile = toUpdate.FirstOrDefault(r => r.CurrentVersion);
 
-            /*            FactoryIndexer.Update(wrapper,
-                            UpdateAction.Replace,
-                            w => w.Folders); */
+            if (toUpdateFile != null)
+            {
+                toUpdateFile.Folders = parentFolders;
+                FactoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+            }
 
             return fileId;
         }
@@ -829,7 +828,6 @@ namespace ASC.Files.Core.Data
 
         public int FileRename(File<int> file, string newTitle)
         {
-            var fileIdString = file.ID.ToString();
             newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
