@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { RequestLoader } from "asc-web-components";
+import { RequestLoader, Checkbox } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
@@ -33,8 +33,10 @@ class PureHome extends React.Component {
 
       showProgressBar: false,
       progressBarValue: 0,
-      progressBarDropDownContent: null,
-      progressBarLabel: ""//{`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
+      progressBarLabel: "",
+      overwriteSetting: false,
+      uploadOriginalFormatSetting: false,
+      hideWindowSetting: false
     };
   }
 
@@ -103,8 +105,11 @@ class PureHome extends React.Component {
     else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), 10000)};
   };
   setProgressValue = value => this.setState({ progressBarValue: value });
-  setProgressContent = content => this.setState({ progressBarDropDownContent: content });
   setProgressLabel = label => this.setState({ progressBarLabel: label });
+
+  onChangeOverwrite = () => this.setState({overwriteSetting: !this.state.overwriteSetting})
+  onChangeOriginalFormat = () => this.setState({uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting})
+  onChangeWindowVisible = () => this.setState({hideWindowSetting: !this.state.hideWindowSetting})
 
   render() {
     const {
@@ -115,10 +120,33 @@ class PureHome extends React.Component {
       isLoading,
       showProgressBar,
       progressBarValue,
-      progressBarDropDownContent,
-      progressBarLabel
+      progressBarLabel,
+      overwriteSetting,
+      uploadOriginalFormatSetting,
+      hideWindowSetting
     } = this.state;
     const { t } = this.props;
+
+    const progressBarContent = (
+      <div>
+        <Checkbox
+          onChange={this.onChangeOverwrite}
+          isChecked={overwriteSetting}
+          label={t("OverwriteSetting")}
+        />
+        <Checkbox
+          onChange={this.onChangeOriginalFormat}
+          isChecked={uploadOriginalFormatSetting}
+          label={t("UploadOriginalFormatSetting")}
+        />
+        <Checkbox
+          onChange={this.onChangeWindowVisible}
+          isChecked={hideWindowSetting}
+          label={t("HideWindowSetting")}
+        />
+      </div>
+    );
+
     return (
       <>
         <RequestLoader
@@ -133,12 +161,10 @@ class PureHome extends React.Component {
         <PageLayout
           withBodyScroll
           withBodyAutoFocus
-
           showProgressBar={showProgressBar}
           progressBarValue={progressBarValue}
-          progressBarDropDownContent={progressBarDropDownContent}
+          progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressBarLabel}
-
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={
             <ArticleMainButtonContent

@@ -68,5 +68,8 @@
   "EmptyFolderHeader": "No files in this folder",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
   "EmptyFilterDescriptionText": "No files or folders matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the files in this section. You can also look for the file you need in other sections.",
-  "Filter": "Filter"
+  "Filter": "Filter",
+  "OverwriteSetting": "Overwrite existing file with the same name",
+  "UploadOriginalFormatSetting": "Upload the documents in original format as well",
+  "HideWindowSetting": "Show this window minimized"
 }

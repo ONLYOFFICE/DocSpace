@@ -55,7 +55,7 @@ class PureArticleMainButtonContent extends React.Component {
       .finally(() => {
         onLoading(false);
       });
-  }
+  };
 
   sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile) => {
     const sendRequestFunc = (index) => {
@@ -87,20 +87,29 @@ class PureArticleMainButtonContent extends React.Component {
         })
         .catch((err) => toastr.error(err))
         .finally(() => {
-          if (newState.hasOwnProperty('files') || newState.hasOwnProperty('percent') || newState.hasOwnProperty('uploadedFiles')) {
+          if (
+            newState.hasOwnProperty("files") ||
+            newState.hasOwnProperty("percent") ||
+            newState.hasOwnProperty("uploadedFiles")
+          ) {
             let progressVisible = true;
             let uploadedFiles = newState.uploadedFiles;
             let percent = newState.percent;
-            if(newState.uploadedFiles === files.length) { 
-              percent=100; 
-              newState.percent = 0; 
-              newState.uploadedFiles = 0; 
-              progressVisible = false
+            if (newState.uploadedFiles === files.length) {
+              percent = 100;
+              newState.percent = 0;
+              newState.uploadedFiles = 0;
+              progressVisible = false;
             }
             this.setState(newState, () => {
               this.props.setProgressValue(percent);
-              this.props.setProgressLabel(this.props.t("UploadingLabel", {file: uploadedFiles, totalFiles: files.length}));
-              if(!progressVisible) {
+              this.props.setProgressLabel(
+                this.props.t("UploadingLabel", {
+                  file: uploadedFiles,
+                  totalFiles: files.length,
+                })
+              );
+              if (!progressVisible) {
                 this.props.setProgressVisible(false);
               }
             });
@@ -163,8 +172,8 @@ class PureArticleMainButtonContent extends React.Component {
     const newFiles = [];
     if(files) {
       let total = 0;
-      for(let item of files) {
-        if(item.size !== 0) {
+      for (let item of files) {
+        if (item.size !== 0) {
           newFiles.push(item);
           total += item.size;
         } else {
@@ -172,13 +181,16 @@ class PureArticleMainButtonContent extends React.Component {
         }
       }
 
-      if(newFiles.length > 0) {
+      if (newFiles.length > 0) {
         this.setState({ files: newFiles, totalSize: total }, () => {
           setProgressVisible(true);
-          setProgressLabel(this.props.t("UploadingLabel", {file: 0, totalFiles: newFiles.length}));
+          setProgressLabel(
+            this.props.t("UploadingLabel", {
+              file: 0,
+              totalFiles: newFiles.length,
+            })
+          );
           this.startSessionFunc(0);
-          //setProgressValue
-          //setProgressContent
         });
       }
     }
