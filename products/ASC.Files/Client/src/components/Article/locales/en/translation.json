@@ -6,5 +6,6 @@
   "NewFolder": "New Folder",
   "UploadFiles": "Upload files",
   "UploadFolder": "Upload folder",
-  "ErrorUploadMessage": "You cannot upload a folder or an empty file"
+  "ErrorUploadMessage": "You cannot upload a folder or an empty file",
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
 }

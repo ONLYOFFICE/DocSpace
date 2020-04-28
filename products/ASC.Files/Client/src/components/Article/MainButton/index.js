@@ -65,7 +65,7 @@ class PureArticleMainButtonContent extends React.Component {
         .then((res) => {
           let newPercent = this.state.percent;
           const percent = (newPercent +=
-            Math.round((files[indexOfFile].size / this.state.totalSize) * 100));
+            (files[indexOfFile].size / this.state.totalSize) * 100);
           if (res.data.data && res.data.data.uploaded) {
             files[indexOfFile].uploaded = true;
             newState = { files, percent };
@@ -89,11 +89,17 @@ class PureArticleMainButtonContent extends React.Component {
         .finally(() => {
           if (newState.hasOwnProperty('files') || newState.hasOwnProperty('percent') || newState.hasOwnProperty('uploadedFiles')) {
             let progressVisible = true;
+            let uploadedFiles = newState.uploadedFiles;
             let percent = newState.percent;
-            if(newState.percent >= 100) { progressVisible = false}
+            if(newState.uploadedFiles === files.length) { 
+              percent=100; 
+              newState.percent = 0; 
+              newState.uploadedFiles = 0; 
+              progressVisible = false
+            }
             this.setState(newState, () => {
               this.props.setProgressValue(percent);
-              this.props.setProgressLabel(`Uploading files: ${newState.uploadedFiles} of ${files.length}`);
+              this.props.setProgressLabel(this.props.t("UploadingLabel", {file: uploadedFiles, totalFiles: files.length}));
               if(!progressVisible) {
                 this.props.setProgressVisible(false);
               }
@@ -169,7 +175,7 @@ class PureArticleMainButtonContent extends React.Component {
       if(newFiles.length > 0) {
         this.setState({ files: newFiles, totalSize: total }, () => {
           setProgressVisible(true);
-          setProgressLabel(`Uploading files: ${0} of ${newFiles.length}`);
+          setProgressLabel(this.props.t("UploadingLabel", {file: 0, totalFiles: newFiles.length}));
           this.startSessionFunc(0);
           //setProgressValue
           //setProgressContent
