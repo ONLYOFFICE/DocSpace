@@ -16,7 +16,6 @@ import { ProgressBar } from "asc-web-components";
 
 |       Props       |   Type   | Required | Values | Default | Description            |
 | :---------------: | :------: | :------: | :----: | :-----: | ---------------------- |
-|      `value`      | `number` |    ✅    |   -    |    -    | Progress value.        |
+|     `percent`     | `number` |    ✅    |   -    |    -    | Progress value.        |
 |      `label`      | `string` |    -     |   -    |    -    | Text in progress-bar.  |
-|    `maxValue`     | `number` |    -     |   -    |   100   | Max value of progress. |
 | `dropDownContent` |  `any`   |    -     |   -    |    -    | Drop-down content.     |

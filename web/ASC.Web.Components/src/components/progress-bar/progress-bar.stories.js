@@ -12,8 +12,7 @@ storiesOf("Components|ProgressBar", module)
     <ProgressBar
       style={{marginTop: 16}}
       label={text("label", "Uploading files: 20 of 100")}
-      value={number("value", 20)}
-      maxValue={number("maxValue", 100)}
+      percent={number("value", 20)}
       dropDownContent={text("dropDownContent", "You content here")}
     />
   ));
