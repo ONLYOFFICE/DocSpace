@@ -87,11 +87,12 @@ class SectionBodyContent extends React.PureComponent {
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
       onLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
+        const newItem = item.id === -1 ? null : item; 
         if (!item.fileExst) {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
           const folders = data.selectedFolder.folders;
-          loopTreeFolders(path, newTreeFolders, folders, null, item);
+          loopTreeFolders(path, newTreeFolders, folders, null, newItem);
           setTreeFolders(newTreeFolders);
         }
       }).finally(() => onLoading(false))
