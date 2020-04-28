@@ -20,7 +20,9 @@ const { FileAction } = constants;
 class PureArticleMainButtonContent extends React.Component {
   state = {
     files: [],
-    uploadPercentage: 0
+    uploadedFiles: 0,
+    totalSize: 0,
+    percent: 0
   };
 
   onCreate = (format) => {
@@ -56,21 +58,48 @@ class PureArticleMainButtonContent extends React.Component {
   }
 
   sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile) => {
-    const sendRequestFunc = index => {
-      api.files.uploadFile(location, requestsDataArray[index]).then(res => {
-        if(res.data.data && res.data.data.uploaded) {
-          files[indexOfFile].uploaded = true;
-          this.setState({ files });
-        }
-        if (index + 1 !== requestsDataArray.length) {
-          sendRequestFunc(index + 1);
-        } else if (isLatestFile) {
-          this.updateFiles();
-          return;
-        } else {
-          this.startSessionFunc(indexOfFile + 1);
-        }
-      });
+    const sendRequestFunc = (index) => {
+      let newState = {};
+      api.files
+        .uploadFile(location, requestsDataArray[index])
+        .then((res) => {
+          let newPercent = this.state.percent;
+          const percent = (newPercent +=
+            Math.round((files[indexOfFile].size / this.state.totalSize) * 100));
+          if (res.data.data && res.data.data.uploaded) {
+            files[indexOfFile].uploaded = true;
+            newState = { files, percent };
+          }
+          if (index + 1 !== requestsDataArray.length) {
+            sendRequestFunc(index + 1);
+          } else if (isLatestFile) {
+            this.updateFiles();
+            newState = Object.assign({}, newState, {
+              uploadedFiles: this.state.uploadedFiles + 1,
+            });
+            return;
+          } else {
+            newState = Object.assign({}, newState, {
+              uploadedFiles: this.state.uploadedFiles + 1,
+            });
+            this.startSessionFunc(indexOfFile + 1);
+          }
+        })
+        .catch((err) => toastr.error(err))
+        .finally(() => {
+          if (newState.hasOwnProperty('files') || newState.hasOwnProperty('percent') || newState.hasOwnProperty('uploadedFiles')) {
+            let progressVisible = true;
+            let percent = newState.percent;
+            if(newState.percent >= 100) { progressVisible = false}
+            this.setState(newState, () => {
+              this.props.setProgressValue(percent);
+              this.props.setProgressLabel(`Uploading files: ${newState.uploadedFiles} of ${files.length}`);
+              if(!progressVisible) {
+                this.props.setProgressVisible(false);
+              }
+            });
+          }
+        });
     };
 
     sendRequestFunc(0);
@@ -78,30 +107,9 @@ class PureArticleMainButtonContent extends React.Component {
 
   startSessionFunc = indexOfFile => {
     const { files } = this.state;
-    const { currentFolderId, t } = this.props;
+    const { currentFolderId } = this.props;
     const file = files[indexOfFile];
     const isLatestFile = indexOfFile === files.length - 1;
-
-    if(file.size === 0) {
-      toastr.error(t("ErrorUploadMessage"));
-      if(isLatestFile) {
-        let uploadedFile = false;
-        for(let item of files) {
-          if(item.uploaded) {
-            uploadedFile = true;
-            break;
-          }
-        }
-        
-        if(uploadedFile) {
-          this.updateFiles();
-          return;
-        }
-        return;
-      } else {
-        this.startSessionFunc(indexOfFile + 1);
-      }
-    }
 
     const fileName = file.name;
     const fileSize = file.size;
@@ -143,30 +151,57 @@ class PureArticleMainButtonContent extends React.Component {
   };
 
   onFileChange = (e) => {
+    const { t, setProgressVisible, setProgressLabel } = this.props;
     const files = e.target.files;
     //console.log("files", files);
+    const newFiles = [];
     if(files) {
-      this.setState({ files }, () => this.startSessionFunc(0));
+      let total = 0;
+      for(let item of files) {
+        if(item.size !== 0) {
+          newFiles.push(item);
+          total += item.size;
+        } else {
+          toastr.error(t("ErrorUploadMessage"));
+        }
+      }
+
+      if(newFiles.length > 0) {
+        this.setState({ files: newFiles, totalSize: total }, () => {
+          setProgressVisible(true);
+          setProgressLabel(`Uploading files: ${0} of ${newFiles.length}`);
+          this.startSessionFunc(0);
+          //setProgressValue
+          //setProgressContent
+        });
+      }
     }
   };
 
   shouldComponentUpdate(nextProps, nextState) {
+    const { files, uploadedFiles, totalSize, percent } = this.state;
     if (nextProps.isCanCreate !== this.props.isCanCreate) {
       return true;
     }
 
-    if (nextState.uploadPercentage !== this.state.uploadPercentage) {
+    if (!utils.array.isArrayEqual(nextState.files, files)) {
       return true;
     }
 
-    if (!utils.array.isArrayEqual(nextState.files, this.state.files)) {
+    if (nextState.uploadedFiles !== uploadedFiles) {
+      return true;
+    }
+
+    if (nextState.totalSize !== totalSize) {
+      return true;
+    }
+
+    if (nextState.percent !== percent) {
       return true;
     }
 
     return false;
   }
-
-
 
   render() {
     //console.log("Files ArticleMainButtonContent render");

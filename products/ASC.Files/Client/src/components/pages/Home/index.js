@@ -29,7 +29,12 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false
+      isLoading: false,
+
+      showProgressBar: false,
+      progressBarValue: 0,
+      progressBarDropDownContent: null,
+      progressBarLabel: ""//{`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
     };
   }
 
@@ -93,13 +98,25 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
+  setProgressVisible = visible => {
+    if(visible) {this.setState({ showProgressBar: visible })}
+    else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), 10000)};
+  };
+  setProgressValue = value => this.setState({ progressBarValue: value });
+  setProgressContent = content => this.setState({ progressBarDropDownContent: content });
+  setProgressLabel = label => this.setState({ progressBarLabel: label });
+
   render() {
     const {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
       selected,
-      isLoading
+      isLoading,
+      showProgressBar,
+      progressBarValue,
+      progressBarDropDownContent,
+      progressBarLabel
     } = this.state;
     const { t } = this.props;
     return (
@@ -117,14 +134,20 @@ class PureHome extends React.Component {
           withBodyScroll
           withBodyAutoFocus
 
-          //showProgressBar
-          //progressBarMaxValue
-          //progressBarValue
-          //progressBarDropDownContent
-          //progressBarLabel={`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
+          showProgressBar={showProgressBar}
+          progressBarValue={progressBarValue}
+          progressBarDropDownContent={progressBarDropDownContent}
+          progressBarLabel={progressBarLabel}
 
           articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent onLoading={this.onLoading} />}
+          articleMainButtonContent={
+            <ArticleMainButtonContent
+              onLoading={this.onLoading}
+              setProgressVisible={this.setProgressVisible}
+              setProgressValue={this.setProgressValue}
+              setProgressContent={this.setProgressContent}
+              setProgressLabel={this.setProgressLabel}
+            />}
           articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
           sectionHeaderContent={
             <SectionHeaderContent
