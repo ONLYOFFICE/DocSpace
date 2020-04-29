@@ -174,11 +174,11 @@ class TreeFolders extends React.Component {
   componentDidUpdate(prevProps) {
     const { expandedKeys, data, onLoading } = this.props;
     if (this.state.expandedKeys.length !== expandedKeys.length) {
-      this.setState({ expandedKeys }, () => onLoading(false));
+      this.setState({ expandedKeys });
     }
 
     if (!utils.array.isArrayEqual(prevProps.data, data)) {
-      this.setState({ treeData: data }, () => onLoading(false));
+      this.setState({ treeData: data });
     }
   }
 
