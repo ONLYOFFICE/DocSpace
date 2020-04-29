@@ -35,6 +35,7 @@ using ASC.ElasticSearch.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
+using ASC.Files.Resources;
 
 using Microsoft.Extensions.Options;
 
@@ -106,6 +107,12 @@ namespace ASC.Web.Files.Core.Search
                 Logger.Error(e);
                 throw;
             }
+        }
+
+
+        public override string SettingsTitle
+        {
+            get { return FilesCommonResource.IndexTitle; }
         }
     }
     public static class FilesWrapperExtention

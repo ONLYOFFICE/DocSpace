@@ -102,6 +102,7 @@ namespace ASC.ElasticSearch
         void IndexAll();
         string IndexName { get; }
         void ReIndex();
+        string SettingsTitle { get; }
     }
 
     public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
@@ -119,6 +120,7 @@ namespace ASC.ElasticSearch
         public IServiceProvider ServiceProvider { get; }
         public string IndexName { get => Indexer.IndexName; }
 
+        public virtual string SettingsTitle { get => ""; }
 
         public FactoryIndexer(
             IOptionsMonitor<ILog> options,

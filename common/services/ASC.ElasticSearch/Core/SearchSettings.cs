@@ -114,14 +114,12 @@ namespace ASC.ElasticSearch.Core
             }).ToList();
         }
 
-        private List<ISearchItemDocument> allItems;
-        internal List<ISearchItemDocument> AllItems
+        private List<IFactoryIndexer> allItems;
+        internal List<IFactoryIndexer> AllItems
         {
             get
             {
-                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>()
-                               .OfType<ISearchItemDocument>()
-                               .ToList());
+                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList());
             }
         }
 

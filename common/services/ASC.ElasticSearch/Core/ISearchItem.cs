@@ -1,8 +1,4 @@
-﻿using Nest;
-
-using Newtonsoft.Json;
-
-namespace ASC.ElasticSearch
+﻿namespace ASC.ElasticSearch
 {
     public interface ISearchItem
     {
@@ -14,8 +10,5 @@ namespace ASC.ElasticSearch
     public interface ISearchItemDocument : ISearchItem
     {
         public Document Document { get; set; }
-
-        [Ignore, JsonIgnore]
-        public abstract string SettingsTitle { get; }
     }
 }
