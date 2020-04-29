@@ -25,28 +25,28 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.ElasticSearch;
-using ASC.Files.Core.EF;
-using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Utils;
+
+using Autofac;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Files.Service
+namespace ASC.ElasticSearch
 {
     public class ServiceLauncher : IHostedService
     {
         private ILog Log { get; }
         private ICacheNotify<AscCacheItem> Notify { get; }
         public IServiceProvider ServiceProvider { get; }
+        public IContainer Container { get; }
         private bool IsStarted { get; set; }
         private string Indexing { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
@@ -54,11 +54,16 @@ namespace ASC.Files.Service
         private DateTime? LastIndexed { get; set; }
         private TimeSpan Period { get { return TimeSpan.FromMinutes(1); } }//Settings.Default.Period
 
-        public ServiceLauncher(IOptionsMonitor<ILog> options, ICacheNotify<AscCacheItem> notify, IServiceProvider serviceProvider)
+        public ServiceLauncher(
+            IOptionsMonitor<ILog> options,
+            ICacheNotify<AscCacheItem> notify,
+            IServiceProvider serviceProvider,
+            IContainer container)
         {
             Log = options.Get("ASC.Indexer");
             Notify = notify;
             ServiceProvider = serviceProvider;
+            Container = container;
             CancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -122,12 +127,13 @@ namespace ASC.Files.Service
             Timer.Change(-1, -1);
             IsStarted = true;
 
-            using var scope = ServiceProvider.CreateScope();
-            var filesWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFile>>();
-            var foldersWrapper = scope.ServiceProvider.GetService<FactoryIndexer<DbFolder>>();
+            using var scope = Container.BeginLifetimeScope();
+            var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
 
-            IndexProduct(filesWrapper, reindex);
-            IndexProduct(foldersWrapper, reindex);
+            foreach (var w in wrappers)
+            {
+                IndexProduct(w, reindex);
+            }
 
             Timer.Change(Period, Period);
             LastIndexed = DateTime.UtcNow;
@@ -176,10 +182,7 @@ namespace ASC.Files.Service
             services.TryAddSingleton<ServiceLauncher>();
 
             return services
-                .AddFileConverterService()
-                .AddKafkaService()
-                .AddFilesWrapperService()
-                .AddFoldersWrapperService();
+                .AddFactoryIndexerService();
         }
     }
 }

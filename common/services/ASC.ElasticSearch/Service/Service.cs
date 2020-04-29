@@ -52,12 +52,12 @@ namespace ASC.ElasticSearch.Service
 
         public bool Support(string table)
         {
-            return FactoryIndexer.Builder.Resolve<IEnumerable<Wrapper>>().Any(r => r.IndexName == table);
+            return FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
         }
 
         public void ReIndex(List<string> toReIndex, int tenant)
         {
-            var allItems = FactoryIndexer.Builder.Resolve<IEnumerable<Wrapper>>().ToList();
+            var allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             var tasks = new List<Task>(toReIndex.Count);
 
             foreach (var item in toReIndex)

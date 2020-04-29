@@ -594,7 +594,8 @@ namespace ASC.ElasticSearch
 
             WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
             {
-                IndexName = Wrapper.IndexName
+                IndexName = Wrapper.IndexName,
+                LastModified = DateTime.UtcNow
             });
 
             WebstudioDbContext.SaveChanges();

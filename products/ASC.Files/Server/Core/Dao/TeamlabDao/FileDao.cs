@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
 using ASC.Common;
 using ASC.Core;
@@ -1334,7 +1335,14 @@ namespace ASC.Files.Core.Data
 
         internal protected DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanSearchByContent()) return dbFile;
+            if (!FactoryIndexer.CanSearchByContent())
+            {
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+                };
+                return dbFile;
+            }
 
             var file = ServiceProvider.GetService<File<int>>();
             file.ID = dbFile.Id;

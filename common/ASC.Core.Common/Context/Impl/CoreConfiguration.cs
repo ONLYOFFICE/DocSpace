@@ -390,6 +390,7 @@ namespace ASC.Core
         {
             services.TryAddScoped<CoreConfiguration>();
             return services
+                .AddTenantManagerService()
                 .AddCoreSettingsService();
         }
     }

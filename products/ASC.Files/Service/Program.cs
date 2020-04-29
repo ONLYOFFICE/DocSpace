@@ -3,8 +3,12 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.ElasticSearch;
+using ASC.Web.Files.Core.Search;
+using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,9 +51,15 @@ namespace ASC.Files.Service
                     var diHelper = new DIHelper(services);
                     diHelper.AddNLogManager("ASC.Files");
                     services.AddHostedService<ServiceLauncher>();
-                    diHelper.AddServiceLauncher();
+                    diHelper
+                        .AddServiceLauncher()
+                        .AddFileConverterService()
+                        .AddKafkaService()
+                        .AddFilesWrapperService()
+                        .AddFoldersWrapperService();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    var a = typeof(FactoryIndexer<ISearchItem>).ToString();
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, "search.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

@@ -62,7 +62,7 @@ namespace ASC.Web.Files.Core.Search
 
         public override void IndexAll()
         {
-            var folderDao = DaoFactory.GetFileDao<int>() as FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<int>() as FolderDao;
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
@@ -73,8 +73,8 @@ namespace ASC.Web.Files.Core.Search
                     .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
 
                 var count = q.GroupBy(a => a.f.Id).Count();
-                var min = q.Min(r => r.f.Id);
-                var max = q.Max(r => r.f.Id);
+                var min = count > 0 ? q.Min(r => r.f.Id) : 0;
+                var max = count > 0 ? q.Max(r => r.f.Id) : 0;
 
                 return (count, max, min);
             }

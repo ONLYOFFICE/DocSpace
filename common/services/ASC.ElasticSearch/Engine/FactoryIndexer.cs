@@ -450,11 +450,20 @@ namespace ASC.ElasticSearch
     public class FactoryIndexer
     {
         private static ICache cache = AscCache.Memory;
-        internal IContainer Builder { get; set; }
+        internal ILifetimeScope Builder { get; set; }
         internal static bool Init { get; set; }
         public ILog Log { get; }
         public Client Client { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+
+        public FactoryIndexer(
+            ILifetimeScope container,
+            Client client,
+            IOptionsMonitor<ILog> options,
+            CoreBaseSettings coreBaseSettings) : this(null, client, options, coreBaseSettings)
+        {
+            Builder = container;
+        }
 
         public FactoryIndexer(
             IContainer container,
@@ -565,9 +574,9 @@ namespace ASC.ElasticSearch
             if (!CoreBaseSettings.Standalone) return;
 
             var generic = typeof(BaseIndexer<>);
-            var indexers = Builder.Resolve<IEnumerable<ISearchItem>>()
+            var indexers = Builder.Resolve<IEnumerable<IFactoryIndexer>>()
                 .Where(r => string.IsNullOrEmpty(name) || r.IndexName == name)
-                .Select(r => (IIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
+                .Select(r => (IFactoryIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
 
             foreach (var indexer in indexers)
             {
