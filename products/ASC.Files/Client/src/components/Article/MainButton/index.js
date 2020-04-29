@@ -196,6 +196,10 @@ class PureArticleMainButtonContent extends React.Component {
     }
   };
 
+  onInputClick = e => {
+    e.target.value = null;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const { files, uploadedFiles, totalSize, percent } = this.state;
     if (nextProps.isCanCreate !== this.props.isCanCreate) {
@@ -268,6 +272,7 @@ class PureArticleMainButtonContent extends React.Component {
           multiple
           type="file"
           onChange={this.onFileChange}
+          onClick={this.onInputClick}
           ref={(input) => (this.inputFilesElement = input)}
           style={{ display: "none" }}
         />
@@ -278,6 +283,7 @@ class PureArticleMainButtonContent extends React.Component {
           mozdirectory=""
           type="file"
           onChange={this.onFileChange}
+          onClick={this.onInputClick}
           ref={(input) => (this.inputFolderElement = input)}
           style={{ display: "none" }}
         />
