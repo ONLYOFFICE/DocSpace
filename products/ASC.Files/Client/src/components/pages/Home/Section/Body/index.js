@@ -112,27 +112,31 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { deleteFile, filter } = this.props;
+    const { deleteFile, filter, onLoading } = this.props;
 
+    onLoading(true);
     deleteFile(fileId)
       .catch(err => toastr.error(err))
       .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
-      .then(() => toastr.success(`File moved to recycle bin`));
+      .then(() => toastr.success(`File moved to recycle bin`))
+      .finally(() => onLoading(false));
   }
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder, filter, treeFolders, setTreeFolders, onLoading } = this.props;
+    const { deleteFolder, filter, treeFolders, setTreeFolders, onLoading, currentFolderType } = this.props;
     onLoading(true);
     deleteFolder(folderId, currentFolderId)
       .catch(err => toastr.error(err))
       .then(() =>
         fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
-          const path = data.selectedFolder.pathParts;
-          const newTreeFolders = treeFolders;
-          const folders = data.selectedFolder.folders;
-          const foldersCount = data.selectedFolder.foldersCount;
-          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-          setTreeFolders(newTreeFolders);
+          if(currentFolderType !== "Trash") {
+            const path = data.selectedFolder.pathParts;
+            const newTreeFolders = treeFolders;
+            const folders = data.selectedFolder.folders;
+            const foldersCount = data.selectedFolder.foldersCount;
+            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+            setTreeFolders(newTreeFolders);
+          }
         })
       )
       .then(() => toastr.success(`Folder moved to recycle bin`))
