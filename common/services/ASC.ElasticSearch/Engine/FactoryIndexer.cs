@@ -565,7 +565,7 @@ namespace ASC.ElasticSearch
             if (!CoreBaseSettings.Standalone) return;
 
             var generic = typeof(BaseIndexer<>);
-            var indexers = Builder.Resolve<IEnumerable<Wrapper>>()
+            var indexers = Builder.Resolve<IEnumerable<ISearchItem>>()
                 .Where(r => string.IsNullOrEmpty(name) || r.IndexName == name)
                 .Select(r => (IIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
 

@@ -114,13 +114,13 @@ namespace ASC.ElasticSearch.Core
             }).ToList();
         }
 
-        private List<WrapperWithDoc> allItems;
-        internal List<WrapperWithDoc> AllItems
+        private List<ISearchItemDocument> allItems;
+        internal List<ISearchItemDocument> AllItems
         {
             get
             {
-                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<Wrapper>>()
-                               .OfType<WrapperWithDoc>()
+                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<ISearchItem>>()
+                               .OfType<ISearchItemDocument>()
                                .ToList());
             }
         }
@@ -149,7 +149,7 @@ namespace ASC.ElasticSearch.Core
         {
             if (!SearchByContentEnabled) return false;
 
-            if (!typeof(T).IsSubclassOf(typeof(WrapperWithDoc)))
+            if (typeof(ISearchItemDocument).IsAssignableFrom(typeof(T)))
             {
                 return false;
             }

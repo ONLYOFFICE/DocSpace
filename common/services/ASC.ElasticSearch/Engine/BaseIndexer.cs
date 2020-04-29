@@ -131,7 +131,7 @@ namespace ASC.ElasticSearch
                     var t = data[i];
                     var runBulk = i == data.Count - 1;
 
-                    if (!(t is WrapperWithDoc wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
+                    if (!(t is ISearchItemDocument wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                     {
                         portion.Add(t);
                     }
@@ -307,7 +307,7 @@ namespace ASC.ElasticSearch
 
                 lock (Locker)
                 {
-                    Func<AnalyzersDescriptor, IPromise<IAnalyzers>> analyzers = b =>
+                    IPromise<IAnalyzers> analyzers(AnalyzersDescriptor b)
                     {
                         foreach (var c in Enum.GetNames(typeof(Analyzer)))
                         {
@@ -324,13 +324,13 @@ namespace ASC.ElasticSearch
                             b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
                         }
 
-                        if (data is WrapperWithDoc)
+                        if (data is ISearchItemDocument)
                         {
                             b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
                         }
 
                         return b;
-                    };
+                    }
 
                     var createIndexResponse = Client.Instance.Indices.Create(data.IndexName,
                         c =>
@@ -358,7 +358,7 @@ namespace ASC.ElasticSearch
                 result.Refresh(Elasticsearch.Net.Refresh.True);
             }
 
-            if (data is WrapperWithDoc)
+            if (data is ISearchItemDocument)
             {
                 result.Pipeline("attachments");
             }
@@ -369,7 +369,7 @@ namespace ASC.ElasticSearch
         {
             var result = desc.Index(IndexName).Id(data.Id);
 
-            if (data is WrapperWithDoc)
+            if (data is ISearchItemDocument)
             {
                 result.Pipeline("attachments");
             }

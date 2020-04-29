@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
+using ASC.Files.Resources;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -83,6 +84,11 @@ namespace ASC.Files.Core.EF
 
         [NotMapped]
         public Document Document { get; set; }
+
+        public string SettingsTitle
+        {
+            get { return FilesCommonResource.IndexTitle; }
+        }
 
         public override object[] GetKeys()
         {
