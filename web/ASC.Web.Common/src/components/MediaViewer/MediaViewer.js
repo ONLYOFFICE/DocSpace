@@ -14,6 +14,8 @@ const StyledVideoViewer = styled(VideoViewer)`
 const StyledMediaViewer = styled.div`
     
     color: #d1d1d1;
+    display: ${props => props.visible ? "block" : "none"};
+
     .videoViewerOverlay{
         position: fixed;
         z-index: 4000;
@@ -78,14 +80,22 @@ class MediaViewer extends React.Component {
         super(props);
 
         this.state = {
-            visible: true,
+            visible: this.props.visible,
             allowConvert: true,
             playlist: this.props.playlist,
             playlistPos: 0,
         };
     }
-    
-    
+
+    componentDidUpdate(prevProps) {
+        if (this.props.visible !== prevProps.visible) {
+          this.setState(
+            {
+                visible: this.props.visible
+            }
+          );
+        }
+      }
     mapSupplied = {
         ".aac": { supply: "m4a", type: audio },
         ".flac": { supply: "mp3", type: audio },
@@ -118,7 +128,7 @@ class MediaViewer extends React.Component {
 
         var canConv = allowConvert || this.props.allowConvert;
 
-        return !!supply &&  this.props.extsMediaPreviewed.indexOf(ext) != -1
+        return !!supply && this.props.extsMediaPreviewed.indexOf(ext) != -1
             && (!supply.convertable || canConv);
     };
 
@@ -132,11 +142,11 @@ class MediaViewer extends React.Component {
     };
 
     prevMedia = () => {
-       
+
         let currentPlaylistPos = this.state.playlistPos;
         currentPlaylistPos--;
         if (currentPlaylistPos < 0)
-        currentPlaylistPos = this.state.playlist.length - 1;
+            currentPlaylistPos = this.state.playlist.length - 1;
 
         this.setState({
             playlistPos: currentPlaylistPos
@@ -154,69 +164,88 @@ class MediaViewer extends React.Component {
         });
     };
 
-    render(){
+    render() {
 
         let currentPlaylistPos = this.state.playlistPos;
         let fileTitle = this.state.playlist[currentPlaylistPos].title;
         let url = this.state.playlist[currentPlaylistPos].src;
         let isImage = false;
-        var isVideo = false;
+        let isVideo = false;
+        let canOpen = true;
 
         var ext = this.getFileExtension(fileTitle) ? this.getFileExtension(fileTitle) : this.getFileExtension(url);
 
         if (!this.canPlay(ext) && !this.canImageView(ext)) {
-            console.log("ERROR")
+            canOpen = false;
+            this.props.onError && this.props.onError();
         }
 
         if (this.canImageView(ext)) {
             isImage = true;
         } else {
-            isImage = false; 
+            isImage = false;
             isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
         }
+        
+        return (
+            <StyledMediaViewer visible={this.state.visible}>
 
-        return(
-            <StyledMediaViewer>
-               
-               <div className = "videoViewerOverlay"></div>
-               <MediaScrollButton orientation = "right" onClick={this.prevMedia}/>
-               <MediaScrollButton orientation = "left" onClick={this.nextMedia}/>
+                <div className="videoViewerOverlay"></div>
+                <MediaScrollButton orientation="right" onClick={this.prevMedia} />
+                <MediaScrollButton orientation="left" onClick={this.nextMedia} />
                 <div>
-                    <div className = "details">
-                        <div className = "title">{fileTitle}</div>
-                        <ControlBtn  onClick={this.props.onClick} className = "mediaPlayerClose">
+                    <div className="details">
+                        <div className="title">{fileTitle}</div>
+                        <ControlBtn onClick={this.props.onClose && (() => {this.props.onClose()})} className="mediaPlayerClose">
                             <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
                         </ControlBtn>
                     </div>
                 </div>
-                {isImage ?
-                    <ImageViewer 
-                        visible={this.state.visible}
-                        onClose={() => { this.setState({ visible: false }); } }
-                        images={[
-                            {src: url, alt: ''}
-                        ]}
-                    /> 
-                    :
-                    <StyledVideoViewer url = {url} isVideo={isVideo}/>
+                {canOpen &&
+                    (
+                        isImage ?
+                            <ImageViewer
+                                visible={this.state.visible}
+                                onClose={() => { this.setState({ visible: false }); }}
+                                images={[
+                                    { src: url, alt: '' }
+                                ]}
+                            />
+                            :
+                            <StyledVideoViewer url={url} isVideo={isVideo} />
+                    )
                 }
-                <div className = "mediaViewerToolbox"></div>
+                <div className="mediaViewerToolbox"></div>
                 <span>
-                    <ControlBtn> 
-                        <Icons.CatalogTrashIcon  size="medium" isfill={true} color="#fff" />
+                    <ControlBtn onClick={this.props.onDelete && (() => {this.props.onDelete(this.state.playlistPos)})}>
+                        <Icons.CatalogTrashIcon size="medium" isfill={true} color="#fff" />
                     </ControlBtn>
 
-                    <ControlBtn>
+                    <ControlBtn onClick={this.props.onDownload && (() => {this.props.onDownload(this.state.playlistPos)})}>
                         <Icons.DownloadIcon size="medium" isfill={true} color="#fff" />
                     </ControlBtn>
                 </span>
             </StyledMediaViewer>
         )
-    };
+    }
 }
 
-MediaViewer.propTypes = {}
+MediaViewer.propTypes = {
+    allowConvert: PropTypes.bool,
+    visible: PropTypes.bool,
+    playlist: PropTypes.arrayOf(PropTypes.object),
+    extsImagePreviewed: PropTypes.arrayOf(PropTypes.string),
+    extsMediaPreviewed: PropTypes.arrayOf(PropTypes.string),
+    onError: PropTypes.func,
+    canDelete: PropTypes.func,
+    onDelete: PropTypes.func,
+    onDownload: PropTypes.func,
+    onClose: PropTypes.func
+}
 
-MediaViewer.defaultProps = {}
+MediaViewer.defaultProps = {
+    allowConvert: true,
+    canDelete: () => { return true }
+}
 
 export default MediaViewer;

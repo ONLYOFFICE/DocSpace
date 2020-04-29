@@ -60,39 +60,28 @@ var customToolbar = [
     {
         key: 'zoomIn',
         actionType: 1,
-        render:  <Icons.PlusIcon size="medium" isfill={true} color="#fff" />
+        render: <Icons.PlusIcon size="medium" isfill={true} color="#fff" />
     },
     {
         key: 'zoomOut',
         actionType: 2,
-        render:  <Icons.CrossIcon size="medium" isfill={true} color="#fff"/>
+        render: <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
     },
     {
         key: 'reset',
         actionType: 7,
-        render:  <Icons.AccessFormIcon size="medium" isfill={true} color="#fff"/>
+        render: <Icons.AccessFormIcon size="medium" isfill={true} color="#fff" />
     },
     {
         key: 'rotateLeft',
         actionType: 5,
-        render:  <Icons.RotateIcon size="medium" isfill={true} color="#fff"/>
+        render: <Icons.RotateIcon size="medium" isfill={true} color="#fff" />
     },
     {
         key: 'rotateRight',
         actionType: 6,
-        render:  <Icons.RotateIcon size="medium" isfill={true} color="#fff"/>
-    },
-    /*{
-        key: 'prev',
-        actionType: 3,
-        render:  <MediaScrollButton orientation = "right" />
-    },
-    {
-        key: 'next',
-        actionType: 4,
-        render:  <MediaScrollButton orientation = "left"/>
-        
-    },*/
+        render: <Icons.RotateIcon size="medium" isfill={true} color="#fff" />
+    }
 ];
 
 class ImageViewer extends React.Component {
@@ -101,21 +90,20 @@ class ImageViewer extends React.Component {
 
         this.state = {
             visible: false,
-          };
+        };
     }
 
-    render(){
+    render() {
 
-        const { className, visible, onClose, images } = this.props;
+        const { className, visible, images } = this.props;
 
-        return(
-            <div> 
+        return (
+            <div className={className}>
                 <StyledViewer
                     visible={visible}
-                    onClose={onClose}
                     customToolbar={(toolbars) => {
                         return customToolbar;
-                      }}
+                    }}
                     images={images}
                 />
             </div>
@@ -123,7 +111,11 @@ class ImageViewer extends React.Component {
     };
 }
 
-ImageViewer.propTypes = {}
+ImageViewer.propTypes = {
+    className: PropTypes.string,
+    visible: PropTypes.bool,
+    images: PropTypes.arrayOf(PropTypes.object)
+}
 
 ImageViewer.defaultProps = {}
 
