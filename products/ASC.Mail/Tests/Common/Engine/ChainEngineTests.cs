@@ -197,7 +197,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
             var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
             var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
 
-            var t = ServiceProvider.GetService<MailWrapper>();
+            var t = scope.ServiceProvider.GetService<MailWrapper>();
             if (factoryIndexerHelper.Support(t))
                 factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
 
@@ -829,9 +829,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
         [Test]
         public void Paging25Total28UnreadTest()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(false, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -840,6 +837,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+                return;
 
             var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
@@ -902,7 +902,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
         [Test]
         public void ReadUnreadSameChainInDifferentMailboxesTest()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(false, ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, ServiceProvider))
                 return;
 
             using var scope = ServiceProvider.CreateScope();

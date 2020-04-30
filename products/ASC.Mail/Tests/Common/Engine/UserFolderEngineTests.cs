@@ -28,13 +28,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Mail.Aggregator.Tests.Common.Utils;
 using ASC.Mail.Models;
 using ASC.Mail.Enums;
-using ASC.Mail.Extensions;
 using ASC.Mail.Utils;
 using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
@@ -207,7 +205,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.UserFolders
             var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
             var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
 
-            var t = ServiceProvider.GetService<MailWrapper>();
+            var t = scope.ServiceProvider.GetService<MailWrapper>();
             if (factoryIndexerHelper.Support(t))
                 factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
 

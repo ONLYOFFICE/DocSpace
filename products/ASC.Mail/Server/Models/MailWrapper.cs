@@ -27,9 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ASC.Common;
+using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
-using ASC.Mail.Core;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Resources;
 
 namespace ASC.Mail.Models
@@ -104,18 +106,42 @@ namespace ASC.Mail.Models
             get { return "mail_mail"; }
         }
 
-        protected override Stream GetDocumentStream()
-        {
-            //TODO: Fix
-            //var factory = new EngineFactory(TenantId, UserId.ToString());
-            //var messageEngine = factory.MessageEngine;
-            //return messageEngine.GetMessageStream(Id);
-            return null;
-        }
-
         public override string SettingsTitle
         {
             get { return MailCoreResource.IndexTitle; }
+        }
+
+        public MailWrapper()
+        {
+
+        }
+
+        public MailWrapper(TenantManager tenantManager, MessageEngine messageEngine)
+        {
+            TenantManager = tenantManager;
+            MessageEngine = messageEngine;
+        }
+
+        protected override Stream GetDocumentStream()
+        {
+            //TenantManager.SetCurrentTenant(TenantId);
+
+            return MessageEngine.GetMessageStream(Id);
+        }
+
+        private TenantManager TenantManager { get; }
+        private MessageEngine MessageEngine { get; }
+    }
+
+    public static class MailWrapperExtention
+    {
+        public static DIHelper AddMailWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<MailWrapper>();
+            return services
+                .AddTenantManagerService()
+                .AddMessageEngineService()
+                .AddFactoryIndexerService<MailWrapper>();
         }
     }
 

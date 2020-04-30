@@ -28,13 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Mail.Aggregator.Tests.Common.Utils;
 using ASC.Mail.Models;
-using ASC.Mail.Enums;
-using ASC.Mail.Extensions;
 using ASC.Mail.Utils;
 using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +47,9 @@ using Autofac;
 using ASC.ElasticSearch;
 using ASC.Api.Core;
 using ASC.Mail.Enums.Filter;
+using ASC.Web.Files.Api;
+using ASC.Files.Core.Security;
+using ASC.Web.Files.Utils;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
@@ -129,7 +129,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddMessageEngineService()
                         .AddFilterEngineService()
                         .AddCoreSettingsService()
-                        .AddApiDateTimeHelper();
+                        .AddApiDateTimeHelper()
+                        .AddFilesIntegrationService()
+                        .AddFileSecurityService()
+                        .AddFileConverterService();
 
                     var builder = new ContainerBuilder();
                     var container = builder.Build();
@@ -187,7 +190,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
             var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
 
-            var t = ServiceProvider.GetService<MailWrapper>();
+            var t = scope.ServiceProvider.GetService<MailWrapper>();
             if (factoryIndexerHelper.Support(t))
                 factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
 

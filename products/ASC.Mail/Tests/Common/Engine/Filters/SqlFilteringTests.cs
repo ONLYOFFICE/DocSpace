@@ -28,13 +28,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Mail.Aggregator.Tests.Common.Utils;
 using ASC.Mail.Models;
 using ASC.Mail.Enums;
-using ASC.Mail.Extensions;
 using ASC.Mail.Utils;
 using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +48,9 @@ using Autofac;
 using ASC.ElasticSearch;
 using ASC.Api.Core;
 using ASC.Mail.Enums.Filter;
+using ASC.Web.Files.Api;
+using ASC.Files.Core.Security;
+using ASC.Web.Files.Utils;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
@@ -122,6 +123,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddMailBoxSettingEngineService()
                         .AddMailboxEngineService()
                         .AddApiHelperService()
+                        .AddMailWrapperService()
                         .AddFolderEngineService()
                         .AddUserFolderEngineService()
                         .AddFactoryIndexerHelperService()
@@ -132,7 +134,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddMessageEngineService()
                         .AddTagEngineService()
                         .AddCoreSettingsService()
-                        .AddApiDateTimeHelper();
+                        .AddApiDateTimeHelper()
+                        .AddFilesIntegrationService()
+                        .AddFileSecurityService()
+                        .AddFileConverterService();
 
                     var builder = new ContainerBuilder();
                     var container = builder.Build();
@@ -203,23 +208,14 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
             var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (factoryIndexerHelper.Support(t))
-                factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
-
             // Clear TestUser mail data
             var mailGarbageEngine = scope.ServiceProvider.GetService<MailGarbageEngine>();
             mailGarbageEngine.ClearUserMail(TestUser.ID, tenantManager.GetCurrentTenant());
         }
 
-        
-
         [Test]
         public void CheckSimpleFilterFromMatch()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -227,6 +223,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -271,9 +270,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterFromContains()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -281,6 +277,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -325,9 +324,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterToMatch()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -335,6 +331,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -379,9 +378,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterToContains()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -389,6 +385,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -433,9 +432,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterCcMatch()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -443,6 +439,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -487,9 +486,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterCcContains()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -497,6 +493,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -541,9 +540,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterToOrCcMatch()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -551,6 +547,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -596,9 +595,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterToOrCcContains()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -606,6 +602,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -651,9 +650,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterSubjectMatch()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -661,6 +657,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -705,9 +704,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckSimpleFilterSubjectContains()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -715,6 +711,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -759,9 +758,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckComplexFilterFromAndSubjectMatchAll()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -769,6 +765,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
@@ -824,9 +823,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
         [Test]
         public void CheckComplexFilterFromAndSubjectMatchAtLeastOne()
         {
-            if (!TestHelper.IgnoreIfFullTextSearch(true, ServiceProvider))
-                return;
-
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -834,6 +830,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
+
+            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(true, scope.ServiceProvider))
+                return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();

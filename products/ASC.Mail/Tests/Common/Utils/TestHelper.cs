@@ -30,7 +30,6 @@ using System.Text;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.ElasticSearch;
-using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -93,11 +92,11 @@ namespace ASC.Mail.Aggregator.Tests.Common.Utils
             return userManager.SaveUserInfo(user);
         }
 
-        public static bool IgnoreIfFullTextSearch(bool enabled, IServiceProvider serviceProvider)
+        public static bool IgnoreIfFullTextSearch<T>(bool enabled, IServiceProvider serviceProvider) where T : Wrapper
         {
             using var scope = serviceProvider.CreateScope();
 
-            var t = serviceProvider.GetService<MailWrapper>();
+            var t = serviceProvider.GetService<T>();
             var factoryIndexerHelper = serviceProvider.GetService<FactoryIndexerHelper>();
 
             if (enabled == factoryIndexerHelper.Support(t))

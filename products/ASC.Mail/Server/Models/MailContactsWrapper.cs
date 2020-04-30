@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common;
+using ASC.Core;
 using ASC.ElasticSearch;
 
 namespace ASC.Mail.Models
@@ -59,6 +61,17 @@ namespace ASC.Mail.Models
         protected override string Table
         {
             get { return "mail_contacts"; }
+        }
+    }
+
+    public static class MailContactWrapperExtension
+    {
+        public static DIHelper AddMailContactWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<MailContactWrapper>();
+            return services
+                .AddTenantManagerService()
+                .AddFactoryIndexerService<MailContactWrapper>();
         }
     }
 
