@@ -4,12 +4,14 @@ import { toastr, ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
+import { fetchFiles } from "../../../store/files/actions";
+import store from "../../../store/store";
 
 const { files } = api;
 const { changeLanguage } = utils;
 
 const EmptyTrashDialogComponent = props => {
-  const { onClose, visible, t } = props;
+  const { onClose, visible, t, filter, currentFolderId } = props;
   const [isLoading, setIsLoading] = useState(false);
 
   changeLanguage(i18n);
@@ -21,6 +23,7 @@ const EmptyTrashDialogComponent = props => {
     files
       .emptyTrash()
       .then(res => {
+        fetchFiles(currentFolderId, filter, store.dispatch)
         toastr.success(successMessage);
       }) //toastr.success("It was successfully deleted 24 from 24"); + progressBar
       .catch(err => toastr.error(err))
@@ -28,7 +31,7 @@ const EmptyTrashDialogComponent = props => {
         setIsLoading(false);
         onClose();
       });
-  }, [onClose]);
+  }, [onClose, filter, currentFolderId]);
 
   return (
     <ModalDialogContainer>

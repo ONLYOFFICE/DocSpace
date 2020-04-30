@@ -260,7 +260,8 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       accessOptions,
-      shareDataItems
+      shareDataItems,
+      currentFolderId
     } = this.props;
     const {
       showDeleteDialog,
@@ -421,6 +422,7 @@ class SectionHeaderContent extends React.Component {
 
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
+            currentFolderId={currentFolderId}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
           />
@@ -460,7 +462,8 @@ const mapStateToProps = state => {
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     accessOptions: getAccessOption(selection),
-    shareDataItems
+    shareDataItems,
+    currentFolderId: id
   };
 };
 
