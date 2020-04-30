@@ -31,7 +31,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         }
 
         public int? StartIndex { get; set; }
-
         public int? Limit { get; set; }
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
@@ -56,6 +55,9 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             Filter = filter;
             Tenant = tenant;
             User = user;
+            FactoryIndexer = factoryIndexer;
+            FactoryIndexerHelper = factoryIndexerHelper;
+            ServiceProvider = serviceProvider;
 
             if (ids.Any())
             {
@@ -65,9 +67,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             StartIndex = page*pageSize;
             Limit = pageSize;
-            FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
-            ServiceProvider = serviceProvider;
         }
 
         public virtual Expression<Func<MailMail, bool>> GetExpression()

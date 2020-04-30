@@ -443,7 +443,6 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             factoryIndexer.Index(mailWrapper);
 
-
             var success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
                 .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);

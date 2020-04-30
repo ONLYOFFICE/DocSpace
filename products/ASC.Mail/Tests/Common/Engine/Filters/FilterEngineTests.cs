@@ -190,9 +190,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
             var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
 
-            var t = scope.ServiceProvider.GetService<MailWrapper>();
+            /*var t = scope.ServiceProvider.GetService<MailWrapper>();
             if (factoryIndexerHelper.Support(t))
-                factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
+                factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();*/
 
             // Clear TestUser mail data
             var mailGarbageEngine = scope.ServiceProvider.GetService<MailGarbageEngine>();

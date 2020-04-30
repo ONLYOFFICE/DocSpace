@@ -55,31 +55,21 @@ namespace ASC.Mail.Core.Dao
             var query = MailDb.MailMail
                 .Where(exp.GetExpression());
 
-            //TODO: Fix
-            /*if (exp.TagIds != null && exp.TagIds.Any())
+            if (exp.TagIds != null && exp.TagIds.Any())
             {
-                query = query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
-                    (m, tm) => new
-                    {
-                        Mail = m,
-                        Xtags = tm
-                    })
-                    .Where(g => exp.TagIds.Contains(g.Xtags.IdTag))
-                    .GroupBy(g => g.Mail.Id)
-                    .Where(g => g.Count() == exp.TagIds.Count);
-            }*/
+                query = query.Where(m => 
+                    MailDb.MailTagMail
+                        .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
+                        .Count() == exp.TagIds.Count);
+            }
 
-            //TODO: Fix
-            /*if (exp.UserFolderId.HasValue)
+            if (exp.UserFolderId.HasValue)
             {
-                query = query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
-                    (m, x) => new
-                    {
-                        Mail = m,
-                        XuserFolder = x
-                    })
-                    .Where(g => g.XuserFolder.IdFolder == exp.UserFolderId.Value);
-            }*/
+                query = query.Where(m =>
+                    MailDb.MailUserFolderXMail
+                        .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId && t.IdFolder == exp.UserFolderId.Value)
+                        .FirstOrDefault() != null);
+            }
 
             if (exp.StartIndex.HasValue)
             {
@@ -129,28 +119,18 @@ namespace ASC.Mail.Core.Dao
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
-                //TODO: Fix 
-                query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
-                    (m, tm) => new
-                    {
-                        Mail = m,
-                        Xtags = tm
-                    })
-                    .Where(g => exp.TagIds.Contains(g.Xtags.IdTag))
-                    .GroupBy(g => g.Mail.Id)
-                    .Where(g => g.Count() == exp.TagIds.Count);
+                query = query.Where(m =>
+                    MailDb.MailTagMail
+                        .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
+                        .Count() == exp.TagIds.Count);
             }
 
             if (exp.UserFolderId.HasValue)
             {
-                //TODO: Fix 
-                query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
-                    (m, x) => new
-                    {
-                        Mail = m,
-                        XuserFolder = x
-                    })
-                    .Where(g => g.XuserFolder.IdFolder == exp.UserFolderId.Value);
+                query = query.Where(m =>
+                    MailDb.MailUserFolderXMail
+                        .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId && t.IdFolder == exp.UserFolderId.Value)
+                        .FirstOrDefault() != null);
             }
 
             var total = query.Count();

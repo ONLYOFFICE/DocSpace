@@ -129,6 +129,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddFactoryIndexerHelperService()
                         .AddFactoryIndexerService()
                         .AddMailWrapperService()
+                        .AddFactoryIndexerService<MailWrapper>()
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
@@ -180,7 +181,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             TestMailbox = testMailboxes.FirstOrDefault();
 
-            if (TestMailbox == null || !mailboxEngine.SaveMailBox(TestMailbox))
+            if (TestMailbox != null)
+                TestMailbox.Name = EMAIL_NAME;
+
+                if (TestMailbox == null || !mailboxEngine.SaveMailBox(TestMailbox))
             {
                 throw new Exception(string.Format("Can't create mailbox with email: {0}", TestUser.Email));
             }
@@ -1485,7 +1489,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                 FolderId = (int)FolderType.Inbox,
                 UserFolderId = null,
                 MailboxId = TestMailbox.MailBoxId,
-                Unread = true,
+                Unread = false,
                 To = new List<string> { "to@to.com" },
                 Cc = new List<string> { "cc@cc.com" },
                 Bcc = new List<string>(),

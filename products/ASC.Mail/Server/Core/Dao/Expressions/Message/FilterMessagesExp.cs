@@ -180,7 +180,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             ids = new List<int>();
 
             var t = serviceProvider.GetService<MailWrapper>();
-            if (factoryIndexerHelper.Support(t))
+            if (!factoryIndexerHelper.Support(t))
             {
                 total = 0;
                 return false;
