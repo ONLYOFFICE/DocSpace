@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const StyledProgress = styled.div`
   display: inline-block;
@@ -109,33 +110,28 @@ const StyledProgress = styled.div`
     
   }
 `;
-
-class Progress extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        return (
-            <StyledProgress {...this.props} >
-                <div className="slider-container">
-                <div className="fill"></div>
-                <input
-                    type='range' min={0} max={0.999999} step='any'
-                    value={this.props.value}
-                    onMouseDown={this.props.handleSeekMouseDown}
-                    onChange={this.props.handleSeekChange}
-                    onMouseUp={this.props.handleSeekMouseUp}
-                />
-                </div>
-            </StyledProgress>
-        );
-    }
+const Progress = props => {
+  return (
+    <StyledProgress {...props} >
+      <div className="slider-container">
+        <div className="fill"></div>
+        <input
+          type='range' min={0} max={0.999999} step='any'
+          value={props.value}
+          onMouseDown={props.handleSeekMouseDown}
+          onChange={props.handleSeekChange}
+          onMouseUp={props.handleSeekMouseUp}
+        />
+      </div>
+    </StyledProgress>
+  );
 }
 
-Progress.propTypes = {}
-
-Progress.defaultProps = {}
+Progress.propTypes = {
+  value: PropTypes.number,
+  handleSeekMouseDown: PropTypes.func,
+  handleSeekChange: PropTypes.func,
+  handleSeekMouseUp: PropTypes.func
+}
 
 export default Progress;

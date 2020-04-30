@@ -117,6 +117,4 @@ ImageViewer.propTypes = {
     images: PropTypes.arrayOf(PropTypes.object)
 }
 
-ImageViewer.defaultProps = {}
-
 export default ImageViewer;

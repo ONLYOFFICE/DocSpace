@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const StyledVideoControlBtn = styled.div`
     display: inline-block;
@@ -15,24 +16,16 @@ const StyledVideoControlBtn = styled.div`
         background-color: rgba(200,200,200,0.2);
     }
 `;
-
-class ControlBtn extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        return (
-            <StyledVideoControlBtn {...this.props} >
-                {this.props.children}
-            </StyledVideoControlBtn>
-        );
-    }
+const ControlBtn = props => {
+    return (
+        <StyledVideoControlBtn {...props} >
+            {props.children}
+        </StyledVideoControlBtn>
+    );
 }
 
-ControlBtn.propTypes = {}
-
-ControlBtn.defaultProps = {}
+ControlBtn.propTypes = {
+    children: PropTypes.any
+}
 
 export default ControlBtn;

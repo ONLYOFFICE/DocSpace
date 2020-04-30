@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import PropTypes from "prop-types";
+
 import { findDOMNode } from 'react-dom'
 import screenfull from 'screenfull'
 
@@ -162,13 +164,6 @@ class ValumeBtn extends Component{
   }
 }
 
- 
-
-const MULTIPLE_SOURCES = [
-  { src: 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4', type: 'video/mp4' },
-  { src: 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.ogv', type: 'video/ogv' },
-  { src: 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.webm', type: 'video/webm' }
-]
 
 class VideoViewer extends Component {
   state = {
@@ -194,7 +189,7 @@ class VideoViewer extends Component {
       pip: false
     })
   }
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.url !== prevProps.url) {
       this.setState(
         {
@@ -315,7 +310,7 @@ class VideoViewer extends Component {
 
   resizePlayer = (videoSize, screenSize) => {
     var ratio = videoSize.h / videoSize.w;
-    console.log("===",videoSize,screenSize)
+    
     if (videoSize.h > screenSize.h) {
         videoSize.h = screenSize.h;
         videoSize.w = videoSize.h / ratio;
@@ -334,8 +329,7 @@ class VideoViewer extends Component {
 
   render () {
     const { url, playing, controls, light, volume, muted, loop, played, loaded, duration, playbackRate, pip } = this.state
-    const SEPARATOR = ' · '
-
+  
     var screenSize = {
       w : window.innerWidth,
       h : window.innerHeight
@@ -435,5 +429,9 @@ class VideoViewer extends Component {
   }
 }
 
+VideoViewer.propTypes = {
+  isVideo: PropTypes.bool,
+  url: PropTypes.string
+}
 
 export default VideoViewer;

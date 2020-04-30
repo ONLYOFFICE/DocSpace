@@ -39,22 +39,10 @@ const ScrollButton = styled.div`
   
 `;
 
-
-class MediaScrollButton extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        return (
-            <ScrollButton {...this.props} />
-        );
-    }
+const MediaScrollButton = props => {
+    return (
+        <ScrollButton {...props} />
+    );
 }
-
-MediaScrollButton.propTypes = {}
-
-MediaScrollButton.defaultProps = {}
 
 export default MediaScrollButton;
