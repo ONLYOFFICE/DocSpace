@@ -140,7 +140,7 @@ const StyledVideoViewer = styled.div`
 `;
 
 class ValumeBtn extends Component {
-  
+
   constructor(props) {
     super(props);
   }
@@ -181,7 +181,7 @@ class VideoViewer extends Component {
   state = {
     url: this.props.url,
     pip: false,
-    playing: true,
+    playing: this.props.playing,
     controls: false,
     light: false,
     volume: 0.3,
@@ -201,14 +201,25 @@ class VideoViewer extends Component {
       pip: false
     })
   }
-  componentDidUpdate(prevProps) {
-    if (this.props.url !== prevProps.url) {
+  componentDidUpdate(prevProps, prevState) {
+    let newUrl = prevState.url;
+    let newPlaying = prevState.playing;
+    if (this.props.url !== prevProps.url || this.props.playing !== prevProps.playing) {
+      if (this.props.url !== prevProps.url) {
+        newUrl = this.props.url
+      }
+      if (this.props.playing !== prevProps.playing) {
+        newPlaying = this.props.playing
+      }
       this.setState(
         {
-          url: this.props.url
+          url: newUrl,
+          playing: newPlaying
         }
       );
     }
+
+
   }
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing })
@@ -443,7 +454,8 @@ class VideoViewer extends Component {
 
 VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
-  url: PropTypes.string
+  url: PropTypes.string,
+  playing: PropTypes.bool
 }
 
 export default VideoViewer;

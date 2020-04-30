@@ -89,13 +89,13 @@ class MediaViewer extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.visible !== prevProps.visible) {
-          this.setState(
-            {
-                visible: this.props.visible
-            }
-          );
+            this.setState(
+                {
+                    visible: this.props.visible
+                }
+            );
         }
-      }
+    }
     mapSupplied = {
         ".aac": { supply: "m4a", type: audio },
         ".flac": { supply: "mp3", type: audio },
@@ -186,7 +186,7 @@ class MediaViewer extends React.Component {
             isImage = false;
             isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
         }
-        
+
         return (
             <StyledMediaViewer visible={this.state.visible}>
 
@@ -196,7 +196,7 @@ class MediaViewer extends React.Component {
                 <div>
                     <div className="details">
                         <div className="title">{fileTitle}</div>
-                        <ControlBtn onClick={this.props.onClose && (() => {this.props.onClose()})} className="mediaPlayerClose">
+                        <ControlBtn onClick={this.props.onClose && (() => { this.props.onClose() })} className="mediaPlayerClose">
                             <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
                         </ControlBtn>
                     </div>
@@ -212,16 +212,16 @@ class MediaViewer extends React.Component {
                                 ]}
                             />
                             :
-                            <StyledVideoViewer url={url} isVideo={isVideo} />
+                            <StyledVideoViewer url={url} playing ={this.state.visible} isVideo={isVideo} />
                     )
                 }
                 <div className="mediaViewerToolbox"></div>
                 <span>
-                    <ControlBtn onClick={this.props.onDelete && (() => {this.props.onDelete(this.state.playlistPos)})}>
+                    <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(this.state.playlistPos) })}>
                         <Icons.CatalogTrashIcon size="medium" isfill={true} color="#fff" />
                     </ControlBtn>
 
-                    <ControlBtn onClick={this.props.onDownload && (() => {this.props.onDownload(this.state.playlistPos)})}>
+                    <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(this.state.playlistPos) })}>
                         <Icons.DownloadIcon size="medium" isfill={true} color="#fff" />
                     </ControlBtn>
                 </span>
