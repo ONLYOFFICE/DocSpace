@@ -23,6 +23,12 @@ import OrigDocumentsIcon from './documents.react.svg';
 import OrigCatalogSharedIcon from './catalog.shared.react.svg';
 import OrigMailIcon from './mail.react.svg';
 import OrigMoneyIcon from './money.react.svg';
+import OrigMediaPauseIcon from './media.pause.react.svg';
+import OrigMediaPlayIcon from './media.play.react.svg';
+import OrigMediaMuteIcon from './media.mute.react.svg';
+import OrigMediaFullScreenPauseIcon from './media.fullscreen.react.svg';
+import OrigMediaDownloadPauseIcon from './media.download.react.svg';
+import OrigMediaDeletePauseIcon from './media.delete.react.svg';
 import OrigProjectsIcon from './projects.react.svg';
 import OrigSearchIcon from './search.react.svg';
 import OrigSettingsIcon from './settings.react.svg';
@@ -529,6 +535,30 @@ export const MoneyIcon = createStyledIcon(
 export const MenuIcon = createStyledIcon(
   OrigMenuIcon,
   'MenuIcon'
+);
+export const MediaPauseIcon = createStyledIcon(
+  OrigMediaPauseIcon,
+  'MediaPauseIcon'
+);
+export const MediaPlayIcon = createStyledIcon(
+  OrigMediaPlayIcon,
+  'MediaPlayIcon'
+);
+export const MediaMuteIcon = createStyledIcon(
+  OrigMediaMuteIcon,
+  'MediaMuteIcon'
+);
+export const MediaFullScreenPauseIcon = createStyledIcon(
+  OrigMediaFullScreenPauseIcon,
+  'MediaFullScreenPauseIcon'
+);
+export const MediaDownloadPauseIcon = createStyledIcon(
+  OrigMediaDownloadPauseIcon,
+  'MediaDownloadPauseIcon'
+);
+export const MediaDeletePauseIcon = createStyledIcon(
+  OrigMediaDeletePauseIcon,
+  'MediaDeletePauseIcon'
 );
 export const MyspaceIcon = createStyledIcon(
   OrigMyspaceIcon,
