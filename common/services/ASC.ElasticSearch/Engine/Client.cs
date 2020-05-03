@@ -50,11 +50,13 @@ namespace ASC.ElasticSearch
         public ILog Log { get; }
 
         public CoreConfiguration CoreConfiguration { get; }
+        public Settings Settings { get; }
 
-        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration)
+        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, Settings settings)
         {
             Log = option.Get("ASC.Indexer");
             CoreConfiguration = coreConfiguration;
+            Settings = settings;
         }
 
         public ElasticClient Instance
@@ -67,8 +69,7 @@ namespace ASC.ElasticSearch
                 {
                     if (client != null) return client;
 
-                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ??
-                                         Settings.Default;
+                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? Settings;
 
                     var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
                     var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))
@@ -133,6 +134,7 @@ namespace ASC.ElasticSearch
         {
             services.TryAddScoped<Client>();
             return services
+                .AddSettingsService()
                 .AddCoreConfigurationService();
         }
     }

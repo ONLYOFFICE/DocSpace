@@ -89,6 +89,7 @@ namespace ASC.ElasticSearch
         public TenantManager TenantManager { get; }
         public SearchSettingsHelper SearchSettingsHelper { get; }
         public BaseIndexerHelper BaseIndexerHelper { get; }
+        public Settings Settings { get; }
         public IServiceProvider ServiceProvider { get; }
         public WebstudioDbContext WebstudioDbContext { get; }
 
@@ -99,6 +100,7 @@ namespace ASC.ElasticSearch
             TenantManager tenantManager,
             SearchSettingsHelper searchSettingsHelper,
             BaseIndexerHelper baseIndexerHelper,
+            Settings settings,
             IServiceProvider serviceProvider)
         {
             Client = client;
@@ -106,6 +108,7 @@ namespace ASC.ElasticSearch
             TenantManager = tenantManager;
             SearchSettingsHelper = searchSettingsHelper;
             BaseIndexerHelper = baseIndexerHelper;
+            Settings = settings;
             ServiceProvider = serviceProvider;
             WebstudioDbContext = dbContextManager.Value;
         }
@@ -138,7 +141,7 @@ namespace ASC.ElasticSearch
                     else
                     {
                         var dLength = wwd.Document.Data.Length;
-                        if (dLength >= Settings.Default.MemoryLimit)
+                        if (dLength >= Settings.MemoryLimit)
                         {
                             try
                             {
@@ -155,7 +158,7 @@ namespace ASC.ElasticSearch
                             continue;
                         }
 
-                        if (currentLength + dLength < Settings.Default.MemoryLimit)
+                        if (currentLength + dLength < Settings.MemoryLimit)
                         {
                             portion.Add(t);
                             currentLength += dLength;

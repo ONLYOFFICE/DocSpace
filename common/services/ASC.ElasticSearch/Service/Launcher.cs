@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.ElasticSearch.Service;
 
 using Autofac;
 
@@ -52,19 +53,21 @@ namespace ASC.ElasticSearch
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
         private DateTime? LastIndexed { get; set; }
-        private TimeSpan Period { get { return TimeSpan.FromMinutes(1); } }//Settings.Default.Period
+        private TimeSpan Period { get; set; }
 
         public ServiceLauncher(
             IOptionsMonitor<ILog> options,
             ICacheNotify<AscCacheItem> notify,
             IServiceProvider serviceProvider,
-            IContainer container)
+            IContainer container,
+            Settings settings)
         {
             Log = options.Get("ASC.Indexer");
             Notify = notify;
             ServiceProvider = serviceProvider;
             Container = container;
             CancellationTokenSource = new CancellationTokenSource();
+            Period = TimeSpan.FromMinutes(settings.Period.Value);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -182,6 +185,7 @@ namespace ASC.ElasticSearch
             services.TryAddSingleton<ServiceLauncher>();
 
             return services
+                .AddSettingsService()
                 .AddFactoryIndexerService();
         }
     }
