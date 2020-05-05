@@ -53,6 +53,11 @@ const StyledViewer = styled(Viewer)`
             background: none;
         }
     }
+    .iconContainer{
+        width: 18px;
+        line-height: 15px;
+        margin: 4px auto;
+    }
 `
 
 
@@ -60,27 +65,27 @@ var customToolbar = [
     {
         key: 'zoomIn',
         actionType: 1,
-        render: <Icons.PlusIcon size="medium" isfill={true} color="#fff" />
+        render: <div className="iconContainer"><Icons.MediaZoomInIcon size="scale" /></div>
     },
     {
         key: 'zoomOut',
         actionType: 2,
-        render: <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
+        render: <div className="iconContainer"><Icons.MediaZoomOutIcon size="scale" /></div>
     },
     {
         key: 'reset',
         actionType: 7,
-        render: <Icons.AccessFormIcon size="medium" isfill={true} color="#fff" />
+        render: <div className="iconContainer"><Icons.MediaResetIcon size="scale" /></div>
     },
     {
         key: 'rotateLeft',
         actionType: 5,
-        render: <Icons.RotateIcon size="medium" isfill={true} color="#fff" />
+        render: <div className="iconContainer"><Icons.MediaRotateLeftIcon size="scale" /></div>
     },
     {
         key: 'rotateRight',
         actionType: 6,
-        render: <Icons.RotateIcon size="medium" isfill={true} color="#fff" />
+        render: <div className="iconContainer"><Icons.MediaRotateRightIcon size="scale" /></div>
     }
 ];
 
