@@ -29,6 +29,12 @@ import OrigMediaMuteIcon from './media.mute.react.svg';
 import OrigMediaFullScreenIcon from './media.fullscreen.react.svg';
 import OrigMediaDownloadIcon from './media.download.react.svg';
 import OrigMediaDeleteIcon from './media.delete.react.svg';
+import OrigMediaMuteOffIcon from './media.muteoff.react.svg';
+import OrigMediaResetIcon from './media.reset.react.svg';
+import OrigMediaRotateLeftIcon from './media.rotateleft.react.svg';
+import OrigMediaRotateRightIcon from './media.rotateright.react.svg';
+import OrigMediaZoomInIcon from './media.zoomin.react.svg';
+import OrigMediaZoomOutIcon from './media.zoomout.react.svg';
 import OrigProjectsIcon from './projects.react.svg';
 import OrigSearchIcon from './search.react.svg';
 import OrigSettingsIcon from './settings.react.svg';
@@ -559,6 +565,30 @@ export const MediaDownloadIcon = createStyledIcon(
 export const MediaDeleteIcon = createStyledIcon(
   OrigMediaDeleteIcon,
   'MediaDeleteIcon'
+);
+export const MediaMuteOffIcon = createStyledIcon(
+  OrigMediaMuteOffIcon,
+  'MediaMuteOffIcon'
+);
+export const MediaResetIcon = createStyledIcon(
+  OrigMediaResetIcon,
+  'MediaResetIcon'
+);
+export const MediaRotateLeftIcon = createStyledIcon(
+  OrigMediaRotateLeftIcon,
+  'MediaRotateLeftIcon'
+);
+export const MediaRotateRightIcon = createStyledIcon(
+  OrigMediaRotateRightIcon,
+  'MediaRotateRightIcon'
+);
+export const MediaZoomInIcon = createStyledIcon(
+  OrigMediaZoomInIcon,
+  'MediaZoomInIcon'
+);
+export const MediaZoomOutIcon = createStyledIcon(
+  OrigMediaZoomOutIcon,
+  'MediaZoomOutIcon'
 );
 export const MyspaceIcon = createStyledIcon(
   OrigMyspaceIcon,
