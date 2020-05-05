@@ -8,7 +8,13 @@ import withReadme from 'storybook-readme/with-readme';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
-
+var playlist = [
+  {
+    id: 0,
+    src: "",
+    title: ""
+  }
+];
 class MediaViewerStory extends React.Component {
   constructor(props) {
     super(props);
@@ -38,19 +44,14 @@ class MediaViewerStory extends React.Component {
         </div>
         <MediaViewer
           allowConvert={true}
-          canDelete={(fileId) => { return true }}
+          canDelete={(fileId) => { 
+            if(fileId == 1) return false;
+            return true 
+          }}
           visible={this.state.visible}
-          playlist={
-            [
-              {
-                id: 0,
-                src: "",
-                title: ""
-              }
-            ]
-          }
-          onDelete={(fileId) => { console.log(fileId) }}
-          onDownload={(fileId) => { console.log(fileId) }}
+          playlist={playlist}
+          onDelete={ (fileId) => action('On delete')(fileId) }
+          onDownload={(fileId) => action('On download')(fileId)}
           onClose={this.onClose}
           extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}
           extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]}
