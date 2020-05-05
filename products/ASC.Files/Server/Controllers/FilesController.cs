@@ -546,15 +546,15 @@ namespace ASC.Api.Documents
         /// ]]>
         /// </returns>
         [Create("{folderId}/upload/create_session", DisableFormat = true)]
-        public object CreateUploadSession(string folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        public object CreateUploadSession(string folderId, SessionModel sessionModel)
         {
-            return FilesControllerHelperString.CreateUploadSession(folderId, fileName, fileSize, relativePath, encrypted);
+            return FilesControllerHelperString.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
         }
 
         [Create("{folderId:int}/upload/create_session")]
-        public object CreateUploadSession(int folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        public object CreateUploadSession(int folderId, SessionModel sessionModel)
         {
-            return FilesControllerHelperInt.CreateUploadSession(folderId, fileName, fileSize, relativePath, encrypted);
+            return FilesControllerHelperInt.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
         }
 
         /// <summary>

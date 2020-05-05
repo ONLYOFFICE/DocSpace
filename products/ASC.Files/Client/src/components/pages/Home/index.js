@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { RequestLoader } from "asc-web-components";
+import { RequestLoader, Checkbox } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
@@ -29,7 +29,14 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false
+      isLoading: false,
+
+      showProgressBar: false,
+      progressBarValue: 0,
+      progressBarLabel: "",
+      overwriteSetting: false,
+      uploadOriginalFormatSetting: false,
+      hideWindowSetting: false
     };
   }
 
@@ -93,15 +100,53 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
+  setProgressVisible = visible => {
+    if(visible) {this.setState({ showProgressBar: visible })}
+    else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), 10000)};
+  };
+  setProgressValue = value => this.setState({ progressBarValue: value });
+  setProgressLabel = label => this.setState({ progressBarLabel: label });
+
+  onChangeOverwrite = () => this.setState({overwriteSetting: !this.state.overwriteSetting})
+  onChangeOriginalFormat = () => this.setState({uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting})
+  onChangeWindowVisible = () => this.setState({hideWindowSetting: !this.state.hideWindowSetting})
+
   render() {
     const {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
       selected,
-      isLoading
+      isLoading,
+      showProgressBar,
+      progressBarValue,
+      progressBarLabel,
+      overwriteSetting,
+      uploadOriginalFormatSetting,
+      hideWindowSetting
     } = this.state;
     const { t } = this.props;
+
+    const progressBarContent = (
+      <div>
+        <Checkbox
+          onChange={this.onChangeOverwrite}
+          isChecked={overwriteSetting}
+          label={t("OverwriteSetting")}
+        />
+        <Checkbox
+          onChange={this.onChangeOriginalFormat}
+          isChecked={uploadOriginalFormatSetting}
+          label={t("UploadOriginalFormatSetting")}
+        />
+        <Checkbox
+          onChange={this.onChangeWindowVisible}
+          isChecked={hideWindowSetting}
+          label={t("HideWindowSetting")}
+        />
+      </div>
+    );
+
     return (
       <>
         <RequestLoader
@@ -116,15 +161,19 @@ class PureHome extends React.Component {
         <PageLayout
           withBodyScroll
           withBodyAutoFocus
-
-          //showProgressBar
-          //progressBarMaxValue
-          //progressBarValue
-          //progressBarDropDownContent
-          //progressBarLabel={`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
-
+          showProgressBar={showProgressBar}
+          progressBarValue={progressBarValue}
+          progressBarDropDownContent={progressBarContent}
+          progressBarLabel={progressBarLabel}
           articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent/>}
+          articleMainButtonContent={
+            <ArticleMainButtonContent
+              onLoading={this.onLoading}
+              setProgressVisible={this.setProgressVisible}
+              setProgressValue={this.setProgressValue}
+              setProgressContent={this.setProgressContent}
+              setProgressLabel={this.setProgressLabel}
+            />}
           articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
           sectionHeaderContent={
             <SectionHeaderContent
@@ -141,6 +190,7 @@ class PureHome extends React.Component {
           sectionBodyContent={
             <SectionBodyContent
               selected={selected}
+              isLoading={isLoading}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
             />

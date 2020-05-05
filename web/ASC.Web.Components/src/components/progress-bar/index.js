@@ -17,14 +17,14 @@ const StyledProgressBar = styled.div`
   }
 
   .progress-bar_percent {
-    width: ${props => props.percent}%;
+    width: ${props => props.uploadedPercent}%;
     float: left;
     overflow: hidden;
     max-height: 22px;
     min-height: 22px;
   }
   .progress-bar_field {
-    width: ${props => props.percent2}%;
+    width: ${props => props.remainPercent}%;
     float: left;
     overflow: hidden;
     max-height: 22px;
@@ -32,6 +32,7 @@ const StyledProgressBar = styled.div`
   }
 
   .progress-bar_percent {
+    transition: width .6s ease;
     background: linear-gradient(90deg, #20d21f 75%, #b9d21f 100%);
   }
 
@@ -56,8 +57,7 @@ const StyledProgressBar = styled.div`
 `;
 
 const ProgressBar = props => {
-  const { value, maxValue, label, dropDownContent, ...rest } = props;
-  const percent = value > maxValue ? 100 : (value / maxValue) * 100;
+  const { percent, label, dropDownContent, ...rest } = props;
   const ref = React.createRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -69,7 +69,7 @@ const ProgressBar = props => {
 
   //console.log("ProgressBar render");
   return (
-    <StyledProgressBar ref={ref} {...rest} percent={percent} percent2={100 - percent} >
+    <StyledProgressBar ref={ref} {...rest} uploadedPercent={percent} remainPercent={100 - percent} >
       <Link
         className="progress-bar_full-text"
         color="#333"
@@ -101,14 +101,9 @@ const ProgressBar = props => {
 };
 
 ProgressBar.propTypes = {
-  value: PropTypes.number,
-  maxValue: PropTypes.number,
+  percent: PropTypes.number.isRequired,
   label: PropTypes.string,
   dropDownContent: PropTypes.any,
-};
-
-ProgressBar.defaultProps = {
-  maxValue: 100
 };
 
 export default ProgressBar;

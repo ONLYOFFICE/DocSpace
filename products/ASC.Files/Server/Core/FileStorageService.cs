@@ -474,7 +474,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            var parent = folderDao.GetFolder(parentId == null || parentId.Equals(default) ? file.FolderID : parentId);
+            var parent = folderDao.GetFolder(parentId == null || parentId.Equals(default(T)) ? file.FolderID : parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(parent.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 

@@ -215,9 +215,15 @@ namespace ASC.Files.Core
         }
 
         public object NativeAccessor { get; set; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
-        public FileConverter FileConverter { get; }
+
+        [NonSerialized]
+        private readonly FilesLinkUtility FilesLinkUtility;
+
+        [NonSerialized]
+        private readonly FileUtility FileUtility;
+
+        [NonSerialized]
+        private readonly FileConverter FileConverter;
 
         private T _folderIdDisplay;
 
@@ -235,10 +241,8 @@ namespace ASC.Files.Core
 
         public static string Serialize(File<T> file)
         {
-            using (var ms = new FileEntrySerializer().ToXml(file))
-            {
-                return Encoding.UTF8.GetString(ms.ToArray());
-            }
+            using var ms = new FileEntrySerializer().ToXml(file);
+            return Encoding.UTF8.GetString(ms.ToArray());
         }
     }
 }

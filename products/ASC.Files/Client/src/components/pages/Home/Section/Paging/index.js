@@ -119,7 +119,7 @@ const SectionPagingContent = ({
   const selectedPageItem = pageItems.find(x => x.key === filter.page) || emptyPageSelection;
   const selectedCountItem = countItems.find(x => x.key === filter.pageCount) || emptyCountSelection;
 
-  console.log("SectionPagingContent render", filter);
+  //console.log("SectionPagingContent render", filter);
 
   return filter.total < filter.pageCount ? (
     <></>

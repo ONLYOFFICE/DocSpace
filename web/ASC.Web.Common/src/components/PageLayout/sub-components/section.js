@@ -9,6 +9,11 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
 
+  .layout-progress-bar {
+    position: sticky;
+    margin-left: -16px;
+  }
+
   .section-header_filter {
       display: block;
     }

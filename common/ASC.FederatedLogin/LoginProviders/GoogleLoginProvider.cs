@@ -185,7 +185,7 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         public static DIHelper AddGoogleLoginProviderService(this DIHelper services)
         {
-            services.TryAddScoped<GoogleLoginProvider>();
+            //services.TryAddScoped<GoogleLoginProvider>();
             return services
                 .AddConsumerFactoryService()
                 .AddKafkaService()

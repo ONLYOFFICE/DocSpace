@@ -10,6 +10,7 @@ const EmptyContentBody = styled.div`
 	display: grid;
 	grid-template-areas: 
     "img header"
+    "img subheading"
     "img desc"
     "img button";
   min-width: 320px;
@@ -22,6 +23,11 @@ const EmptyContentBody = styled.div`
 
   .ec-header {
     grid-area: header;
+  }
+  
+  .ec-subheading {
+    grid-area: subheading;
+    padding: 8px 0;
   }
 
   .ec-desc {
@@ -44,6 +50,10 @@ const EmptyContentBody = styled.div`
         font-size: 3.5vw;
       }
 
+      .ec-subheading {
+        font-size: 2.9vw;
+      }
+
       .ec-desc {
         font-size: 2.4vw;
       }
@@ -56,6 +66,10 @@ const EmptyContentBody = styled.div`
 
       .ec-header {
         font-size: 4.75vw;
+      }
+
+      .ec-subheading {
+        font-size: 4.15vw;
       }
 
       .ec-desc {
@@ -73,7 +87,7 @@ const EmptyContentImage = styled.img.attrs(props => ({
 `;
 
 const EmptyScreenContainer = props => {
-  const { imageSrc, imageAlt, headerText, descriptionText, buttons } = props;
+  const { imageSrc, imageAlt, headerText, subheadingText, descriptionText, buttons } = props;
   return (
 
     <EmptyContentBody {...props}>
@@ -82,6 +96,10 @@ const EmptyScreenContainer = props => {
 
       {headerText && (
         <Text as="span" color="#333333" fontSize='24px' className="ec-header">{headerText}</Text>
+      )}
+
+      {subheadingText && (
+        <Text as="span" color="#737373" fontSize='18px' className="ec-subheading">{subheadingText}</Text>
       )}
 
       {descriptionText && (
@@ -102,6 +120,7 @@ EmptyScreenContainer.propTypes = {
   imageSrc: PropTypes.string,
   imageAlt: PropTypes.string,
   headerText: PropTypes.string,
+  subheadingText: PropTypes.string,
   descriptionText: PropTypes.string,
   buttons: PropTypes.any,
   className: PropTypes.string,

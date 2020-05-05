@@ -251,13 +251,13 @@ namespace ASC.Files.Helpers
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
-                var session = FileUploader.InitiateUpload(file.FolderID.ToString(), (file.ID ?? default).ToString(), file.Title, file.ContentLength, encrypted);
+                var session = FileUploader.InitiateUpload(file.FolderID, (file.ID ?? default), file.Title, file.ContentLength, encrypted);
 
-                var response = ChunkedUploadSessionHelper.ToResponseObject(session, true);
+                var responseObject = ChunkedUploadSessionHelper.ToResponseObject(session, true);
                 return new
                 {
                     success = true,
-                    data = response
+                    data = responseObject
                 };
             }
 
@@ -279,11 +279,10 @@ namespace ASC.Files.Helpers
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            using (var response = request.GetResponse())
-            using (var responseStream = response.GetResponseStream())
-            {
-                return JObject.Parse(new StreamReader(responseStream).ReadToEnd()); //result is json string
-            }
+            using var response = request.GetResponse();
+            using var responseStream = response.GetResponseStream();
+            using var streamReader = new StreamReader(responseStream);
+            return JObject.Parse(streamReader.ReadToEnd()); //result is json string
         }
 
         public FileWrapper<T> CreateTextFile(T folderId, string title, string content)

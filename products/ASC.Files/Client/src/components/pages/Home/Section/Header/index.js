@@ -17,7 +17,8 @@ import { EmptyTrashDialog, DeleteDialog } from "../../../../dialogs";
 import { SharingPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
-  getAccessOption
+  getAccessOption,
+  checkFolderType
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -233,7 +234,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   onBackToParentFolder = () => {
-    fetchFiles(this.props.parentId, this.props.filter, filesStore.dispatch);
+    const { onLoading, parentId, filter } = this.props;
+    onLoading(true);
+    fetchFiles(parentId, filter, filesStore.dispatch).finally(() =>
+      onLoading(false)
+    );
   };
 
   
@@ -255,7 +260,8 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       accessOptions,
-      shareDataItems
+      shareDataItems,
+      currentFolderId
     } = this.props;
     const {
       showDeleteDialog,
@@ -416,6 +422,7 @@ class SectionHeaderContent extends React.Component {
 
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
+            currentFolderId={currentFolderId}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
           />
@@ -448,14 +455,15 @@ const mapStateToProps = state => {
   return {
     folder: parentId !== 0,
     isAdmin: isAdmin(user),
-    isRecycleBinFolder: treeFolders[indexOfTrash].id === id,
+    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
     parentId,
     selection,
     title,
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     accessOptions: getAccessOption(selection),
-    shareDataItems
+    shareDataItems,
+    currentFolderId: id
   };
 };
 

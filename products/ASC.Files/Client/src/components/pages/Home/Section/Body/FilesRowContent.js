@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, toastr } from "asc-web-components";
 import { constants } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
+import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
 
@@ -24,38 +25,38 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.fileAction.id,
-      loading: false
+      editingId: props.fileAction.id
+      //loading: false
     };
   }
 
   completeAction = () => {
-    this.setState({ loading: false }, () =>
-      this.props.onEditComplete());
+    //this.setState({ loading: false }, () =>)
+      this.props.onEditComplete();
   }
 
   updateItem = () => {
-    const { fileAction, updateFile, renameFolder, item } = this.props;
+    const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
+    
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
-    this.setState({ loading: true });
-
+    onLoading(true);
     if (originalTitle === itemTitle)
       return this.completeAction();
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction())
+        .then(() => this.completeAction()).finally(() => onLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction());
+        .then(() => this.completeAction()).finally(() => onLoading(false));
   };
 
   createItem = () => {
     const { createFile, createFolder, item } = this.props;
     const { itemTitle } = this.state;
 
-    this.setState({ loading: true });
+    //this.setState({ loading: true });
 
     if (itemTitle.trim() === '')
       return this.completeAction();
@@ -81,7 +82,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   cancelUpdateItem = () => {
-    this.setState({ loading: false });
+    //this.setState({ loading: false });
     this.completeAction();
   }
 
@@ -160,8 +161,8 @@ class FilesRowContent extends React.PureComponent {
   };
 
   render() {
-    const { t, item, fileAction } = this.props;
-    const { itemTitle, editingId, loading } = this.state;
+    const { t, item, fileAction, isLoading, isTrashFolder } = this.props;
+    const { itemTitle, editingId/*, loading*/ } = this.state;
     const {
       contentLength,
       updated,
@@ -195,42 +196,6 @@ class FilesRowContent extends React.PureComponent {
     }
     `;
 
-    const EditingWrapper = styled.div`
-      width: 100%;
-      display: inline-flex;
-      align-items: center;
-
-      @media (max-width: 1024px) {
-      height: 56px;
-    }
-      .edit-text {
-        height: 30px;
-        font-size: 15px;
-        outline: 0 !important;
-        font-weight: bold;
-        margin: 0;
-        font-family: 'Open Sans',sans-serif,Arial;
-        text-align: left;
-        color: #333333;
-      }
-      .edit-button {
-        margin-left: 8px;
-        height: 30px;
-      }
-
-      .edit-ok-icon {
-        margin-top: -6px;
-        width: 16px;
-        height: 16px;
-      }
-
-      .edit-cancel-icon {
-        margin-top: -6px;
-        width: 14px;
-        height: 14px;
-      }
-    `;
-
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner = createdBy && ((this.props.viewer.id === createdBy.id && t("AuthorMe")) || createdBy.displayName);
     const updatedDate = updated && this.getStatusByDate();
@@ -252,35 +217,19 @@ class FilesRowContent extends React.PureComponent {
     />;
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
+    const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
 
     return isEdit
-      ? (<EditingWrapper>
-        <TextInput
-          className='edit-text'
-          name='title'
-          scale={true}
-          value={itemTitle}
-          tabIndex={1}
-          isAutoFocussed={true}
-          onChange={this.renameTitle}
-          onKeyUp={this.onKeyUpUpdateItem}
-          isDisabled={loading}
+      ? <EditingWrapperComponent
+          isLoading={isLoading}
+          itemTitle={itemTitle}
+          okIcon={okIcon}
+          cancelIcon={cancelIcon}
+          renameTitle={this.renameTitle}
+          onKeyUpUpdateItem={this.onKeyUpUpdateItem}
+          onClickUpdateItem={this.onClickUpdateItem}
+          cancelUpdateItem={this.cancelUpdateItem}
         />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={loading}
-          onClick={this.onClickUpdateItem}
-          icon={okIcon}
-        />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={loading}
-          onClick={this.cancelUpdateItem}
-          icon={cancelIcon}
-        />
-      </EditingWrapper>)
       : (
         <SimpleFilesRowContent
           sideColor="#333"
@@ -292,10 +241,10 @@ class FilesRowContent extends React.PureComponent {
             type='page'
             title={titleWithoutExt}
             fontWeight="bold"
-            onClick={this.onFilesClick}
             fontSize='15px'
+            {...linkStyles}
             color="#333"
-            isTextOverflow={true}
+            isTextOverflow
           >
             {titleWithoutExt}
           </Link>
@@ -421,10 +370,14 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
+  const { filter, fileAction, selectedFolder, treeFolders } = state.files;
+  const indexOfTrash = 3;
+
   return {
-    filter: state.files.filter,
-    fileAction: state.files.fileAction,
-    parentFolder: state.files.selectedFolder.id
+    filter,
+    fileAction,
+    parentFolder: selectedFolder.id,
+    isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id
   }
 }
 

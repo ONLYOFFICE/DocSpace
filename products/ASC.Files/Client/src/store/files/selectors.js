@@ -158,6 +158,75 @@ export const getTreeFolders = (pathParts, filterData) => {
   return treeFolders;
 };
 
+const renameTreeFolder = (folders, newItems, currentFolder) => {
+  const newItem = folders.find(x => x.id === currentFolder.id);
+  const oldItemIndex = newItems.folders.findIndex(x => x.id === currentFolder.id);
+  newItem.folders = newItems.folders[oldItemIndex].folders;
+  newItems.folders[oldItemIndex] = newItem;
+
+  return;
+}
+
+const removeTreeFolder = (folders, newItems, foldersCount) => {
+  for (let folder of newItems.folders) {
+    let currentFolder;
+    if(folders) {
+      currentFolder = folders.find((x) => x.id === folder.id);
+    }
+
+    if (!currentFolder) {
+      const arrayFolders = newItems.folders.filter(x => x.id !== folder.id);
+      newItems.folders = arrayFolders;
+      newItems.foldersCount = foldersCount;
+      return;
+    }
+  }
+}
+
+const addTreeFolder = (folders, newItems, foldersCount) => {
+  let array;
+  const newItemFolders = newItems.folders ? newItems.folders : [];
+  for (let folder of folders) {
+    let currentFolder;
+    if(newItemFolders) {
+      currentFolder = newItemFolders.find((x) => x.id === folder.id);
+    }
+
+    if (folders.length < 1 || !currentFolder) {
+      array = [...newItemFolders, ...[folder]].sort((prev, next) =>
+        prev.title.toLowerCase() < next.title.toLowerCase() ? -1 : 1
+      );
+      newItems.folders = array;
+      newItems.foldersCount = foldersCount;
+      return;
+    }
+  }
+}
+
+export const loopTreeFolders = (path, item, folders, foldersCount, currentFolder) => {
+  const newPath = path;
+  while (path.length !== 0) {
+    const newItems = item.find((x) => x.id === path[0]);
+    if(!newItems) { return; }
+    newPath.shift();
+    if (path.length === 0) {
+      let foldersLength = newItems.folders ? newItems.folders.length : 0;
+      //new Date(prev.updated) > new Date(next.updated) ? -1 : 1;
+      if (folders.length > foldersLength) {
+        addTreeFolder(folders, newItems, foldersCount);
+      } else if (folders.length < foldersLength) {
+        removeTreeFolder(folders, newItems, foldersCount);
+      } else if (folders.length > 0 && newItems.length > 0) {
+        renameTreeFolder(folders, newItems, currentFolder);
+      } else {
+        return;
+      }
+      return;
+    }
+    loopTreeFolders(newPath, newItems.folders, folders, foldersCount, currentFolder);
+  }
+}
+
 export const isCanCreate = (selectedFolder, user) => {
   if (!selectedFolder || !selectedFolder.id) return;
 
@@ -318,4 +387,21 @@ export const getFileIcon = (extension, size = 32) => {
     default:
       return `${folderPath}/file.svg`;
   }
+}
+
+export const checkFolderType = (id, index, treeFolders) => {
+  return treeFolders[index].id === id;
+}
+
+export const getFolderType = (id, treeFolders) => {
+  
+  const indexOfMy = 0;
+  const indexOfShare = 1;
+  const indexOfCommon = 2;
+  const indexOfTrash = 3;
+
+  if(checkFolderType(id, indexOfMy, treeFolders)) { return "My"; }
+  else if(checkFolderType(id, indexOfShare, treeFolders)) { return "Share"; }
+  else if(checkFolderType(id, indexOfCommon, treeFolders)) { return "Common"; }
+  else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
 }

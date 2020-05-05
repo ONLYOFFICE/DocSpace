@@ -4,5 +4,8 @@
   "NewSpreadSheet": "New Spreadsheet",
   "NewPresentation": "New Presentation",
   "NewFolder": "New Folder",
-  "Upload": "Upload"
+  "UploadFiles": "Upload files",
+  "UploadFolder": "Upload folder",
+  "ErrorUploadMessage": "You cannot upload a folder or an empty file",
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Scrollbar, ProgressBar } from "asc-web-components";
+import { utils, Scrollbar } from "asc-web-components";
 const { tablet } = utils.device;
 
 const StyledSectionBody = styled.div`
@@ -28,11 +28,6 @@ const StyledSectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100%;
-
-  .layout-progress-bar {
-    flex: 0 0 auto;
-    margin-right: -16px;
-  }
 `;
 
 const StyledSpacer = styled.div`
@@ -49,7 +44,6 @@ class SectionBody extends React.Component {
     super(props);
 
     this.focusRef = React.createRef();
-    this.ref = React.createRef();
   }
   
   componentDidMount() {
@@ -60,17 +54,15 @@ class SectionBody extends React.Component {
 
   render() {
     //console.log("PageLayout SectionBody render");
-    const { children, withScroll, autoFocus, pinned, showProgressBar, progressBarMaxValue, progressBarValue, progressBarDropDownContent, progressBarLabel } = this.props;
+    const { children, withScroll, autoFocus, pinned } = this.props;
 
     const focusProps = autoFocus ? {
       ref: this.focusRef,
       tabIndex: 1
     } : {};
 
-    const width = this.ref.current && this.ref.current.offsetWidth;
-
     return (
-      <StyledSectionBody ref={this.ref} withScroll={withScroll}>
+      <StyledSectionBody withScroll={withScroll}>
         {withScroll ? (
           <Scrollbar stype="mediumBlack">
             <StyledSectionWrapper>
@@ -78,16 +70,6 @@ class SectionBody extends React.Component {
                 {children}
                 <StyledSpacer pinned={pinned}/>
               </div>
-              {showProgressBar && (
-                <ProgressBar
-                  className="layout-progress-bar"
-                  label={progressBarLabel}
-                  value={progressBarValue}
-                  width={width}
-                  maxValue={progressBarMaxValue}
-                  dropDownContent={progressBarDropDownContent}
-                />
-              )}
             </StyledSectionWrapper>
           </Scrollbar>
         ) : (
@@ -107,11 +89,6 @@ SectionBody.propTypes = {
   withScroll: PropTypes.bool,
   autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
-  showProgressBar: PropTypes.bool,
-  progressBarMaxValue: PropTypes.number,
-  progressBarValue: PropTypes.number,
-  progressBarLabel: PropTypes.string,
-  progressBarDropDownContent: PropTypes.any,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

@@ -416,7 +416,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch)
         {
-            if (parentFolder == null || parentFolder.ID.Equals(default))
+            if (parentFolder == null || parentFolder.ID.Equals(default(T)))
                 throw new ArgumentException("folderId");
 
             var result = new List<Tag>();
