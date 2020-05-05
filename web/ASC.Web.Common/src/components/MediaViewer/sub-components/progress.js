@@ -119,7 +119,7 @@ const Progress = props => {
           type='range' min={0} max={0.999999} step='any'
           value={props.value}
           onMouseDown={props.handleSeekMouseDown}
-          onChange={props.handleSeekChange}
+          onChange={(event)=>props.handleSeekChange(event)}
           onMouseUp={props.handleSeekMouseUp}
         />
       </div>

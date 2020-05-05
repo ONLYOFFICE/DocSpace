@@ -11,9 +11,9 @@ import Progress from './progress'
 import styled from "styled-components"
 import { Icons } from "asc-web-components";
 
-
+const controlsHeight = 40;
 const StyledControls = styled.div`
-    height: 40px;
+    height: ${props => props.height}px;
     display: block;
     position: absolute;
     z-index: 4001;
@@ -31,8 +31,33 @@ const StyledVideoControlBtn = styled.div`
     border-radius: 2px;
     cursor: pointer;
     text-align: center;
+    vertical-align: top;
     &:hover{
         background-color: rgba(200,200,200,0.2);
+    }
+
+    .playBtnContainer{
+      width: 23px;
+      line-height: 0;
+      margin: 3px auto;
+    }
+    .pauseBtnContainer{
+      display: block;
+      width: 19px;
+      margin: 3px 10px;
+      line-height: 19px;
+    }
+    .muteBtnContainer{
+      display: block;
+      width: 26px;
+      margin: 3px 7px;
+      line-height: 19px;
+    }
+    .fullscreenBtnContainer{
+      display: block;
+      width: 20px;
+      margin: 3px 10px;
+      line-height: 19px;
     }
 `;
 
@@ -57,9 +82,19 @@ Controls.propTypes = {
   children: PropTypes.any
 }
 const PlayBtn = props => {
+
   return (
     <VideoControlBtn onClick={props.onClick}>
-      {props.playing ? <Icons.ItemPausedIcon size="medium" isfill={true} color="#fff" /> : <Icons.ItemActiveIcon size="medium" isfill={true} color="#fff" />}
+      {props.playing ? 
+        <div className="pauseBtnContainer">
+          <Icons.MediaPauseIcon size="scale" />
+        </div>
+        : 
+        <div className="playBtnContainer">
+          <Icons.MediaPlayIcon size="scale" />
+        </div>
+      }
+      
     </VideoControlBtn>
   );
 }
@@ -70,7 +105,9 @@ PlayBtn.propTypes = {
 const FullScreenBtn = props => {
   return (
     <VideoControlBtn onClick={props.onClick}>
-      <Icons.ExternalLinkIcon size="medium" isfill={true} color="#fff" />
+      <div className = "fullscreenBtnContainer">
+        <Icons.MediaFullScreenIcon size="scale" />
+      </div>
     </VideoControlBtn>
   );
 }
@@ -80,6 +117,7 @@ FullScreenBtn.propTypes = {
 
 const StyledValumeContainer = styled.div`
     display: inline-block;
+    line-height: 39px;
     position: relative;
     
     .muteConteiner{
@@ -100,7 +138,6 @@ const StyledValumeContainer = styled.div`
     .mute{
       display: inline-block;
       transform: rotate(-90deg);
-      float: right;
       margin: 22px -12px;
     }
 `;
@@ -160,7 +197,9 @@ class ValumeBtn extends Component {
         </div>
 
         <VideoControlBtn onClick={this.props.onChangeMute}>
-          {this.props.muted ? <Icons.ToggleButtonIcon size="medium" /> : <Icons.ToggleButtonCheckedIcon size="medium" />}
+          <div className = "muteBtnContainer">
+            {this.props.muted ? <Icons.MediaMuteOffIcon size="scale" /> : <Icons.MediaMuteIcon size="scale" />}
+          </div>
         </VideoControlBtn>
       </StyledValumeContainer>
     );
@@ -218,31 +257,14 @@ class VideoViewer extends Component {
         }
       );
     }
-
-
   }
+
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing })
   }
 
   handleStop = () => {
     this.setState({ url: null, playing: false })
-  }
-
-  handleToggleControls = () => {
-    const url = this.state.url
-    this.setState({
-      controls: !this.state.controls,
-      url: null
-    }, () => this.load(url))
-  }
-
-  handleToggleLight = () => {
-    this.setState({ light: !this.state.light })
-  }
-
-  handleToggleLoop = () => {
-    this.setState({ loop: !this.state.loop })
   }
 
   handleVolumeChange = e => {
@@ -256,31 +278,19 @@ class VideoViewer extends Component {
     this.setState({ muted: !this.state.muted })
   }
 
-  handleSetPlaybackRate = e => {
-    this.setState({ playbackRate: parseFloat(e.target.value) })
-  }
-
-  handleTogglePIP = () => {
-    this.setState({ pip: !this.state.pip })
-  }
-
   handlePlay = () => {
-    console.log('onPlay')
     this.setState({ playing: true })
   }
 
   handleEnablePIP = () => {
-    console.log('onEnablePIP')
     this.setState({ pip: true })
   }
 
   handleDisablePIP = () => {
-    console.log('onDisablePIP')
     this.setState({ pip: false })
   }
 
   handlePause = () => {
-    console.log('onPause')
     this.setState({ playing: false })
   }
 
@@ -298,20 +308,16 @@ class VideoViewer extends Component {
   }
 
   handleProgress = state => {
-    console.log('onProgress', state)
-    // We only want to update time slider if we are not currently seeking
     if (!this.state.seeking) {
       this.setState(state)
     }
   }
 
   handleEnded = () => {
-    console.log('onEnded')
     this.setState({ playing: this.state.loop })
   }
 
   handleDuration = (duration) => {
-    console.log('onDuration', duration)
     this.setState({ duration })
   }
 
@@ -352,12 +358,12 @@ class VideoViewer extends Component {
 
   render() {
     const { url, playing, controls, light, volume, muted, loop, played, loaded, duration, playbackRate, pip } = this.state
-
+    const parentOffset = this.props.getOffset() || 0;
     var screenSize = {
       w: window.innerWidth,
       h: window.innerHeight
     };
-    screenSize.h -= 48 + 48 + 40;
+    screenSize.h -= parentOffset + controlsHeight;
 
     let width = screenSize.w;
     let height = screenSize.h;
@@ -368,7 +374,7 @@ class VideoViewer extends Component {
     if (document.getElementsByTagName('video')[0]) {
       width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth || 480 : screenSize.w - 300;
       height = this.props.isVideo ? document.getElementsByTagName('video')[0].videoHeight || 270 : 0;
-      console.log(width, height)
+
       let resize = this.resizePlayer(
         {
           w: width,
@@ -381,8 +387,8 @@ class VideoViewer extends Component {
 
     }
 
-    let left = centerAreaOx - width / 2;
-    let top = this.props.isVideo ? centerAreaOy - height / 2 + 48 : centerAreaOy + 48;
+    let left = this.props.isVideo ? centerAreaOx - width / 2 : centerAreaOx + parentOffset / 4 - width / 2;
+    let top = this.props.isVideo ? centerAreaOy - height / 2 + parentOffset / 2 : centerAreaOy + parentOffset / 2;
 
     return (
       <StyledVideoViewer
@@ -408,14 +414,10 @@ class VideoViewer extends Component {
               playbackRate={playbackRate}
               volume={volume}
               muted={muted}
-              onReady={() => console.log('onReady')}
-              onStart={() => console.log('onStart')}
               onPlay={this.handlePlay}
               onEnablePIP={this.handleEnablePIP}
               onDisablePIP={this.handleDisablePIP}
               onPause={this.handlePause}
-              onBuffer={() => console.log('onBuffer')}
-              onSeek={e => console.log('onSeek', e)}
               onEnded={this.handleEnded}
               onError={e => console.log('onError', e)}
               onProgress={this.handleProgress}
@@ -423,6 +425,7 @@ class VideoViewer extends Component {
             />
           </div>
           <Controls
+            height={controlsHeight}
             left={left}
             top={top + height}
             isVideo={this.props.isVideo}
@@ -432,7 +435,7 @@ class VideoViewer extends Component {
               value={played}
               width={width - 220}
               onMouseDown={this.handleSeekMouseDown}
-              onChange={this.handleSeekChange}
+              handleSeekChange={this.handleSeekChange}
               onMouseUp={this.handleSeekMouseUp}
             />
             <StyledDuration>-<Duration seconds={duration * (1 - played)} /></StyledDuration>
@@ -455,7 +458,8 @@ class VideoViewer extends Component {
 VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
   url: PropTypes.string,
-  playing: PropTypes.bool
+  playing: PropTypes.bool,
+  getOffset :PropTypes.func
 }
 
 export default VideoViewer;

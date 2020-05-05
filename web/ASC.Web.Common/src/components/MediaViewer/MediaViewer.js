@@ -46,6 +46,20 @@ const StyledMediaViewer = styled.div`
         bottom: 5px;
         margin-right: 10px;
         z-index: 4005;
+
+        .deleteBtnContainer{
+            display: block;
+            width: 20px;
+            margin: 3px 10px;
+            line-height: 19px;
+        }
+
+        .downloadBtnContainer{
+            display: block;
+            width: 20px;
+            margin: 3px 10px;
+            line-height: 19px;
+        }
     }
     .details{
         z-index: 4001;
@@ -85,6 +99,9 @@ class MediaViewer extends React.Component {
             playlist: this.props.playlist,
             playlistPos: 0,
         };
+
+        this.detailsContainer = React.createRef();
+        this.viewerToolbox = React.createRef();
     }
 
     componentDidUpdate(prevProps) {
@@ -95,6 +112,7 @@ class MediaViewer extends React.Component {
                 }
             );
         }
+
     }
     mapSupplied = {
         ".aac": { supply: "m4a", type: audio },
@@ -163,7 +181,13 @@ class MediaViewer extends React.Component {
             playlistPos: currentPlaylistPos
         });
     };
-
+    getOffset = () => {
+        if (this.detailsContainer.current && this.viewerToolbox.current) {
+            return this.detailsContainer.current.offsetHeight + this.viewerToolbox.current.offsetHeight;
+        } else {
+            return 0;
+        }
+    }
     render() {
 
         let currentPlaylistPos = this.state.playlistPos;
@@ -194,7 +218,7 @@ class MediaViewer extends React.Component {
                 <MediaScrollButton orientation="right" onClick={this.prevMedia} />
                 <MediaScrollButton orientation="left" onClick={this.nextMedia} />
                 <div>
-                    <div className="details">
+                    <div className="details" ref={this.detailsContainer}>
                         <div className="title">{fileTitle}</div>
                         <ControlBtn onClick={this.props.onClose && (() => { this.props.onClose() })} className="mediaPlayerClose">
                             <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
@@ -212,17 +236,24 @@ class MediaViewer extends React.Component {
                                 ]}
                             />
                             :
-                            <StyledVideoViewer url={url} playing ={this.state.visible} isVideo={isVideo} />
+                            <StyledVideoViewer url={url} playing={this.state.visible} isVideo={isVideo} getOffset={this.getOffset} />
                     )
                 }
-                <div className="mediaViewerToolbox"></div>
+                <div className="mediaViewerToolbox" ref={this.viewerToolbox}></div>
                 <span>
-                    <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(this.state.playlistPos) })}>
-                        <Icons.CatalogTrashIcon size="medium" isfill={true} color="#fff" />
-                    </ControlBtn>
+                    {
+                        this.props.canDelete(currentPlaylistPos) &&
+                        <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(this.state.playlistPos) })}>
+                            <div className="deleteBtnContainer">
+                                <Icons.MediaDeleteIcon size="scale" />
+                            </div>
+                        </ControlBtn>
+                    }
 
                     <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(this.state.playlistPos) })}>
-                        <Icons.DownloadIcon size="medium" isfill={true} color="#fff" />
+                        <div className="downloadBtnContainer">
+                            <Icons.MediaDownloadIcon size="scale" />
+                        </div>
                     </ControlBtn>
                 </span>
             </StyledMediaViewer>
