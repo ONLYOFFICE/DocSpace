@@ -30,6 +30,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 
@@ -83,20 +84,26 @@ namespace ASC.ElasticSearch.Core
 
     public class SearchSettingsHelper
     {
+        public TenantManager TenantManager { get; }
         public SettingsManager SettingsManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public FactoryIndexer FactoryIndexer { get; }
+        public ICacheNotify<ReIndexAction> CacheNotify { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public SearchSettingsHelper(
+            TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
             FactoryIndexer factoryIndexer,
+            ICacheNotify<ReIndexAction> cacheNotify,
             IServiceProvider serviceProvider)
         {
+            TenantManager = tenantManager;
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
             FactoryIndexer = factoryIndexer;
+            CacheNotify = cacheNotify;
             ServiceProvider = serviceProvider;
         }
 
@@ -136,11 +143,10 @@ namespace ASC.ElasticSearch.Core
             settings.Data = JsonConvert.SerializeObject(items);
             SettingsManager.Save(settings);
 
-            //TODO:
-            //using (var service = new ServiceClient())
-            //{
-            //    service.ReIndex(toReIndex.Select(r => r.ID).ToList(), TenantManager.GetCurrentTenant().TenantId);
-            //}
+            var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
+            action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
+
+            CacheNotify.Publish(action, CacheNotifyAction.Any);
         }
 
         public bool CanSearchByContent<T>(int tenantId) where T : class, ISearchItem
@@ -188,7 +194,8 @@ namespace ASC.ElasticSearch.Core
             return services
                 .AddSettingsManagerService()
                 .AddCoreBaseSettingsService()
-                .AddFactoryIndexerService();
+                .AddFactoryIndexerService()
+                .AddTenantManagerService();
         }
     }
 }

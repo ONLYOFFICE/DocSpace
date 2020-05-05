@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.ElasticSearch.Core;
@@ -41,23 +42,33 @@ namespace ASC.ElasticSearch.Service
 {
     public class Service
     {
-        public FactoryIndexer FactoryIndexer { get; }
+        public IContainer Container { get; }
         public IServiceProvider ServiceProvider { get; }
+        public ICacheNotify<ReIndexAction> CacheNotify { get; }
 
-        public Service(FactoryIndexer factoryIndexer, IServiceProvider serviceProvider)
+        public Service(IContainer container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {
-            FactoryIndexer = factoryIndexer;
+            Container = container;
             ServiceProvider = serviceProvider;
+            CacheNotify = cacheNotify;
+        }
+
+        public void Subscribe()
+        {
+            CacheNotify.Subscribe((a) =>
+            {
+                ReIndex(a.Names.ToList(), a.Tenant);
+            }, CacheNotifyAction.Any);
         }
 
         public bool Support(string table)
         {
-            return FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
+            return Container.Resolve<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
         }
 
         public void ReIndex(List<string> toReIndex, int tenant)
         {
-            var allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
+            var allItems = Container.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             var tasks = new List<Task>(toReIndex.Count);
 
             foreach (var item in toReIndex)
@@ -69,6 +80,8 @@ namespace ASC.ElasticSearch.Service
                 var instance = (IIndexer)Activator.CreateInstance(generic.MakeGenericType(index.GetType()), index);
                 tasks.Add(instance.ReIndex());
             }
+
+            if (!tasks.Any()) return;
 
             Task.WhenAll(tasks).ContinueWith(r =>
             {

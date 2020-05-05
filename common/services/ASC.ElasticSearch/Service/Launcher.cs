@@ -88,10 +88,11 @@ namespace ASC.ElasticSearch
                 Log.Error("Subscribe on start", e);
             }
 
-            var task = new Task(() =>
+            var task = new Task(async () =>
             {
                 using var scope = ServiceProvider.CreateScope();
                 var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer>();
+                var service = scope.ServiceProvider.GetService<Service.Service>();
 
                 while (!factoryIndexer.CheckState(false))
                 {
@@ -99,9 +100,11 @@ namespace ASC.ElasticSearch
                     {
                         return;
                     }
-                    Thread.Sleep(10000);
+
+                    await Task.Delay(10000);
                 }
 
+                service.Subscribe();
                 Timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
 
             }, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
@@ -183,6 +186,7 @@ namespace ASC.ElasticSearch
         public static DIHelper AddServiceLauncher(this DIHelper services)
         {
             services.TryAddSingleton<ServiceLauncher>();
+            services.TryAddSingleton<Service.Service>();
 
             return services
                 .AddSettingsService()

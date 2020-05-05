@@ -2,6 +2,11 @@
 
 package ASC.ElasticSearch;
 
-message SearchItem {
+message ClearIndexAction {
     string Id = 1;
+}
+
+message ReIndexAction {
+    int32 Tenant = 1;
+    repeated string Names = 2;
 }

@@ -55,9 +55,9 @@ namespace ASC.ElasticSearch
     public class BaseIndexerHelper
     {
         public ConcurrentDictionary<string, bool> IsExist { get; set; }
-        private readonly ICacheNotify<SearchItem> Notify;
+        private readonly ICacheNotify<ClearIndexAction> Notify;
 
-        public BaseIndexerHelper(ICacheNotify<SearchItem> cacheNotify)
+        public BaseIndexerHelper(ICacheNotify<ClearIndexAction> cacheNotify)
         {
             IsExist = new ConcurrentDictionary<string, bool>();
             Notify = cacheNotify;
@@ -69,7 +69,7 @@ namespace ASC.ElasticSearch
 
         public void Clear<T>(T t) where T : class, ISearchItem
         {
-            Notify.Publish(new SearchItem() { Id = t.IndexName }, CacheNotifyAction.Any);
+            Notify.Publish(new ClearIndexAction() { Id = t.IndexName }, CacheNotifyAction.Any);
         }
     }
 
