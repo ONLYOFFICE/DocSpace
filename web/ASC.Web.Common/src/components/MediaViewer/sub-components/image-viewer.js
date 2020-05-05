@@ -23,6 +23,7 @@ const StyledViewer = styled(Viewer)`
     }
     .react-viewer-toolbar li{
         width: 40px;
+        height:30px;
         border-radius: 2px;
         cursor: pointer;
         line-height: 24px;
@@ -54,9 +55,13 @@ const StyledViewer = styled(Viewer)`
         }
     }
     .iconContainer{
-        width: 18px;
+        width: 20px;
         line-height: 15px;
         margin: 4px auto;
+
+        &.reset{
+            width: 18px;
+        }
     }
 `
 
@@ -75,7 +80,7 @@ var customToolbar = [
     {
         key: 'reset',
         actionType: 7,
-        render: <div className="iconContainer"><Icons.MediaResetIcon size="scale" /></div>
+        render: <div className="iconContainer reset"><Icons.MediaResetIcon size="scale" /></div>
     },
     {
         key: 'rotateLeft',
