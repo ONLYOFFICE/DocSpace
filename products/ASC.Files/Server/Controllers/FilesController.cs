@@ -1112,15 +1112,15 @@ namespace ASC.Api.Documents
         /// </remarks>
         /// <returns>Shared file information</returns>
         [Update("file/{fileId}/share", DisableFormat = true)]
-        public IEnumerable<FileShareWrapper> SetFileSecurityInfo(string fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        public IEnumerable<FileShareWrapper> SetFileSecurityInfo(string fileId, SecurityInfoModel model)
         {
-            return FilesControllerHelperString.SetFileSecurityInfo(fileId, share, notify, sharingMessage);
+            return FilesControllerHelperString.SetFileSecurityInfo(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("file/{fileId:int}/share")]
-        public IEnumerable<FileShareWrapper> SetFileSecurityInfo(int fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        public IEnumerable<FileShareWrapper> SetFileSecurityInfo(int fileId, SecurityInfoModel model)
         {
-            return FilesControllerHelperInt.SetFileSecurityInfo(fileId, share, notify, sharingMessage);
+            return FilesControllerHelperInt.SetFileSecurityInfo(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
         /// <summary>
@@ -1137,14 +1137,14 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared folder information</returns>
         [Update("folder/{folderId}/share", DisableFormat = true)]
-        public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(string folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(string folderId, SecurityInfoModel model)
         {
-            return FilesControllerHelperString.SetFolderSecurityInfo(folderId, share, notify, sharingMessage);
+            return FilesControllerHelperString.SetFolderSecurityInfo(folderId, model.Share, model.Notify, model.SharingMessage);
         }
         [Update("folder/{folderId:int}/share")]
-        public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(int folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(int folderId, SecurityInfoModel model)
         {
-            return FilesControllerHelperInt.SetFolderSecurityInfo(folderId, share, notify, sharingMessage);
+            return FilesControllerHelperInt.SetFolderSecurityInfo(folderId, model.Share, model.Notify, model.SharingMessage);
         }
 
         /// <summary>

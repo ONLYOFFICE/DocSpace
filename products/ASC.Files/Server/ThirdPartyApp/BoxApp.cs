@@ -476,7 +476,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 using (var stream = new ResponseStream(request.GetResponse()))
                 {
-                    stream.CopyTo(context.Response.Body, StreamExtension.BufferSize);
+                    stream.CopyTo(context.Response.Body);
                 }
             }
             catch (Exception ex)
