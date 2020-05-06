@@ -333,7 +333,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 //Take from converter
                                 using var readStream = fileConverter.Exec(file, convertToExt);
-                                readStream.StreamCopyTo(zip);
+                                readStream.CopyTo(zip);
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
                                     filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
@@ -346,7 +346,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             else
                             {
                                 using var readStream = FileDao.GetFileStream(file);
-                                readStream.StreamCopyTo(zip);
+                                readStream.CopyTo(zip);
                                 filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                             }
                         }

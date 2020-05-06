@@ -643,7 +643,11 @@ namespace ASC.Files.Core.Data
             if (fileId == default) return;
             using var tx = FilesDbContext.Database.BeginTransaction();
 
-            var fromFolders = Query(FilesDbContext.Files).Where(r => r.Id == fileId).GroupBy(r => r.Id).SelectMany(r => r.Select(a => a.FolderId)).Distinct().ToList();
+            var fromFolders = Query(FilesDbContext.Files)
+                .Where(r => r.Id == fileId)
+                .Select(a => a.FolderId)
+                .Distinct()
+                .ToList();
 
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);

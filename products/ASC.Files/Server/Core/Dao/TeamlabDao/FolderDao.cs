@@ -45,6 +45,7 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
@@ -285,6 +286,11 @@ namespace ASC.Files.Core.Data
 
         public int SaveFolder(Folder<int> folder)
         {
+            return SaveFolder(folder, null);
+        }
+
+        public int SaveFolder(Folder<int> folder, IDbContextTransaction transaction)
+        {
             if (folder == null) throw new ArgumentNullException("folder");
 
             folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
@@ -297,75 +303,78 @@ namespace ASC.Files.Core.Data
 
             var isnew = false;
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            var tx = transaction ?? FilesDbContext.Database.BeginTransaction();
+
+            if (folder.ID != default && IsExist(folder.ID))
             {
-                if (folder.ID != default && IsExist(folder.ID))
+                var toUpdate = Query(FilesDbContext.Folders)
+                    .Where(r => r.Id == folder.ID)
+                    .FirstOrDefault();
+
+                toUpdate.Title = folder.Title;
+                toUpdate.CreateBy = folder.CreateBy;
+                toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn);
+                toUpdate.ModifiedBy = folder.ModifiedBy;
+
+                FilesDbContext.SaveChanges();
+
+                FactoryIndexer.IndexAsync(toUpdate);
+            }
+            else
+            {
+                isnew = true;
+                var newFolder = new DbFolder
                 {
-                    var toUpdate = Query(FilesDbContext.Folders)
-                        .Where(r => r.Id == folder.ID)
-                        .FirstOrDefault();
+                    Id = 0,
+                    ParentId = folder.ParentFolderID,
+                    Title = folder.Title,
+                    CreateOn = TenantUtil.DateTimeToUtc(folder.CreateOn),
+                    CreateBy = folder.CreateBy,
+                    ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn),
+                    ModifiedBy = folder.ModifiedBy,
+                    FolderType = folder.FolderType,
+                    TenantId = TenantID
+                };
 
-                    toUpdate.Title = folder.Title;
-                    toUpdate.CreateBy = folder.CreateBy;
-                    toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn);
-                    toUpdate.ModifiedBy = folder.ModifiedBy;
+                newFolder = FilesDbContext.Folders.Add(newFolder).Entity;
+                FilesDbContext.SaveChanges();
+                FactoryIndexer.IndexAsync(newFolder);
+                folder.ID = newFolder.Id;
 
-                    FilesDbContext.SaveChanges();
-
-                    FactoryIndexer.IndexAsync(toUpdate);
-                }
-                else
+                //itself link
+                var newTree = new DbFolderTree
                 {
-                    isnew = true;
-                    var newFolder = new DbFolder
+                    FolderId = folder.ID,
+                    ParentId = folder.ID,
+                    Level = 0
+                };
+
+                FilesDbContext.Tree.Add(newTree);
+                FilesDbContext.SaveChanges();
+
+                //full path to root
+                var oldTree = FilesDbContext.Tree
+                    .Where(r => r.FolderId == (int)folder.ParentFolderID);
+
+                foreach (var o in oldTree)
+                {
+                    var treeToAdd = new DbFolderTree
                     {
-                        Id = 0,
-                        ParentId = folder.ParentFolderID,
-                        Title = folder.Title,
-                        CreateOn = TenantUtil.DateTimeToUtc(folder.CreateOn),
-                        CreateBy = folder.CreateBy,
-                        ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn),
-                        ModifiedBy = folder.ModifiedBy,
-                        FolderType = folder.FolderType,
-                        TenantId = TenantID
+                        FolderId = (int)folder.ID,
+                        ParentId = o.ParentId,
+                        Level = o.Level + 1
                     };
 
-                    newFolder = FilesDbContext.Folders.Add(newFolder).Entity;
-                    FilesDbContext.SaveChanges();
-                    FactoryIndexer.IndexAsync(newFolder);
-                    folder.ID = newFolder.Id;
-
-                    //itself link
-                    var newTree = new DbFolderTree
-                    {
-                        FolderId = folder.ID,
-                        ParentId = folder.ID,
-                        Level = 0
-                    };
-
-                    FilesDbContext.Tree.Add(newTree);
-                    FilesDbContext.SaveChanges();
-
-                    //full path to root
-                    var oldTree = FilesDbContext.Tree
-                        .Where(r => r.FolderId == (int)folder.ParentFolderID);
-
-                    foreach (var o in oldTree)
-                    {
-                        var treeToAdd = new DbFolderTree
-                        {
-                            FolderId = (int)folder.ID,
-                            ParentId = o.ParentId,
-                            Level = o.Level + 1
-                        };
-
-                        FilesDbContext.Tree.Add(treeToAdd);
-                    }
-
-                    FilesDbContext.SaveChanges();
+                    FilesDbContext.Tree.Add(treeToAdd);
                 }
 
+                FilesDbContext.SaveChanges();
+            }
+
+            if (transaction == null)
+            {
                 tx.Commit();
+                tx.Dispose();
             }
 
             if (isnew)
@@ -844,7 +853,7 @@ namespace ASC.Files.Core.Data
                     }
                     using var tx = FilesDbContext.Database.BeginTransaction();//NOTE: Maybe we shouldn't start transaction here at all
 
-                    newFolderId = SaveFolder(folder); //Save using our db manager
+                    newFolderId = SaveFolder(folder, tx); //Save using our db manager
 
                     var newBunch = new DbFilesBunchObjects
                     {
@@ -914,7 +923,7 @@ namespace ASC.Files.Core.Data
                         break;
                 }
                 using var tx = FilesDbContext.Database.BeginTransaction(); //NOTE: Maybe we shouldn't start transaction here at all
-                newFolderId = SaveFolder(folder); //Save using our db manager
+                newFolderId = SaveFolder(folder, tx); //Save using our db manager
                 var toInsert = new DbFilesBunchObjects
                 {
                     LeftNode = newFolderId.ToString(),
@@ -925,6 +934,8 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
                 tx.Commit(); //Commit changes
             }
+
+            FilesDbContext.SaveChanges();
 
             return newFolderId;
         }

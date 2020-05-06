@@ -126,7 +126,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
             using (var stream = storage.GetReadStream(_domain, path))
             {
-                await stream.StreamCopyToAsync(context.Response.Body);
+                await stream.CopyToAsync(context.Response.Body);
             }
 
             var headersToCopy = new List<string> { "Content-Disposition", "Cache-Control", "Content-Encoding", "Content-Language", "Content-Type", "Expires" };

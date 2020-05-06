@@ -28,8 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.ChunkedUploader
@@ -158,7 +160,7 @@ namespace ASC.Core.ChunkedUploader
 
                 using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
                 {
-                    stream.StreamCopyTo(bufferStream);
+                    stream.CopyTo(bufferStream);
                 }
 
                 uploadSession.BytesUploaded += chunkLength;

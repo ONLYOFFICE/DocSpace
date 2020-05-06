@@ -475,7 +475,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            var parent = folderDao.GetFolder(parentId == null || parentId.Equals(default) ? file.FolderID : parentId);
+            var parent = folderDao.GetFolder(parentId == null || parentId.Equals(default(T)) ? file.FolderID : parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(parent.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -2013,18 +2013,6 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 if (id.StartsWith("file_")) filesId.Add((T)Convert.ChangeType(id.Substring("file_".Length), typeof(T)));
                 if (id.StartsWith("folder_")) foldersId.Add((T)Convert.ChangeType(id.Substring("folder_".Length), typeof(T)));
-            }
-        }
-
-        private static void ParseArrayItems(Dictionary<string, string> items, out Dictionary<object, string> folders, out Dictionary<object, string> files)
-        {
-            //TODO:!!!!Fix
-            folders = new Dictionary<object, string>();
-            files = new Dictionary<object, string>();
-            foreach (var item in (items ?? new Dictionary<string, string>()))
-            {
-                if (item.Key.StartsWith("file_")) files.Add(item.Key.Substring("file_".Length), item.Value);
-                if (item.Key.StartsWith("folder_")) folders.Add(item.Key.Substring("folder_".Length), item.Value);
             }
         }
 

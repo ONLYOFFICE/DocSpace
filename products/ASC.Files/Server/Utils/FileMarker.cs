@@ -406,11 +406,11 @@ namespace ASC.Web.Files.Utils
                 cacheFolderId = GlobalFolder.GetFolderShare<T>(DaoFactory);
             }
 
-            if (rootFolderId != null)
+            if (!rootFolderId.Equals(default(T)))
             {
                 parentFolders.Add(folderDao.GetFolder(rootFolderId));
             }
-            if (cacheFolderId != null)
+            if (!cacheFolderId.Equals(default(T)))
             {
                 RemoveFromCahce(cacheFolderId, userID);
             }

@@ -26,12 +26,12 @@
 
 using System;
 using System.IO;
-using System.Threading.Tasks;
+
 using ASC.Data.Storage;
 
 public static class StreamExtension
 {
-    private const int BufferSize = 2048; //NOTE: set to 2048 to fit in minimum tcp window
+    //    public const int BufferSize = 2048; //NOTE: set to 2048 to fit in minimum tcp window
 
     public static Stream GetBuffered(this Stream srcStream)
     {
@@ -40,7 +40,7 @@ public static class StreamExtension
         {
             //Buffer it
             var memStream = TempStream.Create();
-            srcStream.StreamCopyTo(memStream);
+            srcStream.CopyTo(memStream);
             memStream.Position = 0;
             return memStream;
         }
@@ -59,45 +59,5 @@ public static class StreamExtension
         mem.Position = 0;
         mem.Read(buffer, 0, buffer.Length);
         return buffer;
-    }
-
-    public static void StreamCopyTo(this Stream srcStream, Stream dstStream)
-    {
-        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
-        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
-
-        var buffer = new byte[BufferSize];
-        int readed;
-        while ((readed = srcStream.Read(buffer, 0, BufferSize)) > 0)
-        {
-            dstStream.Write(buffer, 0, readed);
-        }
-    }
-    public static async Task StreamCopyToAsync(this Stream srcStream, Stream dstStream)
-    {
-        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
-        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
-
-        var buffer = new byte[BufferSize];
-        int readed;
-        while ((readed = await srcStream.ReadAsync(buffer, 0, BufferSize)) > 0)
-        {
-            await dstStream.WriteAsync(buffer, 0, readed);
-        }
-    }
-
-    public static void StreamCopyTo(this Stream srcStream, Stream dstStream, int length)
-    {
-        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
-        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
-
-        var buffer = new byte[BufferSize];
-        var totalRead = 0;
-        int readed;
-        while ((readed = srcStream.Read(buffer, 0, length - totalRead > BufferSize ? BufferSize : length - totalRead)) > 0 && totalRead < length)
-        {
-            dstStream.Write(buffer, 0, readed);
-            totalRead += readed;
-        }
     }
 }
