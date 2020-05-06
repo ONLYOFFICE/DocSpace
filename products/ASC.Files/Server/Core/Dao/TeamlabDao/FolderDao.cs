@@ -926,6 +926,8 @@ namespace ASC.Files.Core.Data
                 tx.Commit(); //Commit changes
             }
 
+            FilesDbContext.SaveChanges();
+
             return newFolderId;
         }
 

@@ -2015,18 +2015,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        private static void ParseArrayItems(Dictionary<string, string> items, out Dictionary<object, string> folders, out Dictionary<object, string> files)
-        {
-            //TODO:!!!!Fix
-            folders = new Dictionary<object, string>();
-            files = new Dictionary<object, string>();
-            foreach (var item in (items ?? new Dictionary<string, string>()))
-            {
-                if (item.Key.StartsWith("file_")) files.Add(item.Key.Substring("file_".Length), item.Value);
-                if (item.Key.StartsWith("folder_")) folders.Add(item.Key.Substring("folder_".Length), item.Value);
-            }
-        }
-
         private static void ErrorIf(bool condition, string errorMessage)
         {
             if (condition) throw new InvalidOperationException(errorMessage);
