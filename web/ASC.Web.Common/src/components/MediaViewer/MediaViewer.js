@@ -239,23 +239,25 @@ class MediaViewer extends React.Component {
                             <StyledVideoViewer url={url} playing={this.state.visible} isVideo={isVideo} getOffset={this.getOffset} />
                     )
                 }
-                <div className="mediaViewerToolbox" ref={this.viewerToolbox}></div>
-                <span>
-                    {
-                        this.props.canDelete(currentPlaylistPos) &&
-                        <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(this.state.playlistPos) })}>
-                            <div className="deleteBtnContainer">
-                                <Icons.MediaDeleteIcon size="scale" />
+                <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
+                    <span>
+                        {
+                            this.props.canDelete(currentPlaylistPos) &&
+                            <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(this.state.playlistPos) })}>
+                                <div className="deleteBtnContainer">
+                                    <Icons.MediaDeleteIcon size="scale" />
+                                </div>
+                            </ControlBtn>
+                        }
+
+                        <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(this.state.playlistPos) })}>
+                            <div className="downloadBtnContainer">
+                                <Icons.MediaDownloadIcon size="scale" />
                             </div>
                         </ControlBtn>
-                    }
-
-                    <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(this.state.playlistPos) })}>
-                        <div className="downloadBtnContainer">
-                            <Icons.MediaDownloadIcon size="scale" />
-                        </div>
-                    </ControlBtn>
-                </span>
+                    </span>
+                </div>
+                
             </StyledMediaViewer>
         )
     }
