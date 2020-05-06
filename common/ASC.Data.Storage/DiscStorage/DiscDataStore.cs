@@ -28,10 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -39,7 +41,6 @@ namespace ASC.Data.Storage.DiscStorage
 {
     public class DiscDataStore : BaseStorage
     {
-        private const int BufferSize = 8192;
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
 
         public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
@@ -158,7 +159,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             //optimaze disk file copy
             long fslen;
-            if (buffered is FileStream fileStream && WorkContext.IsMono)
+            if (buffered is FileStream fileStream)
             {
                 File.Copy(fileStream.Name, target, true);
                 fslen = fileStream.Length;
@@ -166,12 +167,7 @@ namespace ASC.Data.Storage.DiscStorage
             else
             {
                 using var fs = File.Open(target, FileMode.Create);
-                var buffer = new byte[BufferSize];
-                int readed;
-                while ((readed = buffered.Read(buffer, 0, BufferSize)) != 0)
-                {
-                    fs.Write(buffer, 0, readed);
-                }
+                buffered.CopyTo(fs);
                 fslen = fs.Length;
             }
 
@@ -208,12 +204,7 @@ namespace ASC.Data.Storage.DiscStorage
             var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
             using (var fs = new FileStream(target, mode))
             {
-                var buffer = new byte[BufferSize];
-                int readed;
-                while ((readed = stream.Read(buffer, 0, BufferSize)) != 0)
-                {
-                    fs.Write(buffer, 0, readed);
-                }
+                stream.CopyTo(fs);
             }
             return string.Format("{0}_{1}", chunkNumber, uploadId);
         }
