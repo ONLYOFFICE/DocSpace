@@ -46,24 +46,25 @@ namespace ASC.ElasticSearch
     {
         private ILog Log { get; }
         private ICacheNotify<AscCacheItem> Notify { get; }
+        public ICacheNotify<IndexAction> IndexNotify { get; }
         public IServiceProvider ServiceProvider { get; }
         public IContainer Container { get; }
         private bool IsStarted { get; set; }
-        private string Indexing { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
-        private DateTime? LastIndexed { get; set; }
         private TimeSpan Period { get; set; }
 
         public ServiceLauncher(
             IOptionsMonitor<ILog> options,
             ICacheNotify<AscCacheItem> notify,
+            ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
             IContainer container,
             Settings settings)
         {
             Log = options.Get("ASC.Indexer");
             Notify = notify;
+            IndexNotify = indexNotify;
             ServiceProvider = serviceProvider;
             Container = container;
             CancellationTokenSource = new CancellationTokenSource();
@@ -142,9 +143,8 @@ namespace ASC.ElasticSearch
             }
 
             Timer.Change(Period, Period);
-            LastIndexed = DateTime.UtcNow;
+            IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
             IsStarted = false;
-            Indexing = null;
         }
 
         public void IndexProduct(IFactoryIndexer product, bool reindex)
@@ -170,7 +170,7 @@ namespace ASC.ElasticSearch
                 if (!IsStarted) return;
 
                 Log.DebugFormat("Product {0}", product.IndexName);
-                Indexing = product.IndexName;
+                IndexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
                 product.IndexAll();
             }
             catch (Exception e)

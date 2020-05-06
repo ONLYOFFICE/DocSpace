@@ -47,15 +47,13 @@ namespace ASC.Web.Files.Core.Search
 
         public FactoryIndexerFolder(
             IOptionsMonitor<ILog> options,
-            FactoryIndexerHelper factoryIndexerSupport,
             TenantManager tenantManager,
             SearchSettingsHelper searchSettingsHelper,
             FactoryIndexer factoryIndexer,
             BaseIndexer<DbFolder> baseIndexer,
-            Client client,
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory)
-            : base(options, factoryIndexerSupport, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, client, serviceProvider)
+            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider)
         {
             DaoFactory = daoFactory;
         }
