@@ -29,7 +29,7 @@ const SharingRow = (props) => {
     onShowEmbeddingPanel,
   } = props;
 
-  const linkVisible = selection.length === 1 && item.shareLink;
+  const linkVisible = selection && selection.length === 1 && item.shareLink;
 
   const onCopyInternalLink = () => {
     const internalLink = item.shareLink.split("&");

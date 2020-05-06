@@ -26,8 +26,9 @@ import {
   setAction,
   setTreeFolders
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, getAccessOption } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
+import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -41,7 +42,9 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
-      editingId: null
+      editingId: null,
+      showSharingPanel: false,
+      currentItem: null
     };
   }
 
@@ -144,8 +147,16 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickShare = item => {
-    return false;
+    let currentItem = item;
+    if(this.state.showSharingPanel) {
+      currentItem = null;
+    }
+    this.setState({
+      currentItem,
+      showSharingPanel: !this.state.showSharingPanel,
+    });
   }
+
 
   onClickLinkForPortal = item => {
     return fetchFolder(item.folderId, store.dispatch);
@@ -167,7 +178,7 @@ class SectionBodyContent extends React.PureComponent {
         key: "sharing-settings",
         label: "Sharing settings",
         onClick: this.onClickShare.bind(this, item),
-        disabled: true
+        disabled: item.access !== 1
       },
       isFile
         ? {
@@ -512,8 +523,9 @@ class SectionBodyContent extends React.PureComponent {
       onLoading,
       isLoading,
       currentFolderCount,
+      accessOptions
     } = this.props;
-    const { editingId } = this.state;
+    const { editingId, showSharingPanel, currentItem } = this.state;
 
     let items = [...folders, ...files];
 
@@ -536,57 +548,68 @@ class SectionBodyContent extends React.PureComponent {
       });
     }
 
-
-
     return !fileAction.id && currentFolderCount === 0 ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
-          this.renderEmptyFolderContainer()
-        )
+        this.renderEmptyFolderContainer()
+      )
     ) : !fileAction.id && items.length === 0 ? (
       this.renderEmptyFilterContainer()
     ) : (
-          <RowContainer useReactWindow={false}>
-            {items.map((item) => {
-              const isEdit =
-                fileAction.type &&
-                (editingId === item.id || item.id === -1) &&
-                item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
-              const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
-              const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
-              const element = this.getItemIcon(item, isEdit);
+      <>
+        <RowContainer useReactWindow={false}>
+          {items.map((item) => {
+            const isEdit =
+              fileAction.type &&
+              (editingId === item.id || item.id === -1) &&
+              item.fileExst === fileAction.extension;
+            const contextOptions = this.getFilesContextOptions(
+              item,
+              viewer
+            ).filter((o) => o);
+            const contextOptionsProps =
+              !contextOptions.length || isEdit ? {} : { contextOptions };
+            const checked = isFileSelected(selection, item.id, item.parentId);
+            const checkedProps = /* isAdmin(viewer) */ isEdit
+              ? {}
+              : { checked };
+            const element = this.getItemIcon(item, isEdit);
 
-              return (
-                <SimpleFilesRow
-                  key={item.id}
-                  data={item}
-                  element={element}
-                  onSelect={this.onContentRowSelect}
-                  editing={editingId}
-                  {...checkedProps}
-                  {...contextOptionsProps}
-                  needForUpdate={this.needForUpdate}
-                >
-                  <FilesRowContent
-                    item={item}
-                    viewer={viewer}
-                    culture={settings.culture}
-                    onEditComplete={this.onEditComplete.bind(this, item)}
-                    onLoading={onLoading}
-                    isLoading={isLoading}
-                  />
-                </SimpleFilesRow>
-              );
-            })}
-          </RowContainer>
-        );
+            return (
+              <SimpleFilesRow
+                key={item.id}
+                data={item}
+                element={element}
+                onSelect={this.onContentRowSelect}
+                editing={editingId}
+                {...checkedProps}
+                {...contextOptionsProps}
+                needForUpdate={this.needForUpdate}
+              >
+                <FilesRowContent
+                  item={item}
+                  viewer={viewer}
+                  culture={settings.culture}
+                  onEditComplete={this.onEditComplete.bind(this, item)}
+                  onLoading={onLoading}
+                  isLoading={isLoading}
+                />
+              </SimpleFilesRow>
+            );
+          })}
+        </RowContainer>
+        {showSharingPanel && (
+          <SharingPanel
+            onLoading={onLoading}
+            selectedItems={currentItem}
+            onClose={this.onClickShare}
+            visible={showSharingPanel}
+            accessOptions={accessOptions}
+          />
+        )}
+      </>
+    );
   }
 }
 
@@ -595,7 +618,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders } = state.files;
+  const { selectedFolder, treeFolders, selection, shareDataItems } = state.files;
   const { id, title, foldersCount, filesCount } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -610,7 +633,7 @@ const mapStateToProps = state => {
     folders: state.files.folders,
     parentId: state.files.selectedFolder.parentId,
     selected: state.files.selected,
-    selection: state.files.selection,
+    selection,
     settings: state.auth.settings,
     viewer: state.auth.user,
     treeFolders: state.files.treeFolders,
@@ -618,7 +641,9 @@ const mapStateToProps = state => {
     title,
     myDocumentsId: treeFolders[myFolderIndex].id,
     currentFolderCount,
-    selectedFolderId: id
+    selectedFolderId: id,
+    accessOptions: getAccessOption(selection),
+    shareDataItems
   };
 };
 

@@ -29,8 +29,6 @@ export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
-export const SET_SHARE_DATA_ITEMS = "SET_SHARE_DATA_ITEMS";
-export const SET_SHARE_DATA = "SET_SHARE_DATA";
 
 export function setFile(file) {
   return {
@@ -78,20 +76,6 @@ export function setAction(fileAction) {
   return {
     type: SET_ACTION,
     fileAction
-  };
-}
-
-export function setShareDataItems(shareDataItems) {
-  return {
-    type: SET_SHARE_DATA_ITEMS,
-    shareDataItems
-  };
-}
-
-export function setShareData(shareData) {
-  return {
-    type: SET_SHARE_DATA,
-    shareData
   };
 }
 
@@ -336,6 +320,14 @@ export function setSharedFiles(fileId, shareTo, access, notify, sharingMessage) 
   );
 
   return axios.all(requests).then((res) => res);
+}
+
+export function getShareUsers(folderIds, fileIds) {
+  const foldersRequests = folderIds.map(folderId => files.getShareFolders(folderId));
+  const filesRequests = fileIds.map(fileId => files.getShareFiles(fileId));
+  const requests = [...foldersRequests, ...filesRequests];
+
+  return axios.all(requests).then(res => res);
 }
 
 /*export function deleteGroup(id) {
