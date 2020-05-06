@@ -97,7 +97,7 @@ class MediaViewer extends React.Component {
             visible: this.props.visible,
             allowConvert: true,
             playlist: this.props.playlist,
-            playlistPos: 0,
+            playlistPos: this.props.currentFileId,
         };
 
         this.detailsContainer = React.createRef();
@@ -264,6 +264,7 @@ class MediaViewer extends React.Component {
 MediaViewer.propTypes = {
     allowConvert: PropTypes.bool,
     visible: PropTypes.bool,
+    currentFileId: PropTypes.number,
     playlist: PropTypes.arrayOf(PropTypes.object),
     extsImagePreviewed: PropTypes.arrayOf(PropTypes.string),
     extsMediaPreviewed: PropTypes.arrayOf(PropTypes.string),
@@ -275,6 +276,7 @@ MediaViewer.propTypes = {
 }
 
 MediaViewer.defaultProps = {
+    currentFileId: 0,
     allowConvert: true,
     canDelete: () => { return true }
 }

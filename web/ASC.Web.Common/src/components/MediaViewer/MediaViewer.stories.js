@@ -43,6 +43,7 @@ class MediaViewerStory extends React.Component {
           />
         </div>
         <MediaViewer
+          currentFileId = {0}
           allowConvert={true}
           canDelete={(fileId) => { 
             if(fileId == 1) return false;
