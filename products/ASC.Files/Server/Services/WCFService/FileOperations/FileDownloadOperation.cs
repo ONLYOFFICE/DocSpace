@@ -108,6 +108,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     "attachment; filename=\"" + fileName + "\"");
                 Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
             }
+
+            FillDistributedTask();
+            TaskInfo.PublishChanges();
         }
     }
 
@@ -260,6 +263,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         internal void CompressToZip(ZipOutputStream zip, Stream stream, IServiceScope scope)
         {
+            if (entriesPathId == null) return;
             var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
             var fileConverter = scope.ServiceProvider.GetService<FileConverter>();
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
