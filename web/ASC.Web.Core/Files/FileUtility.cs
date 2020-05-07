@@ -154,7 +154,7 @@ namespace ASC.Web.Core.Files
 
         public bool CanIndex(string fileName)
         {
-            return extsIndexing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            return ExtsIndexing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
         #endregion
@@ -213,51 +213,108 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        private List<string> extsWebPreviewed { get => (Configuration.GetSection("files:docservice:viewed-docs").Get<string[]>() ?? new string[] { }).ToList(); }
-        private List<string> extsWebEdited { get => (Configuration.GetSection("files:docservice:edited-docs").Get<string[]>() ?? new string[] { }).ToList(); }
-        private List<string> extsWebReviewed { get => (Configuration.GetSection("files:docservice:reviewed-docs").Get<string[]>() ?? new string[] { }).ToList(); }
-        private List<string> extsWebRestrictedEditing { get => (Configuration.GetSection("files:docservice:formfilling-docs").Get<string[]>() ?? new string[] { }).ToList(); }
-        private List<string> extsWebCommented { get => (Configuration.GetSection("files:docservice:commented-docs").Get<string[]>() ?? new string[] { }).ToList(); }
-        private List<string> extsMustConvert { get => (Configuration.GetSection("files:docservice:convert-docs").Get<string[]>() ?? new string[] { }).ToList(); }
-        private List<string> extsIndexing { get => (Configuration.GetSection("files:index").Get<string[]>() ?? new string[] { }).ToList(); }
+        private List<string> extsIndexing;
+        private List<string> ExtsIndexing { get => extsIndexing ?? (extsIndexing = (Configuration.GetSection("files:index").Get<string[]>() ?? new string[] { }).ToList()); }
 
-        public List<string> ExtsImagePreviewed { get => (Configuration.GetSection("files:viewed-images").Get<string[]>() ?? new string[] { }).ToList(); }
+        private List<string> extsImagePreviewed;
+        public List<string> ExtsImagePreviewed { get => extsImagePreviewed ?? (extsImagePreviewed = (Configuration.GetSection("files:viewed-images").Get<string[]>() ?? new string[] { }).ToList()); }
 
-        public List<string> ExtsMediaPreviewed { get => (Configuration.GetSection("files:viewed-media").Get<string[]>() ?? new string[] { }).ToList(); }
+        private List<string> extsMediaPreviewed;
+        public List<string> ExtsMediaPreviewed { get => extsMediaPreviewed ?? (extsMediaPreviewed = (Configuration.GetSection("files:viewed-media").Get<string[]>() ?? new string[] { }).ToList()); }
 
+        private List<string> extsWebPreviewed;
         public List<string> ExtsWebPreviewed
         {
-            get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebPreviewed; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebPreviewed ?? (extsWebPreviewed = (Configuration.GetSection("files:docservice:viewed-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
         }
 
+        private List<string> extsWebEdited;
         public List<string> ExtsWebEdited
         {
-            get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebEdited; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebEdited ?? (extsWebEdited = (Configuration.GetSection("files:docservice:edited-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
         }
 
-        public List<string> ExtsWebEncrypt { get => (Configuration.GetSection("files:docservice:encrypted-docs").Get<string[]>() ?? new string[] { }).ToList(); }
+        public List<string> extsWebEncrypt;
+        public List<string> ExtsWebEncrypt { get => extsWebEncrypt ?? (extsWebEncrypt = (Configuration.GetSection("files:docservice:encrypted-docs").Get<string[]>() ?? new string[] { }).ToList()); }
 
+        private List<string> extsWebReviewed;
         public List<string> ExtsWebReviewed
         {
-            get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebReviewed; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebReviewed ?? (extsWebReviewed = (Configuration.GetSection("files:docservice:reviewed-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
         }
 
+        private List<string> extsWebRestrictedEditing;
         public List<string> ExtsWebRestrictedEditing
         {
-            get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebRestrictedEditing; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebRestrictedEditing ?? (extsWebRestrictedEditing = (Configuration.GetSection("files:docservice:formfilling-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
         }
 
+        private List<string> extsWebCommented;
         public List<string> ExtsWebCommented
         {
-            get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebCommented; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebCommented ?? (extsWebCommented = (Configuration.GetSection("files:docservice:commented-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
         }
 
+        private List<string> extsMustConvert;
         public List<string> ExtsMustConvert
         {
-            get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl) ? new List<string>() : extsMustConvert; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsMustConvert ?? (extsMustConvert = (Configuration.GetSection("files:docservice:convert-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
         }
 
-        public List<string> ExtsCoAuthoring { get => (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList(); }
+        private List<string> extsCoAuthoring;
+        public List<string> ExtsCoAuthoring
+        {
+            get => extsCoAuthoring ?? (extsCoAuthoring = (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList());
+        }
+
         public IConfiguration Configuration { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
 
