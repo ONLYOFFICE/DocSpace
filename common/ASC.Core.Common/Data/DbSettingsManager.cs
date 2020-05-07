@@ -143,14 +143,16 @@ namespace ASC.Core.Data
             WebstudioDbContext = dbContextManager.Value;
         }
 
+        private int tenantID;
         private int TenantID
         {
-            get { return TenantManager.GetCurrentTenant().TenantId; }
+            get { return tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
         }
         //
+        private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return AuthContext.CurrentAccount.ID; }
+            get { return (currentUserID ?? (currentUserID = AuthContext.CurrentAccount.ID)).Value; }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
