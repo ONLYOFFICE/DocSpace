@@ -3,6 +3,7 @@ using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Api.Settings;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Web.Api.Controllers;
@@ -65,7 +66,9 @@ namespace ASC.Web.Api
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            services
+            var diHelper = new DIHelper(services);
+
+            diHelper
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
@@ -74,9 +77,9 @@ namespace ASC.Web.Api
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddAuthenticationController()
                 .AddModulesController()
                 .AddPortalController()

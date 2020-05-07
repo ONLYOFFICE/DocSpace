@@ -31,15 +31,13 @@ using System.Net;
 using System.Threading;
 using System.Web;
 
-
+using ASC.Common;
 using ASC.Common.Notify.Engine;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
@@ -103,6 +101,8 @@ namespace ASC.Core
         internal HttpContext HttpContext { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
+
+        public Tenant CurrentTenant { get; set; }
 
         static TenantManager()
         {
@@ -217,6 +217,11 @@ namespace ASC.Core
         public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
             Tenant tenant = null;
+            if (CurrentTenant != null)
+            {
+                return CurrentTenant;
+            }
+
             if (context != null)
             {
                 tenant = context.Items[CURRENT_TENANT] as Tenant;
@@ -251,7 +256,7 @@ namespace ASC.Core
         {
             if (tenant != null)
             {
-                CallContext.SetData(CURRENT_TENANT, tenant);
+                CurrentTenant = tenant;
                 if (HttpContext != null)
                 {
                     HttpContext.Items[CURRENT_TENANT] = tenant;
@@ -340,7 +345,7 @@ namespace ASC.Core
 
     public static class TenantManagerConfigExtension
     {
-        public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
+        public static DIHelper AddTenantManagerService(this DIHelper services)
         {
             services.TryAddScoped<TenantManager>();
             services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();

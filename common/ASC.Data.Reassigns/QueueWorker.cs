@@ -28,12 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
@@ -143,7 +143,7 @@ namespace ASC.Data.Reassigns
 
     public static class QueueExtension
     {
-        public static IServiceCollection AddQueueWorkerRemoveService(this IServiceCollection services)
+        public static DIHelper AddQueueWorkerRemoveService(this DIHelper services)
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
             services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
@@ -152,7 +152,7 @@ namespace ASC.Data.Reassigns
 
             return services;
         }
-        public static IServiceCollection AddQueueWorkerReassignService(this IServiceCollection services)
+        public static DIHelper AddQueueWorkerReassignService(this DIHelper services)
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
             services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();

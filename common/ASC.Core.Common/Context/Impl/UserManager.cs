@@ -30,14 +30,13 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Core.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -69,6 +68,11 @@ namespace ASC.Core
 
         private Tenant tenant;
         private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+
+        public UserManager()
+        {
+
+        }
 
         public UserManager(
             IUserService service,
@@ -642,7 +646,7 @@ namespace ASC.Core
 
     public static class UserManagerConfigExtension
     {
-        public static IServiceCollection AddUserManagerService(this IServiceCollection services)
+        public static DIHelper AddUserManagerService(this DIHelper services)
         {
             services.TryAddSingleton<UserManagerConstants>();
             services.TryAddScoped<UserManager>();

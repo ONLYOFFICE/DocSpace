@@ -26,9 +26,10 @@
 
 using System.Text.Json.Serialization;
 
+
+using ASC.Common;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Settings
 {
@@ -98,7 +99,7 @@ namespace ASC.Api.Settings
 
     public static class BuildVersionExtension
     {
-        public static IServiceCollection AddBuildVersionService(this IServiceCollection services)
+        public static DIHelper AddBuildVersionService(this DIHelper services)
         {
             services.TryAddSingleton<BuildVersion>();
 

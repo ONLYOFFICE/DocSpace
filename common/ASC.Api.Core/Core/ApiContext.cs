@@ -28,12 +28,11 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Tenants;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Core
 {
@@ -272,13 +271,12 @@ namespace ASC.Api.Core
 
     public static class ApiContextConfigExtension
     {
-        public static IServiceCollection AddApiContextService(this IServiceCollection services)
+        public static DIHelper AddApiContextService(this DIHelper services)
         {
             services.TryAddScoped<ApiContext>();
 
             return services
                 .AddTenantManagerService()
-                .AddHttpContextAccessor()
                 .AddSecurityContextService();
         }
     }

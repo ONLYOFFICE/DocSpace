@@ -31,6 +31,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
 
@@ -346,6 +347,31 @@ namespace ASC.Api.Core
         public override void Write(Utf8JsonWriter writer, ApiDateTime value, JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.ToString());
+        }
+    }
+
+    public class ApiDateTimeHelper
+    {
+        public TenantManager TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
+
+        public ApiDateTimeHelper(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
+        {
+            TenantManager = tenantManager;
+            TimeZoneConverter = timeZoneConverter;
+        }
+
+        public ApiDateTime Get(DateTime? from) => ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
+    }
+
+    public static class ApiDateTimeHelperExtension
+    {
+        public static DIHelper AddApiDateTimeHelper(this DIHelper services)
+        {
+            services.TryAddScoped<ApiDateTimeHelper>();
+
+            return services
+                .AddTenantManagerService();
         }
     }
 }

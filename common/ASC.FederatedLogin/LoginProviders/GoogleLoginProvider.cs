@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -71,13 +72,12 @@ namespace ASC.FederatedLogin.LoginProviders
         public GoogleLoginProvider(TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -178,6 +178,22 @@ namespace ASC.FederatedLogin.LoginProviders
         private class GoogleMetadata
         {
             public bool primary = false;
+        }
+    }
+
+    public static class GoogleLoginProviderExtension
+    {
+        public static DIHelper AddGoogleLoginProviderService(this DIHelper services)
+        {
+            //services.TryAddScoped<GoogleLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService()
+                .AddSignatureService()
+                .AddInstanceCryptoService();
         }
     }
 }

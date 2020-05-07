@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
@@ -37,7 +38,6 @@ using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
@@ -521,7 +521,7 @@ namespace ASC.Core.Caching
     }
     public static class UserConfigExtension
     {
-        public static IServiceCollection AddUserService(this IServiceCollection services)
+        public static DIHelper AddUserService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -39,11 +40,6 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
-        public DocuSignLoginProvider Instance
-        {
-            get { return ConsumerFactory.Get<DocuSignLoginProvider>(); }
-        }
-
         public string Scopes { get { return "signature"; } }
         public string CodeUrl { get { return DocuSignHost + "/oauth/auth"; } }
         public string AccessTokenUrl { get { return DocuSignHost + "/oauth/token"; } }
@@ -68,11 +64,10 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
         }
 
@@ -131,6 +126,19 @@ namespace ASC.FederatedLogin.LoginProviders
             refreshed.RedirectUri = RedirectUri;
             refreshed.RefreshToken ??= refreshToken;
             return refreshed;
+        }
+    }
+    public static class DocuSignLoginProviderExtension
+    {
+        public static DIHelper AddDocuSignLoginProviderService(this DIHelper services)
+        {
+            //services.TryAddScoped<DocuSignLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

@@ -23,8 +23,6 @@
   "Administrator": "Администратор",
   "LblOther": "Другое",
   "DeleteButton": "Удалить",
-  "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  "SuccessChangeUserType": "Тип пользователя успешно изменен",
   "LblSelect": "Выберите",
   "More": "Больше",
   "CloseButton": "Закрыть",
@@ -35,7 +33,6 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "Search": "Поиск",
   "SendInviteAgain": "Отправить приглашение ещё раз",
-  "SuccessSendInvitation": "Приглашение успешно отправлено",
 
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "CountPerPage": "{{count}} на странице",

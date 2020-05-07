@@ -119,7 +119,7 @@ namespace ASC.Common.Logging
 
     public static class LoggerExtension
     {
-        public static IServiceCollection AddLoggerService(this IServiceCollection services)
+        public static DIHelper AddLoggerService(this DIHelper services)
         {
             services.TryAddScoped<EFLoggerFactory>();
             services.TryAddScoped<EFLoggerProvider>();

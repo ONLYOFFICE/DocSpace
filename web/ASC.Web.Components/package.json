@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.360",
+  "version": "1.0.362",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -30,10 +30,10 @@
   },
   "peerDependencies": {
     "prop-types": "^15.7.2",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-values": "^0.3.3",
-    "styled-components": "^4.3.2"
+    "styled-components": "^5.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.3",

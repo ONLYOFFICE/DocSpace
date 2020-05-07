@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -37,7 +38,6 @@ using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
@@ -206,7 +206,7 @@ namespace ASC.Data.Storage.Configuration
 
     public static class StorageSettingsExtension
     {
-        public static IServiceCollection AddBaseStorageSettingsService(this IServiceCollection services)
+        public static DIHelper AddBaseStorageSettingsService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<BaseStorageSettingsListener>();
@@ -217,7 +217,7 @@ namespace ASC.Data.Storage.Configuration
                 .AddEmailValidationKeyProviderService();
         }
 
-        public static IServiceCollection AddCdnStorageSettingsService(this IServiceCollection services)
+        public static DIHelper AddCdnStorageSettingsService(this DIHelper services)
         {
             services.TryAddScoped<StorageSettingsHelper>();
 
@@ -227,7 +227,7 @@ namespace ASC.Data.Storage.Configuration
                 .AddConsumerFactoryService();
         }
 
-        public static IServiceCollection AddStorageSettingsService(this IServiceCollection services)
+        public static DIHelper AddStorageSettingsService(this DIHelper services)
         {
             services.TryAddScoped<StorageSettingsHelper>();
 

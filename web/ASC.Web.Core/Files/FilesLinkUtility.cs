@@ -29,7 +29,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
@@ -43,24 +45,32 @@ namespace ASC.Web.Core.Files
         public const string EditorPage = "doceditor.aspx";
         private readonly string FilesUploaderURL;
         public CommonLinkUtility CommonLinkUtility { get; set; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
         public IConfiguration Configuration { get; }
         public InstanceCrypto InstanceCrypto { get; }
 
-        public FilesLinkUtility(CommonLinkUtility commonLinkUtility, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration, InstanceCrypto instanceCrypto)
+        public FilesLinkUtility(
+            CommonLinkUtility commonLinkUtility,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            InstanceCrypto instanceCrypto)
         {
             CommonLinkUtility = commonLinkUtility;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             Configuration = configuration;
             InstanceCrypto = instanceCrypto;
-            FilesUploaderURL = Configuration["files.uploader.url"] ?? "~";
+            FilesUploaderURL = Configuration["files:uploader:url"] ?? "~";
         }
 
         public string FilesBaseAbsolutePath
         {
-            get { return CommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
+            get { return BaseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
         }
 
         public const string FileId = "fileid";
@@ -74,6 +84,7 @@ namespace ASC.Web.Core.Files
         public const string FolderUrl = "folderurl";
         public const string OutType = "outputtype";
         public const string AuthKey = "stream_auth";
+        public const string Anchor = "anchor";
 
         public string FileHandlerPath
         {
@@ -398,7 +409,7 @@ namespace ASC.Web.Core.Files
             }
             if (string.IsNullOrEmpty(value))
             {
-                value = Configuration["files.docservice.url." + (appSettingsKey ?? key)];
+                value = Configuration["files:docservice:url:" + (appSettingsKey ?? key)];
             }
             return value;
         }
@@ -418,6 +429,20 @@ namespace ASC.Web.Core.Files
         private string GetSettingsKey(string key)
         {
             return "DocKey_" + key;
+        }
+    }
+    public static class FilesLinkUtilityExtention
+    {
+        public static DIHelper AddFilesLinkUtilityService(this DIHelper services)
+        {
+            services.TryAddScoped<FilesLinkUtility>();
+
+            return services
+                .AddCommonLinkUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService()
+                .AddInstanceCryptoService();
         }
     }
 }

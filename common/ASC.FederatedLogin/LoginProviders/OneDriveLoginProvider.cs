@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -38,11 +39,6 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         private const string OneDriveOauthUrl = "https://login.live.com/";
         public const string OneDriveApiUrl = "https://api.onedrive.com";
-
-        public OneDriveLoginProvider Instance
-        {
-            get { return ConsumerFactory.Get<OneDriveLoginProvider>(); }
-        }
 
         public string Scopes { get { return "wl.signin wl.skydrive_update wl.offline_access"; } }
         public string CodeUrl { get { return OneDriveOauthUrl + "oauth20_authorize.srf"; } }
@@ -67,12 +63,25 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
+        }
+    }
+
+    public static class OneDriveLoginProviderExtension
+    {
+        public static DIHelper AddOneDriveLoginProviderService(this DIHelper services)
+        {
+            //services.TryAddScoped<OneDriveLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

@@ -7,43 +7,57 @@ import {
   toastr,
   ContextMenuButton
 } from "asc-web-components";
-import { Headline } from 'asc-web-common';
+import { Headline } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
-  getSelectionIds
+  getUserType,
+  getUsersStatus,
+  getInactiveUsers,
+  getDeleteUsers,
+  getUsersIds
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
-  updateUserType,
   fetchPeople,
-  removeUser
+  removeUser,
+  setSelected
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
-import { store, api, constants } from 'asc-web-common';
-import { InviteDialog } from '../../../../dialogs';
+import { store, constants } from "asc-web-common";
+import {
+  InviteDialog,
+  DeleteUsersDialog,
+  SendInviteDialog,
+  ChangeUserStatusDialog,
+  ChangeUserTypeDialog
+} from "../../../../dialogs";
 
 const { isAdmin } = store.auth.selectors;
-const { resendUserInvites } = api.people;
-const { EmployeeStatus, EmployeeType } = constants;
-
-const isRefetchPeople = true;
+const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
-
   @media (min-width: 1024px) {
-    ${props => props.isHeaderVisible && css`width: calc(100% + 76px);`}
+    ${props =>
+      props.isHeaderVisible &&
+      css`
+        width: calc(100% + 76px);
+      `}
   }
 
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
-    
+
     @media (max-width: 1024px) {
       & > div:first-child {
-        ${props => props.isArticlePinned && css`width: calc(100% - 240px);`}
+        ${props =>
+          props.isArticlePinned &&
+          css`
+            width: calc(100% - 240px);
+          `}
         position: absolute;
         top: 56px;
         z-index: 180;
@@ -79,6 +93,12 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [showDeleteDialog, setDeleteDialog] = useState(false);
+  const [showSendInviteDialog, setSendInviteDialog] = useState(false);
+  const [showDisableDialog, setShowDisableDialog] = useState(false);
+  const [showActiveDialog, setShowActiveDialog] = useState(false);
+  const [showGuestDialog, setShowGuestDialog] = useState(false);
+  const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
 
   const {
     isHeaderVisible,
@@ -90,62 +110,57 @@ const SectionHeaderContent = props => {
     group,
     isAdmin,
     t,
-    selection,
-    updateUserStatus,
-    updateUserType,
-    onLoading,
     filter,
     history,
     settings,
     deleteGroup,
-    removeUser
+    usersWithEmployeeType,
+    usersWithGuestType,
+    usersWithActiveStatus,
+    usersWithDisableStatus,
+    usersToInvite,
+    usersToRemove,
+    setSelected,
+    selection
   } = props;
 
-  const selectedUserIds = getSelectionIds(selection);
-  //console.log("SectionHeaderContent render", selection, selectedUserIds);
+  //console.log("SectionHeaderContent render");
 
-  const onSetActive = useCallback(() => {
-    onLoading(true);
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds, isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .catch(error => toastr.error(error))
-      .finally(() => onLoading(false));
-  }, [selectedUserIds, updateUserStatus, t, onLoading]);
+  const onSetEmployee = useCallback(
+    () => setShowEmployeeDialog(!showEmployeeDialog),
+    [showEmployeeDialog]
+  );
 
-  const onSetDisabled = useCallback(() => {
-    onLoading(true);
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds, isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .catch(error => toastr.error(error))
-      .finally(() => onLoading(false));
-  }, [selectedUserIds, updateUserStatus, t, onLoading]);
+  const onSetGuest = useCallback(() => setShowGuestDialog(!showGuestDialog), [
+    showGuestDialog
+  ]);
 
-  const onSetEmployee = useCallback(() => {
-    updateUserType(EmployeeType.User, selectedUserIds);
-    toastr.success(t("SuccessChangeUserType"));
-  }, [selectedUserIds, updateUserType, t]);
+  const onSetActive = useCallback(
+    () => setShowActiveDialog(!showActiveDialog),
+    [showActiveDialog]
+  );
 
-  const onSetGuest = useCallback(() => {
-    updateUserType(EmployeeType.Guest, selectedUserIds);
-    toastr.success(t("SuccessChangeUserType"));
-  }, [selectedUserIds, updateUserType, t]);
+  const onSetDisabled = useCallback(
+    () => setShowDisableDialog(!showDisableDialog),
+    [showDisableDialog]
+  );
 
-  const onSentInviteAgain = useCallback(() => {
-    resendUserInvites(selectedUserIds)
-      .then(() => toastr.success(t('SuccessSendInvitation')))
-      .catch(error => toastr.error(error));
-  }, [selectedUserIds, t]);
+  const onSendInviteAgain = useCallback(
+    () => setSendInviteDialog(!showSendInviteDialog),
+    [showSendInviteDialog]
+  );
 
-  const onDelete = useCallback(() => {
-    onLoading(true);
-    removeUser(selectedUserIds, filter)
-      .then(() => {
-        toastr.success(t('SuccessfullyRemovedUsers'));
-        return fetchPeople(filter);
-      })
-      .catch(error => toastr.error(error))
-      .finally(() => onLoading(false));
-  }, [selectedUserIds, removeUser, onLoading, filter, t]);
+  const onDelete = useCallback(() => setDeleteDialog(!showDeleteDialog), [
+    showDeleteDialog
+  ]);
+
+  const onSendEmail = useCallback(() => {
+    let str = "";
+    for (let item of selection) {
+      str += `${item.email},`;
+    }
+    window.open(`mailto: ${str}`, "_self");
+  }, [selection]);
 
   const menuItems = [
     {
@@ -162,38 +177,42 @@ const SectionHeaderContent = props => {
       onSelect: item => onSelect(item.key)
     },
     {
-      label: t('ChangeToUser', { userCaption: settings.customNames.userCaption }),
-      disabled: !selection.length,
+      label: t("ChangeToUser", {
+        userCaption: settings.customNames.userCaption
+      }),
+      disabled: !usersWithEmployeeType.length,
       onClick: onSetEmployee
     },
     {
-      label: t('ChangeToGuest', { guestCaption: settings.customNames.guestCaption }),
-      disabled: !selection.length,
+      label: t("ChangeToGuest", {
+        guestCaption: settings.customNames.guestCaption
+      }),
+      disabled: !usersWithGuestType.length,
       onClick: onSetGuest
     },
     {
       label: t("LblSetActive"),
-      disabled: !selection.length,
+      disabled: !usersWithActiveStatus.length,
       onClick: onSetActive
     },
     {
       label: t("LblSetDisabled"),
-      disabled: !selection.length,
+      disabled: !usersWithDisableStatus.length,
       onClick: onSetDisabled
     },
     {
       label: t("LblInviteAgain"),
-      disabled: !selection.length,
-      onClick: onSentInviteAgain
+      disabled: !usersToInvite.length,
+      onClick: onSendInviteAgain
     },
     {
       label: t("LblSendEmail"),
       disabled: !selection.length,
-      onClick: toastr.success.bind(this, t("SendEmailAction"))
+      onClick: onSendEmail
     },
     {
       label: t("DeleteButton"),
-      disabled: !selection.length,
+      disabled: !usersToRemove.length,
       onClick: onDelete
     }
   ];
@@ -236,8 +255,9 @@ const SectionHeaderContent = props => {
     history.push(`${settings.homepage}/group/create`);
   }, [history, settings]);
 
-  const onInvitationDialogClick = useCallback(() =>
-    setDialogVisible(!dialogVisible), [dialogVisible]
+  const onInvitationDialogClick = useCallback(
+    () => setDialogVisible(!dialogVisible),
+    [dialogVisible]
   );
 
   const getContextOptionsPlus = useCallback(() => {
@@ -258,24 +278,97 @@ const SectionHeaderContent = props => {
         label: groupCaption,
         onClick: goToGroupCreate
       },
-      { key: 'separator', isSeparator: true },
+      { key: "separator", isSeparator: true },
       {
         key: "make-invitation-link",
         label: t("MakeInvitationLink"),
         onClick: onInvitationDialogClick
-      }/* ,
+      } /* ,
       {
         key: "send-invitation",
         label: t("SendInviteAgain"),
         onClick: onSentInviteAgain
       } */
     ];
-  }, [settings, t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
+  }, [
+    settings,
+    t,
+    goToEmployeeCreate,
+    goToGuestCreate,
+    goToGroupCreate,
+    onInvitationDialogClick /* , onSentInviteAgain */
+  ]);
 
-  const isArticlePinned = window.localStorage.getItem('asc_article_pinned_key');
+  const isArticlePinned = window.localStorage.getItem("asc_article_pinned_key");
 
   return (
-    <StyledContainer isHeaderVisible={isHeaderVisible} isArticlePinned={isArticlePinned}>
+    <StyledContainer
+      isHeaderVisible={isHeaderVisible}
+      isArticlePinned={isArticlePinned}
+    >
+      {showEmployeeDialog && (
+        <ChangeUserTypeDialog
+          visible={showEmployeeDialog}
+          userIds={getUsersIds(usersWithEmployeeType)}
+          selectedUsers={selection}
+          onClose={onSetEmployee}
+          userType={EmployeeType.User}
+          setSelected={setSelected}
+        />
+      )}
+
+      {showGuestDialog && (
+        <ChangeUserTypeDialog
+          visible={showGuestDialog}
+          userIds={getUsersIds(usersWithGuestType)}
+          selectedUsers={selection}
+          onClose={onSetGuest}
+          userType={EmployeeType.Guest}
+          setSelected={setSelected}
+        />
+      )}
+      {showActiveDialog && (
+        <ChangeUserStatusDialog
+          visible={showActiveDialog}
+          userIds={getUsersIds(usersWithActiveStatus)}
+          selectedUsers={selection}
+          onClose={onSetActive}
+          userStatus={EmployeeStatus.Active}
+          setSelected={setSelected}
+        />
+      )}
+      {showDisableDialog && (
+        <ChangeUserStatusDialog
+          visible={showDisableDialog}
+          userIds={getUsersIds(usersWithDisableStatus)}
+          selectedUsers={selection}
+          onClose={onSetDisabled}
+          userStatus={EmployeeStatus.Disabled}
+          setSelected={setSelected}
+        />
+      )}
+
+      {showSendInviteDialog && (
+        <SendInviteDialog
+          visible={showSendInviteDialog}
+          onClose={onSendInviteAgain}
+          userIds={getUsersIds(usersToInvite)}
+          selectedUsers={selection}
+          setSelected={setSelected}
+        />
+      )}
+
+      {showDeleteDialog && (
+        <DeleteUsersDialog
+          visible={showDeleteDialog}
+          onClose={onDelete}
+          userIds={getUsersIds(usersToRemove)}
+          selectedUsers={selection}
+          filter={filter}
+          setSelected={setSelected}
+        />
+      )}
+
       {isHeaderVisible ? (
         <div className="group-button-menu-container">
           <GroupButtonsMenu
@@ -291,66 +384,107 @@ const SectionHeaderContent = props => {
           />
         </div>
       ) : (
-          <div className="header-container">
-            {group ? (
-              <>
-                <Headline className='headline-header' type="content" truncate={true}>{group.name}</Headline>
-                {isAdmin && (
+        <div className="header-container">
+          {group ? (
+            <>
+              <Headline
+                className="headline-header"
+                type="content"
+                truncate={true}
+              >
+                {group.name}
+              </Headline>
+              {isAdmin && (
+                <ContextMenuButton
+                  className="action-button"
+                  directionX="right"
+                  title={t("Actions")}
+                  iconName="VerticalDotsIcon"
+                  size={16}
+                  color="#A3A9AE"
+                  getData={getContextOptionsGroup}
+                  isDisabled={false}
+                />
+              )}
+            </>
+          ) : (
+            <>
+              <Headline
+                className="headline-header"
+                truncate={true}
+                type="content"
+              >
+                {settings.customNames.groupsCaption}
+              </Headline>
+              {isAdmin && (
+                <>
                   <ContextMenuButton
                     className="action-button"
                     directionX="right"
                     title={t("Actions")}
-                    iconName="VerticalDotsIcon"
+                    iconName="PlusIcon"
                     size={16}
-                    color="#A3A9AE"
-                    getData={getContextOptionsGroup}
+                    color="#657077"
+                    getData={getContextOptionsPlus}
                     isDisabled={false}
                   />
-                )}
-              </>
-            ) : (
-                <>
-                  <Headline className='headline-header' truncate={true} type="content">{settings.customNames.groupsCaption}</Headline>
-                  {isAdmin && (
-                    <>
-                      <ContextMenuButton
-                        className="action-button"
-                        directionX="right"
-                        title={t("Actions")}
-                        iconName="PlusIcon"
-                        size={16}
-                        color="#657077"
-                        getData={getContextOptionsPlus}
-                        isDisabled={false}
-                      />
-                      {dialogVisible &&
-                        <InviteDialog
-                          visible={dialogVisible}
-                          onClose={onInvitationDialogClick}
-                          onCloseButton={onInvitationDialogClick}
-                        />
-                      }
-                    </>
+                  {dialogVisible && (
+                    <InviteDialog
+                      visible={dialogVisible}
+                      onClose={onInvitationDialogClick}
+                      onCloseButton={onInvitationDialogClick}
+                    />
                   )}
                 </>
               )}
-          </div>
-        )}
+            </>
+          )}
+        </div>
+      )}
     </StyledContainer>
   );
 };
 
 const mapStateToProps = state => {
+  const selection = state.people.selection;
+  const activeUsers = 1;
+  const disabledUsers = 2;
+  const currentUserId = state.auth.user.id;
+  const employeeStatus = true;
+  const guestStatus = false;
+
   return {
     group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
-    selection: state.people.selection,
+    selection,
     isAdmin: isAdmin(state.auth.user),
     filter: state.people.filter,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+
+    usersWithEmployeeType: getUserType(
+      selection,
+      employeeStatus,
+      currentUserId
+    ),
+    usersWithGuestType: getUserType(selection, guestStatus, currentUserId),
+    usersWithActiveStatus: getUsersStatus(
+      selection,
+      activeUsers,
+      currentUserId
+    ),
+    usersWithDisableStatus: getUsersStatus(
+      selection,
+      disabledUsers,
+      currentUserId
+    ),
+    usersToInvite: getInactiveUsers(selection),
+    usersToRemove: getDeleteUsers(selection)
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { updateUserStatus, updateUserType, fetchPeople, deleteGroup, removeUser }
-)(withTranslation()(withRouter(SectionHeaderContent)));
+export default connect(mapStateToProps, {
+  updateUserStatus,
+  fetchPeople,
+  deleteGroup,
+  removeUser,
+  setSelected
+})(withTranslation()(withRouter(SectionHeaderContent)));

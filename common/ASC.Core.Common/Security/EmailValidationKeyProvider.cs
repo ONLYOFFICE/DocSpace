@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
@@ -35,8 +36,6 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
@@ -251,7 +250,7 @@ namespace ASC.Security.Cryptography
 
     public static class EmailValidationKeyProviderExtension
     {
-        public static IServiceCollection AddEmailValidationKeyProviderService(this IServiceCollection services)
+        public static DIHelper AddEmailValidationKeyProviderService(this DIHelper services)
         {
             services.TryAddScoped<EmailValidationKeyProvider>();
 

@@ -27,12 +27,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
@@ -81,7 +79,7 @@ namespace ASC.IPSecurity
     }
     public static class IPRestrictionsRepositoryExtension
     {
-        public static IServiceCollection AddIPRestrictionsRepositoryService(this IServiceCollection services)
+        public static DIHelper AddIPRestrictionsRepositoryService(this DIHelper services)
         {
             services.TryAddScoped<IPRestrictionsRepository>();
 

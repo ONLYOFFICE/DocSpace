@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Security;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -39,7 +40,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -1461,7 +1461,7 @@ namespace ASC.Employee.Core.Controllers
 
     public static class PeopleControllerExtention
     {
-        public static IServiceCollection AddPeopleController(this IServiceCollection services)
+        public static DIHelper AddPeopleController(this DIHelper services)
         {
             return services
                 .AddAccountLinker()

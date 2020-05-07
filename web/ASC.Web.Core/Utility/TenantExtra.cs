@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -38,9 +39,6 @@ using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Utility
 {
@@ -249,7 +247,7 @@ namespace ASC.Web.Studio.Utility
 
     public static class TenantExtraExtension
     {
-        public static IServiceCollection AddTenantExtraService(this IServiceCollection services)
+        public static DIHelper AddTenantExtraService(this DIHelper services)
         {
             services.TryAddScoped<TenantExtra>();
 

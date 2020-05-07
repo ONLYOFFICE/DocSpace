@@ -24,14 +24,13 @@
 */
 
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.PublicResources;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -261,7 +260,7 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifySourceExtension
     {
-        public static IServiceCollection AddStudioNotifySourceService(this IServiceCollection services)
+        public static DIHelper AddStudioNotifySourceService(this DIHelper services)
         {
             services.TryAddScoped<StudioNotifySource>();
 

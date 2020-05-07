@@ -67,6 +67,48 @@
       "MessageSendPasswordChangeInstructionsOnEmail",
       "SendButton"
     ]
+  },
+  "DeleteUsersDialog":{
+    "Resource": [
+      "OKButton",
+      "CancelButton",
+      "Warning",
+      "DeleteUserDataConfirmation"
+    ],
+    "UserControlsCommonResource":[
+      "NotBeUndone"
+    ]
+  },
+  "SendInviteDialog":{
+    "Resource": [
+      "OKButton",
+      "CancelButton",
+      "SendInviteAgain",
+      "DisabledEmployeeTitle"
+    ],
+    "PeopleJSResource": [
+      "SuccessSendInvitation"
+    ]
+  },
+  "ChangeUserStatusDialog":{
+    "PeopleJSResource": [
+      "SuccessChangeUserStatus"
+    ],
+    "Resource": [
+      "CancelButton"
+    ]
+  },
+  "ChangeUserTypeDialog":{
+    "PeopleJSResource": [
+      "SuccessChangeUserType"
+    ],
+    "Resource": [
+      "CancelButton",
+      "GuestCaption"
+    ],
+    "AuditResource": [
+      "UserCol"
+    ]
   }
 },
   "pages": {
@@ -192,11 +234,6 @@
         "LblPending",
         "LblOther",
         "LblChangeEmail"
-      ],
-      "PeopleJSResource": [
-        "SuccessChangeUserStatus",
-        "SuccessChangeUserType",
-        "SuccessSendInvitation"
       ],
       "UserControlsCommonResource": [
         "NextPage",

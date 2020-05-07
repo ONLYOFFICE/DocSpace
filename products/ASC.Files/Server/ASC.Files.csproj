@@ -1,0 +1,95 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <ProjectGuid>{77BA2F61-6155-4283-BB39-F8E42F46A0B0}</ProjectGuid>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <FileUpgradeFlags />
+    <UpgradeBackupLocation />
+    <AssemblyTitle>ASC.Files</AssemblyTitle>
+    <Company>Ascensio System SIA</Company>
+    <Product>ASC.Files</Product>
+    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="proto\BoxCacheItem.proto" />
+    <None Remove="proto\DropboxCacheItem.proto" />
+    <None Remove="proto\GoogleDriveCacheItem.proto" />
+    <None Remove="proto\OneDriveCacheItem.proto" />
+    <None Remove="proto\ProviderAccountCacheItem.proto" />
+    <None Remove="proto\SharePointProviderCacheItem.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Box.V2.Core" Version="3.22.0" />
+    <PackageReference Include="DocuSign.eSign.dll" Version="4.1.1" />
+    <PackageReference Include="DotNetZip" Version="1.13.7" />
+    <PackageReference Include="Dropbox.Api" Version="4.9.4" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.44.1.1876" />
+    <PackageReference Include="Grpc.Tools" Version="2.27.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
+    <PackageReference Include="Microsoft.OneDriveSDK" Version="2.0.7" />
+    <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.FederatedLogin\ASC.FederatedLogin.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
+    <ProjectReference Include="..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
+    <ProjectReference Include="..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj" />
+    <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="proto\SharePointProviderCacheItem.proto" />
+    <Protobuf Include="proto\OneDriveCacheItem.proto" />
+    <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
+    <Protobuf Include="proto\BoxCacheItem.proto" />
+    <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
+    <Protobuf Include="proto\DropboxCacheItem.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\FilesCommonResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FilesCommonResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\FilesJSResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FilesJSResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\FilesUCResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FilesUCResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\FilesCommonResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FilesCommonResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FilesJSResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FilesJSResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FilesUCResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FilesUCResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
