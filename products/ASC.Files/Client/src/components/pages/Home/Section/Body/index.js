@@ -26,7 +26,7 @@ import {
   setAction,
   setTreeFolders
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, getAccessOption } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -522,8 +522,7 @@ class SectionBodyContent extends React.PureComponent {
       fileAction,
       onLoading,
       isLoading,
-      currentFolderCount,
-      accessOptions
+      currentFolderCount
     } = this.props;
     const { editingId, showSharingPanel, currentItem } = this.state;
 
@@ -605,7 +604,6 @@ class SectionBodyContent extends React.PureComponent {
             selectedItems={currentItem}
             onClose={this.onClickShare}
             visible={showSharingPanel}
-            accessOptions={accessOptions}
           />
         )}
       </>
@@ -642,7 +640,6 @@ const mapStateToProps = state => {
     myDocumentsId: treeFolders[myFolderIndex].id,
     currentFolderCount,
     selectedFolderId: id,
-    accessOptions: getAccessOption(selection),
     shareDataItems
   };
 };

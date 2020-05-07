@@ -25,6 +25,7 @@ import {
   setSharedFiles,
   getShareUsers
 } from "../../../store/files/actions";
+import { getAccessOption } from '../../../store/files/selectors';
 import {
   StyledSharingPanel,
   StyledContent,
@@ -62,6 +63,7 @@ class SharingPanelComponent extends React.Component {
       shareLink: "",
       isLoadedShareData: false,
       showPanel: false,
+      accessOptions: []
     };
 
     this.ref = React.createRef();
@@ -379,8 +381,11 @@ class SharingPanelComponent extends React.Component {
 
     arrayItems = this.removeDuplicateShareData(arrayItems);
     const baseShareData = JSON.parse(JSON.stringify(arrayItems));
+
+    const accessOptions = !this.props.selectedItems.length ? getAccessOption([this.props.selectedItems]) : getAccessOption(this.props.selectedItems);
+
     this.setState(
-      { baseShareData, shareDataItems: arrayItems, showPanel: true },
+      { baseShareData, shareDataItems: arrayItems, showPanel: true, accessOptions },
       this.props.onLoading(false)
     );
   };
@@ -427,7 +432,7 @@ class SharingPanelComponent extends React.Component {
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId).then((res) => {
-        this.getShareDataItems(res, folderId, fileId);
+        this.getShareDataItems(res);
       });
     }
   };
@@ -460,7 +465,7 @@ class SharingPanelComponent extends React.Component {
 
   render() {
     //console.log("Sharing panel render");
-    const { t, accessOptions, isMyId, selectedItems } = this.props;
+    const { t, isMyId, selectedItems } = this.props;
     const {
       showActionPanel,
       isNotifyUsers,
@@ -471,7 +476,8 @@ class SharingPanelComponent extends React.Component {
       showEmbeddingPanel,
       accessRight,
       shareLink,
-      showPanel
+      showPanel,
+      accessOptions
     } = this.state;
 
     const visible = showPanel;

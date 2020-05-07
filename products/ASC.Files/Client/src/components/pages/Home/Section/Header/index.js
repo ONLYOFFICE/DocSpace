@@ -15,11 +15,7 @@ import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog } from "../../../../dialogs";
 import { SharingPanel } from "../../../../panels";
-import {
-  isCanBeDeleted,
-  getAccessOption,
-  checkFolderType
-} from "../../../../../store/files/selectors";
+import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -260,13 +256,13 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       currentFolderId,
-      accessOptions,
       onLoading
     } = this.props;
     const {
       showDeleteDialog,
       showSharingPanel,
-      showEmptyTrashDialog
+      showEmptyTrashDialog,
+      showDownloadDialog
     } = this.state;
     const isItemsSelected = selection.length;
     const isOnlyFolderSelected = selection.every(
@@ -437,7 +433,6 @@ class SectionHeaderContent extends React.Component {
             selectedItems={selection}
             onClose={this.onOpenSharingPanel}
             visible={showSharingPanel}
-            accessOptions={accessOptions}
           />
         )}
       </StyledContainer>
@@ -467,7 +462,6 @@ const mapStateToProps = state => {
     title,
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    accessOptions: getAccessOption(selection),
     currentFolderId: id
   };
 };
