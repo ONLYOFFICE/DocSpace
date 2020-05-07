@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, toastr } from "asc-web-components";
 import { constants } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
-import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
+import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 
@@ -32,12 +32,12 @@ class FilesRowContent extends React.PureComponent {
 
   completeAction = () => {
     //this.setState({ loading: false }, () =>)
-      this.props.onEditComplete();
+    this.props.onEditComplete();
   }
 
   updateItem = () => {
     const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
-    
+
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
@@ -104,7 +104,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   onFilesClick = () => {
-    const { id, fileExst } = this.props.item;
+    const { id, fileExst, viewUrl } = this.props.item;
     const { filter, parentFolder, onLoading } = this.props;
     if (!fileExst) {
       onLoading(true);
@@ -119,6 +119,18 @@ class FilesRowContent extends React.PureComponent {
           onLoading(false);
         })
         .finally(() => onLoading(false));
+    } else {
+      if (canWebEdit(fileExst)) {
+        return window.open(`./doceditor?fileId=${id}`, "_blank");
+      }
+
+      const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
+
+      if (isOpenMedia) {
+        return window.open(viewUrl, "_blank"); //TODO: insert media viewer
+      }
+
+      return window.open(viewUrl, "_blank");
     }
   };
 
@@ -221,15 +233,15 @@ class FilesRowContent extends React.PureComponent {
 
     return isEdit
       ? <EditingWrapperComponent
-          isLoading={isLoading}
-          itemTitle={itemTitle}
-          okIcon={okIcon}
-          cancelIcon={cancelIcon}
-          renameTitle={this.renameTitle}
-          onKeyUpUpdateItem={this.onKeyUpUpdateItem}
-          onClickUpdateItem={this.onClickUpdateItem}
-          cancelUpdateItem={this.cancelUpdateItem}
-        />
+        isLoading={isLoading}
+        itemTitle={itemTitle}
+        okIcon={okIcon}
+        cancelIcon={cancelIcon}
+        renameTitle={this.renameTitle}
+        onKeyUpUpdateItem={this.onKeyUpUpdateItem}
+        onClickUpdateItem={this.onClickUpdateItem}
+        cancelUpdateItem={this.cancelUpdateItem}
+      />
       : (
         <SimpleFilesRowContent
           sideColor="#333"
