@@ -37,7 +37,7 @@ const { FileAction } = constants;
 
 const linkStyles = { isHovered: true, type: "action", fontSize: "14px", className: "empty-folder_link", display: "flex" };
 
-class SectionBodyContent extends React.PureComponent {
+class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -70,6 +70,21 @@ class SectionBodyContent extends React.PureComponent {
     // }
   }
 
+  /* componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(([key, val]) =>
+      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+    if (this.state) {
+      Object.entries(this.state).forEach(([key, val]) =>
+        prevState[key] !== val && console.log(`State '${key}' changed`)
+      );
+    }
+  } */
+
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
+
   onClickRename = (item) => {
     const { id, fileExst } = item;
 
@@ -90,7 +105,7 @@ class SectionBodyContent extends React.PureComponent {
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
       onLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
-        const newItem = item.id === -1 ? null : item; 
+        const newItem = item.id === -1 ? null : item;
         if (!item.fileExst) {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
@@ -132,7 +147,7 @@ class SectionBodyContent extends React.PureComponent {
       .catch(err => toastr.error(err))
       .then(() =>
         fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
-          if(currentFolderType !== "Trash") {
+          if (currentFolderType !== "Trash") {
             const path = data.selectedFolder.pathParts;
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
@@ -148,7 +163,7 @@ class SectionBodyContent extends React.PureComponent {
 
   onClickShare = item => {
     let currentItem = item;
-    if(this.state.showSharingPanel) {
+    if (this.state.showSharingPanel) {
       currentItem = null;
     }
     this.setState({
@@ -156,7 +171,6 @@ class SectionBodyContent extends React.PureComponent {
       showSharingPanel: !this.state.showSharingPanel,
     });
   }
-
 
   onClickLinkForPortal = item => {
     return fetchFolder(item.folderId, store.dispatch);
@@ -255,12 +269,13 @@ class SectionBodyContent extends React.PureComponent {
     }
   };
 
+  svgLoader = () => <div style={{ width: '24px' }}></div>;
+
   getItemIcon = (item, isEdit) => {
     const extension = item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
-    const loader = <div style={{width: '24px'}}></div> 
 
     return <ReactSVG
       beforeInjection={svg => {
@@ -268,7 +283,7 @@ class SectionBodyContent extends React.PureComponent {
         isEdit && svg.setAttribute('style', 'margin-left: 24px');
       }}
       src={icon}
-      loading={() => loader}
+      loading={this.svgLoader}
     />;
   };
 
@@ -524,6 +539,7 @@ class SectionBodyContent extends React.PureComponent {
       isLoading,
       currentFolderCount
     } = this.props;
+
     const { editingId, showSharingPanel, currentItem } = this.state;
 
     let items = [...folders, ...files];
@@ -551,29 +567,29 @@ class SectionBodyContent extends React.PureComponent {
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
-        this.renderEmptyFolderContainer()
-      )
+          this.renderEmptyFolderContainer()
+        )
     ) : !fileAction.id && items.length === 0 ? (
       this.renderEmptyFilterContainer()
     ) : (
-      <>
-        <RowContainer useReactWindow={false}>
-          {items.map((item) => {
-            const isEdit =
-              fileAction.type &&
-              (editingId === item.id || item.id === -1) &&
-              item.fileExst === fileAction.extension;
-            const contextOptions = this.getFilesContextOptions(
-              item,
-              viewer
-            ).filter((o) => o);
-            const contextOptionsProps =
-              !contextOptions.length || isEdit ? {} : { contextOptions };
-            const checked = isFileSelected(selection, item.id, item.parentId);
-            const checkedProps = /* isAdmin(viewer) */ isEdit
-              ? {}
-              : { checked };
-            const element = this.getItemIcon(item, isEdit);
+          <>
+            <RowContainer useReactWindow={false}>
+              {items.map((item) => {
+                const isEdit =
+                  fileAction.type &&
+                  (editingId === item.id || item.id === -1) &&
+                  item.fileExst === fileAction.extension;
+                const contextOptions = this.getFilesContextOptions(
+                  item,
+                  viewer
+                ).filter((o) => o);
+                const contextOptionsProps =
+                  !contextOptions.length || isEdit ? {} : { contextOptions };
+                const checked = isFileSelected(selection, item.id, item.parentId);
+                const checkedProps = /* isAdmin(viewer) */ isEdit
+                  ? {}
+                  : { checked };
+                const element = this.getItemIcon(item, isEdit);
 
             return (
               <SimpleFilesRow
