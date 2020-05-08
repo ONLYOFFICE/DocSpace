@@ -14,7 +14,7 @@ import {
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
-import { api, constants } from 'asc-web-common';
+import { api, constants, MediaViewer } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,
@@ -26,7 +26,7 @@ import {
   setAction,
   setTreeFolders
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -41,7 +41,9 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
-      editingId: null
+      editingId: null,
+      currentMediaFileId: 0,
+      mediaViewerVisible: false
     };
   }
 
@@ -156,7 +158,13 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickLinkEdit = item => {
-    return window.open(`./doceditor?fileId=${item.id}`, "_blank");
+    if(isImage(item.fileExst) || isSound(item.fileExst) || isVideo(item.fileExst))
+      this.setState({
+        mediaViewerVisible: true,
+        currentMediaFileId: item.id
+      });
+    else
+      return window.open(`./doceditor?fileId=${item.id}`, "_blank");
   }
 
   getFilesContextOptions = (item, viewer) => {
@@ -498,6 +506,11 @@ class SectionBodyContent extends React.PureComponent {
       />
     )
   }
+  onMediaViewerClose = () =>{
+    this.setState({
+      mediaViewerVisible: false
+    });
+  }
 
   render() {
     const {
@@ -536,7 +549,18 @@ class SectionBodyContent extends React.PureComponent {
       });
     }
 
-
+   
+    var playlist = [];
+    files.forEach(function(file, i, files) {
+      if(isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst))
+        playlist.push(
+          {
+            id: file.id,
+            src: file.viewUrl,
+            title: file.title
+          }
+        )
+    });
 
     return !fileAction.id && currentFolderCount === 0 ? (
       parentId === 0 ? (
@@ -547,45 +571,59 @@ class SectionBodyContent extends React.PureComponent {
     ) : !fileAction.id && items.length === 0 ? (
       this.renderEmptyFilterContainer()
     ) : (
-          <RowContainer useReactWindow={false}>
-            {items.map((item) => {
-              const isEdit =
-                fileAction.type &&
-                (editingId === item.id || item.id === -1) &&
-                item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
-              const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
-              const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
-              const element = this.getItemIcon(item, isEdit);
+          <>
+            <RowContainer useReactWindow={false}>
+              {items.map((item) => {
+                const isEdit =
+                  fileAction.type &&
+                  (editingId === item.id || item.id === -1) &&
+                  item.fileExst === fileAction.extension;
+                const contextOptions = this.getFilesContextOptions(
+                  item,
+                  viewer
+                ).filter((o) => o);
+                const contextOptionsProps =
+                  !contextOptions.length || isEdit ? {} : { contextOptions };
+                const checked = isFileSelected(selection, item.id, item.parentId);
+                const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
+                const element = this.getItemIcon(item, isEdit);
 
-              return (
-                <SimpleFilesRow
-                  key={item.id}
-                  data={item}
-                  element={element}
-                  onSelect={this.onContentRowSelect}
-                  editing={editingId}
-                  {...checkedProps}
-                  {...contextOptionsProps}
-                  needForUpdate={this.needForUpdate}
-                >
-                  <FilesRowContent
-                    item={item}
-                    viewer={viewer}
-                    culture={settings.culture}
-                    onEditComplete={this.onEditComplete.bind(this, item)}
-                    onLoading={onLoading}
-                    isLoading={isLoading}
-                  />
-                </SimpleFilesRow>
-              );
-            })}
-          </RowContainer>
+                return (
+                  <SimpleFilesRow
+                    key={item.id}
+                    data={item}
+                    element={element}
+                    onSelect={this.onContentRowSelect}
+                    editing={editingId}
+                    {...checkedProps}
+                    {...contextOptionsProps}
+                    needForUpdate={this.needForUpdate}
+                  >
+                    <FilesRowContent
+                      item={item}
+                      viewer={viewer}
+                      culture={settings.culture}
+                      onEditComplete={this.onEditComplete.bind(this, item)}
+                      onLoading={onLoading}
+                      isLoading={isLoading}
+                    />
+                  </SimpleFilesRow>
+                );
+              })}
+            </RowContainer>
+            <MediaViewer
+              currentFileId = {this.state.currentMediaFileId}
+              allowConvert={true}
+              canDelete={(fileId) => { return true }}
+              visible={this.state.mediaViewerVisible}
+              playlist={playlist}
+              onDelete={ (fileId) => console.log(fileId) }
+              onDownload={(fileId) => console.log(fileId)}
+              onClose={this.onMediaViewerClose}
+              extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}
+              extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]}
+            />
+          </>
         );
   }
 }
