@@ -37,11 +37,9 @@ const StyledMediaViewer = styled.div`
         bottom: 0;
         left: 0;
         text-align: center;
-
-      
     }
     span{
-        position: absolute;
+        position: fixed;
         right: 0;
         bottom: 5px;
         margin-right: 10px;

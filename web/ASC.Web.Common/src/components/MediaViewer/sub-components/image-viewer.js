@@ -21,15 +21,18 @@ const StyledViewer = styled(Viewer)`
     .react-viewer-attribute{
         display: none;
     }
+    .react-viewer-toolbar{
+        position: fixed;
+        left: calc(50% - 125px);
+        bottom: 4px;
+    }
     .react-viewer-toolbar li{
         width: 40px;
         height:30px;
         border-radius: 2px;
         cursor: pointer;
         line-height: 24px;
-        
     }
-
     .react-viewer-btn{
         background-color: transparent;
         &:hover{

@@ -15,7 +15,7 @@ const controlsHeight = 40;
 const StyledControls = styled.div`
     height: ${props => props.height}px;
     display: block;
-    position: absolute;
+    position: fixed;
     z-index: 4001;
     ${props => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
     top: ${props => props.top}px;
@@ -138,7 +138,7 @@ const StyledValumeContainer = styled.div`
     .mute{
       display: inline-block;
       transform: rotate(-90deg);
-      margin: 22px -12px;
+      margin: 22px -14px;
     }
 `;
 const StyledDuration = styled.div`
@@ -166,7 +166,7 @@ const StyledVideoViewer = styled.div`
       left: ${props => props.left}px;
       top: ${props => props.top}px;
       z-index: 4001;
-      position: absolute;
+      position: fixed;
       padding-bottom: 40px;
       background-color: rgba(11,11,11,0.7);
 
