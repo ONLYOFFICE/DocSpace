@@ -535,7 +535,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 using (var response = request.GetResponse())
                 using (var stream = new ResponseStream(response))
                 {
-                    stream.CopyTo(context.Response.Body, StreamExtension.BufferSize);
+                    stream.CopyTo(context.Response.Body);
 
                     var contentLength = jsonFile.Value<string>("size");
                     Logger.Debug("GoogleDriveApp: get file stream contentLength - " + contentLength);

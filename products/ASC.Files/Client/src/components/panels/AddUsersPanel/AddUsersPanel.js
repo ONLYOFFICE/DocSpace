@@ -100,12 +100,12 @@ class AddUsersPanelComponent extends React.Component {
               >
                 {t("LinkText")}
               </Heading>
-              <IconButton
+              {/*<IconButton
                 size="16"
                 iconName="PlusIcon"
                 className="header_aside-panel-plus-icon"
                 onClick={() => console.log("onPlusClick")}
-              />
+              />*/}
             </StyledHeaderContent>
 
             <StyledBody>

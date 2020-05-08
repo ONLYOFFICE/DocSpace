@@ -56,14 +56,14 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        public static Guid Add(Guid userId, object fileId)
+        public static Guid Add<T>(Guid userId, T fileId)
         {
             var tabId = Guid.NewGuid();
             ProlongEditing(fileId, tabId, userId);
             return tabId;
         }
 
-        public static bool ProlongEditing(object fileId, Guid tabId, Guid userId, bool editingAlone = false)
+        public static bool ProlongEditing<T>(T fileId, Guid tabId, Guid userId, bool editingAlone = false)
         {
             var checkRight = true;
             var tracker = GetTracker(fileId);
@@ -89,7 +89,7 @@ namespace ASC.Web.Files.Utils
             return checkRight;
         }
 
-        public static void Remove(object fileId, Guid tabId = default, Guid userId = default)
+        public static void Remove<T>(T fileId, Guid tabId = default, Guid userId = default)
         {
             var tracker = GetTracker(fileId);
             if (tracker != null)
@@ -117,7 +117,7 @@ namespace ASC.Web.Files.Utils
             SetTracker(fileId, null);
         }
 
-        public static void RemoveAllOther(Guid userId, object fileId)
+        public static void RemoveAllOther<T>(Guid userId, T fileId)
         {
             var tracker = GetTracker(fileId);
             if (tracker != null)
@@ -136,32 +136,6 @@ namespace ASC.Web.Files.Utils
                 }
             }
             SetTracker(fileId, null);
-        }
-
-        public static bool IsEditing(object fileId)
-        {
-            var tracker = GetTracker(fileId);
-            if (tracker != null)
-            {
-                var listForRemove = tracker._editingBy
-                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout)
-                                           .ToList();
-                foreach (var editTab in listForRemove)
-                {
-                    tracker._editingBy.Remove(editTab.Key);
-                }
-
-                if (tracker._editingBy.Count == 0)
-                {
-                    SetTracker(fileId, null);
-                    return false;
-                }
-
-                SetTracker(fileId, tracker);
-                return true;
-            }
-            SetTracker(fileId, null);
-            return false;
         }
 
         public static bool IsEditing<T>(T fileId)
@@ -189,13 +163,13 @@ namespace ASC.Web.Files.Utils
             SetTracker(fileId, null);
             return false;
         }
-        public static bool IsEditingAlone(object fileId)
+        public static bool IsEditingAlone<T>(T fileId)
         {
             var tracker = GetTracker(fileId);
             return tracker != null && tracker._editingBy.Count == 1 && tracker._editingBy.FirstOrDefault().Value.EditingAlone;
         }
 
-        public static void ChangeRight(object fileId, Guid userId, bool check)
+        public static void ChangeRight<T>(T fileId, Guid userId, bool check)
         {
             var tracker = GetTracker(fileId);
             if (tracker != null)
@@ -218,24 +192,24 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static List<Guid> GetEditingBy(object fileId)
+        public static List<Guid> GetEditingBy<T>(T fileId)
         {
             var tracker = GetTracker(fileId);
             return tracker != null && IsEditing(fileId) ? tracker._editingBy.Values.Select(i => i.UserId).Distinct().ToList() : new List<Guid>();
         }
 
-        private static FileTracker GetTracker(object fileId)
+        private static FileTracker GetTracker<T>(T fileId)
         {
-            if (fileId != null)
+            if (!fileId.Equals(default(T)))
             {
                 return cache.Get<FileTracker>(TRACKER + fileId);
             }
             return null;
         }
 
-        private static void SetTracker(object fileId, FileTracker tracker)
+        private static void SetTracker<T>(T fileId, FileTracker tracker)
         {
-            if (fileId != null)
+            if (!fileId.Equals(default(T)))
             {
                 if (tracker != null)
                 {

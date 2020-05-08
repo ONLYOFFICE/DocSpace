@@ -694,7 +694,7 @@ namespace ASC.Web.Files
                     stream.CanSeek
                     ? stream.Length.ToString(CultureInfo.InvariantCulture)
                     : file.ContentLength.ToString(CultureInfo.InvariantCulture));
-                await stream.CopyToAsync(context.Response.Body, StreamExtension.BufferSize);
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
@@ -787,7 +787,7 @@ namespace ASC.Web.Files
                     stream.CanSeek
                     ? stream.Length.ToString(CultureInfo.InvariantCulture)
                     : storeTemplate.GetFileSize("", path).ToString(CultureInfo.InvariantCulture));
-                stream.StreamCopyTo(context.Response.Body);
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
@@ -844,7 +844,7 @@ namespace ASC.Web.Files
             using (var readStream = store.GetReadStream(FileConstant.StorageDomainTmp, path))
             {
                 context.Response.Headers.Add("Content-Length", readStream.Length.ToString(CultureInfo.InvariantCulture));
-                await readStream.CopyToAsync(context.Response.Body, StreamExtension.BufferSize);
+                await readStream.CopyToAsync(context.Response.Body);
             }
 
             store.Delete(FileConstant.StorageDomainTmp, path);
@@ -935,7 +935,7 @@ namespace ASC.Web.Files
                 using (var stream = fileDao.GetDifferenceStream(file))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    await stream.CopyToAsync(context.Response.Body, StreamExtension.BufferSize);
+                    await stream.CopyToAsync(context.Response.Body);
                 }
             }
             catch (Exception ex)

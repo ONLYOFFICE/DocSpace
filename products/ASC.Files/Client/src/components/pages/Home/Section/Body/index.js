@@ -28,6 +28,7 @@ import {
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
+import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -36,12 +37,14 @@ const { FileAction } = constants;
 
 const linkStyles = { isHovered: true, type: "action", fontSize: "14px", className: "empty-folder_link", display: "flex" };
 
-class SectionBodyContent extends React.PureComponent {
+class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       editingId: null,
+      showSharingPanel: false,
+      currentItem: null,
       currentMediaFileId: 0,
       mediaViewerVisible: false
     };
@@ -69,6 +72,21 @@ class SectionBodyContent extends React.PureComponent {
     // }
   }
 
+  /* componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(([key, val]) =>
+      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+    if (this.state) {
+      Object.entries(this.state).forEach(([key, val]) =>
+        prevState[key] !== val && console.log(`State '${key}' changed`)
+      );
+    }
+  } */
+
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
+
   onClickRename = (item) => {
     const { id, fileExst } = item;
 
@@ -89,7 +107,7 @@ class SectionBodyContent extends React.PureComponent {
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
       onLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
-        const newItem = item.id === -1 ? null : item; 
+        const newItem = item.id === -1 ? null : item;
         if (!item.fileExst) {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
@@ -131,7 +149,7 @@ class SectionBodyContent extends React.PureComponent {
       .catch(err => toastr.error(err))
       .then(() =>
         fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
-          if(currentFolderType !== "Trash") {
+          if (currentFolderType !== "Trash") {
             const path = data.selectedFolder.pathParts;
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
@@ -146,7 +164,14 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickShare = item => {
-    return false;
+    let currentItem = item;
+    if (this.state.showSharingPanel) {
+      currentItem = null;
+    }
+    this.setState({
+      currentItem,
+      showSharingPanel: !this.state.showSharingPanel,
+    });
   }
 
   onClickLinkForPortal = item => {
@@ -175,7 +200,7 @@ class SectionBodyContent extends React.PureComponent {
         key: "sharing-settings",
         label: "Sharing settings",
         onClick: this.onClickShare.bind(this, item),
-        disabled: true
+        disabled: item.access !== 1
       },
       isFile
         ? {
@@ -252,12 +277,13 @@ class SectionBodyContent extends React.PureComponent {
     }
   };
 
+  svgLoader = () => <div style={{ width: '24px' }}></div>;
+
   getItemIcon = (item, isEdit) => {
     const extension = item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
-    const loader = <div style={{width: '24px'}}></div> 
 
     return <ReactSVG
       beforeInjection={svg => {
@@ -265,7 +291,7 @@ class SectionBodyContent extends React.PureComponent {
         isEdit && svg.setAttribute('style', 'margin-left: 24px');
       }}
       src={icon}
-      loading={() => loader}
+      loading={this.svgLoader}
     />;
   };
 
@@ -524,9 +550,10 @@ class SectionBodyContent extends React.PureComponent {
       fileAction,
       onLoading,
       isLoading,
-      currentFolderCount,
+      currentFolderCount
     } = this.props;
-    const { editingId } = this.state;
+
+    const { editingId, showSharingPanel, currentItem } = this.state;
 
     let items = [...folders, ...files];
 
@@ -633,7 +660,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders } = state.files;
+  const { selectedFolder, treeFolders, selection, shareDataItems } = state.files;
   const { id, title, foldersCount, filesCount } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -648,7 +675,7 @@ const mapStateToProps = state => {
     folders: state.files.folders,
     parentId: state.files.selectedFolder.parentId,
     selected: state.files.selected,
-    selection: state.files.selection,
+    selection,
     settings: state.auth.settings,
     viewer: state.auth.user,
     treeFolders: state.files.treeFolders,
@@ -656,7 +683,8 @@ const mapStateToProps = state => {
     title,
     myDocumentsId: treeFolders[myFolderIndex].id,
     currentFolderCount,
-    selectedFolderId: id
+    selectedFolderId: id,
+    shareDataItems
   };
 };
 
