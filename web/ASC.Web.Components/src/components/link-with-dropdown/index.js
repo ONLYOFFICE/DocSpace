@@ -214,8 +214,8 @@ class LinkWithDropdown extends React.Component {
           {data.map(item => (
             <DropDownItem
               key={item.key}
-              onClick={this.onClickDropDownItem.bind(this.props, item)}
               {...item}
+              onClick={this.onClickDropDownItem.bind(this.props, item)}
             />
           ))}
         </DropDown>
@@ -227,7 +227,7 @@ class LinkWithDropdown extends React.Component {
 LinkWithDropdown.propTypes = {
   color: PropTypes.string,
   data: PropTypes.array,
-  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]).isRequired,
+  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
   fontSize: PropTypes.string,
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isBold: PropTypes.bool,
