@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5010",
+      "applicationUrl": "http://localhost:5009",
       "sslPort": 0
     }
   },
@@ -21,7 +21,7 @@
     "ASC.Files.Service": {
       "commandName": "Project",
       "launchBrowser": false,
-      "applicationUrl": "http://localhost:5010",
+      "applicationUrl": "http://localhost:5009",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "$STORAGE_ROOT": "../../../Data",
