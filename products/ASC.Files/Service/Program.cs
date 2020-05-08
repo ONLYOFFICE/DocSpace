@@ -55,8 +55,8 @@ namespace ASC.Files.Service
                         .AddServiceLauncher()
                         .AddFileConverterService()
                         .AddKafkaService()
-                        .AddFilesWrapperService()
-                        .AddFoldersWrapperService();
+                        .AddFactoryIndexerFileService()
+                        .AddFactoryIndexerFolderService();
 
                     var a = typeof(FactoryIndexer<ISearchItem>).ToString();
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, "search.json");

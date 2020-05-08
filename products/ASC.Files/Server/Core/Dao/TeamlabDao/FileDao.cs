@@ -1396,7 +1396,7 @@ namespace ASC.Files.Core.Data
                 .AddAuthContextService()
                 .AddGlobalStoreService()
                 .AddGlobalSpaceService()
-                .AddFilesWrapperService()
+                .AddFactoryIndexerFileService()
                 .AddGlobalFolderService()
                 .AddChunkedUploadSessionHolderService()
                 .AddFolderDaoService();

@@ -182,7 +182,7 @@ namespace ASC.Web.Files.Configuration
                 .AddUserManagerService()
                 .AddGlobalService()
                 .AddFilesSubscriptionManagerService()
-                .AddFilesWrapperService();
+                .AddFactoryIndexerFileService();
         }
     }
 }

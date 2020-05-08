@@ -101,9 +101,9 @@ namespace ASC.Web.Files.Core.Search
         }
     }
 
-    public static class FoldersWrapperExtention
+    public static class FactoryIndexerFolderExtention
     {
-        public static DIHelper AddFoldersWrapperService(this DIHelper services)
+        public static DIHelper AddFactoryIndexerFolderService(this DIHelper services)
         {
             services.TryAddTransient<DbFolder>();
             services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();

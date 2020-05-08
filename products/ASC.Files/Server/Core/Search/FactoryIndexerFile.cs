@@ -113,9 +113,9 @@ namespace ASC.Web.Files.Core.Search
             get { return FilesCommonResource.IndexTitle; }
         }
     }
-    public static class FilesWrapperExtention
+    public static class FactoryIndexerFileExtention
     {
-        public static DIHelper AddFilesWrapperService(this DIHelper services)
+        public static DIHelper AddFactoryIndexerFileService(this DIHelper services)
         {
             services.TryAddTransient<DbFile>();
             services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
