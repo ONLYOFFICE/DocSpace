@@ -650,6 +650,14 @@ class SectionBodyContent extends React.Component {
               extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}
               extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]}
             />
+            {showSharingPanel && (
+              <SharingPanel
+                onLoading={onLoading}
+                selectedItems={currentItem}
+                onClose={this.onClickShare}
+                visible={showSharingPanel}
+              />
+            )}
           </>
         );
   }
