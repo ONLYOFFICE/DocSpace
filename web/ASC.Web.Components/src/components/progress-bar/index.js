@@ -10,6 +10,7 @@ const StyledProgressBar = styled.div`
   background-color: #f8f9f9;
 
   .progress-bar_full-text {
+    display: block;
     padding: 0px 6px;
     position: absolute;
     font-weight: 600;
