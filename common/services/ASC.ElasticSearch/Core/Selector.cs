@@ -118,11 +118,11 @@ namespace ASC.ElasticSearch
 
             if (IsExactlyPhrase(value))
             {
-                queryContainer = queryContainer & Wrap(selector, (a, w) => w.MatchPhrase(r => r.Field(a).Query(value.TrimQuotes())));
+                queryContainer &= Wrap(selector, (a, w) => w.MatchPhrase(r => r.Field(a).Query(value.TrimQuotes())));
             }
             else if (value.HasOtherLetter() || IsExactly(value))
             {
-                queryContainer = queryContainer & Wrap(selector, (a, w) => w.Match(r => r.Field(a).Query(value.TrimQuotes())));
+                queryContainer &= Wrap(selector, (a, w) => w.Match(r => r.Field(a).Query(value.TrimQuotes())));
             }
             else
             {
@@ -132,19 +132,19 @@ namespace ASC.ElasticSearch
                     foreach (var p in phrase)
                     {
                         var p1 = p;
-                        queryContainer = queryContainer & Wrap(selector, (a, w) => w.Wildcard(r => r.Field(a).Value(p1.WrapAsterisk())));
+                        queryContainer &= Wrap(selector, (a, w) => w.Wildcard(r => r.Field(a).Value(p1.WrapAsterisk())));
                     }
                 }
                 else
                 {
-                    queryContainer = queryContainer & Wrap(selector, (a, w) => w.Wildcard(r => r.Field(a).Value(value.WrapAsterisk())));
+                    queryContainer &= Wrap(selector, (a, w) => w.Wildcard(r => r.Field(a).Value(value.WrapAsterisk())));
                 }
 
             }
 
             if (IsExactly(value))
             {
-                queryContainer = queryContainer | Wrap(selector, (a, w) => w.MatchPhrase(r => r.Field(a).Query(value)));
+                queryContainer |= Wrap(selector, (a, w) => w.MatchPhrase(r => r.Field(a).Query(value)));
             }
 
             return this;
@@ -197,7 +197,7 @@ namespace ASC.ElasticSearch
 
         public Selector<T> MatchAll(string value)
         {
-            //Match(() => ServiceProvider.GetService<T>().GetContentProperties(), value); TODO:
+            //Match(() => ServiceProvider.GetService<T>().GetContentProperties(), value);
 
             return this;
         }
@@ -329,7 +329,6 @@ namespace ASC.ElasticSearch
 
             if (string.IsNullOrEmpty(path) &&
                 !string.IsNullOrEmpty(fieldSelector.Name) &&
-                fieldSelector.Name.StartsWith(JoinTypeEnum.Sub + ":") &&
                 fieldSelector.Name.IndexOf(".", StringComparison.InvariantCulture) > 0)
             {
                 var splitted = fieldSelector.Name.Split(':')[1];
