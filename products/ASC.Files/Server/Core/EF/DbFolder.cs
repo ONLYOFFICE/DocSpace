@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 using ASC.ElasticSearch;
 
@@ -45,6 +46,14 @@ namespace ASC.Files.Core.EF
         public string IndexName
         {
             get => Tables.Folder;
+        }
+
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Title };
+            }
         }
     }
 }

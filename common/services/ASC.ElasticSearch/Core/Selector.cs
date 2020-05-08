@@ -29,6 +29,8 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Nest;
 
 namespace ASC.ElasticSearch
@@ -197,7 +199,7 @@ namespace ASC.ElasticSearch
 
         public Selector<T> MatchAll(string value)
         {
-            //Match(() => ServiceProvider.GetService<T>().GetContentProperties(), value);
+            Match(() => ((NewArrayExpression)(ServiceProvider.GetService<T>().SearchContentFields).Body).Expressions.ToArray(), value);
 
             return this;
         }

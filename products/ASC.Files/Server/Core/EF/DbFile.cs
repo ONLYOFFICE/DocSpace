@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
@@ -83,6 +84,11 @@ namespace ASC.Files.Core.EF
 
         [NotMapped]
         public Document Document { get; set; }
+
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get => (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+        }
 
         public override object[] GetKeys()
         {
