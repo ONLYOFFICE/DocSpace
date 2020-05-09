@@ -191,7 +191,7 @@ class ValumeBtn extends Component {
             width={this.props.width}
             value={this.props.volume}
             onMouseDown={this.props.onMouseDown}
-            onChange={this.props.onChange}
+            handleSeekChange={this.props.onChange}
             onMouseUp={this.props.handleSeekMouseUp}
           />
         </div>

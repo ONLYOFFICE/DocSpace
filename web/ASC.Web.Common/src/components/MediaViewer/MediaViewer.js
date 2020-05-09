@@ -209,6 +209,10 @@ class MediaViewer extends React.Component {
             isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
         }
 
+        if (!isImage && this.mapSupplied[ext].convertable && !url.includes("#")) {
+            url += (url.includes("?") ? "&" : "?") + "convpreview=true";
+        }
+
         return (
             <StyledMediaViewer visible={this.state.visible}>
 
