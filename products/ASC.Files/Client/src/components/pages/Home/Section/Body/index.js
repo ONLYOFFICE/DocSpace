@@ -83,8 +83,8 @@ class SectionBodyContent extends React.Component {
     }
   } */
 
-  shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+  shouldComponentUpdate(nextProps, nextStates) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextStates.mediaViewerVisible);
   }
 
   onClickRename = (item) => {
@@ -183,13 +183,7 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickLinkEdit = item => {
-    if(isImage(item.fileExst) || isSound(item.fileExst) || isVideo(item.fileExst))
-      this.setState({
-        mediaViewerVisible: true,
-        currentMediaFileId: item.id
-      });
-    else
-      return window.open(`./doceditor?fileId=${item.id}`, "_blank");
+    return window.open(`./doceditor?fileId=${item.id}`, "_blank");
   }
 
   getFilesContextOptions = (item, viewer) => {
@@ -537,6 +531,12 @@ class SectionBodyContent extends React.Component {
       mediaViewerVisible: false
     });
   }
+  onMediaFileClick = (id) => {
+      this.setState({
+        mediaViewerVisible: true,
+        currentMediaFileId: id
+      });
+  }
 
   render() {
     const {
@@ -632,6 +632,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete.bind(this, item)}
                       onLoading={onLoading}
+                      onMediaFileClick={this.onMediaFileClick}
                       isLoading={isLoading}
                     />
                   </SimpleFilesRow>

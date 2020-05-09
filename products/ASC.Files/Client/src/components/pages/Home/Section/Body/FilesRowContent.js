@@ -105,7 +105,7 @@ class FilesRowContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, onLoading } = this.props;
+    const { filter, parentFolder, onLoading, onMediaFileClick } = this.props;
     if (!fileExst) {
       onLoading(true);
       const newFilter = filter.clone();
@@ -127,7 +127,8 @@ class FilesRowContent extends React.PureComponent {
       const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
 
       if (isOpenMedia) {
-        return window.open(viewUrl, "_blank"); //TODO: insert media viewer
+        onMediaFileClick(id);
+        return;
       }
 
       return window.open(viewUrl, "_blank");
