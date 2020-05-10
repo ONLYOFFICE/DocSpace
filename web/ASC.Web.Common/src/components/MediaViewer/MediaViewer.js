@@ -95,7 +95,7 @@ class MediaViewer extends React.Component {
             visible: this.props.visible,
             allowConvert: true,
             playlist: this.props.playlist,
-            playlistPos: this.props.currentFileId,
+            playlistPos: 0,
         };
 
         this.detailsContainer = React.createRef();
@@ -106,7 +106,8 @@ class MediaViewer extends React.Component {
         if (this.props.visible !== prevProps.visible) {
             this.setState(
                 {
-                    visible: this.props.visible
+                    visible: this.props.visible,
+                    playlistPos: this.props.playlist.length > 0 ? this.props.playlist.find(file => file.fileId === this.props.currentFileId).id : 0
                 }
             );
         }
@@ -189,6 +190,8 @@ class MediaViewer extends React.Component {
     render() {
 
         let currentPlaylistPos = this.state.playlistPos;
+        let currentFileId = this.state.playlist.length > 0 ? this.state.playlist.find(file => file.id === currentPlaylistPos).fileId : 0;
+
         let fileTitle = this.state.playlist[currentPlaylistPos].title;
         let url = this.state.playlist[currentPlaylistPos].src;
         let isImage = false;
@@ -244,15 +247,15 @@ class MediaViewer extends React.Component {
                 <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
                     <span>
                         {
-                            this.props.canDelete(currentPlaylistPos) &&
-                            <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(this.state.playlistPos) })}>
+                            this.props.canDelete(currentFileId) &&
+                            <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(currentFileId) })}>
                                 <div className="deleteBtnContainer">
                                     <Icons.MediaDeleteIcon size="scale" />
                                 </div>
                             </ControlBtn>
                         }
 
-                        <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(this.state.playlistPos) })}>
+                        <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(currentFileId) })}>
                             <div className="downloadBtnContainer">
                                 <Icons.MediaDownloadIcon size="scale" />
                             </div>
