@@ -578,15 +578,19 @@ class SectionBodyContent extends React.Component {
 
    
     var playlist = [];
+    let id = 0;
     files.forEach(function(file, i, files) {
-      if(isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst))
+      if(isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst)){
         playlist.push(
           {
-            id: file.id,
+            id: id,
+            fileId: file.id,
             src: file.viewUrl,
             title: file.title
           }
-        )
+        );
+        id++;
+      }
     });
 
     return !fileAction.id && currentFolderCount === 0 ? (
