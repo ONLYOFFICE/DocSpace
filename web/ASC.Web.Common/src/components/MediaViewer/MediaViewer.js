@@ -15,7 +15,7 @@ const StyledMediaViewer = styled.div`
     
     color: #d1d1d1;
     display: ${props => props.visible ? "block" : "none"};
-
+    overflow: hidden;
     .videoViewerOverlay{
         position: fixed;
         z-index: 4000;
@@ -212,9 +212,10 @@ class MediaViewer extends React.Component {
             isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
         }
 
-        if (!isImage && this.mapSupplied[ext].convertable && !url.includes("#")) {
-            url += (url.includes("?") ? "&" : "?") + "convpreview=true";
-        }
+        if(this.mapSupplied[ext])
+            if (!isImage && this.mapSupplied[ext].convertable && !url.includes("#")) {
+                url += (url.includes("?") ? "&" : "?") + "convpreview=true";
+            }
 
         return (
             <StyledMediaViewer visible={this.state.visible}>

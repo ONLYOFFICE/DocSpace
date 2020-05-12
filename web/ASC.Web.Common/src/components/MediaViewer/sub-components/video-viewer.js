@@ -18,7 +18,7 @@ const StyledControls = styled.div`
     position: fixed;
     z-index: 4001;
     ${props => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
-    top: ${props => props.top}px;
+    top: calc(50% + ${props => props.top}px);
     left: ${props => props.left}px;
     
 `;
@@ -164,7 +164,7 @@ const StyledVideoViewer = styled.div`
       width: ${props => props.width}px;
       height: ${props => props.height}px;
       left: ${props => props.left}px;
-      top: ${props => props.top}px;
+      top: calc(50% - ${props => props.top/2}px);
       z-index: 4001;
       position: fixed;
       padding-bottom: 40px;
@@ -372,7 +372,7 @@ class VideoViewer extends Component {
     var centerAreaOy = screenSize.h / 2 + document.documentElement.scrollTop;
 
     if (document.getElementsByTagName('video')[0]) {
-      width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth || 480 : screenSize.w - 300;
+      width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth || 480 : screenSize.w - 150;
       height = this.props.isVideo ? document.getElementsByTagName('video')[0].videoHeight || 270 : 0;
 
       let resize = this.resizePlayer(
@@ -387,16 +387,17 @@ class VideoViewer extends Component {
 
     }
 
-    let left = this.props.isVideo ? centerAreaOx - width / 2 : centerAreaOx + parentOffset / 4 - width / 2;
-    let top = this.props.isVideo ? centerAreaOy - height / 2 + parentOffset / 2 : centerAreaOy + parentOffset / 2;
+    let left = this.props.isVideo ? centerAreaOx - width / 2 : centerAreaOx - width / 2;
+    let top = this.props.isVideo ? centerAreaOy  : centerAreaOy + parentOffset / 2;
 
+    let progressWidth = this.props.isVideo ? width - 220 : width - 170;
     return (
       <StyledVideoViewer
         isVideo={this.props.isVideo}
         width={width}
         height={height}
         left={left}
-        top={top}
+        top={height + 40}
       >
         <div>
           <div className='playerWrapper'>
@@ -427,13 +428,13 @@ class VideoViewer extends Component {
           <Controls
             height={controlsHeight}
             left={left}
-            top={top + height}
+            top={height/2 - 20}
             isVideo={this.props.isVideo}
           >
             <PlayBtn onClick={this.handlePlayPause} playing={playing} />
             <Progress
               value={played}
-              width={width - 220}
+              width={progressWidth}
               onMouseDown={this.handleSeekMouseDown}
               handleSeekChange={this.handleSeekChange}
               onMouseUp={this.handleSeekMouseUp}
