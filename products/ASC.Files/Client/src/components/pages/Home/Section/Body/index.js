@@ -543,6 +543,13 @@ class SectionBodyContent extends React.Component {
       return window.open(viewUrlFile, "_blank");
     }
   }
+  onDeleteMediaFile = (id) => {
+    if(this.props.files.length > 0){
+      let file = this.props.files.find(file => file.id === id);
+      if(file)
+        this.onDeleteFile(file.id, file.folderId)
+    }
+  }
 
   render() {
     const {
@@ -655,7 +662,7 @@ class SectionBodyContent extends React.Component {
               canDelete={(fileId) => { return true }}
               visible={this.state.mediaViewerVisible}
               playlist={playlist}
-              onDelete={ (fileId) => console.log(fileId) }
+              onDelete={this.onDeleteMediaFile}
               onDownload={this.onDownloadMediaFile}
               onClose={this.onMediaViewerClose}
               extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}

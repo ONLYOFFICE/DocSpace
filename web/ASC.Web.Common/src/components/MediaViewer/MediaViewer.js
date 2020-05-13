@@ -7,6 +7,7 @@ import ImageViewer from "./sub-components/image-viewer"
 import VideoViewer from "./sub-components/video-viewer"
 import MediaScrollButton from "./sub-components/scroll-button"
 import ControlBtn from "./sub-components/control-btn"
+import isEqual from "lodash/isEqual";
 
 const StyledVideoViewer = styled(VideoViewer)`
     z-index: 4001;
@@ -110,6 +111,20 @@ class MediaViewer extends React.Component {
                     playlistPos: this.props.playlist.length > 0 ? this.props.playlist.find(file => file.fileId === this.props.currentFileId).id : 0
                 }
             );
+        }
+        if (this.props.visible == true && this.props.visible === prevProps.visible && !isEqual(this.props.playlist, prevProps.playlist)) {
+            let playlistPos = 0;
+            if(this.props.playlist.length > 0){
+                if(this.props.playlist.length - 1 < this.state.playlistPos){
+                    playlistPos = this.props.playlist.length - 1;
+                }
+                this.setState(
+                    {
+                        playlist: this.props.playlist,
+                        playlistPos: playlistPos
+                    }
+                );
+            }
         }
 
     }
