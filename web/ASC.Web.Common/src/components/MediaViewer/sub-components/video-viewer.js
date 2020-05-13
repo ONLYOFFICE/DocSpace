@@ -117,6 +117,7 @@ FullScreenBtn.propTypes = {
 
 const StyledValumeContainer = styled.div`
     display: inline-block;
+    vertical-align: top;
     line-height: 39px;
     position: relative;
     
@@ -148,6 +149,7 @@ const StyledDuration = styled.div`
     margin: 5px;
     width: 60px;
     text-align: center;
+    vertical-align: top;
     border-radius: 2px;
     cursor: pointer;
 
@@ -303,8 +305,10 @@ class VideoViewer extends Component {
   }
 
   handleSeekMouseUp = e => {
-    this.setState({ seeking: false })
-    this.player.seekTo(parseFloat(e.target.value))
+    if(!isNaN(parseFloat(e.target.value))){
+      this.setState({ seeking: false });
+      this.player.seekTo(parseFloat(e.target.value));
+    }
   }
 
   handleProgress = state => {

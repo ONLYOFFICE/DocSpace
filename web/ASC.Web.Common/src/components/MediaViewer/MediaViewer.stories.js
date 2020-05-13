@@ -11,6 +11,7 @@ import Readme from './README.md';
 var playlist = [
   {
     id: 0,
+    fileId: 0,
     src: "",
     title: ""
   }

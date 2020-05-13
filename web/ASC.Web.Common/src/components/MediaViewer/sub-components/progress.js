@@ -13,6 +13,7 @@ const StyledProgress = styled.div`
     height:6px;
     background:rgba(200,200,200,0.2);
     margin:15px 0;
+    vertical-align: middle;
   }
   .fill{
     cursor: pointer;
