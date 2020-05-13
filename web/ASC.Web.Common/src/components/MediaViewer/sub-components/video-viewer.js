@@ -442,6 +442,7 @@ class VideoViewer extends Component {
               onMouseDown={this.handleSeekMouseDown}
               handleSeekChange={this.handleSeekChange}
               onMouseUp={this.handleSeekMouseUp}
+              onTouchEnd={this.handleSeekMouseUp}
             />
             <StyledDuration>-<Duration seconds={duration * (1 - played)} /></StyledDuration>
             <ValumeBtn
