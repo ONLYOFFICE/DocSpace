@@ -537,6 +537,12 @@ class SectionBodyContent extends React.Component {
         currentMediaFileId: id
       });
   }
+  onDownloadMediaFile = (id) => {
+    if(this.props.files.length > 0){
+      let viewUrlFile = this.props.files.find(file => file.id === id).viewUrl;
+      return window.open(viewUrlFile, "_blank");
+    }
+  }
 
   render() {
     const {
@@ -650,7 +656,7 @@ class SectionBodyContent extends React.Component {
               visible={this.state.mediaViewerVisible}
               playlist={playlist}
               onDelete={ (fileId) => console.log(fileId) }
-              onDownload={(fileId) => console.log(fileId)}
+              onDownload={this.onDownloadMediaFile}
               onClose={this.onMediaViewerClose}
               extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}
               extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]}
