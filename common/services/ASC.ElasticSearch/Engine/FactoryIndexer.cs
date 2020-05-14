@@ -108,8 +108,6 @@ namespace ASC.ElasticSearch
             FactoryIndexerCommon = factoryIndexer;
             Indexer = baseIndexer;
             ServiceProvider = serviceProvider;
-
-            Indexer.CreateIfNotExist(ServiceProvider.GetService<T>());
         }
 
         public bool TrySelect(Expression<Func<Selector<T>, Selector<T>>> expression, out IReadOnlyCollection<T> result)

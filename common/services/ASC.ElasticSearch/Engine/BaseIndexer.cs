@@ -115,14 +115,15 @@ namespace ASC.ElasticSearch
 
         internal void Index(T data, bool immediately = true)
         {
+            CreateIfNotExist(data);
             Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
         }
 
         internal void Index(List<T> data, bool immediately = true)
         {
-            //CreateIfNotExist(data[0]);
             if (!data.Any()) return;
 
+            CreateIfNotExist(data[0]);
             if (data[0] is ISearchItemDocument)
             {
                 var currentLength = 0L;
@@ -198,22 +199,25 @@ namespace ASC.ElasticSearch
 
         internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
+            CreateIfNotExist(data);
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
         }
 
         internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
+            CreateIfNotExist(data);
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            //CreateIfNotExist(data);
+            CreateIfNotExist(data);
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
+            CreateIfNotExist(data);
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
         }
 
@@ -282,6 +286,7 @@ namespace ASC.ElasticSearch
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
             Client.Instance.Indices.Delete(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
+            CreateIfNotExist(Wrapper);
         }
 
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
