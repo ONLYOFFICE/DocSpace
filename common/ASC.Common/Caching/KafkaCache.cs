@@ -12,8 +12,6 @@ using Confluent.Kafka;
 using Google.Protobuf;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching

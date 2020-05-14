@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Logging;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -79,7 +79,7 @@ namespace ASC.Core.Common.EF
             services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
             //services.TryAddScoped<T>();
 
-            return services;
+            return services.AddLoggerService();
         }
     }
 }

@@ -159,7 +159,6 @@ namespace ASC.Data.Storage
             StaticUploader staticUploader,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
-            IHttpContextAccessor httpContextAccessor,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> options)
@@ -168,10 +167,23 @@ namespace ASC.Data.Storage
             StaticUploader = staticUploader;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
-            HttpContextAccessor = httpContextAccessor;
             HostEnvironment = hostEnvironment;
             CoreBaseSettings = coreBaseSettings;
             Options = options;
+        }
+
+        public WebPath(
+            WebPathSettings webPathSettings,
+            StaticUploader staticUploader,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
+            IHttpContextAccessor httpContextAccessor,
+            IHostEnvironment hostEnvironment,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsMonitor<ILog> options)
+            : this(webPathSettings, staticUploader, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public string GetPath(string relativePath)
@@ -194,7 +206,7 @@ namespace ASC.Data.Storage
                 }
             }
 
-            return WebPathSettings.GetPath(HttpContextAccessor.HttpContext, Options, relativePath);
+            return WebPathSettings.GetPath(HttpContextAccessor?.HttpContext, Options, relativePath);
         }
 
         public bool Exists(string relativePath)

@@ -48,7 +48,6 @@ namespace ASC.MessagingSystem
 
         public MessageService(
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor,
             MessageFactory messageFactory,
             DbMessageSender sender,
             MessagePolicy messagePolicy,
@@ -61,9 +60,20 @@ namespace ASC.MessagingSystem
 
             this.sender = sender;
             MessagePolicy = messagePolicy;
-            request = httpContextAccessor?.HttpContext?.Request;
             MessageFactory = messageFactory;
             log = options.CurrentValue;
+        }
+
+        public MessageService(
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            MessageFactory messageFactory,
+            DbMessageSender sender,
+            MessagePolicy messagePolicy,
+            IOptionsMonitor<ILog> options)
+            : this(configuration, messageFactory, sender, messagePolicy, options)
+        {
+            request = httpContextAccessor?.HttpContext?.Request;
         }
 
         #region HttpRequest
