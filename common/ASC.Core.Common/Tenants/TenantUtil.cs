@@ -74,10 +74,17 @@ namespace ASC.Core.Tenants
             TimeZoneConverter = timeZoneConverter;
         }
 
-
+        private TimeZoneInfo timeZoneInfo;
+        private TimeZoneInfo TimeZoneInfo
+        {
+            get
+            {
+                return timeZoneInfo ?? (timeZoneInfo = TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
+            }
+        }
         public DateTime DateTimeFromUtc(DateTime utc)
         {
-            return DateTimeFromUtc(TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone), utc);
+            return DateTimeFromUtc(TimeZoneInfo, utc);
         }
 
         public DateTime DateTimeFromUtc(string timeZone, DateTime utc)
@@ -103,7 +110,7 @@ namespace ASC.Core.Tenants
 
         public DateTime DateTimeToUtc(DateTime local)
         {
-            return DateTimeToUtc(TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone), local);
+            return DateTimeToUtc(TimeZoneInfo, local);
         }
 
         public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
@@ -126,7 +133,7 @@ namespace ASC.Core.Tenants
 
         public DateTime DateTimeNow()
         {
-            return DateTimeNow(TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
+            return DateTimeNow(TimeZoneInfo);
         }
 
         public static DateTime DateTimeNow(TimeZoneInfo timeZone)
