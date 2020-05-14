@@ -124,6 +124,13 @@ class MediaViewer extends React.Component {
                         playlistPos: playlistPos
                     }
                 );
+            }else{
+                this.props.onEmptyPlaylistError();
+                this.setState(
+                    {
+                        visible: false
+                    }
+                );
             }
         }
 
@@ -295,7 +302,8 @@ MediaViewer.propTypes = {
     canDelete: PropTypes.func,
     onDelete: PropTypes.func,
     onDownload: PropTypes.func,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    onEmptyPlaylistError:PropTypes.func
 }
 
 MediaViewer.defaultProps = {
