@@ -32,8 +32,6 @@ using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace ASC.Core.Security.Authorizing
 {
     class PermissionProvider : IPermissionProvider

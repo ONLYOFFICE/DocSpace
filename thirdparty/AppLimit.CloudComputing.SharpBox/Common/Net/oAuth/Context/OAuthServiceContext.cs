@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Context
+﻿namespace AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Context
 {
     internal class OAuthServiceContext
     {

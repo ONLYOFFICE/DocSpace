@@ -32,8 +32,6 @@ using ASC.Common;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider

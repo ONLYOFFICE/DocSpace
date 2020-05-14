@@ -57,7 +57,9 @@ namespace ASC.Core.Common.Settings
         {
             services.TryAddScoped<SettingsManager>();
 
-            return services.AddDbSettingsManagerService();
+            return services
+                .AddAuthContextService()
+                .AddDbSettingsManagerService();
         }
     }
 }

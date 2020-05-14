@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 using AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Impl;
 
 namespace AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Context

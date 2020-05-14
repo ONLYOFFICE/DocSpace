@@ -375,9 +375,10 @@ namespace ASC.Web.Files.Utils
                 folders = fileSecurity.FilterRead(folders).ToList();
                 entries = entries.Concat(folders);
 
-                var files = DaoFactory.GetFileDao<T>().GetFiles(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
-                files = fileSecurity.FilterRead(files).ToList();
-                entries = entries.Concat(files);
+
+                var files = DaoFactory.GetFileDao<T>()
+                    .GetFiles(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                 {
@@ -397,7 +398,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            entries = FileMarker.SetTagsNew<T>(parent, entries);
+            entries = FileMarker.SetTagsNew(parent, entries);
 
             //sorting after marking
             if (orderBy.SortedBy == SortedByType.New)
@@ -409,8 +410,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            SetFileStatus(entries.OfType<File<T>>().Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).Select(r => r as File<T>).ToList());
-
+            SetFileStatus(entries.OfType<File<T>>().Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).ToList());
             return entries;
         }
 

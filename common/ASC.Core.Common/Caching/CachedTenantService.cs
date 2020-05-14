@@ -33,8 +33,6 @@ using ASC.Common.Utils;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
-
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
