@@ -18,10 +18,10 @@ namespace ASC.Files.Model
 
     public class DownloadModel : BaseBatchModel<object>
     {
-        public IEnumerable<ItemKeyValuePair<string, string>> FileConvertIds { get; set; }
+        public IEnumerable<ItemKeyValuePair<object, string>> FileConvertIds { get; set; }
         public DownloadModel() : base()
         {
-            FileConvertIds = new List<ItemKeyValuePair<string, string>>();
+            FileConvertIds = new List<ItemKeyValuePair<object, string>>();
         }
     }
 
