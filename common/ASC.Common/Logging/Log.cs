@@ -35,7 +35,6 @@ using log4net.Config;
 using log4net.Core;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using NLog;

@@ -30,8 +30,6 @@ using System.Text;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 
 namespace ASC.Common.Utils

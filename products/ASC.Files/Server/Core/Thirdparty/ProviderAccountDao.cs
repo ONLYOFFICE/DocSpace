@@ -73,11 +73,13 @@ namespace ASC.Files.Thirdparty
 
     internal class ProviderAccountDao : IProviderDao
     {
-        protected int TenantID { get; private set; }
+        private int tenantID;
+        protected int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
         public FilesDbContext FilesDbContext { get; }
         public ILog Logger { get; }
         public IServiceProvider ServiceProvider { get; }
         public TenantUtil TenantUtil { get; }
+        public TenantManager TenantManager { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public SecurityContext SecurityContext { get; }
         public ConsumerFactory ConsumerFactory { get; }
@@ -92,11 +94,11 @@ namespace ASC.Files.Thirdparty
             DbContextManager<FilesDbContext> dbContextManager,
             IOptionsMonitor<ILog> options)
         {
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
             Logger = options.Get("ASC.Files");
             ServiceProvider = serviceProvider;
             TenantUtil = tenantUtil;
+            TenantManager = tenantManager;
             InstanceCrypto = instanceCrypto;
             SecurityContext = securityContext;
             ConsumerFactory = consumerFactory;

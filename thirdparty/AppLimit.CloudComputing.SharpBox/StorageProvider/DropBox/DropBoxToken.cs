@@ -1,4 +1,3 @@
-using System;
 using AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Token;
 using AppLimit.CloudComputing.SharpBox.Common.Net.Json;
 

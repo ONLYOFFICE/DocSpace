@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
 using ASC.Common;
 using ASC.Core;
@@ -55,8 +56,10 @@ namespace ASC.Files.Core.Data
 {
     internal class FileDao : AbstractDao, IFileDao<int>
     {
+        public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
+
         private static readonly object syncRoot = new object();
-        public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
+        public FactoryIndexer<DbFile> FactoryIndexer { get; }
         public GlobalStore GlobalStore { get; }
         public GlobalSpace GlobalSpace { get; }
         public GlobalFolder GlobalFolder { get; }
@@ -66,7 +69,7 @@ namespace ASC.Files.Core.Data
         public CrossDao CrossDao { get; }
 
         public FileDao(
-            FactoryIndexer<FilesWrapper> factoryIndexer,
+            FactoryIndexer<DbFile> factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -252,7 +255,7 @@ namespace ASC.Files.Core.Data
             {
                 var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
 
-                Expression<Func<Selector<FilesWrapper>, Selector<FilesWrapper>>> expression = s => func(s);
+                Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
 
                 if (FactoryIndexer.TrySelectIds(expression, out var searchIds))
                 {
@@ -368,6 +371,8 @@ namespace ASC.Files.Core.Data
 
             var isNew = false;
             List<int> parentFoldersIds;
+            DbFile toInsert = null;
+
             lock (syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
@@ -400,7 +405,7 @@ namespace ASC.Files.Core.Data
                     FilesDbContext.SaveChanges();
                 }
 
-                var toInsert = new DbFile
+                toInsert = new DbFile
                 {
                     Id = file.ID,
                     Version = file.Version,
@@ -428,14 +433,15 @@ namespace ASC.Files.Core.Data
 
                 file.PureTitle = file.Title;
 
-                parentFoldersIds =
+                var parentFolders =
                     FilesDbContext.Tree
                     .Where(r => r.FolderId == file.FolderID)
                     .OrderByDescending(r => r.Level)
-                    .Select(r => r.ParentId)
                     .ToList();
 
-                if (parentFoldersIds.Count > 0)
+                parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+                if (parentFoldersIds.Any())
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Any(a => a == r.Id));
@@ -448,6 +454,8 @@ namespace ASC.Files.Core.Data
 
                     FilesDbContext.SaveChanges();
                 }
+
+                toInsert.Folders = parentFolders;
 
                 if (isNew)
                 {
@@ -476,7 +484,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(InitDocument(toInsert));
 
             return GetFile(file.ID);
         }
@@ -502,6 +510,8 @@ namespace ASC.Files.Core.Data
                 }
             }
 
+            DbFile toUpdate = null;
+
             List<int> parentFoldersIds;
             lock (syncRoot)
             {
@@ -516,7 +526,7 @@ namespace ASC.Files.Core.Data
                 if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
-                var toUpdate = FilesDbContext.Files
+                toUpdate = FilesDbContext.Files
                     .Where(r => r.Id == file.ID && r.Version == file.Version)
                     .FirstOrDefault();
 
@@ -541,13 +551,14 @@ namespace ASC.Files.Core.Data
 
                 file.PureTitle = file.Title;
 
-                parentFoldersIds = FilesDbContext.Tree
+                var parentFolders = FilesDbContext.Tree
                     .Where(r => r.FolderId == file.FolderID)
                     .OrderByDescending(r => r.Level)
-                    .Select(r => r.ParentId)
                     .ToList();
 
-                if (parentFoldersIds.Count > 0)
+                parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+                if (parentFoldersIds.Any())
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Any(a => a == r.Id));
@@ -560,6 +571,8 @@ namespace ASC.Files.Core.Data
 
                     FilesDbContext.SaveChanges();
                 }
+
+                toUpdate.Folders = parentFolders;
             }
 
             if (fileStream != null)
@@ -579,7 +592,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(InitDocument(toUpdate));
 
             return GetFile(file.ID);
         }
@@ -639,6 +652,11 @@ namespace ASC.Files.Core.Data
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
+            foreach (var d in toDeleteFiles)
+            {
+                FactoryIndexer.DeleteAsync(d);
+            }
+
             var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
@@ -661,9 +679,11 @@ namespace ASC.Files.Core.Data
             if (deleteFolder)
                 DeleteFolder(fileId);
 
-            var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            wrapper.Id = fileId;
-            FactoryIndexer.DeleteAsync(wrapper);
+            var toDeleteFile = toDeleteFiles.FirstOrDefault(r => r.CurrentVersion);
+            if (toDeleteFile != null)
+            {
+                FactoryIndexer.DeleteAsync(toDeleteFile);
+            }
         }
 
         public bool IsExist(string title, object folderId)
@@ -699,6 +719,8 @@ namespace ASC.Files.Core.Data
         {
             if (fileId == default) return default;
 
+            List<DbFile> toUpdate;
+
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -707,7 +729,7 @@ namespace ASC.Files.Core.Data
                     .Distinct()
                     .ToList();
 
-                var toUpdate = Query(FilesDbContext.Files)
+                toUpdate = Query(FilesDbContext.Files)
                     .Where(r => r.Id == fileId)
                     .ToList();
 
@@ -729,20 +751,19 @@ namespace ASC.Files.Core.Data
                 RecalculateFilesCount(toFolderId);
             }
 
-            var parentFoldersIds =
+            var parentFolders =
                 FilesDbContext.Tree
                 .Where(r => r.FolderId == toFolderId)
                 .OrderByDescending(r => r.Level)
-                .Select(r => r.ParentId)
                 .ToList();
 
-            var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            wrapper.Id = fileId;
-            wrapper.Folders = parentFoldersIds.Select(r => new FilesFoldersWrapper() { FolderId = r.ToString() }).ToList();
+            var toUpdateFile = toUpdate.FirstOrDefault(r => r.CurrentVersion);
 
-            FactoryIndexer.Update(wrapper,
-                UpdateAction.Replace,
-                w => w.Folders);
+            if (toUpdateFile != null)
+            {
+                toUpdateFile.Folders = parentFolders;
+                FactoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+            }
 
             return fileId;
         }
@@ -812,7 +833,6 @@ namespace ASC.Files.Core.Data
 
         public int FileRename(File<int> file, string newTitle)
         {
-            var fileIdString = file.ID.ToString();
             newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
@@ -824,6 +844,8 @@ namespace ASC.Files.Core.Data
             toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
             FilesDbContext.SaveChanges();
+
+            FactoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn);
 
             return file.ID;
         }
@@ -1175,7 +1197,7 @@ namespace ASC.Files.Core.Data
 
         #endregion
 
-        private Func<Selector<FilesWrapper>, Selector<FilesWrapper>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
             return s =>
            {
@@ -1187,11 +1209,11 @@ namespace ASC.Files.Core.Data
                {
                    if (withSubfolders)
                    {
-                       result.In(a => a.Folders.Select(r => r.FolderId), new[] { parentId.ToString() });
+                       result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                    }
                    else
                    {
-                       result.InAll(a => a.Folders.Select(r => r.FolderId), new[] { parentId.ToString() });
+                       result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                    }
                }
 
@@ -1209,7 +1231,7 @@ namespace ASC.Files.Core.Data
                        //    result.Sort(r => r.Title, orderBy.IsAsc);
                        //    break;
                        case SortedByType.DateAndTime:
-                           result.Sort(r => r.LastModifiedOn, orderBy.IsAsc);
+                           result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
                            break;
                        case SortedByType.DateAndTimeCreation:
                            result.Sort(r => r.CreateOn, orderBy.IsAsc);
@@ -1314,6 +1336,36 @@ namespace ASC.Files.Core.Data
             file.Forcesave = r.file.Forcesave;
             return file;
         }
+
+        internal protected DbFile InitDocument(DbFile dbFile)
+        {
+            if (!FactoryIndexer.CanSearchByContent())
+            {
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+                };
+                return dbFile;
+            }
+
+            var file = ServiceProvider.GetService<File<int>>();
+            file.ID = dbFile.Id;
+            file.Title = dbFile.Title;
+            file.Version = dbFile.Version;
+            file.ContentLength = dbFile.ContentLength;
+
+            if (!IsExistOnStorage(file) || file.ContentLength > MaxContentLength) return dbFile;
+
+            using var stream = GetFileStream(file);
+            if (stream == null) return dbFile;
+
+            dbFile.Document = new Document
+            {
+                Data = Convert.ToBase64String(stream.GetCorrectBuffer())
+            };
+
+            return dbFile;
+        }
     }
 
     public class DbFileQuery
@@ -1344,7 +1396,7 @@ namespace ASC.Files.Core.Data
                 .AddAuthContextService()
                 .AddGlobalStoreService()
                 .AddGlobalSpaceService()
-                .AddFactoryIndexerService<FilesWrapper>()
+                .AddFactoryIndexerFileService()
                 .AddGlobalFolderService()
                 .AddChunkedUploadSessionHolderService()
                 .AddFolderDaoService();
