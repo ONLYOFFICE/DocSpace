@@ -124,6 +124,7 @@ class DownloadDialogComponent extends React.Component {
   getDownloadItems = () => {
     const { documents, spreadsheets, presentations, other } = this.state;
     const items = [];
+    const folders = [];
 
     for (let item of documents) {
       if (item.checked) {
@@ -152,23 +153,25 @@ class DownloadDialogComponent extends React.Component {
           const format = item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
           items.push({key: item.id, value: format});
         } else {
-          items.push({key: item.id});
+          folders.push(item.id);
         }
       }
     }
 
-    return items;
+    return [items, folders];
   }
 
   onDownload = () => {
-    const { startUploadSession, closeUploadSession, onDownloadProgress } = this.props;
+    const { startUploadSession, closeUploadSession, onDownloadProgress, onClose } = this.props;
 
-    const fileConvertIds = this.getDownloadItems();
+    const downloadItems = this.getDownloadItems();
+    const fileConvertIds = downloadItems[0];
+    const folderIds = downloadItems[1];
     startUploadSession();
 
     api.files
-      .downloadFormatFiles(fileConvertIds)
-      .then(() => onDownloadProgress(false))
+      .downloadFormatFiles(fileConvertIds, folderIds)
+      .then(() => { onClose(); onDownloadProgress(false); })
       .catch(err => closeUploadSession(err));
   };
 

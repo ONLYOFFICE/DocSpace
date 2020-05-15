@@ -328,8 +328,8 @@ export function downloadFiles(fileIds, folderIds) {
   return request({ method: "put", url: "/files/fileops/bulkdownload", data });
 }
 
-export function downloadFormatFiles(fileConvertIds) {
-  const data = { fileConvertIds };
+export function downloadFormatFiles(fileConvertIds, folderIds) {
+  const data = { folderIds, fileConvertIds };
   return request({ method: "put", url: "/files/fileops/bulkdownload", data });
 }
 
