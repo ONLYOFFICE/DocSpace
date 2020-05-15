@@ -43,11 +43,13 @@ namespace ASC.Files.Core.EF
         public int FilesCount { get; set; }
 
         [NotMapped]
+        [Ignore]
         public string IndexName
         {
             get => Tables.Folder;
         }
 
+        [Ignore]
         public Expression<Func<ISearchItem, object[]>> SearchContentFields
         {
             get
