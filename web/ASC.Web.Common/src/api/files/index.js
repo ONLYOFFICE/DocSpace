@@ -322,3 +322,17 @@ export function startUploadSession(folderId, fileName, fileSize, relativePath) {
 export function uploadFile(url, data) {
   return axios.post(url, data);
 }
+
+export function downloadFiles(fileIds, folderIds) {
+  const data = { fileIds, folderIds };
+  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
+}
+
+export function downloadFormatFiles(fileConvertIds) {
+  const data = { fileConvertIds };
+  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
+}
+
+export function getProgress() {
+  return request({ method: "get", url: "/files/fileops" });
+}

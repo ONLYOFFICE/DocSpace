@@ -14,7 +14,7 @@ import {
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { utils } from "asc-web-common";
+import { utils, api } from "asc-web-common";
 import {
   getFileIcon,
   getFolderIcon,
@@ -92,35 +92,84 @@ class DownloadDialogComponent extends React.Component {
     };
   }
 
-  onDownload = () => {
+  getTitleLabel = (format) => {
+    switch (format) {
+      case 0:
+        return this.props.t("OriginalFormat");
+      case 1:
+        return ".txt";
+      case 2:
+        return ".docx";
+      case 3:
+        return ".odt";
+      case 4:
+        return ".ods";
+      case 5:
+        return ".odp";
+      case 6:
+        return ".pdf";
+      case 7:
+        return ".rtf";
+      case 8:
+        return ".xlsx";
+      case 9:
+        return ".pptx";
+      case 10:
+        return this.props.t("CustomFormat");
+      default:
+        return "";
+    }
+  };
+
+  getDownloadItems = () => {
     const { documents, spreadsheets, presentations, other } = this.state;
-    const folderIds = [];
-    const fileIds = [];
+    const items = [];
 
     for (let item of documents) {
       if (item.checked) {
-        fileIds.push(item.id);
+        const format = item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
+        items.push({key: item.id, value: format});
       }
     }
 
     for (let item of spreadsheets) {
       if (item.checked) {
-        fileIds.push(item.id);
+        const format = item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
+        items.push({key: item.id, value: format});
       }
     }
 
     for (let item of presentations) {
       if (item.checked) {
-        fileIds.push(item.id);
+        const format = item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
+        items.push({key: item.id, value: format});
       }
     }
 
     for (let item of other) {
       if (item.checked) {
-        folderIds.push(item.id);
+        if(item.fileExst) {
+          const format = item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
+          items.push({key: item.id, value: format});
+        } else {
+          items.push({key: item.id});
+        }
       }
     }
-    toastr.success("onDownload click");
+
+    return items;
+  }
+
+  onDownload = () => {
+    const { startUploadSession, closeUploadSession, onDownloadProgress } = this.props;
+
+    const fileConvertIds = this.getDownloadItems();
+    startUploadSession();
+
+    api.files
+      .downloadFormatFiles(fileConvertIds)
+      .then(() => onDownloadProgress(false))
+      .catch(err => closeUploadSession(err));
   };
 
   getItemIcon = (item) => {
@@ -411,6 +460,7 @@ class DownloadDialogComponent extends React.Component {
                   onSelectFormat={this.onSelectFormat}
                   onRowSelect={this.onRowSelect}
                   getItemIcon={this.getItemIcon}
+                  getTitleLabel={this.getTitleLabel}
                   titleFormat={documentsTitleFormat}
                   type="document"
                 />
@@ -426,6 +476,7 @@ class DownloadDialogComponent extends React.Component {
                   onSelectFormat={this.onSelectFormat}
                   onRowSelect={this.onRowSelect}
                   getItemIcon={this.getItemIcon}
+                  getTitleLabel={this.getTitleLabel}
                   titleFormat={spreadsheetsTitleFormat}
                   type="spreadsheet"
                 />
@@ -441,6 +492,7 @@ class DownloadDialogComponent extends React.Component {
                   onSelectFormat={this.onSelectFormat}
                   onRowSelect={this.onRowSelect}
                   getItemIcon={this.getItemIcon}
+                  getTitleLabel={this.getTitleLabel}
                   titleFormat={presentationsTitleFormat}
                   type="presentation"
                 />

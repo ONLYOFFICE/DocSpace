@@ -171,7 +171,6 @@ class PureHome extends React.Component {
               onLoading={this.onLoading}
               setProgressVisible={this.setProgressVisible}
               setProgressValue={this.setProgressValue}
-              setProgressContent={this.setProgressContent}
               setProgressLabel={this.setProgressLabel}
             />}
           articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
@@ -184,6 +183,9 @@ class PureHome extends React.Component {
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
               onLoading={this.onLoading}
+              setProgressVisible={this.setProgressVisible}
+              setProgressValue={this.setProgressValue}
+              setProgressLabel={this.setProgressLabel}
             />
           }
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
