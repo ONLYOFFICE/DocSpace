@@ -1612,11 +1612,9 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        public void RemoveAce(ItemList<string> items)
+        public void RemoveAce(List<T> filesId, List<T> foldersId)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-            ParseArrayItems(items, out var foldersId, out var filesId);
-
             var entries = new List<FileEntry<T>>();
 
             var fileDao = GetFileDao();

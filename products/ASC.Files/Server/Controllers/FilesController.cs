@@ -803,7 +803,7 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}", DisableFormat = true)]
         public FileWrapper<string> UpdateFile(string fileId, int lastVersion, [FromBody]FileModelFull model)
         {
-            return FilesControllerHelperString.UpdateFile(fileId,  model.Title, lastVersion);
+            return FilesControllerHelperString.UpdateFile(fileId, model.Title, lastVersion);
         }
 
         [Update("file/{fileId:int}")]
@@ -1156,15 +1156,10 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel<int> model)
+        public bool RemoveSecurityInfo(BaseBatchModel<object> model)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<int>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<int>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
-
+            FileStorageService.RemoveAce(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
+            FileStorageServiceInt.RemoveAce(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
             return true;
         }
 

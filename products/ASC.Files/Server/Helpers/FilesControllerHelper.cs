@@ -543,14 +543,9 @@ namespace ASC.Files.Helpers
             return GetFolderSecurityInfo(folderId);
         }
 
-        public bool RemoveSecurityInfo(BaseBatchModel<T> model)
+        public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
+            FileStorageService.RemoveAce(fileIds, folderIds);
 
             return true;
         }
