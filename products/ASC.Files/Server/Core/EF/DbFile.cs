@@ -77,6 +77,7 @@ namespace ASC.Files.Core.EF
         public List<DbFolderTree> Folders { get; set; }
 
         [NotMapped]
+        [Ignore]
         public string IndexName
         {
             get => Tables.File;
@@ -85,6 +86,7 @@ namespace ASC.Files.Core.EF
         [NotMapped]
         public Document Document { get; set; }
 
+        [Ignore]
         public Expression<Func<ISearchItem, object[]>> SearchContentFields
         {
             get => (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
