@@ -303,15 +303,14 @@ export function getShareFiles(fileId) {
   });
 }
 
-export function setShareFolder(folderId, shareTo, access, notify, sharingMessage) {
-  const share = [shareTo, access];
+export function setShareFolder(folderId, share, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
   return request({ method: "put", url: `/files/folder/${folderId}/share`, data });
 }
 
-export function setShareFiles(fileId, shareTo, access, notify, sharingMessage) {
-  const share = [shareTo, access];
+export function setShareFiles(fileId, share, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
+  console.log("data", data);
   return request({ method: "put", url: `/files/file/${fileId}/share`, data });
 }
 
