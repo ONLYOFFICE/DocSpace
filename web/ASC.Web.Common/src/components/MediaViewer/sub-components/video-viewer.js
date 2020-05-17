@@ -85,16 +85,16 @@ const PlayBtn = props => {
 
   return (
     <VideoControlBtn onClick={props.onClick}>
-      {props.playing ? 
+      {props.playing ?
         <div className="pauseBtnContainer">
           <Icons.MediaPauseIcon size="scale" />
         </div>
-        : 
+        :
         <div className="playBtnContainer">
           <Icons.MediaPlayIcon size="scale" />
         </div>
       }
-      
+
     </VideoControlBtn>
   );
 }
@@ -105,7 +105,7 @@ PlayBtn.propTypes = {
 const FullScreenBtn = props => {
   return (
     <VideoControlBtn onClick={props.onClick}>
-      <div className = "fullscreenBtnContainer">
+      <div className="fullscreenBtnContainer">
         <Icons.MediaFullScreenIcon size="scale" />
       </div>
     </VideoControlBtn>
@@ -166,7 +166,7 @@ const StyledVideoViewer = styled.div`
       width: ${props => props.width}px;
       height: ${props => props.height}px;
       left: ${props => props.left}px;
-      top: calc(50% - ${props => props.top/2}px);
+      top: calc(50% - ${props => props.top / 2}px);
       z-index: 4001;
       position: fixed;
       padding-bottom: 40px;
@@ -199,7 +199,7 @@ class ValumeBtn extends Component {
         </div>
 
         <VideoControlBtn onClick={this.props.onChangeMute}>
-          <div className = "muteBtnContainer">
+          <div className="muteBtnContainer">
             {this.props.muted ? <Icons.MediaMuteOffIcon size="scale" /> : <Icons.MediaMuteIcon size="scale" />}
           </div>
         </VideoControlBtn>
@@ -305,7 +305,7 @@ class VideoViewer extends Component {
   }
 
   handleSeekMouseUp = e => {
-    if(!isNaN(parseFloat(e.target.value))){
+    if (!isNaN(parseFloat(e.target.value))) {
       this.setState({ seeking: false });
       this.player.seekTo(parseFloat(e.target.value));
     }
@@ -392,16 +392,18 @@ class VideoViewer extends Component {
     }
 
     let left = this.props.isVideo ? centerAreaOx - width / 2 : centerAreaOx - width / 2;
-    let top = this.props.isVideo ? centerAreaOy  : centerAreaOy + parentOffset / 2;
 
-    let progressWidth = this.props.isVideo ? width - 220 : width - 170;
+    const videoControlBtnWidth = 220;
+    const audioControlBtnWidth = 170;
+    let progressWidth = this.props.isVideo ? width - videoControlBtnWidth : width - audioControlBtnWidth;
+
     return (
       <StyledVideoViewer
         isVideo={this.props.isVideo}
         width={width}
         height={height}
         left={left}
-        top={height + 40}
+        top={height + controlsHeight}
       >
         <div>
           <div className='playerWrapper'>
@@ -432,7 +434,7 @@ class VideoViewer extends Component {
           <Controls
             height={controlsHeight}
             left={left}
-            top={height/2 - 20}
+            top={height / 2 - controlsHeight / 2}
             isVideo={this.props.isVideo}
           >
             <PlayBtn onClick={this.handlePlayPause} playing={playing} />
@@ -465,7 +467,7 @@ VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
   url: PropTypes.string,
   playing: PropTypes.bool,
-  getOffset :PropTypes.func
+  getOffset: PropTypes.func
 }
 
 export default VideoViewer;
