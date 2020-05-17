@@ -16,18 +16,18 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="protos\SearchItem.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Elasticsearch.Net" Version="6.5.0" />
+    <PackageReference Include="Elasticsearch.Net" Version="7.6.1" />
     <PackageReference Include="Grpc.Tools" Version="2.27.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NEST" Version="6.5.0" />
+    <PackageReference Include="NEST" Version="7.6.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />

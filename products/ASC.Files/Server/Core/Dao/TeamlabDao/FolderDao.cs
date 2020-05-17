@@ -41,7 +41,6 @@ using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Search;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -59,14 +58,14 @@ namespace ASC.Files.Core.Data
         private const string trash = "trash";
         private const string projects = "projects";
 
-        public FactoryIndexer<FoldersWrapper> FactoryIndexer { get; }
+        public FactoryIndexer<DbFolder> FactoryIndexer { get; }
         public GlobalSpace GlobalSpace { get; }
         public IDaoFactory DaoFactory { get; }
         public ProviderFolderDao ProviderFolderDao { get; }
         public CrossDao CrossDao { get; }
 
         public FolderDao(
-            FactoryIndexer<FoldersWrapper> factoryIndexer,
+            FactoryIndexer<DbFolder> factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -318,6 +317,8 @@ namespace ASC.Files.Core.Data
                 toUpdate.ModifiedBy = folder.ModifiedBy;
 
                 FilesDbContext.SaveChanges();
+
+                FactoryIndexer.IndexAsync(toUpdate);
             }
             else
             {
@@ -337,6 +338,7 @@ namespace ASC.Files.Core.Data
 
                 newFolder = FilesDbContext.Folders.Add(newFolder).Entity;
                 FilesDbContext.SaveChanges();
+                FactoryIndexer.IndexAsync(newFolder);
                 folder.ID = newFolder.Id;
 
                 //itself link
@@ -380,7 +382,7 @@ namespace ASC.Files.Core.Data
                 RecalculateFoldersCount(folder.ID);
             }
 
-            FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
+            //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
             return folder.ID;
         }
 
@@ -412,6 +414,11 @@ namespace ASC.Files.Core.Data
 
                 var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Any(a => r.Id == a));
                 FilesDbContext.Folders.RemoveRange(folderToDelete);
+
+                foreach (var f in folderToDelete)
+                {
+                    FactoryIndexer.DeleteAsync(f);
+                }
 
                 var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
                 FilesDbContext.Tree.RemoveRange(treeToDelete);
@@ -445,7 +452,7 @@ namespace ASC.Files.Core.Data
                 RecalculateFoldersCount(parent);
             }
 
-            FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
+            //FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
         }
 
         public TTo MoveFolder<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -574,7 +581,7 @@ namespace ASC.Files.Core.Data
 
             copy = GetFolder(SaveFolder(copy));
 
-            FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, copy));
+            //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, copy));
             return copy;
         }
 
@@ -672,6 +679,8 @@ namespace ASC.Files.Core.Data
             toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
             FilesDbContext.SaveChanges();
+
+            FactoryIndexer.IndexAsync(toUpdate);
 
             return folder.ID;
         }
@@ -958,7 +967,7 @@ namespace ASC.Files.Core.Data
 
         #endregion
 
-        protected IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
+        protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
         {
             var q = Query(FilesDbContext.Folders);
             if (where != null)
@@ -1154,7 +1163,7 @@ namespace ASC.Files.Core.Data
             services.TryAddTransient<Folder<string>>();
 
             return services
-                .AddFactoryIndexerService<FoldersWrapper>()
+                .AddFactoryIndexerService<DbFolder>()
                 .AddTenantManagerService()
                 .AddUserManagerService()
                 .AddFilesDbContextService()

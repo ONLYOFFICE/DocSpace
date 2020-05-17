@@ -133,7 +133,6 @@ namespace ASC.Data.Storage.Configuration
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IHttpContextAccessor httpContextAccessor,
             ConsumerFactory consumerFactory)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
@@ -144,8 +143,22 @@ namespace ASC.Data.Storage.Configuration
             Options = options;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
-            HttpContextAccessor = httpContextAccessor;
             ConsumerFactory = consumerFactory;
+        }
+        public StorageSettingsHelper(
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            SettingsManager settingsManager,
+            IHttpContextAccessor httpContextAccessor,
+            ConsumerFactory consumerFactory)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, tenantManager, settingsManager, consumerFactory)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()

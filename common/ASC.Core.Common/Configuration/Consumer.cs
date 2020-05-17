@@ -379,6 +379,11 @@ namespace ASC.Core.Common.Configuration
             Builder = builder.BeginLifetimeScope();
         }
 
+        public ConsumerFactory(ILifetimeScope builder)
+        {
+            Builder = builder;
+        }
+
         public Consumer GetByKey(string key)
         {
             if (Builder.TryResolveKeyed(key, typeof(Consumer), out var result))

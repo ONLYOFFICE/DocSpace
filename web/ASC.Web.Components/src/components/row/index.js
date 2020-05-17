@@ -75,6 +75,7 @@ class Row extends React.Component {
       contextOptions,
       data,
       element,
+      indeterminate,
       onSelect,
     } = this.props;
 
@@ -102,7 +103,7 @@ class Row extends React.Component {
       <StyledRow {...this.props}>
         {renderCheckbox && (
           <StyledCheckbox>
-            <Checkbox isChecked={checked} onChange={changeCheckbox} />
+            <Checkbox isChecked={checked} isIndeterminate={indeterminate} onChange={changeCheckbox} />
           </StyledCheckbox>
         )}
         {renderElement && <StyledElement>{element}</StyledElement>}
@@ -126,6 +127,7 @@ Row.propTypes = {
   data: PropTypes.object,
   element: PropTypes.element,
   id: PropTypes.string,
+  indeterminate: PropTypes.bool,
   needForUpdate: PropTypes.func,
   onSelect: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Web;
 using AppLimit.CloudComputing.SharpBox.Common.Extensions;
 using AppLimit.CloudComputing.SharpBox.Common.IO;
 using AppLimit.CloudComputing.SharpBox.Common.Net;

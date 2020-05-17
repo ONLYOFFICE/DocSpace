@@ -48,15 +48,23 @@ namespace ASC.Core.Security.Authentication
         private ILog Log { get; }
 
         public CookieStorage(
-            IHttpContextAccessor httpContextAccessor,
             InstanceCrypto instanceCrypto,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
             IOptionsMonitor<ILog> options)
         {
             InstanceCrypto = instanceCrypto;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-            HttpContext = httpContextAccessor.HttpContext;
             Log = options.CurrentValue;
+        }
+
+        public CookieStorage(
+            IHttpContextAccessor httpContextAccessor,
+            InstanceCrypto instanceCrypto,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
+            IOptionsMonitor<ILog> options)
+            : this(instanceCrypto, tenantCookieSettingsHelper, options)
+        {
+            HttpContext = httpContextAccessor.HttpContext;
         }
 
         public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)

@@ -24,54 +24,47 @@
 */
 
 
-using System.Configuration;
-using ASC.ElasticSearch.Config;
+using ASC.Common;
+using ASC.Common.Utils;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.ElasticSearch.Service
 {
     public class Settings
     {
-        private static readonly Settings DefaultSettings;
-
-        static Settings()
+        public Settings()
         {
-            DefaultSettings = new Settings
-            {
-                Scheme = "http",
-                Host = "localhost",
-                Port = 9200,
-                Period = 1,
-                MemoryLimit = 10 * 1024 * 1024L
-            };
 
+        }
 
-            var cfg = ConfigurationManager.GetSection("elastic") as ElasticSection;
-            if (cfg == null) return;
-
-            DefaultSettings = new Settings
-            {
-                Scheme = cfg.Scheme,
-                Host = cfg.Host,
-                Port = cfg.Port,
-                Period = cfg.Period,
-                MemoryLimit = cfg.MemoryLimit
-            };
-
+        public Settings(IConfiguration configuration)
+        {
+            var cfg = configuration.GetSetting<Settings>("elastic");
+            Scheme = cfg.Scheme ?? "http";
+            Host = cfg.Host ?? "localhost";
+            Port = cfg.Port ?? 9200;
+            Period = cfg.Period ?? 1;
+            MemoryLimit = cfg.MemoryLimit ?? 10 * 1024 * 1024L;
         }
 
         public string Host { get; set; }
 
-        public int Port { get; set; }
+        public int? Port { get; set; }
 
         public string Scheme { get; set; }
 
-        public int Period { get; set; }
+        public int? Period { get; set; }
 
-        public long MemoryLimit { get; set; }
+        public long? MemoryLimit { get; set; }
+    }
 
-        public static Settings Default
+    public static class SettingsExtention
+    {
+        public static DIHelper AddSettingsService(this DIHelper services)
         {
-            get { return DefaultSettings; }
+            services.TryAddSingleton<Settings>();
+            return services;
         }
     }
 }

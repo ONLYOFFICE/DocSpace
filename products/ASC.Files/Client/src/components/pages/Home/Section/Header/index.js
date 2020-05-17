@@ -13,7 +13,7 @@ import {
 } from "asc-web-components";
 import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
-import { EmptyTrashDialog, DeleteDialog } from "../../../../dialogs";
+import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
 import { SharingPanel } from "../../../../panels";
 import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/selectors";
 
@@ -102,6 +102,7 @@ class SectionHeaderContent extends React.Component {
     this.state = {
       showSharingPanel: false,
       showDeleteDialog: false,
+      showDownloadDialog: false,
       showEmptyTrashDialog: false
     };
   }
@@ -167,7 +168,7 @@ class SectionHeaderContent extends React.Component {
 
   downloadAction = () => toastr.info("downloadAction click");
 
-  downloadAsAction = () => toastr.info("downloadAsAction click");
+  downloadAsAction = () => this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
 
   renameAction = () => toastr.info("renameAction click");
 
@@ -433,6 +434,13 @@ class SectionHeaderContent extends React.Component {
             selectedItems={selection}
             onClose={this.onOpenSharingPanel}
             visible={showSharingPanel}
+          />
+        )}
+
+        {showDownloadDialog && (
+          <DownloadDialog 
+            visible={showDownloadDialog}
+            onClose={this.downloadAsAction}
           />
         )}
       </StyledContainer>
