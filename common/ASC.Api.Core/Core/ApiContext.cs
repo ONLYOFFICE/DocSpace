@@ -38,17 +38,17 @@ namespace ASC.Api.Core
 {
     public class ApiContext : ICloneable
     {
-        public HttpContext HttpContext { get; set; }
+        public IHttpContextAccessor HttpContextAccessor { get; set; }
         private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContext)); } }
+        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext)); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
             if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
-            HttpContext = httpContextAccessor.HttpContext;
+            HttpContextAccessor = httpContextAccessor;
 
             Count = 0;
-            var query = HttpContext.Request.Query;
+            var query = HttpContextAccessor.HttpContext.Request.Query;
             //Try parse values
             var count = query.GetRequestValue("count");
             if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
@@ -188,13 +188,13 @@ namespace ASC.Api.Core
         {
             set
             {
-                if (HttpContext.Items.ContainsKey(nameof(TotalCount)))
+                if (HttpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
                 {
-                    HttpContext.Items[nameof(TotalCount)] = value;
+                    HttpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
                 }
                 else
                 {
-                    HttpContext.Items.Add(nameof(TotalCount), value);
+                    HttpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace ASC.Api.Core
 
         public ApiContext SetCount(int count)
         {
-            HttpContext.Items[nameof(Count)] = count;
+            HttpContextAccessor.HttpContext.Items[nameof(Count)] = count;
             return this;
         }
 
@@ -221,7 +221,7 @@ namespace ASC.Api.Core
 
         public void AuthByClaim()
         {
-            var id = HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
+            var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
                 _ = SecurityContext.AuthenticateMe(userId);
