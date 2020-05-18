@@ -306,20 +306,17 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   }
 }
 
-export function setSharedFolders(folderIds, shareTo, access, notify, sharingMessage) {
-  const requests = folderIds.map((id) =>
-    files.setShareFolder(id, shareTo, access, notify, sharingMessage)
+export function setShareFiles(folderIds, fileIds, share, notify, sharingMessage) {
+  const foldersRequests = folderIds.map((id) =>
+    files.setShareFolder(id, share, notify, sharingMessage)
   );
 
-  return axios.all(requests).then((res) => res);
-}
-
-export function setSharedFiles(fileId, shareTo, access, notify, sharingMessage) {
-  const requests = fileId.map((id) =>
-    files.setShareFiles(id, shareTo, access, notify, sharingMessage)
+  const filesRequests = fileIds.map((id) =>
+    files.setShareFiles(id, share, notify, sharingMessage)
   );
 
-  return axios.all(requests).then((res) => res);
+  const requests = [...foldersRequests, ...filesRequests];
+  return axios.all(requests);
 }
 
 export function getShareUsers(folderIds, fileIds) {

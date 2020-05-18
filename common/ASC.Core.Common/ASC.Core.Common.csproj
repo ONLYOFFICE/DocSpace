@@ -43,19 +43,19 @@
     <None Remove="protos\UserPhotoCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.101" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.104.27" />
-    <PackageReference Include="AWSSDK.S3" Version="3.3.110.25" />
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.105" />
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.146" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.106.24" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.110.70" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.150" />
     <PackageReference Include="Grpc.Tools" Version="2.27.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MailKit" Version="2.5.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
-    <PackageReference Include="System.Text.Json" Version="4.7.1" />
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\NotifyMessage.proto" />

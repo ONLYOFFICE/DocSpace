@@ -18,37 +18,9 @@ const DownloadContent = (props) => {
     onRowSelect,
     getItemIcon,
     titleFormat,
+    getTitleLabel,
     type
   } = props;
-
-  const getTitleLabel = (format) => {
-    switch (format) {
-      case 0:
-        return t("OriginalFormat");
-      case 1:
-        return ".txt";
-      case 2:
-        return ".docx";
-      case 3:
-        return ".odt";
-      case 4:
-        return ".ods";
-      case 5:
-        return ".odp";
-      case 6:
-        return ".pdf";
-      case 7:
-        return ".rtf";
-      case 8:
-        return ".xlsx";
-      case 9:
-        return ".pptx";
-      case 10:
-        return t("CustomFormat");
-      default:
-        return "";
-    }
-  };
 
   const getFormats = item => {
 

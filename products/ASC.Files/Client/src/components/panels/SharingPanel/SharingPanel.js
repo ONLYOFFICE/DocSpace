@@ -20,11 +20,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, constants, api } from "asc-web-common";
 import i18n from "./i18n";
-import {
-  setSharedFolders,
-  setSharedFiles,
-  getShareUsers
-} from "../../../store/files/actions";
+import { getShareUsers, setShareFiles } from "../../../store/files/actions";
 import { getAccessOption } from '../../../store/files/selectors';
 import {
   StyledSharingPanel,
@@ -80,43 +76,54 @@ class SharingPanelComponent extends React.Component {
   //onKeyClick = () => console.log("onKeyClick");
 
   onSaveClick = () => {
-    toastr.success("onSaveClick");
-
-    const { baseShareData, isNotifyUsers, message } = this.state;
-    const { shareDataItems, selectedItems, onClose } = this.props;
+    const {
+      baseShareData,
+      isNotifyUsers,
+      message,
+      shareDataItems,
+    } = this.state;
+    const { selectedItems, onClose } = this.props;
 
     const folderIds = [];
     const fileIds = [];
 
-    const shareTo = [];
-    const access = [];
+    const share = [];
     for (let item of shareDataItems) {
       const baseItem = baseShareData.find((x) => x.id === item.id);
       if (
         (baseItem && baseItem.rights.rights !== item.rights.rights) ||
         !baseItem
       ) {
-        shareTo.push(item.id);
-        access.push(item.rights.accessNumber);
+        share.push({ shareTo: item.id, access: item.rights.accessNumber });
       }
     }
 
-    const notify = isNotifyUsers;
-
-    for (let item of selectedItems) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
+    for (let item of baseShareData) {
+      const baseItem = shareDataItems.find((x) => x.id === item.id);
+      if (!baseItem) {
+        share.push({ shareTo: item.id, access: 0});
+      }
+    }
+    
+    if (!selectedItems.length) {
+      if (selectedItems.fileExst) {
+        fileIds.push(selectedItems.id);
       } else {
-        folderIds.push(item.id);
+        folderIds.push(selectedItems.id);
+      }
+    } else {
+      for (let item of selectedItems) {
+        if (item.fileExst) {
+          fileIds.push(item.id);
+        } else {
+          folderIds.push(item.id);
+        }
       }
     }
 
-    /*folderIds.length > 0 &&
-      setSharedFolders(folderIds, shareTo, access, notify, message);
-    fileIds.length > 0 &&
-      setSharedFiles(fileIds, shareTo, access, notify, message);*/
-
-    onClose();
+    setShareFiles(folderIds, fileIds, share, isNotifyUsers, message)
+      .catch((err) => toastr.error(err))
+      .finally(() => onClose());
   };
 
   onFullAccessClick = () => {

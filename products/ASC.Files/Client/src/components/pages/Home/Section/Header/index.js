@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { constants, Headline, store } from "asc-web-common";
+import { constants, Headline, store, api } from "asc-web-common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
@@ -166,7 +166,56 @@ class SectionHeaderContent extends React.Component {
 
   copyAction = () => toastr.info("copyAction click");
 
-  downloadAction = () => toastr.info("downloadAction click");
+  startUploadSession = () => {
+    const { onLoading, t, setProgressLabel, setProgressVisible} = this.props;
+    onLoading(true);
+    setProgressLabel(t("ArchivingData"));
+    setProgressVisible(true);
+  }
+
+  closeUploadSession = (err) => {
+    const timeout = err ? 0 : null;
+    err && toastr.error(err);
+    this.props.onLoading(false);
+    this.props.setProgressVisible(false, timeout);
+  }
+
+  loop = url => {
+    api.files.getProgress().then(res => {
+      if(!url) {
+        this.props.setProgressValue(res[0].progress);
+        setTimeout(() => this.loop(res[0].url), 1000);
+      } else {
+        this.closeUploadSession();
+        return window.open(url, "_blank");
+      }
+    }).catch((err) => this.closeUploadSession(err));
+  }
+
+  downloadAction = () => {
+    const fileIds = [];
+    const folderIds = [];
+    const items = [];
+
+    for(let item of this.props.selection) {
+      if(item.fileExst) {
+        fileIds.push(item.id);
+        items.push({id: item.id, fileExst: item.fileExst});
+      } else {
+        folderIds.push(item.id);
+        items.push({id: item.id});
+      }
+    }
+
+    this.startUploadSession();
+
+    api.files
+      .downloadFiles(fileIds, folderIds)
+      .then(res => {
+        this.loop(res[0].url);
+      })
+      .catch((err) => this.closeUploadSession(err));
+  }
 
   downloadAsAction = () => this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
 
@@ -441,6 +490,9 @@ class SectionHeaderContent extends React.Component {
           <DownloadDialog 
             visible={showDownloadDialog}
             onClose={this.downloadAsAction}
+            startUploadSession={this.startUploadSession}
+            closeUploadSession={this.closeUploadSession}
+            onDownloadProgress={this.loop}
           />
         )}
       </StyledContainer>

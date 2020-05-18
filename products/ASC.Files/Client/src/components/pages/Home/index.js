@@ -100,9 +100,10 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
-  setProgressVisible = visible => {
+  setProgressVisible = (visible, timeout) => {
+    const newTimeout = timeout ? timeout : 10000;
     if(visible) {this.setState({ showProgressBar: visible })}
-    else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), 10000)};
+    else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), newTimeout)};
   };
   setProgressValue = value => this.setState({ progressBarValue: value });
   setProgressLabel = label => this.setState({ progressBarLabel: label });
@@ -171,7 +172,6 @@ class PureHome extends React.Component {
               onLoading={this.onLoading}
               setProgressVisible={this.setProgressVisible}
               setProgressValue={this.setProgressValue}
-              setProgressContent={this.setProgressContent}
               setProgressLabel={this.setProgressLabel}
             />}
           articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
@@ -184,6 +184,9 @@ class PureHome extends React.Component {
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
               onLoading={this.onLoading}
+              setProgressVisible={this.setProgressVisible}
+              setProgressValue={this.setProgressValue}
+              setProgressLabel={this.setProgressLabel}
             />
           }
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}

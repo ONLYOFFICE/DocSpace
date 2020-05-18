@@ -84,7 +84,13 @@ class SectionBodyContent extends React.Component {
   } */
 
   shouldComponentUpdate(nextProps, nextStates) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextStates.mediaViewerVisible);
+    if(this.state.showSharingPanel !== nextState.showSharingPanel) {
+      return true;
+    }
+    if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextStates.mediaViewerVisible)) {
+      return true;
+    }
+    return false;
   }
 
   onClickRename = (item) => {
@@ -194,7 +200,7 @@ class SectionBodyContent extends React.Component {
         key: "sharing-settings",
         label: "Sharing settings",
         onClick: this.onClickShare.bind(this, item),
-        disabled: item.access !== 1
+        disabled: item.access !== 1 && item.access !== 0
       },
       isFile
         ? {
