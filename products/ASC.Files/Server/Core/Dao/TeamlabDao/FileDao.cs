@@ -402,7 +402,6 @@ namespace ASC.Files.Core.Data
                 if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
-                var fileIdString = file.ID.ToString();
                 var toUpdate = FilesDbContext.Files
                     .Where(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID)
                     .FirstOrDefault();
@@ -1320,6 +1319,7 @@ namespace ASC.Files.Core.Data
         public File<int> ToFile(DbFileQuery r)
         {
             var file = ServiceProvider.GetService<File<int>>();
+            if (r == null) return null;
             file.ID = r.file.Id;
             file.Title = r.file.Title;
             file.FolderID = r.file.FolderId;

@@ -1028,6 +1028,7 @@ namespace ASC.Files.Core.Data
 
         public Folder<int> ToFolder(DbFolderQuery r)
         {
+            if (r == null) return null;
             var result = ServiceProvider.GetService<Folder<int>>();
             result.ID = r.folder.Id;
             result.ParentFolderID = r.folder.ParentId;
