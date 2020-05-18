@@ -210,8 +210,8 @@ class SectionHeaderContent extends React.Component {
 
     api.files
       .downloadFiles(fileIds, folderIds)
-      .then(() => {
-        this.loop(false);
+      .then(res => {
+        this.loop(res[0].url);
       })
       .catch((err) => this.closeUploadSession(err));
   }
