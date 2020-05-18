@@ -162,7 +162,11 @@ class PureArticleMainButtonContent extends React.Component {
           isLatestFile,
           indexOfFile
         )
-      );
+      )
+      .catch((err) => {
+        this.props.setProgressVisible(false, 0);
+        toastr.error(err);
+      });
   };
 
   onFileChange = (e) => {

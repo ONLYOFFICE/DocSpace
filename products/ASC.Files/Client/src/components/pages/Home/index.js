@@ -100,9 +100,10 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
-  setProgressVisible = visible => {
+  setProgressVisible = (visible, timeout) => {
+    const newTimeout = timeout ? timeout : 10000;
     if(visible) {this.setState({ showProgressBar: visible })}
-    else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), 10000)};
+    else { setTimeout(() => this.setState({ showProgressBar: visible, progressBarValue: 0 }), newTimeout)};
   };
   setProgressValue = value => this.setState({ progressBarValue: value });
   setProgressLabel = label => this.setState({ progressBarLabel: label });

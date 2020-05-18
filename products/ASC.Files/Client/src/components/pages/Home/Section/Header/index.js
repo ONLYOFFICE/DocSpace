@@ -174,9 +174,10 @@ class SectionHeaderContent extends React.Component {
   }
 
   closeUploadSession = (err) => {
+    const timeout = err ? 0 : null;
     err && toastr.error(err);
     this.props.onLoading(false);
-    this.props.setProgressVisible(false);
+    this.props.setProgressVisible(false, timeout);
   }
 
   loop = url => {
