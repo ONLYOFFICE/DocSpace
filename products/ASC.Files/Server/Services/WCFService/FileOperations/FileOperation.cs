@@ -179,13 +179,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var finished1 = thirdpartyTask.GetProperty<string>(FINISHED);
             var finished2 = daoTask.GetProperty<string>(FINISHED);
 
-            if (!string.IsNullOrEmpty(finished1))
+            if (!string.IsNullOrEmpty(finished1) && !string.IsNullOrEmpty(finished2))
             {
                 TaskInfo.SetProperty(FINISHED, finished1);
-            }
-            else if (!string.IsNullOrEmpty(finished2))
-            {
-                TaskInfo.SetProperty(FINISHED, finished2);
             }
 
             successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
@@ -358,9 +354,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected void ProgressStep(TId folderId = default, TId fileId = default)
         {
-            if (folderId == null && fileId == null
-                || folderId != null && Folders.Contains(folderId)
-                || fileId != null && Files.Contains(fileId))
+            if (folderId.Equals(default(TId)) && fileId.Equals(default(TId))
+                || !folderId.Equals(default(TId)) && Folders.Contains(folderId)
+                || !fileId.Equals(default(TId)) && Files.Contains(fileId))
             {
                 processed++;
                 PublishTaskInfo();

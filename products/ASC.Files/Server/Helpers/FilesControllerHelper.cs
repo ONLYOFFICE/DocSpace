@@ -267,7 +267,7 @@ namespace ASC.Files.Helpers
             request.ContentLength = 0;
 
             // hack for uploader.onlyoffice.com in api requests
-            var rewriterHeader = ApiContext.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
+            var rewriterHeader = ApiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
             if (!string.IsNullOrEmpty(rewriterHeader))
             {
                 request.Headers[HttpRequestExtensions.UrlRewriterHeader] = rewriterHeader;

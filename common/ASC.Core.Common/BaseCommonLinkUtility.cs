@@ -36,8 +36,6 @@ using ASC.Common.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
-
 namespace ASC.Core.Common
 {
     public class CommonLinkUtilitySettings
@@ -53,7 +51,7 @@ namespace ASC.Core.Common
         private UriBuilder _serverRoot;
         private string _vpath;
 
-        public HttpContext HttpContext { get; set; }
+        public IHttpContextAccessor HttpContextAccessor { get; set; }
 
         public BaseCommonLinkUtility(
             CoreBaseSettings coreBaseSettings,
@@ -85,11 +83,11 @@ namespace ASC.Core.Common
             {
                 try
                 {
-                    HttpContext = httpContextAccessor?.HttpContext;
+                    HttpContextAccessor = httpContextAccessor;
                     var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LOCALHOST);
-                    if (HttpContext?.Request != null)
+                    if (HttpContextAccessor?.HttpContext?.Request != null)
                     {
-                        var u = HttpContext.Request.GetUrlRewriter();
+                        var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
                         uriBuilder = new UriBuilder(u.Scheme, LOCALHOST, u.Port);
                     }
                     _serverRoot = uriBuilder;
@@ -122,9 +120,9 @@ namespace ASC.Core.Common
                 if (!string.IsNullOrEmpty(serverRootPath)) return serverRootPath;
                 UriBuilder result;
                 // first, take from current request
-                if (HttpContext?.Request != null)
+                if (HttpContextAccessor?.HttpContext?.Request != null)
                 {
-                    var u = HttpContext.Request.GetUrlRewriter();
+                    var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
                     result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
                     if (CoreBaseSettings.Standalone && !result.Uri.IsLoopback)

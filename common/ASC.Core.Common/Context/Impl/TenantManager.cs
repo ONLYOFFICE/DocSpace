@@ -79,7 +79,7 @@ namespace ASC.Core
 
         public void Configure(TenantManager options)
         {
-            options.HttpContext = HttpContextAccessor?.HttpContext;
+            options.HttpContextAccessor = HttpContextAccessor;
             options.CoreBaseSettings = CoreBaseSettings;
             options.CoreSettings = CoreSettings;
 
@@ -98,7 +98,7 @@ namespace ASC.Core
 
         private static List<string> thisCompAddresses = new List<string>();
 
-        internal HttpContext HttpContext { get; set; }
+        internal IHttpContextAccessor HttpContextAccessor { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
 
@@ -146,7 +146,7 @@ namespace ASC.Core
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings) : this(tenantService, quotaService, tariffService, coreBaseSettings, coreSettings)
         {
-            HttpContext = httpContextAccessor?.HttpContext;
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
@@ -258,7 +258,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContext);
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor.HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
@@ -266,9 +266,9 @@ namespace ASC.Core
             if (tenant != null)
             {
                 CurrentTenant = tenant;
-                if (HttpContext != null)
+                if (HttpContextAccessor?.HttpContext != null)
                 {
-                    HttpContext.Items[CURRENT_TENANT] = tenant;
+                    HttpContextAccessor.HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
