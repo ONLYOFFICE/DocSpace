@@ -87,7 +87,6 @@ const StyledMediaViewer = styled.div`
 
 var audio = 1;
 var video = 2;
-
 class MediaViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -114,8 +113,8 @@ class MediaViewer extends React.Component {
         }
         if (this.props.visible == true && this.props.visible === prevProps.visible && !isEqual(this.props.playlist, prevProps.playlist)) {
             let playlistPos = 0;
-            if(this.props.playlist.length > 0){
-                if(this.props.playlist.length - 1 < this.state.playlistPos){
+            if (this.props.playlist.length > 0) {
+                if (this.props.playlist.length - 1 < this.state.playlistPos) {
                     playlistPos = this.props.playlist.length - 1;
                 }
                 this.setState(
@@ -124,7 +123,7 @@ class MediaViewer extends React.Component {
                         playlistPos: playlistPos
                     }
                 );
-            }else{
+            } else {
                 this.props.onEmptyPlaylistError();
                 this.setState(
                     {
@@ -234,7 +233,7 @@ class MediaViewer extends React.Component {
             isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
         }
 
-        if(this.mapSupplied[ext])
+        if (this.mapSupplied[ext])
             if (!isImage && this.mapSupplied[ext].convertable && !url.includes("#")) {
                 url += (url.includes("?") ? "&" : "?") + "convpreview=true";
             }
@@ -277,15 +276,17 @@ class MediaViewer extends React.Component {
                                 </div>
                             </ControlBtn>
                         }
-
-                        <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(currentFileId) })}>
-                            <div className="downloadBtnContainer">
-                                <Icons.MediaDownloadIcon size="scale" />
-                            </div>
-                        </ControlBtn>
+                        {
+                            this.props.canDownload(currentFileId) &&
+                            <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(currentFileId) })}>
+                                <div className="downloadBtnContainer">
+                                    <Icons.MediaDownloadIcon size="scale" />
+                                </div>
+                            </ControlBtn>
+                        }
                     </span>
                 </div>
-                
+
             </StyledMediaViewer>
         )
     }
@@ -300,16 +301,18 @@ MediaViewer.propTypes = {
     extsMediaPreviewed: PropTypes.arrayOf(PropTypes.string),
     onError: PropTypes.func,
     canDelete: PropTypes.func,
+    canDownload: PropTypes.func,
     onDelete: PropTypes.func,
     onDownload: PropTypes.func,
     onClose: PropTypes.func,
-    onEmptyPlaylistError:PropTypes.func
+    onEmptyPlaylistError: PropTypes.func
 }
 
 MediaViewer.defaultProps = {
     currentFileId: 0,
     allowConvert: true,
-    canDelete: () => { return true }
+    canDelete: () => { return true },
+    canDownload: () => { return true }
 }
 
 export default MediaViewer;

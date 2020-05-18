@@ -659,16 +659,17 @@ class SectionBodyContent extends React.Component {
             {playlist.length > 0 &&
               <MediaViewer
                 currentFileId = {this.state.currentMediaFileId}
-                allowConvert={true}
-                canDelete={(fileId) => { return true }}
+                allowConvert={true} //TODO
+                canDelete={(fileId) => { return true }} //TODO 
+                canDownload={(fileId) => { return true }} //TODO 
                 visible={this.state.mediaViewerVisible}
                 playlist={playlist}
                 onDelete={this.onDeleteMediaFile}
                 onDownload={this.onDownloadMediaFile}
                 onClose={this.onMediaViewerClose}
                 onEmptyPlaylistError={this.onMediaViewerClose}
-                extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}
-                extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]}
+                extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}  //TODO
+                extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]} //TODO
               />
             }
             {showSharingPanel && (
