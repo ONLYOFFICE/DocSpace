@@ -182,7 +182,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return EmployeeWraperFullHelper.GetFull(UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
+            return EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
         }
 
         [Read("email")]

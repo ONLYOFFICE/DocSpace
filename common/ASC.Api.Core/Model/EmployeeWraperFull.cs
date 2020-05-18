@@ -27,11 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Linq.Expressions;
+
 
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
@@ -39,89 +41,61 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "person", Namespace = "")]
     public class EmployeeWraperFull : EmployeeWraper
     {
-        [DataMember(Order = 10)]
         public string FirstName { get; set; }
 
-        [DataMember(Order = 10)]
         public string LastName { get; set; }
 
-        [DataMember(Order = 2)]
         public string UserName { get; set; }
 
-        [DataMember(Order = 10)]
         public string Email { get; set; }
 
-        [DataMember(Order = 12, EmitDefaultValue = false)]
         public List<Contact> Contacts { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public ApiDateTime Birthday { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public string Sex { get; set; }
 
-        [DataMember(Order = 10)]
         public EmployeeStatus Status { get; set; }
 
-        [DataMember(Order = 10)]
         public EmployeeActivationStatus ActivationStatus { get; set; }
 
-        [DataMember(Order = 10)]
         public ApiDateTime Terminated { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public string Department { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public ApiDateTime WorkFrom { get; set; }
 
-        [DataMember(Order = 20, EmitDefaultValue = false)]
         public List<GroupWrapperSummary> Groups { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public string Location { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public string Notes { get; set; }
 
-        [DataMember(Order = 20)]
         public string AvatarMax { get; set; }
 
-        [DataMember(Order = 20)]
         public string AvatarMedium { get; set; }
 
-        [DataMember(Order = 20)]
         public string Avatar { get; set; }
 
-        [DataMember(Order = 20)]
         public bool IsAdmin { get; set; }
 
-        [DataMember(Order = 20)]
         public bool IsLDAP { get; set; }
 
-        [DataMember(Order = 20, EmitDefaultValue = false)]
         public List<string> ListAdminModules { get; set; }
 
-        [DataMember(Order = 20)]
         public bool IsOwner { get; set; }
 
-        [DataMember(Order = 2)]
         public bool IsVisitor { get; set; }
 
-        [DataMember(Order = 20, EmitDefaultValue = false)]
         public string CultureName { get; set; }
 
 
-        [DataMember(Order = 11, EmitDefaultValue = false)]
         public string MobilePhone { get; set; }
 
-        [DataMember(Order = 11, EmitDefaultValue = false)]
         public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
 
-        [DataMember(Order = 20)]
         public bool IsSSO { get; set; }
 
         public new static EmployeeWraperFull GetSample()
@@ -176,6 +150,26 @@ namespace ASC.Web.Api.Models
             Context = context;
             WebItemSecurity = webItemSecurity;
             ApiDateTimeHelper = apiDateTimeHelper;
+        }
+
+        public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
+        {
+            if (apiContext?.Fields == null) return null;
+            var newExpr = Expression.New(typeof(UserInfo));
+
+            //i => new UserInfo { ID = i.id } 
+            var parameter = Expression.Parameter(typeof(User), "i");
+            var bindExprs = new List<MemberAssignment>();
+
+            if (apiContext.Check("Id"))
+            {
+                bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), Expression.Property(parameter, typeof(User).GetProperty("Id"))));
+            }
+
+            var body = Expression.MemberInit(newExpr, bindExprs);
+            var lambda = Expression.Lambda<Func<User, UserInfo>>(body, parameter);
+
+            return lambda;
         }
 
         public EmployeeWraperFull GetFull(UserInfo userInfo)
