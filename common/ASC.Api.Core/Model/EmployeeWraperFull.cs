@@ -39,9 +39,6 @@ using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace ASC.Web.Api.Models
 {
     public class EmployeeWraperFull : EmployeeWraper
