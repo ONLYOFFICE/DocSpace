@@ -104,12 +104,20 @@ class SharingPanelComponent extends React.Component {
         share.push({ shareTo: item.id, access: 0});
       }
     }
-
-    for (let item of selectedItems) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
+    
+    if (!selectedItems.length) {
+      if (selectedItems.fileExst) {
+        fileIds.push(selectedItems.id);
       } else {
-        folderIds.push(item.id);
+        folderIds.push(selectedItems.id);
+      }
+    } else {
+      for (let item of selectedItems) {
+        if (item.fileExst) {
+          fileIds.push(item.id);
+        } else {
+          folderIds.push(item.id);
+        }
       }
     }
 

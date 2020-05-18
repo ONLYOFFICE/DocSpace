@@ -310,7 +310,6 @@ export function setShareFolder(folderId, share, notify, sharingMessage) {
 
 export function setShareFiles(fileId, share, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
-  console.log("data", data);
   return request({ method: "put", url: `/files/file/${fileId}/share`, data });
 }
 
