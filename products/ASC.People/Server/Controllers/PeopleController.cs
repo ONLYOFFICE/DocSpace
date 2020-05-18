@@ -751,10 +751,10 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("{userid}/photo")]
-        public People.Models.FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
+        public FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
         {
             var result = new People.Models.FileUploadResult();
-            bool autosave = Boolean.Parse(model["Autosave"]);
+            var autosave = bool.Parse(model["Autosave"]);
 
             try
             {
@@ -1423,7 +1423,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
-                files = new Uri(ApiContext.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
+                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
             }
             var request = WebRequest.Create(files);
             using var response = (HttpWebResponse)request.GetResponse();

@@ -39,7 +39,6 @@ namespace ASC.Files.Service
                         )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
@@ -59,7 +58,7 @@ namespace ASC.Files.Service
                         .AddFactoryIndexerFolderService();
 
                     var a = typeof(FactoryIndexer<ISearchItem>).ToString();
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, "search.json");
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, "search.json");
                 })
                 .UseConsoleLifetime()
                 .Build();
