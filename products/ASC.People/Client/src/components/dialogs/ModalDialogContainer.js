@@ -1,10 +1,9 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`
-
-.flex {
-  display: flex;
-  justify-content: space-between;
+  .flex {
+    display: flex;
+    justify-content: space-between;
   }
 
   .text-dialog {
@@ -20,7 +19,7 @@ const ModalDialogContainer = styled.div`
   }
 
   .warning-text {
-    margin: 20px 0; 
+    margin: 20px 0;
   }
 
   .textarea-dialog {
@@ -38,7 +37,22 @@ const ModalDialogContainer = styled.div`
 
   .field-body {
     position: relative;
-}
+  }
+
+  .toggle-content-dialog {
+    .heading-toggle-content {
+      font-size: 16px;
+    }
+
+    .modal-dialog-content {
+      padding: 8px 16px;
+      border: 1px solid lightgray;
+
+      .modal-dialog-checkbox:not(:last-child) {
+        padding-bottom: 4px;
+      }
+    }
+  }
 `;
 
 export default ModalDialogContainer;

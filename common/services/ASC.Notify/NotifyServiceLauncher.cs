@@ -28,13 +28,15 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common;
 using ASC.Notify.Config;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -129,7 +131,7 @@ namespace ASC.Notify
 
     public static class NotifyServiceLauncherExtension
     {
-        public static IServiceCollection AddNotifyServiceLauncher(this IServiceCollection services)
+        public static DIHelper AddNotifyServiceLauncher(this DIHelper services)
         {
             return services
                 .AddCommonLinkUtilityService()

@@ -31,6 +31,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
@@ -39,8 +40,6 @@ using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
@@ -144,14 +143,16 @@ namespace ASC.Core.Data
             WebstudioDbContext = dbContextManager.Value;
         }
 
+        private int tenantID;
         private int TenantID
         {
-            get { return TenantManager.GetCurrentTenant().TenantId; }
+            get { return tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
         }
         //
+        private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return AuthContext.CurrentAccount.ID; }
+            get { return (currentUserID ?? (currentUserID = AuthContext.CurrentAccount.ID)).Value; }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
@@ -349,7 +350,7 @@ namespace ASC.Core.Data
 
     public static class DbSettingsManagerExtension
     {
-        public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
+        public static DIHelper AddDbSettingsManagerService(this DIHelper services)
         {
             services.TryAddSingleton<DbSettingsManagerCache>();
             services.TryAddScoped<DbSettingsManager>();

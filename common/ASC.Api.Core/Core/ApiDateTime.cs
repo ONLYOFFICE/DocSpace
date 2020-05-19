@@ -28,14 +28,16 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
-using Newtonsoft.Json;
 
 namespace ASC.Api.Core
 {
     [DataContract(Name = "date", Namespace = "")]
-    [JsonConverter(typeof(ApiDateTimeConverter))]
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
     public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {
@@ -321,43 +323,55 @@ namespace ASC.Api.Core
         }
     }
 
-    public class ApiDateTimeConverter : JsonConverter
+    public class ApiDateTimeConverter : JsonConverter<ApiDateTime>
     {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override ApiDateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (value is ApiDateTime)
+            if (reader.TryGetDateTime(out var result))
             {
-                writer.WriteValue(value.ToString());
+                return new ApiDateTime(result, TimeSpan.Zero);
+            }
+            else
+            {
+                if (DateTime.TryParseExact(reader.GetString(), ApiDateTime.Formats, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dateTime))
+                {
+                    return new ApiDateTime(dateTime, TimeSpan.Zero);
+                }
+                else
+                {
+                    return new ApiDateTime();
+                }
             }
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, ApiDateTime value, JsonSerializerOptions options)
         {
-            if (reader.ValueType != null)
-            {
-                if (reader.ValueType.Name == "String")
-                {
-                    if (DateTime.TryParseExact(reader.Value?.ToString(), ApiDateTime.Formats, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var result))
-                    {
-                        return new ApiDateTime(result, TimeSpan.Zero);
-                    }
-                    else
-                    {
-                        return new ApiDateTime();
-                    }
-                }
-                else if (reader.ValueType.Name == "DateTime")
-                {
-                    return new ApiDateTime((DateTime)reader.Value, TimeSpan.Zero);
-                }
-            }
+            writer.WriteStringValue(value.ToString());
+        }
+    }
 
-            return DateTime.MinValue;
+    public class ApiDateTimeHelper
+    {
+        public TenantManager TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
+
+        public ApiDateTimeHelper(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
+        {
+            TenantManager = tenantManager;
+            TimeZoneConverter = timeZoneConverter;
         }
 
-        public override bool CanConvert(Type objectType)
+        public ApiDateTime Get(DateTime? from) => ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
+    }
+
+    public static class ApiDateTimeHelperExtension
+    {
+        public static DIHelper AddApiDateTimeHelper(this DIHelper services)
         {
-            return typeof(ApiDateTime).IsAssignableFrom(objectType);
+            services.TryAddScoped<ApiDateTimeHelper>();
+
+            return services
+                .AddTenantManagerService();
         }
     }
 }

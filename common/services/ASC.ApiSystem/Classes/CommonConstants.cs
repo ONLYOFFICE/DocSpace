@@ -24,13 +24,14 @@
 */
 
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
+using ASC.Common;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.ApiSystem.Classes
 {
@@ -86,7 +87,7 @@ namespace ASC.ApiSystem.Classes
 
     public static class CommonControllerExtention
     {
-        public static IServiceCollection AddCommonConstants(this IServiceCollection services)
+        public static DIHelper AddCommonConstants(this DIHelper services)
         {
             services.TryAddSingleton<CommonConstants>();
 

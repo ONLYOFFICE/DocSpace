@@ -27,10 +27,11 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Core.Common.Settings;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Tenants
 {
@@ -126,7 +127,7 @@ namespace ASC.Core.Tenants
 
     public static class TenantCookieSettingsExtention
     {
-        public static IServiceCollection AddTenantCookieSettingsService(this IServiceCollection services)
+        public static DIHelper AddTenantCookieSettingsService(this DIHelper services)
         {
             services.TryAddScoped<TenantCookieSettingsHelper>();
             return services.AddSettingsManagerService();

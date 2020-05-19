@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using ASC.Core.Security.Authorizing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.Security.Authorizing
 {
@@ -150,7 +148,7 @@ namespace ASC.Common.Security.Authorizing
 
     public static class AzManagerConfigExtension
     {
-        public static IServiceCollection AddAzManagerService(this IServiceCollection services)
+        public static DIHelper AddAzManagerService(this DIHelper services)
         {
             services.TryAddScoped<AzManager>();
 

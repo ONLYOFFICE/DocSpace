@@ -27,14 +27,12 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
@@ -181,7 +179,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedTenantService : ITenantService
+    class CachedTenantService : ITenantService
     {
         internal ITenantService Service { get; set; }
 
@@ -198,6 +196,13 @@ namespace ASC.Core.Caching
             SettingsExpiration = TimeSpan.FromMinutes(2);
         }
 
+        public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache) : this()
+        {
+            Service = service ?? throw new ArgumentNullException("service");
+            TenantServiceCache = tenantServiceCache;
+            CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
+            CacheNotifySettings = tenantServiceCache.CacheNotifySettings;
+        }
 
         public void ValidateDomain(string domain)
         {
@@ -299,12 +304,15 @@ namespace ASC.Core.Caching
 
     public static class TenantConfigExtension
     {
-        public static IServiceCollection AddTenantService(this IServiceCollection services)
+        public static DIHelper AddTenantService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<TenantDomainValidator>();
             services.TryAddSingleton<TimeZoneConverter>();
             services.TryAddSingleton<TenantServiceCache>();
+
+            services.TryAddScoped<DbTenantService>();
+            services.TryAddScoped<ITenantService, CachedTenantService>();
 
             services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
             services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();

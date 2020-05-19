@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 
+using ASC.Common;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Data;
@@ -37,12 +38,11 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
-    public class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
+    class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
     {
         public UserFormatter UserFormatter { get; }
         public IOptionsSnapshot<CachedTenantService> TenantService { get; }
@@ -295,9 +295,9 @@ namespace ASC.Core
 
     public static class HostedSolutionExtension
     {
-        public static IServiceCollection AddHostedSolutionService(this IServiceCollection services)
+        public static DIHelper AddHostedSolutionService(this DIHelper services)
         {
-            services.AddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>();
+            services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>();
 
             return services
                 .AddUserFormatter()

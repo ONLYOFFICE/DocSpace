@@ -31,6 +31,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Caching;
@@ -38,8 +39,6 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
@@ -165,6 +164,35 @@ namespace ASC.Core.Billing
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
         }
 
+        public TariffService(
+            IQuotaService quotaService,
+            ITenantService tenantService,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            DbContextManager<CoreDbContext> coreDbContextManager,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options)
+            : this()
+
+        {
+            Log = options.CurrentValue;
+            QuotaService = quotaService;
+            TenantService = tenantService;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            TariffServiceStorage = tariffServiceStorage;
+            Options = options;
+            CoreBaseSettings = coreBaseSettings;
+            Test = configuration["core:payment:test"] == "true";
+            int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
+
+            PaymentDelay = paymentDelay;
+
+            Cache = TariffServiceStorage.Cache;
+            Notify = TariffServiceStorage.Notify;
+            CoreDbContext = coreDbContextManager.Value;
+        }
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
@@ -658,12 +686,13 @@ namespace ASC.Core.Billing
 
     public static class TariffConfigExtension
     {
-        public static IServiceCollection AddTariffService(this IServiceCollection services)
+        public static DIHelper AddTariffService(this DIHelper services)
         {
             services.AddCoreDbContextService();
 
             services.TryAddSingleton<TariffServiceStorage>();
 
+            services.TryAddScoped<ITariffService, TariffService>();
             services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
 
             return services;

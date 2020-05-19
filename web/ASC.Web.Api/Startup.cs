@@ -1,7 +1,9 @@
+using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Api.Settings;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Web.Api.Controllers;
@@ -17,7 +19,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api
 {
@@ -34,24 +35,22 @@ namespace ASC.Web.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                    .AddNewtonsoftJson()
-                    .AddXmlSerializerFormatters();
-
-            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
-
-            services.AddMemoryCache();
-
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
             services.AddHttpContextAccessor();
+
+            services.AddControllers()
+                    .AddXmlSerializerFormatters()
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.WriteIndented = false;
+                        options.JsonSerializerOptions.IgnoreNullValues = true;
+                        options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                    });
 
             services.AddAuthentication("cookie")
                     .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
                     .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
 
-            var builder = services.AddMvc(config =>
+            var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -67,7 +66,9 @@ namespace ASC.Web.Api
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            services
+            var diHelper = new DIHelper(services);
+
+            diHelper
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
@@ -76,9 +77,9 @@ namespace ASC.Web.Api
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddAuthenticationController()
                 .AddModulesController()
                 .AddPortalController()
@@ -107,8 +108,6 @@ namespace ASC.Web.Api
                     .AllowAnyMethod());
 
             app.UseRouting();
-
-            app.UseSession();
 
             app.UseAuthentication();
 

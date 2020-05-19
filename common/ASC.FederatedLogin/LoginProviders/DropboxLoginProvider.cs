@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -36,11 +37,6 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public class DropboxLoginProvider : Consumer, IOAuthProvider
     {
-        public DropboxLoginProvider Instance
-        {
-            get { return ConsumerFactory.Get<DropboxLoginProvider>(); }
-        }
-
         public string Scopes { get { return ""; } }
         public string CodeUrl { get { return "https://www.dropbox.com/oauth2/authorize"; } }
         public string AccessTokenUrl { get { return "https://api.dropboxapi.com/oauth2/token"; } }
@@ -64,12 +60,24 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
+        }
+    }
+    public static class DropboxLoginProviderExtension
+    {
+        public static DIHelper AddDropboxLoginProviderService(this DIHelper services)
+        {
+            //services.TryAddScoped<DropboxLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

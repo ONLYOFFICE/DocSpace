@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -28,17 +28,13 @@ namespace ASC.Core.Common.EF.Context
 
             modelBuilder.AddCoreSettings();
 
-            modelBuilder.Entity<DbTenant>()
-                .HasOne(r => r.Partner)
-                .WithOne(r => r.Tenant)
-                .HasForeignKey<DbTenantPartner>(r => new { r.TenantId })
-                .HasPrincipalKey<DbTenant>(r => new { r.Id });
+            modelBuilder.AddDbTenant();
         }
     }
 
     public static class TenantDbExtension
     {
-        public static IServiceCollection AddTenantDbContextService(this IServiceCollection services)
+        public static DIHelper AddTenantDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<TenantDbContext>();
         }

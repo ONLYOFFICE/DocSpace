@@ -25,8 +25,10 @@
 
 
 using System;
+
 using ASC.Api.Core;
 using ASC.Api.Settings.Smtp;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Configuration;
@@ -37,10 +39,10 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Api.Settings
 {
@@ -251,7 +253,7 @@ namespace ASC.Api.Settings
 
     public static class SmtpSettingsControllerExtension
     {
-        public static IServiceCollection AddSmtpSettingsController(this IServiceCollection services)
+        public static DIHelper AddSmtpSettingsController(this DIHelper services)
         {
             return services
                 .AddMessageServiceService()

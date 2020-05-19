@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -39,8 +40,6 @@ using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -251,7 +250,7 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifyHelperExtension
     {
-        public static IServiceCollection AddStudioNotifyHelperService(this IServiceCollection services)
+        public static DIHelper AddStudioNotifyHelperService(this DIHelper services)
         {
             services.TryAddScoped<StudioNotifyHelper>();
 

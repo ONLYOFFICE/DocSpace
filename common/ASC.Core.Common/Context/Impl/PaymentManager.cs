@@ -34,14 +34,12 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
@@ -57,10 +55,10 @@ namespace ASC.Core
         public TenantManager TenantManager { get; }
         public IConfiguration Configuration { get; }
 
-        public PaymentManager(TenantManager tenantManager, IOptionsSnapshot<TariffService> tariffService, IConfiguration configuration)
+        public PaymentManager(TenantManager tenantManager, ITariffService tariffService, IConfiguration configuration)
         {
             TenantManager = tenantManager;
-            this.tariffService = tariffService.Value;
+            this.tariffService = tariffService;
             Configuration = configuration;
             partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
             partnerKey = (Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
@@ -182,7 +180,7 @@ namespace ASC.Core
 
     public static class PaymentManagerExtension
     {
-        public static IServiceCollection AddPaymentManagerService(this IServiceCollection services)
+        public static DIHelper AddPaymentManagerService(this DIHelper services)
         {
             services.TryAddScoped<PaymentManager>();
 

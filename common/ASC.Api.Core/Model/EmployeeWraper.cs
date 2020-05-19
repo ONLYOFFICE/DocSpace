@@ -25,32 +25,27 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
+
 using ASC.Api.Core;
+using ASC.Common;
+using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "person", Namespace = "")]
     public class EmployeeWraper
     {
-        [DataMember(Order = 1)]
         public Guid Id { get; set; }
 
-        [DataMember(Order = 10)]
         public string DisplayName { get; set; }
 
-        [DataMember(Order = 11, EmitDefaultValue = false)]
         public string Title { get; set; }
 
-        [DataMember(Order = 20)]
         public string AvatarSmall { get; set; }
 
-        [DataMember(Order = 30)]
         public string ProfileUrl { get; set; }
 
         public static EmployeeWraper GetSample()
@@ -67,23 +62,41 @@ namespace ASC.Web.Api.Models
 
     public class EmployeeWraperHelper
     {
-        public UserInfo UserInfo { get; set; }
-        public ApiContext HttpContext { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private ApiContext HttpContext { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        protected UserPhotoManager UserPhotoManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        protected UserManager UserManager { get; }
 
-        public EmployeeWraperHelper(ApiContext httpContext, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
+        public EmployeeWraperHelper(
+            ApiContext httpContext,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            UserPhotoManager userPhotoManager,
+            CommonLinkUtility commonLinkUtility,
+            UserManager userManager)
         {
             HttpContext = httpContext;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             UserPhotoManager = userPhotoManager;
             CommonLinkUtility = commonLinkUtility;
+            UserManager = userManager;
         }
 
         public EmployeeWraper Get(UserInfo userInfo)
         {
             return Init(new EmployeeWraper(), userInfo);
+        }
+
+        public EmployeeWraper Get(Guid userId)
+        {
+            try
+            {
+                return Get(UserManager.GetUsers(userId));
+            }
+            catch (Exception)
+            {
+                return Get(Constants.LostUser);
+            }
         }
 
         protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
@@ -114,7 +127,7 @@ namespace ASC.Web.Api.Models
 
     public static class EmployeeWraperExtension
     {
-        public static IServiceCollection AddEmployeeWraper(this IServiceCollection services)
+        public static DIHelper AddEmployeeWraper(this DIHelper services)
         {
             services.TryAddScoped<EmployeeWraperHelper>();
 

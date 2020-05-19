@@ -14,6 +14,6 @@ namespace ASC.Core.Common.EF.Model
         [Column("last_date")]
         public DateTime LastDate { get; set; }
 
-        internal override object[] GetKeys() => new object[] { LastKey };
+        public override object[] GetKeys() => new object[] { LastKey };
     }
 }

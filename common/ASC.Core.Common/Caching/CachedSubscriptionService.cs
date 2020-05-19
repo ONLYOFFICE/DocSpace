@@ -27,11 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -288,7 +288,7 @@ namespace ASC.Core.Caching
 
     public static class SubscriptionConfigExtension
     {
-        public static IServiceCollection AddSubscriptionService(this IServiceCollection services)
+        public static DIHelper AddSubscriptionService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 

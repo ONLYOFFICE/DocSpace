@@ -27,11 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Caching;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -131,7 +131,7 @@ namespace ASC.Core
 
     public static class AuthorizationManagerConfigExtension
     {
-        public static IServiceCollection AddAuthorizationManagerService(this IServiceCollection services)
+        public static DIHelper AddAuthorizationManagerService(this DIHelper services)
         {
             services.TryAddScoped<AuthorizationManager>();
             return services

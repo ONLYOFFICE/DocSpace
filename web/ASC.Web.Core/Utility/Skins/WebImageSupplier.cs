@@ -26,12 +26,11 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Data.Storage;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility.Skins
 {
@@ -104,7 +103,7 @@ namespace ASC.Web.Core.Utility.Skins
             return folderName.TrimStart('~');
         }
 
-        private string GetAppThemeVirtualPath(IWebItem webitem)
+        private static string GetAppThemeVirtualPath(IWebItem webitem)
         {
             if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
             {
@@ -120,13 +119,12 @@ namespace ASC.Web.Core.Utility.Skins
 
     public static class WebImageSupplierExtension
     {
-        public static IServiceCollection AddWebImageSupplierService(this IServiceCollection services)
+        public static DIHelper AddWebImageSupplierService(this DIHelper services)
         {
             services.TryAddScoped<WebImageSupplier>();
 
             return services
                 .AddWebPathService()
-                .AddHttpContextAccessor()
                 .AddWebItemManager();
         }
     }

@@ -24,9 +24,18 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Interfaces;
 using ASC.ApiSystem.Models;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -37,20 +46,13 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
 
 
 namespace ASC.ApiSystem.Controllers
@@ -354,7 +356,7 @@ namespace ASC.ApiSystem.Controllers
 
     public static class CommonMethodsExtention
     {
-        public static IServiceCollection AddCommonMethods(this IServiceCollection services)
+        public static DIHelper AddCommonMethods(this DIHelper services)
         {
             services.TryAddScoped<CommonMethods>();
 

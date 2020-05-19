@@ -28,14 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
@@ -108,7 +107,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedQuotaService : IQuotaService
+    class CachedQuotaService : IQuotaService
     {
         internal IQuotaService Service { get; set; }
         internal ICache Cache { get; set; }
@@ -124,6 +123,13 @@ namespace ASC.Core.Caching
             CacheExpiration = TimeSpan.FromMinutes(10);
         }
 
+        public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache) : this()
+        {
+            Service = service ?? throw new ArgumentNullException("service");
+            QuotaServiceCache = quotaServiceCache;
+            Cache = quotaServiceCache.Cache;
+            CacheNotify = quotaServiceCache.CacheNotify;
+        }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
@@ -234,12 +240,13 @@ namespace ASC.Core.Caching
 
     public static class QuotaConfigExtension
     {
-        public static IServiceCollection AddQuotaService(this IServiceCollection services)
+        public static DIHelper AddQuotaService(this DIHelper services)
         {
             services.AddCoreDbContextService();
 
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<QuotaServiceCache>();
+
             services.TryAddScoped<DbQuotaService>();
             services.TryAddScoped<IQuotaService, CachedQuotaService>();
 

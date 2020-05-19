@@ -26,13 +26,14 @@
 
 using System;
 using System.Linq;
+
 using Newtonsoft.Json;
 
 namespace ASC.Common.Threading
 {
     public class DistributedTask
     {
-        internal Action<DistributedTask> Publication { get; set; }
+        public Action<DistributedTask> Publication { get; set; }
 
         public DistributedTaskCache DistributedTaskCache { get; internal set; }
 
@@ -44,7 +45,7 @@ namespace ASC.Common.Threading
             }
             set
             {
-                DistributedTaskCache.InstanceId = value;
+                DistributedTaskCache.InstanceId = value?.ToString() ?? "";
             }
         }
         public string Id
@@ -55,7 +56,7 @@ namespace ASC.Common.Threading
             }
             private set
             {
-                DistributedTaskCache.Id = value;
+                DistributedTaskCache.Id = value?.ToString() ?? "";
             }
         }
 
@@ -79,7 +80,7 @@ namespace ASC.Common.Threading
             }
             internal set
             {
-                DistributedTaskCache.Exception = value.ToString();
+                DistributedTaskCache.Exception = value?.ToString() ?? "";
             }
         }
 
@@ -89,6 +90,10 @@ namespace ASC.Common.Threading
             {
                 Id = Guid.NewGuid().ToString()
             };
+        }
+        public DistributedTask(DistributedTaskCache distributedTaskCache)
+        {
+            DistributedTaskCache = distributedTaskCache;
         }
 
 
@@ -107,13 +112,15 @@ namespace ASC.Common.Threading
                 Value = JsonConvert.SerializeObject(value)
             };
 
+            var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
+            if (current != null)
+            {
+                DistributedTaskCache.Props.Remove(current);
+            }
+
             if (value != null)
             {
                 DistributedTaskCache.Props.Add(prop);
-            }
-            else
-            {
-                DistributedTaskCache.Props.Remove(prop);
             }
         }
 

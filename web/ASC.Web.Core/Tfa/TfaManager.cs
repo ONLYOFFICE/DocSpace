@@ -31,6 +31,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -39,9 +41,8 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
+
 using Google.Authenticator;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -98,7 +99,7 @@ namespace ASC.Web.Studio.Core.TFA
 
         public SetupCode GenerateSetupCode(UserInfo user, int size)
         {
-            return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), size, size, true);
+            return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, Encoding.UTF8.GetBytes(GenerateAccessToken(user)), size, true);
         }
 
         public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
@@ -192,7 +193,7 @@ namespace ASC.Web.Studio.Core.TFA
 
     public static class TfaManagerExtension
     {
-        public static IServiceCollection AddTfaManagerService(this IServiceCollection services)
+        public static DIHelper AddTfaManagerService(this DIHelper services)
         {
             services.TryAddScoped<TfaManager>();
 

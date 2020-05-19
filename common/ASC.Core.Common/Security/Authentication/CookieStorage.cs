@@ -28,13 +28,12 @@ using System;
 using System.Globalization;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Security.Authentication
@@ -49,15 +48,23 @@ namespace ASC.Core.Security.Authentication
         private ILog Log { get; }
 
         public CookieStorage(
-            IHttpContextAccessor httpContextAccessor,
             InstanceCrypto instanceCrypto,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
             IOptionsMonitor<ILog> options)
         {
             InstanceCrypto = instanceCrypto;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-            HttpContext = httpContextAccessor.HttpContext;
             Log = options.CurrentValue;
+        }
+
+        public CookieStorage(
+            IHttpContextAccessor httpContextAccessor,
+            InstanceCrypto instanceCrypto,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
+            IOptionsMonitor<ILog> options)
+            : this(instanceCrypto, tenantCookieSettingsHelper, options)
+        {
+            HttpContext = httpContextAccessor.HttpContext;
         }
 
         public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
@@ -141,7 +148,7 @@ namespace ASC.Core.Security.Authentication
 
     public static class CookieStorageExtension
     {
-        public static IServiceCollection AddCookieStorageService(this IServiceCollection services)
+        public static DIHelper AddCookieStorageService(this DIHelper services)
         {
             services.TryAddScoped<CookieStorage>();
 

@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Security;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -39,7 +40,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -182,7 +182,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return EmployeeWraperFullHelper.GetFull(UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
+            return EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
         }
 
         [Read("email")]
@@ -751,10 +751,10 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("{userid}/photo")]
-        public People.Models.FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
+        public FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
         {
             var result = new People.Models.FileUploadResult();
-            bool autosave = Boolean.Parse(model["Autosave"]);
+            var autosave = bool.Parse(model["Autosave"]);
 
             try
             {
@@ -1423,7 +1423,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
-                files = new Uri(ApiContext.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
+                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
             }
             var request = WebRequest.Create(files);
             using var response = (HttpWebResponse)request.GetResponse();
@@ -1461,7 +1461,7 @@ namespace ASC.Employee.Core.Controllers
 
     public static class PeopleControllerExtention
     {
-        public static IServiceCollection AddPeopleController(this IServiceCollection services)
+        public static DIHelper AddPeopleController(this DIHelper services)
         {
             return services
                 .AddAccountLinker()

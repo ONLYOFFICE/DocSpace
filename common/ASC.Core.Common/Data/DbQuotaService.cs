@@ -88,6 +88,11 @@ namespace ASC.Core.Data
             };
         }
 
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
+        {
+            CoreDbContext = dbContextManager.Value;
+        }
+
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
             return

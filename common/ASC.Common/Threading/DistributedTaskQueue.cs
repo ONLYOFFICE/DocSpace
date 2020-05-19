@@ -28,8 +28,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Caching;
 
 namespace ASC.Common.Threading
@@ -44,6 +46,8 @@ namespace ASC.Common.Threading
         public DistributedTaskCacheNotify(ICacheNotify<DistributedTaskCancelation> notify, ICacheNotify<DistributedTaskCache> notifyCache)
         {
             Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
+
+            Cache = AscCache.Memory;
 
             this.notify = notify;
 
@@ -155,7 +159,7 @@ namespace ASC.Common.Threading
 
         public IEnumerable<DistributedTask> GetTasks()
         {
-            var tasks = new List<DistributedTask>(cache.HashGetAll<DistributedTask>(key).Values);
+            var tasks = cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
             tasks.ForEach(t =>
             {
                 if (t.Publication == null)
@@ -168,12 +172,27 @@ namespace ASC.Common.Threading
 
         public DistributedTask GetTask(string id)
         {
-            var task = cache.HashGet<DistributedTask>(key, id);
+            var task = new DistributedTask(cache.HashGet<DistributedTaskCache>(key, id));
             if (task != null && task.Publication == null)
             {
                 task.Publication = GetPublication();
             }
             return task;
+        }
+
+        public void SetTask(DistributedTask task)
+        {
+            DistributedTaskCacheNotify.SetTask(task);
+        }
+
+        public void RemoveTask(string id)
+        {
+            DistributedTaskCacheNotify.RemoveTask(id, key);
+        }
+
+        public void CancelTask(string id)
+        {
+            DistributedTaskCacheNotify.CancelTask(id);
         }
 
         private void OnCompleted(Task task, string id)

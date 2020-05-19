@@ -27,13 +27,11 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.SMS
 {
@@ -101,7 +99,7 @@ namespace ASC.Web.Studio.Core.SMS
 
     public static class StudioSmsNotificationSettingsExtension
     {
-        public static IServiceCollection AddStudioSmsNotificationSettingsService(this IServiceCollection services)
+        public static DIHelper AddStudioSmsNotificationSettingsService(this DIHelper services)
         {
             services.TryAddScoped<StudioSmsNotificationSettingsHelper>();
 

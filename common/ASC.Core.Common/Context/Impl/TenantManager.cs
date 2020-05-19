@@ -31,15 +31,13 @@ using System.Net;
 using System.Threading;
 using System.Web;
 
-
+using ASC.Common;
 using ASC.Common.Notify.Engine;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
@@ -81,7 +79,7 @@ namespace ASC.Core
 
         public void Configure(TenantManager options)
         {
-            options.HttpContext = HttpContextAccessor?.HttpContext;
+            options.HttpContextAccessor = HttpContextAccessor;
             options.CoreBaseSettings = CoreBaseSettings;
             options.CoreSettings = CoreSettings;
 
@@ -97,11 +95,14 @@ namespace ASC.Core
         internal ITenantService TenantService { get; set; }
         internal IQuotaService QuotaService { get; set; }
         internal ITariffService TariffService { get; set; }
+
         private static List<string> thisCompAddresses = new List<string>();
 
-        internal HttpContext HttpContext { get; set; }
+        internal IHttpContextAccessor HttpContextAccessor { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
+
+        public Tenant CurrentTenant { get; set; }
 
         static TenantManager()
         {
@@ -124,19 +125,28 @@ namespace ASC.Core
         }
 
         public TenantManager(
-            IOptionsSnapshot<CachedTenantService> tenantService,
-            IOptionsSnapshot<CachedQuotaService> quotaService,
-            IOptionsSnapshot<TariffService> tariffService,
-            IHttpContextAccessor httpContextAccessor,
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
         {
-            TenantService = tenantService.Value;
-            QuotaService = quotaService.Value;
-            TariffService = tariffService.Value;
+            TenantService = tenantService;
+            QuotaService = quotaService;
+            TariffService = tariffService;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
-            HttpContext = httpContextAccessor?.HttpContext;
+        }
+
+        public TenantManager(
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings) : this(tenantService, quotaService, tariffService, coreBaseSettings, coreSettings)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
@@ -216,6 +226,11 @@ namespace ASC.Core
         public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
             Tenant tenant = null;
+            if (CurrentTenant != null)
+            {
+                return CurrentTenant;
+            }
+
             if (context != null)
             {
                 tenant = context.Items[CURRENT_TENANT] as Tenant;
@@ -243,17 +258,17 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContext);
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor.HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
         {
             if (tenant != null)
             {
-                CallContext.SetData(CURRENT_TENANT, tenant);
-                if (HttpContext != null)
+                CurrentTenant = tenant;
+                if (HttpContextAccessor?.HttpContext != null)
                 {
-                    HttpContext.Items[CURRENT_TENANT] = tenant;
+                    HttpContextAccessor.HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
@@ -339,13 +354,12 @@ namespace ASC.Core
 
     public static class TenantManagerConfigExtension
     {
-        public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
+        public static DIHelper AddTenantManagerService(this DIHelper services)
         {
             services.TryAddScoped<TenantManager>();
             services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddTenantService()
                 .AddQuotaService()
                 .AddTariffService()

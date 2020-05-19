@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -77,9 +74,9 @@ namespace ASC.Common.Logging
         {
             switch (eventId.Id)
             {
-                case 20000:
-                    CustomLogger.Debug(formatter(state, exception));
-                    break;
+                //case 20000:
+                //    CustomLogger.Debug(formatter(state, exception));
+                //    break;
                 case 20101:
                     var keyValuePairs = state as IEnumerable<KeyValuePair<string, object>>;
                     string commandText = null;
@@ -119,7 +116,7 @@ namespace ASC.Common.Logging
 
     public static class LoggerExtension
     {
-        public static IServiceCollection AddLoggerService(this IServiceCollection services)
+        public static DIHelper AddLoggerService(this DIHelper services)
         {
             services.TryAddScoped<EFLoggerFactory>();
             services.TryAddScoped<EFLoggerProvider>();

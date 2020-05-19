@@ -27,15 +27,12 @@
 using System;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Security.Authentication;
 using ASC.Core.Caching;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -46,9 +43,9 @@ namespace ASC.Core
         public UserManager UserManager { get; }
         public UserFormatter UserFormatter { get; }
 
-        public AuthManager(IOptionsSnapshot<CachedUserService> service, UserManager userManager, UserFormatter userFormatter)
+        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
         {
-            userService = service.Value;
+            userService = service;
             UserManager = userManager;
             UserFormatter = userFormatter;
         }
@@ -86,7 +83,7 @@ namespace ASC.Core
     }
     public static class AuthManagerExtension
     {
-        public static IServiceCollection AddAuthManager(this IServiceCollection services)
+        public static DIHelper AddAuthManager(this DIHelper services)
         {
             services.TryAddScoped<AuthManager>();
             return services

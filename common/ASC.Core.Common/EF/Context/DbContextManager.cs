@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common;
+using ASC.Common.Logging;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -70,7 +71,7 @@ namespace ASC.Core.Common.EF
 
     public static class DbContextManagerExtension
     {
-        public static IServiceCollection AddDbContextManagerService<T>(this IServiceCollection services) where T : BaseDbContext, new()
+        public static DIHelper AddDbContextManagerService<T>(this DIHelper services) where T : BaseDbContext, new()
         {
             services.TryAddScoped<DbContextManager<T>>();
             services.TryAddScoped<MultiRegionalDbContextManager<T>>();
@@ -78,7 +79,7 @@ namespace ASC.Core.Common.EF
             services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
             //services.TryAddScoped<T>();
 
-            return services;
+            return services.AddLoggerService();
         }
     }
 }

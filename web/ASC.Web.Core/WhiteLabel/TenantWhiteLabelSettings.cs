@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -40,8 +41,6 @@ using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using TMResourceData;
@@ -601,7 +600,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public static class TenantWhiteLabelSettingsExtension
     {
-        public static IServiceCollection AddTenantWhiteLabelSettingsService(this IServiceCollection services)
+        public static DIHelper AddTenantWhiteLabelSettingsService(this DIHelper services)
         {
             services.TryAddScoped<TenantWhiteLabelSettingsHelper>();
             return services

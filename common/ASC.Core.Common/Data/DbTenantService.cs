@@ -109,6 +109,11 @@ namespace ASC.Core.Data
             FromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
         }
 
+        public DbTenantService(DbContextManager<TenantDbContext> dbContextManager, TenantDomainValidator tenantDomainValidator) : this()
+        {
+            TenantDbContext = dbContextManager.Value;
+            TenantDomainValidator = tenantDomainValidator;
+        }
 
         public void ValidateDomain(string domain)
         {

@@ -30,8 +30,6 @@ using System.Text;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 
 namespace ASC.Common.Utils
@@ -101,7 +99,7 @@ namespace ASC.Common.Utils
 
     public static class SignatureExtension
     {
-        public static IServiceCollection AddSignatureService(this IServiceCollection services)
+        public static DIHelper AddSignatureService(this DIHelper services)
         {
             services.TryAddSingleton<Signature>();
             return services.AddMachinePseudoKeysService();

@@ -36,6 +36,7 @@ using System.Web;
 using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -74,7 +75,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
@@ -311,9 +311,9 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Read("cultures")]
-        public List<CultureInfo> GetSupportedCultures()
+        public IEnumerable<object> GetSupportedCultures()
         {
-            return SetupInfo.EnabledCultures;
+            return SetupInfo.EnabledCultures.Select(r => new { r.Name });
         }
 
         [Read("timezones")]
@@ -1492,7 +1492,7 @@ namespace ASC.Api.Settings
 
     public static class SettingsControllerExtension
     {
-        public static IServiceCollection AddSettingsController(this IServiceCollection services)
+        public static DIHelper AddSettingsController(this DIHelper services)
         {
             return services
                 .AddMessageTargetService()

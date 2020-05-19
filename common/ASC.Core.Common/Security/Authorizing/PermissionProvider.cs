@@ -27,10 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Security.Authorizing
 {
@@ -56,7 +56,7 @@ namespace ASC.Core.Security.Authorizing
 
     public static class PermissionProviderConfigExtension
     {
-        public static IServiceCollection AddPermissionProviderService(this IServiceCollection services)
+        public static DIHelper AddPermissionProviderService(this DIHelper services)
         {
             services.TryAddScoped(typeof(IPermissionProvider), typeof(PermissionProvider));
             return services.AddAuthorizationManagerService();

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -37,7 +38,6 @@ using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
@@ -133,7 +133,6 @@ namespace ASC.Data.Storage.Configuration
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IHttpContextAccessor httpContextAccessor,
             ConsumerFactory consumerFactory)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
@@ -144,8 +143,22 @@ namespace ASC.Data.Storage.Configuration
             Options = options;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
-            HttpContextAccessor = httpContextAccessor;
             ConsumerFactory = consumerFactory;
+        }
+        public StorageSettingsHelper(
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            SettingsManager settingsManager,
+            IHttpContextAccessor httpContextAccessor,
+            ConsumerFactory consumerFactory)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, tenantManager, settingsManager, consumerFactory)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
@@ -206,7 +219,7 @@ namespace ASC.Data.Storage.Configuration
 
     public static class StorageSettingsExtension
     {
-        public static IServiceCollection AddBaseStorageSettingsService(this IServiceCollection services)
+        public static DIHelper AddBaseStorageSettingsService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<BaseStorageSettingsListener>();
@@ -214,11 +227,10 @@ namespace ASC.Data.Storage.Configuration
             return services
                 .AddStorageFactoryConfigService()
                 .AddPathUtilsService()
-                .AddEmailValidationKeyProviderService()
-                .AddHttpContextAccessor();
+                .AddEmailValidationKeyProviderService();
         }
 
-        public static IServiceCollection AddCdnStorageSettingsService(this IServiceCollection services)
+        public static DIHelper AddCdnStorageSettingsService(this DIHelper services)
         {
             services.TryAddScoped<StorageSettingsHelper>();
 
@@ -228,7 +240,7 @@ namespace ASC.Data.Storage.Configuration
                 .AddConsumerFactoryService();
         }
 
-        public static IServiceCollection AddStorageSettingsService(this IServiceCollection services)
+        public static DIHelper AddStorageSettingsService(this DIHelper services)
         {
             services.TryAddScoped<StorageSettingsHelper>();
 

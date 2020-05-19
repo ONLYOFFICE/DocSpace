@@ -27,16 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Core.Caching;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -69,14 +69,19 @@ namespace ASC.Core
         private Tenant tenant;
         private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
+        public UserManager()
+        {
+
+        }
+
         public UserManager(
-            IOptionsSnapshot<CachedUserService> service,
+            IUserService service,
             IHttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants)
         {
-            UserService = service.Value;
+            UserService = service;
             Accessor = httpContextAccessor;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;
@@ -182,6 +187,12 @@ namespace ASC.Core
         {
             if (IsSystemUser(id)) return SystemUsers[id];
             var u = UserService.GetUser(Tenant.TenantId, id);
+            return u != null && !u.Removed ? u : Constants.LostUser;
+        }
+        public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
+        {
+            if (IsSystemUser(id)) return SystemUsers[id];
+            var u = UserService.GetUser(Tenant.TenantId, id, exp);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
@@ -635,14 +646,13 @@ namespace ASC.Core
 
     public static class UserManagerConfigExtension
     {
-        public static IServiceCollection AddUserManagerService(this IServiceCollection services)
+        public static DIHelper AddUserManagerService(this DIHelper services)
         {
             services.TryAddSingleton<UserManagerConstants>();
             services.TryAddScoped<UserManager>();
 
             return services
                 .AddUserService()
-                .AddHttpContextAccessor()
                 .AddTenantManagerService()
                 .AddConstantsService()
                 .AddPermissionContextService();

@@ -31,14 +31,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -160,7 +159,6 @@ namespace ASC.Data.Storage
             StaticUploader staticUploader,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
-            IHttpContextAccessor httpContextAccessor,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> options)
@@ -169,10 +167,23 @@ namespace ASC.Data.Storage
             StaticUploader = staticUploader;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
-            HttpContextAccessor = httpContextAccessor;
             HostEnvironment = hostEnvironment;
             CoreBaseSettings = coreBaseSettings;
             Options = options;
+        }
+
+        public WebPath(
+            WebPathSettings webPathSettings,
+            StaticUploader staticUploader,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
+            IHttpContextAccessor httpContextAccessor,
+            IHostEnvironment hostEnvironment,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsMonitor<ILog> options)
+            : this(webPathSettings, staticUploader, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public string GetPath(string relativePath)
@@ -195,7 +206,7 @@ namespace ASC.Data.Storage
                 }
             }
 
-            return WebPathSettings.GetPath(HttpContextAccessor.HttpContext, Options, relativePath);
+            return WebPathSettings.GetPath(HttpContextAccessor?.HttpContext, Options, relativePath);
         }
 
         public bool Exists(string relativePath)
@@ -235,7 +246,7 @@ namespace ASC.Data.Storage
 
     public static class WebPathExtension
     {
-        public static IServiceCollection AddWebPathService(this IServiceCollection services)
+        public static DIHelper AddWebPathService(this DIHelper services)
         {
             services.TryAddScoped<WebPath>();
 
@@ -243,10 +254,9 @@ namespace ASC.Data.Storage
                 .AddStaticUploaderService()
                 .AddCdnStorageSettingsService()
                 .AddWebPathSettingsService()
-                .AddCoreBaseSettingsService()
-                .AddHttpContextAccessor();
+                .AddCoreBaseSettingsService();
         }
-        public static IServiceCollection AddWebPathSettingsService(this IServiceCollection services)
+        public static DIHelper AddWebPathSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<WebPathSettings>();
 

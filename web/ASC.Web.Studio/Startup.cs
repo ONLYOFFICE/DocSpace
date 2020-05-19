@@ -1,4 +1,5 @@
 using ASC.Api.Core.Auth;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Data.Storage;
@@ -29,21 +30,17 @@ namespace ASC.Web.Studio
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddCors();
-
-            services.AddMvc();
-            services.AddMemoryCache();
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
-            /*services.AddMvc(options => options.EnableEndpointRouting = false)
-                .AddNewtonsoftJson();*/
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            var diHelper = new DIHelper(services);
 
-            services
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
+
+            diHelper
                 .AddCookieAuthHandler()
                 .AddStorage()
                 .AddPathUtilsService()
@@ -76,8 +73,6 @@ namespace ASC.Web.Studio
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
-            app.UseStaticFiles();
-            app.UseSession();
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>

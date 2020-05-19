@@ -24,14 +24,6 @@
 */
 
 
-using ASC.Common.Logging;
-using ASC.Web.Core.Helpers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -41,6 +33,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+
+using ASC.Common;
+using ASC.Common.Logging;
+using ASC.Web.Core.Helpers;
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Classes
 {
@@ -162,7 +164,7 @@ namespace ASC.ApiSystem.Classes
 
     public static class AuthAllowskipHandlerExtension
     {
-        public static IServiceCollection AddAuthAllowskipHandler(this IServiceCollection services)
+        public static DIHelper AddAuthAllowskipHandler(this DIHelper services)
         {
             return services.AddApiSystemHelper();
         }

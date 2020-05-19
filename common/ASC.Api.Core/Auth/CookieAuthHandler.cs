@@ -2,9 +2,11 @@
 using System.Security.Authentication;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+
+using ASC.Common;
 using ASC.Core;
+
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -39,7 +41,7 @@ namespace ASC.Api.Core.Auth
 
     public static class CookieAuthHandlerExtension
     {
-        public static IServiceCollection AddCookieAuthHandler(this IServiceCollection services)
+        public static DIHelper AddCookieAuthHandler(this DIHelper services)
         {
             return services.AddSecurityContextService();
         }

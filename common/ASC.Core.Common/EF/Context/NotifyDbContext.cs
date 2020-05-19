@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -13,7 +13,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class NotifyDbExtension
     {
-        public static IServiceCollection AddNotifyDbContext(this IServiceCollection services)
+        public static DIHelper AddNotifyDbContext(this DIHelper services)
         {
             return services.AddDbContextManagerService<NotifyDbContext>();
         }

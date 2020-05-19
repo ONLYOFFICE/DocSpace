@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -40,8 +41,6 @@ using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Utility
@@ -216,7 +215,7 @@ namespace ASC.Web.Studio.Utility
         {
             var productID = Guid.Empty;
 
-            if (HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
                 GetLocationByRequest(out var product, out _);
                 if (product != null) productID = product.ID;
@@ -229,9 +228,9 @@ namespace ASC.Web.Studio.Utility
         {
             var addonID = Guid.Empty;
 
-            if (HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                var addonName = GetAddonNameFromUrl(HttpContext.Request.Url().AbsoluteUri);
+                var addonName = GetAddonNameFromUrl(HttpContextAccessor.HttpContext.Request.Url().AbsoluteUri);
 
                 switch (addonName)
                 {
@@ -255,9 +254,9 @@ namespace ASC.Web.Studio.Utility
         public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
         {
             var currentURL = string.Empty;
-            if (HttpContext?.Request != null)
+            if (HttpContextAccessor?.HttpContext?.Request != null)
             {
-                currentURL = HttpContext.Request.GetUrlRewriter().AbsoluteUri;
+                currentURL = HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
 
                 //TODO ?
                 // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx
@@ -551,12 +550,11 @@ namespace ASC.Web.Studio.Utility
 
     public static class CommonLinkUtilityExtension
     {
-        public static IServiceCollection AddCommonLinkUtilityService(this IServiceCollection services)
+        public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
         {
             services.TryAddScoped<CommonLinkUtility>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddUserManagerService()
                 .AddBaseCommonLinkUtilityService()
                 .AddWebItemManagerSecurity()

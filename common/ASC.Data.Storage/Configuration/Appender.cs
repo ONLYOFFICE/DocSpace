@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Utils;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Data.Storage.Configuration
 {
     public static class StorageConfigExtension
     {
-        public static IServiceCollection AddStorage(this IServiceCollection services)
+        public static DIHelper AddStorage(this DIHelper services)
         {
             services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
             return services;

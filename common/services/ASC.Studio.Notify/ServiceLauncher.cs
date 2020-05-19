@@ -27,10 +27,11 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ASC.Common;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
@@ -66,7 +67,7 @@ namespace ASC.Notify
 
     public static class ServiceLauncherExtension
     {
-        public static IServiceCollection AddServiceLauncher(this IServiceCollection services)
+        public static DIHelper AddServiceLauncher(this DIHelper services)
         {
             services.TryAddSingleton<StudioNotifyServiceSender>();
 

@@ -182,6 +182,12 @@ namespace ASC.Core.Data
             };
         }
 
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager) : this()
+        {
+            UserDbContextManager = userDbContextManager;
+            UserDbContext = UserDbContextManager.Value;
+        }
+
         public Group GetGroup(int tenant, Guid id)
         {
             return GetGroupQuery(UserDbContext, tenant, default)
@@ -678,6 +684,14 @@ namespace ASC.Core.Data
 
             result.Add(id);
             return result.Distinct().ToList();
+        }
+
+        public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
+        {
+            return GetUserQuery(UserDbContext, tenant, default)
+                    .Where(r => r.Id == id)
+                    .Select(exp ?? FromUserToUserInfo)
+                    .FirstOrDefault();
         }
     }
 }

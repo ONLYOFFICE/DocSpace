@@ -28,8 +28,8 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
+using ASC.Common;
 
 namespace ASC.Security.Cryptography
 {
@@ -88,12 +88,11 @@ namespace ASC.Security.Cryptography
     }
     public static class InstanceCryptoExtension
     {
-        public static IServiceCollection AddInstanceCryptoService(this IServiceCollection services)
+        public static DIHelper AddInstanceCryptoService(this DIHelper services)
         {
             services.TryAddSingleton<InstanceCrypto>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddMachinePseudoKeysService();
         }
     }

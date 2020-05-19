@@ -26,8 +26,10 @@
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Controllers;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,6 +55,8 @@ namespace ASC.ApiSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var diHelper = new DIHelper(services);
+
             services.AddHttpContextAccessor();
 
             services.AddControllers()
@@ -64,9 +68,9 @@ namespace ASC.ApiSystem
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
-            services.AddNLogManager("ASC.Apisystem");
+            diHelper.AddNLogManager("ASC.Apisystem");
 
-            services
+            diHelper
                 .AddCommonConstants()
                 .AddTimeZonesProvider()
                 .AddCommonMethods();

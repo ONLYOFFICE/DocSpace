@@ -27,22 +27,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
-    class UserServiceCache
+    public class UserServiceCache
     {
         public const string USERS = "users";
         private const string GROUPS = "groups";
@@ -198,6 +197,22 @@ namespace ASC.Core.Caching
             PhotoExpiration = TimeSpan.FromMinutes(10);
         }
 
+        public CachedUserService(
+            EFUserService service,
+            CoreBaseSettings coreBaseSettings,
+            UserServiceCache userServiceCache
+            ) : this()
+        {
+            Service = service ?? throw new ArgumentNullException("service");
+            CoreBaseSettings = coreBaseSettings;
+            UserServiceCache = userServiceCache;
+            Cache = userServiceCache.Cache;
+            CacheUserInfoItem = userServiceCache.CacheUserInfoItem;
+            CacheUserPhotoItem = userServiceCache.CacheUserPhotoItem;
+            CacheGroupCacheItem = userServiceCache.CacheGroupCacheItem;
+            CacheUserGroupRefItem = userServiceCache.CacheUserGroupRefItem;
+            TrustInterval = userServiceCache.TrustInterval;
+        }
 
         public IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from)
         {
@@ -491,6 +506,11 @@ namespace ASC.Core.Caching
             UserServiceCache.InvalidateCache();
         }
 
+        public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
+        {
+            return Service.GetUser(tenant, id, exp);
+        }
+
         [Serializable]
         class UserPhoto
         {
@@ -499,7 +519,7 @@ namespace ASC.Core.Caching
     }
     public static class UserConfigExtension
     {
-        public static IServiceCollection AddUserService(this IServiceCollection services)
+        public static DIHelper AddUserService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
@@ -507,6 +527,9 @@ namespace ASC.Core.Caching
                 .AddCoreSettingsService()
                 .AddLoggerService()
                 .AddUserDbContextService();
+
+            services.TryAddScoped<EFUserService>();
+            services.TryAddScoped<IUserService, CachedUserService>();
 
             services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
             services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();

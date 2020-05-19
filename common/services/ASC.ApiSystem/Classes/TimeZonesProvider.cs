@@ -27,9 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+
+using ASC.Common;
 using ASC.Common.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Classes
@@ -143,7 +144,7 @@ namespace ASC.ApiSystem.Classes
 
     public static class TimeZonesProviderExtention
     {
-        public static IServiceCollection AddTimeZonesProvider(this IServiceCollection services)
+        public static DIHelper AddTimeZonesProvider(this DIHelper services)
         {
             services.TryAddSingleton<TimeZonesProvider>();
 

@@ -27,14 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Web.Core.WebZones;
 
 using Autofac;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core
@@ -104,7 +105,7 @@ namespace ASC.Web.Core
             get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
         }
 
-        public IContainer Container { get; }
+        public ILifetimeScope Container { get; }
         public IConfiguration Configuration { get; }
 
         public IWebItem this[Guid id]
@@ -125,8 +126,17 @@ namespace ASC.Web.Core
             LoadItems();
         }
 
+        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
+            : this(null, configuration, options)
+        {
+            Container = container;
+            LoadItems();
+        }
+
         public void LoadItems()
         {
+            if (Container == null) return;
+
             foreach (var webitem in Container.Resolve<IEnumerable<IWebItem>>())
             {
                 var file = webitem.ID.ToString();
@@ -256,12 +266,12 @@ namespace ASC.Web.Core
 
     public static class WebItemManagerExtension
     {
-        public static IServiceCollection AddWebItemManager(this IServiceCollection services)
+        public static DIHelper AddWebItemManager(this DIHelper services)
         {
             services.TryAddSingleton<WebItemManager>();
             return services;
         }
-        public static IServiceCollection AddWebItemManagerSecurity(this IServiceCollection services)
+        public static DIHelper AddWebItemManagerSecurity(this DIHelper services)
         {
             services.TryAddScoped<WebItemManagerSecurity>();
             return services
