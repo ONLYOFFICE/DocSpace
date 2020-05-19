@@ -83,11 +83,11 @@ class SectionBodyContent extends React.Component {
     }
   } */
 
-  shouldComponentUpdate(nextProps, nextStates) {
+  shouldComponentUpdate(nextProps, nextState) {
     if(this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
-    if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextStates.mediaViewerVisible)) {
+    if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
       return true;
     }
     return false;
