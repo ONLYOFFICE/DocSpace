@@ -24,11 +24,16 @@
 */
 
 
+using System;
+
 using ASC.ApiSystem.Models;
+using ASC.Common.Logging;
+using ASC.Core;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
@@ -38,11 +43,16 @@ namespace ASC.ApiSystem.Controllers
     [Route("[controller]")]
     public class CoreSettingsController : ControllerBase
     {
-        public CommonMethods CommonMethods { get; }
+        public CoreSettings CoreSettings { get; }
+        private ILog Log { get; }
 
-        public CoreSettingsController(CommonMethods commonMethods)
+        public CoreSettingsController(
+            CoreSettings coreSettings,
+            IOptionsMonitor<ILog> option
+            )
         {
-            CommonMethods = commonMethods;
+            CoreSettings = coreSettings;
+            Log = option.Get("ASC.ApiSystem");
         }
 
         #region For TEST api
@@ -84,7 +94,7 @@ namespace ASC.ApiSystem.Controllers
                     });
                 }
 
-                var settings = CommonMethods.CoreSettings.GetSetting(key, tenant);
+                var settings = CoreSettings.GetSetting(key, tenant);
 
                 return Ok(new
                 {
@@ -93,7 +103,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (ArgumentException ae)
             {
-                CommonMethods.Log.Error(ae);
+                Log.Error(ae);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -103,7 +113,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception e)
             {
-                CommonMethods.Log.Error(e);
+                Log.Error(e);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -144,9 +154,9 @@ namespace ASC.ApiSystem.Controllers
                     tenant = -1;
                 }
 
-                CommonMethods.CoreSettings.SaveSetting(model.Key, model.Value, tenant);
+                CoreSettings.SaveSetting(model.Key, model.Value, tenant);
 
-                var settings = CommonMethods.CoreSettings.GetSetting(model.Key, tenant);
+                var settings = CoreSettings.GetSetting(model.Key, tenant);
 
                 return Ok(new
                 {
@@ -155,7 +165,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (ArgumentException ae)
             {
-                CommonMethods.Log.Error(ae);
+                Log.Error(ae);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -165,7 +175,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception e)
             {
-                CommonMethods.Log.Error(e);
+                Log.Error(e);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {

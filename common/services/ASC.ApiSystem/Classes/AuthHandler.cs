@@ -120,7 +120,7 @@ namespace ASC.ApiSystem.Classes
                     {
                         var timestamp = DateTime.ParseExact(date, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
 
-                        var trustInterval = TimeSpan.FromMinutes(Convert.ToDouble(Configuration["auth.trust-interval"] ?? "5"));
+                        var trustInterval = TimeSpan.FromMinutes(Convert.ToDouble(Configuration["auth:trust-interval"] ?? "5"));
 
                         if (DateTime.UtcNow > timestamp.Add(trustInterval))
                         {
@@ -130,7 +130,7 @@ namespace ASC.ApiSystem.Classes
                         }
                     }
 
-                    var skey = Configuration["core.machinekey"];
+                    var skey = Configuration["core:machinekey"];
                     using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey));
                     var data = string.Join("\n", date, pkey);
                     var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));

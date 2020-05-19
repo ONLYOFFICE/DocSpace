@@ -24,14 +24,19 @@
 */
 
 
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Models;
-using ASC.Core.Billing;
-using ASC.Core.Tenants;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+
+using ASC.ApiSystem.Classes;
+using ASC.ApiSystem.Models;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Core.Billing;
+using ASC.Core.Tenants;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
@@ -39,11 +44,18 @@ namespace ASC.ApiSystem.Controllers
     [Route("[controller]")]
     public class TariffController : ControllerBase
     {
-        public CommonMethods CommonMethods { get; }
-
-        public TariffController(CommonMethods commonMethods)
+        private CommonMethods CommonMethods { get; }
+        private HostedSolution HostedSolution { get; }
+        private ILog Log { get; }
+        public TariffController(
+            CommonMethods commonMethods,
+            HostedSolution hostedSolution,
+            IOptionsMonitor<ILog> option
+            )
         {
             CommonMethods = commonMethods;
+            HostedSolution = hostedSolution;
+            Log = option.Get("ASC.ApiSystem");
         }
 
         #region For TEST api
@@ -68,7 +80,7 @@ namespace ASC.ApiSystem.Controllers
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                CommonMethods.Log.Error("Model without tenant");
+                Log.Error("Model without tenant");
 
                 return BadRequest(new
                 {
@@ -79,7 +91,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                CommonMethods.Log.Error("Tenant not found");
+                Log.Error("Tenant not found");
 
                 return BadRequest(new
                 {
@@ -112,7 +124,7 @@ namespace ASC.ApiSystem.Controllers
                 quota.MaxFileSize = model.MaxFileSize;
             }
 
-            CommonMethods.HostedSolution.SaveTenantQuota(quota);
+            HostedSolution.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -120,7 +132,7 @@ namespace ASC.ApiSystem.Controllers
                 DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue,
             };
 
-            CommonMethods.HostedSolution.SetTariff(tenant.TenantId, tariff);
+            HostedSolution.SetTariff(tenant.TenantId, tariff);
 
             return GetTariff(tenant);
         }
@@ -132,7 +144,7 @@ namespace ASC.ApiSystem.Controllers
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                CommonMethods.Log.Error("Model without tenant");
+                Log.Error("Model without tenant");
 
                 return BadRequest(new
                 {
@@ -143,7 +155,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                CommonMethods.Log.Error("Tenant not found");
+                Log.Error("Tenant not found");
 
                 return BadRequest(new
                 {
@@ -159,7 +171,7 @@ namespace ASC.ApiSystem.Controllers
         [AllowCrossSiteJson]
         public IActionResult GetTariffs()
         {
-            var tariffs = CommonMethods.HostedSolution.GetTenantQuotas()
+            var tariffs = HostedSolution.GetTenantQuotas()
                 .Where(q => !q.Trial && !q.Free && !q.Open)
                 .OrderBy(q => q.ActiveUsers)
                 .ThenByDescending(q => q.Id)
@@ -177,9 +189,9 @@ namespace ASC.ApiSystem.Controllers
 
         private IActionResult GetTariff(Tenant tenant)
         {
-            var tariff = CommonMethods.HostedSolution.GetTariff(tenant.TenantId, false);
+            var tariff = HostedSolution.GetTariff(tenant.TenantId, false);
 
-            var quota = CommonMethods.HostedSolution.GetTenantQuota(tenant.TenantId);
+            var quota = HostedSolution.GetTenantQuota(tenant.TenantId);
 
             return Ok(new
             {

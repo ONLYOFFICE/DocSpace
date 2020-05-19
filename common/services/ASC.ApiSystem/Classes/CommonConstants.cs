@@ -41,9 +41,9 @@ namespace ASC.ApiSystem.Classes
         {
             DefaultCulture = new CultureInfo(DefaultLanguage);
 
-            RecaptchaRequired = Convert.ToBoolean(configuration["recaptcha.required"] ?? "true");
+            RecaptchaRequired = Convert.ToBoolean(configuration["recaptcha:required"] ?? "true");
 
-            var appKeys = configuration["web.app.keys"];
+            var appKeys = configuration["web:app:keys"];
 
             if (!string.IsNullOrEmpty(appKeys))
             {
@@ -56,13 +56,13 @@ namespace ASC.ApiSystem.Classes
                 AppSecretKeys = new List<string>();
             }
 
-            AutotestSecretEmails = (configuration["web.autotest.secret-email"] ?? "").Trim();
+            AutotestSecretEmails = (configuration["web:autotest:secret-email"] ?? "").Trim();
 
             MaxAttemptsCount = Convert.ToInt32(configuration["max-attempts-count"] ?? "10");
 
             MaxAttemptsTimeInterval = TimeSpan.Parse(Convert.ToString(configuration["max-attempts-interval"] ?? "00:05:00"));
 
-            WebApiBaseUrl = Convert.ToString(configuration["api.url"] ?? "/api/2.0/");
+            WebApiBaseUrl = Convert.ToString(configuration["api:url"] ?? "/api/2.0/");
 
         }
 

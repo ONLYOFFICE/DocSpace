@@ -25,9 +25,13 @@
 
 
 using ASC.ApiSystem.Models;
+using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Core.Tenants;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
@@ -35,11 +39,18 @@ namespace ASC.ApiSystem.Controllers
     [Route("[controller]")]
     public class SettingsController : ControllerBase
     {
-        public CommonMethods CommonMethods { get; }
+        private CommonMethods CommonMethods { get; }
+        public CoreSettings CoreSettings { get; }
+        private ILog Log { get; }
 
-        public SettingsController(CommonMethods commonMethods)
+        public SettingsController(
+            CommonMethods commonMethods,
+            CoreSettings coreSettings,
+            IOptionsMonitor<ILog> option)
         {
             CommonMethods = commonMethods;
+            CoreSettings = coreSettings;
+            Log = option.Get("ASC.ApiSystem");
         }
 
         #region For TEST api
@@ -75,7 +86,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            var settings = CommonMethods.CoreSettings.GetSetting(model.Key, tenantId);
+            var settings = CoreSettings.GetSetting(model.Key, tenantId);
 
             return Ok(new
             {
@@ -110,11 +121,11 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            CommonMethods.Log.DebugFormat("Set {0} value {1} for {2}", model.Key, model.Value, tenantId);
+            Log.DebugFormat("Set {0} value {1} for {2}", model.Key, model.Value, tenantId);
 
-            CommonMethods.CoreSettings.SaveSetting(model.Key, model.Value, tenantId);
+            CoreSettings.SaveSetting(model.Key, model.Value, tenantId);
 
-            var settings = CommonMethods.CoreSettings.GetSetting(model.Key, tenantId);
+            var settings = CoreSettings.GetSetting(model.Key, tenantId);
 
             return Ok(new
             {
@@ -139,7 +150,7 @@ namespace ASC.ApiSystem.Controllers
                     message = "PortalName is required"
                 };
 
-                CommonMethods.Log.Error("Model is null");
+                Log.Error("Model is null");
 
                 return false;
             }
@@ -158,7 +169,7 @@ namespace ASC.ApiSystem.Controllers
                     message = "PortalName is required"
                 };
 
-                CommonMethods.Log.Error("Model without tenant");
+                Log.Error("Model without tenant");
 
                 return false;
             }
@@ -171,7 +182,7 @@ namespace ASC.ApiSystem.Controllers
                     message = "Portal not found"
                 };
 
-                CommonMethods.Log.Error("Tenant not found");
+                Log.Error("Tenant not found");
 
                 return false;
             }

@@ -61,43 +61,34 @@ namespace ASC.ApiSystem.Controllers
     {
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
-        public ILog Log { get; }
+        private ILog Log { get; }
 
-        public CoreSettings CoreSettings { get; }
+        private CoreSettings CoreSettings { get; }
 
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
 
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
-        public ApiSystemHelper ApiSystemHelper { get; }
+        private CommonConstants CommonConstants { get; }
 
-        public TenantManager TenantManager { get; }
+        private HostedSolution HostedSolution { get; }
 
-        public UserFormatter UserFormatter { get; }
+        private IMemoryCache MemoryCache { get; }
 
-        public TenantDomainValidator TenantDomainValidator { get; }
-
-        public UserManagerWrapper UserManagerWrapper { get; }
-
-        public CommonConstants CommonConstants { get; }
-
-        public TimeZonesProvider TimeZonesProvider { get; }
-
-        public SettingsManager SettingsManager { get; }
-
-        public SecurityContext SecurityContext { get; }
-
-        public HostedSolution HostedSolution { get; }
-
-        public IMemoryCache MemoryCache { get; }
-
-        public IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
-
-        public CommonMethods(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
+        public CommonMethods(
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> option,
+            CoreSettings coreSettings,
+            CommonLinkUtility commonLinkUtility,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            TimeZoneConverter timeZoneConverter, CommonConstants commonConstants,
+            IMemoryCache memoryCache,
+            IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -113,27 +104,9 @@ namespace ASC.ApiSystem.Controllers
 
             TimeZoneConverter = timeZoneConverter;
 
-            ApiSystemHelper = apiSystemHelper;
-
-            TenantManager = tenantManager;
-
-            UserFormatter = userFormatter;
-
-            TenantDomainValidator = tenantDomainValidator;
-
-            UserManagerWrapper = userManagerWrapper;
-
             CommonConstants = commonConstants;
 
-            TimeZonesProvider = timeZonesProvider;
-
-            SettingsManager = settingsManager;
-
-            SecurityContext = securityContext;
-
             MemoryCache = memoryCache;
-
-            HostedSolutionOptions = hostedSolutionOptions;
 
             HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
         }
@@ -315,8 +288,8 @@ namespace ASC.ApiSystem.Controllers
         {
             try
             {
-                var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha.private-key"], ip, response);
-                var url = Configuration["recaptcha.verify-url"] ?? "https://www.google.com/recaptcha/api/siteverify";
+                var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
+                var url = Configuration["recaptcha:verify-url"] ?? "https://www.google.com/recaptcha/api/siteverify";
 
                 var webRequest = (HttpWebRequest)WebRequest.Create(url);
                 webRequest.Method = WebRequestMethods.Http.Post;

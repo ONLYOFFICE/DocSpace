@@ -24,19 +24,32 @@
 */
 
 
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Models;
-using ASC.Core.Tenants;
-using ASC.Web.Core.Utility;
-using ASC.Web.Core.Utility.Settings;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
+
+using ASC.ApiSystem.Classes;
+using ASC.ApiSystem.Models;
+using ASC.Common.Logging;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common.Settings;
+using ASC.Core.Tenants;
+using ASC.Core.Users;
+using ASC.Web.Core.Helpers;
+using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility;
+using ASC.Web.Core.Utility.Settings;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json.Linq;
 
 
 namespace ASC.ApiSystem.Controllers
@@ -45,11 +58,54 @@ namespace ASC.ApiSystem.Controllers
     [Route("[controller]")]
     public class PortalController : ControllerBase
     {
-        public CommonMethods CommonMethods { get; }
+        private IConfiguration Configuration { get; }
+        private Core.SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private ApiSystemHelper ApiSystemHelper { get; }
+        private CommonMethods CommonMethods { get; }
+        private HostedSolution HostedSolution { get; }
+        private CoreSettings CoreSettings { get; }
+        private TenantDomainValidator TenantDomainValidator { get; }
+        private UserFormatter UserFormatter { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private CommonConstants CommonConstants { get; }
+        private TimeZonesProvider TimeZonesProvider { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        private ILog Log { get; }
 
-        public PortalController(CommonMethods commonMethods)
+        public PortalController(
+            IConfiguration configuration,
+            Core.SecurityContext securityContext,
+            TenantManager tenantManager,
+            SettingsManager settingsManager,
+            ApiSystemHelper apiSystemHelper,
+            CommonMethods commonMethods,
+            HostedSolution hostedSolution,
+            CoreSettings coreSettings,
+            TenantDomainValidator tenantDomainValidator,
+            UserFormatter userFormatter,
+            UserManagerWrapper userManagerWrapper,
+            CommonConstants commonConstants,
+            IOptionsMonitor<ILog> option,
+            TimeZonesProvider timeZonesProvider,
+            TimeZoneConverter timeZoneConverter)
         {
+            Configuration = configuration;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            SettingsManager = settingsManager;
+            ApiSystemHelper = apiSystemHelper;
             CommonMethods = commonMethods;
+            HostedSolution = hostedSolution;
+            CoreSettings = coreSettings;
+            TenantDomainValidator = tenantDomainValidator;
+            UserFormatter = userFormatter;
+            UserManagerWrapper = userManagerWrapper;
+            CommonConstants = commonConstants;
+            TimeZonesProvider = timeZonesProvider;
+            TimeZoneConverter = timeZoneConverter;
+            Log = option.Get("ASC.ApiSystem");
         }
 
         #region For TEST api
@@ -125,7 +181,7 @@ namespace ASC.ApiSystem.Controllers
                 return BadRequest(error);
             }
 
-            CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. CheckExistingNamePortal: {1}", model.PortalName, sw.ElapsedMilliseconds);
+            Log.DebugFormat("PortalName = {0}; Elapsed ms. CheckExistingNamePortal: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
             var clientIP = CommonMethods.GetClientIp();
 
@@ -150,24 +206,24 @@ namespace ASC.ApiSystem.Controllers
 
             var language = model.Language ?? string.Empty;
 
-            var tz = CommonMethods.TimeZonesProvider.GetCurrentTimeZoneInfo(language);
+            var tz = TimeZonesProvider.GetCurrentTimeZoneInfo(language);
 
-            CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. TimeZonesProvider.GetCurrentTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
+            Log.DebugFormat("PortalName = {0}; Elapsed ms. TimeZonesProvider.GetCurrentTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
             if (!string.IsNullOrEmpty(model.TimeZoneName))
             {
-                tz = CommonMethods.TimeZoneConverter.GetTimeZone(model.TimeZoneName.Trim(), false) ?? tz;
+                tz = TimeZoneConverter.GetTimeZone(model.TimeZoneName.Trim(), false) ?? tz;
 
-                CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. TimeZonesProvider.OlsonTimeZoneToTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
+                Log.DebugFormat("PortalName = {0}; Elapsed ms. TimeZonesProvider.OlsonTimeZoneToTimeZoneInfo: {1}", model.PortalName, sw.ElapsedMilliseconds);
             }
 
-            var lang = CommonMethods.TimeZonesProvider.GetCurrentCulture(language);
+            var lang = TimeZonesProvider.GetCurrentCulture(language);
 
-            CommonMethods.Log.DebugFormat("PortalName = {0}; model.Language = {1}, resultLang.DisplayName = {2}", model.PortalName, language, lang.DisplayName);
+            Log.DebugFormat("PortalName = {0}; model.Language = {1}, resultLang.DisplayName = {2}", model.PortalName, language, lang.DisplayName);
 
             var info = new TenantRegistrationInfo
             {
-                Name = CommonMethods.Configuration["web.portal-name"] ?? "Cloud Office Applications",
+                Name = Configuration["web:portal-name"] ?? "Cloud Office Applications",
                 Address = model.PortalName,
                 Culture = lang,
                 FirstName = model.FirstName,
@@ -206,24 +262,24 @@ namespace ASC.ApiSystem.Controllers
             try
             {
                 /****REGISTRATION!!!*****/
-                if (!string.IsNullOrEmpty(CommonMethods.ApiSystemHelper.ApiCacheUrl))
+                if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                 {
-                    CommonMethods.ApiSystemHelper.AddTenantToCache(info.Address, CommonMethods.SecurityContext.CurrentAccount.ID);
+                    ApiSystemHelper.AddTenantToCache(info.Address, SecurityContext.CurrentAccount.ID);
 
-                    CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
+                    Log.DebugFormat("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
                 }
 
-                CommonMethods.HostedSolution.RegisterTenant(info, out t);
+                HostedSolution.RegisterTenant(info, out t);
 
                 /*********/
 
-                CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. HostedSolution.RegisterTenant: {1}", model.PortalName, sw.ElapsedMilliseconds);
+                Log.DebugFormat("PortalName = {0}; Elapsed ms. HostedSolution.RegisterTenant: {1}", model.PortalName, sw.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
                 sw.Stop();
 
-                CommonMethods.Log.Error(e);
+                Log.Error(e);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -240,28 +296,28 @@ namespace ASC.ApiSystem.Controllers
             {
                 isFirst = !CommonMethods.SendCongratulations(Request.Scheme, t, model.SkipWelcome, out sendCongratulationsAddress);
             }
-            else if (CommonMethods.Configuration["core.base-domain"] == "localhost")
+            else if (Configuration["core:base-domain"] == "localhost")
             {
                 try
                 {
                     /* set wizard not completed*/
-                    CommonMethods.TenantManager.SetCurrentTenant(t);
+                    TenantManager.SetCurrentTenant(t);
 
-                    var settings = CommonMethods.SettingsManager.Load<WizardSettings>();
+                    var settings = SettingsManager.Load<WizardSettings>();
 
                     settings.Completed = false;
 
-                    CommonMethods.SettingsManager.Save(settings);
+                    SettingsManager.Save(settings);
                 }
                 catch (Exception e)
                 {
-                    CommonMethods.Log.Error(e);
+                    Log.Error(e);
                 }
             }
 
-            var reference = CommonMethods.CreateReference(Request.Scheme, t.GetTenantDomain(CommonMethods.CoreSettings), info.Email, isFirst);
+            var reference = CommonMethods.CreateReference(Request.Scheme, t.GetTenantDomain(CoreSettings), info.Email, isFirst);
 
-            CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
+            Log.DebugFormat("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
             sw.Stop();
 
@@ -280,7 +336,7 @@ namespace ASC.ApiSystem.Controllers
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                CommonMethods.Log.Error("Model without tenant");
+                Log.Error("Model without tenant");
 
                 return BadRequest(new
                 {
@@ -291,7 +347,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                CommonMethods.Log.Error("Tenant not found");
+                Log.Error("Tenant not found");
 
                 return BadRequest(new
                 {
@@ -300,7 +356,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            CommonMethods.HostedSolution.RemoveTenant(tenant);
+            HostedSolution.RemoveTenant(tenant);
 
             return Ok(new
             {
@@ -315,7 +371,7 @@ namespace ASC.ApiSystem.Controllers
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                CommonMethods.Log.Error("Model without tenant");
+                Log.Error("Model without tenant");
 
                 return BadRequest(new
                 {
@@ -326,7 +382,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                CommonMethods.Log.Error("Tenant not found");
+                Log.Error("Tenant not found");
 
                 return BadRequest(new
                 {
@@ -344,7 +400,7 @@ namespace ASC.ApiSystem.Controllers
 
             tenant.SetStatus(active);
 
-            CommonMethods.HostedSolution.SaveTenant(tenant);
+            HostedSolution.SaveTenant(tenant);
 
             return Ok(new
             {
@@ -389,13 +445,13 @@ namespace ASC.ApiSystem.Controllers
                 if (!string.IsNullOrEmpty((model.Email ?? "").Trim()))
                 {
                     empty = false;
-                    tenants.AddRange(CommonMethods.HostedSolution.FindTenants((model.Email ?? "").Trim()));
+                    tenants.AddRange(HostedSolution.FindTenants((model.Email ?? "").Trim()));
                 }
 
                 if (!string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
                 {
                     empty = false;
-                    var tenant = CommonMethods.HostedSolution.GetTenant((model.PortalName ?? "").Trim());
+                    var tenant = HostedSolution.GetTenant((model.PortalName ?? "").Trim());
 
                     if (tenant != null)
                     {
@@ -406,7 +462,7 @@ namespace ASC.ApiSystem.Controllers
                 if (model.TenantId.HasValue)
                 {
                     empty = false;
-                    var tenant = CommonMethods.HostedSolution.GetTenant(model.TenantId.Value);
+                    var tenant = HostedSolution.GetTenant(model.TenantId.Value);
 
                     if (tenant != null)
                     {
@@ -416,7 +472,7 @@ namespace ASC.ApiSystem.Controllers
 
                 if (empty)
                 {
-                    tenants.AddRange(CommonMethods.HostedSolution.GetTenants(DateTime.MinValue).OrderBy(t => t.TenantId).ToList());
+                    tenants.AddRange(HostedSolution.GetTenants(DateTime.MinValue).OrderBy(t => t.TenantId).ToList());
                 }
 
                 var tenantsWrapper = tenants
@@ -432,7 +488,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception ex)
             {
-                CommonMethods.Log.Error(ex);
+                Log.Error(ex);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -450,11 +506,11 @@ namespace ASC.ApiSystem.Controllers
         private void ValidateDomain(string domain)
         {
             // size
-            CommonMethods.TenantDomainValidator.ValidateDomainLength(domain);
+            TenantDomainValidator.ValidateDomainLength(domain);
             // characters
             TenantDomainValidator.ValidateDomainCharacters(domain);
 
-            var sameAliasTenants = CommonMethods.ApiSystemHelper.FindTenantsInCache(domain, CommonMethods.SecurityContext.CurrentAccount.ID);
+            var sameAliasTenants = ApiSystemHelper.FindTenantsInCache(domain, SecurityContext.CurrentAccount.ID);
 
             if (sameAliasTenants != null)
             {
@@ -472,13 +528,13 @@ namespace ASC.ApiSystem.Controllers
             }
             try
             {
-                if (!string.IsNullOrEmpty(CommonMethods.ApiSystemHelper.ApiCacheUrl))
+                if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                 {
                     ValidateDomain(portalName.Trim());
                 }
                 else
                 {
-                    CommonMethods.HostedSolution.CheckTenantAddress(portalName.Trim());
+                    HostedSolution.CheckTenantAddress(portalName.Trim());
                 }
             }
             catch (TenantAlreadyExistsException ex)
@@ -499,7 +555,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception ex)
             {
-                CommonMethods.Log.Error(ex);
+                Log.Error(ex);
                 error = new { error = "error", message = ex.Message, stacktrace = ex.StackTrace };
                 return false;
             }
@@ -516,7 +572,7 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            if (!CommonMethods.UserFormatter.IsValidUserName(name, string.Empty))
+            if (!UserFormatter.IsValidUserName(name, string.Empty))
             {
                 error = new { error = "error", message = "name is incorrect" };
                 return false;
@@ -534,9 +590,9 @@ namespace ASC.ApiSystem.Controllers
                 return true;
             }
 
-            var passwordSettings = (PasswordSettings)new PasswordSettings().GetDefault(CommonMethods.Configuration);
+            var passwordSettings = (PasswordSettings)new PasswordSettings().GetDefault(Configuration);
 
-            if (!CommonMethods.UserManagerWrapper.CheckPasswordRegex(passwordSettings, pwd))
+            if (!UserManagerWrapper.CheckPasswordRegex(passwordSettings, pwd))
             {
                 error = new { error = "passPolicyError", message = "Password is incorrect" };
                 return false;
@@ -548,15 +604,15 @@ namespace ASC.ApiSystem.Controllers
         private bool CheckRegistrationPayment(out object error)
         {
             error = null;
-            if (CommonMethods.Configuration["core.base-domain"] == "localhost")
+            if (Configuration["core:base-domain"] == "localhost")
             {
-                var tenants = CommonMethods.HostedSolution.GetTenants(DateTime.MinValue);
+                var tenants = HostedSolution.GetTenants(DateTime.MinValue);
                 var firstTenant = tenants.FirstOrDefault();
                 if (firstTenant != null)
                 {
                     var activePortals = tenants.Count(r => r.Status != TenantStatus.Suspended && r.Status != TenantStatus.RemovePending);
 
-                    var quota = CommonMethods.HostedSolution.GetTenantQuota(firstTenant.TenantId);
+                    var quota = HostedSolution.GetTenantQuota(firstTenant.TenantId);
                     if (quota.CountPortals > 0 && quota.CountPortals <= activePortals)
                     {
                         error = new { error = "portalsCountTooMuch", message = "Too much portals registered already", };
@@ -573,12 +629,12 @@ namespace ASC.ApiSystem.Controllers
         private bool CheckRecaptcha(TenantModel model, string clientIP, Stopwatch sw, out object error)
         {
             error = null;
-            if (CommonMethods.CommonConstants.RecaptchaRequired
+            if (CommonConstants.RecaptchaRequired
                 && !CommonMethods.IsTestEmail(model.Email))
             {
-                if (!string.IsNullOrEmpty(model.AppKey) && CommonMethods.CommonConstants.AppSecretKeys.Contains(model.AppKey))
+                if (!string.IsNullOrEmpty(model.AppKey) && CommonConstants.AppSecretKeys.Contains(model.AppKey))
                 {
-                    CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha via app key: {1}. {2}", model.PortalName, model.AppKey, sw.ElapsedMilliseconds);
+                    Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha via app key: {1}. {2}", model.PortalName, model.AppKey, sw.ElapsedMilliseconds);
                     return true;
                 }
 
@@ -587,7 +643,7 @@ namespace ASC.ApiSystem.Controllers
                 /*** validate recaptcha ***/
                 if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, clientIP))
                 {
-                    CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha error: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
+                    Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha error: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
                     sw.Stop();
 
                     error = new { error = "recaptchaInvalid", message = "Recaptcha is invalid" };
@@ -595,7 +651,7 @@ namespace ASC.ApiSystem.Controllers
 
                 }
 
-                CommonMethods.Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
+                Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
             }
 
             return true;

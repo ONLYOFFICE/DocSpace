@@ -24,13 +24,6 @@
 */
 
 
-using ASC.ApiSystem.Models;
-using ASC.Core.Tenants;
-using ASC.Web.Studio.Utility;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,17 +31,45 @@ using System.Linq;
 using System.Net;
 using System.Web;
 
+using ASC.ApiSystem.Classes;
+using ASC.ApiSystem.Models;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
+using ASC.Web.Studio.Utility;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json.Linq;
+
 namespace ASC.ApiSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class CalDavController : ControllerBase
     {
-        public CommonMethods CommonMethods { get; }
+        private CommonMethods CommonMethods { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private CoreSettings CoreSettings { get; }
+        private CommonConstants CommonConstants { get; }
+        private ILog Log { get; }
 
-        public CalDavController(CommonMethods commonMethods)
+        public CalDavController(
+            CommonMethods commonMethods,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            CoreSettings coreSettings,
+            CommonConstants commonConstants,
+            IOptionsMonitor<ILog> option)
         {
             CommonMethods = commonMethods;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            CoreSettings = coreSettings;
+            CommonConstants = commonConstants;
+            Log = option.Get("ASC.ApiSystem");
         }
 
         #region For TEST api
@@ -76,13 +97,13 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                var validationKey = CommonMethods.EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, change + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, change + ConfirmType.Auth);
 
                 SendToApi(Request.Scheme, tenant, "calendar/change_to_storage", new Dictionary<string, string> { { "change", change }, { "key", validationKey } });
             }
             catch (Exception ex)
             {
-                CommonMethods.Log.Error("Error change_to_storage", ex);
+                Log.Error("Error change_to_storage", ex);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -105,13 +126,13 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                var validationKey = CommonMethods.EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, eventInfo + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, eventInfo + ConfirmType.Auth);
 
                 SendToApi(Request.Scheme, tenant, "calendar/caldav_delete_event", new Dictionary<string, string> { { "eventInfo", eventInfo }, { "key", validationKey } });
             }
             catch (Exception ex)
             {
-                CommonMethods.Log.Error("Error caldav_delete_event", ex);
+                Log.Error("Error caldav_delete_event", ex);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -129,7 +150,7 @@ namespace ASC.ApiSystem.Controllers
         {
             if (data == null)
             {
-                CommonMethods.Log.Error("CalDav authenticated data is null");
+                Log.Error("CalDav authenticated data is null");
 
                 return BadRequest(new
                 {
@@ -149,7 +170,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                CommonMethods.Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.TenantId));
+                Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.TenantId));
 
                 if (email == "admin@ascsystem" && Core.Configuration.Constants.CoreSystem.ID.ToString() == password)
                 {
@@ -159,7 +180,7 @@ namespace ASC.ApiSystem.Controllers
                     });
                 }
 
-                var validationKey = CommonMethods.EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + password + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + password + ConfirmType.Auth);
 
                 var authData = string.Format("userName={0}&password={1}&key={2}",
                                              HttpUtility.UrlEncode(email),
@@ -175,7 +196,7 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception ex)
             {
-                CommonMethods.Log.Error("Caldav authenticated", ex);
+                Log.Error("Caldav authenticated", ex);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -195,7 +216,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (string.IsNullOrEmpty(calendarParam))
             {
-                CommonMethods.Log.Error("calendarParam is empty");
+                Log.Error("calendarParam is empty");
 
                 error = new
                 {
@@ -207,7 +228,7 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            CommonMethods.Log.Info(string.Format("CalDav calendarParam: {0}", calendarParam));
+            Log.Info(string.Format("CalDav calendarParam: {0}", calendarParam));
 
             var userParam = calendarParam.Split('/')[0];
 
@@ -222,7 +243,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (string.IsNullOrEmpty(userParam))
             {
-                CommonMethods.Log.Error("userParam is empty");
+                Log.Error("userParam is empty");
 
                 error = new
                 {
@@ -238,7 +259,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (userData.Length < 3)
             {
-                CommonMethods.Log.Error(string.Format("Error Caldav username: {0}", userParam));
+                Log.Error(string.Format("Error Caldav username: {0}", userParam));
 
                 error = new
                 {
@@ -254,20 +275,20 @@ namespace ASC.ApiSystem.Controllers
 
             var tenantName = userData[2];
 
-            var baseUrl = CommonMethods.CoreSettings.BaseDomain;
+            var baseUrl = CoreSettings.BaseDomain;
 
             if (!string.IsNullOrEmpty(baseUrl) && tenantName.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
             {
                 tenantName = tenantName.Replace("." + baseUrl, "");
             }
 
-            CommonMethods.Log.Info(string.Format("CalDav: user:{0} tenantName:{1}", userParam, tenantName));
+            Log.Info(string.Format("CalDav: user:{0} tenantName:{1}", userParam, tenantName));
 
             var tenantModel = new TenantModel { PortalName = tenantName };
 
             if (!CommonMethods.GetTenant(tenantModel, out tenant))
             {
-                CommonMethods.Log.Error("Model without tenant");
+                Log.Error("Model without tenant");
 
                 error = new
                 {
@@ -281,7 +302,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                CommonMethods.Log.Error("Tenant not found " + tenantName);
+                Log.Error("Tenant not found " + tenantName);
 
                 error = new
                 {
@@ -310,12 +331,12 @@ namespace ASC.ApiSystem.Controllers
             var url = string.Format("{0}{1}{2}{3}{4}{5}",
                                     requestUriScheme,
                                     Uri.SchemeDelimiter,
-                                    tenant.GetTenantDomain(CommonMethods.CoreSettings),
-                                    CommonMethods.CommonConstants.WebApiBaseUrl,
+                                    tenant.GetTenantDomain(CoreSettings),
+                                    CommonConstants.WebApiBaseUrl,
                                     path,
                                     string.IsNullOrEmpty(query) ? "" : "?" + query);
 
-            CommonMethods.Log.Info(string.Format("CalDav: SendToApi: {0}", url));
+            Log.Info(string.Format("CalDav: SendToApi: {0}", url));
 
             var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = httpMethod;
