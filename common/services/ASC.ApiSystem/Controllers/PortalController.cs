@@ -32,6 +32,7 @@ using System.Security;
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -660,5 +661,25 @@ namespace ASC.ApiSystem.Controllers
         #endregion
 
         #endregion
+    }
+
+    public static class PortalControllerExtention
+    {
+        public static DIHelper AddPortalController(this DIHelper services)
+        {
+            return services
+                .AddCommonMethods()
+                .AddTimeZonesProvider()
+                .AddCommonConstants()
+                .AddUserManagerService()
+                .AddUserFormatter()
+                .AddCoreSettingsService()
+                .AddHostedSolutionService()
+                .AddApiSystemHelper()
+                .AddSettingsManagerService()
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                ;
+        }
     }
 }

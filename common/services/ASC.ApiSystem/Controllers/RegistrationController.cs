@@ -30,6 +30,7 @@ using System.Linq;
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -76,7 +77,7 @@ namespace ASC.ApiSystem.Controllers
         public RegistrationController(
             CommonMethods commonMethods,
             CommonConstants commonConstants,
-            HostedSolution hostedSolution,
+            IOptionsSnapshot<HostedSolution> hostedSolution,
             TimeZonesProvider timeZonesProvider,
             TimeZoneConverter timeZoneConverter,
             ApiSystemHelper apiSystemHelper,
@@ -92,7 +93,7 @@ namespace ASC.ApiSystem.Controllers
         {
             CommonMethods = commonMethods;
             CommonConstants = commonConstants;
-            HostedSolution = hostedSolution;
+            HostedSolution = hostedSolution.Value;
             TimeZonesProvider = timeZonesProvider;
             TimeZoneConverter = timeZoneConverter;
             ApiSystemHelper = apiSystemHelper;
@@ -776,5 +777,25 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
+    }
+
+    public static class RegistrationControllerExtention
+    {
+        public static DIHelper AddRegistrationController(this DIHelper services)
+        {
+            return services
+                .AddCommonMethods()
+                .AddTimeZonesProvider()
+                .AddCommonConstants()
+                .AddUserManagerService()
+                .AddUserFormatter()
+                .AddCoreSettingsService()
+                .AddHostedSolutionService()
+                .AddApiSystemHelper()
+                .AddSettingsManagerService()
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                ;
+        }
     }
 }

@@ -33,6 +33,7 @@ using System.Web;
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -359,5 +360,17 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
+    }
+
+    public static class CalDavControllerExtention
+    {
+        public static DIHelper AddCalDavController(this DIHelper services)
+        {
+            return services
+                .AddCommonMethods()
+                .AddEmailValidationKeyProviderService()
+                .AddCommonConstants()
+                .AddCoreSettingsService();
+        }
     }
 }

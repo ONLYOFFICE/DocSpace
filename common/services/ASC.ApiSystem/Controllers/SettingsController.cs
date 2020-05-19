@@ -25,6 +25,7 @@
 
 
 using ASC.ApiSystem.Models;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -192,5 +193,15 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
+    }
+
+    public static class SettingsControllerExtention
+    {
+        public static DIHelper AddSettingsController(this DIHelper services)
+        {
+            return services
+                .AddCommonMethods()
+                .AddCoreSettingsService();
+        }
     }
 }

@@ -71,9 +71,12 @@ namespace ASC.ApiSystem
             diHelper.AddNLogManager("ASC.Apisystem");
 
             diHelper
-                .AddCommonConstants()
-                .AddTimeZonesProvider()
-                .AddCommonMethods();
+                .AddPortalController()
+                .AddCoreSettingsController()
+                .AddCalDavController()
+                .AddRegistrationController()
+                .AddSettingsController()
+                .AddTariffController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }

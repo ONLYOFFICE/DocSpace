@@ -29,6 +29,7 @@ using System.Linq;
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -214,5 +215,16 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
+    }
+
+    public static class TariffControllerExtention
+    {
+        public static DIHelper AddTariffController(this DIHelper services)
+        {
+            return services
+                .AddCommonMethods()
+                .AddHostedSolutionService()
+                .AddCoreSettingsService();
+        }
     }
 }
