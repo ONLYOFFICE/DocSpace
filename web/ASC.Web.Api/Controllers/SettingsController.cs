@@ -311,9 +311,9 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Read("cultures")]
-        public List<CultureInfo> GetSupportedCultures()
+        public IEnumerable<object> GetSupportedCultures()
         {
-            return SetupInfo.EnabledCultures;
+            return SetupInfo.EnabledCultures.Select(r => new { r.Name });
         }
 
         [Read("timezones")]

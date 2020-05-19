@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 
 using ASC.Common;
@@ -503,6 +504,11 @@ namespace ASC.Core.Caching
         public void InvalidateCache()
         {
             UserServiceCache.InvalidateCache();
+        }
+
+        public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
+        {
+            return Service.GetUser(tenant, id, exp);
         }
 
         [Serializable]

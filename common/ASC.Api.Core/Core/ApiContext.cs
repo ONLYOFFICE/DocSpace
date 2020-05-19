@@ -265,7 +265,7 @@ namespace ASC.Api.Core
     {
         public static bool Check(this ApiContext context, string field)
         {
-            return context == null || context.Fields == null || (context.Fields != null && context.Fields.Contains(field));
+            return context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
         }
     }
 
