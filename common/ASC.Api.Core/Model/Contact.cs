@@ -23,18 +23,12 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "contact", Namespace = "")]
     public class Contact
     {
-        [DataMember(Order = 1)]
         public string Type { get; set; }
 
-        [DataMember(Order = 2)]
         public string Value { get; set; }
 
         public Contact()

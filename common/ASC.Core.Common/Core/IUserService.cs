@@ -27,6 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+
+using ASC.Core.Common.EF;
 using ASC.Core.Users;
 
 namespace ASC.Core
@@ -49,6 +52,8 @@ namespace ASC.Core
             out int count);
 
         UserInfo GetUser(int tenant, Guid id);
+
+        UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
 
         UserInfo GetUser(int tenant, string login, string passwordHash);
 

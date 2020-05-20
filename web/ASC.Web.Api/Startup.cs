@@ -1,3 +1,4 @@
+using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -18,7 +19,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api
 {
@@ -38,10 +38,13 @@ namespace ASC.Web.Api
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                    .AddNewtonsoftJson()
-                    .AddXmlSerializerFormatters();
-
-            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
+                    .AddXmlSerializerFormatters()
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.WriteIndented = false;
+                        options.JsonSerializerOptions.IgnoreNullValues = true;
+                        options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                    });
 
             services.AddAuthentication("cookie")
                     .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
