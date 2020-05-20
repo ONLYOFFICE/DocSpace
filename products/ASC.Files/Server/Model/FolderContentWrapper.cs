@@ -24,9 +24,12 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -160,6 +163,32 @@ namespace ASC.Api.Documents
             return services
                 .AddFileWrapperHelperService()
                 .AddFolderWrapperHelperService();
+        }
+    }
+
+
+    public class FileEntryWrapperConverter : JsonConverter<FileEntryWrapper>
+    {
+        public override FileEntryWrapper Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return null;
+        }
+
+        public override void Write(Utf8JsonWriter writer, FileEntryWrapper value, JsonSerializerOptions options)
+        {
+            if (value is FolderWrapper<string> f1)
+            {
+                JsonSerializer.Serialize(writer, f1, typeof(FolderWrapper<string>), options);
+                return;
+            }
+
+            if (value is FolderWrapper<int> f2)
+            {
+                JsonSerializer.Serialize(writer, f2, typeof(FolderWrapper<int>), options);
+                return;
+            }
+
+            JsonSerializer.Serialize(writer, value, options);
         }
     }
 }
