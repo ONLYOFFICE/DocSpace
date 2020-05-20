@@ -31,6 +31,8 @@ class OperationsPanelComponent extends React.Component {
     super(props);
 
     changeLanguage(i18n);
+
+    this.state = { visible: false };
   }
 
   loop = (id, destFolderId) => {
@@ -73,11 +75,19 @@ class OperationsPanelComponent extends React.Component {
     }).catch(err => finishFilesOperations(err));
   }
 
+  onClose = () => {
+    this.setState({ visible: false });
+    setTimeout(() => this.props.onClose(), 1000);
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.setState({visible: this.props.visible}), 1000);
+  }
+
   onSelect = e => {
     const {
       t,
       isCopy,
-      onClose,
       selection,
       startFilesOperations,
       finishFilesOperations,
@@ -99,7 +109,7 @@ class OperationsPanelComponent extends React.Component {
       }
     }
 
-    onClose();
+    this.onClose();
 
     if(isCopy) {
       startFilesOperations(t("CopyOperation"));
@@ -116,7 +126,8 @@ class OperationsPanelComponent extends React.Component {
 
   render() {
     //console.log("Operations panel render");
-    const { t, visible, onClose, onLoading, isLoading, filter, treeFolders, isCopy } = this.props;
+    const { t, onLoading, isLoading, filter, treeFolders, isCopy } = this.props;
+    const { visible } = this.state;
     const zIndex = 310;
     const fakeNewDocuments = 8;
     const data = treeFolders.slice(0, 3);
@@ -124,7 +135,7 @@ class OperationsPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledHeaderContent className="files-operations-panel">
