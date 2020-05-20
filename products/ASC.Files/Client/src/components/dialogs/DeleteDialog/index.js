@@ -44,7 +44,7 @@ class DeleteDialogComponent extends React.Component {
   }
 
   loopDeleteOperation = id => {
-    const { currentFolderId, filter, treeFolders, setTreeFolders, isRecycleBinFolder, setProgressValue, closeUploadSession, getProgress } = this.props;
+    const { currentFolderId, filter, treeFolders, setTreeFolders, isRecycleBinFolder, setProgressValue, finishFilesOperations, getProgress } = this.props;
     const successMessage = "Files and folders was deleted";
     getProgress().then(res => {
       const currentProcess = res.find(x => x.id === id);
@@ -59,19 +59,18 @@ class DeleteDialogComponent extends React.Component {
             const folders = data.selectedFolder.folders;
             const foldersCount = data.selectedFolder.foldersCount;
             loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
             setTreeFolders(newTreeFolders);
-            setProgressValue(100);
-            closeUploadSession();
-            toastr.success(successMessage);
           }
+          setProgressValue(100);
+          finishFilesOperations();
+          toastr.success(successMessage);
         })
       }
-    }).catch(err => closeUploadSession(err))
+    }).catch(err => finishFilesOperations(err))
   }
 
   onDelete = () => {
-    const { isRecycleBinFolder, onClose, startFilesOperations, closeUploadSession, t } = this.props;
+    const { isRecycleBinFolder, onClose, startFilesOperations, finishFilesOperations, t } = this.props;
     const { selection } = this.state;
 
     const deleteAfter = true; //Delete after finished
@@ -97,7 +96,7 @@ class DeleteDialogComponent extends React.Component {
       .removeFiles(folderIds, fileIds, deleteAfter, immediately)
       .then(res =>
         this.loopDeleteOperation(res[0].id))
-      .catch(err => closeUploadSession(err))
+      .catch(err => finishFilesOperations(err))
   };
 
   onChange = event => {

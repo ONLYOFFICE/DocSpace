@@ -295,15 +295,7 @@ export function deleteFile(fileId, deleteAfter, immediately) {
 }
 
 export function deleteFolder(folderId, deleteAfter, immediately) {
-  return (dispatch, getState) => {
-    const { files } = getState();
-    const { folders } = files;
-
-    return api.files.deleteFolder(folderId, deleteAfter, immediately)
-      .then(res => {
-        return dispatch(setFolder(folders.filter(f => f.id !== folderId)));
-      })
-  }
+  return (dispatch) => api.files.deleteFolder(folderId, deleteAfter, immediately);
 }
 
 export function setShareFiles(folderIds, fileIds, share, notify, sharingMessage) {

@@ -37,7 +37,7 @@ class OperationsPanelComponent extends React.Component {
     const {
       getProgress,
       setProgressValue,
-      closeUploadSession,
+      finishFilesOperations,
       filter,
       currentFolderId,
       treeFolders,
@@ -63,14 +63,14 @@ class OperationsPanelComponent extends React.Component {
             foldersCount = data.selectedFolder.foldersCount;
             loopTreeFolders(path, newTreeFolders, folders, foldersCount);
             setTreeFolders(newTreeFolders);
-          }).catch(err => closeUploadSession(err))
+          }).catch(err => finishFilesOperations(err))
             .finally(() => { 
               setProgressValue(100);
-              closeUploadSession();
+              finishFilesOperations();
             })
-        }).catch(err => closeUploadSession(err))
+        }).catch(err => finishFilesOperations(err))
       }
-    }).catch(err => closeUploadSession(err));
+    }).catch(err => finishFilesOperations(err));
   }
 
   onSelect = e => {
@@ -80,7 +80,7 @@ class OperationsPanelComponent extends React.Component {
       onClose,
       selection,
       startFilesOperations,
-      closeUploadSession,
+      finishFilesOperations,
       copyToFolder,
       moveToFolder
     } = this.props;
@@ -105,12 +105,12 @@ class OperationsPanelComponent extends React.Component {
       startFilesOperations(t("CopyOperation"));
       copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
         .then(res => this.loop(res[0].id, destFolderId))
-        .catch(err => closeUploadSession(err))
+        .catch(err => finishFilesOperations(err))
     } else {
       startFilesOperations(t("MoveToOperation"));
       moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
         .then(res => this.loop(res[0].id, destFolderId))
-        .catch(err => closeUploadSession(err))
+        .catch(err => finishFilesOperations(err))
     }
   }
 
