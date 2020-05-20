@@ -50,6 +50,7 @@ namespace ASC.Files
                     options.JsonSerializerOptions.WriteIndented = false;
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                     options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new FileEntryWrapperConverter());
                 });
 
             services.AddMemoryCache();
