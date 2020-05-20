@@ -35,6 +35,7 @@ using ASC.Files.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Search;
 
 namespace ASC.Web.Files.Configuration
 {
@@ -46,6 +47,8 @@ namespace ASC.Web.Files.Configuration
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
+        public IServiceProvider ServiceProvider { get; }
+
         //public SubscriptionManager SubscriptionManager { get; }
 
         public ProductEntryPoint()
@@ -97,6 +100,7 @@ namespace ASC.Web.Files.Configuration
                     UserOpportunities = userOpportunities,
                     CanNotBeDisabled = true,
                 };
+
             //SearchHandlerManager.Registry(new SearchHandler());
         }
 
@@ -177,7 +181,8 @@ namespace ASC.Web.Files.Configuration
                 .AddAuthContextService()
                 .AddUserManagerService()
                 .AddGlobalService()
-                .AddFilesSubscriptionManagerService();
+                .AddFilesSubscriptionManagerService()
+                .AddFactoryIndexerFileService();
         }
     }
 }

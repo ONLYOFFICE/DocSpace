@@ -1,0 +1,33 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:5010",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "apisystem",
+        "log__dir": "../../../Logs"
+      }
+    },
+    "ASC.ApiSystem": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5010",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "apisystem",
+        "log__dir": "../../../Logs"
+      }
+    }
+  }
+}

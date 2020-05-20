@@ -43,8 +43,6 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
-
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users

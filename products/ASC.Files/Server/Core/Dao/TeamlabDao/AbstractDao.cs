@@ -53,8 +53,10 @@ namespace ASC.Files.Core.Data
 
         public FilesDbContext FilesDbContext { get; }
 
-        protected internal int TenantID { get; }
+        private int tenantID;
+        protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
         public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
         public TenantUtil TenantUtil { get; }
         public SetupInfo SetupInfo { get; }
         public TenantExtra TenantExtra { get; }
@@ -81,8 +83,8 @@ namespace ASC.Files.Core.Data
         {
             cache = AscCache.Memory;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
             UserManager = userManager;
+            TenantManager = tenantManager;
             TenantUtil = tenantUtil;
             SetupInfo = setupInfo;
             TenantExtra = tenantExtra;
@@ -100,7 +102,7 @@ namespace ASC.Files.Core.Data
             return set.Where(r => r.TenantId == TenantID);
         }
 
-        protected IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
+        protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
         {
             return Query(FilesDbContext.Files)
                 .Where(where);
@@ -169,21 +171,25 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
+        protected int MappingID(int id)
+        {
+            return id;
+        }
         protected object MappingID(object id)
         {
             return MappingID(id, false);
         }
 
-        internal static bool BuildSearch(IDbSearch dbSearch, string text, SearhTypeEnum searhTypeEnum)
+        internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch
         {
-            var lowerTitle = dbSearch.Title.ToLower();
             var lowerText = text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+
             return searhTypeEnum switch
             {
-                SearhTypeEnum.Start => lowerTitle.StartsWith(lowerText),
-                SearhTypeEnum.End => lowerTitle.EndsWith(lowerText),
-                SearhTypeEnum.Any => lowerTitle.Contains(lowerText),
-                _ => lowerTitle.EndsWith(lowerText),
+                SearhTypeEnum.Start => query.Where(r => r.Title.ToLower().StartsWith(lowerText)),
+                SearhTypeEnum.End => query.Where(r => r.Title.ToLower().EndsWith(lowerText)),
+                SearhTypeEnum.Any => query.Where(r => r.Title.ToLower().Contains(lowerText)),
+                _ => query,
             };
         }
 

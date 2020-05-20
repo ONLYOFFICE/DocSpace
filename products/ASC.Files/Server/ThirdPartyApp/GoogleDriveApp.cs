@@ -68,7 +68,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using File = ASC.Files.Core.File;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -117,7 +116,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public GoogleLoginProvider GoogleLoginProvider { get; }
         public TokenHelper TokenHelper { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
-        public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
+        public ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public GoogleDriveApp()
@@ -148,16 +147,15 @@ namespace ASC.Web.Files.ThirdPartyApp
             GoogleLoginProvider googleLoginProvider,
             TokenHelper tokenHelper,
             DocumentServiceConnector documentServiceConnector,
-            ThirdPartyAppHandler thirdPartyAppHandler,
+            ThirdPartyAppHandlerService thirdPartyAppHandlerService,
             IServiceProvider serviceProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
         {
             Logger = option.CurrentValue;
             PathProvider = pathProvider;
@@ -182,7 +180,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             GoogleLoginProvider = googleLoginProvider;
             TokenHelper = tokenHelper;
             DocumentServiceConnector = documentServiceConnector;
-            ThirdPartyAppHandler = thirdPartyAppHandler;
+            ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
         }
 
@@ -215,7 +213,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return AccessTokenUrl;
         }
 
-        public File GetFile(string fileId, out bool editable)
+        public File<string> GetFile(string fileId, out bool editable)
         {
             Logger.Debug("GoogleDriveApp: get file " + fileId);
             fileId = ThirdPartySelector.GetFileId(fileId);
@@ -228,7 +226,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var jsonFile = JObject.Parse(driveFile);
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<string>>();
             file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
             file.Title = Global.ReplaceInvalidCharsAndTruncate(GetCorrectTitle(jsonFile));
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
@@ -247,7 +245,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return file;
         }
 
-        public string GetFileStreamUrl(File file)
+        public string GetFileStreamUrl(File<string> file)
         {
             if (file == null) return string.Empty;
 
@@ -259,7 +257,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             Logger.Debug("GoogleDriveApp: get file stream url " + fileId);
 
-            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandler.HandlerPath));
+            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandlerService.HandlerPath));
             if (uriBuilder.Uri.IsLoopback)
             {
                 uriBuilder.Host = Dns.GetHostName();
@@ -537,7 +535,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 using (var response = request.GetResponse())
                 using (var stream = new ResponseStream(response))
                 {
-                    stream.StreamCopyTo(context.Response.Body);
+                    stream.CopyTo(context.Response.Body);
 
                     var contentLength = jsonFile.Value<string>("size");
                     Logger.Debug("GoogleDriveApp: get file stream contentLength - " + contentLength);

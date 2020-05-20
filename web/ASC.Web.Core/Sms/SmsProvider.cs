@@ -144,12 +144,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
             Log = options.CurrentValue;
         }
@@ -206,12 +205,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -343,12 +341,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
     }
@@ -363,12 +360,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
         {
         }
     }
@@ -392,6 +388,8 @@ namespace ASC.Web.Core.Sms
             get { return this["twiliosender"]; }
             set { }
         }
+
+        public VoipDao VoipDao { get; }
 
         public override bool Enable()
         {
@@ -429,16 +427,17 @@ namespace ASC.Web.Core.Sms
         }
 
         public TwilioProvider(
+            VoipDao voipDao,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
+            VoipDao = voipDao;
         }
 
 
@@ -461,12 +460,11 @@ namespace ASC.Web.Core.Sms
 
             var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
 
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, ConsumerFactory, voipDaoCache);
-            var numbers = dao.GetNumbers();
+            var numbers = VoipDao.GetNumbers();
             foreach (var number in numbers)
             {
                 provider.DisablePhone(number);
-                dao.DeleteNumber(number.Id);
+                VoipDao.DeleteNumber(number.Id);
             }
         }
     }
@@ -478,16 +476,29 @@ namespace ASC.Web.Core.Sms
         }
 
         public TwilioSaaSProvider(
+            VoipDao voipDao,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
+            : base(voipDao, tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
         {
+        }
+    }
+
+    public static class TwilioProviderExtention
+    {
+        public static DIHelper AddTwilioProviderService(this DIHelper services)
+        {
+            services.TryAddScoped<TwilioProvider>();
+            services.TryAddScoped<TwilioSaaSProvider>();
+            return services.AddVoipDaoService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+
 
 using ASC.Common;
 using ASC.Core;
@@ -35,30 +35,21 @@ using ASC.Core.Users;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperFull
     {
-        [DataMember(Order = 5)]
         public string Description { get; set; }
 
-        [DataMember(Order = 2)]
         public string Name { get; set; }
 
-        [DataMember(Order = 4, EmitDefaultValue = true)]
         public Guid? Parent { get; set; }
 
-        [DataMember(Order = 3)]
         public Guid Category { get; set; }
 
-        [DataMember(Order = 1)]
         public Guid Id { get; set; }
 
-        [DataMember(Order = 9, EmitDefaultValue = true)]
         public EmployeeWraper Manager { get; set; }
 
-        [DataMember(Order = 10, EmitDefaultValue = false)]
         public List<EmployeeWraper> Members { get; set; }
-        public UserManager UserManager { get; }
 
         public static GroupWrapperFull GetSample()
         {

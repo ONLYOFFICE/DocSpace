@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 
@@ -53,7 +54,7 @@ namespace ASC.Web.Files.Services.FFmpegService
         public FFmpegService(IOptionsMonitor<ILog> optionsMonitor, IConfiguration configuration)
         {
             logger = optionsMonitor.CurrentValue;
-            FFmpegPath = configuration["files:ffmpeg"];
+            FFmpegPath = configuration["files:ffmpeg:value"];
             FFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 
             var exts = configuration["files:ffmpeg:exts"];
@@ -167,6 +168,14 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 logger.Info(line);
             }
+        }
+    }
+    public static class FFmpegServiceExtensions
+    {
+        public static DIHelper AddFFmpegServiceService(this DIHelper services)
+        {
+            services.TryAddSingleton<FFmpegService>();
+            return services;
         }
     }
 }

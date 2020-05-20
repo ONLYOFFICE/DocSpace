@@ -56,11 +56,6 @@ namespace ASC.Web.Core.Jabber
             get { return this["firebase_messagingSenderId"]; }
         }
 
-        public FireBase Instance
-        {
-            get { return ConsumerFactory.Get<FireBase>(); }
-        }
-
         public FireBase()
         {
         }
@@ -69,11 +64,10 @@ namespace ASC.Web.Core.Jabber
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
         }
     }

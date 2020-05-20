@@ -33,7 +33,6 @@ using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns

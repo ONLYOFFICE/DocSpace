@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyTitle>ASC.ApiSystem</AssemblyTitle>
+    <Company>Ascensio System SIA</Company>
+    <Product>ASC.ApiSystem</Product>
+    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Classes\EnableCorsAppSettingsAttribute .cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+    <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
+  </ItemGroup>
+
+</Project>

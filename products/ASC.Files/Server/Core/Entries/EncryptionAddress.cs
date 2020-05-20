@@ -58,9 +58,9 @@ namespace ASC.Web.Files.Core.Entries
             EncryptionLoginProvider = encryptionLoginProvider;
         }
 
-        public IEnumerable<string> GetAddresses(string fileId)
+        public IEnumerable<string> GetAddresses<T>(T fileId)
         {
-            var fileShares = FileSharing.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
+            var fileShares = FileSharing.GetSharedInfo<T>(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
             fileShares = fileShares.Where(share => !share.SubjectGroup && !share.SubjectId.Equals(FileConstant.ShareLinkId) && share.Share == FileShare.ReadWrite).ToList();
             var accountsString = fileShares.Select(share => EncryptionLoginProvider.GetAddress(share.SubjectId)).Where(address => !string.IsNullOrEmpty(address));
             return accountsString;

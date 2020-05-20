@@ -24,9 +24,12 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -37,22 +40,22 @@ namespace ASC.Api.Documents
     /// <summary>
     /// </summary>
     [DataContract(Name = "content", Namespace = "")]
-    public class FolderContentWrapper
+    public class FolderContentWrapper<T>
     {
         /// <summary>
         /// </summary>
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        public List<FileWrapper> Files { get; set; }
+        public List<FileWrapper<T>> Files { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        public List<FolderWrapper> Folders { get; set; }
+        public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
-        public FolderWrapper Current { get; set; }
+        public FolderWrapper<T> Current { get; set; }
 
         /// <summary>
         /// </summary>
@@ -86,13 +89,13 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public static FolderContentWrapper GetSample()
+        public static FolderContentWrapper<int> GetSample()
         {
-            return new FolderContentWrapper
+            return new FolderContentWrapper<int>
             {
-                Current = FolderWrapper.GetSample(),
-                Files = new List<FileWrapper>(new[] { FileWrapper.GetSample(), FileWrapper.GetSample() }),
-                Folders = new List<FolderWrapper>(new[] { FolderWrapper.GetSample(), FolderWrapper.GetSample() }),
+                Current = FolderWrapper<int>.GetSample(),
+                Files = new List<FileWrapper<int>>(new[] { FileWrapper<int>.GetSample(), FileWrapper<int>.GetSample() }),
+                Folders = new List<FileEntryWrapper>(new[] { FolderWrapper<int>.GetSample(), FolderWrapper<int>.GetSample() }),
                 PathParts = new
                 {
                     key = "Key",
@@ -119,12 +122,28 @@ namespace ASC.Api.Documents
             FolderWrapperHelper = folderWrapperHelper;
         }
 
-        public FolderContentWrapper Get(DataWrapper folderItems, int startIndex)
+        public FolderContentWrapper<T> Get<T>(DataWrapper<T> folderItems, int startIndex)
         {
-            var result = new FolderContentWrapper
+            var result = new FolderContentWrapper<T>
             {
-                Files = folderItems.Entries.OfType<File>().Select(FileWrapperHelper.Get).ToList(),
-                Folders = folderItems.Entries.OfType<Folder>().Select(FolderWrapperHelper.Get).ToList(),
+                Files = folderItems.Entries.OfType<File<T>>().Select(FileWrapperHelper.Get).ToList(),
+                Folders = folderItems.Entries
+                .Where(r => r.FileEntryType == FileEntryType.Folder)
+                .Select(r =>
+                {
+                    FileEntryWrapper wrapper = null;
+                    if (r is Folder<int> fol1)
+                    {
+                        wrapper = FolderWrapperHelper.Get(fol1);
+                    }
+                    if (r is Folder<string> fol2)
+                    {
+                        wrapper = FolderWrapperHelper.Get(fol2);
+                    }
+
+                    return wrapper;
+                }
+                ).ToList(),
                 PathParts = folderItems.FolderPathParts,
                 StartIndex = startIndex
             };
@@ -144,6 +163,32 @@ namespace ASC.Api.Documents
             return services
                 .AddFileWrapperHelperService()
                 .AddFolderWrapperHelperService();
+        }
+    }
+
+
+    public class FileEntryWrapperConverter : JsonConverter<FileEntryWrapper>
+    {
+        public override FileEntryWrapper Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return null;
+        }
+
+        public override void Write(Utf8JsonWriter writer, FileEntryWrapper value, JsonSerializerOptions options)
+        {
+            if (value is FolderWrapper<string> f1)
+            {
+                JsonSerializer.Serialize(writer, f1, typeof(FolderWrapper<string>), options);
+                return;
+            }
+
+            if (value is FolderWrapper<int> f2)
+            {
+                JsonSerializer.Serialize(writer, f2, typeof(FolderWrapper<int>), options);
+                return;
+            }
+
+            JsonSerializer.Serialize(writer, value, options);
         }
     }
 }

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common;
@@ -65,7 +66,7 @@ namespace ASC.VoipService.Dao
         public VoipDaoCache VoipDaoCache { get; }
 
         public CachedVoipDao(
-            int tenantID,
+            TenantManager tenantManager,
             DbContextManager<VoipDbContext> dbOptions,
             AuthContext authContext,
             TenantUtil tenantUtil,
@@ -73,7 +74,7 @@ namespace ASC.VoipService.Dao
             BaseCommonLinkUtility baseCommonLinkUtility,
             ConsumerFactory consumerFactory,
             VoipDaoCache voipDaoCache)
-            : base(tenantID, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, consumerFactory)
+            : base(tenantManager, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, consumerFactory)
         {
             cache = voipDaoCache.Cache;
             VoipDaoCache = voipDaoCache;
@@ -107,6 +108,23 @@ namespace ASC.VoipService.Dao
         public static string GetCacheKey(int tenant)
         {
             return "voip" + tenant.ToString(CultureInfo.InvariantCulture);
+        }
+    }
+
+    public static class VoipDaoExtention
+    {
+        public static DIHelper AddVoipDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<VoipDao, CachedVoipDao>();
+            services.TryAddSingleton<VoipDaoCache>();
+
+            return services
+                .AddDbContextManagerService<VoipDbContext>()
+                .AddAuthContextService()
+                .AddTenantUtilService()
+                .AddSecurityContextService()
+                .AddBaseCommonLinkUtilityService()
+                .AddConsumerFactoryService();
         }
     }
 }

@@ -42,12 +42,34 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.HttpHandlers
 {
     public class DocuSignHandler
+    {
+        public RequestDelegate Next { get; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public DocuSignHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        {
+            Next = next;
+            ServiceProvider = serviceProvider;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var docuSignHandlerService = scope.ServiceProvider.GetService<DocuSignHandlerService>();
+            await docuSignHandlerService.Invoke(context);
+            await Next.Invoke(context);
+        }
+    }
+
+    public class DocuSignHandlerService
     {
         public static string Path(FilesLinkUtility filesLinkUtility)
         {
@@ -55,23 +77,18 @@ namespace ASC.Web.Files.HttpHandlers
         }
 
         private ILog Log { get; set; }
-
-        public RequestDelegate Next { get; }
-
         public TenantExtra TenantExtra { get; }
         public DocuSignHelper DocuSignHelper { get; }
         public SecurityContext SecurityContext { get; }
         public NotifyClient NotifyClient { get; }
 
-        public DocuSignHandler(
-            RequestDelegate next,
+        public DocuSignHandlerService(
             IOptionsMonitor<ILog> optionsMonitor,
             TenantExtra tenantExtra,
             DocuSignHelper docuSignHelper,
             SecurityContext securityContext,
             NotifyClient notifyClient)
         {
-            Next = next;
             TenantExtra = tenantExtra;
             DocuSignHelper = docuSignHelper;
             SecurityContext = securityContext;
@@ -84,7 +101,7 @@ namespace ASC.Web.Files.HttpHandlers
             if (TenantExtra.IsNotPaid())
             {
                 context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
-                context.Response.WriteAsync("Payment Required.").Wait();
+                await context.Response.WriteAsync("Payment Required.");
                 return;
             }
 
@@ -106,8 +123,6 @@ namespace ASC.Web.Files.HttpHandlers
             {
                 throw new HttpException((int)HttpStatusCode.InternalServerError, FilesCommonResource.ErrorMassage_BadRequest, e);
             }
-
-            await Next.Invoke(context);
         }
 
         private void Redirect(HttpContext context)
@@ -241,13 +256,18 @@ namespace ASC.Web.Files.HttpHandlers
     {
         public static DIHelper AddDocuSignHandlerService(this DIHelper services)
         {
-            services.TryAddScoped<DocuSignHandler>();
+            services.TryAddScoped<DocuSignHandlerService>();
             return services
                 .AddFilesLinkUtilityService()
                 .AddTenantExtraService()
                 .AddDocuSignHelperService()
                 .AddSecurityContextService()
                 .AddNotifyClientService();
+        }
+
+        public static IApplicationBuilder UseDocuSignHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<DocuSignHandler>();
         }
     }
 }

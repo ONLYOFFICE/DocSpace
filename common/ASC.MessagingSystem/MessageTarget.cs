@@ -76,6 +76,22 @@ namespace ASC.MessagingSystem
 
         }
 
+        public MessageTarget Create(IEnumerable<string> value)
+        {
+            try
+            {
+                return new MessageTarget(Option)
+                {
+                    _items = value.Distinct()
+                };
+            }
+            catch (Exception e)
+            {
+                Log.Error("EventMessageTarget exception", e);
+                return null;
+            }
+        }
+
         public MessageTarget Parse(string value)
         {
             if (string.IsNullOrEmpty(value)) return null;

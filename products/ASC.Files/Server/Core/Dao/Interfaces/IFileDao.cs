@@ -32,22 +32,19 @@ using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Files.Core
 {
-    /// <summary>
-    ///    Interface encapsulates access toFolderId files
-    /// </summary>
-    public interface IFileDao
+    public interface IFileDao<T>
     {
         /// <summary>
         ///     Clear the application cache for the specific file
         /// </summary>
-        void InvalidateCache(object fileId);
+        void InvalidateCache(T fileId);
 
         /// <summary>
         ///     Receive file
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <returns></returns>
-        File GetFile(object fileId);
+        File<T> GetFile(T fileId);
 
         /// <summary>
         ///     Receive file
@@ -55,7 +52,7 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
         /// <returns></returns>
-        File GetFile(object fileId, int fileVersion);
+        File<T> GetFile(T fileId, int fileVersion);
 
         /// <summary>
         ///     Receive file
@@ -65,7 +62,7 @@ namespace ASC.Files.Core
         /// <returns>
         ///   file
         /// </returns>
-        File GetFile(object parentId, string title);
+        File<T> GetFile(T parentId, string title);
 
         /// <summary>
         ///     Receive last file without forcesave
@@ -73,21 +70,21 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion"></param>
         /// <returns></returns>
-        File GetFileStable(object fileId, int fileVersion = -1);
+        File<T> GetFileStable(T fileId, int fileVersion = -1);
 
         /// <summary>
         ///  Returns all versions of the file
         /// </summary>
         /// <param name="fileId"></param>
         /// <returns></returns>
-        List<File> GetFileHistory(object fileId);
+        List<File<T>> GetFileHistory(T fileId);
 
         /// <summary>
         ///     Gets the file (s) by ID (s)
         /// </summary>
         /// <param name="fileIds">id file</param>
         /// <returns></returns>
-        List<File> GetFiles(object[] fileIds);
+        List<File<T>> GetFiles(T[] fileIds);
 
         /// <summary>
         ///     Gets the file (s) by ID (s) for share
@@ -99,14 +96,14 @@ namespace ASC.Files.Core
         /// <param name="searchText"></param>
         /// <param name="searchInContent"></param>
         /// <returns></returns>
-        List<File> GetFilesForShare(object[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+        List<File<T>> GetFilesForShare(T[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        List<object> GetFiles(object parentId);
+        List<T> GetFiles(T parentId);
 
         /// <summary>
         ///     Get files in folder
@@ -123,14 +120,14 @@ namespace ASC.Files.Core
         /// <remarks>
         ///    Return only the latest versions of files of a folder
         /// </remarks>
-        List<File> GetFiles(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
+        List<File<T>> GetFiles(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
 
         /// <summary>
         /// Get stream of file
         /// </summary>
         /// <param name="file"></param>
         /// <returns>Stream</returns>
-        Stream GetFileStream(File file);
+        Stream GetFileStream(File<T> file);
 
         /// <summary>
         /// Get stream of file
@@ -138,7 +135,7 @@ namespace ASC.Files.Core
         /// <param name="file"></param>
         /// <param name="offset"></param>
         /// <returns>Stream</returns>
-        Stream GetFileStream(File file, long offset);
+        Stream GetFileStream(File<T> file, long offset);
 
         /// <summary>
         /// Get presigned uri
@@ -146,14 +143,14 @@ namespace ASC.Files.Core
         /// <param name="file"></param>
         /// <param name="expires"></param>
         /// <returns>Stream uri</returns>
-        Uri GetPreSignedUri(File file, TimeSpan expires);
+        Uri GetPreSignedUri(File<T> file, TimeSpan expires);
 
         /// <summary>
         ///  Check is supported PreSignedUri
         /// </summary>
         /// <param name="file"></param>
         /// <returns>Stream uri</returns>
-        bool IsSupportedPreSignedUri(File file);
+        bool IsSupportedPreSignedUri(File<T> file);
 
         /// <summary>
         ///  Saves / updates the version of the file
@@ -169,7 +166,7 @@ namespace ASC.Files.Core
         ///
         /// Save in all other cases
         /// </remarks>
-        File SaveFile(File file, Stream fileStream);
+        File<T> SaveFile(File<T> file, Stream fileStream);
 
         /// <summary>
         /// 
@@ -177,13 +174,13 @@ namespace ASC.Files.Core
         /// <param name="file"></param>
         /// <param name="fileStream"></param>
         /// <returns></returns>
-        File ReplaceFileVersion(File file, Stream fileStream);
+        File<T> ReplaceFileVersion(File<T> file, Stream fileStream);
 
         /// <summary>
         ///   Deletes a file including all previous versions
         /// </summary>
         /// <param name="fileId">file id</param>
-        void DeleteFile(object fileId);
+        void DeleteFile(T fileId);
 
         /// <summary>
         ///     Checks whether or not file
@@ -198,21 +195,27 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="toFolderId">The ID of the destination folder</param>
-        object MoveFile(object fileId, object toFolderId);
+        T MoveFile(T fileId, T toFolderId);
+        TTo MoveFile<TTo>(T fileId, TTo toFolderId);
+        string MoveFile(T fileId, string toFolderId);
+        int MoveFile(T fileId, int toFolderId);
 
         /// <summary>
         ///  Copy the files in a folder
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="toFolderId">The ID of the destination folder</param>
-        File CopyFile(object fileId, object toFolderId);
+        File<T> CopyFile(T fileId, T toFolderId);
+        File<TTo> CopyFile<TTo>(T fileId, TTo toFolderId);
+        File<string> CopyFile(T fileId, string toFolderId);
+        File<int> CopyFile(T fileId, int toFolderId);
 
         /// <summary>
         ///   Rename file
         /// </summary>
         /// <param name="file"></param>
         /// <param name="newTitle">new name</param>
-        object FileRename(File file, string newTitle);
+        T FileRename(File<T> file, string newTitle);
 
         /// <summary>
         ///   Update comment file
@@ -220,36 +223,38 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
         /// <param name="comment">new comment</param>
-        string UpdateComment(object fileId, int fileVersion, string comment);
+        string UpdateComment(T fileId, int fileVersion, string comment);
 
         /// <summary>
         ///   Complete file version
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
-        void CompleteVersion(object fileId, int fileVersion);
+        void CompleteVersion(T fileId, int fileVersion);
 
         /// <summary>
         ///   Continue file version
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
-        void ContinueVersion(object fileId, int fileVersion);
+        void ContinueVersion(T fileId, int fileVersion);
 
         /// <summary>
         /// Check the need to use the trash before removing
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        bool UseTrashForRemove(File file);
+        bool UseTrashForRemove(File<T> file);
+
+        string GetUniqFilePath(File<T> file, string fileTitle);
 
         #region chunking
 
-        ChunkedUploadSession CreateUploadSession(File file, long contentLength);
+        ChunkedUploadSession<T> CreateUploadSession(File<T> file, long contentLength);
 
-        void UploadChunk(ChunkedUploadSession uploadSession, Stream chunkStream, long chunkLength);
+        void UploadChunk(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
 
-        void AbortUploadSession(ChunkedUploadSession uploadSession);
+        void AbortUploadSession(ChunkedUploadSession<T> uploadSession);
 
         #endregion
 
@@ -260,7 +265,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="fileIds"></param>
         /// <param name="newOwnerId"></param>
-        void ReassignFiles(object[] fileIds, Guid newOwnerId);
+        void ReassignFiles(T[] fileIds, Guid newOwnerId);
 
         /// <summary>
         /// Search files in SharedWithMe & Projects
@@ -272,7 +277,7 @@ namespace ASC.Files.Core
         /// <param name="searchText"></param>
         /// <param name="searchInContent"></param>
         /// <returns></returns>
-        List<File> GetFiles(object[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+        List<File<T>> GetFiles(T[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
 
         /// <summary>
         /// Search the list of files containing text
@@ -281,22 +286,22 @@ namespace ASC.Files.Core
         /// <param name="text">search text</param>
         /// <param name="bunch"></param>
         /// <returns>list of files</returns>
-        IEnumerable<File> Search(string text, bool bunch = false);
+        IEnumerable<File<T>> Search(string text, bool bunch = false);
 
         /// <summary>
         ///   Checks whether file exists on storage
         /// </summary>
         /// <param name="file">file</param>
         /// <returns></returns>
-        bool IsExistOnStorage(File file);
+        bool IsExistOnStorage(File<T> file);
 
-        void SaveEditHistory(File file, string changes, Stream differenceStream);
+        void SaveEditHistory(File<T> file, string changes, Stream differenceStream);
 
-        List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, object fileId, int fileVersion = 0);
+        List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
 
-        Stream GetDifferenceStream(File file);
+        Stream GetDifferenceStream(File<T> file);
 
-        bool ContainChanges(object fileId, int fileVersion);
+        bool ContainChanges(T fileId, int fileVersion);
 
         #endregion
     }

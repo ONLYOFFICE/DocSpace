@@ -76,7 +76,6 @@ namespace ASC.Core
         private IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
-            IHttpContextAccessor httpContextAccessor,
             UserManager userManager,
             AuthManager authentication,
             AuthContext authContext,
@@ -95,6 +94,20 @@ namespace ASC.Core
             UserFormatter = userFormatter;
             CookieStorage = cookieStorage;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
+        }
+
+        public SecurityContext(
+            IHttpContextAccessor httpContextAccessor,
+            UserManager userManager,
+            AuthManager authentication,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            UserFormatter userFormatter,
+            CookieStorage cookieStorage,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
+            IOptionsMonitor<ILog> options
+            ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, options)
+        {
             HttpContextAccessor = httpContextAccessor;
         }
 
