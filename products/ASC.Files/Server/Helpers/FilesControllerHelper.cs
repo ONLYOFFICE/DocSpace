@@ -240,7 +240,7 @@ namespace ASC.Files.Helpers
         public Configuration<T> OpenEdit(T fileId, int version, string doc)
         {
             DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
-            configuration.Type = EditorType.External;
+            configuration.EditorType = EditorType.External;
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
         }
