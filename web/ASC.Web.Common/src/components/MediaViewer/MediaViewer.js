@@ -7,86 +7,16 @@ import ImageViewer from "./sub-components/image-viewer"
 import VideoViewer from "./sub-components/video-viewer"
 import MediaScrollButton from "./sub-components/scroll-button"
 import ControlBtn from "./sub-components/control-btn"
+import StyledMediaViewer from "./StyledMediaViewer"
 import isEqual from "lodash/isEqual";
 
 const StyledVideoViewer = styled(VideoViewer)`
     z-index: 4001;
 `
-const StyledMediaViewer = styled.div`
-    
-    color: #d1d1d1;
-    display: ${props => props.visible ? "block" : "none"};
-    overflow: hidden;
-    .videoViewerOverlay{
-        position: fixed;
-        z-index: 4000;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: black;
-        opacity: 0.5;
-    }
-    .mediaViewerToolbox{
-        z-index: 4001;
-        padding-top: 14px;
-        padding-bottom: 14px;
-        height: 20px;
-        width: 100%;
-        background-color: rgba(11,11,11,0.7);
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        text-align: center;
-    }
-    span{
-        position: fixed;
-        right: 0;
-        bottom: 5px;
-        margin-right: 10px;
-        z-index: 4005;
-
-        .deleteBtnContainer{
-            display: block;
-            width: 20px;
-            margin: 3px 10px;
-            line-height: 19px;
-        }
-
-        .downloadBtnContainer{
-            display: block;
-            width: 20px;
-            margin: 3px 10px;
-            line-height: 19px;
-        }
-    }
-    .details{
-        z-index: 4001;
-        font-size: 14px;
-        font-weight: bold;
-        text-align: center;
-        white-space: nowrap;
-        padding-top: 14px;
-        padding-bottom: 14px;
-        height: 20px;
-        width: 100%;
-        background: rgba(17,17,17,0.867);
-        position: fixed;
-        top: 0;
-        left: 0;
-    }
-
-    .mediaPlayerClose{
-        position: fixed;
-        top: 4px;
-        right: 10px;
-        height: 30px;
-    }
-  
-`;
-
-var audio = 1;
-var video = 2;
+const mediaTypes = Object.freeze({
+    audio: 1,
+    video: 2
+});
 class MediaViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -111,7 +41,7 @@ class MediaViewer extends React.Component {
                 }
             );
         }
-        if (this.props.visible == true && this.props.visible === prevProps.visible && !isEqual(this.props.playlist, prevProps.playlist)) {
+        if (this.props.visible && this.props.visible === prevProps.visible && !isEqual(this.props.playlist, prevProps.playlist)) {
             let playlistPos = 0;
             if (this.props.playlist.length > 0) {
                 if (this.props.playlist.length - 1 < this.state.playlistPos) {
@@ -135,24 +65,24 @@ class MediaViewer extends React.Component {
 
     }
     mapSupplied = {
-        ".aac": { supply: "m4a", type: audio },
-        ".flac": { supply: "mp3", type: audio },
-        ".m4a": { supply: "m4a", type: audio },
-        ".mp3": { supply: "mp3", type: audio },
-        ".oga": { supply: "oga", type: audio },
-        ".ogg": { supply: "oga", type: audio },
-        ".wav": { supply: "wav", type: audio },
+        ".aac": { supply: "m4a", type: mediaTypes.audio },
+        ".flac": { supply: "mp3", type: mediaTypes.audio },
+        ".m4a": { supply: "m4a", type: mediaTypes.audio },
+        ".mp3": { supply: "mp3", type: mediaTypes.audio },
+        ".oga": { supply: "oga", type: mediaTypes.audio },
+        ".ogg": { supply: "oga", type: mediaTypes.audio },
+        ".wav": { supply: "wav", type: mediaTypes.audio },
 
-        ".f4v": { supply: "m4v", type: video },
-        ".m4v": { supply: "m4v", type: video },
-        ".mov": { supply: "m4v", type: video },
-        ".mp4": { supply: "m4v", type: video },
-        ".ogv": { supply: "ogv", type: video },
-        ".webm": { supply: "webmv", type: video },
-        ".wmv": { supply: "m4v", type: video, convertable: true },
-        ".avi": { supply: "m4v", type: video, convertable: true },
-        ".mpeg": { supply: "m4v", type: video, convertable: true },
-        ".mpg": { supply: "m4v", type: video, convertable: true }
+        ".f4v": { supply: "m4v", type: mediaTypes.video },
+        ".m4v": { supply: "m4v", type: mediaTypes.video },
+        ".mov": { supply: "m4v", type: mediaTypes.video },
+        ".mp4": { supply: "m4v", type: mediaTypes.video },
+        ".ogv": { supply: "ogv", type: mediaTypes.video },
+        ".webm": { supply: "webmv", type: mediaTypes.video },
+        ".wmv": { supply: "m4v", type: mediaTypes.video, convertable: true },
+        ".avi": { supply: "m4v", type: mediaTypes.video, convertable: true },
+        ".mpeg": { supply: "m4v", type: mediaTypes.video, convertable: true },
+        ".mpg": { supply: "m4v", type: mediaTypes.video, convertable: true }
     };
 
     canImageView = function (ext) {
@@ -171,7 +101,7 @@ class MediaViewer extends React.Component {
     };
 
     getFileExtension = (fileTitle) => {
-        if (typeof fileTitle == "undefined" || fileTitle == null) {
+        if (!fileTitle) {
             return "";
         }
         fileTitle = fileTitle.trim();
@@ -208,13 +138,23 @@ class MediaViewer extends React.Component {
             return 0;
         }
     }
+    onDelete = () => {
+        let currentFileId = this.state.playlist.length > 0 ? this.state.playlist.find(file => file.id === this.state.playlistPos).fileId : 0;
+        this.props.onDelete && this.props.onDelete(currentFileId);
+    }
+    onDownload = () => {
+        let currentFileId = this.state.playlist.length > 0 ? this.state.playlist.find(file => file.id === this.state.playlistPos).fileId : 0;
+        this.props.onDownload && this.props.onDownload(currentFileId);
+    }
     render() {
 
         let currentPlaylistPos = this.state.playlistPos;
         let currentFileId = this.state.playlist.length > 0 ? this.state.playlist.find(file => file.id === currentPlaylistPos).fileId : 0;
 
-        let fileTitle = this.state.playlist[currentPlaylistPos].title;
-        let url = this.state.playlist[currentPlaylistPos].src;
+        let currentFile = this.state.playlist[currentPlaylistPos];
+        let fileTitle = currentFile.title;
+        let url = currentFile.src;
+
         let isImage = false;
         let isVideo = false;
         let canOpen = true;
@@ -230,7 +170,7 @@ class MediaViewer extends React.Component {
             isImage = true;
         } else {
             isImage = false;
-            isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == video : false;
+            isVideo = this.mapSupplied[ext] ? this.mapSupplied[ext].type == mediaTypes.video : false;
         }
 
         if (this.mapSupplied[ext])
@@ -247,7 +187,7 @@ class MediaViewer extends React.Component {
                 <div>
                     <div className="details" ref={this.detailsContainer}>
                         <div className="title">{fileTitle}</div>
-                        <ControlBtn onClick={this.props.onClose && (() => { this.props.onClose() })} className="mediaPlayerClose">
+                        <ControlBtn onClick={this.props.onClose && (this.props.onClose)} className="mediaPlayerClose">
                             <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
                         </ControlBtn>
                     </div>
@@ -270,7 +210,7 @@ class MediaViewer extends React.Component {
                     <span>
                         {
                             this.props.canDelete(currentFileId) &&
-                            <ControlBtn onClick={this.props.onDelete && (() => { this.props.onDelete(currentFileId) })}>
+                            <ControlBtn onClick={this.onDelete}>
                                 <div className="deleteBtnContainer">
                                     <Icons.MediaDeleteIcon size="scale" />
                                 </div>
@@ -278,7 +218,7 @@ class MediaViewer extends React.Component {
                         }
                         {
                             this.props.canDownload(currentFileId) &&
-                            <ControlBtn onClick={this.props.onDownload && (() => { this.props.onDownload(currentFileId) })}>
+                            <ControlBtn onClick={this.onDownload}>
                                 <div className="downloadBtnContainer">
                                     <Icons.MediaDownloadIcon size="scale" />
                                 </div>
@@ -310,6 +250,7 @@ MediaViewer.propTypes = {
 
 MediaViewer.defaultProps = {
     currentFileId: 0,
+    visible: false,
     allowConvert: true,
     canDelete: () => { return true },
     canDownload: () => { return true }

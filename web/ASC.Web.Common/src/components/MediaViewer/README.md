@@ -1,6 +1,6 @@
 # MediaViewer
 
-
+Used to open media files
 
 ### Usage
 

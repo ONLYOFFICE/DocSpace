@@ -360,6 +360,10 @@ class VideoViewer extends Component {
 
   };
 
+  onError = (e) => {
+    console.log('onError', e)
+  }
+
   render() {
     const { url, playing, controls, light, volume, muted, loop, played, loaded, duration, playbackRate, pip } = this.state
     const parentOffset = this.props.getOffset() || 0;
@@ -372,12 +376,13 @@ class VideoViewer extends Component {
     let width = screenSize.w;
     let height = screenSize.h;
 
-    var centerAreaOx = screenSize.w / 2 + document.documentElement.scrollLeft;
-    var centerAreaOy = screenSize.h / 2 + document.documentElement.scrollTop;
+    let centerAreaOx = screenSize.w / 2 + document.documentElement.scrollLeft;
+    let centerAreaOy = screenSize.h / 2 + document.documentElement.scrollTop;
 
-    if (document.getElementsByTagName('video')[0]) {
-      width = this.props.isVideo ? document.getElementsByTagName('video')[0].videoWidth || 480 : screenSize.w - 150;
-      height = this.props.isVideo ? document.getElementsByTagName('video')[0].videoHeight || 270 : 0;
+    let videoElement = document.getElementsByTagName('video')[0];
+    if (videoElement) {
+      width = this.props.isVideo ? videoElement.videoWidth || 480 : screenSize.w - 150;
+      height = this.props.isVideo ? videoElement.videoHeight || 270 : 0;
 
       let resize = this.resizePlayer(
         {
@@ -426,7 +431,7 @@ class VideoViewer extends Component {
               onDisablePIP={this.handleDisablePIP}
               onPause={this.handlePause}
               onEnded={this.handleEnded}
-              onError={e => console.log('onError', e)}
+              onError={this.onError}
               onProgress={this.handleProgress}
               onDuration={this.handleDuration}
             />
