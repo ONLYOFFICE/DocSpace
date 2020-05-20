@@ -151,7 +151,7 @@ class PureHome extends React.Component {
     return (
       <>
         <RequestLoader
-          visible={this.state.isLoading}
+          visible={isLoading}
           zIndex={256}
           loaderSize='16px'
           loaderColor={"#999"}
@@ -184,6 +184,7 @@ class PureHome extends React.Component {
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
               onLoading={this.onLoading}
+              isLoading={isLoading}
               setProgressVisible={this.setProgressVisible}
               setProgressValue={this.setProgressValue}
               setProgressLabel={this.setProgressLabel}

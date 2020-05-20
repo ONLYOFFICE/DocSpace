@@ -11,5 +11,6 @@
     "ConvertToZip": "Files will be compressed into the .zip file",
     "ConvertMessage": "If you choose to convert the file to the format different from the original, some data might be lost.",
     "DownloadButton": "Download",
-    "CancelButton": "Cancel"
+    "CancelButton": "Cancel",
+    "ArchivingData": "Archiving data"
 }
