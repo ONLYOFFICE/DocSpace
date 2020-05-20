@@ -9,7 +9,6 @@ import {
   Button,
   DropDown,
   DropDownItem,
-  utils,
   toastr,
   Textarea,
   ComboBox,
@@ -18,12 +17,12 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, constants, api } from "asc-web-common";
+import { utils as commonUtils, constants } from "asc-web-common";
 import i18n from "./i18n";
 import { getShareUsers, setShareFiles } from "../../../store/files/actions";
 import { getAccessOption } from '../../../store/files/selectors';
 import {
-  StyledSharingPanel,
+  StyledAsidePanel,
   StyledContent,
   StyledFooter,
   StyledSharingHeaderContent,
@@ -34,7 +33,6 @@ import SharingRow from "./SharingRow";
 
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
-const { files } = api;
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -561,7 +559,7 @@ class SharingPanelComponent extends React.Component {
     );
 
     return (
-      <StyledSharingPanel visible={visible}>
+      <StyledAsidePanel visible={visible}>
         <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
@@ -676,7 +674,7 @@ class SharingPanelComponent extends React.Component {
           onClose={this.onShowEmbeddingPanel}
           embeddingLink={shareLink}
         />
-      </StyledSharingPanel>
+      </StyledAsidePanel>
     );
   }
 }

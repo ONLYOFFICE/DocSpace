@@ -14,7 +14,7 @@ const PanelStyles = css`
   }
 `;
 
-const StyledSharingPanel = styled.div`
+const StyledAsidePanel = styled.div`
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
@@ -73,6 +73,14 @@ const StyledContent = styled.div`
   background-color: #fff;
   padding: 0 16px 16px;
 
+  .files-operations-panel {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .files-operations-body {
+    padding: 16px 0;
+  }
+
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
@@ -91,6 +99,10 @@ const StyledHeaderContent = styled.div`
 `;
 
 const StyledBody = styled.div`
+  .files-operations-body {
+    padding: 0 16px;
+  }
+
   .selector-wrapper {
     position: fixed;
     height: 94%;
@@ -257,7 +269,7 @@ const StyledFooter = styled.div`
 `;
 
 export {
-  StyledSharingPanel,
+  StyledAsidePanel,
   StyledAddGroupsPanel,
   StyledAddUsersPanelPanel,
   StyledEmbeddingPanel,
@@ -266,5 +278,5 @@ export {
   StyledBody,
   StyledSharingHeaderContent,
   StyledSharingBody,
-  StyledFooter,
+  StyledFooter
 };

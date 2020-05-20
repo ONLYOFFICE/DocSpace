@@ -14,7 +14,7 @@ import {
 import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
-import { SharingPanel } from "../../../../panels";
+import { SharingPanel, OperationsPanel } from "../../../../panels";
 import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -103,7 +103,9 @@ class SectionHeaderContent extends React.Component {
       showSharingPanel: false,
       showDeleteDialog: false,
       showDownloadDialog: false,
-      showEmptyTrashDialog: false
+      showEmptyTrashDialog: false,
+      showMoveToPanel: false,
+      showCopyPanel: false
     };
   }
 
@@ -162,14 +164,14 @@ class SectionHeaderContent extends React.Component {
   createLinkForPortalUsers = () =>
     toastr.info("createLinkForPortalUsers click");
 
-  moveAction = () => toastr.info("moveAction click");
+  onMoveAction = () => this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
 
-  copyAction = () => toastr.info("copyAction click");
+  onCopyAction = () => this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
-  startUploadSession = () => {
-    const { onLoading, t, setProgressLabel, setProgressVisible} = this.props;
+  startFilesOperations = progressBarLabel => {
+    const { onLoading, setProgressLabel, setProgressVisible} = this.props;
     onLoading(true);
-    setProgressLabel(t("ArchivingData"));
+    setProgressLabel(progressBarLabel);
     setProgressVisible(true);
   }
 
@@ -207,7 +209,7 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    this.startUploadSession();
+    this.startFilesOperations(this.props.t("ArchivingData"));
 
     api.files
       .downloadFiles(fileIds, folderIds)
@@ -249,13 +251,13 @@ class SectionHeaderContent extends React.Component {
       {
         key: "move-to",
         label: t("MoveTo"),
-        onClick: this.moveAction,
+        onClick: this.onMoveAction,
         disabled: true
       },
       {
         key: "copy",
         label: t("Copy"),
-        onClick: this.copyAction,
+        onClick: this.onCopyAction,
         disabled: true
       },
       {
@@ -287,8 +289,6 @@ class SectionHeaderContent extends React.Component {
     );
   };
 
-  
-
   render() {
     //console.log("Body header render");
 
@@ -306,13 +306,18 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       currentFolderId,
-      onLoading
+      onLoading,
+      isLoading,
+      filter,
+      setProgressValue
     } = this.props;
     const {
       showDeleteDialog,
       showSharingPanel,
       showEmptyTrashDialog,
-      showDownloadDialog
+      showDownloadDialog,
+      showMoveToPanel,
+      showCopyPanel
     } = this.state;
     const isItemsSelected = selection.length;
     const isOnlyFolderSelected = selection.every(
@@ -369,12 +374,12 @@ class SectionHeaderContent extends React.Component {
       {
         label: t("MoveTo"),
         disabled: !isItemsSelected,
-        onClick: this.moveAction
+        onClick: this.onMoveAction
       },
       {
         label: t("Copy"),
         disabled: !isItemsSelected,
-        onClick: this.copyAction
+        onClick: this.onCopyAction
       },
       {
         label: t("Delete"),
@@ -389,6 +394,14 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onEmptyTrashAction
       });
 
+    const operationsPanelProps = { 
+      onLoading,
+      isLoading,
+      setProgressValue,
+      startFilesOperations: this.startFilesOperations,
+      closeUploadSession: this.closeUploadSession
+    };
+    
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -486,11 +499,29 @@ class SectionHeaderContent extends React.Component {
           />
         )}
 
+        {showMoveToPanel && (
+          <OperationsPanel
+            {...operationsPanelProps}
+            isCopy={false}
+            visible={showMoveToPanel}
+            onClose={this.onMoveAction}
+          />
+        )}
+        
+        {showCopyPanel && (
+          <OperationsPanel
+            {...operationsPanelProps}
+            isCopy={true}
+            visible={showCopyPanel}
+            onClose={this.onCopyAction}
+          />
+        )}
+
         {showDownloadDialog && (
           <DownloadDialog 
             visible={showDownloadDialog}
             onClose={this.downloadAsAction}
-            startUploadSession={this.startUploadSession}
+            startUploadSession={this.startFilesOperations}
             closeUploadSession={this.closeUploadSession}
             onDownloadProgress={this.loop}
           />

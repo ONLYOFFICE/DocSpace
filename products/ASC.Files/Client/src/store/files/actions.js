@@ -14,7 +14,7 @@ import {
 import config from "../../../package.json";
 import { getTreeFolders } from "./selectors";
 
-const { files, groups, FilesFilter } = api;
+const { files, FilesFilter } = api;
 
 export const SET_FOLDER = "SET_FOLDER";
 export const SET_FOLDERS = "SET_FOLDERS";
@@ -326,6 +326,24 @@ export function getShareUsers(folderIds, fileIds) {
 
   return axios.all(requests).then(res => res);
 }
+
+export function getProgress() {
+  return dispatch => {
+    return files.getProgress();
+  };
+};
+
+export function copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
+  return dispatch => {
+    return files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+  };
+};
+
+export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
+  return dispatch => {
+    return files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+  };
+};
 
 /*export function deleteGroup(id) {
   return (dispatch, getState) => {
