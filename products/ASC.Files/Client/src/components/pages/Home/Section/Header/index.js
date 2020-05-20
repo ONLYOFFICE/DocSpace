@@ -308,7 +308,6 @@ class SectionHeaderContent extends React.Component {
       currentFolderId,
       onLoading,
       isLoading,
-      filter,
       setProgressValue
     } = this.props;
     const {
@@ -475,6 +474,7 @@ class SectionHeaderContent extends React.Component {
 
         {showDeleteDialog && (
           <DeleteDialog
+            {...operationsPanelProps}
             isRecycleBinFolder={isRecycleBinFolder}
             visible={showDeleteDialog}
             onClose={this.onDeleteAction}
