@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+		<IsPackable>false</IsPackable>
+		<DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="SharpCompress" Version="0.25.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\products\ASC.Files\Server\ASC.Files.csproj" />
+	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
+	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
+	  <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+	</ItemGroup>
+
+
+</Project>
