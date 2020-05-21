@@ -4,5 +4,6 @@
   "ConfirmationTitle": "Confirmation",
 
   "EmptyTrashDialogQuestion": "Are you sure you want to empty the recycle bin?",
-  "EmptyTrashDialogMessage": "Note: This action can not be undone. Note: removal from your account can not be undone."
+  "EmptyTrashDialogMessage": "Note: This action can not be undone. Note: removal from your account can not be undone.",
+  "DeleteOperation": "Deleting"
 }

@@ -296,7 +296,8 @@ class SectionHeaderContent extends React.Component {
       isLoading,
       setProgressValue,
       startFilesOperations,
-      finishFilesOperations
+      finishFilesOperations,
+      getProgress
     } = this.props;
     const {
       showDeleteDialog,
@@ -480,6 +481,8 @@ class SectionHeaderContent extends React.Component {
 
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
+            {...operationsPanelProps}
+            getProgress={getProgress}
             currentFolderId={currentFolderId}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
