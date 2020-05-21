@@ -335,3 +335,13 @@ export function downloadFormatFiles(fileConvertIds, folderIds) {
 export function getProgress() {
   return request({ method: "get", url: "/files/fileops" });
 }
+
+export function copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
+  const data = { destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter };
+  return request({ method: "put", url: "/files/fileops/copy", data });
+}
+
+export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
+  const data = { destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter };
+  return request({ method: "put", url: "/files/fileops/move", data });
+}

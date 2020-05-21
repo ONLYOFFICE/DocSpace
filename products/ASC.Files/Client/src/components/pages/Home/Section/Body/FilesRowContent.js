@@ -53,19 +53,19 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = () => {
-    const { createFile, createFolder, item } = this.props;
+    const { createFile, createFolder, item, onLoading } = this.props;
     const { itemTitle } = this.state;
 
-    //this.setState({ loading: true });
+    onLoading(true);
 
     if (itemTitle.trim() === '')
       return this.completeAction();
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-        .then(() => this.completeAction())
+        .then(() => this.completeAction()).finally(() => onLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction())
+        .then(() => this.completeAction()).finally(() => onLoading(false))
   }
 
   componentDidUpdate(prevProps) {

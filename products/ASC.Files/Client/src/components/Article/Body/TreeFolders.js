@@ -1,7 +1,5 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils } from "asc-web-components";
-import { fetchFiles } from "../../../store/files/actions";
-import store from "../../../store/store";
 import { api } from "asc-web-common";
 const { files } = api;
 
@@ -10,8 +8,7 @@ class TreeFolders extends React.Component {
     super(props);
 
     const treeData = props.data;
-
-    this.state = { treeData, expandedKeys: this.props.expandedKeys };
+    this.state = { treeData, expandedKeys: props.expandedKeys };
 
     this.ref = React.createRef();
   }
@@ -54,18 +51,6 @@ class TreeFolders extends React.Component {
     } else {
       return <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />;
     }
-  };
-
-  onSelect = data => {
-    if (this.props.selectedKeys[0] !== data[0]) {
-      this.props.onLoading(true);
-      const newFilter = this.props.filter.clone();
-      fetchFiles(data[0], newFilter, store.dispatch).catch(err =>
-        toastr.error("Something went wrong", err)
-      ).finally(() => this.props.onLoading(false));
-    }
-
-    //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
   loop = (data, curId, child, level) => {
@@ -156,7 +141,7 @@ class TreeFolders extends React.Component {
 
         const treeData = [...this.state.treeData];
         this.getNewTreeData(treeData, listIds, data.folders, 10);
-        this.props.setTreeFolders(treeData);
+        this.props.needUpdate && this.props.setTreeFolders(treeData);
         this.setState({ treeData });
       })
       .catch(() => this.props.onLoading(false))
@@ -164,16 +149,18 @@ class TreeFolders extends React.Component {
   };
 
   onExpand = data => {
-    const newFilter = this.props.filter;
-    newFilter.treeFolders = data;
+    if(this.props.needUpdate) {
+      const newFilter = this.props.filter.clone();
+      newFilter.treeFolders = data;
+      this.props.setFilter(newFilter);
+    }
 
-    this.props.setFilter(newFilter);
     this.setState({ expandedKeys: data });
   };
 
   componentDidUpdate(prevProps) {
-    const { expandedKeys, data } = this.props;
-    if (this.state.expandedKeys.length !== expandedKeys.length) {
+    const { expandedKeys, data, needUpdate } = this.props;
+    if (needUpdate && expandedKeys && this.state.expandedKeys.length !== expandedKeys.length) {
       this.setState({ expandedKeys });
     }
 
@@ -183,7 +170,7 @@ class TreeFolders extends React.Component {
   }
 
   render() {
-    const { selectedKeys, fakeNewDocuments, isLoading } = this.props;
+    const { selectedKeys, fakeNewDocuments, isLoading, onSelect } = this.props;
     const { treeData, expandedKeys } = this.state;
 
     return (
@@ -196,7 +183,7 @@ class TreeFolders extends React.Component {
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
+        onSelect={onSelect}
         selectedKeys={selectedKeys}
         badgeLabel={fakeNewDocuments}
         onBadgeClick={() => console.log("onBadgeClick")}
@@ -209,5 +196,10 @@ class TreeFolders extends React.Component {
     );
   }
 }
+
+TreeFolders.defaultProps = {
+  selectedKeys: [],
+  needUpdate: true
+};
 
 export default TreeFolders;

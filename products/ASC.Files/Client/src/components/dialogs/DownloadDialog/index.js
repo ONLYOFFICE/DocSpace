@@ -162,17 +162,17 @@ class DownloadDialogComponent extends React.Component {
   }
 
   onDownload = () => {
-    const { startUploadSession, closeUploadSession, onDownloadProgress, onClose } = this.props;
+    const { startUploadSession, finishFilesOperations, onDownloadProgress, onClose, t } = this.props;
 
     const downloadItems = this.getDownloadItems();
     const fileConvertIds = downloadItems[0];
     const folderIds = downloadItems[1];
-    startUploadSession();
+    startUploadSession(t("ArchivingData"));
 
     api.files
       .downloadFormatFiles(fileConvertIds, folderIds)
       .then(() => { onClose(); onDownloadProgress(false); })
-      .catch(err => closeUploadSession(err));
+      .catch(err => finishFilesOperations(err));
   };
 
   getItemIcon = (item) => {

@@ -24,7 +24,8 @@ import {
   //fetchRootFolders,
   selectFile,
   setAction,
-  setTreeFolders
+  setTreeFolders,
+  getProgress
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -138,35 +139,47 @@ class SectionBodyContent extends React.Component {
   }
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { deleteFile, filter, onLoading } = this.props;
+    const { deleteFile, t, startFilesOperations, finishFilesOperations } = this.props;
 
-    onLoading(true);
+    startFilesOperations(t("DeleteOperation"));
     deleteFile(fileId)
-      .catch(err => toastr.error(err))
-      .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
-      .then(() => toastr.success(`File moved to recycle bin`))
-      .finally(() => onLoading(false));
+      .then(res => this.loopDeleteProgress(res[0].id, currentFolderId, false))
+      .catch(err => finishFilesOperations(err))
   }
 
-  onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder, filter, treeFolders, setTreeFolders, onLoading, currentFolderType } = this.props;
-    onLoading(true);
-    deleteFolder(folderId, currentFolderId)
-      .catch(err => toastr.error(err))
-      .then(() =>
-        fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
-          if (currentFolderType !== "Trash") {
-            const path = data.selectedFolder.pathParts;
+  loopDeleteProgress = (id, folderId, isFolder) => {
+    const { filter, treeFolders, setTreeFolders, currentFolderType, getProgress, setProgressValue, finishFilesOperations } = this.props;
+    getProgress().then(res => {
+      const deleteProgress = res.find(x => x.id === id);
+      if(deleteProgress && deleteProgress.progress !== 100) {
+        setProgressValue(deleteProgress.progress);
+        setTimeout(() => this.loopDeleteProgress(id, folderId), 1000);
+      } else {
+        fetchFiles(folderId, filter, store.dispatch).then(data => {
+          if (currentFolderType !== "Trash" && isFolder) {
+            const path = data.selectedFolder.pathParts.slice(0);
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
             const foldersCount = data.selectedFolder.foldersCount;
             loopTreeFolders(path, newTreeFolders, folders, foldersCount);
             setTreeFolders(newTreeFolders);
           }
-        })
-      )
-      .then(() => toastr.success(`Folder moved to recycle bin`))
-      .finally(() => onLoading(false));
+          isFolder
+            ? toastr.success(`Folder moved to recycle bin`)
+            : toastr.success(`File moved to recycle bin`);
+          setProgressValue(100);
+          finishFilesOperations();
+        }).catch(err => finishFilesOperations(err))
+      }
+    })
+  }
+
+  onDeleteFolder = (folderId, currentFolderId) => {
+    const { deleteFolder, startFilesOperations, finishFilesOperations, t } = this.props;
+    startFilesOperations(t("DeleteOperation"));
+    deleteFolder(folderId, currentFolderId)
+      .then(res => this.loopDeleteProgress(res[0].id, currentFolderId, true))
+      .catch(err => finishFilesOperations(err))
   }
 
   onClickShare = item => {
@@ -734,6 +747,7 @@ export default connect(
     //fetchRootFolders,
     selectFile,
     setAction,
-    setTreeFolders
+    setTreeFolders,
+    getProgress
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

@@ -11,10 +11,10 @@ import {
   IconButton,
   toastr
 } from "asc-web-components";
-import { fetchFiles, setAction } from "../../../../../store/files/actions";
+import { fetchFiles, setAction, getProgress } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
-import { SharingPanel } from "../../../../panels";
+import { SharingPanel, OperationsPanel } from "../../../../panels";
 import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -103,7 +103,9 @@ class SectionHeaderContent extends React.Component {
       showSharingPanel: false,
       showDeleteDialog: false,
       showDownloadDialog: false,
-      showEmptyTrashDialog: false
+      showEmptyTrashDialog: false,
+      showMoveToPanel: false,
+      showCopyPanel: false
     };
   }
 
@@ -162,34 +164,20 @@ class SectionHeaderContent extends React.Component {
   createLinkForPortalUsers = () =>
     toastr.info("createLinkForPortalUsers click");
 
-  moveAction = () => toastr.info("moveAction click");
+  onMoveAction = () => this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
 
-  copyAction = () => toastr.info("copyAction click");
-
-  startUploadSession = () => {
-    const { onLoading, t, setProgressLabel, setProgressVisible} = this.props;
-    onLoading(true);
-    setProgressLabel(t("ArchivingData"));
-    setProgressVisible(true);
-  }
-
-  closeUploadSession = (err) => {
-    const timeout = err ? 0 : null;
-    err && toastr.error(err);
-    this.props.onLoading(false);
-    this.props.setProgressVisible(false, timeout);
-  }
+  onCopyAction = () => this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
   loop = url => {
-    api.files.getProgress().then(res => {
+    this.props.getProgress().then(res => {
       if(!url) {
         this.props.setProgressValue(res[0].progress);
         setTimeout(() => this.loop(res[0].url), 1000);
       } else {
-        this.closeUploadSession();
+        this.props.finishFilesOperations();
         return window.open(url, "_blank");
       }
-    }).catch((err) => this.closeUploadSession(err));
+    }).catch((err) => this.props.finishFilesOperations(err));
   }
 
   downloadAction = () => {
@@ -207,14 +195,14 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    this.startUploadSession();
+    this.props.startFilesOperations(this.props.t("ArchivingData"));
 
     api.files
       .downloadFiles(fileIds, folderIds)
       .then(res => {
         this.loop(res[0].url);
       })
-      .catch((err) => this.closeUploadSession(err));
+      .catch((err) => this.props.finishFilesOperations(err));
   }
 
   downloadAsAction = () => this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
@@ -249,13 +237,13 @@ class SectionHeaderContent extends React.Component {
       {
         key: "move-to",
         label: t("MoveTo"),
-        onClick: this.moveAction,
+        onClick: this.onMoveAction,
         disabled: true
       },
       {
         key: "copy",
         label: t("Copy"),
-        onClick: this.copyAction,
+        onClick: this.onCopyAction,
         disabled: true
       },
       {
@@ -287,8 +275,6 @@ class SectionHeaderContent extends React.Component {
     );
   };
 
-  
-
   render() {
     //console.log("Body header render");
 
@@ -306,13 +292,19 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       currentFolderId,
-      onLoading
+      onLoading,
+      isLoading,
+      setProgressValue,
+      startFilesOperations,
+      finishFilesOperations
     } = this.props;
     const {
       showDeleteDialog,
       showSharingPanel,
       showEmptyTrashDialog,
-      showDownloadDialog
+      showDownloadDialog,
+      showMoveToPanel,
+      showCopyPanel
     } = this.state;
     const isItemsSelected = selection.length;
     const isOnlyFolderSelected = selection.every(
@@ -369,12 +361,12 @@ class SectionHeaderContent extends React.Component {
       {
         label: t("MoveTo"),
         disabled: !isItemsSelected,
-        onClick: this.moveAction
+        onClick: this.onMoveAction
       },
       {
         label: t("Copy"),
         disabled: !isItemsSelected,
-        onClick: this.copyAction
+        onClick: this.onCopyAction
       },
       {
         label: t("Delete"),
@@ -389,6 +381,14 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onEmptyTrashAction
       });
 
+    const operationsPanelProps = { 
+      onLoading,
+      isLoading,
+      setProgressValue,
+      startFilesOperations,
+      finishFilesOperations
+    };
+    
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -462,6 +462,7 @@ class SectionHeaderContent extends React.Component {
 
         {showDeleteDialog && (
           <DeleteDialog
+            {...operationsPanelProps}
             isRecycleBinFolder={isRecycleBinFolder}
             visible={showDeleteDialog}
             onClose={this.onDeleteAction}
@@ -486,12 +487,30 @@ class SectionHeaderContent extends React.Component {
           />
         )}
 
+        {showMoveToPanel && (
+          <OperationsPanel
+            {...operationsPanelProps}
+            isCopy={false}
+            visible={showMoveToPanel}
+            onClose={this.onMoveAction}
+          />
+        )}
+        
+        {showCopyPanel && (
+          <OperationsPanel
+            {...operationsPanelProps}
+            isCopy={true}
+            visible={showCopyPanel}
+            onClose={this.onCopyAction}
+          />
+        )}
+
         {showDownloadDialog && (
           <DownloadDialog 
             visible={showDownloadDialog}
             onClose={this.downloadAsAction}
-            startUploadSession={this.startUploadSession}
-            closeUploadSession={this.closeUploadSession}
+            startUploadSession={startFilesOperations}
+            finishFilesOperations={finishFilesOperations}
             onDownloadProgress={this.loop}
           />
         )}
@@ -526,6 +545,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { setAction })(
+export default connect(mapStateToProps, { setAction, getProgress })(
   withTranslation()(withRouter(SectionHeaderContent))
 );

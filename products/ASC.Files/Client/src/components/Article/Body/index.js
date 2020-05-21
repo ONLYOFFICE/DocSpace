@@ -29,10 +29,10 @@ class ArticleBodyContent extends React.Component {
         expandedKeys.pop();
 
         fetchFiles(folderId, newFilter, store.dispatch).catch(err =>
-          toastr.error("Something went wrong", err)
+          toastr.error(err)
         );
       })
-      .catch(err => toastr.error("Something went wrong", err))
+      .catch(err => toastr.error(err))
       .finally(() => this.setState({ expandedKeys }));
   }
 
@@ -46,12 +46,22 @@ class ArticleBodyContent extends React.Component {
     }
   }
 
+  onSelect = data => {
+    const { selectedKeys, filter, onLoading } = this.props;
+    if (selectedKeys[0] !== data[0]) {
+      onLoading(true);
+      const newFilter = filter.clone();
+      fetchFiles(data[0], newFilter, store.dispatch).catch(err =>
+        toastr.error(err)
+      ).finally(() => onLoading(false));
+    }
+  };
+
   render() {
     const {
       data,
       selectedKeys,
       fakeNewDocuments,
-      currentModule,
       filter,
       setFilter,
       setTreeFolders,
@@ -64,7 +74,7 @@ class ArticleBodyContent extends React.Component {
       <TreeFolders
         selectedKeys={selectedKeys}
         fakeNewDocuments={fakeNewDocuments}
-        currentModule={currentModule}
+        onSelect={this.onSelect}
         data={data}
         filter={filter}
         setFilter={setFilter}
@@ -86,7 +96,6 @@ function mapStateToProps(state) {
     data: treeFolders,
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
     fakeNewDocuments,
-    currentModule: currentFolderId,
     filter
   };
 }

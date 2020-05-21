@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { RequestLoader, Checkbox } from "asc-web-components";
+import { RequestLoader, Checkbox, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
@@ -112,6 +112,17 @@ class PureHome extends React.Component {
   onChangeOriginalFormat = () => this.setState({uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting})
   onChangeWindowVisible = () => this.setState({hideWindowSetting: !this.state.hideWindowSetting})
 
+  startFilesOperations = progressBarLabel => {
+    this.setState({ isLoading: true, progressBarLabel, showProgressBar: true })
+  }
+
+  finishFilesOperations = err => {
+    const timeout = err ? 0 : null;
+    err && toastr.error(err);
+    this.onLoading(false);
+    this.setProgressVisible(false, timeout);
+  }
+
   render() {
     const {
       isHeaderVisible,
@@ -151,7 +162,7 @@ class PureHome extends React.Component {
     return (
       <>
         <RequestLoader
-          visible={this.state.isLoading}
+          visible={isLoading}
           zIndex={256}
           loaderSize='16px'
           loaderColor={"#999"}
@@ -184,9 +195,10 @@ class PureHome extends React.Component {
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
               onLoading={this.onLoading}
-              setProgressVisible={this.setProgressVisible}
+              isLoading={isLoading}
               setProgressValue={this.setProgressValue}
-              setProgressLabel={this.setProgressLabel}
+              startFilesOperations={this.startFilesOperations}
+              finishFilesOperations={this.finishFilesOperations}
             />
           }
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
@@ -196,6 +208,9 @@ class PureHome extends React.Component {
               isLoading={isLoading}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
+              setProgressValue={this.setProgressValue}
+              startFilesOperations={this.startFilesOperations}
+              finishFilesOperations={this.finishFilesOperations}
             />
           }
           sectionPagingContent={
