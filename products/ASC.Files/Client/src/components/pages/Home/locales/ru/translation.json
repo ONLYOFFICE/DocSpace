@@ -73,5 +73,6 @@
   "UploadOriginalFormatSetting": "Сохранять также копию файла в исходном формате",
   "HideWindowSetting": "Показывать это окно минимизированным",
   "ArchivingData": "Архивирование данных",
-  "DeleteOperation": "Удаление"
+  "DeleteOperation": "Удаление",
+  "Restore": "Восстановить"
 }

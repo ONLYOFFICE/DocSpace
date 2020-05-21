@@ -2,5 +2,6 @@
     "Copy": "Copy",
     "Move": "Move",
     "CopyOperation": "Copying",
-    "MoveToOperation": "Moving"
+    "MoveToOperation": "Moving",
+    "Restore": "Restore"
 }

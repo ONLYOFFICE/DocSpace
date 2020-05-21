@@ -8,9 +8,7 @@ class TreeFolders extends React.Component {
     super(props);
 
     const treeData = props.data;
-    this.state = { treeData, expandedKeys: props.expandedKeys };
-
-    this.ref = React.createRef();
+    this.state = { treeData, expandedKeys: props.expandedKeys, loaded: true };
   }
 
   getItems = data => {
@@ -144,18 +142,23 @@ class TreeFolders extends React.Component {
         this.props.needUpdate && this.props.setTreeFolders(treeData);
         this.setState({ treeData });
       })
-      .catch(() => this.props.onLoading(false))
+      .catch(err => toastr.error(err))
       .finally(() => this.props.onLoading(false));
   };
 
-  onExpand = data => {
+  onExpand = (data, treeNode) => {
+    if(treeNode.node && !treeNode.node.props.children) {
+      if(treeNode.expanded) {
+        this.onLoadData(treeNode.node);
+      }
+    }
     if(this.props.needUpdate) {
       const newFilter = this.props.filter.clone();
       newFilter.treeFolders = data;
       this.props.setFilter(newFilter);
     }
 
-    this.setState({ expandedKeys: data });
+    this.setState({ expandedKeys: data, loaded: false });
   };
 
   componentDidUpdate(prevProps) {
@@ -170,12 +173,13 @@ class TreeFolders extends React.Component {
   }
 
   render() {
-    const { selectedKeys, fakeNewDocuments, isLoading, onSelect } = this.props;
-    const { treeData, expandedKeys } = this.state;
+    const { selectedKeys, fakeNewDocuments, isLoading, onSelect, needUpdate } = this.props;
+    const { treeData, expandedKeys, loaded } = this.state;
+
+    const loadProp = loaded && needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
       <TreeMenu
-        ref={this.ref}
         className="files-tree-menu"
         checkable={false}
         draggable={false}
@@ -187,7 +191,7 @@ class TreeFolders extends React.Component {
         selectedKeys={selectedKeys}
         badgeLabel={fakeNewDocuments}
         onBadgeClick={() => console.log("onBadgeClick")}
-        loadData={this.onLoadData}
+        {...loadProp}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}
       >

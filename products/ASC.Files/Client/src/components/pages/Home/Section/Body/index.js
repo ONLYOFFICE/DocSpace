@@ -141,7 +141,10 @@ class SectionBodyContent extends React.Component {
 
     startFilesOperations(t("DeleteOperation"));
     deleteFile(fileId)
-      .then(res => this.loopDeleteProgress(res[0].id, currentFolderId, false))
+      .then(res => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopDeleteProgress(id, currentFolderId, false);
+      })
       .catch(err => finishFilesOperations(err))
   }
 
@@ -176,7 +179,10 @@ class SectionBodyContent extends React.Component {
     const { deleteFolder, startFilesOperations, finishFilesOperations, t } = this.props;
     startFilesOperations(t("DeleteOperation"));
     deleteFolder(folderId, currentFolderId)
-      .then(res => this.loopDeleteProgress(res[0].id, currentFolderId, true))
+      .then(res => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopDeleteProgress(id, currentFolderId, true);
+      })
       .catch(err => finishFilesOperations(err))
   }
 

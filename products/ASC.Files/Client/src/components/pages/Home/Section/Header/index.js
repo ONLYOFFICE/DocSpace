@@ -375,11 +375,19 @@ class SectionHeaderContent extends React.Component {
       }
     ];
 
-    isRecycleBinFolder &&
+    if(isRecycleBinFolder) {
       menuItems.push({
         label: t("EmptyRecycleBin"),
         onClick: this.onEmptyTrashAction
       });
+
+      menuItems.splice(4, 2, {
+        label: t("Restore"),
+        onClick: this.onMoveAction
+      });
+
+      menuItems.splice(1, 1);
+    }
 
     const operationsPanelProps = { 
       onLoading,
