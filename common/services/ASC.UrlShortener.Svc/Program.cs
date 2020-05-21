@@ -62,9 +62,8 @@ namespace ASC.UrlShortener.Svc
                         )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"appsettings.services.json", true)
+                        .AddJsonFile($"urlshortener.{env}.json", true)
                         .AddJsonFile("storage.json")
-                        .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables();
@@ -76,7 +75,7 @@ namespace ASC.UrlShortener.Svc
                     services.AddHostedService<UrlShortenerServiceLauncher>();
                     diHelper.AddUrlShortenerServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, new string[] { "autofac.json" });
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

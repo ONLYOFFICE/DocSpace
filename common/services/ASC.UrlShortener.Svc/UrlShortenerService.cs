@@ -103,7 +103,6 @@ namespace ASC.UrlShortener.Svc
         {
             var path = configuration["urlshortener:path"] ?? "../../ASC.UrlShortener/index.js";
             var port = configuration["urlshortener:port"] ?? "9999";
-            var logPath = configuration["urlshortener:log"] ?? "../../../Logs/urlshortener.log";
 
             var startInfo = new ProcessStartInfo
             {
@@ -115,7 +114,7 @@ namespace ASC.UrlShortener.Svc
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
 
-            startInfo.EnvironmentVariables.Add("core.machinekey", configuration["core:machinekey"]);
+            startInfo.EnvironmentVariables.Add("core:machinekey", configuration["core:machinekey"]);
 
             startInfo.EnvironmentVariables.Add("port", port);
 
@@ -141,7 +140,7 @@ namespace ASC.UrlShortener.Svc
                 }
             }
 
-            startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, logPath)));
+            startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, log.LogDirectory, "web.urlshortener.log")));
 
             return startInfo;
         }
