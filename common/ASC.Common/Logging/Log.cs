@@ -372,7 +372,7 @@ namespace ASC.Common.Logging
         public string Dir { get; set; }
     }
 
-    public class ConfigureLogNLog : IConfigureOptions<LogNLog>
+    public class ConfigureLogNLog : IConfigureNamedOptions<LogNLog>
     {
         public ConfigureLogNLog(IConfiguration configuration)
         {
@@ -397,6 +397,11 @@ namespace ASC.Common.Logging
             }
 
             NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
+        }
+
+        public void Configure(string name, LogNLog options)
+        {
+            Configure(options);
         }
     }
 
@@ -658,7 +663,7 @@ namespace ASC.Common.Logging
             if (IsFatalEnabled) Loger.Fatal(provider, format, args);
         }
 
-        public string LogDirectory { get { return NLog.LogManager.Configuration.Variables["logDirectory"].Text; } }
+        public string LogDirectory { get { return NLog.LogManager.Configuration.Variables["dir"].Text; } }
 
         private string name;
         public string Name
@@ -886,6 +891,7 @@ namespace ASC.Common.Logging
 
         public static DIHelper AddNLogManager(this DIHelper services, params string[] additionalLoggers)
         {
+            services.TryAddSingleton<IConfigureNamedOptions<LogNLog>, ConfigureLogNLog>();
             services.TryAddSingleton<IConfigureOptions<LogNLog>, ConfigureLogNLog>();
             return services.AddLogManager<LogNLog>(additionalLoggers);
         }
