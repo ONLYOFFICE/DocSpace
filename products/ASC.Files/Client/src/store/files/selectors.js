@@ -178,14 +178,13 @@ const removeTreeFolder = (folders, newItems, foldersCount) => {
       const arrayFolders = newItems.folders.filter(x => x.id !== folder.id);
       newItems.folders = arrayFolders;
       newItems.foldersCount = foldersCount;
-      return;
     }
   }
 }
 
 const addTreeFolder = (folders, newItems, foldersCount) => {
   let array;
-  const newItemFolders = newItems.folders ? newItems.folders : [];
+  let newItemFolders = newItems.folders ? newItems.folders : [];
   for (let folder of folders) {
     let currentFolder;
     if(newItemFolders) {
@@ -197,8 +196,8 @@ const addTreeFolder = (folders, newItems, foldersCount) => {
         prev.title.toLowerCase() < next.title.toLowerCase() ? -1 : 1
       );
       newItems.folders = array;
+      newItemFolders = array;
       newItems.foldersCount = foldersCount;
-      return;
     }
   }
 }

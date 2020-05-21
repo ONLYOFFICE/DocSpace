@@ -73,5 +73,6 @@
   "UploadOriginalFormatSetting": "Upload the documents in original format as well",
   "HideWindowSetting": "Show this window minimized",
   "ArchivingData": "Archiving data",
-  "DeleteOperation": "Deleting"
+  "DeleteOperation": "Deleting",
+  "Restore": "Restore"
 }
