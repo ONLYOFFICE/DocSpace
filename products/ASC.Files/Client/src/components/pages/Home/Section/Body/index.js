@@ -14,7 +14,7 @@ import {
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
-import { api, constants } from 'asc-web-common';
+import { api, constants, MediaViewer } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,
@@ -27,7 +27,7 @@ import {
   setTreeFolders,
   getProgress
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -45,7 +45,9 @@ class SectionBodyContent extends React.Component {
     this.state = {
       editingId: null,
       showSharingPanel: false,
-      currentItem: null
+      currentItem: null,
+      currentMediaFileId: 0,
+      mediaViewerVisible: false
     };
   }
 
@@ -86,7 +88,7 @@ class SectionBodyContent extends React.Component {
     if(this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
-    if(!isEqual(this.props, nextProps)) {
+    if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
       return true;
     }
     return false;
@@ -549,6 +551,30 @@ class SectionBodyContent extends React.Component {
       />
     )
   }
+  onMediaViewerClose = () =>{
+    this.setState({
+      mediaViewerVisible: false
+    });
+  }
+  onMediaFileClick = (id) => {
+      this.setState({
+        mediaViewerVisible: true,
+        currentMediaFileId: id
+      });
+  }
+  onDownloadMediaFile = (id) => {
+    if(this.props.files.length > 0){
+      let viewUrlFile = this.props.files.find(file => file.id === id).viewUrl;
+      return window.open(viewUrlFile, "_blank");
+    }
+  }
+  onDeleteMediaFile = (id) => {
+    if(this.props.files.length > 0){
+      let file = this.props.files.find(file => file.id === id);
+      if(file)
+        this.onDeleteFile(file.id, file.folderId)
+    }
+  }
 
   render() {
     const {
@@ -588,6 +614,23 @@ class SectionBodyContent extends React.Component {
       });
     }
 
+   
+    var playlist = [];
+    let id = 0;
+    files.forEach(function(file, i, files) {
+      if(isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst)){
+        playlist.push(
+          {
+            id: id,
+            fileId: file.id,
+            src: file.viewUrl,
+            title: file.title
+          }
+        );
+        id++;
+      }
+    });
+
     return !fileAction.id && currentFolderCount === 0 ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
@@ -611,44 +654,59 @@ class SectionBodyContent extends React.Component {
                 const contextOptionsProps =
                   !contextOptions.length || isEdit ? {} : { contextOptions };
                 const checked = isFileSelected(selection, item.id, item.parentId);
-                const checkedProps = /* isAdmin(viewer) */ isEdit
-                  ? {}
-                  : { checked };
+                const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
                 const element = this.getItemIcon(item, isEdit);
 
-            return (
-              <SimpleFilesRow
-                key={item.id}
-                data={item}
-                element={element}
-                onSelect={this.onContentRowSelect}
-                editing={editingId}
-                {...checkedProps}
-                {...contextOptionsProps}
-                needForUpdate={this.needForUpdate}
-              >
-                <FilesRowContent
-                  item={item}
-                  viewer={viewer}
-                  culture={settings.culture}
-                  onEditComplete={this.onEditComplete.bind(this, item)}
-                  onLoading={onLoading}
-                  isLoading={isLoading}
-                />
-              </SimpleFilesRow>
-            );
-          })}
-        </RowContainer>
-        {showSharingPanel && (
-          <SharingPanel
-            onLoading={onLoading}
-            selectedItems={currentItem}
-            onClose={this.onClickShare}
-            visible={showSharingPanel}
-          />
-        )}
-      </>
-    );
+                return (
+                  <SimpleFilesRow
+                    key={item.id}
+                    data={item}
+                    element={element}
+                    onSelect={this.onContentRowSelect}
+                    editing={editingId}
+                    {...checkedProps}
+                    {...contextOptionsProps}
+                    needForUpdate={this.needForUpdate}
+                  >
+                    <FilesRowContent
+                      item={item}
+                      viewer={viewer}
+                      culture={settings.culture}
+                      onEditComplete={this.onEditComplete.bind(this, item)}
+                      onLoading={onLoading}
+                      onMediaFileClick={this.onMediaFileClick}
+                      isLoading={isLoading}
+                    />
+                  </SimpleFilesRow>
+                );
+              })}
+            </RowContainer>
+            {playlist.length > 0 &&
+              <MediaViewer
+                currentFileId = {this.state.currentMediaFileId}
+                allowConvert={true} //TODO
+                canDelete={(fileId) => { return true }} //TODO 
+                canDownload={(fileId) => { return true }} //TODO 
+                visible={this.state.mediaViewerVisible}
+                playlist={playlist}
+                onDelete={this.onDeleteMediaFile}
+                onDownload={this.onDownloadMediaFile}
+                onClose={this.onMediaViewerClose}
+                onEmptyPlaylistError={this.onMediaViewerClose}
+                extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}  //TODO
+                extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]} //TODO
+              />
+            }
+            {showSharingPanel && (
+              <SharingPanel
+                onLoading={onLoading}
+                selectedItems={currentItem}
+                onClose={this.onClickShare}
+                visible={showSharingPanel}
+              />
+            )}
+          </>
+        );
   }
 }
 
