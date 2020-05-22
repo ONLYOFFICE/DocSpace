@@ -84,7 +84,7 @@ namespace ASC.Web.Core.Utility
         {
             url = configuration["web:url-shortener:value"];
             internalUrl = configuration["web:url-shortener:internal"];
-            sKey = configuration["core.:machinekey"];
+            sKey = configuration["core:machinekey"];
 
             if (!url.EndsWith("/"))
                 url += '/';
