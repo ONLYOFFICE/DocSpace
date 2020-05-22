@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Utility
                     {
                         _instance = new BitLyShortener(ConsumerFactory);
                     }
-                    else if (!string.IsNullOrEmpty(Configuration["web:url-shortener"]))
+                    else if (!string.IsNullOrEmpty(Configuration["web:url-shortener:value"]))
                     {
                         _instance = new OnlyoShortener(Configuration, CommonLinkUtility);
                     }
@@ -82,9 +82,9 @@ namespace ASC.Web.Core.Utility
 
         public OnlyoShortener(IConfiguration configuration, CommonLinkUtility commonLinkUtility)
         {
-            url = configuration["web.url-shortener"];
-            internalUrl = configuration["web.url-shortener.internal"];
-            sKey = configuration["core.machinekey"];
+            url = configuration["web:url-shortener:value"];
+            internalUrl = configuration["web:url-shortener:internal"];
+            sKey = configuration["core.:machinekey"];
 
             if (!url.EndsWith("/"))
                 url += '/';
