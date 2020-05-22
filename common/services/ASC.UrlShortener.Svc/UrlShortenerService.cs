@@ -114,7 +114,7 @@ namespace ASC.UrlShortener.Svc
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
 
-            startInfo.EnvironmentVariables.Add("core:machinekey", configuration["core:machinekey"]);
+            startInfo.EnvironmentVariables.Add("core.machinekey", configuration["core:machinekey"]);
 
             startInfo.EnvironmentVariables.Add("port", port);
 
