@@ -234,14 +234,6 @@ class VideoViewer extends Component {
     loop: false
   }
 
-  load = url => {
-    this.setState({
-      url,
-      played: 0,
-      loaded: 0,
-      pip: false
-    })
-  }
   componentDidUpdate(prevProps, prevState) {
     let newUrl = prevState.url;
     let newPlaying = prevState.playing;
@@ -301,11 +293,11 @@ class VideoViewer extends Component {
   }
 
   handleSeekChange = e => {
-    console.log('-----handleSeekChange-----',parseFloat(e.target.value))
     this.setState({ played: parseFloat(e.target.value) })
   }
 
   handleSeekMouseUp = e => {
+    console.log(!isNaN(parseFloat(e.target.value)),parseFloat(e.target.value))
     if (!isNaN(parseFloat(e.target.value))) {
       this.setState({ seeking: false });
       this.player.seekTo(parseFloat(e.target.value));
@@ -328,14 +320,6 @@ class VideoViewer extends Component {
 
   handleClickFullscreen = () => {
     screenfull.request(findDOMNode(this.player))
-  }
-
-  renderLoadButton = (url, label) => {
-    return (
-      <button onClick={() => this.load(url)}>
-        {label}
-      </button>
-    )
   }
 
   ref = player => {
@@ -367,7 +351,6 @@ class VideoViewer extends Component {
 
   render() {
     const { url, playing, controls, light, volume, muted, loop, played, loaded, duration, playbackRate, pip } = this.state
-    console.log('-----render-----',played)
     const parentOffset = this.props.getOffset() || 0;
     var screenSize = {
       w: window.innerWidth,
