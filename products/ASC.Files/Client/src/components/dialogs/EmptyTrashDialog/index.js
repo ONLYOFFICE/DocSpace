@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { toastr, ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
@@ -11,27 +11,48 @@ const { files } = api;
 const { changeLanguage } = utils;
 
 const EmptyTrashDialogComponent = props => {
-  const { onClose, visible, t, filter, currentFolderId } = props;
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    onClose,
+    visible,
+    t,
+    filter,
+    currentFolderId,
+    startFilesOperations,
+    finishFilesOperations,
+    setProgressValue,
+    getProgress,
+    isLoading
+  } = props;
 
   changeLanguage(i18n);
-
-  const successMessage = "Success empty recycle bin";
+  
+  const loopEmptyTrash = useCallback(id => {
+    const successMessage = "Success empty recycle bin";
+    getProgress().then(res => {
+      const currentProcess = res.find(x => x.id === id);
+      if(currentProcess && currentProcess.progress !== 100) {
+        setProgressValue(currentProcess.progress);
+        setTimeout(() => loopEmptyTrash(id), 1000);
+      } else {
+        fetchFiles(currentFolderId, filter, store.dispatch).then(() => {
+          setProgressValue(100);
+          finishFilesOperations();
+          toastr.success(successMessage);
+        }).catch(err => finishFilesOperations(err))
+      }
+    }).catch(err => finishFilesOperations(err))
+  }, [currentFolderId, filter, finishFilesOperations, setProgressValue, getProgress])
 
   const onEmptyTrash = useCallback(() => {
-    setIsLoading(true);
-    files
-      .emptyTrash()
+    startFilesOperations(t("DeleteOperation"));
+    onClose();
+    files.emptyTrash()
       .then(res => {
-        fetchFiles(currentFolderId, filter, store.dispatch)
-        toastr.success(successMessage);
-      }) //toastr.success("It was successfully deleted 24 from 24"); + progressBar
-      .catch(err => toastr.error(err))
-      .finally(() => {
-        setIsLoading(false);
-        onClose();
-      });
-  }, [onClose, filter, currentFolderId]);
+        const id = res[0] && res[0].id ? res[0].id : null;
+        loopEmptyTrash(id);
+      })
+      .catch(err => finishFilesOperations(err))
+  }, [onClose, loopEmptyTrash, startFilesOperations, finishFilesOperations, t]);
 
   return (
     <ModalDialogContainer>
