@@ -61,6 +61,12 @@ class MediaViewer extends React.Component {
                     }
                 );
             }
+        }else if(!isEqual(this.props.playlist, prevProps.playlist)){
+            this.setState(
+                {
+                    playlist: this.props.playlist
+                }
+            );
         }
 
     }
