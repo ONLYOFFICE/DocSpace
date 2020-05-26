@@ -25,7 +25,7 @@ class MediaViewer extends React.Component {
             visible: this.props.visible,
             allowConvert: true,
             playlist: this.props.playlist,
-            playlistPos: 0,
+            playlistPos: this.props.playlist.length > 0 ? this.props.playlist.find(file => file.fileId === this.props.currentFileId).id : 0
         };
 
         this.detailsContainer = React.createRef();
