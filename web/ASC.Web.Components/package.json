@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.384",
+  "version": "1.0.385",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -74,7 +74,6 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.17.0",
-    "faker": "^4.1.0",
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
     "jest-junit": "^10.0.0",

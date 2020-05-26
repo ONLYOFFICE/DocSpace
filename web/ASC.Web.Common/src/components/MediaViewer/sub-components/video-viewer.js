@@ -234,14 +234,6 @@ class VideoViewer extends Component {
     loop: false
   }
 
-  load = url => {
-    this.setState({
-      url,
-      played: 0,
-      loaded: 0,
-      pip: false
-    })
-  }
   componentDidUpdate(prevProps, prevState) {
     let newUrl = prevState.url;
     let newPlaying = prevState.playing;
@@ -305,6 +297,7 @@ class VideoViewer extends Component {
   }
 
   handleSeekMouseUp = e => {
+    console.log(!isNaN(parseFloat(e.target.value)),parseFloat(e.target.value))
     if (!isNaN(parseFloat(e.target.value))) {
       this.setState({ seeking: false });
       this.player.seekTo(parseFloat(e.target.value));
@@ -327,14 +320,6 @@ class VideoViewer extends Component {
 
   handleClickFullscreen = () => {
     screenfull.request(findDOMNode(this.player))
-  }
-
-  renderLoadButton = (url, label) => {
-    return (
-      <button onClick={() => this.load(url)}>
-        {label}
-      </button>
-    )
   }
 
   ref = player => {

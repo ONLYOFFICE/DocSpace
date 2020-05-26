@@ -1,7 +1,6 @@
 import { request } from "../client";
 import axios from "axios";
 import FilesFilter from "./filter";
-import * as fakeFiles from "./fake";
 
 export function openEdit(fileId) {
   const options = {
@@ -30,11 +29,7 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter, fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "Fake folder");
-  }
-
+export function getFolder(folderId, filter) {
   const params =
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toUrlParams()}`
@@ -74,11 +69,7 @@ export function getFoldersTree() {
     ))
 }
 
-export function getMyFolderList(filter = FilesFilter.getDefault(), fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "My Documents");
-  }
-
+export function getMyFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@my`
@@ -87,11 +78,7 @@ export function getMyFolderList(filter = FilesFilter.getDefault(), fake = false)
   return request(options);
 }
 
-export function getCommonFolderList(filter = FilesFilter.getDefault(), fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "Common Documents");
-  }
-
+export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@common`
@@ -100,11 +87,7 @@ export function getCommonFolderList(filter = FilesFilter.getDefault(), fake = fa
   return request(options);
 }
 
-export function getProjectsFolderList(filter = FilesFilter.getDefault(), fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "Project Documents");
-  }
-
+export function getProjectsFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@projects`
@@ -113,11 +96,7 @@ export function getProjectsFolderList(filter = FilesFilter.getDefault(), fake = 
   return request(options);
 }
 
-export function getTrashFolderList(filter = FilesFilter.getDefault(), fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "Recycle Bin");
-  }
-
+export function getTrashFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@trash`
@@ -126,11 +105,7 @@ export function getTrashFolderList(filter = FilesFilter.getDefault(), fake = fal
   return request(options);
 }
 
-export function getSharedFolderList(filter = FilesFilter.getDefault(), fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "Shared with Me");
-  }
-
+export function getSharedFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@share`
