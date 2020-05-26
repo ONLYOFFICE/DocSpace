@@ -64,7 +64,7 @@ namespace ASC.Data.Backup.Tasks
         }
 
         public RestorePortalTask(IOptionsMonitor<ILog> options, int tenantId, string toConfigPath, string fromFilePath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, LicenseReader licenseReader, AscCacheNotify ascCacheNotify, ModuleProvider moduleProvider, ColumnMapper columnMapper = null, string upgradesPath = null)
-            : base(options, tenantId, toConfigPath, storageFactory, storageFactoryConfig)
+            : base(options, tenantId, toConfigPath, storageFactory, storageFactoryConfig, moduleProvider)
         {
             this.coreBaseSettings = coreBaseSettings;
             this.licenseReader = licenseReader;
@@ -109,7 +109,7 @@ namespace ASC.Data.Backup.Tasks
 
                     foreach (var module in modulesToProcess)
                     {
-                        var restoreTask = new RestoreDbModuleTask(options, module, dataReader, _columnMapper, dbFactory, ReplaceDate, Dump, storageFactory, storageFactoryConfig);
+                        var restoreTask = new RestoreDbModuleTask(options, module, dataReader, _columnMapper, dbFactory, ReplaceDate, Dump, storageFactory, storageFactoryConfig, moduleProvider);
                         restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
                         foreach (var tableName in IgnoredTables)
                         {

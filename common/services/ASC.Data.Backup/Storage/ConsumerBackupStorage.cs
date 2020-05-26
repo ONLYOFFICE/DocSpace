@@ -37,11 +37,16 @@ namespace ASC.Data.Backup.Storage
     {
         private readonly IDataStore store;
         private const string Domain = "backup";
+        private StorageSettingsHelper storageSettingsHelper;
+        public ConsumerBackupStorage(StorageSettingsHelper storageSettingsHelper)
+        {
+            this.storageSettingsHelper = storageSettingsHelper;
+        }
 
         public ConsumerBackupStorage(IReadOnlyDictionary<string, string> storageParams)
         {
             var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
-            store = settings.DataStore; //тут
+            store = storageSettingsHelper.DataStore(settings); 
         }
 
         public string Upload(string storageBasePath, string localPath, Guid userId)

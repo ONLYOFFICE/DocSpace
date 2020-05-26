@@ -41,8 +41,8 @@ namespace ASC.Data.Backup.Tasks
 
         private StorageFactory storageFactory;
         private StorageFactoryConfig storageFactoryConfig;
-        public DeletePortalTask(IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
-            : base(options, tenantId, configPath, storageFactory , storageFactoryConfig)
+        public DeletePortalTask(IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+            : base(options, tenantId, configPath, storageFactory , storageFactoryConfig, moduleProvider)
         {
             this.storageFactory = storageFactory;
             this.storageFactoryConfig = storageFactoryConfig;

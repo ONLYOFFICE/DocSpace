@@ -43,7 +43,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
         private ILog log;
         private Helpers helpers;
-        public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers)
+        public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) :base(helpers)
         {
             log = options.CurrentValue;
             this.helpers = helpers;

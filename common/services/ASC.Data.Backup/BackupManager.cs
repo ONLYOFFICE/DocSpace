@@ -24,6 +24,8 @@
 */
 
 
+using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -41,20 +43,22 @@ namespace ASC.Data.Backup
         private readonly string[] configs;
         
         public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+        private IOptionsMonitor<ILog> options;
 
-
-        public BackupManager(string backup)
-            : this(backup, null)
+        public BackupManager(string backup, IOptionsMonitor<ILog> options)
+            : this(backup, options, null)
         {
+            
         }
 
-        public BackupManager(string backup, params string[] configs)
+        public BackupManager(string backup, IOptionsMonitor<ILog> options, params string[] configs)
         {
+            this.options = options;
             this.backup = backup;
             this.configs = configs ?? new string[0];
 
             providers = new Dictionary<string, IBackupProvider>();
-            AddBackupProvider(new DbBackupProvider());
+            AddBackupProvider(new DbBackupProvider(options));
             AddBackupProvider(new FileBackupProvider());
         }
 

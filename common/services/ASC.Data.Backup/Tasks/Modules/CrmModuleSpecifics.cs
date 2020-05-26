@@ -36,8 +36,13 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    internal class CrmModuleSpecifics : ModuleSpecificsBase
+    public class CrmModuleSpecifics : ModuleSpecificsBase
     {
+        public CrmModuleSpecifics(Helpers helpers)
+        :base(helpers)
+        {
+
+        }
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("crm_case", "tenant_id", "id")
@@ -153,8 +158,13 @@ namespace ASC.Data.Backup.Tasks.Modules
     }
 
     //todo: hack: in future there be no modules only tables!!!
-    internal class CrmModuleSpecifics2 : ModuleSpecificsBase
+    public class CrmModuleSpecifics2 : ModuleSpecificsBase
     {
+        public CrmModuleSpecifics2(Helpers helpers)
+        : base(helpers)
+        {
+
+        }
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("crm_field_value", "tenant_id", "id", IdType.Autoincrement) {UserIDColumns = new[] {"last_modifed_by"}},
@@ -271,8 +281,13 @@ namespace ASC.Data.Backup.Tasks.Modules
         }
     }
 
-    internal class CrmInvoiceModuleSpecifics : ModuleSpecificsBase
+    public class CrmInvoiceModuleSpecifics : ModuleSpecificsBase
     {
+        public CrmInvoiceModuleSpecifics(Helpers helpers)
+        : base(helpers)
+        {
+
+        }
         public override ModuleName ModuleName
         {
             get { return ModuleName.CrmInvoice; }

@@ -30,8 +30,11 @@ using ASC.Data.Backup.Tasks.Data;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    internal class AuditModuleSpecifics : ModuleSpecificsBase
+    public class AuditModuleSpecifics : ModuleSpecificsBase
     {
+        public AuditModuleSpecifics(Helpers helpers)
+        :base(helpers)
+        {}
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("audit_events", "tenant_id", "id") {UserIDColumns = new[] {"user_id"}},

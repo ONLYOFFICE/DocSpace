@@ -34,10 +34,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    class FilesModuleSpecifics : ModuleSpecificsBase
+    public class FilesModuleSpecifics : ModuleSpecificsBase
     {
         private static readonly Regex RegexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
         private const string BunchRightNodeStartProject = "projects/project/";
@@ -110,6 +111,14 @@ namespace ASC.Data.Backup.Tasks.Modules
 
                 new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
             };
+
+        private Helpers helpers;
+        private ILog log;
+        public FilesModuleSpecifics(IOptionsMonitor<ILog> options,Helpers helpers) : base(helpers)
+        {
+            log = options.CurrentValue;
+            this.helpers = helpers;
+        }
 
         public override ModuleName ModuleName
         {
@@ -203,7 +212,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 //note: value could be ShareForEveryoneID and in that case result should be always false
                 var strVal = Convert.ToString(value);
-                if (Helpers.IsEmptyOrSystemUser(strVal) || Helpers.IsEmptyOrSystemGroup(strVal))
+                if (helpers.IsEmptyOrSystemUser(strVal) || helpers.IsEmptyOrSystemGroup(strVal))
                     return true;
 
                 foreach (var relation in relationList)
@@ -248,11 +257,11 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 try
                 {
-                    value = Helpers.CreateHash(value as string); // save original hash
+                    value = helpers.CreateHash(value as string); // save original hash
                 }
                 catch (Exception err)
                 {
-                    LogManager.GetLogger("ASC").ErrorFormat("Can not prepare value {0}: {1}", value, err);
+                    log.ErrorFormat("Can not prepare value {0}: {1}", value, err);
                     value = null;
                 }
                 return true;
@@ -278,12 +287,12 @@ namespace ASC.Data.Backup.Tasks.Modules
                     var row = data.Rows[i];
                     try
                     {
-                        row[pwdColumn] = Helpers.CreateHash2(row[pwdColumn] as string);
-                        row[tokenColumn] = Helpers.CreateHash2(row[tokenColumn] as string);
+                        row[pwdColumn] = helpers.CreateHash2(row[pwdColumn] as string);
+                        row[tokenColumn] = helpers.CreateHash2(row[tokenColumn] as string);
                     }
                     catch (Exception ex)
                     {
-                        LogManager.GetLogger("ASC").ErrorFormat("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
+                        log.ErrorFormat("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
                         data.Rows.Remove(row);
                         i--;
                     }
@@ -299,8 +308,14 @@ namespace ASC.Data.Backup.Tasks.Modules
     }
 
 
-    class FilesModuleSpecifics2 : ModuleSpecificsBase
+    
+    public class FilesModuleSpecifics2 : ModuleSpecificsBase
     {
+        public FilesModuleSpecifics2(Helpers helpers)
+        :base(helpers)
+        {
+
+        }
         private static readonly Regex RegexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
         private const string TagStartMessage = "Message";
         private const string TagStartTask = "Task";

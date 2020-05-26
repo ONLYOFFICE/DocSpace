@@ -25,6 +25,7 @@
 
 
 using ASC.Common.Logging;
+using ASC.Core;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,23 +36,23 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
         public List<IModuleSpecifics> AllModules;
 
-        public ModuleProvider(IOptionsMonitor<ILog> options)
+        public ModuleProvider(IOptionsMonitor<ILog> options, Helpers helpers, CoreSettings coreSettings)
         {
             AllModules = new List<IModuleSpecifics>
             {
-                new TenantsModuleSpecifics(),
-                new AuditModuleSpecifics(),
-                new CommunityModuleSpecifics(),
-                new CalendarModuleSpecifics(),
-                new ProjectsModuleSpecifics(),
-                new CrmModuleSpecifics(),
-                new FilesModuleSpecifics(),
-                new MailModuleSpecifics(options),
-                new CrmModuleSpecifics2(),
-                new FilesModuleSpecifics2(),
-                new CrmInvoiceModuleSpecifics(),
-                new WebStudioModuleSpecifics(),
-                new CoreModuleSpecifics()
+                new TenantsModuleSpecifics(coreSettings,helpers),
+                new AuditModuleSpecifics(helpers),
+                new CommunityModuleSpecifics(helpers),
+                new CalendarModuleSpecifics(helpers),
+                new ProjectsModuleSpecifics(helpers),
+                new CrmModuleSpecifics(helpers),
+                new FilesModuleSpecifics(options,helpers),
+                new MailModuleSpecifics(options,helpers),
+                new CrmModuleSpecifics2(helpers),
+                new FilesModuleSpecifics2(helpers),
+                new CrmInvoiceModuleSpecifics(helpers),
+                new WebStudioModuleSpecifics(helpers),
+                new CoreModuleSpecifics(helpers)
             }
             .ToList();
         }

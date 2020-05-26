@@ -34,8 +34,11 @@ using System.Linq;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    internal class CommunityModuleSpecifics : ModuleSpecificsBase
+    public class CommunityModuleSpecifics : ModuleSpecificsBase
     {
+        public CommunityModuleSpecifics(Helpers helpers)
+        : base(helpers)
+        { }
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("bookmarking_bookmark", "Tenant", "ID")

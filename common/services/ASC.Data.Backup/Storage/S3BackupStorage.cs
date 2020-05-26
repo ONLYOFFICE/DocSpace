@@ -82,7 +82,7 @@ namespace ASC.Data.Backup.Storage
             return key;
         }
 
-        public async Task Download(string storagePath, string targetLocalPath)
+        public void Download(string storagePath, string targetLocalPath)
         {
             var request = new GetObjectRequest
                 {
@@ -91,17 +91,17 @@ namespace ASC.Data.Backup.Storage
                 };
 
             using (var s3 = GetClient())
-            using (var response = await s3.GetObjectAsync(request))
+            using (var response = s3.GetObjectAsync(request).Result)
             {
-               await response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
+               response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
             }
         }
 
-        public async Task Delete(string storagePath)
+        public void Delete(string storagePath)
         {
             using (var s3 = GetClient())
             {
-               await s3.DeleteObjectAsync(new DeleteObjectRequest
+               s3.DeleteObjectAsync(new DeleteObjectRequest
                     {
                         BucketName = bucket,
                         Key = GetKey(storagePath)
@@ -109,14 +109,14 @@ namespace ASC.Data.Backup.Storage
             }
         }
 
-        public async Task<bool> IsExists(string storagePath)
+        public bool IsExists(string storagePath)
         {
             using (var s3 = GetClient())
             {
                 try
                 {
                     var request = new ListObjectsRequest { BucketName = bucket, Prefix = GetKey(storagePath) };
-                    var response = await s3.ListObjectsAsync(request);
+                    var response =  s3.ListObjectsAsync(request).Result;
                     return response.S3Objects.Count > 0;
                 }
                 catch (AmazonS3Exception ex)

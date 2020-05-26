@@ -49,7 +49,8 @@ namespace ASC.Data.Backup.Service
         private readonly TenantManager tenantManager;
         private readonly TenantUtil tenantUtil;
         private readonly IOptionsMonitor<ILog> options;
-        public BackupService(IOptionsMonitor<ILog> options, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, TenantManager tenantManager, TenantUtil tenantUtil)
+        private readonly BackupHelper backupHelper;
+        public BackupService(IOptionsMonitor<ILog> options, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
         {
             log = options.CurrentValue;
             this.backupStorageFactory = backupStorageFactory;
@@ -57,6 +58,7 @@ namespace ASC.Data.Backup.Service
             this.tenantManager = tenantManager;
             this.tenantUtil = tenantUtil;
             this.options = options;
+            this.backupHelper = backupHelper;
         }
 
         public BackupProgress StartBackup(StartBackupRequest request)
@@ -228,7 +230,7 @@ namespace ASC.Data.Backup.Service
         public void CreateSchedule(CreateScheduleRequest request)
         {
             backupStorageFactory.GetBackupRepository().SaveBackupSchedule(
-                new Schedule(options, request.TenantId, tenantManager, tenantUtil)
+                new Schedule(options, request.TenantId, tenantManager, tenantUtil, backupHelper)
                     {
                         Cron = request.Cron,
                         BackupMail = request.BackupMail,

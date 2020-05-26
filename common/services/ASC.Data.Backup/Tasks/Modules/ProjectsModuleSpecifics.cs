@@ -34,8 +34,13 @@ using System.Text.RegularExpressions;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    internal class ProjectsModuleSpecifics : ModuleSpecificsBase
+    public class ProjectsModuleSpecifics : ModuleSpecificsBase
     {
+        public ProjectsModuleSpecifics(Helpers helpers)
+        :base(helpers)
+        {
+
+        }
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("projects_comments", "tenant_id", "comment_id", IdType.Autoincrement) {UserIDColumns = new[] {"create_by"}},

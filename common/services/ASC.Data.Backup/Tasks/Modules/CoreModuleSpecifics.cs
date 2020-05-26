@@ -34,7 +34,7 @@ using ASC.Data.Backup.Tasks.Data;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    internal class CoreModuleSpecifics : ModuleSpecificsBase
+    public class CoreModuleSpecifics : ModuleSpecificsBase
     {
         private static readonly Guid ProjectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
         private static readonly Guid BookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
@@ -55,6 +55,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
         private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
 
+        
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("core_acl", "tenant") {InsertMethod = InsertMethod.Ignore},
@@ -79,7 +80,12 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new TableInfo("core_settings", "tenant") 
             };
 
-        private readonly RelationInfo[] _tableRelations = new[]
+        private readonly RelationInfo[] _tableRelations;
+        private Helpers helpers;
+        public CoreModuleSpecifics(Helpers helpers) : base(helpers)
+        {
+            this.helpers = helpers;
+            _tableRelations = new[]
             {
                 new RelationInfo("core_user", "id", "core_acl", "subject", typeof(TenantsModuleSpecifics)),
 
@@ -94,7 +100,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("core_group", "id", "core_subscriptionmethod", "recipient", typeof(TenantsModuleSpecifics)),
 
                 new RelationInfo("core_group", "id", "core_usergroup", "groupid", typeof(TenantsModuleSpecifics),
-                                 x => !Helpers.IsEmptyOrSystemGroup(Convert.ToString(x["groupid"]))),
+                                 x => !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["groupid"]))),
 
                 new RelationInfo("crm_contact", "id", "core_acl", "object", typeof(CrmModuleSpecifics),
                                  x => Convert.ToString(x["object"]).StartsWith(CrmCompanyAclObjectStart) || Convert.ToString(x["object"]).StartsWith(CrmPersonAclObjectStart)),
@@ -152,7 +158,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("files_folder", "id", "backup_schedule", "storage_base_path", typeof(FilesModuleSpecifics),
                                  x => IsDocumentsStorageType(Convert.ToString(x["storage_type"]))),
             };
-
+        }
         public override ModuleName ModuleName
         {
             get { return ModuleName.Core; }
@@ -245,7 +251,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 || relationList.All(x => x.ChildTable == "core_acl" && x.ChildColumn == "subject"))
             {
                 var strVal = Convert.ToString(value);
-                if (Helpers.IsEmptyOrSystemUser(strVal) || Helpers.IsEmptyOrSystemGroup(strVal))
+                if (helpers.IsEmptyOrSystemUser(strVal) || helpers.IsEmptyOrSystemGroup(strVal))
                     return true;
 
                 foreach (var relation in relationList)

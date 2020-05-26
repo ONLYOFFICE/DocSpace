@@ -37,6 +37,7 @@ using Microsoft.Extensions.Options;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Common.Caching;
+using ASC.Data.Backup.EF.Context;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -57,10 +58,11 @@ namespace ASC.Data.Backup.Tasks
         public LicenseReader licenseReader;
         public AscCacheNotify ascCacheNotify;
         public ModuleProvider moduleProvider;
+        public BackupRecordContext backupRecordContext;
 
         public int Limit { get; private set; }
 
-        public TransferPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toConfigPath, int limit, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider)
+        public TransferPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toConfigPath, int limit, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupRecordContext backupRecordContext)
             : base(options, tenantId, fromConfigPath, storageFactory, storageFactoryConfig, moduleProvider)
         {
             if (toConfigPath == null)
@@ -76,6 +78,7 @@ namespace ASC.Data.Backup.Tasks
             this.coreBaseSettings = coreBaseSettings;
             this.tenantManager = tenantManager;
             this.moduleProvider = moduleProvider;
+            this.backupRecordContext = backupRecordContext;
         }
 
         public override void RunJob()
@@ -99,7 +102,7 @@ namespace ASC.Data.Backup.Tasks
                 SetStepsCount(ProcessStorage ? 3 : 2);
 
                 //save db data to temporary file
-                var backupTask = new BackupPortalTask(Logger, TenantId, ConfigPath, backupFilePath, Limit, coreBaseSettings, tenantManager) {ProcessStorage = false};
+                var backupTask = new BackupPortalTask(options, TenantId, ConfigPath, backupFilePath, Limit, coreBaseSettings, storageFactory, storageFactoryConfig, moduleProvider, backupRecordContext) {ProcessStorage = false};
                 backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
                 foreach (var moduleName in IgnoredModules)
                 {
@@ -220,8 +223,9 @@ namespace ASC.Data.Backup.Tasks
 
                 if (!string.IsNullOrEmpty(whereCondition))
                     commandText += (" and " + whereCondition);
-
-                connection.CreateCommand(commandText).WithTimeout(120).ExecuteNonQuery();
+                var command = connection.CreateCommand();
+                command.CommandText = commandText;
+                command.WithTimeout(120).ExecuteNonQuery();
             }
         }
 
@@ -229,16 +233,17 @@ namespace ASC.Data.Backup.Tasks
         {
             using (var connection = dbFactory.OpenConnection())
             {
-                var commandText = "select alias from tenants_tenants where id = " + TenantId;
-                return connection.CreateCommand(commandText).WithTimeout(120).ExecuteScalar<string>();
+                var command = connection.CreateCommand();
+                command.CommandText = "select alias from tenants_tenants where id = " + TenantId;
+                return (string)command.WithTimeout(120).ExecuteScalar();
             }
         }
 
         private static string GetUniqAlias(DbConnection connection, string alias)
         {
-            return alias + connection.CreateCommand("select count(*) from tenants_tenants where alias like '" + alias + "%'")
-                                     .WithTimeout(120)
-                                     .ExecuteScalar<int>();
+            var command = connection.CreateCommand();
+            command.CommandText = "select count(*) from tenants_tenants where alias like '" + alias + "%'";
+            return alias + command.WithTimeout(120).ExecuteScalar();
         }
 
         private string GetBackupFilePath(string tenantAlias)

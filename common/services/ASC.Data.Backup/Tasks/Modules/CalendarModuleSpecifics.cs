@@ -30,8 +30,10 @@ using ASC.Data.Backup.Tasks.Data;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
-    internal class CalendarModuleSpecifics : ModuleSpecificsBase
+    public class CalendarModuleSpecifics : ModuleSpecificsBase
     {
+        private Helpers helpers;
+        
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("calendar_calendars", "tenant", "id") {UserIDColumns = new[] {"owner_id"}},
@@ -52,7 +54,13 @@ namespace ASC.Data.Backup.Tasks.Modules
                     }
             };
 
-        private readonly RelationInfo[] _tableRelations = new[]
+        private readonly RelationInfo[] _tableRelations;
+
+            public CalendarModuleSpecifics(Helpers helpers)
+        : base(helpers)
+        {
+            this.helpers = helpers;
+            _tableRelations = new[]
             {
                 new RelationInfo("calendar_calendars", "id", "calendar_calendar_item", "calendar_id"),
                 new RelationInfo("calendar_calendars", "id", "calendar_calendar_user", "calendar_id"),
@@ -62,15 +70,16 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("calendar_events", "id", "calendar_event_item", "event_id"),
                 new RelationInfo("calendar_events", "id", "calendar_event_user", "event_id"),
                 new RelationInfo("calendar_events", "id", "calendar_notifications", "event_id"),
-                new RelationInfo("core_user", "id", "calendar_calendar_item", "item_id", typeof(TenantsModuleSpecifics), 
+                new RelationInfo("core_user", "id", "calendar_calendar_item", "item_id", typeof(TenantsModuleSpecifics),
                     x => Convert.ToInt32(x["is_group"]) == 0),
-                new RelationInfo("core_group", "id", "calendar_calendar_item", "item_id", typeof(TenantsModuleSpecifics), 
-                    x => Convert.ToInt32(x["is_group"]) == 1 && !Helpers.IsEmptyOrSystemGroup(Convert.ToString(x["item_id"]))),
-                new RelationInfo("core_user", "id", "calendar_event_item", "item_id", typeof(TenantsModuleSpecifics), 
+                new RelationInfo("core_group", "id", "calendar_calendar_item", "item_id", typeof(TenantsModuleSpecifics),
+                    x => Convert.ToInt32(x["is_group"]) == 1 && !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["item_id"]))),
+                new RelationInfo("core_user", "id", "calendar_event_item", "item_id", typeof(TenantsModuleSpecifics),
                     x => Convert.ToInt32(x["is_group"]) == 0),
-                new RelationInfo("core_group", "id", "calendar_event_item", "item_id", typeof(TenantsModuleSpecifics), 
-                    x => Convert.ToInt32(x["is_group"]) == 1 && !Helpers.IsEmptyOrSystemGroup(Convert.ToString(x["item_id"])))
+                new RelationInfo("core_group", "id", "calendar_event_item", "item_id", typeof(TenantsModuleSpecifics),
+                    x => Convert.ToInt32(x["is_group"]) == 1 && !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["item_id"])))
             };
+        }
 
         public override ModuleName ModuleName
         {

@@ -148,11 +148,9 @@ namespace ASC.Data.Backup.Tasks
                                     }
                                     else if (tableInfo.IdType == IdType.Integer)
                                     {
-                                        newIdValue = connection
-                                            .CreateCommand(string.Format("select max({0}) from {1};",
-                                                tableInfo.IdColumn, tableInfo.Name))
-                                            .WithTimeout(120)
-                                            .ExecuteScalar<int>() + 1;
+                                        var command = connection.CreateCommand();
+                                        command.CommandText = string.Format("select max({0}) from {1};", tableInfo.IdColumn, tableInfo.Name);
+                                        newIdValue = (int)command.WithTimeout(120).ExecuteScalar() + 1;
                                     }
                                 }
                                 if (newIdValue != null)
@@ -197,15 +195,15 @@ namespace ASC.Data.Backup.Tasks
                                 object oldValue = row[relation.Item1.ParentColumn];
                                 object newValue = _columnMapper.GetMapping(relation.Item1.ParentTable,
                                     relation.Item1.ParentColumn, oldValue);
-
-                                connection.CreateCommand(
-                                    string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
+                                var command = connection.CreateCommand();
+                                command.CommandText = string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
                                         relation.Item1.ChildTable,
                                         relation.Item1.ChildColumn,
                                         newValue is string ? "'" + newValue + "'" : newValue,
                                         oldValue is string ? "'" + oldValue + "'" : oldValue,
                                         relation.Item2.TenantColumn,
-                                        _columnMapper.GetTenantMapping())).WithTimeout(120).ExecuteNonQuery();
+                                        _columnMapper.GetTenantMapping());
+                                command.WithTimeout(120).ExecuteNonQuery();
                             }
                         }
 
@@ -246,7 +244,21 @@ namespace ASC.Data.Backup.Tasks
         {
             var showColumnsCommand = _factory.CreateShowColumnsCommand(table.Name);
             showColumnsCommand.Connection = connection;
-            table.Columns = showColumnsCommand.ExecuteList().Select(x => Convert.ToString(x[0])).ToArray();
+
+            table.Columns = ExecuteArray(showColumnsCommand);
+        }
+
+        public string[] ExecuteArray(DbCommand command)
+        {
+            List<string> list = new List<string>();
+            using (var result = command.ExecuteReader())
+            {
+                while (result.Read())
+                {
+                    list.Add(result.GetString(0));
+                }
+            }
+            return list.ToArray();
         }
     }
 }

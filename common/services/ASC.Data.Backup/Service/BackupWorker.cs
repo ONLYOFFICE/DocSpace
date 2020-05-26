@@ -38,6 +38,7 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Contracts;
 using ASC.Core.Tenants;
+using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Tasks;
@@ -69,7 +70,8 @@ namespace ASC.Data.Backup.Service
         private LicenseReader licenseReader;
         private AscCacheNotify ascCacheNotify;
         private ModuleProvider moduleProvider;
-        public BackupWorker(IOptionsMonitor<ILog> options, BackupConfigurationSection config, ProgressQueue<IProgressItem> progressQueue, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, LicenseReader licenseReader, AscCacheNotify ascCacheNotify, ModuleProvider moduleProvider)
+        private BackupRecordContext backupRecordContext;
+        public BackupWorker(IOptionsMonitor<ILog> options, BackupConfigurationSection config, ProgressQueue<IProgressItem> progressQueue, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, LicenseReader licenseReader, AscCacheNotify ascCacheNotify, ModuleProvider moduleProvider, BackupRecordContext backupRecordContext)
         {
             Log = options.CurrentValue;
             TempFolder = PathHelper.ToRootedPath(config.TempFolder);
@@ -95,6 +97,7 @@ namespace ASC.Data.Backup.Service
             this.licenseReader = licenseReader;
             this.ascCacheNotify = ascCacheNotify;
             this.moduleProvider = moduleProvider;
+            this.backupRecordContext = backupRecordContext;
     }
         public  void Start(BackupConfigurationSection config)
         {
@@ -131,7 +134,7 @@ namespace ASC.Data.Backup.Service
                 }
                 if (item == null)
                 {
-                    item = new BackupProgressItem(false, request.TenantId, request.UserId, request.StorageType, request.StorageBasePath, backupStorageFactory, backupWorker, notifyHelper, tenantManager, coreBaseSettings) { BackupMail = request.BackupMail, StorageParams = request.StorageParams };//тут
+                    item = new BackupProgressItem(false, request.TenantId, request.UserId, request.StorageType, request.StorageBasePath, backupStorageFactory, backupWorker, notifyHelper, tenantManager, coreBaseSettings, backupRecordContext) { BackupMail = request.BackupMail, StorageParams = request.StorageParams };//тут
                     tasks.Add(item);
                 }
                 return ToBackupProgress(item);
@@ -150,7 +153,7 @@ namespace ASC.Data.Backup.Service
                 }
                 if (item == null)
                 {
-                    item = new BackupProgressItem(true, schedule.TenantId, Guid.Empty, schedule.StorageType, schedule.StorageBasePath, backupStorageFactory, backupWorker, notifyHelper, tenantManager, coreBaseSettings) { BackupMail = schedule.BackupMail, StorageParams = schedule.StorageParams };
+                    item = new BackupProgressItem(true, schedule.TenantId, Guid.Empty, schedule.StorageType, schedule.StorageBasePath, backupStorageFactory, backupWorker, notifyHelper, tenantManager, coreBaseSettings, backupRecordContext) { BackupMail = schedule.BackupMail, StorageParams = schedule.StorageParams };
                     schedulerTasks.Add(item);
                 }
             }
@@ -298,8 +301,9 @@ namespace ASC.Data.Backup.Service
             private TenantManager tenantManager;
             private BackupStorageFactory backupStorageFactory;
             private NotifyHelper notifyHelper;
+            private BackupRecordContext backupRecordContext;
             private CoreBaseSettings coreBaseSettings;
-            public BackupProgressItem(bool isScheduled, int tenantId, Guid userId, BackupStorageType storageType, string storageBasePath, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
+            public BackupProgressItem(bool isScheduled, int tenantId, Guid userId, BackupStorageType storageType, string storageBasePath, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, BackupRecordContext backupRecordContext)
             {
                 Id = Guid.NewGuid();
                 IsScheduled = isScheduled;
@@ -312,6 +316,8 @@ namespace ASC.Data.Backup.Service
                 this.backupStorageFactory = backupStorageFactory;
                 this.notifyHelper = notifyHelper;
                 this.coreBaseSettings = coreBaseSettings;
+                this.backupRecordContext = backupRecordContext;
+
             }
 
             public void RunJob()
@@ -326,7 +332,7 @@ namespace ASC.Data.Backup.Service
                 var storagePath = tempFile;
                 try
                 {
-                    var backupTask = new BackupPortalTask(backupWorker.Log, TenantId, backupWorker.configPaths[backupWorker.currentRegion], tempFile, backupWorker.limit, coreBaseSettings,tenantManager);//тут
+                    var backupTask = new BackupPortalTask(backupWorker.options, TenantId, backupWorker.configPaths[backupWorker.currentRegion], tempFile, backupWorker.limit, coreBaseSettings, backupWorker.storageFactory, backupWorker.storageFactoryConfig, backupWorker.moduleProvider, backupRecordContext);
                     if (!BackupMail)
                     {
                         backupTask.IgnoreModule(ModuleName.Mail);
@@ -554,7 +560,7 @@ namespace ASC.Data.Backup.Service
                 {
                     backupWorker.notifyHelper.SendAboutTransferStart(TenantId, TargetRegion, Notify);
 
-                    var transferProgressItem = new TransferPortalTask(backupWorker.options, TenantId, backupWorker.configPaths[backupWorker.currentRegion], backupWorker.configPaths[TargetRegion], backupWorker.limit, backupWorker.storageFactory, backupWorker.storageFactoryConfig, backupWorker.coreBaseSettings, backupWorker.tenantManager, backupWorker.moduleProvider) { BackupDirectory = backupWorker.TempFolder };
+                    var transferProgressItem = new TransferPortalTask(backupWorker.options, TenantId, backupWorker.configPaths[backupWorker.currentRegion], backupWorker.configPaths[TargetRegion], backupWorker.limit, backupWorker.storageFactory, backupWorker.storageFactoryConfig, backupWorker.coreBaseSettings, backupWorker.tenantManager, backupWorker.moduleProvider, backupWorker.backupRecordContext) { BackupDirectory = backupWorker.TempFolder };
                     transferProgressItem.ProgressChanged += (sender, args) => Percentage = args.Progress;
                     if (!TransferMail)
                     {

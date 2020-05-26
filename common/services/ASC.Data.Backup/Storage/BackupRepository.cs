@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
@@ -42,13 +43,13 @@ namespace ASC.Data.Backup.Storage
 
         private readonly BackupRecordContext backupContext;
         private readonly ScheduleContext scheduleContext;
-        private readonly TenantsContext tenantsContext;
+        private readonly TenantDbContext tenantsContext;
         private readonly IOptionsMonitor<ILog> options;
         private readonly TenantManager tenantManager;
         private readonly TenantUtil tenantUtil;
         private readonly BackupHelper backupHelper;
 
-        public BackupRepository(BackupRecordContext backupContext, ScheduleContext scheduleContext, TenantsContext tenantsContext, IOptionsMonitor<ILog> options,TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
+        public BackupRepository(BackupRecordContext backupContext, ScheduleContext scheduleContext, TenantDbContext tenantsContext, IOptionsMonitor<ILog> options,TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
         {
             this.tenantsContext = tenantsContext;
             this.backupContext = backupContext;
@@ -196,7 +197,7 @@ namespace ASC.Data.Backup.Storage
 
         public List<Schedule> GetBackupSchedules()
         {
-            var query = scheduleContext.Schedules.Join(tenantsContext.tenants,
+            var query = scheduleContext.Schedules.Join(tenantsContext.Tenants,
                 s=> s.TenantId, 
                 t=> t.Id,
                 (s, t) => new{
@@ -240,7 +241,7 @@ namespace ASC.Data.Backup.Storage
         }
 
         
-   /*     private IDbManager GetDbManager()//тут
+       /* private IDbManager GetDbManager()//тут
         {
             return new DbManager(connectionStringName);
         }*/

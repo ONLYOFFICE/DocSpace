@@ -26,8 +26,11 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Contracts;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Service;
@@ -35,6 +38,7 @@ using ASC.Data.Backup.Utils;
 using ASC.Data.Storage;
 using ASC.Files.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Storage
 {
@@ -47,9 +51,12 @@ namespace ASC.Data.Backup.Storage
         private StorageFactory storageFactory;
         private BackupRecordContext backupContext;
         private ScheduleContext scheduleContext;
-        private TenantsContext tenantsContext;
+        private TenantDbContext tenantsContext;
+        private IOptionsMonitor<ILog> options;
+        private TenantUtil tenantUtil;
+        private BackupHelper backupHelper;
 
-        public BackupStorageFactory(TenantManager tenantManager, SecurityContext securityContext, IDaoFactory daoFactory, StorageFactory storageFactory, BackupRecordContext backupContext, ScheduleContext scheduleContext, TenantsContext tenantsContext)
+        public BackupStorageFactory(TenantManager tenantManager, SecurityContext securityContext, IDaoFactory daoFactory, StorageFactory storageFactory, BackupRecordContext backupContext, ScheduleContext scheduleContext, TenantDbContext tenantsContext, IOptionsMonitor<ILog> options, TenantUtil tenantUtil, BackupHelper backupHelper)
         {
             this.tenantManager = tenantManager;
             this.securityContext = securityContext;
@@ -58,6 +65,9 @@ namespace ASC.Data.Backup.Storage
             this.backupContext = backupContext;
             this.scheduleContext = scheduleContext;
             this.tenantsContext = tenantsContext;
+            this.options = options;
+            this.tenantUtil = tenantUtil;
+            this.backupHelper = backupHelper;
         }
         public IBackupStorage GetBackupStorage(BackupRecord record)
         {
@@ -96,7 +106,7 @@ namespace ASC.Data.Backup.Storage
 
         public IBackupRepository GetBackupRepository()
         {
-            return new BackupRepository(backupContext, scheduleContext, tenantsContext);
+            return new BackupRepository(backupContext, scheduleContext, tenantsContext, options, tenantManager, tenantUtil, backupHelper);
         }
     }
 }

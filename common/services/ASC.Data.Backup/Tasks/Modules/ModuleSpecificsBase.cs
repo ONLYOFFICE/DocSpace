@@ -44,10 +44,14 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             get { return _connectionStringName ?? (_connectionStringName = ModuleName.ToString().ToLower()); }
         }
-
+        
         public abstract IEnumerable<TableInfo> Tables { get; }
         public abstract IEnumerable<RelationInfo> TableRelations { get; }
-
+        private Helpers helpers;
+        public ModuleSpecificsBase(Helpers helpers)
+        {
+            this.helpers = helpers;
+        }
         public IEnumerable<TableInfo> GetTablesOrdered()
         {
             var notOrderedTables = new List<TableInfo>(Tables);
@@ -86,13 +90,16 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         public DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset)
         {
-            return connection.CreateCommand(string.Format("select t.* from {0} as t {1} limit {2},{3};", table.Name, GetSelectCommandConditionText(tenantId, table), offset, limit));//Nen
+            var command = connection.CreateCommand();
+            command.CommandText = string.Format("select t.* from {0} as t {1} limit {2},{3};", table.Name, GetSelectCommandConditionText(tenantId, table), offset, limit);
+            return command;
         }
 
         public DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table)
         {
-            var commandText = string.Format("delete t.* from {0} as t {1};", table.Name, GetDeleteCommandConditionText(tenantId, table));
-            return connection.CreateCommand(commandText);
+            var command = connection.CreateCommand();
+            command.CommandText = string.Format("delete t.* from {0} as t {1};", table.Name, GetDeleteCommandConditionText(tenantId, table));
+            return command;
         }
 
         public DbCommand CreateInsertCommand(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row)
@@ -114,14 +121,48 @@ namespace ASC.Data.Backup.Tasks.Modules
                                                   string.Join(",", columns),
                                                   string.Join(",", columns.Select(c => "@" + c)));
 
-            var command = connection.CreateCommand(insertCommantText);
+            var command = connection.CreateCommand();
+            command.CommandText = insertCommantText;
             foreach (var parameter in valuesForInsert)
             {
-                command.AddParameter(parameter.Key, parameter.Value);
+                AddParameter(command,parameter.Key, parameter.Value);
             }
             return command;
         }
+        public DbCommand AddParameter(DbCommand command, string name, object value)
+        {
+            var p = command.CreateParameter();
+            if (!string.IsNullOrEmpty(name))
+            {
+                p.ParameterName = name.StartsWith("@") ? name : "@" + name;
+            }
 
+            p.Value = GetParameterValue(value);
+
+            command.Parameters.Add(p);
+            return command;
+        }
+
+        public object GetParameterValue(object value)
+        {
+            if (value == null)
+            {
+                return DBNull.Value;
+            }
+
+            var @enum = value as Enum;
+            if (@enum != null)
+            {
+                return @enum.ToString("d");
+            }
+
+            if (value is DateTime)
+            {
+                var d = (DateTime)value;
+                return new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Unspecified);
+            }
+            return value;
+        }
         public virtual bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
         {
             return true;
@@ -191,7 +232,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var strVal = Convert.ToString(value);
                 string userMapping = columnMapper.GetUserMapping(strVal);
                 if (userMapping == null)
-                    return Helpers.IsEmptyOrSystemUser(strVal);
+                    return helpers.IsEmptyOrSystemUser(strVal);
                 value = userMapping;
                 return true;
             }

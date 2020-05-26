@@ -38,8 +38,10 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
 
         private CoreSettings coreSettings;
-        public TenantsModuleSpecifics(CoreSettings coreSettings)
+        public TenantsModuleSpecifics(CoreSettings coreSettings, Helpers helpers)
+            : base(helpers)
         {
+            
             this.coreSettings = coreSettings;
         }
         private readonly TableInfo[] _tables = new[]

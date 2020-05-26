@@ -276,9 +276,7 @@ namespace ASC.Data.Backup.Tasks
 
         protected async Task RunMysqlFile(Stream stream, string delimiter = ";")
         {
-            using (var dbManager = new DbManager("default", 100000))
-            using (var tr = dbManager.BeginTransaction())
-            {
+            
                 if (stream == null) return;
 
                 using (var reader = new StreamReader(stream, Encoding.UTF8))
@@ -299,7 +297,14 @@ namespace ASC.Data.Backup.Tasks
 
                         try
                         {
-                            await dbManager.ExecuteNonQueryAsync(commandText, null);
+                        var dbFactory = new DbFactory(ConfigPath);
+                        using (var connection = dbFactory.OpenConnection())
+                        {
+                            var command = connection.CreateCommand();
+                            command.CommandText = commandText;
+                            await command.ExecuteNonQueryAsync();
+                        }
+                      //  await dbManager.ExecuteNonQueryAsync(commandText, null);
                         }
                         catch (Exception e)
                         {
@@ -307,9 +312,6 @@ namespace ASC.Data.Backup.Tasks
                         }
                     }
                 }
-
-                tr.Commit();
-            }
         }
     }
 }

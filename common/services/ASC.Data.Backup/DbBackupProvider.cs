@@ -36,6 +36,8 @@ using System.Threading;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using ASC.Common.Logging;
+using ASC.Data.Backup.EF.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
@@ -43,6 +45,7 @@ namespace ASC.Data.Backup
     public class DbBackupProvider : IBackupProvider
     {
         private readonly List<string> processedTables = new List<string>();
+        private readonly IOptionsMonitor<ILog> options;
 
 
         public string Name
@@ -50,6 +53,10 @@ namespace ASC.Data.Backup
             get { return "databases"; }
         }
 
+        public DbBackupProvider(IOptionsMonitor<ILog> options)
+        {
+            this.options = options;
+        }
         public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
         {
             processedTables.Clear();
@@ -105,10 +112,10 @@ namespace ASC.Data.Backup
                     Path.Combine(config, "Web.config");
                 return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             }
-            return WebConfigurationManager.OpenWebConfiguration(config); //тут
+            return ConfigurationManager.OpenExeConfiguration(config); //тут
         }
 
-        private IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
+        public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
         {
             /*  if (configs.Length == 0)
               {
@@ -123,7 +130,7 @@ namespace ASC.Data.Backup
             return null;
         }
 
-        private IEnumerable<ConnectionStringSettings> GetConnectionStrings(Configuration cfg)
+        public IEnumerable<ConnectionStringSettings> GetConnectionStrings(Configuration cfg)
         {
             var connectionStrings = new List<ConnectionStringSettings>();
             foreach (ConnectionStringSettings connectionString in cfg.ConnectionStrings.ConnectionStrings)
@@ -144,7 +151,7 @@ namespace ASC.Data.Backup
             var errors = 0;
             var timeout = TimeSpan.FromSeconds(1);
 
-            using (var dbHelper = new DbHelper(connectionString))
+            using (var dbHelper = new DbHelper(options,connectionString))
             {
                 var tables = dbHelper.GetTables();
                 for (int i = 0; i < tables.Count; i++)
@@ -204,7 +211,7 @@ namespace ASC.Data.Backup
             }
             if (dbElement == null) return;
 
-            using (var dbHelper = new DbHelper(connectionString))
+            using (var dbHelper = new DbHelper(options,connectionString))
             {
                 var tables = dbHelper.GetTables();
                 for (int i = 0; i < tables.Count; i++)
@@ -231,7 +238,7 @@ namespace ASC.Data.Backup
             }
         }
 
-        private class DbHelper : IDisposable
+        public class DbHelper : IDisposable
         {
             private readonly DbProviderFactory factory;
             private readonly DbConnection connect;
@@ -240,13 +247,10 @@ namespace ASC.Data.Backup
             private readonly bool mysql;
             private readonly IDictionary<string, string> whereExceptions = new Dictionary<string, string>();
             private readonly ILog log;
-            public DbHelper(IOptionsMonitor<ILog> options)
+
+            public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString)
             {
                 log = options.CurrentValue;
-            }
-
-            public DbHelper(ConnectionStringSettings connectionString)
-            {
                 var file = connectionString.ElementInformation.Source;
                 if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -319,9 +323,7 @@ namespace ASC.Data.Backup
 
                 if (mysql)
                 {
-                    tables = CreateCommand("show tables")
-                        .ExecuteList()
-                        .ConvertAll(r => (string)r[0]);//тут
+                    tables = ExecuteList(CreateCommand("show tables"));
                 }
                 else
                 {
@@ -366,7 +368,7 @@ namespace ASC.Data.Backup
                         if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))
                         {
                             // remove last tenant
-                            var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar<int>();//тут
+                            var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar();//тут
                             CreateCommand("delete from tenants_tenants where id = " + tenantid).ExecuteNonQuery();
                             if (table.Columns.Contains("mappeddomain"))
                             {
@@ -425,11 +427,24 @@ namespace ASC.Data.Backup
                 connect.Dispose();
             }
 
-            private DbCommand CreateCommand(string sql)
+            public DbCommand CreateCommand(string sql)
             {
                 var command = connect.CreateCommand();
                 command.CommandText = sql;
                 return command;
+            }
+
+            public List<string> ExecuteList(DbCommand command)
+            {
+                List<string> list = new List<string>();
+                using (var result = command.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        list.Add(result.GetString(0));
+                    }
+                }
+                return list;
             }
 
             private string Quote(string identifier)
@@ -441,9 +456,7 @@ namespace ASC.Data.Backup
             {
                 if (mysql)
                 {
-                    return CreateCommand("show columns from " + Quote(table))
-                        .ExecuteList()//тут
-                        .ConvertAll(r => (string)r[0]);
+                    return ExecuteList(CreateCommand("show columns from " + Quote(table)));
                 }
                 else
                 {
