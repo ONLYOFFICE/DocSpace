@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.144",
+  "version": "1.0.145",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "files": [
@@ -77,6 +77,7 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.17.0",
+    "faker": "^4.1.0",
     "i18next": "19.0.3",
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
@@ -104,8 +105,7 @@
     "rollup-plugin-url": "^3.0.1",
     "storybook-readme": "^5.0.8",
     "styled-components": "^5.0.0",
-    "svg-inline-loader": "^0.8.0",
-    "faker": "^4.1.0"
+    "svg-inline-loader": "^0.8.0"
   },
   "peerDependencies": {
     "asc-web-components": "file:../../packages/asc-web-components",
