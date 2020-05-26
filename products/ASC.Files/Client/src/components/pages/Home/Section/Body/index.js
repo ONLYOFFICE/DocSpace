@@ -156,7 +156,7 @@ class SectionBodyContent extends React.Component {
       const deleteProgress = res.find(x => x.id === id);
       if(deleteProgress && deleteProgress.progress !== 100) {
         setProgressValue(deleteProgress.progress);
-        setTimeout(() => this.loopDeleteProgress(id, folderId), 1000);
+        setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
         fetchFiles(folderId, filter, store.dispatch).then(data => {
           if (currentFolderType !== "Trash" && isFolder) {

@@ -31,7 +31,13 @@ class PureEditor extends React.Component {
     const fileId = urlParams.fileId || null;
 
     files.openEdit(fileId)
-      .then(config => window.DocsAPI.DocEditor("editor", config));
+      .then(config => {
+        if (window.innerWidth < 600) {
+          config.type = 'mobile';
+        }
+
+        window.DocsAPI.DocEditor("editor", config)
+      });
 
     return (
       <>

@@ -168,7 +168,8 @@ const renameTreeFolder = (folders, newItems, currentFolder) => {
 }
 
 const removeTreeFolder = (folders, newItems, foldersCount) => {
-  for (let folder of newItems.folders) {
+  const newFolders = JSON.parse(JSON.stringify(newItems.folders));
+  for (let folder of newFolders) {
     let currentFolder;
     if(folders) {
       currentFolder = folders.find((x) => x.id === folder.id);
