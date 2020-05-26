@@ -681,7 +681,7 @@ class SectionBodyContent extends React.Component {
                 );
               })}
             </RowContainer>
-            {playlist.length > 0 &&
+            {playlist.length > 0 && this.state.mediaViewerVisible &&
               <MediaViewer
                 currentFileId = {this.state.currentMediaFileId}
                 allowConvert={true} //TODO
