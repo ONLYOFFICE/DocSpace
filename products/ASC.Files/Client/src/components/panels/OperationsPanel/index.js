@@ -113,7 +113,7 @@ class OperationsPanelComponent extends React.Component {
     } = this.props;
 
     const destFolderId = Number(e);
-    const conflictResolveType = "skip"; //Skip, Overwrite, Duplicate
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
     const folderIds = [];
     const fileIds = [];
