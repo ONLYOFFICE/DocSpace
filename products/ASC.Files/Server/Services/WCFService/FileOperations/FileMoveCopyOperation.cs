@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.Core.Tenants;
 using ASC.Files.Core;
@@ -68,21 +69,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public FileConflictResolveType ResolveType { get; }
         public Dictionary<string, string> Headers { get; }
 
-        public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, object toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
+        public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
             : this(folders.OfType<T>(), files.OfType<T>(), tenant, toFolderId, copy, resolveType, holdResult, headers)
         {
         }
 
-        public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, object toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
+        public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
             : base(folders, files, tenant, holdResult)
         {
-            if (toFolderId is string thirdpartyFolderId)
+            if (toFolderId.ValueKind == JsonValueKind.String)
             {
-                ThirdpartyFolderId = thirdpartyFolderId;
+                ThirdpartyFolderId = toFolderId.GetString();
             }
-            else if (toFolderId is long daoFolderId)
+            else if (toFolderId.ValueKind == JsonValueKind.Number)
             {
-                DaoFolderId = (int)daoFolderId;
+                DaoFolderId = toFolderId.GetInt32();
             }
 
             Copy = copy;

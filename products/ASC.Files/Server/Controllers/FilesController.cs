@@ -948,7 +948,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<object> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
         {
             return FilesControllerHelperString.MarkAsRead(model);
         }
