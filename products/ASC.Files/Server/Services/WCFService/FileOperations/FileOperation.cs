@@ -279,6 +279,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             try
             {
+                //todo check files> 0 or folders > 0
                 CancellationToken = cancellationToken;
 
                 using var scope = ServiceProvider.CreateScope();
