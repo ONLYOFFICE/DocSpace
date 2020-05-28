@@ -62,6 +62,14 @@ const StyledMediaViewer = styled.div`
         position: fixed;
         top: 0;
         left: 0;
+
+        .title{
+            width: calc(100% - 100px);
+            margin: 0 auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
     .mediaPlayerClose{
