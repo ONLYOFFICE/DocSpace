@@ -15,20 +15,20 @@ const StyledViewer = styled(Viewer)`
         z-index: 4000!important;
     }
     .react-viewer-navbar,
-    .react-viewer-mask{
+    .react-viewer-mask,
+    .react-viewer-attribute,
+    .react-viewer-close{
         display: none
     }
-    .react-viewer-attribute{
-        display: none;
-    }
     .react-viewer-toolbar{
-        position: fixed;
-        left: calc(50% - 125px);
+        position: relative;
+        overflow: visible;
         bottom: 4px;
     }
     .react-viewer-toolbar li{
         width: 40px;
         height:30px;
+        margin-top: 4px;
         border-radius: 2px;
         cursor: pointer;
         line-height: 24px;
@@ -59,7 +59,7 @@ const StyledViewer = styled(Viewer)`
     }
     .iconContainer{
         width: 20px;
-        line-height: 15px;
+        line-height: 20px;
         margin: 4px auto;
 
         &.reset{
