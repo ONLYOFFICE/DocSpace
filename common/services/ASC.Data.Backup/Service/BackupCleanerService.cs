@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Data.Backup.Storage;
 using Microsoft.Extensions.Options;
@@ -137,6 +138,14 @@ namespace ASC.Data.Backup.Service
                     Monitor.Exit(cleanerLock);
                 }
             }
+        }
+    }
+    public static class BackupCleanerServiceExtension
+    {
+        public static DIHelper AddBackupCleanerService(this DIHelper services)
+        {
+            services.TryAddScoped<BackupCleanerService>();
+            return services;
         }
     }
 }

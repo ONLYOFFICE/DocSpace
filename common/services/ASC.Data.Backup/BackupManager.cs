@@ -24,12 +24,14 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
+using static ASC.Data.Backup.DbBackupProvider;
 
 namespace ASC.Data.Backup
 {
@@ -43,22 +45,20 @@ namespace ASC.Data.Backup
         private readonly string[] configs;
         
         public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
-        private IOptionsMonitor<ILog> options;
 
-        public BackupManager(string backup, IOptionsMonitor<ILog> options)
-            : this(backup, options, null)
+        public BackupManager(string backup, DbBackupProvider dbBackupProvider)
+            : this(backup, dbBackupProvider, null)
         {
             
         }
 
-        public BackupManager(string backup, IOptionsMonitor<ILog> options, params string[] configs)
+        public BackupManager(string backup, DbBackupProvider dbBackupProvider, params string[] configs)
         {
-            this.options = options;
             this.backup = backup;
             this.configs = configs ?? new string[0];
 
             providers = new Dictionary<string, IBackupProvider>();
-            AddBackupProvider(new DbBackupProvider(options));
+            AddBackupProvider(dbBackupProvider);
             AddBackupProvider(new FileBackupProvider());
         }
 
@@ -120,6 +120,14 @@ namespace ASC.Data.Backup
         private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (ProgressChanged != null) ProgressChanged(this, e);
+        }
+    }
+    public static class BackupManagerExtension
+    {
+        public static DIHelper AddBackupManager(this DIHelper services)
+        {
+            services.TryAddSingleton<BackupManager>();
+            return services;
         }
     }
 }

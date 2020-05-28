@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
@@ -41,24 +40,19 @@ namespace ASC.Data.Backup.Storage
     internal class BackupRepository : IBackupRepository
     {
 
-        private readonly BackupRecordContext backupContext;
-        private readonly ScheduleContext scheduleContext;
-        private readonly TenantDbContext tenantsContext;
+        private readonly BackupsContext backupContext;
         private readonly IOptionsMonitor<ILog> options;
         private readonly TenantManager tenantManager;
         private readonly TenantUtil tenantUtil;
         private readonly BackupHelper backupHelper;
 
-        public BackupRepository(BackupRecordContext backupContext, ScheduleContext scheduleContext, TenantDbContext tenantsContext, IOptionsMonitor<ILog> options,TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
+        public BackupRepository(BackupsContext backupContext, IOptionsMonitor<ILog> options,TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
         {
-            this.tenantsContext = tenantsContext;
             this.backupContext = backupContext;
-            this.scheduleContext = scheduleContext;
             this.options = options;
             this.tenantManager = tenantManager;
             this.tenantUtil = tenantUtil;
             this.backupHelper = backupHelper;
-         //   this.connectionStringName = connectionStringName ?? "core";
         }
 
         public void SaveBackupRecord(BackupRecord backup)
@@ -158,7 +152,7 @@ namespace ASC.Data.Backup.Storage
 
         public void SaveBackupSchedule(Schedule schedule)
         {
-            scheduleContext.Schedules.Add(schedule);
+            backupContext.Schedules.Add(schedule);
             backupContext.SaveChanges();
             /*  var query = new SqlInsert("backup_schedule")
                   .ReplaceExists(true)
@@ -179,11 +173,11 @@ namespace ASC.Data.Backup.Storage
 
         public void DeleteBackupSchedule(int tenantId)
         {
-            var shedule = scheduleContext.Schedules.FirstOrDefault(s => s.TenantId == tenantId);
+            var shedule = backupContext.Schedules.FirstOrDefault(s => s.TenantId == tenantId);
             if (shedule != null)
             {
-                scheduleContext.Schedules.Remove(shedule);
-                scheduleContext.SaveChanges();
+                backupContext.Schedules.Remove(shedule);
+                backupContext.SaveChanges();
             }
             /*
             var query = new SqlDelete("backup_schedule")
@@ -197,7 +191,7 @@ namespace ASC.Data.Backup.Storage
 
         public List<Schedule> GetBackupSchedules()
         {
-            var query = scheduleContext.Schedules.Join(tenantsContext.Tenants,
+            var query = backupContext.Schedules.Join(backupContext.Tenants,
                 s=> s.TenantId, 
                 t=> t.Id,
                 (s, t) => new{
@@ -229,7 +223,7 @@ namespace ASC.Data.Backup.Storage
 
         public Schedule GetBackupSchedule(int tenantId)
         {
-          return scheduleContext.Schedules.FirstOrDefault(s => s.TenantId == tenantId);
+          return backupContext.Schedules.FirstOrDefault(s => s.TenantId == tenantId);
           /* var query = new SqlQuery("backup_schedule")
                 .Select("tenant_id", "backup_mail", "cron", "backups_stored", "storage_type", "storage_base_path", "last_backup_time", "storage_params")
                 .Where("tenant_id", tenantId);
@@ -241,7 +235,7 @@ namespace ASC.Data.Backup.Storage
         }
 
         
-       /* private IDbManager GetDbManager()//тут
+       /* private IDbManager GetDbManager()
         {
             return new DbManager(connectionStringName);
         }*/

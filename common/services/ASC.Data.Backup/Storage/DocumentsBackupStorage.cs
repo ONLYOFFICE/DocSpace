@@ -31,7 +31,7 @@ using ASC.Web.Files.Classes;
 using System;
 using System.IO;
 using System.Net;
-//using File = ASC.Files.Core.File;//тут
+//using File = ASC.Files.Core.File;
 using IoFile = System.IO.File;
 
 namespace ASC.Data.Backup.Storage
@@ -143,12 +143,12 @@ namespace ASC.Data.Backup.Storage
             return string.Empty;
         }
 
-     /*   private IFolderDao GetFolderDao()//тут
+     /*   private IFolderDao GetFolderDao()
 +        {
             return daoFactory.GetFolderDao;
         }
 
-        private IFileDao GetFileDao()//тут
+        private IFileDao GetFileDao()
         {
             // hack: create storage using webConfigPath and put it into DataStoreCache
             // FileDao will use this storage and will not try to create the new one from service config

@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.Extensions.Options;
@@ -78,6 +79,15 @@ namespace ASC.Data.Backup.Tasks.Modules
                 default:
                     return null;
             }
+        }
+    }
+    public static class ModuleProviderExtension
+    {
+        public static DIHelper AddModuleProvider(this DIHelper services)
+        {
+            services.TryAddScoped<ModuleProvider>();
+            return services
+                .AddCoreSettingsService();
         }
     }
 }

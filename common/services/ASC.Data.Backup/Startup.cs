@@ -8,6 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using ASC.Common.Logging;
+using static ASC.Data.Backup.Service.BackupWorker;
+using ASC.Data.Backup.Tasks.Modules;
+
 namespace ASC.Data.Backup
 {
     public class Startup
@@ -25,10 +28,42 @@ namespace ASC.Data.Backup
 
             var diHelper = new DIHelper(services);
 
-            
+            diHelper.AddBackupHelperService()
+                .AddBackupManager()
+                .AddDbBackupProvider()
+                .AddDbHelper()
+                .AddFileBackupProviderService()
+                .AddNotifyHelperService()
+                .AddHelpers()
+                .AddModuleProvider()
+                .AddBackupAjaxHandler();
             diHelper.AddNLogManager("ASC.Data.Backup");
 
-            diHelper.Configure<ProgressQueue<IProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<BackupProgressItem>>(r =>
+            {
+                r.workerCount = 1;
+                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
+                r.removeAfterCompleted = true;
+                r.stopAfterFinsih = false;
+                r.errorCount = 0;
+            });
+            diHelper.Configure<ProgressQueue<RestoreProgressItem>>(r =>
+            {
+                r.workerCount = 1;
+                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
+                r.removeAfterCompleted = true;
+                r.stopAfterFinsih = false;
+                r.errorCount = 0;
+            });
+            diHelper.Configure<ProgressQueue<TransferProgressItem>>(r =>
+            {
+                r.workerCount = 1;
+                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
+                r.removeAfterCompleted = true;
+                r.stopAfterFinsih = false;
+                r.errorCount = 0;
+            });
+            diHelper.Configure<ProgressQueue<ScheduledProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;

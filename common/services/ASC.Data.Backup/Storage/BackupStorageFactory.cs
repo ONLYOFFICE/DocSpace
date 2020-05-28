@@ -26,10 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Contracts;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
@@ -49,22 +49,18 @@ namespace ASC.Data.Backup.Storage
         private SecurityContext securityContext;
         private IDaoFactory daoFactory; 
         private StorageFactory storageFactory;
-        private BackupRecordContext backupContext;
-        private ScheduleContext scheduleContext;
-        private TenantDbContext tenantsContext;
+        private BackupsContext backupContext;
         private IOptionsMonitor<ILog> options;
         private TenantUtil tenantUtil;
         private BackupHelper backupHelper;
 
-        public BackupStorageFactory(TenantManager tenantManager, SecurityContext securityContext, IDaoFactory daoFactory, StorageFactory storageFactory, BackupRecordContext backupContext, ScheduleContext scheduleContext, TenantDbContext tenantsContext, IOptionsMonitor<ILog> options, TenantUtil tenantUtil, BackupHelper backupHelper)
+        public BackupStorageFactory(TenantManager tenantManager, SecurityContext securityContext, IDaoFactory daoFactory, StorageFactory storageFactory, BackupsContext backupContext, IOptionsMonitor<ILog> options, TenantUtil tenantUtil, BackupHelper backupHelper)
         {
             this.tenantManager = tenantManager;
             this.securityContext = securityContext;
             this.daoFactory = daoFactory;
             this.storageFactory = storageFactory;
             this.backupContext = backupContext;
-            this.scheduleContext = scheduleContext;
-            this.tenantsContext = tenantsContext;
             this.options = options;
             this.tenantUtil = tenantUtil;
             this.backupHelper = backupHelper;
@@ -75,7 +71,6 @@ namespace ASC.Data.Backup.Storage
         }
         
         public IServiceProvider ServiceProvider { get; }
-        private DocumentsBackupStorage documentsBackupStorage;
         public BackupStorageFactory(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
@@ -106,7 +101,19 @@ namespace ASC.Data.Backup.Storage
 
         public IBackupRepository GetBackupRepository()
         {
-            return new BackupRepository(backupContext, scheduleContext, tenantsContext, options, tenantManager, tenantUtil, backupHelper);
+            return new BackupRepository(backupContext, options, tenantManager, tenantUtil, backupHelper);
+        }
+    }
+    public static class BackupStorageFactoryExtension
+    {
+        public static DIHelper AddBackupStorageFactory(this DIHelper services)
+        {
+            services.TryAddScoped<BackupStorageFactory>();
+            return services
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddStorageFactoryService()
+                .AddTenantUtilService();
         }
     }
 }

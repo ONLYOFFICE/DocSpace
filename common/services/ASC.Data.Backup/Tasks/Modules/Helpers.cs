@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
 using System;
@@ -89,6 +90,15 @@ namespace ASC.Data.Backup.Tasks.Modules
         public string CreateHash2(string s)
         {
             return !string.IsNullOrEmpty(s) ? "S|" + Crypto.GetV(instanceCrypto.Decrypt(s), 1, true) : s;
+        }
+    }
+    public static class HelpersExtension
+    {
+        public static DIHelper AddHelpers(this DIHelper services)
+        {
+            services.TryAddScoped<Helpers>();
+            return services
+                .AddInstanceCryptoService();
         }
     }
 }

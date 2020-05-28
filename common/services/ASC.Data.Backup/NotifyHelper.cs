@@ -25,9 +25,10 @@
 
 
 using System;
+using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Core.Notify;
 using Microsoft.Extensions.Options;
+using ASC.Notify;
 
 namespace ASC.Data.Backup
 {
@@ -41,11 +42,11 @@ namespace ASC.Data.Backup
         private const string MethodRestoreStarted = "SendMsgRestoreStarted";
         private const string MethodRestoreCompleted = "SendMsgRestoreCompleted";
         private readonly ILog log;
-        private readonly NotifyServiceClient notifyServiceClient;
+        private readonly NotifyService notifyService;
 
-        public NotifyHelper(IOptionsMonitor<ILog> options, NotifyServiceClient notifyServiceClient)
+        public NotifyHelper(IOptionsMonitor<ILog> options, NotifyService notifyService)
         {
-            this.notifyServiceClient = notifyServiceClient;
+            this.notifyService = notifyService;
             log = options.CurrentValue;
         }
         public void SendAboutTransferStart(int tenantId, string targetRegion, bool notifyUsers)
@@ -82,12 +83,21 @@ namespace ASC.Data.Backup
         {
             try
             {
-                notifyServiceClient.InvokeSendMethod(NotifyService, method, tenantId, args);
+                notifyService.InvokeSendMethod(NotifyService, method, tenantId, args);
             }
             catch (Exception error)
             {
                 log.Warn("Error while sending notification", error);
             }
+        }
+    }
+    public static class NotifyHelperExtension
+    {
+        public static DIHelper AddNotifyHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<NotifyHelper>();
+            return services
+                .AddNotifyService();
         }
     }
 }

@@ -77,13 +77,5 @@ namespace ASC.Data.Backup.EF.Model
             }
         }
     }
-    public static class BackupScheduleExtension
-    {
-        public static void AddBackupSchedule(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Schedule>()
-                        .HasKey(c => new { c.TenantId });
-        }
-    }
 
 }

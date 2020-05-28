@@ -32,6 +32,7 @@ using System.Threading;
 using ASC.Common.Logging;
 using Microsoft.Extensions.Options;
 using ASC.Core;
+using ASC.Common;
 
 namespace ASC.Data.Backup.Service
 {
@@ -50,13 +51,9 @@ namespace ASC.Data.Backup.Service
             this.backupStorageFactory = backupStorageFactory;
             this.backupWorker = backupWorker;
             log = options.CurrentValue;
-        }
-        public TimeSpan Period { get; set; }
-
-        public BackupSchedulerService()
-        {
             Period = TimeSpan.FromMinutes(15);
         }
+        public TimeSpan Period { get; set; }
 
         public void Start()
         {
@@ -131,6 +128,15 @@ namespace ASC.Data.Backup.Service
                     Monitor.Exit(schedulerLock);
                 }
             }
+        }
+    }
+    public static class BackupSchedulerServiceExtension
+    {
+        public static DIHelper AddBackupSchedulerService(this DIHelper services)
+        {
+            services.TryAddScoped<BackupSchedulerService>();
+            return services
+                .AddPaymentManagerService();
         }
     }
 }

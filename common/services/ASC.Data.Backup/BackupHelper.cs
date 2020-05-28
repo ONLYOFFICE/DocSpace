@@ -1,4 +1,5 @@
-﻿using ASC.Core;
+﻿using ASC.Common;
+using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Studio.UserControls.Statistics;
 using System;
@@ -53,5 +54,16 @@ namespace ASC.Data.Backup
         Available,
         WithoutMail,
         NotAvailable,
+    }
+    public static class BackupHelperExtension
+    {
+        public static DIHelper AddBackupHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<BackupHelper>();
+            return services
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddTenantStatisticsProviderService();
+        }
     }
 }

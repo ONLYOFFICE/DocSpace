@@ -30,10 +30,10 @@ using ASC.Notify.Messages;
 
 namespace ASC.Core.Notify
 {
-    public class NotifyServiceClient : INotifyService
+    public class NotifyService : INotifyService
     {
         private readonly ICacheNotify<NotifyMessage> cacheNotify;
-        public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify)
+        public NotifyService(ICacheNotify<NotifyMessage> cacheNotify)
         {
             this.cacheNotify = cacheNotify;
         }

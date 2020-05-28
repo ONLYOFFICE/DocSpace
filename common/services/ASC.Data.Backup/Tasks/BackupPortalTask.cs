@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -45,8 +44,6 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.EF.Context;
-using System.Configuration;
-using MySqlX.XDevAPI.Relational;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -58,9 +55,9 @@ namespace ASC.Data.Backup.Tasks
         private bool Dump { get; set; }
         private TenantManager tenantManager;
         private ModuleProvider moduleProvider;
-        private BackupRecordContext backupRecordContext;
+        private BackupsContext backupRecordContext;
 
-        public BackupPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toFilePath, int limit, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupRecordContext backupRecordContext)
+        public BackupPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toFilePath, int limit, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
             : base(options, tenantId, fromConfigPath,storageFactory,storageFactoryConfig, moduleProvider)
         {
             if (string.IsNullOrEmpty(toFilePath))
@@ -399,7 +396,7 @@ namespace ASC.Data.Backup.Tasks
                     selects = column + ", ";
                 }
                 selects = selects.Substring(0, selects.Length - 1);
-                command.CommandText = string.Format("select {0} from {1}", selects, t );//here
+                command.CommandText = string.Format("select {0} from {1} LIMIT {2}, {3}", selects, t, offset, Limit);
                 return ExecuteList(command);
             }
             /*using (var dbManager = new DbManager("default", 100000))

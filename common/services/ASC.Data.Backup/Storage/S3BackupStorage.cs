@@ -33,7 +33,6 @@ using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Storage

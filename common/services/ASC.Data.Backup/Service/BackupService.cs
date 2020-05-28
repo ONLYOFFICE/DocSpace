@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Contracts;
@@ -41,7 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
-    internal class BackupService : IBackupService
+    public class BackupService : IBackupService
     {
         private readonly ILog log;
         private readonly BackupStorageFactory backupStorageFactory;
@@ -261,6 +261,14 @@ namespace ASC.Data.Backup.Service
                                StorageParams = schedule.StorageParams
                            }
                        : null;
+        }
+    }
+    public static class BackupServiceExtension
+    {
+        public static DIHelper AddBackupService(this DIHelper services)
+        {
+            services.TryAddScoped<BackupService>();
+            return services;
         }
     }
 }

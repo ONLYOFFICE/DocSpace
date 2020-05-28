@@ -22,7 +22,7 @@ namespace ASC.Web.Core.PublicResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class UserControlsCommonResource {
+    public class UserControlsCommonResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -198,7 +198,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The Backup function is not available as the storage space exceeds {0}. Go to the {1}Statistics section{2} to check the storage space used..
         /// </summary>
-        internal static string BackupSpaceExceed {
+        public static string BackupSpaceExceed {
             get {
                 return ResourceManager.GetString("BackupSpaceExceed", resourceCulture);
             }

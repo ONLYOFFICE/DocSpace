@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
-
+using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Contracts;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Backup;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
@@ -26,6 +29,8 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class PortalController : ControllerBase
     {
+        public BackupAjaxHandler backupHandler;
+
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
@@ -148,6 +153,132 @@ namespace ASC.Web.Api.Controllers
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
+
+        /// <summary>
+        /// Returns the backup schedule of the current portal
+        /// </summary>
+        /// <category>Backup</category>
+        /// <returns>Backup Schedule</returns>
+        [Read("getbackupschedule")]
+        public BackupAjaxHandler.Schedule GetBackupSchedule()
+        {
+            return backupHandler.GetSchedule();
+        }
+
+        /// <summary>
+        /// Create the backup schedule of the current portal
+        /// </summary>
+        /// <param name="storageType">Storage type</param>
+        /// <param name="storageParams">Storage parameters</param>
+        /// <param name="backupsStored">Max of the backup's stored copies</param>
+        /// <param name="cronParams">Cron parameters</param>
+        /// <param name="backupMail">Include mail in the backup</param>
+        /// <category>Backup</category>
+        [Create("createbackupschedule")]
+        public void CreateBackupSchedule(BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, int backupsStored, BackupAjaxHandler.CronParams cronParams, bool backupMail)
+        {
+            backupHandler.CreateSchedule(storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), backupsStored, cronParams, backupMail);
+        }
+
+        /// <summary>
+        /// Delete the backup schedule of the current portal
+        /// </summary>
+        /// <category>Backup</category>
+        [Delete("deletebackupschedule")]
+        public void DeleteBackupSchedule()
+        {
+            backupHandler.DeleteSchedule();
+        }
+
+        /// <summary>
+        /// Start a backup of the current portal
+        /// </summary>
+        /// <param name="storageType">Storage Type</param>
+        /// <param name="storageParams">Storage Params</param>
+        /// <param name="backupMail">Include mail in the backup</param>
+        /// <category>Backup</category>
+        /// <returns>Backup Progress</returns>
+        [Create("startbackup")]
+        public BackupProgress StartBackup(BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, bool backupMail)
+        {
+            return backupHandler.StartBackup(storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), backupMail);
+        }
+
+        /// <summary>
+        /// Returns the progress of the started backup
+        /// </summary>
+        /// <category>Backup</category>
+        /// <returns>Backup Progress</returns>
+        [Read("getbackupprogress")]
+        public BackupProgress GetBackupProgress()
+        {
+            return backupHandler.GetBackupProgress();
+        }
+
+        /// <summary>
+        /// Returns the backup history of the started backup
+        /// </summary>
+        /// <category>Backup</category>
+        /// <returns>Backup History</returns>
+        [Read("getbackuphistory")]
+        public List<BackupHistoryRecord> GetBackupHistory()
+        {
+            return backupHandler.GetBackupHistory();
+        }
+
+        /// <summary>
+        /// Delete the backup with the specified id
+        /// </summary>
+        /// <category>Backup</category>
+        [Delete("deletebackup/{id}")]
+        public void DeleteBackup(Guid id)
+        {
+            backupHandler.DeleteBackup(id);
+        }
+
+        /// <summary>
+        /// Delete all backups of the current portal
+        /// </summary>
+        /// <category>Backup</category>
+        /// <returns>Backup History</returns>
+        [Delete("deletebackuphistory")]
+        public void DeleteBackupHistory()
+        {
+            backupHandler.DeleteAllBackups();
+        }
+
+        /// <summary>
+        /// Start a data restore of the current portal
+        /// </summary>
+        /// <param name="backupId">Backup Id</param>
+        /// <param name="storageType">Storage Type</param>
+        /// <param name="storageParams">Storage Params</param>
+        /// <param name="notify">Notify about backup to users</param>
+        /// <category>Backup</category>
+        /// <returns>Restore Progress</returns>
+        [Create("startrestore")]
+        public BackupProgress StartBackupRestore(string backupId, BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, bool notify)
+        {
+            return backupHandler.StartRestore(backupId, storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), notify);
+        }
+
+        /// <summary>
+        /// Returns the progress of the started restore
+        /// </summary>
+        /// <category>Backup</category>
+        /// <returns>Restore Progress</returns>
+        [Read("getrestoreprogress", true)]  //NOTE: this method doesn't check payment!!!
+        public BackupProgress GetRestoreProgress()
+        {
+            return backupHandler.GetRestoreProgress();
+        }
+
+        ///<visible>false</visible>
+        [Read("backuptmp")]
+        public string GetTempPath(string alias)
+        {
+            return backupHandler.GetTmpFolder();
+        }
     }
 
     public static class PortalControllerExtension
@@ -167,7 +298,8 @@ namespace ASC.Web.Api.Controllers
                 .AddPaymentManagerService()
                 .AddCommonLinkUtilityService()
                 .AddAuthContextService()
-                .AddWebItemSecurity();
+                .AddWebItemSecurity()
+                .AddBackupAjaxHandler();
         }
     }
 }

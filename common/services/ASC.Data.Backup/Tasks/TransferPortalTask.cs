@@ -58,11 +58,11 @@ namespace ASC.Data.Backup.Tasks
         public LicenseReader licenseReader;
         public AscCacheNotify ascCacheNotify;
         public ModuleProvider moduleProvider;
-        public BackupRecordContext backupRecordContext;
+        public BackupsContext backupRecordContext;
 
         public int Limit { get; private set; }
 
-        public TransferPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toConfigPath, int limit, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupRecordContext backupRecordContext)
+        public TransferPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toConfigPath, int limit, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
             : base(options, tenantId, fromConfigPath, storageFactory, storageFactoryConfig, moduleProvider)
         {
             if (toConfigPath == null)

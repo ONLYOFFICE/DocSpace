@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Module;
 
 namespace ASC.Data.Backup.Service
@@ -49,10 +50,12 @@ namespace ASC.Data.Backup.Service
 
             if (config.Cleaner.ElementInformation.IsPresent)
             {
+                cleanerService.Period = config.Cleaner.Period ;
                 cleanerService.Start();
             }
             if (config.Scheduler.ElementInformation.IsPresent)
-            {   
+            {
+                schedulerService.Period = config.Scheduler.Period ;
                 schedulerService.Start();
             }
         }
@@ -70,6 +73,14 @@ namespace ASC.Data.Backup.Service
                 schedulerService.Stop();
                 schedulerService = null;
             }
+        }
+    }
+    public static class BackupServiceLauncherExtension
+    {
+        public static DIHelper AddBackupServiceLauncher(this DIHelper services)
+        {
+            services.TryAddScoped<BackupServiceLauncher>();
+            return services;
         }
     }
 }
