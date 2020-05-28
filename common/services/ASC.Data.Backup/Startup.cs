@@ -10,6 +10,7 @@ using System;
 using ASC.Common.Logging;
 using static ASC.Data.Backup.Service.BackupWorker;
 using ASC.Data.Backup.Tasks.Modules;
+using ASC.Data.Backup.Service;
 
 namespace ASC.Data.Backup
 {
@@ -36,7 +37,12 @@ namespace ASC.Data.Backup
                 .AddNotifyHelperService()
                 .AddHelpers()
                 .AddModuleProvider()
-                .AddBackupAjaxHandler();
+                .AddBackupAjaxHandler()
+                .AddBackupServiceLauncher()
+                .AddBackupWorkerService()
+                .AddBackupService()
+                .AddBackupSchedulerService()
+                .AddBackupCleanerService();
             diHelper.AddNLogManager("ASC.Data.Backup");
 
             diHelper.Configure<ProgressQueue<BackupProgressItem>>(r =>

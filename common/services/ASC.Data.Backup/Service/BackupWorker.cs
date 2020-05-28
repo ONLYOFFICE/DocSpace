@@ -621,7 +621,7 @@ namespace ASC.Data.Backup.Service
     }
     public static class BackupWorkerExtension
     {
-        public static DIHelper BackupWorkerService(this DIHelper services)
+        public static DIHelper AddBackupWorkerService(this DIHelper services)
         {
             services.TryAddScoped<BackupWorker>();
             return services
