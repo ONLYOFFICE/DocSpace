@@ -270,6 +270,7 @@ namespace ASC.Web.Files
                 }
 
                 await context.Response.Body.FlushAsync();
+                await context.Response.CompleteAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -477,7 +478,7 @@ namespace ASC.Web.Files
                     {
                         await context.Response.Body.FlushAsync();
                         //context.Response.SuppressContent = true;
-                        //context.ApplicationInstance.CompleteRequest();
+                        await context.Response.CompleteAsync();
                         flushed = true;
                     }
                     catch (HttpException ex)
@@ -543,31 +544,25 @@ namespace ASC.Web.Files
 
         private async Task<bool> SendStreamByChunksAsync(HttpContext context, long toRead, string title, Stream fileStream, bool flushed)
         {
+            var cl = 0;
             //context.Response.Buffer = false;
             context.Response.Headers.Add("Connection", "Keep-Alive");
-            context.Response.Headers.Add("Content-Length", toRead.ToString(CultureInfo.InvariantCulture));
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(title));
             context.Response.ContentType = MimeMapping.GetMimeMapping(title);
 
-            const int bufferSize = 32 * 1024; // 32KB
+            var bufferSize = Convert.ToInt32(Math.Min(Convert.ToInt64(32 * 1024), toRead)); // 32KB
             var buffer = new byte[bufferSize];
             while (toRead > 0)
             {
-                var length = fileStream.Read(buffer, 0, bufferSize);
-
-                if (!context.RequestAborted.IsCancellationRequested)
-                {
-                    await context.Response.Body.WriteAsync(buffer, 0, length);
-                    await context.Response.Body.FlushAsync();
-                    flushed = true;
-                    toRead -= length;
-                }
-                else
-                {
-                    toRead = -1;
-                    Logger.Warn(string.Format("IsClientConnected is false. Why? Download file {0} Connection is lost. ", title));
-                }
+                var length = await fileStream.ReadAsync(buffer, 0, bufferSize);
+                cl += length;
+                await context.Response.Body.WriteAsync(buffer, 0, length, context.RequestAborted);
+                await context.Response.Body.FlushAsync();
+                flushed = true;
+                toRead -= length;
             }
+
+            context.Response.Headers.Add("Content-Length", cl.ToString(CultureInfo.InvariantCulture));
 
             return flushed;
         }
