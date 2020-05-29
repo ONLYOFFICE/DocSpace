@@ -148,7 +148,7 @@ class PageLayoutComponent extends React.PureComponent {
   };
 
   render() {
-    const { showProgressBar, progressBarValue, progressBarDropDownContent, withBodyScroll, withBodyAutoFocus, progressBarLabel } = this.props;
+    const { showProgressBar, progressBarValue, progressBarDropDownContent, withBodyScroll, withBodyAutoFocus, progressBarLabel, onDrop, uploadFiles } = this.props;
     return (
       <>
         {this.state.isBackdropAvailable && (
@@ -197,7 +197,9 @@ class PageLayoutComponent extends React.PureComponent {
             )}
             {this.state.isSectionBodyAvailable && (
               <>
-                <SectionBody 
+                <SectionBody
+                  onDrop={onDrop}
+                  uploadFiles={uploadFiles}
                   withScroll={withBodyScroll}
                   autoFocus={withBodyAutoFocus}
                   pinned={this.state.isArticlePinned}
@@ -282,7 +284,9 @@ PageLayoutComponent.propTypes = {
   showProgressBar: PropTypes.bool,
   progressBarValue: PropTypes.number,
   progressBarDropDownContent: PropTypes.any,
-  progressBarLabel: PropTypes.string
+  progressBarLabel: PropTypes.string,
+  onDrop: PropTypes.func,
+  uploadFiles: PropTypes.bool
 };
 
 PageLayoutComponent.defaultProps = {
