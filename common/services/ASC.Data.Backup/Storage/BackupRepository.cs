@@ -27,217 +27,102 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Logging;
-using ASC.Core;
+
+using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
+
 using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Storage
 {
     internal class BackupRepository : IBackupRepository
     {
+        private BackupsContext BackupContext { get; }
 
-        private readonly BackupsContext backupContext;
-        private readonly IOptionsMonitor<ILog> options;
-        private readonly TenantManager tenantManager;
-        private readonly TenantUtil tenantUtil;
-        private readonly BackupHelper backupHelper;
-
-        public BackupRepository(BackupsContext backupContext, IOptionsMonitor<ILog> options,TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
+        public BackupRepository(DbContextManager<BackupsContext> backupContext)
         {
-            this.backupContext = backupContext;
-            this.options = options;
-            this.tenantManager = tenantManager;
-            this.tenantUtil = tenantUtil;
-            this.backupHelper = backupHelper;
+            BackupContext = backupContext.Value;
         }
 
         public void SaveBackupRecord(BackupRecord backup)
         {
-            backupContext.Backups.Add(backup);
-            backupContext.SaveChanges();
-          /*  var insert = new SqlInsert("backup_backup")
-                .ReplaceExists(true)
-                .InColumnValue("id", backupRecord.Id)
-                .InColumnValue("tenant_id", backupRecord.TenantId)
-                .InColumnValue("is_scheduled", backupRecord.IsScheduled)
-                .InColumnValue("name", backupRecord.FileName)
-                .InColumnValue("storage_type", (int)backupRecord.StorageType)
-                .InColumnValue("storage_base_path", backupRecord.StorageBasePath)
-                .InColumnValue("storage_path", backupRecord.StoragePath)
-                .InColumnValue("created_on", backupRecord.CreatedOn)
-                .InColumnValue("expires_on", backupRecord.ExpiresOn)
-                .InColumnValue("storage_params", JsonConvert.SerializeObject(backupRecord.StorageParams));
-
-            using (var db = GetDbManager())
-            {
-                db.ExecuteNonQuery(insert);
-            }*/
+            BackupContext.AddOrUpdate(r => r.Backups, backup);
+            BackupContext.SaveChanges();
         }
 
         public BackupRecord GetBackupRecord(Guid id)
         {
-          return backupContext.Backups.FirstOrDefault(b => b.Id == id);
-            
-          /*  var select = new SqlQuery("backup_backup")
-                .Select("id", "tenant_id", "is_scheduled", "name", "storage_type", "storage_base_path", "storage_path", "created_on", "expires_on", "storage_params")
-                .Where("id", id);
-
-            using (var db = GetDbManager())
-            {
-                return db.ExecuteList(select).Select(ToBackupRecord).SingleOrDefault();
-            }*/
+            return BackupContext.Backups.SingleOrDefault(b => b.Id == id);
         }
 
         public List<BackupRecord> GetExpiredBackupRecords()
         {
-            
-            return new List<BackupRecord>(backupContext.Backups.Where(b=> b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow));
-            /*  var select = new SqlQuery("backup_backup")
-                  .Select("id", "tenant_id", "is_scheduled", "name", "storage_type", "storage_base_path", "storage_path", "created_on", "expires_on", "storage_params")
-                  .Where(!Exp.Eq("expires_on", DateTime.MinValue) & Exp.Le("expires_on", DateTime.UtcNow));
 
-              using (var db = GetDbManager())
-              {
-                  return db.ExecuteList(select).Select(ToBackupRecord).ToList();
-              }*/
+            return BackupContext.Backups.Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
         }
 
         public List<BackupRecord> GetScheduledBackupRecords()
         {
-            return new List<BackupRecord>(backupContext.Backups.Where(b=> b.IsScheduled == true));
-            /*var select = new SqlQuery("backup_backup")
-                .Select("id", "tenant_id", "is_scheduled", "name", "storage_type", "storage_base_path", "storage_path", "created_on", "expires_on", "storage_params")
-                .Where(Exp.Eq("is_scheduled", true));
-
-            using (var db = GetDbManager())
-            {
-                return db.ExecuteList(select).Select(ToBackupRecord).ToList();
-            }*/
+            return BackupContext.Backups.Where(b => b.IsScheduled == true).ToList();
         }
 
         public List<BackupRecord> GetBackupRecordsByTenantId(int tenantId)
         {
-            return new List<BackupRecord>(backupContext.Backups.Where(b=> b.TenantId == tenantId));
-            /* var select = new SqlQuery("backup_backup")
-                 .Select("id", "tenant_id", "is_scheduled", "name", "storage_type", "storage_base_path", "storage_path", "created_on", "expires_on", "storage_params")
-                 .Where("tenant_id", tenantId);
-
-             using (var db = GetDbManager())
-             {
-                 return db.ExecuteList(select).Select(ToBackupRecord).ToList();
-             }*/
+            return BackupContext.Backups.Where(b => b.TenantId == tenantId).ToList();
         }
 
         public void DeleteBackupRecord(Guid id)
         {
 
-            var backup = backupContext.Backups.FirstOrDefault(b => b.Id == id);
+            var backup = BackupContext.Backups.FirstOrDefault(b => b.Id == id);
             if (backup != null)
             {
-                backupContext.Backups.Remove(backup);
-                backupContext.SaveChanges();
+                BackupContext.Backups.Remove(backup);
+                BackupContext.SaveChanges();
             }
-            /*  var delete = new SqlDelete("backup_backup")
-                  .Where("id", id);
-
-              using (var db = GetDbManager())
-              {
-                  db.ExecuteNonQuery(delete);
-              }*/
         }
 
-        public void SaveBackupSchedule(Schedule schedule)
+        public void SaveBackupSchedule(BackupSchedule schedule)
         {
-            backupContext.Schedules.Add(schedule);
-            backupContext.SaveChanges();
-            /*  var query = new SqlInsert("backup_schedule")
-                  .ReplaceExists(true)
-                  .InColumnValue("tenant_id", schedule.TenantId)
-                  .InColumnValue("backup_mail", schedule.BackupMail)
-                  .InColumnValue("cron", schedule.Cron)
-                  .InColumnValue("backups_stored", schedule.NumberOfBackupsStored)
-                  .InColumnValue("storage_type", (int)schedule.StorageType)
-                  .InColumnValue("storage_base_path", schedule.StorageBasePath)
-                  .InColumnValue("last_backup_time", schedule.LastBackupTime)
-                  .InColumnValue("storage_params", JsonConvert.SerializeObject(schedule.StorageParams));
-
-              using (var db = GetDbManager())
-              {
-                  db.ExecuteNonQuery(query);
-              }*/
+            BackupContext.AddOrUpdate(r => r.Schedules, schedule);
+            BackupContext.SaveChanges();
         }
 
         public void DeleteBackupSchedule(int tenantId)
         {
-            var shedule = backupContext.Schedules.FirstOrDefault(s => s.TenantId == tenantId);
-            if (shedule != null)
-            {
-                backupContext.Schedules.Remove(shedule);
-                backupContext.SaveChanges();
-            }
-            /*
-            var query = new SqlDelete("backup_schedule")
-                .Where("tenant_id", tenantId);
-
-            using (var db = GetDbManager())
-            {
-                db.ExecuteNonQuery(query);
-            }*/
+            var shedule = BackupContext.Schedules.Where(s => s.TenantId == tenantId).ToList();
+            BackupContext.Schedules.RemoveRange(shedule);
+            BackupContext.SaveChanges();
         }
 
-        public List<Schedule> GetBackupSchedules()
+        public List<BackupSchedule> GetBackupSchedules()
         {
-            var query = backupContext.Schedules.Join(backupContext.Tenants,
-                s=> s.TenantId, 
-                t=> t.Id,
-                (s, t) => new{
-                    TenantId = s.TenantId,
-                    BackupMail = s.BackupMail,
-                    Cron = s.Cron,
-                    BackupsStored = s.BackupsStored,
-                    StorageType = s.StorageType,
-                    StorageBasePath = s.StorageBasePath,
-                    LastBackupTime = s.LastBackupTime,
-                    StorageParams = s.StorageParams,
-                    Status = t.Status
-                }).Where(q=> q.Status == (int)TenantStatus.Active);
-            List<Schedule> shedules = new List<Schedule>();
-            foreach (var q in query) {
-                shedules.Add(new Schedule(options, q.TenantId, tenantManager, tenantUtil, backupHelper) { BackupMail = q.BackupMail, Cron = q.Cron, BackupsStored = q.BackupsStored, StorageType = q.StorageType, StorageBasePath = q.StorageBasePath, LastBackupTime = q.LastBackupTime, StorageParams = q.StorageParams });
-            }
-            return shedules;
-            /* var query = new SqlQuery("backup_schedule s")
-                 .Select("s.tenant_id", "s.backup_mail", "s.cron", "s.backups_stored", "s.storage_type", "s.storage_base_path", "s.last_backup_time", "s.storage_params")
-                 .InnerJoin("tenants_tenants t", Exp.EqColumns("t.id", "s.tenant_id"))
-                 .Where("t.status", (int)TenantStatus.Active);
+            var query = BackupContext.Schedules.Join(BackupContext.Tenants,
+                s => s.TenantId,
+                t => t.Id,
+                (s, t) => new { schedule = s, tenant = t })
+                .Where(q => q.tenant.Status == TenantStatus.Active)
+                .Select(q => q.schedule);
 
-             using (var db = GetDbManager())
-             {
-                 return db.ExecuteList(query).Select(ToSchedule).ToList();
-             }*/
+            return query.ToList();
         }
 
-        public Schedule GetBackupSchedule(int tenantId)
+        public BackupSchedule GetBackupSchedule(int tenantId)
         {
-          return backupContext.Schedules.FirstOrDefault(s => s.TenantId == tenantId);
-          /* var query = new SqlQuery("backup_schedule")
-                .Select("tenant_id", "backup_mail", "cron", "backups_stored", "storage_type", "storage_base_path", "last_backup_time", "storage_params")
-                .Where("tenant_id", tenantId);
-
-            using (var db = GetDbManager())
-            {
-                return db.ExecuteList(query).Select(ToSchedule).SingleOrDefault();
-            }*/
+            return BackupContext.Schedules.SingleOrDefault(s => s.TenantId == tenantId);
         }
+    }
 
-        
-       /* private IDbManager GetDbManager()
+    public static class BackupRepositoryExtension
+    {
+        public static DIHelper AddBackupRepositoryService(this DIHelper services)
         {
-            return new DbManager(connectionStringName);
-        }*/
+            services.TryAddScoped<BackupRepository>();
+            return services
+                .AddBackupContext();
+        }
     }
 }

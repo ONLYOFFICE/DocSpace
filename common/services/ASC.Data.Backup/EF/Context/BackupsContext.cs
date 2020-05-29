@@ -10,7 +10,7 @@ namespace ASC.Data.Backup.EF.Context
     public class BackupsContext : BaseDbContext
     {
         public DbSet<BackupRecord> Backups { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<BackupSchedule> Schedules { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbTariff> Tariffs { get; set; }
 

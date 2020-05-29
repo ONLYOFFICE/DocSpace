@@ -25,13 +25,11 @@
 
 
 using ASC.Common;
-using ASC.Common.Logging;
-using Microsoft.Extensions.Options;
+
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
-using static ASC.Data.Backup.DbBackupProvider;
 
 namespace ASC.Data.Backup
 {

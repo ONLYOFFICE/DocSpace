@@ -39,9 +39,9 @@ namespace ASC.Data.Backup.Storage
         List<BackupRecord> GetBackupRecordsByTenantId(int tenantId);
         void DeleteBackupRecord(Guid id);
 
-        void SaveBackupSchedule(Schedule schedule);
-        Schedule GetBackupSchedule(int tenantId);
-        List<Schedule> GetBackupSchedules();
+        void SaveBackupSchedule(BackupSchedule schedule);
+        BackupSchedule GetBackupSchedule(int tenantId);
+        List<BackupSchedule> GetBackupSchedules();
         void DeleteBackupSchedule(int tenantId);
     }
 }

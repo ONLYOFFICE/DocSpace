@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Text.RegularExpressions;
+
 using ASC.Data.Backup.Tasks.Data;
 
 namespace ASC.Data.Backup.Tasks.Modules
@@ -72,7 +72,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             if (relation.ParentTable == "crm_organisation_logo")
             {
-                bool success = true;
+                var success = true;
                 value = Regex.Replace(
                     Convert.ToString(value),
                     @"(?<=""CompanyLogoID"":)\d+",

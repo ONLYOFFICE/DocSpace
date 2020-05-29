@@ -27,12 +27,9 @@
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Files.Core;
-using ASC.Web.Files.Classes;
+
 using System;
-using System.IO;
-using System.Net;
 //using File = ASC.Files.Core.File;
-using IoFile = System.IO.File;
 
 namespace ASC.Data.Backup.Storage
 {

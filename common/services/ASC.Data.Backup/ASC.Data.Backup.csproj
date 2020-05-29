@@ -26,10 +26,6 @@
 	  <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
 	  <ProjectReference Include="..\ASC.Notify\ASC.Notify.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="EF\Model\" />
-	</ItemGroup>
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)' == 'MySqlConnector'">

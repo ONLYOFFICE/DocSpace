@@ -26,9 +26,9 @@
 
 using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Backup.Utils;
+
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 
@@ -266,7 +266,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         private static string PreparePath(bool dump, ColumnMapper columnMapper, string partsSeparator, string path)
         {
-            string[] parts = path.Split(new[] { partsSeparator }, StringSplitOptions.None);
+            var parts = path.Split(new[] { partsSeparator }, StringSplitOptions.None);
 
             if (parts.Length != 4)
                 return null;
