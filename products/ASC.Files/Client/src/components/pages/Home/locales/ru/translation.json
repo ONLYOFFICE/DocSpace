@@ -74,5 +74,7 @@
   "HideWindowSetting": "Показывать это окно минимизированным",
   "ArchivingData": "Архивирование данных",
   "DeleteOperation": "Удаление",
-  "Restore": "Восстановить"
+  "Restore": "Восстановить",
+  "ErrorUploadMessage": "Нельзя загрузить папку или пустой файл",
+  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
 }

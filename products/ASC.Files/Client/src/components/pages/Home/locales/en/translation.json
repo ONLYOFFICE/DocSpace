@@ -74,5 +74,7 @@
   "HideWindowSetting": "Show this window minimized",
   "ArchivingData": "Archiving data",
   "DeleteOperation": "Deleting",
-  "Restore": "Restore"
+  "Restore": "Restore",
+  "ErrorUploadMessage": "You cannot upload a folder or an empty file",
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
 }

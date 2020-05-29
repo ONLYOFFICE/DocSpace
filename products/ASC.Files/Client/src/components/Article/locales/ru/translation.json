@@ -5,7 +5,5 @@
   "NewPresentation": "Новая презентация",
   "NewFolder": "Новая папка",
   "UploadFiles": "Загрузить файлы",
-  "UploadFolder": "Загрузить папку",
-  "ErrorUploadMessage": "Нельзя загрузить папку или пустой файл",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
+  "UploadFolder": "Загрузить папку"
 }
