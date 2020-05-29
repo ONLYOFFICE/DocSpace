@@ -4,15 +4,19 @@ import PropTypes from "prop-types";
 import Viewer from 'react-viewer';
 import { Icons } from "asc-web-components";
 import styled from "styled-components";
+import MediaScrollButton from "./scroll-button"
+import ControlBtn from "./control-btn"
 
 const StyledViewer = styled(Viewer)`
 
     .react-viewer-footer{
         bottom: 5px!important;
         z-index: 4001!important;
+        overflow: visible;
     }
     .react-viewer-canvas{
         z-index: 4000!important;
+        margin-top: 50px;
     }
     .react-viewer-navbar,
     .react-viewer-mask,
@@ -57,6 +61,20 @@ const StyledViewer = styled(Viewer)`
             background: none;
         }
     }
+    li[data-key='delete'],
+    li[data-key='customDownload']{
+        position: fixed;
+        bottom: 10px;
+        .controlBtn{
+            margin: 0
+        }
+    }
+    li[data-key='delete']{
+        right: 62px;
+    }
+    li[data-key='customDownload']{
+        right: 12px;
+    }
     .iconContainer{
         width: 20px;
         line-height: 20px;
@@ -65,6 +83,13 @@ const StyledViewer = styled(Viewer)`
         &.reset{
             width: 18px;
         }
+    }
+
+    .btnContainer{
+        display: block;
+        width: 20px;
+        margin: 3px 10px;
+        line-height: 19px;
     }
 `
 
@@ -94,6 +119,32 @@ var customToolbar = [
         key: 'rotateRight',
         actionType: 6,
         render: <div className="iconContainer"><Icons.MediaRotateRightIcon size="scale" /></div>
+    },
+    {
+        key: 'prev',
+        actionType: 3,
+        render: <MediaScrollButton orientation="right" />
+    },
+    {
+        key: 'next',
+        actionType: 4,
+        render: <MediaScrollButton orientation="left" />
+    },
+    {
+        key: 'delete',
+        render: <ControlBtn className="controlBtn">
+            <div className="btnContainer">
+                <Icons.MediaDeleteIcon size="scale" />
+            </div>
+        </ControlBtn>
+    },
+    {
+        key: 'customDownload',
+        render: <ControlBtn className="controlBtn">
+            <div className="btnContainer">
+                <Icons.MediaDownloadIcon size="scale" />
+            </div>
+        </ControlBtn>
     }
 ];
 
@@ -110,6 +161,24 @@ class ImageViewer extends React.Component {
 
         const { className, visible, images } = this.props;
 
+        customToolbar.forEach((button) => {
+            switch (button.key) {
+                case "prev":
+                    button.onClick = this.props.onPrevClick;
+                    break;
+                case "next":
+                    button.onClick = this.props.onNextClick;
+                    break;
+                case "delete":
+                    button.onClick = this.props.onDeleteClick;
+                    break;
+                case "customDownload":
+                    button.onClick = this.props.onDownloadClick;
+                    break;
+                default:
+                    break;
+            }
+        });
         return (
             <div className={className}>
                 <StyledViewer
@@ -127,7 +196,11 @@ class ImageViewer extends React.Component {
 ImageViewer.propTypes = {
     className: PropTypes.string,
     visible: PropTypes.bool,
-    images: PropTypes.arrayOf(PropTypes.object)
+    images: PropTypes.arrayOf(PropTypes.object),
+    onNextClick: PropTypes.func,
+    onPrevClick: PropTypes.func,
+    onDeleteClick: PropTypes.func,
+    onDownloadClick: PropTypes.func
 }
 
 export default ImageViewer;

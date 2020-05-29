@@ -33,20 +33,13 @@ const StyledMediaViewer = styled.div`
         bottom: 5px;
         margin-right: 10px;
         z-index: 4005;
-
-        .deleteBtnContainer{
-            display: block;
-            width: 20px;
-            margin: 3px 10px;
-            line-height: 19px;
-        }
-
-        .downloadBtnContainer{
-            display: block;
-            width: 20px;
-            margin: 3px 10px;
-            line-height: 19px;
-        }
+    }
+    .deleteBtnContainer,
+    .downloadBtnContainer{
+        display: block;
+        width: 20px;
+        margin: 3px 10px;
+        line-height: 19px;
     }
     .details{
         z-index: 4001;

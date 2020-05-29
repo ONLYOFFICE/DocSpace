@@ -61,7 +61,7 @@ class MediaViewer extends React.Component {
                     }
                 );
             }
-        }else if(!isEqual(this.props.playlist, prevProps.playlist)){
+        } else if (!isEqual(this.props.playlist, prevProps.playlist)) {
             this.setState(
                 {
                     playlist: this.props.playlist
@@ -188,8 +188,14 @@ class MediaViewer extends React.Component {
             <StyledMediaViewer visible={this.state.visible}>
 
                 <div className="videoViewerOverlay"></div>
-                <MediaScrollButton orientation="right" onClick={this.prevMedia} />
-                <MediaScrollButton orientation="left" onClick={this.nextMedia} />
+                {
+                    !isImage &&
+                    <>
+                        <MediaScrollButton orientation="right" onClick={this.prevMedia} />
+                        <MediaScrollButton orientation="left" onClick={this.nextMedia} />
+                    </>
+                }
+
                 <div>
                     <div className="details" ref={this.detailsContainer}>
                         <div className="title">{fileTitle}</div>
@@ -207,30 +213,37 @@ class MediaViewer extends React.Component {
                                 images={[
                                     { src: url, alt: '' }
                                 ]}
+                                onNextClick={this.nextMedia}
+                                onPrevClick={this.prevMedia}
+                                onDeleteClick={this.onDelete}
+                                onDownloadClick={this.onDownload}
                             />
                             :
                             <StyledVideoViewer url={url} playing={this.state.visible} isVideo={isVideo} getOffset={this.getOffset} />
                     )
                 }
                 <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
-                    <span>
-                        {
-                            this.props.canDelete(currentFileId) &&
-                            <ControlBtn onClick={this.onDelete}>
-                                <div className="deleteBtnContainer">
-                                    <Icons.MediaDeleteIcon size="scale" />
-                                </div>
-                            </ControlBtn>
-                        }
-                        {
-                            this.props.canDownload(currentFileId) &&
-                            <ControlBtn onClick={this.onDownload}>
-                                <div className="downloadBtnContainer">
-                                    <Icons.MediaDownloadIcon size="scale" />
-                                </div>
-                            </ControlBtn>
-                        }
-                    </span>
+                    {
+                        !isImage &&
+                        <span>
+                            {
+                                this.props.canDelete(currentFileId) &&
+                                <ControlBtn onClick={this.onDelete}>
+                                    <div className="deleteBtnContainer">
+                                        <Icons.MediaDeleteIcon size="scale" />
+                                    </div>
+                                </ControlBtn>
+                            }
+                            {
+                                this.props.canDownload(currentFileId) &&
+                                <ControlBtn onClick={this.onDownload}>
+                                    <div className="downloadBtnContainer">
+                                        <Icons.MediaDownloadIcon size="scale" />
+                                    </div>
+                                </ControlBtn>
+                            }
+                        </span>
+                    }
                 </div>
 
             </StyledMediaViewer>
