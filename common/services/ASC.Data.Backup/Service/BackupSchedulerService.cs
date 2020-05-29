@@ -24,61 +24,119 @@
 */
 
 
-using ASC.Core.Billing;
-using ASC.Data.Backup.Storage;
 using System;
 using System.Linq;
 using System.Threading;
-using ASC.Common.Logging;
-using Microsoft.Extensions.Options;
-using ASC.Core;
+
 using ASC.Common;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Core.Billing;
+using ASC.Data.Backup.Storage;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
+    internal class BackupSchedulerServiceHelper
+    {
+        private ILog Log { get; }
+        private PaymentManager PaymentManager { get; }
+        private BackupWorker BackupWorker { get; }
+        public BackupRepository BackupRepository { get; }
+        private Schedule Schedule { get; }
+
+        public BackupSchedulerServiceHelper(
+            IOptionsMonitor<ILog> options,
+            PaymentManager paymentManager,
+            BackupWorker backupWorker,
+            BackupRepository backupRepository,
+            Schedule schedule)
+        {
+            PaymentManager = paymentManager;
+            BackupWorker = backupWorker;
+            BackupRepository = backupRepository;
+            Schedule = schedule;
+            Log = options.CurrentValue;
+        }
+
+        public void ScheduleBackupTasks(BackupSchedulerService backupSchedulerService)
+        {
+            Log.DebugFormat("started to schedule backups");
+            var backupsToSchedule = BackupRepository.GetBackupSchedules().Where(schedule => Schedule.IsToBeProcessed(schedule)).ToList();
+            Log.DebugFormat("{0} backups are to schedule", backupsToSchedule.Count);
+            foreach (var schedule in backupsToSchedule)
+            {
+                if (!backupSchedulerService.IsStarted)
+                {
+                    return;
+                }
+                try
+                {
+                    var tariff = PaymentManager.GetTariff(schedule.TenantId);
+                    if (tariff.State < TariffState.Delay)
+                    {
+                        schedule.LastBackupTime = DateTime.UtcNow;
+                        BackupRepository.SaveBackupSchedule(schedule);
+                        Log.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
+                        BackupWorker.StartScheduledBackup(schedule);
+                    }
+                    else
+                    {
+                        Log.DebugFormat("Skip portal {0} not paid", schedule.TenantId);
+                    }
+                }
+                catch (Exception error)
+                {
+                    Log.Error("error while scheduling backups: {0}", error);
+                }
+            }
+        }
+    }
+
     public class BackupSchedulerService
     {
         private readonly object schedulerLock = new object();
-        private Timer schedulerTimer;
-        private bool isStarted;
-        private readonly ILog log;
-        private readonly PaymentManager paymentManager;
-        private BackupStorageFactory backupStorageFactory;
-        private BackupWorker backupWorker;
-        public BackupSchedulerService(IOptionsMonitor<ILog> options, PaymentManager paymentManager, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker)
-        {
-            this.paymentManager = paymentManager;
-            this.backupStorageFactory = backupStorageFactory;
-            this.backupWorker = backupWorker;
-            log = options.CurrentValue;
-            Period = TimeSpan.FromMinutes(15);
-        }
+        private Timer SchedulerTimer { get; set; }
+        internal bool IsStarted { get; set; }
         public TimeSpan Period { get; set; }
+        private ILog Log { get; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public BackupSchedulerService(
+            IOptionsMonitor<ILog> options,
+            IServiceProvider serviceProvider)
+        {
+            Log = options.CurrentValue;
+            Period = TimeSpan.FromMinutes(15);
+            ServiceProvider = serviceProvider;
+        }
 
         public void Start()
         {
-            if (!isStarted && Period > TimeSpan.Zero)
+            if (!IsStarted && Period > TimeSpan.Zero)
             {
-                log.Info("staring backup scheduler service...");
-                schedulerTimer = new Timer(_ => ScheduleBackupTasks(), null, TimeSpan.Zero, Period);
-                log.Info("backup scheduler service service started");
-                isStarted = true;
+                Log.Info("staring backup scheduler service...");
+                SchedulerTimer = new Timer(_ => ScheduleBackupTasks(), null, TimeSpan.Zero, Period);
+                Log.Info("backup scheduler service service started");
+                IsStarted = true;
             }
         }
 
         public void Stop()
         {
-            if (isStarted)
+            if (IsStarted)
             {
-                log.Info("stoping backup scheduler service...");
-                if (schedulerTimer != null)
+                Log.Info("stoping backup scheduler service...");
+                if (SchedulerTimer != null)
                 {
-                    schedulerTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                    schedulerTimer.Dispose();
-                    schedulerTimer = null;
+                    SchedulerTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    SchedulerTimer.Dispose();
+                    SchedulerTimer = null;
                 }
-                log.Info("backup scheduler service stoped");
-                isStarted = false;
+                Log.Info("backup scheduler service stoped");
+                IsStarted = false;
             }
         }
 
@@ -88,40 +146,13 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    log.DebugFormat("started to schedule backups");
-                    var backupRepostory = backupStorageFactory.GetBackupRepository();
-                    var backupsToSchedule = backupRepostory.GetBackupSchedules().Where(schedule => schedule.IsToBeProcessed()).ToList();
-                    log.DebugFormat("{0} backups are to schedule", backupsToSchedule.Count);
-                    foreach (var schedule in backupsToSchedule)
-                    {
-                        if (!isStarted)
-                        {
-                            return;
-                        }
-                        try
-                        {
-                            var tariff = paymentManager.GetTariff(schedule.TenantId);
-                            if (tariff.State < TariffState.Delay)
-                            {
-                                schedule.LastBackupTime = DateTime.UtcNow;
-                                backupRepostory.SaveBackupSchedule(schedule);
-                                log.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
-                                backupWorker.StartScheduledBackup(schedule);
-                            }
-                            else
-                            {
-                                log.DebugFormat("Skip portal {0} not paid", schedule.TenantId);
-                            }
-                        }
-                        catch (Exception error)
-                        {
-                            log.Error("error while scheduling backups: {0}", error);
-                        }
-                    }
+                    using var scope = ServiceProvider.CreateScope();
+                    var backupSchedulerServiceHelper = scope.ServiceProvider.GetService<BackupSchedulerServiceHelper>();
+                    backupSchedulerServiceHelper.ScheduleBackupTasks(this);
                 }
                 catch (Exception error)
                 {
-                    log.Error("error while scheduling backups: {0}", error);
+                    Log.Error("error while scheduling backups: {0}", error);
                 }
                 finally
                 {
@@ -130,13 +161,20 @@ namespace ASC.Data.Backup.Service
             }
         }
     }
+
     public static class BackupSchedulerServiceExtension
     {
         public static DIHelper AddBackupSchedulerService(this DIHelper services)
         {
-            services.TryAddScoped<BackupSchedulerService>();
+            services.TryAddSingleton<BackupSchedulerService>();
+            services.TryAddScoped<BackupSchedulerServiceHelper>();
+
             return services
-                .AddPaymentManagerService();
+                .AddPaymentManagerService()
+                .AddScheduleService()
+                .AddBackupStorageFactory()
+                .AddBackupWorkerService()
+                .AddBackupRepositoryService();
         }
     }
 }

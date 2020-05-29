@@ -56,13 +56,13 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             var notOrderedTables = new List<TableInfo>(Tables);
 
-            int totalTablesCount = notOrderedTables.Count;
-            int orderedTablesCount = 0;
+            var totalTablesCount = notOrderedTables.Count;
+            var orderedTablesCount = 0;
             while (orderedTablesCount < totalTablesCount)
             {
-                int orderedTablesCountBeforeIter = orderedTablesCount; // ensure we not in infinite loop...
+                var orderedTablesCountBeforeIter = orderedTablesCount; // ensure we not in infinite loop...
 
-                int i = 0;
+                var i = 0;
                 while (i < notOrderedTables.Count)
                 {
                     var table = notOrderedTables[i];
@@ -220,7 +220,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             if (columnName.Equals(table.TenantColumn, StringComparison.OrdinalIgnoreCase))
             {
-                int tenantMapping = columnMapper.GetTenantMapping();
+                var tenantMapping = columnMapper.GetTenantMapping();
                 if (tenantMapping < 1)
                     return false;
                 value = tenantMapping;
@@ -230,7 +230,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (table.UserIDColumns.Any(x => columnName.Equals(x, StringComparison.OrdinalIgnoreCase)))
             {
                 var strVal = Convert.ToString(value);
-                string userMapping = columnMapper.GetUserMapping(strVal);
+                var userMapping = columnMapper.GetUserMapping(strVal);
                 if (userMapping == null)
                     return helpers.IsEmptyOrSystemUser(strVal);
                 value = userMapping;

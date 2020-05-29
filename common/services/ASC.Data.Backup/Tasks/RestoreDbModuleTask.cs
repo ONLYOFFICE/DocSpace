@@ -115,15 +115,15 @@ namespace ASC.Data.Backup.Tasks
                     .ToList();
 
                 foreach (
-                    IEnumerable<DataRowInfo> rows in
+                    var rows in
                         GetRows(tableInfo, stream)
                             .Skip(transactionsCommited*TransactionLength)
                             .MakeParts(TransactionLength))
                 {
                     using (var transaction = connection.BeginTransaction())
                     {
-                        int rowsSuccess = 0;
-                        foreach (DataRowInfo row in rows)
+                        var rowsSuccess = 0;
+                        foreach (var row in rows)
                         {
                             if (_replaceDate)
                             {
@@ -182,7 +182,7 @@ namespace ASC.Data.Backup.Tasks
 
                             _columnMapper.Commit();
 
-                            foreach (Tuple<RelationInfo, TableInfo> relation in lowImportanceRelations)
+                            foreach (var relation in lowImportanceRelations)
                             {
                                 if (!relation.Item2.HasTenantColumn())
                                 {
@@ -192,8 +192,8 @@ namespace ASC.Data.Backup.Tasks
                                     continue;
                                 }
 
-                                object oldValue = row[relation.Item1.ParentColumn];
-                                object newValue = _columnMapper.GetMapping(relation.Item1.ParentTable,
+                                var oldValue = row[relation.Item1.ParentColumn];
+                                var newValue = _columnMapper.GetMapping(relation.Item1.ParentTable,
                                     relation.Item1.ParentColumn, oldValue);
                                 var command = connection.CreateCommand();
                                 command.CommandText = string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
@@ -250,7 +250,7 @@ namespace ASC.Data.Backup.Tasks
 
         public string[] ExecuteArray(DbCommand command)
         {
-            List<string> list = new List<string>();
+            var list = new List<string>();
             using (var result = command.ExecuteReader())
             {
                 while (result.Read())

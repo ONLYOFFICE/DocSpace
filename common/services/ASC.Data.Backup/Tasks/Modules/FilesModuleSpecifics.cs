@@ -236,7 +236,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 var strValue = Convert.ToString(value);
 
-                string start = GetStart(strValue);
+                var start = GetStart(strValue);
                 if (start == null)
                     return false;
 

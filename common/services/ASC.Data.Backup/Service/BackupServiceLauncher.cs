@@ -24,55 +24,65 @@
 */
 
 
+using System.Threading;
+using System.Threading.Tasks;
+
 using ASC.Common;
-using ASC.Common.Module;
+
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup.Service
 {
-    public class BackupServiceLauncher : IServiceController
+    internal class BackupServiceLauncher : IHostedService
     {
-        private BackupCleanerService cleanerService;
-        private BackupSchedulerService schedulerService;
-        private BackupWorker backupWorker;
+        private BackupCleanerService CleanerService { get; set; }
+        private BackupSchedulerService SchedulerService { get; set; }
+        private BackupWorker BackupWorker { get; set; }
 
-        public BackupServiceLauncher(BackupCleanerService cleanerService, BackupSchedulerService schedulerService, BackupWorker backupWorker)
+        public BackupServiceLauncher(
+            BackupCleanerService cleanerService,
+            BackupSchedulerService schedulerService,
+            BackupWorker backupWorker)
         {
-            this.cleanerService = cleanerService;
-            this.schedulerService = schedulerService;
-            this.backupWorker = backupWorker;
+            CleanerService = cleanerService;
+            SchedulerService = schedulerService;
+            BackupWorker = backupWorker;
         }
-        public void Start()
+
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             var config = BackupConfigurationSection.GetSection();
 
-            backupWorker.Start(config);
-           
+            BackupWorker.Start(config);
 
             if (config.Cleaner.ElementInformation.IsPresent)
             {
-                cleanerService.Period = config.Cleaner.Period ;
-                cleanerService.Start();
+                CleanerService.Period = config.Cleaner.Period;
+                CleanerService.Start();
             }
             if (config.Scheduler.ElementInformation.IsPresent)
             {
-                schedulerService.Period = config.Scheduler.Period ;
-                schedulerService.Start();
+                SchedulerService.Period = config.Scheduler.Period;
+                SchedulerService.Start();
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Stop()
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            backupWorker.Stop();
-            if (cleanerService != null)
+            BackupWorker.Stop();
+            if (CleanerService != null)
             {
-                cleanerService.Stop();
-                cleanerService = null;
+                CleanerService.Stop();
+                CleanerService = null;
             }
-            if (schedulerService != null)
+            if (SchedulerService != null)
             {
-                schedulerService.Stop();
-                schedulerService = null;
+                SchedulerService.Stop();
+                SchedulerService = null;
             }
+            return Task.CompletedTask;
         }
     }
     public static class BackupServiceLauncherExtension
@@ -80,7 +90,10 @@ namespace ASC.Data.Backup.Service
         public static DIHelper AddBackupServiceLauncher(this DIHelper services)
         {
             services.TryAddScoped<BackupServiceLauncher>();
-            return services;
+            return services
+                .AddBackupCleanerService()
+                .AddBackupSchedulerService()
+                .AddBackupWorkerService();
         }
     }
 }

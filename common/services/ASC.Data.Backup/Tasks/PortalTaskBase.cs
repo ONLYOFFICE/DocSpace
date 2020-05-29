@@ -142,7 +142,7 @@ namespace ASC.Data.Backup.Tasks
             if (!allowedStorageModules.Contains(storageModuleName))
                 return false;
 
-            IModuleSpecifics moduleSpecifics = moduleProvider.GetByStorageModule(storageModuleName);
+            var moduleSpecifics = moduleProvider.GetByStorageModule(storageModuleName);
             return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
         }
 

@@ -86,8 +86,8 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("begin transfer {0}", TenantId);
             var fromDbFactory = new DbFactory(ConfigPath);
             var toDbFactory = new DbFactory(ToConfigPath);
-            string tenantAlias = GetTenantAlias(fromDbFactory);
-            string backupFilePath = GetBackupFilePath(tenantAlias);
+            var tenantAlias = GetTenantAlias(fromDbFactory);
+            var backupFilePath = GetBackupFilePath(tenantAlias);
             var columnMapper = new ColumnMapper();
             try
             {
@@ -158,18 +158,18 @@ namespace ASC.Data.Backup.Tasks
         {
             Logger.Debug("begin transfer storage");
             var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
-            int groupsProcessed = 0;
+            var groupsProcessed = 0;
             foreach (var group in fileGroups)
             {
                 var baseStorage = storageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
                 var destStorage = storageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
                 var utility = new CrossModuleTransferUtility(options, baseStorage, destStorage);
 
-                foreach (BackupFileInfo file in group)
+                foreach (var file in group)
                 {
-                    string adjustedPath = file.Path;
+                    var adjustedPath = file.Path;
 
-                    IModuleSpecifics module = moduleProvider.GetByStorageModule(file.Module, file.Domain);
+                    var module = moduleProvider.GetByStorageModule(file.Module, file.Domain);
                     if (module == null || module.TryAdjustFilePath(false, columnMapper, ref adjustedPath))
                     {
                         try

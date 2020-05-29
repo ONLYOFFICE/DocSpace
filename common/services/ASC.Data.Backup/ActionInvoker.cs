@@ -54,7 +54,7 @@ namespace ASC.Data.Backup
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            int countAttempts = 0;
+            var countAttempts = 0;
             while (countAttempts++ < maxAttempts)
             {
                 try

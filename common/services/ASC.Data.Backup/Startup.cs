@@ -1,16 +1,18 @@
 
 
+using System;
+
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
+using ASC.Data.Backup.Service;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using ASC.Common.Logging;
+
 using static ASC.Data.Backup.Service.BackupWorker;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Backup.Service;
 
 namespace ASC.Data.Backup
 {
@@ -29,20 +31,7 @@ namespace ASC.Data.Backup
 
             var diHelper = new DIHelper(services);
 
-            diHelper.AddBackupHelperService()
-                .AddBackupManager()
-                .AddDbBackupProvider()
-                .AddDbHelper()
-                .AddFileBackupProviderService()
-                .AddNotifyHelperService()
-                .AddHelpers()
-                .AddModuleProvider()
-                .AddBackupAjaxHandler()
-                .AddBackupServiceLauncher()
-                .AddBackupWorkerService()
-                .AddBackupService()
-                .AddBackupSchedulerService()
-                .AddBackupCleanerService();
+            diHelper.AddBackupServiceLauncher();
             diHelper.AddNLogManager("ASC.Data.Backup");
 
             diHelper.Configure<ProgressQueue<BackupProgressItem>>(r =>
@@ -81,7 +70,7 @@ namespace ASC.Data.Backup
 
         public void Configure(IApplicationBuilder app)
         {
-           
+
         }
     }
 }

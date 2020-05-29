@@ -57,7 +57,7 @@ namespace ASC.Data.Backup.Storage
 
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
-            String key = String.Empty;
+            var key = String.Empty;
 
             if (String.IsNullOrEmpty(storageBasePath))
                 key = "backup/" + Path.GetFileName(localPath);

@@ -26,61 +26,47 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Contracts;
 using ASC.Core.Tenants;
-using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Service;
 using ASC.Data.Backup.Utils;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Storage
 {
     public class BackupStorageFactory
     {
-
-        private TenantManager tenantManager;
-        private SecurityContext securityContext;
-        private IDaoFactory daoFactory; 
-        private StorageFactory storageFactory;
-        private BackupsContext backupContext;
-        private IOptionsMonitor<ILog> options;
-        private TenantUtil tenantUtil;
-        private BackupHelper backupHelper;
-
-        public BackupStorageFactory(TenantManager tenantManager, SecurityContext securityContext, IDaoFactory daoFactory, StorageFactory storageFactory, BackupsContext backupContext, IOptionsMonitor<ILog> options, TenantUtil tenantUtil, BackupHelper backupHelper)
-        {
-            this.tenantManager = tenantManager;
-            this.securityContext = securityContext;
-            this.daoFactory = daoFactory;
-            this.storageFactory = storageFactory;
-            this.backupContext = backupContext;
-            this.options = options;
-            this.tenantUtil = tenantUtil;
-            this.backupHelper = backupHelper;
-        }
-        public IBackupStorage GetBackupStorage(BackupRecord record)
-        {
-            return GetBackupStorage(record.StorageType, record.TenantId, record.StorageParams);
-        }
-        
         public IServiceProvider ServiceProvider { get; }
         public BackupStorageFactory(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
         }
+
+        public IBackupStorage GetBackupStorage(BackupRecord record)
+        {
+            return GetBackupStorage(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
+        }
+
         public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
         {
             var config = BackupConfigurationSection.GetSection();
             var webConfigPath = PathHelper.ToRootedConfigPath(config.WebConfigs.CurrentPath);
+
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+
             switch (type)
             {
                 case BackupStorageType.Documents:
@@ -97,11 +83,6 @@ namespace ASC.Data.Backup.Storage
                 default:
                     throw new InvalidOperationException("Unknown storage type.");
             }
-        }
-
-        public IBackupRepository GetBackupRepository()
-        {
-            return new BackupRepository(backupContext, options, tenantManager, tenantUtil, backupHelper);
         }
     }
     public static class BackupStorageFactoryExtension

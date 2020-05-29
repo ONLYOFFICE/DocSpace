@@ -297,8 +297,8 @@ namespace ASC.Data.Backup.Tasks
                 Logger.DebugFormat("dump table data start {0}", t);
                 var searchWithPrimary = false;
                 string primaryIndex;
-                int primaryIndexStep = 0;
-                int primaryIndexStart = 0;
+                var primaryIndexStep = 0;
+                var primaryIndexStart = 0;
 
                 List<string> columns;
                 var dbFactory = new DbFactory(ConfigPath);
@@ -390,7 +390,7 @@ namespace ASC.Data.Backup.Tasks
             using (var connection = dbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
-                string selects = "";
+                var selects = "";
                 foreach(var column in columns)
                 {
                     selects = column + ", ";
@@ -414,7 +414,7 @@ namespace ASC.Data.Backup.Tasks
             using (var connection = dbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
-                string selects = "";
+                var selects = "";
                 foreach (var column in columns)
                 {
                     selects = column + ", ";
@@ -712,12 +712,12 @@ namespace ASC.Data.Backup.Tasks
         }
         public List<object[]> ExecuteList(DbCommand command)
         {
-            List<object[]> list = new List<object[]>();
+            var list = new List<object[]>();
             using (var result = command.ExecuteReader())
             {
                 while (result.Read())
                 {
-                    object[] objects = new object[result.FieldCount];
+                    var objects = new object[result.FieldCount];
                     result.GetValues(objects);
                     list.Add(objects);
                 }

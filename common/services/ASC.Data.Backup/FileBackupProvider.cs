@@ -253,7 +253,7 @@ namespace ASC.Data.Backup
             {
                 unchecked
                 {
-                    int result = (Module != null ? Module.GetHashCode() : 0);
+                    var result = (Module != null ? Module.GetHashCode() : 0);
                     result = (result * 397) ^ (Domain != null ? Domain.GetHashCode() : 0);
                     result = (result * 397) ^ (Path != null ? Path.GetHashCode() : 0);
                     return result;

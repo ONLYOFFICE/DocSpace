@@ -226,7 +226,7 @@ namespace ASC.Data.Backup
 
         public List<string> ExecuteList(DbCommand command)
         {
-            List<string> list = new List<string>();
+            var list = new List<string>();
             using (var result = command.ExecuteReader())
             {
                 while (result.Read())

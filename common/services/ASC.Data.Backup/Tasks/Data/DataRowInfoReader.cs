@@ -72,7 +72,7 @@ namespace ASC.Data.Backup.Tasks.Data
                             var dataRowInfo = new DataRowInfo(el.Name.LocalName);
                             foreach (var column in schema)
                             {
-                                object value = ConvertToType(el.Element(column.Key).ValueOrDefault(), column.Value);
+                                var value = ConvertToType(el.Element(column.Key).ValueOrDefault(), column.Value);
                                 dataRowInfo.SetValue(column.Key, value);
                             }
 

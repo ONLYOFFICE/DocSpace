@@ -146,7 +146,7 @@ namespace ASC.Data.Backup
             var errors = 0;
             var timeout = TimeSpan.FromSeconds(1);
             var tables = dbHelper.GetTables();
-            for (int i = 0; i < tables.Count; i++)
+            for (var i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];
                 OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
@@ -203,7 +203,7 @@ namespace ASC.Data.Backup
             if (dbElement == null) return;
 
             var tables = dbHelper.GetTables();
-            for (int i = 0; i < tables.Count; i++)
+            for (var i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];
                 OnProgressChanged(table, (int)(i / (double)tables.Count * 100));

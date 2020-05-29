@@ -82,7 +82,7 @@ namespace ASC.Data.Backup.Tasks.Data
             
             var sb = new StringBuilder(maxStrLength);
             
-            int i = 0;
+            var i = 0;
             while (i < _values.Count && sb.Length <= maxStrLength)
             {
                 var strVal = Convert.ToString(_values[i]);
