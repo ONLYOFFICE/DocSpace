@@ -39,6 +39,7 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
@@ -67,14 +68,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public int DaoFolderId { get; }
         public bool Copy { get; }
         public FileConflictResolveType ResolveType { get; }
-        public Dictionary<string, string> Headers { get; }
+        public IDictionary<string, StringValues> Headers { get; }
 
-        public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
+        public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
             : this(folders.OfType<T>(), files.OfType<T>(), tenant, toFolderId, copy, resolveType, holdResult, headers)
         {
         }
 
-        public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
+        public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
             : base(folders, files, tenant, holdResult)
         {
             if (toFolderId.ValueKind == JsonValueKind.String)
@@ -99,7 +100,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private readonly bool _copy;
         private readonly FileConflictResolveType _resolveType;
 
-        private readonly Dictionary<string, string> _headers;
+        private readonly IDictionary<string, StringValues> _headers;
 
         public override FileOperationType OperationType
         {

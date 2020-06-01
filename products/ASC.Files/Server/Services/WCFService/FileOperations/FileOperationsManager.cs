@@ -35,6 +35,8 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Files.Resources;
 
+using Microsoft.Extensions.Primitives;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     public class FileOperationsManager
@@ -109,7 +111,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Download(AuthContext authContext, TenantManager tenantManager, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Download(AuthContext authContext, TenantManager tenantManager, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
         {
             var operations = tasks.GetTasks()
                 .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID)
@@ -128,7 +130,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopy(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> MoveOrCopy(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
         {
             var tenant = tenantManager.GetCurrentTenant();
             var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant, destFolderId, copy, resolveType, holdResult, headers));
@@ -138,13 +140,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Delete<T>(AuthContext authContext, TenantManager tenantManager, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete<T>(AuthContext authContext, TenantManager tenantManager, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
             var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Delete(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
             var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
             var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
@@ -198,32 +200,32 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return FileOperationsManager.MarkAsRead(AuthContext, TenantManager, folderIds, fileIds);
         }
 
-        public ItemList<FileOperationResult> Download(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Download(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
         {
             return FileOperationsManager.Download(AuthContext, TenantManager, folders, files, headers);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopy(IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> MoveOrCopy(IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
         {
             return FileOperationsManager.MoveOrCopy(AuthContext, TenantManager, folders, files, destFolderId, copy, resolveType, holdResult, headers);
         }
 
-        public ItemList<FileOperationResult> Delete(List<JsonElement> folders, List<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete(List<JsonElement> folders, List<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
             return FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
         }
 
-        public ItemList<FileOperationResult> Delete<T>(List<T> folders, List<T> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete<T>(List<T> folders, List<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
             return FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
         }
 
-        public ItemList<FileOperationResult> DeleteFile<T>(T file, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> DeleteFile<T>(T file, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
             return Delete(new List<T>(), new List<T>() { file }, ignoreException, holdResult, immediately, headers);
         }
 
-        public ItemList<FileOperationResult> DeleteFolder<T>(T folder, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> DeleteFolder<T>(T folder, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
             return Delete(new List<T>() { folder }, new List<T>(), ignoreException, holdResult, immediately, headers);
         }

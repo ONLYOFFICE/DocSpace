@@ -37,6 +37,7 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
@@ -44,16 +45,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     {
         public bool IgnoreException { get; }
         public bool Immediately { get; }
-        public Dictionary<string, string> Headers { get; }
+        public IDictionary<string, StringValues> Headers { get; }
 
         public FileDeleteOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant,
-            bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
+            bool holdResult = true, bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null)
             : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult, ignoreException, immediately, headers)
         {
         }
 
         public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant,
-            bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
+            bool holdResult = true, bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null)
             : base(folders, files, tenant, holdResult)
         {
             IgnoreException = ignoreException;
@@ -80,7 +81,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private int _trashId;
         private readonly bool _ignoreException;
         private readonly bool _immediately;
-        private readonly Dictionary<string, string> _headers;
+        private readonly IDictionary<string, StringValues> _headers;
 
         public override FileOperationType OperationType
         {

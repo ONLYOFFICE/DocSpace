@@ -68,6 +68,7 @@ using ASC.Web.Files.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
@@ -1009,7 +1010,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file = EntryManager.SaveEditing(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
             }
 
-            FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+            FilesMessageService.Send(file, HttpContextAccessor?.HttpContext?.Request?.Headers, MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
             fileDao = GetFileDao();
             return new ItemList<EditHistory>(fileDao.GetEditHistory(DocumentServiceHelper, file.ID));
@@ -2041,18 +2042,9 @@ namespace ASC.Web.Files.Services.WCFService
             return new InvalidOperationException(error.Message, error);
         }
 
-        private Dictionary<string, string> GetHttpHeaders()
+        private IDictionary<string, StringValues> GetHttpHeaders()
         {
-            if (HttpContextAccessor?.HttpContext != null && HttpContextAccessor?.HttpContext.Request != null && HttpContextAccessor?.HttpContext.Request.Headers != null)
-            {
-                var headers = new Dictionary<string, string>();
-                foreach (var k in HttpContextAccessor?.HttpContext.Request.Headers)
-                {
-                    headers[k.Key] = string.Join(", ", k.Value);
-                }
-                return headers;
-            }
-            return null;
+            return HttpContextAccessor?.HttpContext?.Request?.Headers;
         }
     }
 
