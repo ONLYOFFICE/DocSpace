@@ -91,6 +91,34 @@ namespace ASC.Core
 
     public class TenantManager
     {
+        private class TenantHolder
+        {
+            public Tenant Tenant;
+        }
+
+        private static readonly AsyncLocal<TenantHolder> currentTenant = new AsyncLocal<TenantHolder>();
+
+        public Tenant CurrentTenant
+        {
+            get
+            {
+                return currentTenant.Value?.Tenant;
+            }
+            set
+            {
+                var holder = currentTenant.Value;
+                if (holder != null)
+                {
+                    holder.Tenant = null;
+                }
+
+                if (value != null)
+                {
+                    currentTenant.Value = new TenantHolder { Tenant = value };
+                }
+            }
+        }
+
         public const string CURRENT_TENANT = "CURRENT_TENANT";
         internal ITenantService TenantService { get; set; }
         internal IQuotaService QuotaService { get; set; }
@@ -101,8 +129,6 @@ namespace ASC.Core
         internal IHttpContextAccessor HttpContextAccessor { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
-
-        public Tenant CurrentTenant { get; set; }
 
         static TenantManager()
         {
@@ -248,6 +274,9 @@ namespace ASC.Core
             {
                 throw new Exception("Could not resolve current tenant :-(.");
             }
+
+            CurrentTenant = tenant;
+
             return tenant;
         }
 
