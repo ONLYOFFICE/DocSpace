@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Contracts;
 using ASC.Core.Tenants;
@@ -37,6 +38,7 @@ using ASC.Data.Backup.Utils;
 using ASC.Data.Storage;
 using ASC.Files.Core;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
@@ -46,9 +48,11 @@ namespace ASC.Data.Backup.Storage
     public class BackupStorageFactory
     {
         public IServiceProvider ServiceProvider { get; }
-        public BackupStorageFactory(IServiceProvider serviceProvider)
+        public IConfiguration Configuration { get; }
+        public BackupStorageFactory(IServiceProvider serviceProvider, IConfiguration configuration)
         {
             ServiceProvider = serviceProvider;
+            Configuration = configuration;
         }
 
         public IBackupStorage GetBackupStorage(BackupRecord record)
@@ -58,8 +62,8 @@ namespace ASC.Data.Backup.Storage
 
         public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
         {
-            var config = BackupConfigurationSection.GetSection();
-            var webConfigPath = PathHelper.ToRootedConfigPath(config.WebConfigs.CurrentPath);
+            var settings = Configuration.GetSetting<BackupSettings>("backup");
+            var webConfigPath = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
 
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -71,7 +75,7 @@ namespace ASC.Data.Backup.Storage
             {
                 case BackupStorageType.Documents:
                 case BackupStorageType.ThridpartyDocuments:
-                    return new DocumentsBackupStorage(tenantId, webConfigPath, tenantManager, securityContext, daoFactory, storageFactory);
+                    return new DocumentsBackupStorage(tenantId, webConfigPath, tenantManager, securityContext, daoFactory, storageFactory, ServiceProvider);
                 case BackupStorageType.DataStore:
                     return new DataStoreBackupStorage(tenantId, webConfigPath, storageFactory);
                 case BackupStorageType.Local:

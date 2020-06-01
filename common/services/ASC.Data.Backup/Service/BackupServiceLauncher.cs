@@ -28,7 +28,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Utils;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup.Service
@@ -38,33 +40,31 @@ namespace ASC.Data.Backup.Service
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
+        private IConfiguration Configuration { get; set; }
 
         public BackupServiceLauncher(
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
-            BackupWorker backupWorker)
+            BackupWorker backupWorker,
+            IConfiguration configuration)
         {
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
+            Configuration = configuration;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var config = BackupConfigurationSection.GetSection();
+            var settings = Configuration.GetSetting<BackupSettings>("backup");
 
-            BackupWorker.Start(config);
+            BackupWorker.Start(settings);
 
-            if (config.Cleaner.ElementInformation.IsPresent)
-            {
-                CleanerService.Period = config.Cleaner.Period;
-                CleanerService.Start();
-            }
-            if (config.Scheduler.ElementInformation.IsPresent)
-            {
-                SchedulerService.Period = config.Scheduler.Period;
-                SchedulerService.Start();
-            }
+            CleanerService.Period = settings.Cleaner.Period;
+            CleanerService.Start();
+
+            SchedulerService.Period = settings.Scheduler.Period;
+            SchedulerService.Start();
 
             return Task.CompletedTask;
         }

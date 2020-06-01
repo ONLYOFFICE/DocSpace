@@ -33,13 +33,16 @@ using System.ServiceModel;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Contracts;
+using ASC.Common.Utils;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Utils;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
+
 
 namespace ASC.Data.Backup.Service
 {
@@ -49,17 +52,20 @@ namespace ASC.Data.Backup.Service
         private BackupStorageFactory BackupStorageFactory { get; set; }
         private BackupWorker BackupWorker { get; set; }
         public BackupRepository BackupRepository { get; }
+        public IConfiguration Configuration { get; }
 
         public BackupService(
             IOptionsMonitor<ILog> options,
             BackupStorageFactory backupStorageFactory,
             BackupWorker backupWorker,
-            BackupRepository backupRepository)
+            BackupRepository backupRepository,
+            IConfiguration configuration)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;
             BackupWorker = backupWorker;
             BackupRepository = backupRepository;
+            Configuration = configuration;
         }
 
         public BackupProgress StartBackup(StartBackupRequest request)
@@ -207,21 +213,19 @@ namespace ASC.Data.Backup.Service
 
         public List<TransferRegion> GetTransferRegions()
         {
-            var webConfigs = BackupConfigurationSection.GetSection().WebConfigs;
-            return webConfigs
-                .Cast<WebConfigElement>()
-                .Select(configElement =>
-                    {
-                        var config = ConfigurationProvider.Open(PathHelper.ToRootedConfigPath(configElement.Path));
-                        var baseDomain = config.AppSettings.Settings["core.base-domain"].Value;
-                        return new TransferRegion
-                        {
-                            Name = configElement.Region,
-                            BaseDomain = baseDomain,
-                            IsCurrentRegion = configElement.Region.Equals(webConfigs.CurrentRegion, StringComparison.InvariantCultureIgnoreCase)
-                        };
-                    })
-                .ToList();
+            var settings = Configuration.GetSetting<BackupSettings>("backup");
+            return settings.WebConfigs.Elements.Select(configElement =>
+            {
+                var config = Utils.ConfigurationProvider.Open(PathHelper.ToRootedConfigPath(configElement.Path));
+                var baseDomain = config.AppSettings.Settings["core.base-domain"].Value;
+                return new TransferRegion
+                {
+                    Name = configElement.Region,
+                    BaseDomain = baseDomain,
+                    IsCurrentRegion = configElement.Region.Equals(settings.WebConfigs.CurrentRegion, StringComparison.InvariantCultureIgnoreCase)
+                };
+            })
+            .ToList();
         }
 
         public void CreateSchedule(CreateScheduleRequest request)

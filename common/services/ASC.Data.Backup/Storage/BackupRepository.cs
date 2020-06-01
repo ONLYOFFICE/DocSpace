@@ -38,7 +38,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ASC.Data.Backup.Storage
 {
-    internal class BackupRepository : IBackupRepository
+    public class BackupRepository : IBackupRepository
     {
         private BackupsContext BackupContext { get; }
 

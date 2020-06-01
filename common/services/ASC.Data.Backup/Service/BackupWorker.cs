@@ -55,77 +55,39 @@ namespace ASC.Data.Backup.Service
     internal class BackupWorker
     {
         private ILog Log { get; set; }
-        private ProgressQueue<BackupProgressItem> BackupProgressQueue { get; set; }
-        private ProgressQueue<ScheduledProgressItem> ScheduledProgressQueue { get; set; }
-        private ProgressQueue<RestoreProgressItem> RestoreProgressQueue { get; set; }
-        private ProgressQueue<TransferProgressItem> TransferProgressQueue { get; set; }
+        private ProgressQueue<IProgressItem> ProgressQueue { get; set; }
         internal string TempFolder { get; set; }
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
         private string UpgradesPath { get; set; }
-        private TenantManager TenantManager { get; set; }
-        private BackupStorageFactory BackupStorageFactory { get; set; }
-        private NotifyHelper NotifyHelper { get; set; }
-        private CoreBaseSettings CoreBaseSettings { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        private StorageFactoryConfig StorageFactoryConfig { get; set; }
-        private LicenseReader LicenseReader { get; set; }
-        private AscCacheNotify AscCacheNotify { get; set; }
-        private ModuleProvider ModuleProvider { get; set; }
-        private BackupsContext BackupRecordContext { get; set; }
         public BackupRepository BackupRepository { get; }
+        public FactoryProgressItem factoryProgressItem { get; set; }
 
         public BackupWorker(
             IOptionsMonitor<ILog> options,
-            ProgressQueue<BackupProgressItem> backupProgressQueue,
-            ProgressQueue<ScheduledProgressItem> scheduledProgressQueue,
-            ProgressQueue<RestoreProgressItem> restoreProgressQueue,
-            ProgressQueue<TransferProgressItem> transferProgressQueue,
-            BackupStorageFactory backupStorageFactory,
-            NotifyHelper notifyHelper,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            StorageFactory storageFactory,
-            StorageFactoryConfig storageFactoryConfig,
-            LicenseReader licenseReader,
-            AscCacheNotify ascCacheNotify,
-            ModuleProvider moduleProvider,
-            BackupsContext backupRecordContext,
-            BackupRepository backupRepository)
+            ProgressQueue<IProgressItem> progressQueue,
+            BackupRepository backupRepository,
+            FactoryProgressItem factoryProgressItem)
         {
             Log = options.CurrentValue;
-
-            TenantManager = tenantManager;
-            BackupStorageFactory = backupStorageFactory;
-            NotifyHelper = notifyHelper;
-            CoreBaseSettings = coreBaseSettings;
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
-            LicenseReader = licenseReader;
-            AscCacheNotify = ascCacheNotify;
-            ModuleProvider = moduleProvider;
-            BackupRecordContext = backupRecordContext;
             BackupRepository = backupRepository;
-            BackupProgressQueue = backupProgressQueue;
-            ScheduledProgressQueue = scheduledProgressQueue;
-            RestoreProgressQueue = restoreProgressQueue;
-            this.TransferProgressQueue = transferProgressQueue;
+            ProgressQueue = progressQueue;
+            this.factoryProgressItem = factoryProgressItem;
         }
-        public void Start(BackupConfigurationSection config)
+        public void Start(BackupSettings settings)
         {
-            TempFolder = PathHelper.ToRootedPath(config.TempFolder);
+            TempFolder = PathHelper.ToRootedPath(settings.TempFolder);
             if (!Directory.Exists(TempFolder))
             {
                 Directory.CreateDirectory(TempFolder);
             }
 
-            Limit = config.Limit;
-            UpgradesPath = config.UpgradesPath;
-            CurrentRegion = config.WebConfigs.CurrentRegion;
-            ConfigPaths = config.WebConfigs.Cast<WebConfigElement>().ToDictionary(el => el.Region, el => PathHelper.ToRootedConfigPath(el.Path));
-            ConfigPaths[CurrentRegion] = PathHelper.ToRootedConfigPath(config.WebConfigs.CurrentPath);
+            Limit = settings.Limit;
+            UpgradesPath = settings.UpgradesPath;
+            CurrentRegion = settings.WebConfigs.CurrentRegion;
+            ConfigPaths = settings.WebConfigs.Elements.ToDictionary(el => el.Region, el => PathHelper.ToRootedConfigPath(el.Path));
+            ConfigPaths[CurrentRegion] = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
 
             var invalidConfigPath = ConfigPaths.Values.FirstOrDefault(path => !File.Exists(path));
             if (invalidConfigPath != null)
@@ -136,42 +98,29 @@ namespace ASC.Data.Backup.Service
 
         public void Stop()
         {
-            if (BackupProgressQueue != null)
+            if (ProgressQueue != null)
             {
-                BackupProgressQueue.Terminate();
-                BackupProgressQueue = null;
-            }
-            if (ScheduledProgressQueue != null)
-            {
-                ScheduledProgressQueue.Terminate();
-                ScheduledProgressQueue = null;
-            }
-            if (RestoreProgressQueue != null)
-            {
-                RestoreProgressQueue.Terminate();
-                RestoreProgressQueue = null;
-            }
-            if (TransferProgressQueue != null)
-            {
-                TransferProgressQueue.Terminate();
-                TransferProgressQueue = null;
+                ProgressQueue.Terminate();
+                ProgressQueue = null;
             }
         }
 
         public BackupProgress StartBackup(StartBackupRequest request)
         {
-            lock (BackupProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                var item = BackupProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
+                var item = ProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
                 if (item != null && item.IsCompleted)
                 {
-                    BackupProgressQueue.Remove(item);
+                    ProgressQueue.Remove(item);
                     item = null;
                 }
                 if (item == null)
                 {
-                    item = new BackupProgressItem(false, request.TenantId, request.UserId, request.StorageType, request.StorageBasePath, BackupStorageFactory, this, NotifyHelper, TenantManager, CoreBaseSettings, BackupRecordContext, BackupRepository) { BackupMail = request.BackupMail, StorageParams = request.StorageParams };
-                    BackupProgressQueue.Add(item);
+                    item = factoryProgressItem.CreateBackupProgressItem(request.UserId, false, request.TenantId, TempFolder, Limit, CurrentRegion, ConfigPaths, request.StorageType, request.StorageBasePath);
+                    item.BackupMail = request.BackupMail;
+                    item.StorageParams = request.StorageParams;
+                    ProgressQueue.Add(item);
                 }
                 return ToBackupProgress(item);
             }
@@ -179,39 +128,37 @@ namespace ASC.Data.Backup.Service
 
         public void StartScheduledBackup(BackupSchedule schedule)
         {
-            lock (ScheduledProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                var item = ScheduledProgressQueue.GetItems().OfType<ScheduledProgressItem>().FirstOrDefault(t => t.TenantId == schedule.TenantId);
+                var item = ProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == schedule.TenantId);
                 if (item != null && item.IsCompleted)
                 {
-                    ScheduledProgressQueue.Remove(item);
+                    ProgressQueue.Remove(item);
                     item = null;
                 }
                 if (item == null)
                 {
-                    item = new ScheduledProgressItem(schedule.TenantId, Guid.Empty, schedule.StorageType, schedule.StorageBasePath, BackupStorageFactory, this, NotifyHelper, TenantManager, CoreBaseSettings, BackupRecordContext, BackupRepository)
-                    {
-                        BackupMail = schedule.BackupMail,
-                        StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams)
-                    };
-                    ScheduledProgressQueue.Add(item);
+                    item = factoryProgressItem.CreateBackupProgressItem(Guid.Empty, true, schedule.TenantId, TempFolder, Limit, CurrentRegion, ConfigPaths, schedule.StorageType, schedule.StorageBasePath);
+                    item.BackupMail = schedule.BackupMail;
+                    item.StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams);
+                    ProgressQueue.Add(item);
                 }
             }
         }
 
         public BackupProgress GetBackupProgress(int tenantId)
         {
-            lock (BackupProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                return ToBackupProgress(BackupProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+                return ToBackupProgress(ProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
         public void ResetBackupError(int tenantId)
         {
-            lock (BackupProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                var progress = BackupProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
+                var progress = ProgressQueue.GetItems().OfType<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
                 if (progress != null)
                 {
                     progress.Error = null;
@@ -221,9 +168,9 @@ namespace ASC.Data.Backup.Service
 
         public void ResetRestoreError(int tenantId)
         {
-            lock (RestoreProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                var progress = RestoreProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
+                var progress = ProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
                 if (progress != null)
                 {
                     progress.Error = null;
@@ -233,18 +180,18 @@ namespace ASC.Data.Backup.Service
 
         public BackupProgress StartRestore(StartRestoreRequest request)
         {
-            lock (RestoreProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                var item = RestoreProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
+                var item = ProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
                 if (item != null && item.IsCompleted)
                 {
-                    RestoreProgressQueue.Remove(item);
+                    ProgressQueue.Remove(item);
                     item = null;
                 }
                 if (item == null)
                 {
-                    item = new RestoreProgressItem(request.TenantId, request.StorageType, request.FilePathOrId, request.NotifyAfterCompletion, BackupStorageFactory, this) { StorageParams = request.StorageParams };
-                    RestoreProgressQueue.Add(item);
+                    item = factoryProgressItem.CreateRestoreProgressItem(request.FilePathOrId, request.NotifyAfterCompletion, request.TenantId, TempFolder, UpgradesPath, CurrentRegion, request.StorageType);
+                    ProgressQueue.Add(item);
                 }
                 return ToBackupProgress(item);
             }
@@ -252,26 +199,26 @@ namespace ASC.Data.Backup.Service
 
         public BackupProgress GetRestoreProgress(int tenantId)
         {
-            lock (RestoreProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                return ToBackupProgress(RestoreProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+                return ToBackupProgress(ProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
         public BackupProgress StartTransfer(int tenantId, string targetRegion, bool transferMail, bool notify)
         {
-            lock (TransferProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                var item = TransferProgressQueue.GetItems().OfType<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
+                var item = ProgressQueue.GetItems().OfType<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
                 if (item != null && item.IsCompleted)
                 {
-                    TransferProgressQueue.Remove(item);
+                    ProgressQueue.Remove(item);
                     item = null;
                 }
                 if (item == null)
                 {
-                    item = new TransferProgressItem(tenantId, targetRegion, transferMail, notify, this);
-                    TransferProgressQueue.Add(item);
+                    item = factoryProgressItem.CreateTransferProgressItem(targetRegion, transferMail, tenantId, TempFolder, Limit, notify, CurrentRegion, ConfigPaths);
+                    ProgressQueue.Add(item);
                 }
                 return ToBackupProgress(item);
             }
@@ -279,9 +226,9 @@ namespace ASC.Data.Backup.Service
 
         public BackupProgress GetTransferProgress(int tenantId)
         {
-            lock (TransferProgressQueue.SynchRoot)
+            lock (ProgressQueue.SynchRoot)
             {
-                return ToBackupProgress(TransferProgressQueue.GetItems().OfType<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+                return ToBackupProgress(ProgressQueue.GetItems().OfType<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
@@ -316,335 +263,493 @@ namespace ASC.Data.Backup.Service
             return progress;
         }
 
-        internal class BackupProgressItem : IProgressItem
+        
+    }
+    public class BackupProgressItem : IProgressItem
+    {
+        private const string ArchiveFormat = "tar.gz";
+        private bool IsScheduled { get; set; }
+        public int TenantId { get; private set; }
+        private Guid UserId { get; set; }
+        private BackupStorageType StorageType { get; set; }
+        private string StorageBasePath { get; set; }
+        public bool BackupMail { get; set; }
+
+        public Dictionary<string, string> StorageParams { get; set; }
+
+        public string Link { get; private set; }
+
+        public object Id { get; set; }
+        public object Status { get; set; }
+        public object Error { get; set; }
+        public double Percentage { get; set; }
+        public bool IsCompleted { get; set; }
+        public string TempFolder { get; set; }
+        private string CurrentRegion { get; set; }
+        private Dictionary<string, string> ConfigPaths { get; set; }
+        private int Limit { get; set; }
+
+        private TenantManager tenantManager;
+        private BackupStorageFactory backupStorageFactory;
+        private NotifyHelper notifyHelper;
+        private BackupsContext backupRecordContext;
+        private readonly BackupRepository backupRepository;
+        private CoreBaseSettings coreBaseSettings;
+        private IOptionsMonitor<ILog> Options;
+        private StorageFactory StorageFactory;
+        private StorageFactoryConfig StorageFactoryConfig;
+        private ModuleProvider ModuleProvider;
+        private ILog Log { get; set; }
+        public BackupProgressItem(bool isScheduled, int tenantId, Guid userId, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupStorageType storageType, string storageBasePath, BackupStorageFactory backupStorageFactory, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, BackupsContext backupRecordContext, BackupRepository backupRepository)
         {
-            private const string ArchiveFormat = "tar.gz";
-            private bool IsScheduled { get; set; }
-            public int TenantId { get; private set; }
-            private Guid UserId { get; set; }
-            private BackupStorageType StorageType { get; set; }
-            private string StorageBasePath { get; set; }
-            public bool BackupMail { get; set; }
+            Id = Guid.NewGuid();
+            IsScheduled = isScheduled;
+            TenantId = tenantId;
+            UserId = userId;
+            StorageType = storageType;
+            StorageBasePath = storageBasePath;
+            this.tenantManager = tenantManager;
+            this.backupStorageFactory = backupStorageFactory;
+            this.notifyHelper = notifyHelper;
+            this.backupRecordContext = backupRecordContext;
+            this.backupRepository = backupRepository;
+            Options = options;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
+            ModuleProvider = moduleProvider;
+            this.coreBaseSettings = coreBaseSettings;
+            Log = options.CurrentValue;
+            Limit = limit;
+            CurrentRegion = currentRegion;
+            ConfigPaths = configPaths;
+            TempFolder = tempFolder;
 
-            public Dictionary<string, string> StorageParams { get; set; }
+        }
 
-            public string Link { get; private set; }
-
-            public object Id { get; set; }
-            public object Status { get; set; }
-            public object Error { get; set; }
-            public double Percentage { get; set; }
-            public bool IsCompleted { get; set; }
-
-            private BackupWorker backupWorker;
-            private TenantManager tenantManager;
-            private BackupStorageFactory backupStorageFactory;
-            private NotifyHelper notifyHelper;
-            private BackupsContext backupRecordContext;
-            private readonly BackupRepository backupRepository;
-            private CoreBaseSettings coreBaseSettings;
-            public BackupProgressItem(bool isScheduled, int tenantId, Guid userId, BackupStorageType storageType, string storageBasePath, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, BackupsContext backupRecordContext, BackupRepository backupRepository)
+        public void RunJob()
+        {
+            if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
             {
-                Id = Guid.NewGuid();
-                IsScheduled = isScheduled;
-                TenantId = tenantId;
-                UserId = userId;
-                StorageType = storageType;
-                StorageBasePath = storageBasePath;
-                this.backupWorker = backupWorker;
-                this.tenantManager = tenantManager;
-                this.backupStorageFactory = backupStorageFactory;
-                this.notifyHelper = notifyHelper;
-                this.coreBaseSettings = coreBaseSettings;
-                this.backupRecordContext = backupRecordContext;
-                this.backupRepository = backupRepository;
+                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             }
 
-            public void RunJob()
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, DateTime.UtcNow, ArchiveFormat);
+            var tempFile = Path.Combine(TempFolder, backupName);
+            var storagePath = tempFile;
+            try
             {
-                if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
+                var backupTask = new BackupPortalTask(Options, TenantId, ConfigPaths[CurrentRegion], tempFile, Limit, coreBaseSettings, StorageFactory, StorageFactoryConfig, ModuleProvider, backupRecordContext);
+                if (!BackupMail)
                 {
-                    Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+                    backupTask.IgnoreModule(ModuleName.Mail);
+                }
+                backupTask.IgnoreTable("tenants_tariff");
+                backupTask.ProgressChanged += (sender, args) => Percentage = 0.9 * args.Progress;
+                backupTask.RunJob();
+
+                var backupStorage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
+                if (backupStorage != null)
+                {
+                    storagePath = backupStorage.Upload(StorageBasePath, tempFile, UserId);
+                    Link = backupStorage.GetPublicLink(storagePath);
                 }
 
-                var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, DateTime.UtcNow, ArchiveFormat);
-                var tempFile = Path.Combine(backupWorker.TempFolder, backupName);
-                var storagePath = tempFile;
+                var repo = backupRepository;
+                repo.SaveBackupRecord(
+                    new BackupRecord
+                    {
+                        Id = (Guid)Id,
+                        TenantId = TenantId,
+                        IsScheduled = IsScheduled,
+                        Name = Path.GetFileName(tempFile),
+                        StorageType = StorageType,
+                        StorageBasePath = StorageBasePath,
+                        StoragePath = storagePath,
+                        CreatedOn = DateTime.UtcNow,
+                        ExpiresOn = StorageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
+                        StorageParams = JsonConvert.SerializeObject(StorageParams)
+                    });
+
+                Percentage = 100;
+
+                if (UserId != Guid.Empty && !IsScheduled)
+                {
+                    notifyHelper.SendAboutBackupCompleted(TenantId, UserId, Link);
+                }
+
+                IsCompleted = true;
+            }
+            catch (Exception error)
+            {
+                Log.ErrorFormat("RunJob - Params: {0}, Error = {1}", new { Id = Id, Tenant = TenantId, File = tempFile, BasePath = StorageBasePath, }, error);
+                Error = error;
+                IsCompleted = true;
+            }
+            finally
+            {
                 try
                 {
-                    var backupTask = new BackupPortalTask(backupWorker.Options, TenantId, backupWorker.ConfigPaths[backupWorker.CurrentRegion], tempFile, backupWorker.Limit, coreBaseSettings, backupWorker.StorageFactory, backupWorker.StorageFactoryConfig, backupWorker.ModuleProvider, backupRecordContext);
-                    if (!BackupMail)
+                    if (!(storagePath == tempFile && StorageType == BackupStorageType.Local))
                     {
-                        backupTask.IgnoreModule(ModuleName.Mail);
+                        File.Delete(tempFile);
                     }
-                    backupTask.IgnoreTable("tenants_tariff");
-                    backupTask.ProgressChanged += (sender, args) => Percentage = 0.9 * args.Progress;
-                    backupTask.RunJob();
-
-                    var backupStorage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
-                    if (backupStorage != null)
-                    {
-                        storagePath = backupStorage.Upload(StorageBasePath, tempFile, UserId);
-                        Link = backupStorage.GetPublicLink(storagePath);
-                    }
-
-                    var repo = backupRepository;
-                    repo.SaveBackupRecord(
-                        new BackupRecord
-                        {
-                            Id = (Guid)Id,
-                            TenantId = TenantId,
-                            IsScheduled = IsScheduled,
-                            Name = Path.GetFileName(tempFile),
-                            StorageType = StorageType,
-                            StorageBasePath = StorageBasePath,
-                            StoragePath = storagePath,
-                            CreatedOn = DateTime.UtcNow,
-                            ExpiresOn = StorageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
-                            StorageParams = JsonConvert.SerializeObject(StorageParams)
-                        });
-
-                    Percentage = 100;
-
-                    if (UserId != Guid.Empty && !IsScheduled)
-                    {
-                        notifyHelper.SendAboutBackupCompleted(TenantId, UserId, Link);
-                    }
-
-                    IsCompleted = true;
                 }
                 catch (Exception error)
                 {
-                    backupWorker.Log.ErrorFormat("RunJob - Params: {0}, Error = {1}", new { Id = Id, Tenant = TenantId, File = tempFile, BasePath = StorageBasePath, }, error);
-                    Error = error;
-                    IsCompleted = true;
+                    Log.Error("can't delete file: {0}", error);
                 }
-                finally
+            }
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+    }
+
+    public class RestoreProgressItem : IProgressItem
+    {
+        public int TenantId { get; private set; }
+        public BackupStorageType StorageType { get; set; }
+        public string StoragePath { get; set; }
+        public bool Notify { get; set; }
+
+        public Dictionary<string, string> StorageParams { get; set; }
+
+        public object Id { get; set; }
+        public object Status { get; set; }
+        public object Error { get; set; }
+        public double Percentage { get; set; }
+        public bool IsCompleted { get; set; }
+        public string TempFolder { get; set; }
+        private string CurrentRegion { get; set; }
+        private string UpgradesPath { get; set; }
+        private Dictionary<string, string> ConfigPaths { get; set; }
+        private TenantManager tenantManager { get; set; }
+
+        private NotifyHelper notifyHelper { get; set; }
+        private BackupStorageFactory backupStorageFactory { get; set; }
+        private CoreBaseSettings CoreBaseSettings { get; set; }
+        private IOptionsMonitor<ILog> Options { get; set; }
+        private StorageFactory StorageFactory { get; set; }
+        private StorageFactoryConfig StorageFactoryConfig { get; set; }
+        private ModuleProvider ModuleProvider { get; set; }
+        private LicenseReader LicenseReader { get; set; }
+        private AscCacheNotify AscCacheNotify { get; set; }
+        private ILog Log { get; set; }
+
+        public RestoreProgressItem(int tenantId, BackupStorageType storageType, string storagePath, bool notify, BackupStorageFactory backupStorageFactory, string tempFolder, string currentRegion, string upgradesPath, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, CoreBaseSettings coreBaseSettings, LicenseReader licenseReader, AscCacheNotify ascCacheNotify)
+        {
+            Id = Guid.NewGuid();
+            TenantId = tenantId;
+            StorageType = storageType;
+            StoragePath = storagePath;
+            Notify = notify;
+            this.backupStorageFactory = backupStorageFactory;
+            CurrentRegion = currentRegion;
+            UpgradesPath = upgradesPath;
+            Options = options;
+            TempFolder = tempFolder;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
+            ModuleProvider = moduleProvider;
+            CoreBaseSettings = coreBaseSettings;
+            LicenseReader = licenseReader;
+            AscCacheNotify = ascCacheNotify;
+            Log = options.CurrentValue;
+        }
+
+        public void RunJob()
+        {
+            Tenant tenant = null;
+            var tempFile = PathHelper.GetTempFileName(TempFolder);
+            try
+            {
+                notifyHelper.SendAboutRestoreStarted(TenantId, Notify);
+
+                var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
+                storage.Download(StoragePath, tempFile);
+
+                Percentage = 10;
+
+                tenant = tenantManager.GetTenant(TenantId);
+                tenant.SetStatus(TenantStatus.Restoring);
+                tenantManager.SaveTenant(tenant);
+
+                var columnMapper = new ColumnMapper();
+                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
+                columnMapper.Commit();
+
+                var restoreTask = new RestorePortalTask(Options, TenantId, ConfigPaths[CurrentRegion], tempFile, StorageFactory, StorageFactoryConfig, CoreBaseSettings, LicenseReader, AscCacheNotify, ModuleProvider, columnMapper, UpgradesPath);
+                restoreTask.ProgressChanged += (sender, args) => Percentage = (10d + 0.65 * args.Progress);
+                restoreTask.RunJob();
+
+                Tenant restoredTenant = null;
+
+                if (restoreTask.Dump)
                 {
-                    try
+                    if (Notify)
                     {
-                        if (!(storagePath == tempFile && StorageType == BackupStorageType.Local))
+                        AscCacheNotify.OnClearCache();
+                        var tenants = tenantManager.GetTenants();
+                        foreach (var t in tenants)
                         {
-                            File.Delete(tempFile);
+                            notifyHelper.SendAboutRestoreCompleted(t.TenantId, Notify);
                         }
                     }
-                    catch (Exception error)
-                    {
-                        backupWorker.Log.Error("can't delete file: {0}", error);
-                    }
                 }
-            }
-
-            public object Clone()
-            {
-                return MemberwiseClone();
-            }
-        }
-        internal class ScheduledProgressItem : BackupProgressItem
-        {
-            public ScheduledProgressItem(int tenantId, Guid userId, BackupStorageType storageType, string storageBasePath, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, BackupsContext backupRecordContext, BackupRepository backupRepository)
-                : base(true, tenantId, userId, storageType, storageBasePath, backupStorageFactory, backupWorker, notifyHelper, tenantManager, coreBaseSettings, backupRecordContext, backupRepository)
-            {
-            }
-        }
-
-        public class RestoreProgressItem : IProgressItem
-        {
-            public int TenantId { get; private set; }
-            public BackupStorageType StorageType { get; set; }
-            public string StoragePath { get; set; }
-            public bool Notify { get; set; }
-
-            public Dictionary<string, string> StorageParams { get; set; }
-
-            public object Id { get; set; }
-            public object Status { get; set; }
-            public object Error { get; set; }
-            public double Percentage { get; set; }
-            public bool IsCompleted { get; set; }
-            private BackupWorker backupWorker;
-            private TenantManager tenantManager;
-
-            private NotifyHelper notifyHelper;
-            private BackupStorageFactory backupStorageFactory;
-
-            public RestoreProgressItem(int tenantId, BackupStorageType storageType, string storagePath, bool notify, BackupStorageFactory backupStorageFactory, BackupWorker backupWorker)
-            {
-                Id = Guid.NewGuid();
-                TenantId = tenantId;
-                StorageType = storageType;
-                StoragePath = storagePath;
-                Notify = notify;
-                this.backupWorker = backupWorker;
-                this.backupStorageFactory = backupStorageFactory;
-
-            }
-
-            public void RunJob()
-            {
-                Tenant tenant = null;
-                var tempFile = PathHelper.GetTempFileName(backupWorker.TempFolder);
-                try
+                else
                 {
-                    notifyHelper.SendAboutRestoreStarted(TenantId, Notify);
+                    tenantManager.RemoveTenant(tenant.TenantId);
 
-                    var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
-                    storage.Download(StoragePath, tempFile);
+                    restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
+                    restoredTenant.SetStatus(TenantStatus.Active);
+                    restoredTenant.TenantAlias = tenant.TenantAlias;
+                    restoredTenant.PaymentId = string.Empty;
+                    if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
+                    {
+                        restoredTenant.MappedDomain = tenant.MappedDomain;
+                    }
+                    tenantManager.SaveTenant(restoredTenant);
 
-                    Percentage = 10;
+                    // sleep until tenants cache expires
+                    Thread.Sleep(TimeSpan.FromMinutes(2));
 
-                    tenant = tenantManager.GetTenant(TenantId);
-                    tenant.SetStatus(TenantStatus.Restoring);
+                    notifyHelper.SendAboutRestoreCompleted(restoredTenant.TenantId, Notify);
+                }
+
+                Percentage = 75;
+
+                File.Delete(tempFile);
+
+                Percentage = 100;
+            }
+            catch (Exception error)
+            {
+                Log.Error(error);
+                Error = error;
+
+                if (tenant != null)
+                {
+                    tenant.SetStatus(TenantStatus.Active);
                     tenantManager.SaveTenant(tenant);
-
-                    var columnMapper = new ColumnMapper();
-                    columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
-                    columnMapper.Commit();
-
-                    var restoreTask = new RestorePortalTask(backupWorker.Options, TenantId, backupWorker.ConfigPaths[backupWorker.CurrentRegion], tempFile, backupWorker.StorageFactory, backupWorker.StorageFactoryConfig, backupWorker.CoreBaseSettings, backupWorker.LicenseReader, backupWorker.AscCacheNotify, backupWorker.ModuleProvider, columnMapper, backupWorker.UpgradesPath);
-                    restoreTask.ProgressChanged += (sender, args) => Percentage = (10d + 0.65 * args.Progress);
-                    restoreTask.RunJob();
-
-                    Tenant restoredTenant = null;
-
-                    if (restoreTask.Dump)
-                    {
-                        if (Notify)
-                        {
-                            AscCacheNotify.OnClearCache();
-                            var tenants = tenantManager.GetTenants();
-                            foreach (var t in tenants)
-                            {
-                                notifyHelper.SendAboutRestoreCompleted(t.TenantId, Notify);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        tenantManager.RemoveTenant(tenant.TenantId);
-
-                        restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
-                        restoredTenant.SetStatus(TenantStatus.Active);
-                        restoredTenant.TenantAlias = tenant.TenantAlias;
-                        restoredTenant.PaymentId = string.Empty;
-                        if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
-                        {
-                            restoredTenant.MappedDomain = tenant.MappedDomain;
-                        }
-                        tenantManager.SaveTenant(restoredTenant);
-
-                        // sleep until tenants cache expires
-                        Thread.Sleep(TimeSpan.FromMinutes(2));
-
-                        notifyHelper.SendAboutRestoreCompleted(restoredTenant.TenantId, Notify);
-                    }
-
-                    Percentage = 75;
-
-                    File.Delete(tempFile);
-
-                    Percentage = 100;
-                }
-                catch (Exception error)
-                {
-                    backupWorker.Log.Error(error);
-                    Error = error;
-
-                    if (tenant != null)
-                    {
-                        tenant.SetStatus(TenantStatus.Active);
-                        tenantManager.SaveTenant(tenant);
-                    }
-                }
-                finally
-                {
-                    if (File.Exists(tempFile))
-                    {
-                        File.Delete(tempFile);
-                    }
-                    IsCompleted = true;
                 }
             }
-
-            public object Clone()
+            finally
             {
-                return MemberwiseClone();
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+                IsCompleted = true;
             }
         }
 
-        public class TransferProgressItem : IProgressItem
+        public object Clone()
         {
-            public int TenantId { get; private set; }
-            public string TargetRegion { get; set; }
-            public bool TransferMail { get; set; }
-            public bool Notify { get; set; }
+            return MemberwiseClone();
+        }
+    }
 
-            public string Link { get; set; }
+    public class TransferProgressItem : IProgressItem
+    {
+        public int TenantId { get; private set; }
+        public string TargetRegion { get; set; }
+        public bool TransferMail { get; set; }
+        public bool Notify { get; set; }
 
-            public object Id { get; set; }
-            public object Status { get; set; }
-            public object Error { get; set; }
-            public double Percentage { get; set; }
-            public bool IsCompleted { get; set; }
-            private BackupWorker backupWorker;
+        public string Link { get; set; }
 
-            public TransferProgressItem(int tenantId, string targetRegion, bool transferMail, bool notify, BackupWorker backupWorker)
+        public object Id { get; set; }
+        public object Status { get; set; }
+        public object Error { get; set; }
+        public double Percentage { get; set; }
+        public bool IsCompleted { get; set; }
+        public string TempFolder { get; set; }
+        public Dictionary<string, string> ConfigPaths { get; set; }
+        public IOptionsMonitor<ILog> Options { get; set; }
+        public TenantManager TenantManager { get; set; }
+        public NotifyHelper NotifyHelper { get; set; }
+        public string CurrentRegion { get; set; }
+        public int Limit { get; set; }
+        public StorageFactory StorageFactory { get; set; }
+        public StorageFactoryConfig StorageFactoryConfig { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
+        public ModuleProvider ModuleProvider { get; set; }
+        public BackupsContext BackupRecordContext { get; set; }
+        public ILog Log { get; set; }
+
+
+        public TransferProgressItem(
+            int tenantId,
+            string targetRegion,
+            bool transferMail,
+            bool notify,
+            string tempFolder,
+            int limit,
+            string currentRegion,
+            Dictionary<string, string> configPaths,
+            IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            NotifyHelper notifyHelper,
+            StorageFactory storageFactory,
+            StorageFactoryConfig storageFactoryConfig,
+            CoreBaseSettings coreBaseSettings,
+            ModuleProvider moduleProvider,
+            BackupsContext backupRecordContext
+            )
+        {
+            Id = Guid.NewGuid();
+            TenantId = tenantId;
+            TargetRegion = targetRegion;
+            TransferMail = transferMail;
+            Notify = notify;
+            TempFolder = tempFolder;
+            ConfigPaths = configPaths;
+            Options = options;
+            TenantManager = tenantManager;
+            NotifyHelper = notifyHelper;
+            CurrentRegion = currentRegion;
+            Limit = limit;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
+            CoreBaseSettings = coreBaseSettings;
+            ModuleProvider = moduleProvider;
+            BackupRecordContext = backupRecordContext;
+            Log = options.CurrentValue;
+        }
+
+        public void RunJob()
+        {
+            var tempFile = PathHelper.GetTempFileName(TempFolder);
+            var alias = TenantManager.GetTenant(TenantId).TenantAlias;
+            try
             {
-                Id = Guid.NewGuid();
-                TenantId = tenantId;
-                TargetRegion = targetRegion;
-                TransferMail = transferMail;
-                Notify = notify;
-                this.backupWorker = backupWorker;
+                NotifyHelper.SendAboutTransferStart(TenantId, TargetRegion, Notify);
 
-            }
-
-            public void RunJob()
-            {
-                var tempFile = PathHelper.GetTempFileName(backupWorker.TempFolder);
-                var alias = backupWorker.TenantManager.GetTenant(TenantId).TenantAlias;
-                try
+                var transferProgressItem = new TransferPortalTask(Options, TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, StorageFactory, StorageFactoryConfig, CoreBaseSettings, TenantManager, ModuleProvider, BackupRecordContext) { BackupDirectory = TempFolder };
+                transferProgressItem.ProgressChanged += (sender, args) => Percentage = args.Progress;
+                if (!TransferMail)
                 {
-                    backupWorker.NotifyHelper.SendAboutTransferStart(TenantId, TargetRegion, Notify);
-
-                    var transferProgressItem = new TransferPortalTask(backupWorker.Options, TenantId, backupWorker.ConfigPaths[backupWorker.CurrentRegion], backupWorker.ConfigPaths[TargetRegion], backupWorker.Limit, backupWorker.StorageFactory, backupWorker.StorageFactoryConfig, backupWorker.CoreBaseSettings, backupWorker.TenantManager, backupWorker.ModuleProvider, backupWorker.BackupRecordContext) { BackupDirectory = backupWorker.TempFolder };
-                    transferProgressItem.ProgressChanged += (sender, args) => Percentage = args.Progress;
-                    if (!TransferMail)
-                    {
-                        transferProgressItem.IgnoreModule(ModuleName.Mail);
-                    }
-                    transferProgressItem.RunJob();
-
-                    Link = GetLink(alias, false);
-                    backupWorker.NotifyHelper.SendAboutTransferComplete(TenantId, TargetRegion, Link, !Notify);
+                    transferProgressItem.IgnoreModule(ModuleName.Mail);
                 }
-                catch (Exception error)
-                {
-                    backupWorker.Log.Error(error);
-                    Error = error;
+                transferProgressItem.RunJob();
 
-                    Link = GetLink(alias, true);
-                    backupWorker.NotifyHelper.SendAboutTransferError(TenantId, TargetRegion, Link, !Notify);
-                }
-                finally
-                {
-                    if (File.Exists(tempFile))
-                    {
-                        File.Delete(tempFile);
-                    }
-                    IsCompleted = true;
-                }
+                Link = GetLink(alias, false);
+                NotifyHelper.SendAboutTransferComplete(TenantId, TargetRegion, Link, !Notify);
             }
-
-            private string GetLink(string alias, bool isErrorLink)
+            catch (Exception error)
             {
-                return "http://" + alias + "." + ConfigurationProvider.Open(backupWorker.ConfigPaths[isErrorLink ? backupWorker.CurrentRegion : TargetRegion]).AppSettings.Settings["core.base-domain"].Value;
-            }
+                Log.Error(error);
+                Error = error;
 
-            public object Clone()
-            {
-                return MemberwiseClone();
+                Link = GetLink(alias, true);
+                NotifyHelper.SendAboutTransferError(TenantId, TargetRegion, Link, !Notify);
             }
+            finally
+            {
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+                IsCompleted = true;
+            }
+        }
+
+        private string GetLink(string alias, bool isErrorLink)
+        {
+            return "http://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core.base-domain"].Value;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+    }
+
+    public class FactoryProgressItem
+    {
+
+        public IOptionsMonitor<ILog> Options { get; set; }
+        public TenantManager TenantManager { get; set; }
+        public NotifyHelper NotifyHelper { get; set; }
+        public StorageFactory StorageFactory { get; set; }
+        public StorageFactoryConfig StorageFactoryConfig { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
+        public ModuleProvider ModuleProvider { get; set; }
+        public BackupsContext BackupRecordContext { get; set; }
+        public BackupStorageFactory BackupStorageFactory { get; set; }
+        public BackupRepository BackupRepository { get; set; }
+        public LicenseReader LicenseReader { get; set; }
+        public AscCacheNotify AscCacheNotify { get; set; }
+
+        public FactoryProgressItem(
+            IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            NotifyHelper notifyHelper,
+            StorageFactory storageFactory,
+            StorageFactoryConfig storageFactoryConfig,
+            CoreBaseSettings coreBaseSettings,
+            ModuleProvider moduleProvider,
+            BackupsContext backupRecordContext,
+            BackupStorageFactory backupStorageFactory,
+            BackupRepository backupRepository,
+            LicenseReader licenseReader,
+            AscCacheNotify ascCacheNotify
+            )
+        {
+            Options = options;
+            TenantManager = tenantManager;
+            NotifyHelper = notifyHelper;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
+            CoreBaseSettings = coreBaseSettings;
+            ModuleProvider = moduleProvider;
+            BackupRecordContext = backupRecordContext;
+            BackupStorageFactory = backupStorageFactory;
+            BackupRepository = backupRepository;
+            LicenseReader = licenseReader;
+            AscCacheNotify = ascCacheNotify;
+        }
+
+        public BackupProgressItem CreateBackupProgressItem(
+            Guid userId,
+            bool isScheduled,
+            int tenantId,
+            string tempFolder,
+            int limit,
+            string currentRegion,
+            Dictionary<string, string> configPaths,
+            BackupStorageType StorageType,
+            string storageBasePath
+            )
+        {
+            return new BackupProgressItem(isScheduled, tenantId, userId, tempFolder, limit, currentRegion, configPaths, Options, StorageFactory, StorageFactoryConfig, ModuleProvider, StorageType, storageBasePath, BackupStorageFactory, NotifyHelper, TenantManager, CoreBaseSettings, BackupRecordContext, BackupRepository);
+        }
+        public RestoreProgressItem CreateRestoreProgressItem(
+            string storagePath,
+            bool notify,
+            int tenantId,
+            string tempFolder,
+            string upgradesPath,
+            string currentRegion,
+            BackupStorageType StorageType
+            )
+        {
+            return new RestoreProgressItem(tenantId, StorageType, storagePath, notify, BackupStorageFactory, tempFolder, currentRegion, upgradesPath, Options, StorageFactory, StorageFactoryConfig, ModuleProvider, CoreBaseSettings, LicenseReader, AscCacheNotify);
+        }
+        public TransferProgressItem CreateTransferProgressItem(
+            string targetRegion,
+            bool transferMail,
+            int tenantId,
+            string tempFolder,
+            int limit,
+             bool notify,
+            string currentRegion,
+            Dictionary<string, string> configPaths
+            )
+        {
+            return new TransferProgressItem(tenantId, targetRegion, transferMail, notify, tempFolder, limit, currentRegion, configPaths, Options, TenantManager, NotifyHelper, StorageFactory, StorageFactoryConfig, CoreBaseSettings, ModuleProvider, BackupRecordContext);
         }
     }
     public static class BackupWorkerExtension
@@ -652,6 +757,7 @@ namespace ASC.Data.Backup.Service
         public static DIHelper AddBackupWorkerService(this DIHelper services)
         {
             services.TryAddScoped<BackupWorker>();
+            services.TryAddScoped<FactoryProgressItem>();
             return services
                 .AddTenantManagerService()
                 .AddCoreBaseSettingsService()

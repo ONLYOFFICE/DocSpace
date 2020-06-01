@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using static ASC.Data.Backup.Service.BackupWorker;
 
 namespace ASC.Data.Backup
 {
@@ -34,31 +33,7 @@ namespace ASC.Data.Backup
             diHelper.AddBackupServiceLauncher();
             diHelper.AddNLogManager("ASC.Data.Backup");
 
-            diHelper.Configure<ProgressQueue<BackupProgressItem>>(r =>
-            {
-                r.workerCount = 1;
-                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-                r.removeAfterCompleted = true;
-                r.stopAfterFinsih = false;
-                r.errorCount = 0;
-            });
-            diHelper.Configure<ProgressQueue<RestoreProgressItem>>(r =>
-            {
-                r.workerCount = 1;
-                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-                r.removeAfterCompleted = true;
-                r.stopAfterFinsih = false;
-                r.errorCount = 0;
-            });
-            diHelper.Configure<ProgressQueue<TransferProgressItem>>(r =>
-            {
-                r.workerCount = 1;
-                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-                r.removeAfterCompleted = true;
-                r.stopAfterFinsih = false;
-                r.errorCount = 0;
-            });
-            diHelper.Configure<ProgressQueue<ScheduledProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<IProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
