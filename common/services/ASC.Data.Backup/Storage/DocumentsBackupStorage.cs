@@ -24,115 +24,102 @@
 */
 
 
+using System;
+using System.IO;
+
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Files.Core;
-
-using System;
 //using File = ASC.Files.Core.File;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Backup.Storage
 {
     public class DocumentsBackupStorage : IBackupStorage
     {
-        private readonly int tenantId;
-        private readonly string webConfigPath;
-        private readonly TenantManager tenantManager;
-        private readonly SecurityContext securityContext;
-        private readonly IDaoFactory daoFactory;
-        private readonly StorageFactory storageFactory;
-        public DocumentsBackupStorage(int tenantId, string webConfigPath, TenantManager tenantManager, SecurityContext securityContext, IDaoFactory daoFactory, StorageFactory storageFactory)
+        private int TenantId { get; set; }
+        private string WebConfigPath { get; set; }
+        private TenantManager TenantManager { get; set; }
+        private SecurityContext SecurityContext { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
+        private StorageFactory StorageFactory { get; set; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public DocumentsBackupStorage(
+            int tenantId,
+            string webConfigPath,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            IDaoFactory daoFactory,
+            StorageFactory storageFactory,
+            IServiceProvider serviceProvider)
         {
-            this.tenantId = tenantId;
-            this.webConfigPath = webConfigPath;
-            this.tenantManager = tenantManager;
-            this.securityContext = securityContext;
-            this.daoFactory = daoFactory;
-            this.storageFactory = storageFactory;
+            TenantId = tenantId;
+            WebConfigPath = webConfigPath;
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            DaoFactory = daoFactory;
+            StorageFactory = storageFactory;
+            ServiceProvider = serviceProvider;
         }
 
         public string Upload(string folderId, string localPath, Guid userId)
         {
-            /*  tenantManager.SetCurrentTenant(tenantId);
-              if (!userId.Equals(Guid.Empty))
-              {
-                  securityContext.AuthenticateMe(userId);
-              }
-              else
-              {
-                  var tenant = tenantManager.GetTenant(tenantId);
-                  securityContext.AuthenticateMe(tenant.OwnerId);
-              }
+            TenantManager.SetCurrentTenant(TenantId);
+            if (!userId.Equals(Guid.Empty))
+            {
+                SecurityContext.AuthenticateMe(userId);
+            }
+            else
+            {
+                var tenant = TenantManager.GetTenant(TenantId);
+                SecurityContext.AuthenticateMe(tenant.OwnerId);
+            }
 
-              using (var folderDao = GetFolderDao())
-              using (var fileDao = GetFileDao())
-              {
-                  var folder = folderDao.GetFolder(folderId);
-                  if (folder == null)
-                  {
-                      throw new FileNotFoundException("Folder not found.");
-                  }
-                  using (var source = IoFile.OpenRead(localPath))
-                  {
-                      var file = fileDao.SaveFile(
-                          new File
-                              {
-                                  Title = Path.GetFileName(localPath),
-                                  FolderID = folder.ID,
-                                  ContentLength = source.Length
-                              },
-                          source);
+            if (int.TryParse(folderId, out var fId))
+            {
+                return Upload(fId, localPath).ToString();
+            }
 
-                      return Convert.ToString(file.ID);
-                  }
-              }*/
-            return null;
+            return Upload(folderId, localPath);
         }
 
         public void Download(string fileId, string targetLocalPath)
         {
-           /* tenantManager.SetCurrentTenant(tenantId);
-            using (var fileDao = GetFileDao())
+            TenantManager.SetCurrentTenant(TenantId);
+
+            if (int.TryParse(fileId, out var fId))
             {
-                var file = fileDao.GetFile(fileId);
-                if (file == null)
-                {
-                    throw new FileNotFoundException("File not found.");
-                }
-                using (var source = fileDao.GetFileStream(file))
-                using (var destination = IoFile.OpenWrite(targetLocalPath))
-                {
-                    source.StreamCopyTo(destination);
-                }
-            }*/
+                DownloadDao(fId, targetLocalPath);
+                return;
+            }
+
+            DownloadDao(fileId, targetLocalPath);
         }
 
         public void Delete(string fileId)
         {
-          /*  tenantManager.SetCurrentTenant(tenantId);
-            using (var fileDao = GetFileDao())
+            TenantManager.SetCurrentTenant(TenantId);
+
+            if (int.TryParse(fileId, out var fId))
             {
-                fileDao.DeleteFile(fileId);
-            }*/
+                DeleteDao(fId);
+                return;
+            }
+
+            DeleteDao(fileId);
         }
 
         public bool IsExists(string fileId)
         {
-            /*  tenantManager.SetCurrentTenant(tenantId);
-              using (var fileDao = GetFileDao())
-              {
-                  try
-                  {
+            TenantManager.SetCurrentTenant(TenantId);
+            if (int.TryParse(fileId, out var fId))
+            {
+                return IsExistsDao(fId);
+            }
 
-                      var file = fileDao.GetFile(fileId);
-                      return file != null && file.RootFolderType != FolderType.TRASH;
-                  }
-                  catch (Exception)
-                  {
-                      return false;
-                  }
-              }*/
-            return false;
+            return IsExistsDao(fileId);
         }
 
         public string GetPublicLink(string fileId)
@@ -140,17 +127,75 @@ namespace ASC.Data.Backup.Storage
             return string.Empty;
         }
 
-     /*   private IFolderDao GetFolderDao()
-+        {
-            return daoFactory.GetFolderDao;
+        private T Upload<T>(T folderId, string localPath)
+        {
+            var folderDao = GetFolderDao<T>();
+            var fileDao = GetFileDao<T>();
+
+            var folder = folderDao.GetFolder(folderId);
+            if (folder == null)
+            {
+                throw new FileNotFoundException("Folder not found.");
+            }
+
+            using var source = File.OpenRead(localPath);
+            var newFile = ServiceProvider.GetService<File<T>>();
+            newFile.Title = Path.GetFileName(localPath);
+            newFile.FolderID = folder.ID;
+            newFile.ContentLength = source.Length;
+
+            var file = fileDao.SaveFile(newFile, source);
+
+            return file.ID;
         }
 
-        private IFileDao GetFileDao()
+        private void DownloadDao<T>(T fileId, string targetLocalPath)
+        {
+            TenantManager.SetCurrentTenant(TenantId);
+            var fileDao = GetFileDao<T>();
+            var file = fileDao.GetFile(fileId);
+            if (file == null)
+            {
+                throw new FileNotFoundException("File not found.");
+            }
+
+            using var source = fileDao.GetFileStream(file);
+            using var destination = File.OpenWrite(targetLocalPath);
+            source.CopyTo(destination);
+        }
+
+        private void DeleteDao<T>(T fileId)
+        {
+            var fileDao = GetFileDao<T>();
+            fileDao.DeleteFile(fileId);
+        }
+
+        private bool IsExistsDao<T>(T fileId)
+        {
+            var fileDao = GetFileDao<T>();
+            try
+            {
+
+                var file = fileDao.GetFile(fileId);
+                return file != null && file.RootFolderType != FolderType.TRASH;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private IFolderDao<T> GetFolderDao<T>()
+        {
+            return DaoFactory.GetFolderDao<T>();
+        }
+
+        private IFileDao<T> GetFileDao<T>()
         {
             // hack: create storage using webConfigPath and put it into DataStoreCache
             // FileDao will use this storage and will not try to create the new one from service config
-            storageFactory.GetStorage(webConfigPath, tenantId.ToString(), "files");
-            return daoFactory.GetFileDao;
-        }*/
+            StorageFactory.GetStorage(WebConfigPath, TenantId.ToString(), "files");
+            return DaoFactory.GetFileDao<T>();
+        }
     }
 }
