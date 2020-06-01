@@ -3,16 +3,14 @@ import styled from "styled-components";
 
 const ScrollButton = styled.div`
    
-    cursor: pointer;
+    cursor: ${props => props.inactive ? 'default' : 'pointer'};
+    opacity: ${props => props.inactive ? '0.2' : '1'};
     z-index: 4005;
     position: fixed;
     top: calc(50% - 20px);
    
     background: none;
 
-    &:hover{
-        background: none;
-    }
     ${props => props.orientation != "left" ? 'left: 20px;' : 'right: 20px;'}
     
     width: 40px;
@@ -21,7 +19,7 @@ const ScrollButton = styled.div`
     border-radius: 50%;
 
     &:hover{
-        background-color: rgba(200, 200, 200, 0.2);
+        background-color: ${props => !props.inactive && 'rgba(200, 200, 200, 0.2)'};
     }
 
     &:before{

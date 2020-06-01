@@ -91,6 +91,13 @@ const StyledViewer = styled(Viewer)`
         margin: 3px 10px;
         line-height: 19px;
     }
+    .scrollBtn{
+        cursor: ${props => props.inactive ? 'default' : 'pointer'};
+        opacity: ${props => props.inactive ? '0.2' : '1'};
+        &:hover{
+            background-color: ${props => !props.inactive ? 'rgba(200, 200, 200, 0.2)' : 'rgba(11,11,11,0.7)'};
+        }
+    }
 `
 
 
@@ -123,12 +130,12 @@ var customToolbar = [
     {
         key: 'prev',
         actionType: 3,
-        render: <MediaScrollButton orientation="right" />
+        render: <MediaScrollButton orientation="right" className="scrollBtn"/>
     },
     {
         key: 'next',
         actionType: 4,
-        render: <MediaScrollButton orientation="left" />
+        render: <MediaScrollButton orientation="left" className="scrollBtn"/>
     },
     {
         key: 'delete',
@@ -159,7 +166,7 @@ class ImageViewer extends React.Component {
 
     render() {
 
-        const { className, visible, images } = this.props;
+        const { className, visible, images, inactive } = this.props;
 
         customToolbar.forEach((button) => {
             switch (button.key) {
@@ -182,6 +189,7 @@ class ImageViewer extends React.Component {
         return (
             <div className={className}>
                 <StyledViewer
+                    inactive={inactive}
                     visible={visible}
                     customToolbar={(toolbars) => {
                         return customToolbar;
@@ -196,6 +204,7 @@ class ImageViewer extends React.Component {
 ImageViewer.propTypes = {
     className: PropTypes.string,
     visible: PropTypes.bool,
+    inactive: PropTypes.bool,
     images: PropTypes.arrayOf(PropTypes.object),
     onNextClick: PropTypes.func,
     onPrevClick: PropTypes.func,

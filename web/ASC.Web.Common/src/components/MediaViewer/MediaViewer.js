@@ -191,8 +191,8 @@ class MediaViewer extends React.Component {
                 {
                     !isImage &&
                     <>
-                        <MediaScrollButton orientation="right" onClick={this.prevMedia} />
-                        <MediaScrollButton orientation="left" onClick={this.nextMedia} />
+                        <MediaScrollButton orientation="right" onClick={this.prevMedia} inactive={this.state.playlist.length <= 1}/>
+                        <MediaScrollButton orientation="left" onClick={this.nextMedia} inactive={this.state.playlist.length <= 1}/>
                     </>
                 }
 
@@ -213,6 +213,7 @@ class MediaViewer extends React.Component {
                                 images={[
                                     { src: url, alt: '' }
                                 ]}
+                                inactive={this.state.playlist.length <= 1}
                                 onNextClick={this.nextMedia}
                                 onPrevClick={this.prevMedia}
                                 onDeleteClick={this.onDelete}
