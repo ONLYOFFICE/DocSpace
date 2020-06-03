@@ -34,7 +34,7 @@ if (token) {
       return Promise.resolve(filterObj);
     })
     .then(filter => {
-      let dataObj = null;
+      let dataObj = filter;
 
       if (filter && filter.authorType) {
         const filterObj = filter;
@@ -63,6 +63,7 @@ if (token) {
 
       const { filter, itemId, type } = data;
       const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
+      
       switch (type) {
         case 'group':
           return Promise.all([api.groups.getGroup(itemId), newFilter]);
