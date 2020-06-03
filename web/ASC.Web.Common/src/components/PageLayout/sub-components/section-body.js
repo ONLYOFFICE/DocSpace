@@ -104,7 +104,7 @@ class SectionBody extends React.Component {
           {renderBody()}
         </StyledDropZoneBody>
       ) : (
-        <StyledSectionBody>
+        <StyledSectionBody withScroll={withScroll}>
           {renderBody()}
         </StyledSectionBody>
       )
