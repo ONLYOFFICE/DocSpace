@@ -313,7 +313,7 @@ namespace ASC.Api.Settings
         [Read("cultures")]
         public IEnumerable<object> GetSupportedCultures()
         {
-            return SetupInfo.EnabledCultures.Select(r => new { r.Name });
+            return SetupInfo.EnabledCultures.Select(r => r.Name).ToArray();
         }
 
         [Read("timezones")]
