@@ -38,6 +38,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Files.Thirdparty.ProviderDao;
@@ -1204,6 +1205,51 @@ namespace ASC.Files.Core.Data
                 .Any();
         }
 
+        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        {
+            var q1 = FilesDbContext.Files
+                .Where(r => r.TenantId == tenant)
+                .Where(r => r.CurrentVersion)
+                .Where(r => r.ModifiedOn >= from && r.ModifiedOn <= to);
+
+            var q2 = FromQuery(q1)
+                .Select(r => new DbFileQueryWithSecurity() { DbFileQuery = r, Security = null });
+
+            var q3 = FilesDbContext.Files
+                .Where(r => r.TenantId == tenant)
+                .Where(r => r.CurrentVersion);
+
+            var q4 = FromQuery(q3)
+                .Join(FilesDbContext.Security.DefaultIfEmpty(), r => r.file.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
+                .Where(r => r.Security.TenantId == tenant)
+                .Where(r => r.Security.EntryType == FileEntryType.File)
+                .Where(r => r.Security.Security == Security.FileShare.Restrict)
+                .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
+
+            return q4.Select(ToFileWithShare).ToList();
+        }
+
+        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+        {
+            var q1 = FilesDbContext.Files
+                .Where(r => r.ModifiedOn > fromTime)
+                .Select(r => r.TenantId)
+                .GroupBy(r => r)
+                .Where(r => r.Count() > 0)
+                .Select(r => r.Key)
+                .ToList();
+
+            var q2 = FilesDbContext.Security
+                .Where(r => r.TimeStamp > fromTime)
+                .Select(r => r.TenantId)
+                .GroupBy(r => r)
+                .Where(r => r.Count() > 0)
+                .Select(r => r.Key)
+                .ToList();
+
+            return q1.Union(q2);
+        }
+
         #endregion
 
         private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -1341,6 +1387,21 @@ namespace ASC.Files.Core.Data
             return file;
         }
 
+        public (File<int>, SmallShareRecord) ToFileWithShare(DbFileQueryWithSecurity r)
+        {
+            var file = ToFile(r.DbFileQuery);
+            var record = r.Security != null
+                ? new SmallShareRecord
+                {
+                    ShareOn = r.Security.TimeStamp,
+                    ShareBy = r.Security.Owner,
+                    ShareTo = r.Security.Subject
+                }
+                : null;
+
+            return (file, record);
+        }
+
         internal protected DbFile InitDocument(DbFile dbFile)
         {
             if (!FactoryIndexer.CanSearchByContent())
@@ -1377,6 +1438,12 @@ namespace ASC.Files.Core.Data
         public DbFile file { get; set; }
         public DbFolder root { get; set; }
         public bool shared { get; set; }
+    }
+
+    public class DbFileQueryWithSecurity
+    {
+        public DbFileQuery DbFileQuery { get; set; }
+        public DbFilesSecurity Security { get; set; }
     }
 
     public static class FileDaoExtention
