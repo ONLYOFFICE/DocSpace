@@ -163,7 +163,9 @@ class ImageViewer extends React.Component {
             visible: false,
         };
     }
-
+    componentDidUpdate(){
+        document.getElementsByClassName("iconContainer reset").length > 0 && document.getElementsByClassName("iconContainer reset")[0].click();
+    }
     render() {
 
         const { className, visible, images, inactive } = this.props;
