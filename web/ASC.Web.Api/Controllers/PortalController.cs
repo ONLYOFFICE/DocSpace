@@ -29,7 +29,7 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class PortalController : ControllerBase
     {
-        public BackupAjaxHandler backupHandler;
+        public BackupAjaxHandler BackupHandler { get; }
 
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -162,7 +162,7 @@ namespace ASC.Web.Api.Controllers
         [Read("getbackupschedule")]
         public BackupAjaxHandler.Schedule GetBackupSchedule()
         {
-            return backupHandler.GetSchedule();
+            return BackupHandler.GetSchedule();
         }
 
         /// <summary>
@@ -175,9 +175,9 @@ namespace ASC.Web.Api.Controllers
         /// <param name="backupMail">Include mail in the backup</param>
         /// <category>Backup</category>
         [Create("createbackupschedule")]
-        public void CreateBackupSchedule(BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, int backupsStored, BackupAjaxHandler.CronParams cronParams, bool backupMail)
+        public void CreateBackupSchedule(BackupStorageType storageType, [FromQuery] Dictionary<string, string> storageParams, int backupsStored, [FromBody] BackupAjaxHandler.CronParams cronParams, bool backupMail)
         {
-            backupHandler.CreateSchedule(storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), backupsStored, cronParams, backupMail);
+            BackupHandler.CreateSchedule(storageType, storageParams, backupsStored, cronParams, backupMail);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace ASC.Web.Api.Controllers
         [Delete("deletebackupschedule")]
         public void DeleteBackupSchedule()
         {
-            backupHandler.DeleteSchedule();
+            BackupHandler.DeleteSchedule();
         }
 
         /// <summary>
@@ -199,9 +199,9 @@ namespace ASC.Web.Api.Controllers
         /// <category>Backup</category>
         /// <returns>Backup Progress</returns>
         [Create("startbackup")]
-        public BackupProgress StartBackup(BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, bool backupMail)
+        public BackupProgress StartBackup(BackupStorageType storageType, Dictionary<string,string> storageParams, bool backupMail)
         {
-            return backupHandler.StartBackup(storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), backupMail);
+            return BackupHandler.StartBackup(storageType, storageParams, backupMail);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace ASC.Web.Api.Controllers
         [Read("getbackupprogress")]
         public BackupProgress GetBackupProgress()
         {
-            return backupHandler.GetBackupProgress();
+            return BackupHandler.GetBackupProgress();
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace ASC.Web.Api.Controllers
         [Read("getbackuphistory")]
         public List<BackupHistoryRecord> GetBackupHistory()
         {
-            return backupHandler.GetBackupHistory();
+            return BackupHandler.GetBackupHistory();
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace ASC.Web.Api.Controllers
         [Delete("deletebackup/{id}")]
         public void DeleteBackup(Guid id)
         {
-            backupHandler.DeleteBackup(id);
+            BackupHandler.DeleteBackup(id);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace ASC.Web.Api.Controllers
         [Delete("deletebackuphistory")]
         public void DeleteBackupHistory()
         {
-            backupHandler.DeleteAllBackups();
+            BackupHandler.DeleteAllBackups();
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace ASC.Web.Api.Controllers
         [Create("startrestore")]
         public BackupProgress StartBackupRestore(string backupId, BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, bool notify)
         {
-            return backupHandler.StartRestore(backupId, storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), notify);
+            return BackupHandler.StartRestore(backupId, storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), notify);
         }
 
         /// <summary>
@@ -270,14 +270,14 @@ namespace ASC.Web.Api.Controllers
         [Read("getrestoreprogress", true)]  //NOTE: this method doesn't check payment!!!
         public BackupProgress GetRestoreProgress()
         {
-            return backupHandler.GetRestoreProgress();
+            return BackupHandler.GetRestoreProgress();
         }
 
         ///<visible>false</visible>
         [Read("backuptmp")]
         public string GetTempPath(string alias)
         {
-            return backupHandler.GetTmpFolder();
+            return BackupHandler.GetTmpFolder();
         }
     }
 

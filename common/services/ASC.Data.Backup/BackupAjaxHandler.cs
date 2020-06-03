@@ -21,30 +21,30 @@ namespace ASC.Data.Backup
     public class BackupAjaxHandler
     {
 
-        private TenantManager tenantManager;
-        private MessageService messageService;
-        private CoreBaseSettings coreBaseSettings;
-        private CoreConfiguration coreConfiguration;
-        private PermissionContext  permissionContext;
-        private SecurityContext securityContext;
-        private UserManager userManager;
-        private TenantExtra tenantExtra;
-        private BackupHelper backupHelper;
-        private ConsumerFactory consumerFactory;
+        private TenantManager TenantManager { get; }
+        private MessageService MessageService { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private PermissionContext  PermissionContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private BackupHelper BackupHelper { get; }
+        private ConsumerFactory ConsumerFactory { get; }
         #region backup
 
         public BackupAjaxHandler(TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
         {
-            this.tenantManager = tenantManager;
-            this.messageService = messageService;
-            this.coreBaseSettings = coreBaseSettings;
-            this.coreConfiguration = coreConfiguration;
-            this.permissionContext = permissionContext;
-            this.securityContext = securityContext;
-            this.userManager = userManager;
-            this.tenantExtra = tenantExtra;
-            this.backupHelper = backupHelper;
-            this.consumerFactory = consumerFactory;
+            this.TenantManager = tenantManager;
+            this.MessageService = messageService;
+            this.CoreBaseSettings = coreBaseSettings;
+            this.CoreConfiguration = coreConfiguration;
+            this.PermissionContext = permissionContext;
+            this.SecurityContext = securityContext;
+            this.UserManager = userManager;
+            this.TenantExtra = tenantExtra;
+            this.BackupHelper = backupHelper;
+            this.ConsumerFactory = consumerFactory;
         }
 
         [AjaxMethod]
@@ -57,7 +57,7 @@ namespace ASC.Data.Backup
             var backupRequest = new StartBackupRequest
             {
                 TenantId = GetCurrentTenantId(),
-                UserId = securityContext.CurrentAccount.ID,
+                UserId = SecurityContext.CurrentAccount.ID,
                 BackupMail = backupMail,
                 StorageType = storageType,
                 StorageParams = storageParams
@@ -70,12 +70,12 @@ namespace ASC.Data.Backup
                     backupRequest.StorageBasePath = storageParams["folderId"];
                     break;
                 case BackupStorageType.Local:
-                    if (!coreBaseSettings.Standalone) throw new Exception("Access denied");
+                    if (!CoreBaseSettings.Standalone) throw new Exception("Access denied");
                     backupRequest.StorageBasePath = storageParams["filePath"];
                     break;
             }
 
-            messageService.Send(MessageAction.StartBackupSetting);
+            MessageService.Send(MessageAction.StartBackupSetting);
 
             using (var service = new BackupServiceClient())
             {
@@ -142,7 +142,7 @@ namespace ASC.Data.Backup
 
             var scheduleRequest = new CreateScheduleRequest
             {
-                TenantId = tenantManager.GetCurrentTenant().TenantId,
+                TenantId = TenantManager.GetCurrentTenant().TenantId,
                 BackupMail = backupMail,
                 Cron = cronParams.ToString(),
                 NumberOfBackupsStored = backupsStored,
@@ -157,7 +157,7 @@ namespace ASC.Data.Backup
                     scheduleRequest.StorageBasePath = storageParams["folderId"];
                     break;
                 case BackupStorageType.Local:
-                    if (!coreBaseSettings.Standalone) throw new Exception("Access denied");
+                    if (!CoreBaseSettings.Standalone) throw new Exception("Access denied");
                     scheduleRequest.StorageBasePath = storageParams["filePath"];
                     break;
             }
@@ -195,9 +195,9 @@ namespace ASC.Data.Backup
 
             if (response.StorageType == BackupStorageType.CustomCloud)
             {
-                var amazonSettings = coreConfiguration.GetSection<AmazonS3Settings>();
+                var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
 
-                var consumer = consumerFactory.GetByKey<DataStoreConsumer>("S3");//here
+                var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>("S3");//here
                 if (!consumer.IsSet)
                 {
                     consumer["acesskey"] = amazonSettings.AccessKeyId;
@@ -215,7 +215,7 @@ namespace ASC.Data.Backup
                 {
                     service.CreateSchedule(new CreateScheduleRequest
                     {
-                        TenantId = tenantManager.GetCurrentTenant().TenantId,
+                        TenantId = TenantManager.GetCurrentTenant().TenantId,
                         BackupMail = schedule.BackupMail,
                         Cron = schedule.CronParams.ToString(),
                         NumberOfBackupsStored = schedule.BackupsStored,
@@ -246,7 +246,7 @@ namespace ASC.Data.Backup
 
         private void DemandPermissionsBackup()
         {
-            permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings(ManagementType.Backup.ToString()))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
@@ -291,7 +291,7 @@ namespace ASC.Data.Backup
         {
             BackupProgress result;
 
-            var tenant = tenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             using (var service = new BackupServiceClient())
             {
                 result = service.GetRestoreProgress(tenant.TenantId);
@@ -302,7 +302,7 @@ namespace ASC.Data.Backup
 
         private void DemandPermissionsRestore()
         {
-            permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings("Restore"))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
@@ -318,7 +318,7 @@ namespace ASC.Data.Backup
             DemandPermissionsTransfer();
             DemandSize();
 
-            messageService.Send(MessageAction.StartTransferSetting);
+            MessageService.Send(MessageAction.StartTransferSetting);
 
             using (var service = new BackupServiceClient())
             {
@@ -345,12 +345,12 @@ namespace ASC.Data.Backup
 
         private void DemandPermissionsTransfer()
         {
-            permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var currentUser = userManager.GetUsers(securityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             if (!SetupInfo.IsVisibleSettings(ManagementType.Migration.ToString())
-                || !currentUser.IsOwner(tenantManager.CurrentTenant)
-                || !SetupInfo.IsSecretEmail(currentUser.Email) && !tenantExtra.GetTenantQuota().HasMigration)
+                || !currentUser.IsOwner(TenantManager.CurrentTenant)
+                || !SetupInfo.IsSecretEmail(currentUser.Email) && !TenantExtra.GetTenantQuota().HasMigration)
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }
 
@@ -366,7 +366,7 @@ namespace ASC.Data.Backup
 
         private void DemandSize()
         {
-            if (backupHelper.ExceedsMaxAvailableSize(tenantManager.CurrentTenant.TenantId))
+            if (BackupHelper.ExceedsMaxAvailableSize(TenantManager.CurrentTenant.TenantId))
                 throw new InvalidOperationException(string.Format(UserControlsCommonResource.BackupSpaceExceed,
                     FileSizeComment.FilesSizeToString(BackupHelper.AvailableZipSize),
                     "",
@@ -380,7 +380,7 @@ namespace ASC.Data.Backup
 
         private int GetCurrentTenantId()
         {
-            return tenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().TenantId;
         }
 
         public class Schedule
@@ -460,7 +460,8 @@ namespace ASC.Data.Backup
                 .AddSecurityContextService()
                 .AddUserManagerService()
                 .AddTenantExtraService()
-                .AddConsumerFactoryService();
+                .AddConsumerFactoryService()
+                .AddBackupHelperService();
         }
     }
 }

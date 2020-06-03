@@ -7,14 +7,7 @@ namespace ASC.Data.Backup.Service
     public class BackupSettings
     {
 
-        public string TempFolder
-        {
-            get
-            {
-               return TempFolder.Replace('\\', Path.DirectorySeparatorChar);
-            }
-            set { TempFolder = value; }
-        }
+        public string TempFolder { get; set; }
 
         public string UpgradesPath { get; set; }
 
@@ -46,10 +39,17 @@ namespace ASC.Data.Backup.Service
         {
             public string CurrentRegion { get; set; }
 
+
+            public List<WebConfigElement> Elements { get; set; }
+
             public string CurrentPath
             {
                 get
                 {
+                    if(Elements == null)
+                    {
+                        Elements = new List<WebConfigElement>();
+                    }
                     if (Elements.Count == 0)
                     {
                         return Path.Combine("..", "..", "WebStudio");
@@ -61,8 +61,6 @@ namespace ASC.Data.Backup.Service
                     return GetPath(CurrentRegion);
                 }
             }
-
-            public List<WebConfigElement> Elements { get; set; }
 
             public string GetPath(string region)
             {
