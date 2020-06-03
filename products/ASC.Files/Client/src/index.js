@@ -23,52 +23,47 @@ if (token) {
     .then(() => fetchMyFolder(store.dispatch))
     .then(() => fetchTreeFolders(store.dispatch))
     .then(() => {
-      const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-      const match = window.location.pathname.match(re);
+      const reg = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
+      const match = window.location.pathname.match(reg);
+      let filterObj = null;
 
       if (match && match.length > 0) {
-        const newFilter = getFilterByLocation(window.location);
-        if (newFilter) {
-          return Promise.resolve(newFilter);
-        }
-        else {
-          return Promise.resolve(FilesFilter.getDefault());
-        }
+        filterObj = getFilterByLocation(window.location);
       }
-      else {
-        return Promise.resolve();
-      }
+
+      return Promise.resolve(filterObj);
     })
     .then(filter => {
+      let dataObj = filter;
+
       if (filter && filter.authorType) {
-        const newFilter = filter;
-        const authorType = newFilter.authorType
+        const filterObj = filter;
+        const authorType = filterObj.authorType;
         const indexOfUnderscore = authorType.indexOf('_');
         const type = authorType.slice(0, indexOfUnderscore);
         const itemId = authorType.slice(indexOfUnderscore + 1);
-        if (!itemId) {
-          newFilter.authorType = null;
-          return Promise.resolve(newFilter);
-        }
-        else {
-          const result = {
+
+        if (itemId) {
+          dataObj = {
             type,
             itemId,
-            filter: newFilter
-          }
-          return Promise.resolve(result);
+            filter: filterObj
+          };
+        }
+        else {
+          filterObj.authorType = null;
+          dataObj = filterObj;
         }
       }
-      else {
-        return Promise.resolve(filter);
-      }
+      return Promise.resolve(dataObj);
     })
     .then(data => {
       if (!data) return Promise.resolve();
-
       if (data instanceof FilesFilter) return Promise.resolve(data);
+
       const { filter, itemId, type } = data;
       const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
+      
       switch (type) {
         case 'group':
           return Promise.all([api.groups.getGroup(itemId), newFilter]);
@@ -78,11 +73,14 @@ if (token) {
           return Promise.resolve(newFilter);
       }
     })
-    .catch(err => Promise.resolve(FilesFilter.getDefault()))
+    .catch(err => {
+      Promise.resolve(FilesFilter.getDefault());
+      console.warn('Filter restored by default', err);
+    })
     .then(data => {
       if (!data) return Promise.resolve();
-
       if (data instanceof FilesFilter) return Promise.resolve(data);
+
       const result = data[0];
       const filter = data[1];
       const type = result.displayName ? 'user' : 'group';
@@ -92,11 +90,12 @@ if (token) {
         type
       };
       filter.selectedItem = selectedItem;
+
       return Promise.resolve(filter);
     })
     .then(filter => {
       if (!filter) return Promise.resolve();
-      
+
       const folderId = filter.folder;
       return fetchFiles(folderId, filter, store.dispatch);
     })
