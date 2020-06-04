@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
         useSuspense: true
       },
       backend: {
-        loadPath: `${config.homepage}/locales/MoveToPanel/{{lng}}/{{ns}}.json`
+        loadPath: `${config.homepage}/locales/OperationsPanel/{{lng}}/{{ns}}.json`
       }
     });
 } else if (process.env.NODE_ENV === "development") {
