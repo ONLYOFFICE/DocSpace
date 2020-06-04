@@ -66,7 +66,8 @@ namespace ASC.UrlShortener.Svc
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
-                        .AddEnvironmentVariables();
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
