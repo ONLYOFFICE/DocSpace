@@ -32,13 +32,20 @@ namespace ASC.Common.DependencyInjection
             var subfolder = configuration["core:products:subfolder"];
             string productsDir;
 
-            if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+            if (!Path.IsPathRooted(folder))
             {
-                productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+                {
+                    productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                }
+                else
+                {
+                    productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                }
             }
             else
             {
-                productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                productsDir = folder;
             }
 
             var builder = new ContainerBuilder();
