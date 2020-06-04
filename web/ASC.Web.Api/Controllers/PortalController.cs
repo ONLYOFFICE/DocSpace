@@ -53,7 +53,8 @@ namespace ASC.Web.Api.Controllers
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
             AuthContext authContext,
-            WebItemSecurity webItemSecurity
+            WebItemSecurity webItemSecurity,
+            BackupAjaxHandler backupHandler
             )
         {
             Log = options.CurrentValue;
@@ -65,6 +66,7 @@ namespace ASC.Web.Api.Controllers
             UrlShortener = urlShortener;
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
+            BackupHandler = backupHandler;
         }
 
         [Read("")]

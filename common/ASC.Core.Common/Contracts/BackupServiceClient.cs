@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Common.Module;
 
 namespace ASC.Core.Common.Contracts
@@ -100,6 +102,14 @@ namespace ASC.Core.Common.Contracts
         public ScheduleResponse GetSchedule(int tenantId)
         {
             return Channel.GetSchedule(tenantId);
+        }
+    }
+    public static class BackupServiceClientExtension
+    {
+        public static DIHelper AddBackupServiceClient(this DIHelper services)
+        {
+            services.TryAddScoped<BackupServiceClient>();
+            return services;
         }
     }
 }

@@ -31,20 +31,22 @@ namespace ASC.Data.Backup
         private TenantExtra TenantExtra { get; }
         private BackupHelper BackupHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        private BackupServiceClient BackupServiceClient { get; }
         #region backup
 
-        public BackupAjaxHandler(TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
+        public BackupAjaxHandler(TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory, BackupServiceClient backupServiceClient)
         {
-            this.TenantManager = tenantManager;
-            this.MessageService = messageService;
-            this.CoreBaseSettings = coreBaseSettings;
-            this.CoreConfiguration = coreConfiguration;
-            this.PermissionContext = permissionContext;
-            this.SecurityContext = securityContext;
-            this.UserManager = userManager;
-            this.TenantExtra = tenantExtra;
-            this.BackupHelper = backupHelper;
-            this.ConsumerFactory = consumerFactory;
+            TenantManager = tenantManager;
+            MessageService = messageService;
+            CoreBaseSettings = coreBaseSettings;
+            CoreConfiguration = coreConfiguration;
+            PermissionContext = permissionContext;
+            SecurityContext = securityContext;
+            UserManager = userManager;
+            TenantExtra = tenantExtra;
+            BackupHelper = backupHelper;
+            ConsumerFactory = consumerFactory;
+            BackupServiceClient = backupServiceClient;
         }
 
         [AjaxMethod]
@@ -77,10 +79,7 @@ namespace ASC.Data.Backup
 
             MessageService.Send(MessageAction.StartBackupSetting);
 
-            using (var service = new BackupServiceClient())
-            {
-                return service.StartBackup(backupRequest);
-            }
+                return BackupServiceClient.StartBackup(backupRequest);
         }
 
         [AjaxMethod]
@@ -89,10 +88,7 @@ namespace ASC.Data.Backup
         {
             DemandPermissionsBackup();
 
-            using (var service = new BackupServiceClient())
-            {
-                return service.GetBackupProgress(GetCurrentTenantId());
-            }
+           return BackupServiceClient.GetBackupProgress(GetCurrentTenantId());
         }
 
         [AjaxMethod]
@@ -100,10 +96,7 @@ namespace ASC.Data.Backup
         {
             DemandPermissionsBackup();
 
-            using (var service = new BackupServiceClient())
-            {
-                service.DeleteBackup(id);
-            }
+            BackupServiceClient.DeleteBackup(id);
         }
 
         [AjaxMethod]
@@ -111,21 +104,14 @@ namespace ASC.Data.Backup
         {
             DemandPermissionsBackup();
 
-            using (var service = new BackupServiceClient())
-            {
-                service.DeleteAllBackups(GetCurrentTenantId());
-            }
+            BackupServiceClient.DeleteAllBackups(GetCurrentTenantId());
         }
 
         [AjaxMethod]
         public List<BackupHistoryRecord> GetBackupHistory()
         {
             DemandPermissionsBackup();
-
-            using (var service = new BackupServiceClient())
-            {
-                return service.GetBackupHistory(GetCurrentTenantId());
-            }
+            return BackupServiceClient.GetBackupHistory(GetCurrentTenantId());
         }
 
 
@@ -162,10 +148,7 @@ namespace ASC.Data.Backup
                     break;
             }
 
-            using (var service = new BackupServiceClient())
-            {
-                service.CreateSchedule(scheduleRequest);
-            }
+            BackupServiceClient.CreateSchedule(scheduleRequest);
         }
 
         [AjaxMethod]
@@ -174,13 +157,11 @@ namespace ASC.Data.Backup
             DemandPermissionsBackup();
 
             ScheduleResponse response;
-            using (var service = new BackupServiceClient())
+
+            response = BackupServiceClient.GetSchedule(GetCurrentTenantId());
+            if (response == null)
             {
-                response = service.GetSchedule(GetCurrentTenantId());
-                if (response == null)
-                {
-                    return null;
-                }
+                return null;
             }
 
             var schedule = new Schedule
@@ -211,18 +192,15 @@ namespace ASC.Data.Backup
                 schedule.StorageParams = consumer.AdditionalKeys.ToDictionary(r => r, r => consumer[r]);
                 schedule.StorageParams.Add("module", "S3");
 
-                using (var service = new BackupServiceClient())
+                BackupServiceClient.CreateSchedule(new CreateScheduleRequest
                 {
-                    service.CreateSchedule(new CreateScheduleRequest
-                    {
-                        TenantId = TenantManager.GetCurrentTenant().TenantId,
-                        BackupMail = schedule.BackupMail,
-                        Cron = schedule.CronParams.ToString(),
-                        NumberOfBackupsStored = schedule.BackupsStored,
-                        StorageType = schedule.StorageType,
-                        StorageParams = schedule.StorageParams
-                    });
-                }
+                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    BackupMail = schedule.BackupMail,
+                    Cron = schedule.CronParams.ToString(),
+                    NumberOfBackupsStored = schedule.BackupsStored,
+                    StorageType = schedule.StorageType,
+                    StorageParams = schedule.StorageParams
+                });
 
             }
             else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
@@ -238,10 +216,8 @@ namespace ASC.Data.Backup
         {
             DemandPermissionsBackup();
 
-            using (var service = new BackupServiceClient())
-            {
-                service.DeleteSchedule(GetCurrentTenantId());
-            }
+            BackupServiceClient.DeleteSchedule(GetCurrentTenantId());
+
         }
 
         private void DemandPermissionsBackup()
@@ -320,27 +296,23 @@ namespace ASC.Data.Backup
 
             MessageService.Send(MessageAction.StartTransferSetting);
 
-            using (var service = new BackupServiceClient())
-            {
-                return service.StartTransfer(
-                    new StartTransferRequest
-                    {
-                        TenantId = GetCurrentTenantId(),
-                        TargetRegion = targetRegion,
-                        BackupMail = transferMail,
-                        NotifyUsers = notifyUsers
-                    });
-            }
+            return BackupServiceClient.StartTransfer(
+                new StartTransferRequest
+                {
+                    TenantId = GetCurrentTenantId(),
+                    TargetRegion = targetRegion,
+                    BackupMail = transferMail,
+                    NotifyUsers = notifyUsers
+                });
+
         }
 
         [AjaxMethod]
         [SecurityPassthrough]
         public BackupProgress GetTransferProgress()
         {
-            using (var service = new BackupServiceClient())
-            {
-                return service.GetTransferProgress(GetCurrentTenantId());
-            }
+
+             return BackupServiceClient.GetTransferProgress(GetCurrentTenantId());
         }
 
         private void DemandPermissionsTransfer()
@@ -349,7 +321,7 @@ namespace ASC.Data.Backup
 
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             if (!SetupInfo.IsVisibleSettings(ManagementType.Migration.ToString())
-                || !currentUser.IsOwner(TenantManager.CurrentTenant)
+                || !currentUser.IsOwner(TenantManager.GetCurrentTenant())
                 || !SetupInfo.IsSecretEmail(currentUser.Email) && !TenantExtra.GetTenantQuota().HasMigration)
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }
@@ -358,15 +330,12 @@ namespace ASC.Data.Backup
 
         public string GetTmpFolder()
         {
-            using (var service = new BackupServiceClient())
-            {
-                return service.GetTmpFolder();
-            }
+            return BackupServiceClient.GetTmpFolder();
         }
 
         private void DemandSize()
         {
-            if (BackupHelper.ExceedsMaxAvailableSize(TenantManager.CurrentTenant.TenantId))
+            if (BackupHelper.ExceedsMaxAvailableSize(TenantManager.GetCurrentTenant().TenantId))
                 throw new InvalidOperationException(string.Format(UserControlsCommonResource.BackupSpaceExceed,
                     FileSizeComment.FilesSizeToString(BackupHelper.AvailableZipSize),
                     "",
@@ -461,7 +430,8 @@ namespace ASC.Data.Backup
                 .AddUserManagerService()
                 .AddTenantExtraService()
                 .AddConsumerFactoryService()
-                .AddBackupHelperService();
+                .AddBackupHelperService()
+                .AddBackupServiceClient();
         }
     }
 }
