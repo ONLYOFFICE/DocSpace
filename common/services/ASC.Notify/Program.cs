@@ -27,8 +27,7 @@ namespace ASC.Notify
                     .AddFilter("Microsoft", LogLevel.Warning)
                     .AddFilter("System", LogLevel.Warning)
                     .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
-                    .AddConsole()
-                    .AddEventLog();
+                    .AddConsole();
             });
             ILogger logger = loggerFactory.CreateLogger<Program>();
             logger.LogInformation("Example log message");
