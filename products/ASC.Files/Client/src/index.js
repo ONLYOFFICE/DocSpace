@@ -29,6 +29,10 @@ if (token) {
 
       if (match && match.length > 0) {
         filterObj = getFilterByLocation(window.location);
+
+        if (!filterObj) {
+          filterObj = FilesFilter.getDefault();
+        }
       }
 
       return Promise.resolve(filterObj);
