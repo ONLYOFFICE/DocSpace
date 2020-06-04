@@ -75,7 +75,7 @@ namespace ASC.UrlShortener.Svc
                     services.AddHostedService<UrlShortenerServiceLauncher>();
                     diHelper.AddUrlShortenerServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                    services.AddAutofac(hostContext.Configuration, null, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();
