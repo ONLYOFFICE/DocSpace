@@ -27,7 +27,6 @@ const commonStyles = css`
 `;
 
 const StyledSectionBody = styled.div`
-  ${props => props.displayBorder && `outline: 1px dotted;`}
   ${commonStyles}
   
   ${props => props.withScroll && `
@@ -36,7 +35,6 @@ const StyledSectionBody = styled.div`
 `;
 
 const StyledDropZoneBody = styled(DragAndDrop)`
-  ${props => props.displayBorder && `outline: 1px dotted;`}
   ${commonStyles}
 
   .drag-and-drop {
@@ -98,16 +96,18 @@ class SectionBody extends React.Component {
         ))
     };
 
-    return (
-      uploadFiles ? (
-        <StyledDropZoneBody onDrop={onDrop} withScroll={withScroll}>
-          {renderBody()}
-        </StyledDropZoneBody>
-      ) : (
-        <StyledSectionBody withScroll={withScroll}>
-          {renderBody()}
-        </StyledSectionBody>
-      )
+    return (uploadFiles ? (
+      <StyledDropZoneBody
+        isDropZone
+        onDrop={onDrop}
+        withScroll={withScroll}
+      >
+        {renderBody()}
+      </StyledDropZoneBody>
+    ) : (
+      <StyledSectionBody withScroll={withScroll}>
+        {renderBody()}
+      </StyledSectionBody>
     );
   }
 }
