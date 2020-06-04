@@ -3,5 +3,6 @@
     "Move": "Перемещение",
     "CopyOperation": "Копирование",
     "MoveToOperation": "Перемещение",
-    "Restore": "Восстановить"
+    "Restore": "Восстановить",
+    "MoveToFolderMessage": "Нельзя перенести папку в свою дочернюю папку"
 }

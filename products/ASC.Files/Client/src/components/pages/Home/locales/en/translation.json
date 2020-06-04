@@ -76,5 +76,6 @@
   "DeleteOperation": "Deleting",
   "Restore": "Restore",
   "ErrorUploadMessage": "You cannot upload a folder or an empty file",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
+  "MoveToOperation": "Moving"
 }

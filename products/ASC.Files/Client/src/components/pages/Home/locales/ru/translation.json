@@ -76,5 +76,6 @@
   "DeleteOperation": "Удаление",
   "Restore": "Восстановить",
   "ErrorUploadMessage": "Нельзя загрузить папку или пустой файл",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
+  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
+  "MoveToOperation": "Перемещение"
 }
