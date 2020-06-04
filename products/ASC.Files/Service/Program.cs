@@ -58,7 +58,7 @@ namespace ASC.Files.Service
                         .AddFactoryIndexerFolderService();
 
                     var a = typeof(FactoryIndexer<ISearchItem>).ToString();
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false, "search.json");
+                    services.AddAutofac(hostContext.Configuration, null, hostContext.HostingEnvironment.ContentRootPath, false, false, "search.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

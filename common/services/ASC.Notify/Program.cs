@@ -12,6 +12,7 @@ using ASC.Notify.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -20,6 +21,18 @@ namespace ASC.Notify
     {
         public static async Task Main(string[] args)
         {
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
+                    .AddConsole()
+                    .AddEventLog();
+            });
+            ILogger logger = loggerFactory.CreateLogger<Program>();
+            logger.LogInformation("Example log message");
+
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
@@ -66,7 +79,7 @@ namespace ASC.Notify
                     .AddSmtpSenderService()
                     .AddAWSSenderService();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    services.AddAutofac(hostContext.Configuration, logger, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();
