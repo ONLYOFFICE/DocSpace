@@ -96,7 +96,7 @@ class SectionBody extends React.Component {
         ))
     };
 
-    return (uploadFiles ? (
+    return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone
         onDrop={onDrop}
