@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,58 +24,9 @@
 */
 
 
-using System;
-using System.IO;
-using System.Text;
-
-using ASC.Common.Logging;
-
-using Nest;
-
-using Newtonsoft.Json;
-
-namespace ASC.ElasticSearch.Core
-{
-    public abstract class WrapperWithDoc : Wrapper
-    {
-        public Document Document { get; set; }
-
-        public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
-
-        protected abstract Stream GetDocumentStream();
-
-        [Ignore, JsonIgnore]
-        public abstract string SettingsTitle { get; }
-
-        internal void InitDocument(bool index, ILog log)
-        {
-            Document = new Document
-            {
-                Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
-            };
-
-            try
-            {
-                if (!index) return;
-
-                using (var stream = GetDocumentStream())
-                {
-                    if (stream == null) return;
-
-                    Document = new Document
-                    {
-                        Data = Convert.ToBase64String(stream.GetCorrectBuffer())
-                    };
-                }
-            }
-            catch (FileNotFoundException e)
-            {
-                log.Error("InitDocument FileNotFoundException", e);
-            }
-            catch (Exception e)
-            {
-                log.Error("InitDocument", e);
-            }
-        }
-    }
-}
+module.exports = {
+    exists: "SELECT short,id FROM short_links WHERE link = ?",
+    insert: "INSERT INTO short_links SET link = ?",
+    update: "UPDATE short_links SET short = ? WHERE id = ?",
+    find: "SELECT link FROM short_links WHERE id = ?",
+};

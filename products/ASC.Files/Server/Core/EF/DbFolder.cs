@@ -1,16 +1,25 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
+
+using ASC.ElasticSearch;
+
+using Nest;
+
+using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
 
 namespace ASC.Files.Core.EF
 {
+    [ElasticsearchType(RelationName = Tables.Folder)]
     [Table("files_folder")]
-    public class DbFolder : IDbFile, IDbSearch
+    public class DbFolder : IDbFile, IDbSearch, ISearchItem
     {
         public int Id { get; set; }
 
         [Column("parent_id")]
         public int ParentId { get; set; }
 
+        [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
 
         [Column("folder_type")]
@@ -32,5 +41,21 @@ namespace ASC.Files.Core.EF
         public int TenantId { get; set; }
         public int FoldersCount { get; set; }
         public int FilesCount { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get => Tables.Folder;
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Title };
+            }
+        }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Token
+﻿namespace AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Token
 {
     /// <summary>
     /// The OAuthToken will be generated during the login process in a oauth compliant 

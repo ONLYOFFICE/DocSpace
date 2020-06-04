@@ -57,20 +57,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             FFmpegPath = configuration["files:ffmpeg:value"];
             FFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 
-            var exts = configuration["files:ffmpeg:exts"];
-            ConvertableMedia = new List<string>();
-
-            if (!string.IsNullOrEmpty(exts))
-            {
-                try
-                {
-                    ConvertableMedia = exts.Split('|').ToList();
-                }
-                catch (Exception e)
-                {
-                    logger.Error("Couldn't parse 'files.ffmpeg.exts' setting.", e);
-                }
-            }
+            ConvertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? new string[] { }).ToList();
 
             if (string.IsNullOrEmpty(FFmpegPath))
             {

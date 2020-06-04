@@ -25,40 +25,27 @@
 
 
 using System;
-using System.Configuration;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
-namespace ASC.ElasticSearch.Config
+namespace ASC.ApiSystem.Models
 {
-    class ElasticSection : ConfigurationSection
+    [DataContract]
+    public class CoreSettingsModel
     {
-        [ConfigurationProperty("host", IsRequired = true, DefaultValue = "localhost")]
-        public string Host
-        {
-            get { return (string)this["host"]; }
-        }
+        [DataMember(IsRequired = false)]
+        public Int32 Tenant { get; set; }
 
-        [ConfigurationProperty("port", IsRequired = false, DefaultValue = "9200")]
-        public int Port
-        {
-            get { return Convert.ToInt32(this["port"]); }
-        }
+        [DataMember(IsRequired = true)]
+        [StringLength(255)]
+        public string Key { get; set; }
 
-        [ConfigurationProperty("scheme", IsRequired = false, DefaultValue = "http")]
-        public string Scheme
-        {
-            get { return (string)this["scheme"]; }
-        }
+        [DataMember(IsRequired = true)]
+        public string Value { get; set; }
 
-        [ConfigurationProperty("period", IsRequired = false, DefaultValue = 1)]
-        public int Period
+        public CoreSettingsModel()
         {
-            get { return Convert.ToInt32(this["period"]); }
-        }
-
-        [ConfigurationProperty("memoryLimit", IsRequired = false, DefaultValue = 10 * 1024 * 1024L)]
-        public long MemoryLimit
-        {
-            get { return Convert.ToInt64(this["memoryLimit"]); }
+            Tenant = -1;
         }
     }
 }

@@ -1,6 +1,8 @@
 
 using System.Text;
+using System.Text.Json.Serialization;
 
+using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -22,7 +24,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Files
 {
@@ -44,10 +45,15 @@ namespace ASC.Files
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                .AddNewtonsoftJson()
-                .AddXmlSerializerFormatters();
-
-            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new FileEntryWrapperConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddMemoryCache();
 

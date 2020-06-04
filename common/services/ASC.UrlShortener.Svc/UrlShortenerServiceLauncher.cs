@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,46 +24,45 @@
 */
 
 
-using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
-using ASC.Core;
-using ASC.ElasticSearch;
-using ASC.Files.Core;
 
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace ASC.Web.Files.Core.Search
+
+namespace ASC.UrlShortener.Svc
 {
-    public sealed class FoldersWrapper : Wrapper
+    public class UrlShortenerServiceLauncher : IHostedService
     {
-        [Column("title", 1)]
-        public string Title { get; set; }
+        public UrlShortenerService UrlShortenerService { get; }
 
-        [ColumnLastModified("modified_on")]
-        public override DateTime LastModifiedOn { get; set; }
-
-        protected override string Table { get { return "files_folder"; } }
-
-        public static FoldersWrapper GetFolderWrapper<T>(IServiceProvider serviceProvider, Folder<T> d)
+        public UrlShortenerServiceLauncher(UrlShortenerService urlShortenerService)
         {
-            var tenantManager = serviceProvider.GetService<TenantManager>();
+            UrlShortenerService = urlShortenerService;
+        }
 
-            return new FoldersWrapper
-            {
-                Id = Convert.ToInt32(d.ID),
-                Title = d.Title,
-                TenantId = tenantManager.GetCurrentTenant().TenantId
-            };
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            UrlShortenerService.Start();
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            UrlShortenerService.Stop();
+
+            return Task.CompletedTask;
         }
     }
-    public static class FoldersWrapperExtention
+
+    public static class UrlShortenerServiceLauncherExtension
     {
-        public static DIHelper AddFoldersWrapperService(this DIHelper services)
+        public static DIHelper AddUrlShortenerServiceLauncher(this DIHelper services)
         {
-            services.TryAddTransient<FoldersWrapper>();
-            return services
-                .AddFactoryIndexerService<FoldersWrapper>();
+            return services.AddUrlShortenerService();
         }
     }
 }

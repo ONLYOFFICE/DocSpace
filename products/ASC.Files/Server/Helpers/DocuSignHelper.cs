@@ -60,6 +60,7 @@ using DocuSign.eSign.Model;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 using Newtonsoft.Json;
 
@@ -204,7 +205,7 @@ namespace ASC.Web.Files.Helpers
             return true;
         }
 
-        public string SendDocuSign<T>(T fileId, DocuSignData docuSignData, Dictionary<string, string> requestHeaders)
+        public string SendDocuSign<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
         {
             if (docuSignData == null) throw new ArgumentNullException("docuSignData");
             var token = DocuSignToken.GetToken();

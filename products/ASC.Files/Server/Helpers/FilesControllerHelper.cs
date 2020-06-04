@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -240,7 +241,7 @@ namespace ASC.Files.Helpers
         public Configuration<T> OpenEdit(T fileId, int version, string doc)
         {
             DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
-            configuration.Type = EditorType.External;
+            configuration.EditorType = EditorType.External;
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
         }
@@ -267,7 +268,7 @@ namespace ASC.Files.Helpers
             request.ContentLength = 0;
 
             // hack for uploader.onlyoffice.com in api requests
-            var rewriterHeader = ApiContext.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
+            var rewriterHeader = ApiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
             if (!string.IsNullOrEmpty(rewriterHeader))
             {
                 request.Headers[HttpRequestExtensions.UrlRewriterHeader] = rewriterHeader;
@@ -409,9 +410,19 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId, out var checkedFiles, out var checkedFolders);
+            var checkedFiles = new List<object>();
+            var checkedFolders = new List<object>();
 
-            var entries = FileStorageService.GetItems(checkedFiles.OfType<long>().Select(Convert.ToInt32), checkedFiles.OfType<long>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
+            if (batchModel.DestFolderId.ValueKind == System.Text.Json.JsonValueKind.Number)
+            {
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
+            }
+            else
+            {
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
+            }
+
+            var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
 
             entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
@@ -443,7 +454,7 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<object> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
         {
             return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get);
         }
@@ -460,8 +471,8 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel model)
         {
-            var folders = new Dictionary<object, string>();
-            var files = new Dictionary<object, string>();
+            var folders = new Dictionary<JsonElement, string>();
+            var files = new Dictionary<JsonElement, string>();
 
             foreach (var fileId in model.FileConvertIds.Where(fileId => !files.ContainsKey(fileId.Key)))
             {

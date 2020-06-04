@@ -167,7 +167,7 @@ namespace ASC.Core.ChunkedUploader
 
                 if (uploadSession.BytesTotal == uploadSession.BytesUploaded)
                 {
-                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.Read, FileShare.None,
+                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.Read, FileShare.ReadWrite,
                         4096, FileOptions.DeleteOnClose);
                 }
             }

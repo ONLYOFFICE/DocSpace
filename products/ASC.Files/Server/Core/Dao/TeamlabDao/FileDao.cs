@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
 using ASC.Common;
 using ASC.Core;
@@ -49,14 +50,17 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
     internal class FileDao : AbstractDao, IFileDao<int>
     {
+        public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
+
         private static readonly object syncRoot = new object();
-        public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
+        public FactoryIndexer<DbFile> FactoryIndexer { get; }
         public GlobalStore GlobalStore { get; }
         public GlobalSpace GlobalSpace { get; }
         public GlobalFolder GlobalFolder { get; }
@@ -66,7 +70,7 @@ namespace ASC.Files.Core.Data
         public CrossDao CrossDao { get; }
 
         public FileDao(
-            FactoryIndexer<FilesWrapper> factoryIndexer,
+            FactoryIndexer<DbFile> factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -116,14 +120,14 @@ namespace ASC.Files.Core.Data
 
         public File<int> GetFile(int fileId)
         {
-            var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion);
-            return FromQueryWithShared(query).SingleOrDefault();
+            var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
+            return ToFile(FromQueryWithShared(query).SingleOrDefault());
         }
 
         public File<int> GetFile(int fileId, int fileVersion)
         {
-            var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion);
-            return FromQueryWithShared(query).SingleOrDefault();
+            var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
+            return ToFile(FromQueryWithShared(query).SingleOrDefault());
         }
 
         public File<int> GetFile(int parentId, string title)
@@ -131,14 +135,16 @@ namespace ASC.Files.Core.Data
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
             var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId == parentId)
+                .AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
-            return FromQueryWithShared(query).FirstOrDefault();
+            return ToFile(FromQueryWithShared(query).FirstOrDefault());
         }
 
         public File<int> GetFileStable(int fileId, int fileVersion = -1)
         {
-            var query = GetFileQuery(r => r.Id == fileId && r.Forcesave == ForcesaveType.None);
+            var query = GetFileQuery(r => r.Id == fileId && r.Forcesave == ForcesaveType.None)
+                .AsNoTracking();
 
             if (fileVersion >= 0)
             {
@@ -147,30 +153,31 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return FromQueryWithShared(query).SingleOrDefault();
+            return ToFile(FromQueryWithShared(query).SingleOrDefault());
         }
 
         public List<File<int>> GetFileHistory(int fileId)
         {
-            var query = GetFileQuery(r => r.Id == fileId).OrderByDescending(r => r.Version);
+            var query = GetFileQuery(r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
-            return FromQueryWithShared(query);
+            return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
         public List<File<int>> GetFiles(int[] fileIds)
         {
             if (fileIds == null || fileIds.Length == 0) return new List<File<int>>();
 
-            var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion);
+            var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion)
+                .AsNoTracking();
 
-            return FromQueryWithShared(query);
+            return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
         public List<File<int>> GetFilesForShare(int[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
-            var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion);
+            var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion).AsNoTracking();
 
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -217,15 +224,18 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQuery(query);
+            return FromQuery(query).Select(ToFile).ToList();
         }
 
 
         public List<int> GetFiles(int parentId)
         {
-            var query = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion).Select(r => r.Id);
+            var query = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion)
+                .AsNoTracking()
+                .Select(r => r.Id);
 
             return Query(FilesDbContext.Files)
+                .AsNoTracking()
                 .Where(r => r.FolderId == parentId && r.CurrentVersion)
                 .Select(r => r.Id)
                 .ToList();
@@ -237,12 +247,13 @@ namespace ASC.Files.Core.Data
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            var q = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion);
+            var q = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion).AsNoTracking();
 
 
             if (withSubfolders)
             {
                 q = GetFileQuery(r => r.CurrentVersion)
+                    .AsNoTracking()
                     .Join(FilesDbContext.Tree, r => r.FolderId, a => a.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.tree.ParentId == parentId)
                     .Select(r => r.file);
@@ -252,7 +263,7 @@ namespace ASC.Files.Core.Data
             {
                 var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
 
-                Expression<Func<Selector<FilesWrapper>, Selector<FilesWrapper>>> expression = s => func(s);
+                Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
 
                 if (FactoryIndexer.TrySelectIds(expression, out var searchIds))
                 {
@@ -317,7 +328,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQueryWithShared(q);
+            return FromQueryWithShared(q).Select(ToFile).ToList();
         }
 
         public Stream GetFileStream(File<int> file, long offset)
@@ -368,6 +379,8 @@ namespace ASC.Files.Core.Data
 
             var isNew = false;
             List<int> parentFoldersIds;
+            DbFile toInsert = null;
+
             lock (syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
@@ -389,7 +402,6 @@ namespace ASC.Files.Core.Data
                 if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
-                var fileIdString = file.ID.ToString();
                 var toUpdate = FilesDbContext.Files
                     .Where(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID)
                     .FirstOrDefault();
@@ -400,7 +412,7 @@ namespace ASC.Files.Core.Data
                     FilesDbContext.SaveChanges();
                 }
 
-                var toInsert = new DbFile
+                toInsert = new DbFile
                 {
                     Id = file.ID,
                     Version = file.Version,
@@ -428,14 +440,15 @@ namespace ASC.Files.Core.Data
 
                 file.PureTitle = file.Title;
 
-                parentFoldersIds =
+                var parentFolders =
                     FilesDbContext.Tree
                     .Where(r => r.FolderId == file.FolderID)
                     .OrderByDescending(r => r.Level)
-                    .Select(r => r.ParentId)
                     .ToList();
 
-                if (parentFoldersIds.Count > 0)
+                parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+                if (parentFoldersIds.Any())
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Any(a => a == r.Id));
@@ -448,6 +461,8 @@ namespace ASC.Files.Core.Data
 
                     FilesDbContext.SaveChanges();
                 }
+
+                toInsert.Folders = parentFolders;
 
                 if (isNew)
                 {
@@ -476,7 +491,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(InitDocument(toInsert));
 
             return GetFile(file.ID);
         }
@@ -502,6 +517,8 @@ namespace ASC.Files.Core.Data
                 }
             }
 
+            DbFile toUpdate = null;
+
             List<int> parentFoldersIds;
             lock (syncRoot)
             {
@@ -516,7 +533,7 @@ namespace ASC.Files.Core.Data
                 if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
-                var toUpdate = FilesDbContext.Files
+                toUpdate = FilesDbContext.Files
                     .Where(r => r.Id == file.ID && r.Version == file.Version)
                     .FirstOrDefault();
 
@@ -541,13 +558,14 @@ namespace ASC.Files.Core.Data
 
                 file.PureTitle = file.Title;
 
-                parentFoldersIds = FilesDbContext.Tree
+                var parentFolders = FilesDbContext.Tree
                     .Where(r => r.FolderId == file.FolderID)
                     .OrderByDescending(r => r.Level)
-                    .Select(r => r.ParentId)
                     .ToList();
 
-                if (parentFoldersIds.Count > 0)
+                parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+                if (parentFoldersIds.Any())
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Any(a => a == r.Id));
@@ -560,6 +578,8 @@ namespace ASC.Files.Core.Data
 
                     FilesDbContext.SaveChanges();
                 }
+
+                toUpdate.Folders = parentFolders;
             }
 
             if (fileStream != null)
@@ -579,7 +599,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(InitDocument(toUpdate));
 
             return GetFile(file.ID);
         }
@@ -639,6 +659,11 @@ namespace ASC.Files.Core.Data
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
+            foreach (var d in toDeleteFiles)
+            {
+                FactoryIndexer.DeleteAsync(d);
+            }
+
             var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
@@ -661,9 +686,11 @@ namespace ASC.Files.Core.Data
             if (deleteFolder)
                 DeleteFolder(fileId);
 
-            var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            wrapper.Id = fileId;
-            FactoryIndexer.DeleteAsync(wrapper);
+            var toDeleteFile = toDeleteFiles.FirstOrDefault(r => r.CurrentVersion);
+            if (toDeleteFile != null)
+            {
+                FactoryIndexer.DeleteAsync(toDeleteFile);
+            }
         }
 
         public bool IsExist(string title, object folderId)
@@ -674,6 +701,7 @@ namespace ASC.Files.Core.Data
         public bool IsExist(string title, int folderId)
         {
             return Query(FilesDbContext.Files)
+                .AsNoTracking()
                 .Where(r => r.Title == title)
                 .Where(r => r.FolderId == folderId)
                 .Where(r => r.CurrentVersion)
@@ -699,6 +727,8 @@ namespace ASC.Files.Core.Data
         {
             if (fileId == default) return default;
 
+            List<DbFile> toUpdate;
+
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -707,7 +737,7 @@ namespace ASC.Files.Core.Data
                     .Distinct()
                     .ToList();
 
-                var toUpdate = Query(FilesDbContext.Files)
+                toUpdate = Query(FilesDbContext.Files)
                     .Where(r => r.Id == fileId)
                     .ToList();
 
@@ -729,20 +759,19 @@ namespace ASC.Files.Core.Data
                 RecalculateFilesCount(toFolderId);
             }
 
-            var parentFoldersIds =
+            var parentFolders =
                 FilesDbContext.Tree
                 .Where(r => r.FolderId == toFolderId)
                 .OrderByDescending(r => r.Level)
-                .Select(r => r.ParentId)
                 .ToList();
 
-            var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            wrapper.Id = fileId;
-            wrapper.Folders = parentFoldersIds.Select(r => new FilesFoldersWrapper() { FolderId = r.ToString() }).ToList();
+            var toUpdateFile = toUpdate.FirstOrDefault(r => r.CurrentVersion);
 
-            FactoryIndexer.Update(wrapper,
-                UpdateAction.Replace,
-                w => w.Folders);
+            if (toUpdateFile != null)
+            {
+                toUpdateFile.Folders = parentFolders;
+                FactoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+            }
 
             return fileId;
         }
@@ -812,7 +841,6 @@ namespace ASC.Files.Core.Data
 
         public int FileRename(File<int> file, string newTitle)
         {
-            var fileIdString = file.ID.ToString();
             newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
@@ -824,6 +852,8 @@ namespace ASC.Files.Core.Data
             toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
             FilesDbContext.SaveChanges();
+
+            FactoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn);
 
             return file.ID;
         }
@@ -848,6 +878,7 @@ namespace ASC.Files.Core.Data
         public void CompleteVersion(int fileId, int fileVersion)
         {
             var toUpdate = Query(FilesDbContext.Files)
+                .AsNoTracking()
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version >= fileVersion);
 
@@ -864,6 +895,7 @@ namespace ASC.Files.Core.Data
             using var tx = FilesDbContext.Database.BeginTransaction();
 
             var versionGroup = Query(FilesDbContext.Files)
+                .AsNoTracking()
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
                 .Select(r => r.VersionGroup)
@@ -995,7 +1027,6 @@ namespace ASC.Files.Core.Data
 
         public void ReassignFiles(int[] fileIds, Guid newOwnerId)
         {
-            var fileIdsStrings = fileIds.Select(r => r.ToString()).ToList();
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.CurrentVersion)
                 .Where(r => fileIds.Any(a => a == r.Id));
@@ -1012,8 +1043,8 @@ namespace ASC.Files.Core.Data
         {
             if (parentIds == null || parentIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
-            var parentIdsStrings = parentIds.Select(r => r.ToString()).ToList();
             var q = GetFileQuery(r => r.CurrentVersion)
+                .AsNoTracking()
                 .Join(FilesDbContext.Tree, a => a.FolderId, t => t.FolderId, (file, tree) => new { file, tree })
                 .Where(r => parentIds.Any(a => a == r.tree.ParentId))
                 .Select(r => r.file);
@@ -1063,15 +1094,15 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQueryWithShared(q);
+            return FromQueryWithShared(q).Select(ToFile).ToList();
         }
 
         public IEnumerable<File<int>> Search(string searchText, bool bunch)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
-                var query = GetFileQuery(r => r.CurrentVersion && ids.Any(i => i == r.Id));
-                return FromQueryWithShared(query)
+                var query = GetFileQuery(r => r.CurrentVersion && ids.Any(i => i == r.Id)).AsNoTracking();
+                return FromQueryWithShared(query).Select(ToFile)
                     .Where(
                         f =>
                         bunch
@@ -1081,8 +1112,8 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                var query = BuildSearch(GetFileQuery(r => r.CurrentVersion), searchText, SearhTypeEnum.Any);
-                return FromQueryWithShared(query)
+                var query = BuildSearch(GetFileQuery(r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
+                return FromQueryWithShared(query).Select(ToFile)
                     .Where(f =>
                            bunch
                                 ? f.RootFolderType == FolderType.BUNCH
@@ -1175,7 +1206,7 @@ namespace ASC.Files.Core.Data
 
         #endregion
 
-        private Func<Selector<FilesWrapper>, Selector<FilesWrapper>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
             return s =>
            {
@@ -1187,11 +1218,11 @@ namespace ASC.Files.Core.Data
                {
                    if (withSubfolders)
                    {
-                       result.In(a => a.Folders.Select(r => r.FolderId), new[] { parentId.ToString() });
+                       result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                    }
                    else
                    {
-                       result.InAll(a => a.Folders.Select(r => r.FolderId), new[] { parentId.ToString() });
+                       result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                    }
                }
 
@@ -1209,7 +1240,7 @@ namespace ASC.Files.Core.Data
                        //    result.Sort(r => r.Title, orderBy.IsAsc);
                        //    break;
                        case SortedByType.DateAndTime:
-                           result.Sort(r => r.LastModifiedOn, orderBy.IsAsc);
+                           result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
                            break;
                        case SortedByType.DateAndTimeCreation:
                            result.Sort(r => r.CreateOn, orderBy.IsAsc);
@@ -1246,7 +1277,7 @@ namespace ASC.Files.Core.Data
            };
         }
 
-        protected List<File<int>> FromQueryWithShared(IQueryable<DbFile> dbFiles)
+        protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
             return dbFiles
                 .Select(r => new DbFileQuery
@@ -1265,13 +1296,10 @@ namespace ASC.Files.Core.Data
                         .Where(x => x.EntryType == FileEntryType.File)
                         .Where(x => x.EntryId == r.Id.ToString())
                         .Any()
-                })
-                .ToList()
-                .Select(ToFile)
-                .ToList();
+                });
         }
 
-        protected List<File<int>> FromQuery(IQueryable<DbFile> dbFiles)
+        protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
         {
             return dbFiles
                 .Select(r => new DbFileQuery
@@ -1285,15 +1313,13 @@ namespace ASC.Files.Core.Data
                             .Select(r => r.folder)
                             .FirstOrDefault(),
                     shared = true
-                })
-                .ToList()
-                .Select(ToFile)
-                .ToList();
+                });
         }
 
         public File<int> ToFile(DbFileQuery r)
         {
             var file = ServiceProvider.GetService<File<int>>();
+            if (r == null) return null;
             file.ID = r.file.Id;
             file.Title = r.file.Title;
             file.FolderID = r.file.FolderId;
@@ -1313,6 +1339,36 @@ namespace ASC.Files.Core.Data
             file.Encrypted = r.file.Encrypted;
             file.Forcesave = r.file.Forcesave;
             return file;
+        }
+
+        internal protected DbFile InitDocument(DbFile dbFile)
+        {
+            if (!FactoryIndexer.CanSearchByContent())
+            {
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+                };
+                return dbFile;
+            }
+
+            var file = ServiceProvider.GetService<File<int>>();
+            file.ID = dbFile.Id;
+            file.Title = dbFile.Title;
+            file.Version = dbFile.Version;
+            file.ContentLength = dbFile.ContentLength;
+
+            if (!IsExistOnStorage(file) || file.ContentLength > MaxContentLength) return dbFile;
+
+            using var stream = GetFileStream(file);
+            if (stream == null) return dbFile;
+
+            dbFile.Document = new Document
+            {
+                Data = Convert.ToBase64String(stream.GetCorrectBuffer())
+            };
+
+            return dbFile;
         }
     }
 
@@ -1344,7 +1400,7 @@ namespace ASC.Files.Core.Data
                 .AddAuthContextService()
                 .AddGlobalStoreService()
                 .AddGlobalSpaceService()
-                .AddFactoryIndexerService<FilesWrapper>()
+                .AddFactoryIndexerFileService()
                 .AddGlobalFolderService()
                 .AddChunkedUploadSessionHolderService()
                 .AddFolderDaoService();

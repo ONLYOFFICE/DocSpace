@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using ASC.Core.Security.Authorizing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.Security.Authorizing
 {

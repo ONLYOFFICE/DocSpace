@@ -34,6 +34,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
+using System.Text.Json;
 using System.Web;
 
 using ASC.Api.Core;
@@ -48,6 +49,7 @@ using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
+using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
 using ASC.Files.Resources;
 using ASC.MessagingSystem;
@@ -66,6 +68,7 @@ using ASC.Web.Files.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
@@ -81,8 +84,8 @@ namespace ASC.Web.Files.Services.WCFService
         public FilesSettingsHelper FilesSettingsHelper { get; }
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
-        public FactoryIndexer<FoldersWrapper> FoldersIndexer { get; }
-        public FactoryIndexer<FilesWrapper> FilesIndexer { get; }
+        public FactoryIndexer<DbFolder> FoldersIndexer { get; }
+        public FactoryIndexer<DbFile> FilesIndexer { get; }
         public FileUtility FileUtility { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -123,8 +126,8 @@ namespace ASC.Web.Files.Services.WCFService
             FilesSettingsHelper filesSettingsHelper,
             AuthContext authContext,
             UserManager userManager,
-            FactoryIndexer<FoldersWrapper> foldersIndexer,
-            FactoryIndexer<FilesWrapper> filesIndexer,
+            FactoryIndexer<DbFolder> foldersIndexer,
+            FactoryIndexer<DbFile> filesIndexer,
             FileUtility fileUtility,
             FilesLinkUtility filesLinkUtility,
             BaseCommonLinkUtility baseCommonLinkUtility,
@@ -415,10 +418,10 @@ namespace ASC.Web.Files.Services.WCFService
 
                 FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
 
-                if (!folder.ProviderEntry)
-                {
-                    FoldersIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
-                }
+                //if (!folder.ProviderEntry)
+                //{
+                //    FoldersIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
+                //}
             }
 
             var tag = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folder).FirstOrDefault();
@@ -745,10 +748,10 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRenamed, file.Title);
 
-                    if (!file.ProviderEntry)
-                    {
-                        FilesIndexer.UpdateAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file), true, r => r.Title);
-                    }
+                    //if (!file.ProviderEntry)
+                    //{
+                    //    FilesIndexer.UpdateAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file), true, r => r.Title);
+                    //}
                 }
 
                 if (file.RootFolderType == FolderType.USER
@@ -1007,7 +1010,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file = EntryManager.SaveEditing(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
             }
 
-            FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+            FilesMessageService.Send(file, HttpContextAccessor?.HttpContext?.Request?.Headers, MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
             fileDao = GetFileDao();
             return new ItemList<EditHistory>(fileDao.GetEditHistory(DocumentServiceHelper, file.ID));
@@ -1041,7 +1044,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (!result.Any())
                 {
-                    MarkAsRead(new List<object>() { folderId }, new List<object>() { });
+                    //MarkAsRead(new List<JsonElement>() { folderId }, new List<JsonElement>() { }); //TODO
                 }
 
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -1057,7 +1060,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public ItemList<FileOperationResult> MarkAsRead(IEnumerable<object> foldersId, IEnumerable<object> filesId)
+        public ItemList<FileOperationResult> MarkAsRead(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId)
         {
             if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
 
@@ -1260,7 +1263,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.CancelOperations();
         }
 
-        public ItemList<FileOperationResult> BulkDownload(Dictionary<object, string> folders, Dictionary<object, string> files)
+        public ItemList<FileOperationResult> BulkDownload(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files)
         {
             ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
 
@@ -1268,14 +1271,15 @@ namespace ASC.Web.Files.Services.WCFService
         }
 
 
-        public void MoveOrCopyFilesCheck<T1>(IEnumerable<object> filesId, IEnumerable<object> foldersId, T1 destFolderId,
-            out List<object> checkedFiles, out List<object> checkedFolders)
+        public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(IEnumerable<JsonElement> filesId, IEnumerable<JsonElement> foldersId, T1 destFolderId)
         {
-            checkedFiles = new List<object>();
-            checkedFolders = new List<object>();
+            var checkedFiles = new List<object>();
+            var checkedFolders = new List<object>();
 
-            MoveOrCopyFilesCheck(filesId.OfType<long>().Select(Convert.ToInt32), foldersId.OfType<long>().Select(Convert.ToInt32), destFolderId,
-                out var filesInts, out var folderInts);
+            var (filesInts, folderInts) = MoveOrCopyFilesCheck(
+                filesId.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()),
+                foldersId.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()),
+                destFolderId);
 
             foreach (var i in filesInts)
             {
@@ -1287,8 +1291,10 @@ namespace ASC.Web.Files.Services.WCFService
                 checkedFolders.Add(i);
             }
 
-            MoveOrCopyFilesCheck(filesId.OfType<string>(), foldersId.OfType<string>(), destFolderId,
-                out var filesStrings, out var folderStrings);
+            var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(
+                filesId.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()),
+                foldersId.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()),
+                destFolderId);
 
             foreach (var i in filesStrings)
             {
@@ -1299,13 +1305,14 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 checkedFolders.Add(i);
             }
+
+            return (checkedFiles, checkedFolders);
         }
 
-        private void MoveOrCopyFilesCheck<TFrom, TTo>(IEnumerable<TFrom> filesId, IEnumerable<TFrom> foldersId, TTo destFolderId,
-            out List<TFrom> checkedFiles, out List<TFrom> checkedFolders)
+        private (List<TFrom>, List<TFrom>) MoveOrCopyFilesCheck<TFrom, TTo>(IEnumerable<TFrom> filesId, IEnumerable<TFrom> foldersId, TTo destFolderId)
         {
-            checkedFiles = new List<TFrom>();
-            checkedFolders = new List<TFrom>();
+            var checkedFiles = new List<TFrom>();
+            var checkedFolders = new List<TFrom>();
             var folderDao = DaoFactory.GetFolderDao<TFrom>();
             var fileDao = DaoFactory.GetFileDao<TFrom>();
             var destFolderDao = DaoFactory.GetFolderDao<TTo>();
@@ -1337,7 +1344,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var filesPr = fileDao.GetFiles(folderProject.ID);
                     var foldersPr = folderDao.GetFolders(folderProject.ID).Select(d => d.ID);
 
-                    MoveOrCopyFilesCheck(filesPr, foldersPr, toSub.ID, out var cFiles, out var cFolders);
+                    var (cFiles, cFolders) = MoveOrCopyFilesCheck(filesPr, foldersPr, toSub.ID);
                     checkedFiles.AddRange(cFiles);
                     checkedFolders.AddRange(cFolders);
                 }
@@ -1353,9 +1360,11 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 throw GenerateException(e);
             }
+
+            return (checkedFiles, checkedFolders);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopyItems(IEnumerable<object> foldersId, IEnumerable<object> filesId, object destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
+        public ItemList<FileOperationResult> MoveOrCopyItems(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
         {
             ItemList<FileOperationResult> result;
             if (foldersId.Any() || filesId.Any())
@@ -1379,7 +1388,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.DeleteFolder(folderId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
-        public ItemList<FileOperationResult> DeleteItems(string action, List<object> files, List<object> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+        public ItemList<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
             return FileOperationsManagerHelper.Delete(folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
@@ -2033,18 +2042,9 @@ namespace ASC.Web.Files.Services.WCFService
             return new InvalidOperationException(error.Message, error);
         }
 
-        private Dictionary<string, string> GetHttpHeaders()
+        private IDictionary<string, StringValues> GetHttpHeaders()
         {
-            if (HttpContextAccessor?.HttpContext != null && HttpContextAccessor?.HttpContext.Request != null && HttpContextAccessor?.HttpContext.Request.Headers != null)
-            {
-                var headers = new Dictionary<string, string>();
-                foreach (var k in HttpContextAccessor?.HttpContext.Request.Headers)
-                {
-                    headers[k.Key] = string.Join(", ", k.Value);
-                }
-                return headers;
-            }
-            return null;
+            return HttpContextAccessor?.HttpContext?.Request?.Headers;
         }
     }
 
@@ -2061,8 +2061,8 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddGlobalFolderHelperService()
                 .AddAuthContextService()
                 .AddUserManagerService()
-                .AddFoldersWrapperService()
-                .AddFilesWrapperService()
+                .AddFactoryIndexerFolderService()
+                .AddFactoryIndexerFileService()
                 .AddFilesLinkUtilityService()
                 .AddBaseCommonLinkUtilityService()
                 .AddCoreBaseSettingsService()

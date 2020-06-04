@@ -47,15 +47,16 @@ using ASC.Web.Studio.Core;
 using Ionic.Zip;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     internal class FileDownloadOperationData<T> : FileOperationData<T>
     {
         public Dictionary<T, string> FilesDownload { get; }
-        public Dictionary<string, string> Headers { get; }
+        public IDictionary<string, StringValues> Headers { get; }
 
-        public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, Dictionary<string, string> headers, bool holdResult = true)
+        public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, IDictionary<string, StringValues> headers, bool holdResult = true)
             : base(folders.Select(f => f.Key).ToList(), files.Select(f => f.Key).ToList(), tenant, holdResult)
         {
             FilesDownload = files;
@@ -117,7 +118,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     {
         private readonly Dictionary<T, string> files;
-        private readonly Dictionary<string, string> headers;
+        private readonly IDictionary<string, StringValues> headers;
         ItemNameValueCollection<T> entriesPathId;
         public override FileOperationType OperationType
         {
