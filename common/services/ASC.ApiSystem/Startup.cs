@@ -78,7 +78,7 @@ namespace ASC.ApiSystem
                 .AddSettingsController()
                 .AddTariffController();
 
-            services.AddAutofac(Configuration, null, HostEnvironment.ContentRootPath, false);
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

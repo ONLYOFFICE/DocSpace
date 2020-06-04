@@ -46,7 +46,7 @@ namespace ASC.Web.Studio
                 .AddPathUtilsService()
                 .AddStorageHandlerService();
 
-            services.AddAutofac(Configuration, null, HostEnvironment.ContentRootPath);
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
