@@ -27,6 +27,9 @@ class ArticleBodyContent extends React.Component {
     if (selectedKeys[0] !== data[0]) {
       onLoading(true);
       const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
+
       fetchFiles(data[0], newFilter, store.dispatch).catch(err =>
         toastr.error(err)
       ).finally(() => onLoading(false));
