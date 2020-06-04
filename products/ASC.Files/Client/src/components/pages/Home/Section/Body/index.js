@@ -755,6 +755,7 @@ class SectionBodyContent extends React.Component {
                     draggable={!!draggable}
                     currentId={item.id}
                     key={`dnd-key_${item.id}`}
+                    {...contextOptionsProps}
                     //value={value}
                   >
                     <SimpleFilesRow
