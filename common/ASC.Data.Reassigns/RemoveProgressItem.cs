@@ -46,12 +46,13 @@ using ASC.Web.Studio.Core.Notify;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
     public class RemoveProgressItem : IProgressItem
     {
-        private readonly Dictionary<string, string> _httpHeaders;
+        private readonly IDictionary<string, StringValues> _httpHeaders;
 
         private readonly int _tenantId;
         private readonly Guid _currentUserId;
