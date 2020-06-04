@@ -18,8 +18,8 @@ import {
   SectionFilterContent,
   SectionPagingContent
 } from "./Section";
-import { setSelected, fetchFiles, setTreeFolders } from "../../../store/files/actions";
-import { loopTreeFolders } from "../../../store/files/selectors";
+import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter  } from "../../../store/files/actions";
+import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
 import store from "../../../store/store";
 const { changeLanguage } = utils;
 
@@ -43,7 +43,7 @@ class PureHome extends React.Component {
       files: [],
       uploadedFiles: 0,
       totalSize: 0,
-      percent: 0,
+      percent: 0
     };
   }
 
@@ -81,29 +81,44 @@ class PureHome extends React.Component {
     this.setState(newState);
   };
 
-  //TODO: Refactor this block
-
-  updateFiles = () => {
-    const { filter, currentFolderId, treeFolders, setTreeFolders } = this.props;
+  updateFiles = (folderId) => {
+    const { filter, treeFolders, setTreeFolders, currentFolderId } = this.props;
 
     this.onLoading(true);
     const newFilter = filter.clone();
-    fetchFiles(currentFolderId, newFilter, store.dispatch, treeFolders)
-      .then((data) => {
-        const path = data.selectedFolder.pathParts;
-        const newTreeFolders = treeFolders;
-        const folders = data.selectedFolder.folders;
-        const foldersCount = data.selectedFolder.foldersCount;
-        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-        setTreeFolders(newTreeFolders);
-      })
-      .catch((err) => toastr.error(err))
-      .finally(() => {
-        this.onLoading(false);
-      });
+    if (currentFolderId === folderId) {
+      fetchFiles(currentFolderId, newFilter, store.dispatch, treeFolders)
+        .then((data) => {
+          const path = data.selectedFolder.pathParts;
+          const newTreeFolders = treeFolders;
+          const folders = data.selectedFolder.folders;
+          const foldersCount = data.selectedFolder.foldersCount;
+          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+          setTreeFolders(newTreeFolders);
+        })
+        .catch((err) => toastr.error(err))
+        .finally(() => {
+          this.onLoading(false);
+        });
+    } else {
+      api.files
+        .getFolder(folderId, newFilter)
+        .then((data) => {
+          const path = data.pathParts;
+          const newTreeFolders = treeFolders;
+          const folders = data.folders;
+          const foldersCount = data.count;
+          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+          setTreeFolders(newTreeFolders);
+        })
+        .catch((err) => toastr.error(err))
+        .finally(() => {
+          this.onLoading(false);
+        });
+    }
   };
 
-  sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile) => {
+  sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile, folderId) => {
     const sendRequestFunc = (index) => {
       let newState = {};
       api.files
@@ -119,7 +134,7 @@ class PureHome extends React.Component {
           if (index + 1 !== requestsDataArray.length) {
             sendRequestFunc(index + 1);
           } else if (isLatestFile) {
-            this.updateFiles();
+            this.updateFiles(folderId);
             newState = Object.assign({}, newState, {
               uploadedFiles: this.state.uploadedFiles + 1,
             });
@@ -128,7 +143,7 @@ class PureHome extends React.Component {
             newState = Object.assign({}, newState, {
               uploadedFiles: this.state.uploadedFiles + 1,
             });
-            this.startSessionFunc(indexOfFile + 1);
+            this.startSessionFunc(indexOfFile + 1, folderId);
           }
         })
         .catch((err) => toastr.error(err))
@@ -165,13 +180,12 @@ class PureHome extends React.Component {
     sendRequestFunc(0);
   };
 
-  //TODO: Refactor this block
-
-  startSessionFunc = (indexOfFile) => {
+  startSessionFunc = (indexOfFile, folderId) => {
     const { files } = this.state;
     const { currentFolderId } = this.props;
     const file = files[indexOfFile];
     const isLatestFile = indexOfFile === files.length - 1;
+    const selectedFolderId = folderId ? folderId : currentFolderId;
 
     const fileName = file.name;
     const fileSize = file.size;
@@ -188,7 +202,7 @@ class PureHome extends React.Component {
     let chunk = 0;
 
     api.files
-      .startUploadSession(currentFolderId, fileName, fileSize, relativePath)
+      .startUploadSession(selectedFolderId, fileName, fileSize, relativePath)
       .then((res) => {
         location = res.data.location;
         while (chunk < chunks) {
@@ -204,7 +218,7 @@ class PureHome extends React.Component {
         }
       })
       .then(
-        () => this.sendChunk(files, location, requestsDataArray, isLatestFile, indexOfFile)
+        () => this.sendChunk(files, location, requestsDataArray, isLatestFile, indexOfFile, selectedFolderId)
       )
       .catch((err) => {
         this.setProgressVisible(false, 0);
@@ -212,8 +226,7 @@ class PureHome extends React.Component {
       });
   };
 
-  onDrop = (e) => {
-    // ev.currentTarget.style.background = "lightyellow";
+  onDrop = (e, folderId) => {
     const items = e.dataTransfer.items;
     let files = [];
 
@@ -307,13 +320,13 @@ class PureHome extends React.Component {
         func();
       }
     };
-
+    
     this.setState({ isLoading: true }, () =>
-      readItems(items, () => this.startUpload(files))
+      readItems(items, () => this.startUpload(files, folderId))
     );
   };
 
-  startUpload = files => {
+  startUpload = (files, folderId) => {
     const newFiles = [];
     let total = 0;
 
@@ -325,27 +338,21 @@ class PureHome extends React.Component {
         toastr.error(this.props.t("ErrorUploadMessage"));
       }
     }
-    this.startUploadFiles(newFiles, total);
+    this.startUploadFiles(newFiles, total, folderId);
   }
 
-  startUploadFiles = (files, totalSize) => {
+  startUploadFiles = (files, totalSize, folderId) => {
     if (files.length > 0) {
       const progressBarLabel = this.props.t("UploadingLabel", {
         file: 0,
         totalFiles: files.length,
       });
       this.setState({ files, totalSize, progressBarLabel, showProgressBar: true, isLoading: true },
-        () => { this.startSessionFunc(0); });
+        () => { this.startSessionFunc(0, folderId); });
     } else if(this.state.isLoading) {
       this.setState({ isLoading: false });
     }
   };
-
-  componentDidUpdate(prevProps) {
-    if (this.props.selection !== prevProps.selection) {
-      this.renderGroupButtonMenu();
-    }
-  }
 
   onSectionHeaderContentCheck = (checked) => {
     this.props.setSelected(checked ? "all" : "none");
@@ -404,6 +411,69 @@ class PureHome extends React.Component {
     this.setProgressVisible(false, timeout);
   };
 
+    setNewFilter = () => {
+      const { filter, selection, setFilter } = this.props;
+      const newFilter = filter.clone();
+      for(let item of selection) {
+        const expandedIndex = newFilter.treeFolders.findIndex(x => x == item.id);
+        if(expandedIndex !== -1) {
+          newFilter.treeFolders.splice(expandedIndex, 1);
+        }
+      }
+    
+      setFilter(newFilter);
+  }
+
+  loopFilesOperations = (id, destFolderId, isCopy) => {
+    const { getProgress, filter, currentFolderId, treeFolders, getFolder, isRecycleBinFolder } = this.props;
+    getProgress().then(res => {
+      const currentItem = res.find(x => x.id === id);
+      if(currentItem && currentItem.progress !== 100) {
+        this.setProgressValue(currentItem.progress);
+        setTimeout(() => this.loopFilesOperations(id, destFolderId, isCopy), 1000);
+      } else {
+        getFolder(destFolderId).then(data => {
+          let newTreeFolders = treeFolders;
+          let path = data.pathParts.slice(0);
+          let folders = data.folders;
+          let foldersCount = data.current.foldersCount;
+          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+          if(!isCopy) {
+            fetchFiles(currentFolderId, filter, store.dispatch).then((data) => {
+              if(!isRecycleBinFolder) {
+                newTreeFolders = treeFolders;
+                path = data.selectedFolder.pathParts.slice(0);
+                folders = data.selectedFolder.folders;
+                foldersCount = data.selectedFolder.foldersCount;
+                loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+                setTreeFolders(newTreeFolders);
+              }
+              this.setNewFilter();
+            }).catch(err => this.finishFilesOperations(err))
+              .finally(() => { 
+                this.setProgressValue(100);
+                this.finishFilesOperations();
+              })
+          } else {
+            this.setProgressValue(100);
+            this.finishFilesOperations();
+            setTreeFolders(newTreeFolders);
+          }
+          
+        }).catch(err => this.finishFilesOperations(err))
+      }
+    }).catch(err => this.finishFilesOperations(err));
+  }
+
+  
+
+  componentDidUpdate(prevProps) {
+    if (this.props.selection !== prevProps.selection) {
+      this.renderGroupButtonMenu();
+    }
+  }
+
   render() {
     const {
       isHeaderVisible,
@@ -416,7 +486,7 @@ class PureHome extends React.Component {
       progressBarLabel,
       overwriteSetting,
       uploadOriginalFormatSetting,
-      hideWindowSetting,
+      hideWindowSetting
     } = this.state;
     const { t } = this.props;
 
@@ -489,6 +559,7 @@ class PureHome extends React.Component {
               setProgressValue={this.setProgressValue}
               startFilesOperations={this.startFilesOperations}
               finishFilesOperations={this.finishFilesOperations}
+              loopFilesOperations={this.loopFilesOperations}
             />
           }
           sectionFilterContent={
@@ -503,6 +574,8 @@ class PureHome extends React.Component {
               setProgressValue={this.setProgressValue}
               startFilesOperations={this.startFilesOperations}
               finishFilesOperations={this.finishFilesOperations}
+              loopFilesOperations={this.loopFilesOperations}
+              onDropZoneUpload={this.onDrop}
             />
           }
           sectionPagingContent={
@@ -528,20 +601,24 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  return {
-    files: state.files.files,
-    folders: state.files.folders,
-    selection: state.files.selection,
-    selected: state.files.selected,
-    isLoaded: state.auth.isLoaded,
+  const { treeFolders, filter, selectedFolder, selected, selection, folders, files } = state.files;
+  const { id } = selectedFolder;
+  const indexOfTrash = 3;
 
-    currentFolderId: state.files.selectedFolder.id,
-    filter: state.files.filter,
-    treeFolders: state.files.treeFolders
+  return {
+    files,
+    folders,
+    selection,
+    selected,
+    isLoaded: state.auth.isLoaded,
+    currentFolderId: id,
+    filter,
+    treeFolders,
+    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders)
   };
 }
 
 export default connect(
   mapStateToProps,
-  { setSelected, setTreeFolders }
+  { setSelected, setTreeFolders, getProgress, getFolder, setFilter  }
 )(withRouter(Home));

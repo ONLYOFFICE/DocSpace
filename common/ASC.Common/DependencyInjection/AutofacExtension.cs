@@ -11,6 +11,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Common.DependencyInjection
 {
@@ -26,19 +27,37 @@ namespace ASC.Common.DependencyInjection
 
     public static class AutofacExtension
     {
-        public static IContainer AddAutofac(this IServiceCollection services, IConfiguration configuration, string currentDir, bool loadproducts = true, bool loadconsumers = true, params string[] intern)
+        public static IContainer AddAutofac(this IServiceCollection services, IConfiguration configuration, ILogger logger, string currentDir, bool loadproducts = true, bool loadconsumers = true, params string[] intern)
         {
             var folder = configuration["core:products:folder"];
             var subfolder = configuration["core:products:subfolder"];
             string productsDir;
 
-            if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+            if (logger != null)
             {
-                productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                logger.LogInformation($"{folder}");
+                logger.LogInformation($"{subfolder}");
+            }
+
+            if (!Path.IsPathRooted(folder))
+            {
+                if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+                {
+                    productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                }
+                else
+                {
+                    productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                }
             }
             else
             {
-                productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                productsDir = folder;
+            }
+
+            if (logger != null)
+            {
+                logger.LogInformation($"{productsDir}");
             }
 
             var builder = new ContainerBuilder();
@@ -123,11 +142,22 @@ namespace ASC.Common.DependencyInjection
                 var dll = type.Substring(type.IndexOf(",") + 1).Trim();
                 var path = GetFullPath(dll);
 
+                if (logger != null)
+                {
+                    logger.LogInformation($"LoadAssembly {path}");
+                }
+
                 if (!string.IsNullOrEmpty(path))
                 {
                     AssemblyLoadContext.Default.Resolving += (c, n) =>
                     {
                         var path = GetFullPath(n.Name);
+
+                        if (logger != null)
+                        {
+                            logger.LogInformation($"Resolve {path}");
+                        }
+
                         return path != null ?
                                 c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll")) :
                                 null;

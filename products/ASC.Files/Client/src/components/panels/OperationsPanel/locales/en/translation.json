@@ -3,5 +3,6 @@
     "Move": "Move",
     "CopyOperation": "Copying",
     "MoveToOperation": "Moving",
-    "Restore": "Restore"
+    "Restore": "Restore",
+    "MoveToFolderMessage": "You cannot move the folder to its subfolder"
 }

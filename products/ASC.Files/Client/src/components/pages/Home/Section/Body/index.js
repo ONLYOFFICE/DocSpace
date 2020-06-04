@@ -14,20 +14,20 @@ import {
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
-import { api, constants, MediaViewer } from 'asc-web-common';
+import { api, constants, MediaViewer, DragAndDrop } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,
   deselectFile,
   fetchFiles,
   fetchFolder,
-  //fetchRootFolders,
   selectFile,
   setAction,
   setTreeFolders,
+  moveToFolder,
   getProgress
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo, checkFolderType } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -47,7 +47,8 @@ class SectionBodyContent extends React.Component {
       showSharingPanel: false,
       currentItem: null,
       currentMediaFileId: 0,
-      mediaViewerVisible: false
+      mediaViewerVisible: false,
+      dragging: false
     };
   }
 
@@ -88,6 +89,11 @@ class SectionBodyContent extends React.Component {
     if(this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
+
+    if(this.state.dragging !== nextState.dragging) {
+      return true;
+    }
+
     if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
       return true;
     }
@@ -576,6 +582,82 @@ class SectionBodyContent extends React.Component {
     }
   }
 
+  onDragEnter = (item, e) => {
+    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+    if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
+      //console.log("onDragEnter");
+      e.currentTarget.style.background = "#EFEFB2";
+    }
+  }
+
+  onDragOver = (item, e) => {
+    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+    if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
+      //console.log("onDragOver");
+      e.currentTarget.style.background = "#EFEFB2";
+    }
+  }
+
+  onDragLeave = (item, e) => {
+    //console.log("onDragLeave");
+    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+    if(e.dataTransfer.items.length) {
+      e.currentTarget.style.background = "none";
+    } else if(!item.fileExst && !isCurrentItem) {
+      e.currentTarget.style.background = "#F8F7BF";
+    }
+  }
+
+  onDragStart = (item, e) => {
+    if(this.props.selection.length) {
+      this.setState({dragging: true});
+      //this.props.showReceivedItem(true);
+    }
+  }
+
+  onDrop = (item, e) => {
+    const { selection } = this.props;
+
+    if(selection.find(x => x.id === item.id)) {
+      return;
+    }
+
+    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+    if(e.dataTransfer.items.length > 0) {
+      this.props.onDropZoneUpload(e, item.id);
+    } else if(!item.fileExst && !isCurrentItem) {
+      this.onMoveTo(item.id);
+    }
+  }
+
+  onDragEnd = e => {
+    this.setState({dragging: false});
+  }
+
+  onMoveTo = (destFolderId) => {
+    const { selection, moveToFolder, finishFilesOperations, startFilesOperations, t, loopFilesOperations } = this.props;
+    const folderIds = [];
+    const fileIds = [];
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const deleteAfter = true;
+
+    for(let item of selection) {
+      if(item.fileExst) {
+        fileIds.push(item.id)
+      } else {
+        folderIds.push(item.id)
+      }
+    }
+    
+    startFilesOperations(t("MoveToOperation"));
+    moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
+      .then(res => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        loopFilesOperations(id, destFolderId, false);
+      })
+      .catch(err => finishFilesOperations(err))
+  }
+
   render() {
     const {
       files,
@@ -641,7 +723,7 @@ class SectionBodyContent extends React.Component {
       this.renderEmptyFilterContainer()
     ) : (
           <>
-            <RowContainer useReactWindow={false}>
+            <RowContainer draggable useReactWindow={false}>
               {items.map((item) => {
                 const isEdit =
                   fileAction.type &&
@@ -656,28 +738,47 @@ class SectionBodyContent extends React.Component {
                 const checked = isFileSelected(selection, item.id, item.parentId);
                 const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
                 const element = this.getItemIcon(item, isEdit);
-
+               
+                const selectedItem = selection.find(x => x.id === item.id);
+                const isFolder = selectedItem ? false : item.fileExst ? false : true;
+                const draggable = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+                
                 return (
-                  <SimpleFilesRow
-                    key={item.id}
-                    data={item}
-                    element={element}
-                    onSelect={this.onContentRowSelect}
-                    editing={editingId}
-                    {...checkedProps}
-                    {...contextOptionsProps}
-                    needForUpdate={this.needForUpdate}
+                  <DragAndDrop
+                    onDrop={this.onDrop.bind(this, item)}
+                    onDragEnd={this.onDragEnd}
+                    onDragEnter={this.onDragEnter.bind(this, item)}
+                    onDragLeave={this.onDragLeave.bind(this, item)}
+                    //onDragOver={this.onDragOver.bind(this, item)}
+                    onDragStart={this.onDragStart.bind(this, item)}
+                    dragging={this.state.dragging && isFolder}
+                    draggable={!!draggable}
+                    currentId={item.id}
+                    key={`dnd-key_${item.id}`}
+                    //value={value}
                   >
-                    <FilesRowContent
-                      item={item}
-                      viewer={viewer}
-                      culture={settings.culture}
-                      onEditComplete={this.onEditComplete.bind(this, item)}
-                      onLoading={onLoading}
-                      onMediaFileClick={this.onMediaFileClick}
-                      isLoading={isLoading}
-                    />
-                  </SimpleFilesRow>
+                    <SimpleFilesRow
+                    //value={value}
+                      key={item.id}
+                      data={item}
+                      element={element}
+                      onSelect={this.onContentRowSelect}
+                      editing={editingId}
+                      {...checkedProps}
+                      {...contextOptionsProps}
+                      needForUpdate={this.needForUpdate}
+                    >
+                      <FilesRowContent
+                        item={item}
+                        viewer={viewer}
+                        culture={settings.culture}
+                        onEditComplete={this.onEditComplete.bind(this, item)}
+                        onLoading={onLoading}
+                        onMediaFileClick={this.onMediaFileClick}
+                        isLoading={isLoading}
+                      />
+                    </SimpleFilesRow>
+                  </DragAndDrop>
                 );
               })}
             </RowContainer>
@@ -715,7 +816,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection, shareDataItems } = state.files;
+  const { selectedFolder, treeFolders, selection } = state.files;
   const { id, title, foldersCount, filesCount } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -738,8 +839,7 @@ const mapStateToProps = state => {
     title,
     myDocumentsId: treeFolders[myFolderIndex].id,
     currentFolderCount,
-    selectedFolderId: id,
-    shareDataItems
+    selectedFolderId: id
   };
 };
 
@@ -754,6 +854,7 @@ export default connect(
     selectFile,
     setAction,
     setTreeFolders,
+    moveToFolder,
     getProgress
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

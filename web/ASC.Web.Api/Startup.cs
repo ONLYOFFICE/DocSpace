@@ -89,7 +89,7 @@ namespace ASC.Web.Api
                 .AddSettingsController()
                 .AddSmtpSettingsController();
 
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            services.AddAutofac(Configuration, null, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

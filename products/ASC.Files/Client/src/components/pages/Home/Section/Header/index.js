@@ -297,7 +297,8 @@ class SectionHeaderContent extends React.Component {
       setProgressValue,
       startFilesOperations,
       finishFilesOperations,
-      getProgress
+      getProgress,
+      loopFilesOperations
     } = this.props;
     const {
       showDeleteDialog,
@@ -395,7 +396,8 @@ class SectionHeaderContent extends React.Component {
       isLoading,
       setProgressValue,
       startFilesOperations,
-      finishFilesOperations
+      finishFilesOperations,
+      loopFilesOperations
     };
     
     return (
