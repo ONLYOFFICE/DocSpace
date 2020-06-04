@@ -51,7 +51,7 @@ namespace ASC.Studio.Notify
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.AddServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, null, hostContext.HostingEnvironment.ContentRootPath);
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();
