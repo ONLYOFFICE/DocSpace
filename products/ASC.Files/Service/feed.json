@@ -1,7 +1,7 @@
 ﻿{
   "components": [
     {
-      "type": "ASC.Files.Service., ASC.Files.Service",
+      "type": "ASC.Files.Service.Core.FilesModule, ASC.Files.Service",
       "services": [
         {
           "type": "ASC.Feed.Aggregator.Modules.IFeedModule, ASC.Feed.Aggregator"

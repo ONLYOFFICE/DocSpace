@@ -120,9 +120,6 @@ namespace ASC.Feed.Aggregator
                 commonLinkUtility.Initialize(cfg.ServerRoot);
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var userManager = scope.ServiceProvider.GetService<UserManager>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var authManager = scope.ServiceProvider.GetService<AuthManager>();
                 var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
 
                 var start = DateTime.UtcNow;
@@ -159,6 +156,9 @@ namespace ASC.Feed.Aggregator
                             }
 
                             tenantManager.SetCurrentTenant(tenant);
+                            var userManager = scope.ServiceProvider.GetService<UserManager>();
+                            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                            var authManager = scope.ServiceProvider.GetService<AuthManager>();
                             var users = userManager.GetUsers();
 
                             var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());

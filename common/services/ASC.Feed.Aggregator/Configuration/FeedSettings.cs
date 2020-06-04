@@ -16,6 +16,31 @@ namespace ASC.Feed.Configuration
 
         public TimeSpan RemovePeriod { get; set; }
 
-        public static FeedSettings GetInstance(IConfiguration configuration) => configuration.GetSetting<FeedSettings>("feed");
+        public static FeedSettings GetInstance(IConfiguration configuration)
+        {
+            var result = configuration.GetSetting<FeedSettings>("feed");
+
+            if (string.IsNullOrEmpty(result.ServerRoot))
+            {
+                result.ServerRoot = "http://*/";
+            }
+
+            if (result.AggregatePeriod == TimeSpan.Zero)
+            {
+                result.AggregatePeriod = TimeSpan.FromMinutes(5);
+            }
+
+            if (result.AggregateInterval == TimeSpan.Zero)
+            {
+                result.AggregateInterval = TimeSpan.FromDays(14);
+            }
+
+            if (result.RemovePeriod == TimeSpan.Zero)
+            {
+                result.RemovePeriod = TimeSpan.FromDays(1);
+            }
+
+            return result;
+        }
     }
 }

@@ -1226,7 +1226,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.Security.Security == Security.FileShare.Restrict)
                 .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
 
-            return q4.Select(ToFileWithShare).ToList();
+            return q2.Select(ToFileWithShare).ToList().Union(q4.Select(ToFileWithShare).ToList());
         }
 
         public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
