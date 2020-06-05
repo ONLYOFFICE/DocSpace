@@ -23,8 +23,8 @@ const { FilterType, FileAction } = constants;
 const StyledContainer = styled.div`
   @media (min-width: 1024px) {
     ${props =>
-      props.isHeaderVisible &&
-      css`
+    props.isHeaderVisible &&
+    css`
         width: calc(100% + 76px);
       `}
   }
@@ -79,8 +79,8 @@ const StyledContainer = styled.div`
     @media (max-width: 1024px) {
       & > div:first-child {
         ${props =>
-          props.isArticlePinned &&
-          css`
+    props.isArticlePinned &&
+    css`
             width: calc(100% - 240px);
           `}
         position: absolute;
@@ -170,7 +170,7 @@ class SectionHeaderContent extends React.Component {
 
   loop = url => {
     this.props.getProgress().then(res => {
-      if(!url) {
+      if (!url) {
         this.props.setProgressValue(res[0].progress);
         setTimeout(() => this.loop(res[0].url), 1000);
       } else {
@@ -185,13 +185,13 @@ class SectionHeaderContent extends React.Component {
     const folderIds = [];
     const items = [];
 
-    for(let item of this.props.selection) {
-      if(item.fileExst) {
+    for (let item of this.props.selection) {
+      if (item.fileExst) {
         fileIds.push(item.id);
-        items.push({id: item.id, fileExst: item.fileExst});
+        items.push({ id: item.id, fileExst: item.fileExst });
       } else {
         folderIds.push(item.id);
-        items.push({id: item.id});
+        items.push({ id: item.id });
       }
     }
 
@@ -209,7 +209,7 @@ class SectionHeaderContent extends React.Component {
 
   renameAction = () => toastr.info("renameAction click");
 
-  onOpenSharingPanel = () => 
+  onOpenSharingPanel = () =>
     this.setState({ showSharingPanel: !this.state.showSharingPanel });
 
   onDeleteAction = () =>
@@ -324,8 +324,14 @@ class SectionHeaderContent extends React.Component {
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem key="all" label={t("All")} />,
-          <DropDownItem key={FilterType.FoldersOnly} label={t("Folders")} />,
+          <DropDownItem
+            key="all"
+            label={t("All")}
+          />,
+          <DropDownItem
+            key={FilterType.FoldersOnly}
+            label={t("Folders")}
+          />,
           <DropDownItem
             key={FilterType.DocumentsOnly}
             label={t("Documents")}
@@ -338,10 +344,22 @@ class SectionHeaderContent extends React.Component {
             key={FilterType.SpreadsheetsOnly}
             label={t("Spreadsheets")}
           />,
-          <DropDownItem key={FilterType.ImagesOnly} label={t("Images")} />,
-          <DropDownItem key={FilterType.MediaOnly} label={t("Media")} />,
-          <DropDownItem key={FilterType.ArchiveOnly} label={t("Archives")} />,
-          <DropDownItem key={FilterType.FilesOnly} label={t("AllFiles")} />
+          <DropDownItem
+            key={FilterType.ImagesOnly}
+            label={t("Images")}
+          />,
+          <DropDownItem
+            key={FilterType.MediaOnly}
+            label={t("Media")}
+          />,
+          <DropDownItem
+            key={FilterType.ArchiveOnly}
+            label={t("Archives")}
+          />,
+          <DropDownItem
+            key={FilterType.FilesOnly}
+            label={t("AllFiles")}
+          />
         ],
         onSelect: item => onSelect(item.key)
       },
@@ -377,7 +395,7 @@ class SectionHeaderContent extends React.Component {
       }
     ];
 
-    if(isRecycleBinFolder) {
+    if (isRecycleBinFolder) {
       menuItems.push({
         label: t("EmptyRecycleBin"),
         onClick: this.onEmptyTrashAction
@@ -391,7 +409,7 @@ class SectionHeaderContent extends React.Component {
       menuItems.splice(1, 1);
     }
 
-    const operationsPanelProps = { 
+    const operationsPanelProps = {
       onLoading,
       isLoading,
       setProgressValue,
@@ -399,7 +417,7 @@ class SectionHeaderContent extends React.Component {
       finishFilesOperations,
       loopFilesOperations
     };
-    
+
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -417,59 +435,59 @@ class SectionHeaderContent extends React.Component {
             />
           </div>
         ) : (
-          <div className="header-container">
-            {folder && (
-              <IconButton
-                iconName="ArrowPathIcon"
-                size="16"
-                color="#A3A9AE"
-                hoverColor="#657077"
-                isFill={true}
-                onClick={this.onBackToParentFolder}
-                className="arrow-button"
-              />
-            )}
-            <Headline
-              className="headline-header"
-              type="content"
-              truncate={true}
-            >
-              {title}
-            </Headline>
-            {folder ? (
-              <>
-                <ContextMenuButton
-                  className="add-button"
-                  directionX="right"
-                  iconName="PlusIcon"
-                  size={16}
-                  color="#657077"
-                  getData={this.getContextOptionsPlus}
-                  isDisabled={false}
-                />
-                <ContextMenuButton
-                  className="option-button"
-                  directionX="right"
-                  iconName="VerticalDotsIcon"
-                  size={16}
+            <div className="header-container">
+              {folder && (
+                <IconButton
+                  iconName="ArrowPathIcon"
+                  size="16"
                   color="#A3A9AE"
-                  getData={this.getContextOptionsFolder}
-                  isDisabled={false}
+                  hoverColor="#657077"
+                  isFill={true}
+                  onClick={this.onBackToParentFolder}
+                  className="arrow-button"
                 />
-              </>
-            ) : (
-              <ContextMenuButton
-                className="add-button"
-                directionX="right"
-                iconName="PlusIcon"
-                size={16}
-                color="#657077"
-                getData={this.getContextOptionsPlus}
-                isDisabled={false}
-              />
-            )}
-          </div>
-        )}
+              )}
+              <Headline
+                className="headline-header"
+                type="content"
+                truncate={true}
+              >
+                {title}
+              </Headline>
+              {folder ? (
+                <>
+                  <ContextMenuButton
+                    className="add-button"
+                    directionX="right"
+                    iconName="PlusIcon"
+                    size={16}
+                    color="#657077"
+                    getData={this.getContextOptionsPlus}
+                    isDisabled={false}
+                  />
+                  <ContextMenuButton
+                    className="option-button"
+                    directionX="right"
+                    iconName="VerticalDotsIcon"
+                    size={16}
+                    color="#A3A9AE"
+                    getData={this.getContextOptionsFolder}
+                    isDisabled={false}
+                  />
+                </>
+              ) : (
+                  <ContextMenuButton
+                    className="add-button"
+                    directionX="right"
+                    iconName="PlusIcon"
+                    size={16}
+                    color="#657077"
+                    getData={this.getContextOptionsPlus}
+                    isDisabled={false}
+                  />
+                )}
+            </div>
+          )}
 
         {showDeleteDialog && (
           <DeleteDialog
@@ -508,7 +526,7 @@ class SectionHeaderContent extends React.Component {
             onClose={this.onMoveAction}
           />
         )}
-        
+
         {showCopyPanel && (
           <OperationsPanel
             {...operationsPanelProps}
@@ -519,7 +537,7 @@ class SectionHeaderContent extends React.Component {
         )}
 
         {showDownloadDialog && (
-          <DownloadDialog 
+          <DownloadDialog
             visible={showDownloadDialog}
             onClose={this.downloadAsAction}
             startUploadSession={startFilesOperations}
