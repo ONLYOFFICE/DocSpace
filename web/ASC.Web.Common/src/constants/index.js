@@ -80,11 +80,11 @@ export const FileAction = Object.freeze({
  */
 export const FolderType = Object.freeze({
   DEFAULT: 0,
-  COMMON: "COMMON",
+  COMMON: 1,
   BUNCH: 2,
-  TRASH: "TRASH",
-  USER: "USER",
-  SHARE: "SHARE",
+  TRASH: 3,
+  USER: 5,
+  SHARE: 6,
   Projects: 8
 });
 
