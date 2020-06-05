@@ -1,6 +1,5 @@
 
 using System;
-using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Core.Auth;
@@ -51,7 +50,6 @@ namespace ASC.People
                         options.JsonSerializerOptions.WriteIndented = false;
                         options.JsonSerializerOptions.IgnoreNullValues = true;
                         options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     });
 
             services.AddAuthentication("cookie")
