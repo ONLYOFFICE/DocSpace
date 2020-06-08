@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AjaxPro;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -14,7 +15,7 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Security;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
-
+using Microsoft.Extensions.DependencyInjection;
 namespace ASC.Data.Backup
 {
     [AjaxNamespace("AjaxPro.Backup")]
@@ -31,10 +32,11 @@ namespace ASC.Data.Backup
         private TenantExtra TenantExtra { get; }
         private BackupHelper BackupHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
         private BackupServiceClient BackupServiceClient { get; }
         #region backup
 
-        public BackupAjaxHandler(TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory, BackupServiceClient backupServiceClient)
+        public BackupAjaxHandler( IServiceProvider serviceProvider, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
         {
             TenantManager = tenantManager;
             MessageService = messageService;
@@ -46,7 +48,8 @@ namespace ASC.Data.Backup
             TenantExtra = tenantExtra;
             BackupHelper = backupHelper;
             ConsumerFactory = consumerFactory;
-            BackupServiceClient = backupServiceClient;
+            ServiceProvider = serviceProvider;
+            BackupServiceClient = new BackupServiceClient();
         }
 
         [AjaxMethod]
@@ -59,12 +62,11 @@ namespace ASC.Data.Backup
             var backupRequest = new StartBackupRequest
             {
                 TenantId = GetCurrentTenantId(),
-                UserId = SecurityContext.CurrentAccount.ID,
+                UserId = SecurityContext.CurrentAccount.ID.ToString(),
                 BackupMail = backupMail,
-                StorageType = storageType,
-                StorageParams = storageParams
+                StorageType = (int)storageType
             };
-
+            backupRequest.StorageParams.Add(storageParams);
             switch (storageType)
             {
                 case BackupStorageType.ThridpartyDocuments:
@@ -78,8 +80,8 @@ namespace ASC.Data.Backup
             }
 
             MessageService.Send(MessageAction.StartBackupSetting);
-
-                return BackupServiceClient.StartBackup(backupRequest);
+            BackupServiceClient.СacheStartBackupRequest = ServiceProvider.GetService<ICacheNotify<StartBackupRequest>>();
+            return BackupServiceClient.StartBackup(backupRequest);
         }
 
         [AjaxMethod]
@@ -132,10 +134,9 @@ namespace ASC.Data.Backup
                 BackupMail = backupMail,
                 Cron = cronParams.ToString(),
                 NumberOfBackupsStored = backupsStored,
-                StorageType = storageType,
-                StorageParams = storageParams
+                StorageType = (int)storageType
             };
-
+            scheduleRequest.StorageParams.Add(storageParams);
             switch (storageType)
             {
                 case BackupStorageType.ThridpartyDocuments:
@@ -166,15 +167,15 @@ namespace ASC.Data.Backup
 
             var schedule = new Schedule
             {
-                StorageType = response.StorageType,
-                StorageParams = response.StorageParams ?? new Dictionary<string, string>(),
+                StorageType = (BackupStorageType)response.StorageType,
+                StorageParams = response.StorageParams.ToDictionary(r => r.Key, r => r.Value) ?? new Dictionary<string, string>(),
                 CronParams = new CronParams(response.Cron),
                 BackupMail = response.BackupMail,
                 BackupsStored = response.NumberOfBackupsStored,
-                LastBackupTime = response.LastBackupTime
+                LastBackupTime = response.LastBackupTime.ToDateTime()
             };
 
-            if (response.StorageType == BackupStorageType.CustomCloud)
+            if ((BackupStorageType)response.StorageType == BackupStorageType.CustomCloud)
             {
                 var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
 
@@ -192,18 +193,19 @@ namespace ASC.Data.Backup
                 schedule.StorageParams = consumer.AdditionalKeys.ToDictionary(r => r, r => consumer[r]);
                 schedule.StorageParams.Add("module", "S3");
 
-                BackupServiceClient.CreateSchedule(new CreateScheduleRequest
+                var Schedule = new CreateScheduleRequest
                 {
                     TenantId = TenantManager.GetCurrentTenant().TenantId,
                     BackupMail = schedule.BackupMail,
                     Cron = schedule.CronParams.ToString(),
                     NumberOfBackupsStored = schedule.BackupsStored,
-                    StorageType = schedule.StorageType,
-                    StorageParams = schedule.StorageParams
-                });
+                    StorageType = (int)schedule.StorageType
+                };
+                Schedule.StorageParams.Add(schedule.StorageParams);
+                BackupServiceClient.CreateSchedule(Schedule);
 
             }
-            else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
+            else if ((BackupStorageType)response.StorageType != BackupStorageType.ThirdPartyConsumer)
             {
                 schedule.StorageParams["folderId"] = response.StorageBasePath;
             }
@@ -240,25 +242,21 @@ namespace ASC.Data.Backup
             var restoreRequest = new StartRestoreRequest
             {
                 TenantId = GetCurrentTenantId(),
-                NotifyAfterCompletion = notify,
-                StorageParams = storageParams
+                NotifyAfterCompletion = notify
             };
-
+            restoreRequest.StorageParams.Add(storageParams);
             Guid guidBackupId;
             if (Guid.TryParse(backupId, out guidBackupId))
             {
-                restoreRequest.BackupId = guidBackupId;
+                restoreRequest.BackupId = guidBackupId.ToString();
             }
             else
             {
-                restoreRequest.StorageType = storageType;
+                restoreRequest.StorageType = (int)storageType;
                 restoreRequest.FilePathOrId = storageParams["filePath"];
             }
-
-            using (var service = new BackupServiceClient())
-            {
-                return service.StartRestore(restoreRequest);
-            }
+            BackupServiceClient.СacheStartRestoreRequest = ServiceProvider.GetService<ICacheNotify<StartRestoreRequest>>();
+            return BackupServiceClient.StartRestore(restoreRequest);
         }
 
         [AjaxMethod]
@@ -268,10 +266,7 @@ namespace ASC.Data.Backup
             BackupProgress result;
 
             var tenant = TenantManager.GetCurrentTenant();
-            using (var service = new BackupServiceClient())
-            {
-                result = service.GetRestoreProgress(tenant.TenantId);
-            }
+            result = BackupServiceClient.GetRestoreProgress(tenant.TenantId);
 
             return result;
         }
@@ -295,7 +290,7 @@ namespace ASC.Data.Backup
             DemandSize();
 
             MessageService.Send(MessageAction.StartTransferSetting);
-
+            BackupServiceClient.СacheStartTransferRequest = ServiceProvider.GetService<ICacheNotify<StartTransferRequest>>();
             return BackupServiceClient.StartTransfer(
                 new StartTransferRequest
                 {

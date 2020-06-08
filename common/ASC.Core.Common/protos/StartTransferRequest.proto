@@ -1,0 +1,10 @@
+﻿syntax = "proto3";
+
+package ASC.Core.Common.Contracts;
+
+message StartTransferRequest {
+    int32 TenantId = 1;
+    string TargetRegion = 2;
+    bool NotifyUsers = 3;
+    bool BackupMail = 4;
+}

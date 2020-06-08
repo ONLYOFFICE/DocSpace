@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+
+package ASC.Core.Common.Contracts;
+import "google/protobuf/timestamp.proto";
+message BackupHistoryRecord {
+    string Id = 1;
+    string FileName = 2;
+    int32 StorageType = 3;
+    google.protobuf.Timestamp CreatedOn = 4;
+    google.protobuf.Timestamp ExpiresOn = 5;
+}

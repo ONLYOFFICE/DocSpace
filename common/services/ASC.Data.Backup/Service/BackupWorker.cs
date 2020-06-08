@@ -64,17 +64,20 @@ namespace ASC.Data.Backup.Service
         private string UpgradesPath { get; set; }
         public BackupRepository BackupRepository { get; }
         public FactoryProgressItem factoryProgressItem { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
         public BackupWorker(
             IOptionsMonitor<ILog> options,
             ProgressQueueOptionsManager<BaseBackupProgressItem> progressQueue,
             BackupRepository backupRepository,
-            FactoryProgressItem factoryProgressItem)
+            FactoryProgressItem factoryProgressItem,
+            IServiceProvider serviceProvider)
         {
             Log = options.CurrentValue;
             BackupRepository = backupRepository;
             ProgressQueue = progressQueue.Value;
             this.factoryProgressItem = factoryProgressItem;
+            ServiceProvider = serviceProvider;
         }
 
         public void Start(BackupSettings settings)
@@ -236,21 +239,20 @@ namespace ASC.Data.Backup.Service
             {
                 return null;
             }
+            var progress = new BackupProgress();
+            progress.IsCompleted = progressItem.IsCompleted;
+            progress.Progress = (int)progressItem.Percentage;
+            progress.Error = progressItem.Error != null ? ((Exception)progressItem.Error).Message : "";
 
-            var progress = new BackupProgress
-            {
-                IsCompleted = progressItem.IsCompleted,
-                Progress = (int)progressItem.Percentage,
-                Error = progressItem.Error != null ? ((Exception)progressItem.Error).Message : null
-            };
-
-            if (progressItem is BackupProgressItem backupProgressItem)
+            var backupProgressItem = progressItem as BackupProgressItem;
+            if (backupProgressItem != null && backupProgressItem.Link != null)
             {
                 progress.Link = backupProgressItem.Link;
             }
             else
             {
-                if (progressItem is TransferProgressItem transferProgressItem)
+                var transferProgressItem = progressItem as TransferProgressItem;
+                if (transferProgressItem != null && transferProgressItem.Link != null)
                 {
                     progress.Link = transferProgressItem.Link;
                 }
@@ -295,29 +297,19 @@ namespace ASC.Data.Backup.Service
         private TenantManager TenantManager { get; set; }
         private BackupStorageFactory BackupStorageFactory { get; set; }
         private NotifyHelper NotifyHelper { get; set; }
-        private BackupsContext BackupRecordContext { get; set; }
         private BackupRepository BackupRepository { get; set; }
-        private CoreBaseSettings CoreBaseSettings { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        private StorageFactoryConfig StorageFactoryConfig { get; set; }
-        private ModuleProvider ModuleProvider { get; set; }
         private ILog Log { get; set; }
-        public BackupProgressItem(IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupStorageFactory backupStorageFactory, NotifyHelper notifyHelper, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, BackupsContext backupRecordContext, BackupRepository backupRepository)
+        public IServiceProvider ServiceProvider { get; set; }
+        public BackupProgressItem(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, BackupStorageFactory backupStorageFactory, NotifyHelper notifyHelper, TenantManager tenantManager, BackupRepository backupRepository)
         {
             Id = Guid.NewGuid();
 
             TenantManager = tenantManager;
             BackupStorageFactory = backupStorageFactory;
             NotifyHelper = notifyHelper;
-            BackupRecordContext = backupRecordContext;
             BackupRepository = backupRepository;
-            Options = options;
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
-            ModuleProvider = moduleProvider;
-            CoreBaseSettings = coreBaseSettings;
             Log = options.CurrentValue;
+            ServiceProvider = serviceProvider;
 
         }
         public void Init(BackupSchedule schedule, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
@@ -336,12 +328,12 @@ namespace ASC.Data.Backup.Service
         }
         public void Init(StartBackupRequest request, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
         {
-            UserId = request.UserId;
+            UserId = Guid.Parse(request.UserId);
             TenantId = request.TenantId;
-            StorageType = request.StorageType;
+            StorageType = (BackupStorageType)request.StorageType;
             StorageBasePath = request.StorageBasePath;
             BackupMail = request.BackupMail;
-            StorageParams = request.StorageParams;
+            StorageParams = request.StorageParams.ToDictionary(r => r.Key, r => r.Value);
             IsScheduled = isScheduled;
             TempFolder = tempFolder;
             Limit = limit;
@@ -360,7 +352,8 @@ namespace ASC.Data.Backup.Service
             var storagePath = tempFile;
             try
             {
-                var backupTask = new BackupPortalTask(Options, TenantId, ConfigPaths[CurrentRegion], tempFile, Limit, CoreBaseSettings, StorageFactory, StorageFactoryConfig, ModuleProvider, BackupRecordContext);
+                var backupTask = ServiceProvider.GetService<BackupPortalTask>();
+                backupTask.Init(TenantId, ConfigPaths[CurrentRegion], tempFile, Limit);
                 if (!BackupMail)
                 {
                     backupTask.IgnoreModule(ModuleName.Mail);
@@ -444,38 +437,21 @@ namespace ASC.Data.Backup.Service
         private TenantManager TenantManager { get; set; }
         private NotifyHelper NotifyHelper { get; set; }
         private BackupStorageFactory BackupStorageFactory { get; set; }
-        private CoreBaseSettings CoreBaseSettings { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        private StorageFactoryConfig StorageFactoryConfig { get; set; }
-        private ModuleProvider ModuleProvider { get; set; }
-        private LicenseReader LicenseReader { get; set; }
-        private AscCacheNotify AscCacheNotify { get; set; }
         private ILog Log { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
         public RestoreProgressItem(
             BackupStorageFactory backupStorageFactory,
             IOptionsMonitor<ILog> options,
-            StorageFactory storageFactory,
-            StorageFactoryConfig storageFactoryConfig,
-            ModuleProvider moduleProvider,
-            CoreBaseSettings coreBaseSettings,
-            LicenseReader licenseReader,
-            AscCacheNotify ascCacheNotify,
             NotifyHelper notifyHelper,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IServiceProvider serviceProvider)
         {
             BackupStorageFactory = backupStorageFactory;
-            Options = options;
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
-            ModuleProvider = moduleProvider;
-            CoreBaseSettings = coreBaseSettings;
-            LicenseReader = licenseReader;
-            AscCacheNotify = ascCacheNotify;
             Log = options.CurrentValue;
             NotifyHelper = notifyHelper;
             TenantManager = tenantManager;
+            ServiceProvider = serviceProvider;
         }
         public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion)
         {
@@ -483,7 +459,7 @@ namespace ASC.Data.Backup.Service
             TenantId = request.TenantId;
             Notify = request.NotifyAfterCompletion;
             StoragePath = request.FilePathOrId;
-            StorageType = request.StorageType;
+            StorageType = (BackupStorageType)request.StorageType;
             TempFolder = tempFolder;
             UpgradesPath = upgradesPath;
             CurrentRegion = currentRegion;
@@ -509,7 +485,8 @@ namespace ASC.Data.Backup.Service
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
                 columnMapper.Commit();
 
-                var restoreTask = new RestorePortalTask(Options, TenantId, ConfigPaths[CurrentRegion], tempFile, StorageFactory, StorageFactoryConfig, CoreBaseSettings, LicenseReader, AscCacheNotify, ModuleProvider, columnMapper, UpgradesPath);
+                var restoreTask = ServiceProvider.GetService<RestorePortalTask>();
+                restoreTask.Init(ConfigPaths[CurrentRegion], tempFile, TenantId, columnMapper, UpgradesPath);
                 restoreTask.ProgressChanged += (sender, args) => Percentage = (10d + 0.65 * args.Progress);
                 restoreTask.RunJob();
 
@@ -603,6 +580,7 @@ namespace ASC.Data.Backup.Service
         public ModuleProvider ModuleProvider { get; set; }
         public BackupsContext BackupRecordContext { get; set; }
         public ILog Log { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
 
         public TransferProgressItem(
@@ -613,7 +591,8 @@ namespace ASC.Data.Backup.Service
             StorageFactoryConfig storageFactoryConfig,
             CoreBaseSettings coreBaseSettings,
             ModuleProvider moduleProvider,
-            BackupsContext backupRecordContext
+            BackupsContext backupRecordContext,
+            IServiceProvider serviceProvider
             )
         {
             Options = options;
@@ -625,6 +604,7 @@ namespace ASC.Data.Backup.Service
             ModuleProvider = moduleProvider;
             BackupRecordContext = backupRecordContext;
             Log = options.CurrentValue;
+            ServiceProvider = serviceProvider;
         }
         public void Init(
             string targetRegion,
@@ -655,8 +635,8 @@ namespace ASC.Data.Backup.Service
             try
             {
                 NotifyHelper.SendAboutTransferStart(TenantId, TargetRegion, Notify);
-
-                var transferProgressItem = new TransferPortalTask(Options, TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, StorageFactory, StorageFactoryConfig, CoreBaseSettings, TenantManager, ModuleProvider, BackupRecordContext) { BackupDirectory = TempFolder };
+                var transferProgressItem = ServiceProvider.GetService<TransferPortalTask>();
+                transferProgressItem.Init(TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, TempFolder);
                 transferProgressItem.ProgressChanged += (sender, args) => Percentage = args.Progress;
                 if (!TransferMail)
                 {
@@ -768,10 +748,14 @@ namespace ASC.Data.Backup.Service
         {
             services.TryAddScoped<BackupWorker>();
             services.TryAddScoped<FactoryProgressItem>();
+            services.TryAddScoped<BackupProgressItem>();
+            services.TryAddScoped<TransferProgressItem>();
+            services.TryAddScoped<RestoreProgressItem>();
+
 
             services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
             services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>(); ;
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
 
             return services
                 .AddTenantManagerService()
@@ -779,7 +763,8 @@ namespace ASC.Data.Backup.Service
                 .AddStorageFactoryService()
                 .AddStorageFactoryConfigService()
                 .AddLicenseReaderService()
-                .AddNotifyHelperService();
+                .AddNotifyHelperService()
+                .AddBackupPortalTaskService();
         }
     }
 }

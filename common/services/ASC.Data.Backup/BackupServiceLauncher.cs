@@ -41,21 +41,25 @@ namespace ASC.Data.Backup.Service
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private IConfiguration Configuration { get; set; }
+        private BackupService BackupService { get; set; }
 
         public BackupServiceLauncher(
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            BackupService backupService)
         {
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
+            BackupService = backupService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            BackupService.StartSubscribeBackup();
             var settings = Configuration.GetSetting<BackupSettings>("backup");
 
             BackupWorker.Start(settings);
@@ -93,7 +97,8 @@ namespace ASC.Data.Backup.Service
             return services
                 .AddBackupCleanerService()
                 .AddBackupSchedulerService()
-                .AddBackupWorkerService();
+                .AddBackupWorkerService()
+                .AddBackupService();
         }
     }
 }

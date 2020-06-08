@@ -1,0 +1,13 @@
+﻿syntax = "proto3";
+
+package ASC.Core.Common.Contracts;
+import "google/protobuf/timestamp.proto";
+message ScheduleResponse {
+    int32 StorageType = 1;
+    string StorageBasePath = 2;
+    bool BackupMail = 3;
+    int32 NumberOfBackupsStored = 4;
+    string Cron = 5;
+    google.protobuf.Timestamp LastBackupTime = 6;
+    map<string, string> StorageParams = 7;
+}

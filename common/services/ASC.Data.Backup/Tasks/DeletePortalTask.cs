@@ -24,14 +24,15 @@
 */
 
 
-using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Data.Backup.Exceptions;
 using ASC.Data.Backup.Extensions;
 using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
@@ -39,13 +40,14 @@ namespace ASC.Data.Backup.Tasks
     public class DeletePortalTask : PortalTaskBase
     {
 
-        private StorageFactory storageFactory;
-        private StorageFactoryConfig storageFactoryConfig;
+        private StorageFactory StorageFactory;
+        private StorageFactoryConfig StorageFactoryConfig;
         public DeletePortalTask(IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-            : base(options, tenantId, configPath, storageFactory , storageFactoryConfig, moduleProvider)
+            : base(options, storageFactory , storageFactoryConfig, moduleProvider)
         {
-            this.storageFactory = storageFactory;
-            this.storageFactoryConfig = storageFactoryConfig;
+            Init(tenantId, configPath);
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
         }
 
         public override void RunJob()
@@ -88,12 +90,12 @@ namespace ASC.Data.Backup.Tasks
         private void DoDeleteStorage()
         {
             Logger.Debug("begin delete storage");
-            var storageModules = storageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed).ToList();
+            var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed).ToList();
             var modulesProcessed = 0;
             foreach (var module in storageModules)
             {
-                var storage = storageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
-                var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
+                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
                 foreach (var domain in domains)
                 {
                     ActionInvoker.Try(state => storage.DeleteFiles((string)state, "\\", "*.*", true), domain, 5,

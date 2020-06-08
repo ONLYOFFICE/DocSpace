@@ -52,7 +52,7 @@ namespace ASC.Data.Backup.Tasks
         private readonly bool dump;
 
         public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-            : base(options, -1, null, storageFactory, storageFactoryConfig, moduleProvider)
+            : base(options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -69,6 +69,7 @@ namespace ASC.Data.Backup.Tasks
             _factory = factory;
             _replaceDate = replaceDate;
             this.dump = dump;
+            Init(-1, null);
         }
 
         public override void RunJob()

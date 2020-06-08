@@ -67,15 +67,18 @@ namespace ASC.Data.Backup.Tasks
         public bool ProcessStorage { get; set; }
         public ModuleProvider moduleProvider { get; set; }
 
-        protected PortalTaskBase(IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+        protected PortalTaskBase(IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
         {
             Logger = options.CurrentValue;
-            TenantId = tenantId;
-            ConfigPath = configPath;
             ProcessStorage = true;
             this.storageFactory = storageFactory;
             this.storageFactoryConfig = storageFactoryConfig;
             this.moduleProvider = moduleProvider;
+        }
+        public void Init(int tenantId, string configPath)
+        {
+            TenantId = tenantId;
+            ConfigPath = configPath;
         }
 
         public void IgnoreModule(ModuleName moduleName)

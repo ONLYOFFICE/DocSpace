@@ -45,7 +45,7 @@ namespace ASC.Core.Common.Contracts
 
         [EnumMember] ThirdPartyConsumer = 5
     }
-
+    /*
     [DataContract]
     public class StartBackupRequest
     {
@@ -187,5 +187,5 @@ namespace ASC.Core.Common.Contracts
 
         [DataMember]
         public Dictionary<string, string> StorageParams { get; set; }
-    }
+    }*/
 }

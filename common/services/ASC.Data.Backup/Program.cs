@@ -7,6 +7,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Data.Backup.Service;
+using ASC.Data.Backup.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +51,7 @@ namespace ASC.Data.Backup
                     var diHelper = new DIHelper(services);
 
                     diHelper.AddBackupServiceLauncher();
+                    diHelper.AddBackupPortalTaskService();
                     diHelper.AddNLogManager("ASC.Data.Backup");
                     services.AddHostedService<BackupServiceLauncher>();
                     diHelper.Configure<ProgressQueue<BaseBackupProgressItem>>(r =>

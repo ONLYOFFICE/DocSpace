@@ -44,6 +44,8 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.EF.Context;
+using ASC.Common;
+using ASC.Core.Common.Configuration;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -53,27 +55,29 @@ namespace ASC.Data.Backup.Tasks
         public string BackupFilePath { get; private set; }
         public int Limit { get; private set; }
         private bool Dump { get; set; }
-        private TenantManager tenantManager;
-        private ModuleProvider moduleProvider;
-        private BackupsContext backupRecordContext;
+        private TenantManager TenantManager { get; set; }
+        private ModuleProvider ModuleProvider { get; set; }
+        private BackupsContext BackupRecordContext { get; set; }
 
-        public BackupPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toFilePath, int limit, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
-            : base(options, tenantId, fromConfigPath,storageFactory,storageFactoryConfig, moduleProvider)
+        public BackupPortalTask(IOptionsMonitor<ILog> options,  CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
+            : base(options, storageFactory,storageFactoryConfig, moduleProvider)
+        {
+            Dump = coreBaseSettings.Standalone;
+            ModuleProvider = moduleProvider;
+            BackupRecordContext = backupRecordContext;
+        }
+        public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
         {
             if (string.IsNullOrEmpty(toFilePath))
                 throw new ArgumentNullException("toFilePath");
-
             BackupFilePath = toFilePath;
             Limit = limit;
-            Dump = coreBaseSettings.Standalone;
-            this.moduleProvider = moduleProvider;
-            this.backupRecordContext = backupRecordContext;
+            Init(tenantId, fromConfigPath);
         }
-
         public override void RunJob()
         {
             Logger.DebugFormat("begin backup {0}", TenantId);
-            tenantManager.SetCurrentTenant(TenantId);
+            TenantManager.SetCurrentTenant(TenantId);
 
 
             using (var writer = new ZipWriteOperator(BackupFilePath))
@@ -127,7 +131,7 @@ namespace ASC.Data.Backup.Tasks
             var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
             if (ProcessStorage)
             {
-                var tenants = tenantManager.GetTenants(false).Select(r => r.TenantId);
+                var tenants = TenantManager.GetTenants(false).Select(r => r.TenantId);
                 foreach (var t in tenants)
                 {
                     files.AddRange(GetFiles(t));
@@ -138,7 +142,7 @@ namespace ASC.Data.Backup.Tasks
 
             SetStepsCount(stepscount);
 
-            var excluded = moduleProvider.AllModules.Where(r => IgnoredModules.Contains(r.ModuleName)).SelectMany(r => r.Tables).Select(r => r.Name).ToList();
+            var excluded = ModuleProvider.AllModules.Where(r => IgnoredModules.Contains(r.ModuleName)).SelectMany(r => r.Tables).Select(r => r.Name).ToList();
             excluded.AddRange(IgnoredTables);
             excluded.Add("res_");
 
@@ -194,7 +198,7 @@ namespace ASC.Data.Backup.Tasks
         private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
         {
               var files = GetFilesToProcess(tenantId).ToList();
-              var exclude = new List<BackupRecord>(backupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null));
+              var exclude = new List<BackupRecord>(BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null));
               files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
               return files;
 
@@ -578,7 +582,7 @@ namespace ASC.Data.Backup.Tasks
         private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(DbFactory dbFactory)
         {
             var files = GetFilesToProcess(TenantId).ToList();
-            var exclude = new List<BackupRecord>(backupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null));
+            var exclude = new List<BackupRecord>(BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null));
 
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
 
@@ -723,6 +727,19 @@ namespace ASC.Data.Backup.Tasks
                 }
             }
             return list;
+        }
+    }
+    public static class BackupPortalTaskExtension
+    {
+        public static DIHelper AddBackupPortalTaskService(this DIHelper services)
+        {
+            services.TryAddScoped<BackupPortalTask>();
+            return services
+                .AddConsumerFactoryService()
+                .AddCoreConfigurationService()
+                .AddStorageFactoryService()
+                .AddModuleProvider()
+                .AddBackupContext();
         }
     }
 }

@@ -41,6 +41,14 @@
     <None Remove="protos\UserGroupRefCacheItem.proto" />
     <None Remove="protos\UserInfoCacheItem.proto" />
     <None Remove="protos\UserPhotoCacheItem.proto" />
+    <None Remove="protos\BackupHistoryRecord.proto" />
+    <None Remove="protos\BackupProgress.proto" />
+    <None Remove="protos\CreateScheduleRequest.proto" />
+    <None Remove="protos\ScheduleResponse.proto" />
+    <None Remove="protos\StartBackupRequest.proto" />
+    <None Remove="protos\StartRestoreRequest.proto" />
+    <None Remove="protos\StartTransferRequest.proto" />
+    <None Remove="protos\TransferRegion.proto" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.153" />
@@ -72,5 +80,13 @@
     <Protobuf Include="protos\TariffCacheItem.proto" />
     <Protobuf Include="protos\AzRecordCache.proto" />
     <Protobuf Include="protos\QuotaCacheItem.proto" />
+    <Protobuf Include="protos\BackupHistoryRecord.proto" />
+    <Protobuf Include="protos\BackupProgress.proto" />
+    <Protobuf Include="protos\CreateScheduleRequest.proto" />
+    <Protobuf Include="protos\ScheduleResponse.proto" />
+    <Protobuf Include="protos\StartBackupRequest.proto" />
+    <Protobuf Include="protos\StartRestoreRequest.proto" />
+    <Protobuf Include="protos\StartTransferRequest.proto" />
+    <Protobuf Include="protos\TransferRegion.proto" />
   </ItemGroup>
 </Project>

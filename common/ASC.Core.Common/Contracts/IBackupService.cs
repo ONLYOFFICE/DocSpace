@@ -33,49 +33,49 @@ namespace ASC.Core.Common.Contracts
     [ServiceContract]
     public interface IBackupService
     {
-        [OperationContract]
+
         BackupProgress StartBackup(StartBackupRequest request);
 
-        [OperationContract]
-        BackupProgress GetBackupProgress(int tenantId);
 
-        [OperationContract]
-        void DeleteBackup(Guid backupId);
-
-        [OperationContract]
-        void DeleteAllBackups(int tenantId);
-
-        [OperationContract]
-        List<BackupHistoryRecord> GetBackupHistory(int tenantId);
+         BackupProgress GetBackupProgress(int tenantId);
 
 
-        [OperationContract]
-        BackupProgress StartTransfer(StartTransferRequest request);
-
-        [OperationContract]
-        BackupProgress GetTransferProgress(int tenantId);
-
-        [OperationContract]
-        List<TransferRegion> GetTransferRegions();
+         void DeleteBackup(Guid backupId);
 
 
-        [OperationContract]
-        BackupProgress StartRestore(StartRestoreRequest request);
-
-        [OperationContract]
-        BackupProgress GetRestoreProgress(int tenantId);
-
-        [OperationContract]
-        string GetTmpFolder();
+         void DeleteAllBackups(int tenantId);
 
 
-        [OperationContract]
-        void CreateSchedule(CreateScheduleRequest request);
+         List<BackupHistoryRecord> GetBackupHistory(int tenantId);
 
-        [OperationContract]
-        void DeleteSchedule(int tenantId);
 
-        [OperationContract]
-        ScheduleResponse GetSchedule(int tenantId);
+
+         BackupProgress StartTransfer(StartTransferRequest request);
+
+
+         BackupProgress GetTransferProgress(int tenantId);
+
+
+         List<TransferRegion> GetTransferRegions();
+
+
+
+         BackupProgress StartRestore(StartRestoreRequest request);
+
+
+         BackupProgress GetRestoreProgress(int tenantId);
+
+
+         string GetTmpFolder();
+
+
+
+         void CreateSchedule(CreateScheduleRequest request);
+
+
+         void DeleteSchedule(int tenantId);
+
+
+         ScheduleResponse GetSchedule(int tenantId);
     }
 }

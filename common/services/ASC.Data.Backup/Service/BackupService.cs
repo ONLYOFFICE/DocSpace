@@ -42,7 +42,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
-
+using Google.Protobuf.WellKnownTypes;
+using ASC.Common.Caching;
 
 namespace ASC.Data.Backup.Service
 {
@@ -53,21 +54,34 @@ namespace ASC.Data.Backup.Service
         private BackupWorker BackupWorker { get; set; }
         public BackupRepository BackupRepository { get; }
         public IConfiguration Configuration { get; }
+        public ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
+        public ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
+        public ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
 
         public BackupService(
             IOptionsMonitor<ILog> options,
             BackupStorageFactory backupStorageFactory,
             BackupWorker backupWorker,
             BackupRepository backupRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
+            ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
+            ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;
             BackupWorker = backupWorker;
             BackupRepository = backupRepository;
             Configuration = configuration;
+            СacheStartBackupRequest = cacheStartBackupRequest;
+            СacheStartRestoreRequest = cacheStartRestoreRequest;
+            СacheStartTransferRequest = cacheStartTransferRequest;
         }
 
+        public void StartSubscribeBackup()
+        {
+            СacheStartBackupRequest.Subscribe((n) => StartBackup(n), CacheNotifyAction.InsertOrUpdate);
+        }
         public BackupProgress StartBackup(StartBackupRequest request)
         {
             var progress = BackupWorker.StartBackup(request);
@@ -77,7 +91,6 @@ namespace ASC.Data.Backup.Service
             }
             return progress;
         }
-
         public BackupProgress GetBackupProgress(int tenantId)
         {
             var progress = BackupWorker.GetBackupProgress(tenantId);
@@ -129,11 +142,11 @@ namespace ASC.Data.Backup.Service
                 {
                     backupHistory.Add(new BackupHistoryRecord
                     {
-                        Id = record.Id,
+                        Id = record.Id.ToString(),
                         FileName = record.Name,
-                        StorageType = record.StorageType,
-                        CreatedOn = record.CreatedOn,
-                        ExpiresOn = record.ExpiresOn
+                        StorageType = (int)record.StorageType,
+                        CreatedOn = Timestamp.FromDateTimeOffset(record.CreatedOn),
+                        ExpiresOn = Timestamp.FromDateTimeOffset(record.ExpiresOn)
                     });
                 }
                 else
@@ -166,7 +179,7 @@ namespace ASC.Data.Backup.Service
 
         public BackupProgress StartRestore(StartRestoreRequest request)
         {
-            if (request.StorageType == BackupStorageType.Local)
+            if ((BackupStorageType)request.StorageType == BackupStorageType.Local)
             {
                 if (string.IsNullOrEmpty(request.FilePathOrId) || !File.Exists(request.FilePathOrId))
                 {
@@ -176,15 +189,15 @@ namespace ASC.Data.Backup.Service
 
             if (!request.BackupId.Equals(Guid.Empty))
             {
-                var backupRecord = BackupRepository.GetBackupRecord(request.BackupId);
+                var backupRecord = BackupRepository.GetBackupRecord(Guid.Parse(request.BackupId));
                 if (backupRecord == null)
                 {
                     throw new FileNotFoundException();
                 }
 
                 request.FilePathOrId = backupRecord.StoragePath;
-                request.StorageType = backupRecord.StorageType;
-                request.StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(backupRecord.StorageParams);
+                request.StorageType = (int)backupRecord.StorageType;
+                request.StorageParams.Add(JsonConvert.DeserializeObject<Dictionary<string, string>>(backupRecord.StorageParams));
             }
 
             var progress = BackupWorker.StartRestore(request);
@@ -237,7 +250,7 @@ namespace ASC.Data.Backup.Service
                     Cron = request.Cron,
                     BackupMail = request.BackupMail,
                     BackupsStored = request.NumberOfBackupsStored,
-                    StorageType = request.StorageType,
+                    StorageType = (BackupStorageType)request.StorageType,
                     StorageBasePath = request.StorageBasePath,
                     StorageParams = JsonConvert.SerializeObject(request.StorageParams)
                 });
@@ -251,18 +264,24 @@ namespace ASC.Data.Backup.Service
         public ScheduleResponse GetSchedule(int tenantId)
         {
             var schedule = BackupRepository.GetBackupSchedule(tenantId);
-            return schedule != null
-                       ? new ScheduleResponse
-                       {
-                           StorageType = schedule.StorageType,
-                           StorageBasePath = schedule.StorageBasePath,
-                           BackupMail = schedule.BackupMail,
-                           NumberOfBackupsStored = schedule.BackupsStored,
-                           Cron = schedule.Cron,
-                           LastBackupTime = schedule.LastBackupTime,
-                           StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams)
-                       }
-                       : null;
+            if(schedule != null)
+            {
+                var tmp = new ScheduleResponse
+                {
+                    StorageType = (int)schedule.StorageType,
+                    StorageBasePath = schedule.StorageBasePath,
+                    BackupMail = schedule.BackupMail,
+                    NumberOfBackupsStored = schedule.BackupsStored,
+                    Cron = schedule.Cron,
+                    LastBackupTime = Timestamp.FromDateTimeOffset(schedule.LastBackupTime),
+                };
+                tmp.StorageParams.Add(JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams));
+                return tmp;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
     public static class BackupServiceExtension
@@ -270,7 +289,8 @@ namespace ASC.Data.Backup.Service
         public static DIHelper AddBackupService(this DIHelper services)
         {
             services.TryAddScoped<BackupService>();
-            return services;
+            return services
+                .AddKafkaService();
         }
     }
 }

@@ -38,6 +38,7 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Common.Caching;
 using ASC.Data.Backup.EF.Context;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -51,34 +52,41 @@ namespace ASC.Data.Backup.Tasks
         public bool DeleteBackupFileAfterCompletion { get; set; }
         public bool BlockOldPortalAfterStart { get; set; }
         public bool DeleteOldPortalAfterCompletion { get; set; }
-        public IOptionsMonitor<ILog> options { get; set; }
-        public CoreBaseSettings coreBaseSettings { get; set; }
-        public TenantManager tenantManager { get; set; }
+        public IOptionsMonitor<ILog> Options { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
+        public TenantManager TenantManager { get; set; }
 
-        public LicenseReader licenseReader;
-        public AscCacheNotify ascCacheNotify;
-        public ModuleProvider moduleProvider;
-        public BackupsContext backupRecordContext;
+        public LicenseReader LicenseReader { get; set; }
+        public AscCacheNotify AscCacheNotify { get; set; }
+        public ModuleProvider ModuleProvider { get; set; }
+        public BackupsContext BackupRecordContext { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
         public int Limit { get; private set; }
 
-        public TransferPortalTask(IOptionsMonitor<ILog> options, int tenantId, string fromConfigPath, string toConfigPath, int limit, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
-            : base(options, tenantId, fromConfigPath, storageFactory, storageFactoryConfig, moduleProvider)
+        public TransferPortalTask(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
+            : base(options, storageFactory, storageFactoryConfig, moduleProvider)
         {
+            DeleteBackupFileAfterCompletion = true;
+            BlockOldPortalAfterStart = true;
+            DeleteOldPortalAfterCompletion = true;
+            Options = options;
+            CoreBaseSettings = coreBaseSettings;
+            TenantManager = tenantManager;
+            ModuleProvider = moduleProvider;
+            BackupRecordContext = backupRecordContext;
+            ServiceProvider = serviceProvider;
+        }
+        public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
+        {
+            Limit = limit;
             if (toConfigPath == null)
                 throw new ArgumentNullException("toConfigPath");
 
             ToConfigPath = toConfigPath;
+            Init(tenantId, fromConfigPath);
 
-            DeleteBackupFileAfterCompletion = true;
-            BlockOldPortalAfterStart = true;
-            DeleteOldPortalAfterCompletion = true;
-            Limit = limit;
-            this.options = options;
-            this.coreBaseSettings = coreBaseSettings;
-            this.tenantManager = tenantManager;
-            this.moduleProvider = moduleProvider;
-            this.backupRecordContext = backupRecordContext;
+            BackupDirectory = backupDirectory;
         }
 
         public override void RunJob()
@@ -102,16 +110,20 @@ namespace ASC.Data.Backup.Tasks
                 SetStepsCount(ProcessStorage ? 3 : 2);
 
                 //save db data to temporary file
-                var backupTask = new BackupPortalTask(options, TenantId, ConfigPath, backupFilePath, Limit, coreBaseSettings, storageFactory, storageFactoryConfig, moduleProvider, backupRecordContext) {ProcessStorage = false};
+                var backupTask = ServiceProvider.GetService<BackupPortalTask>();
+                backupTask.Init(TenantId, ConfigPath, backupFilePath, Limit);
+                backupTask.ProcessStorage = false;
                 backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
                 foreach (var moduleName in IgnoredModules)
                 {
                     backupTask.IgnoreModule(moduleName);
                 }
                 backupTask.RunJob();
-                
+
                 //restore db data from temporary file
-                var restoreTask = new RestorePortalTask(options, ToConfigPath, backupFilePath, storageFactory, storageFactoryConfig, coreBaseSettings, licenseReader, ascCacheNotify, moduleProvider, columnMapper) {ProcessStorage = false};
+                var restoreTask = ServiceProvider.GetService<RestorePortalTask>();
+                restoreTask.Init(ToConfigPath, backupFilePath, columnMapper: columnMapper);
+                restoreTask.ProcessStorage = false;
                 restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
                 foreach (var moduleName in IgnoredModules)
                 {
@@ -163,13 +175,13 @@ namespace ASC.Data.Backup.Tasks
             {
                 var baseStorage = storageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
                 var destStorage = storageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
-                var utility = new CrossModuleTransferUtility(options, baseStorage, destStorage);
+                var utility = new CrossModuleTransferUtility(Options, baseStorage, destStorage);
 
                 foreach (var file in group)
                 {
                     var adjustedPath = file.Path;
 
-                    var module = moduleProvider.GetByStorageModule(file.Module, file.Domain);
+                    var module = ModuleProvider.GetByStorageModule(file.Module, file.Domain);
                     if (module == null || module.TryAdjustFilePath(false, columnMapper, ref adjustedPath))
                     {
                         try

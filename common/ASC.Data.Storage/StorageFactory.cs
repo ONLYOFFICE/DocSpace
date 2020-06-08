@@ -324,6 +324,7 @@ namespace ASC.Data.Storage
             services.TryAddSingleton<StorageFactoryListener>();
 
             return services
+                .AddConsumerFactoryService()
                 .AddTenantManagerService()
                 .AddCoreBaseSettingsService()
                 .AddPathUtilsService()
