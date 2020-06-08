@@ -98,18 +98,18 @@ namespace ASC.Web.Files.Configuration
             ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
-        public IEnumerable<File> SearchFiles(string text)
+        public IEnumerable<File<int>> SearchFiles(string text)
         {
             var security = FileSecurity;
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<int>();
             return fileDao.Search(text).Where(security.CanRead);
         }
 
-        public IEnumerable<Folder> SearchFolders(string text)
+        public IEnumerable<Folder<int>> SearchFolders(string text)
         {
             var security = FileSecurity;
-            IEnumerable<Folder> result;
-            var folderDao = DaoFactory.FolderDao;
+            IEnumerable<Folder<int>> result;
+            var folderDao = DaoFactory.GetFolderDao<int>();
             result = folderDao.Search(text).Where(security.CanRead);
 
             if (ThirdpartyConfiguration.SupportInclusion
@@ -119,12 +119,12 @@ namespace ASC.Web.Files.Configuration
                 if (!Equals(id, 0))
                 {
                     var folderMy = folderDao.GetFolder(id);
-                    result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
+                    //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
                 }
 
                 id = GlobalFolderHelper.FolderCommon;
                 var folderCommon = folderDao.GetFolder(id);
-                result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
+                //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
 
             return result;
@@ -132,7 +132,7 @@ namespace ASC.Web.Files.Configuration
 
         public SearchResultItem[] Search(string text)
         {
-            var folderDao = DaoFactory.FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<int>();
             var result = SearchFiles(text)
                             .Select(r => new SearchResultItem
                             {
@@ -168,7 +168,7 @@ namespace ASC.Web.Files.Configuration
             return result.Concat(resultFolder).ToArray();
         }
 
-        private static string FolderPathBuilder(IEnumerable<Folder> folders)
+        private static string FolderPathBuilder<T>(IEnumerable<Folder<T>> folders)
         {
             var titles = folders.Select(f => f.Title).ToList();
             const string separator = " \\ ";

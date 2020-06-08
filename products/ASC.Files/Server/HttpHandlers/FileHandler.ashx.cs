@@ -34,6 +34,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
@@ -57,27 +58,45 @@ using ASC.Web.Studio.Utility;
 
 using JWT;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files
 {
-    public class FileHandler //: AbstractHttpAsyncHandler
+    public class FileHandler
+    {
+        public RequestDelegate Next { get; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public FileHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        {
+            Next = next;
+            ServiceProvider = serviceProvider;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var fileHandlerService = scope.ServiceProvider.GetService<FileHandlerService>();
+            await fileHandlerService.Invoke(context);
+            await Next.Invoke(context);
+        }
+    }
+
+    public class FileHandlerService
     {
         public string FileHandlerPath
         {
             get { return FilesLinkUtility.FileHandlerPath; }
         }
-
-        public RequestDelegate Next { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
         public TenantExtra TenantExtra { get; }
         public AuthContext AuthContext { get; }
@@ -104,8 +123,7 @@ namespace ASC.Web.Files
         public CookiesManager CookiesManager { get; }
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
 
-        public FileHandler(
-            RequestDelegate next,
+        public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
             TenantExtra tenantExtra,
             CookiesManager cookiesManager,
@@ -131,7 +149,6 @@ namespace ASC.Web.Files
             FFmpegService fFmpegService,
             IServiceProvider serviceProvider)
         {
-            Next = next;
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
             AuthContext = authContext;
@@ -173,31 +190,31 @@ namespace ASC.Web.Files
                 {
                     case "view":
                     case "download":
-                        DownloadFile(context);
+                        await DownloadFile(context);
                         break;
                     case "bulk":
-                        BulkDownloadFile(context);
+                        await BulkDownloadFile(context);
                         break;
                     case "stream":
-                        StreamFile(context);
+                        await StreamFile(context);
                         break;
                     case "empty":
-                        EmptyFile(context);
+                        await EmptyFile(context);
                         break;
                     case "tmp":
-                        TempFile(context);
+                        await TempFile(context);
                         break;
                     case "create":
-                        CreateFile(context);
+                        await CreateFile(context);
                         break;
                     case "redirect":
                         Redirect(context);
                         break;
                     case "diff":
-                        DifferenceFile(context);
+                        await DifferenceFile(context);
                         break;
                     case "track":
-                        TrackFile(context);
+                        await TrackFile(context);
                         break;
                     default:
                         throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
@@ -208,11 +225,9 @@ namespace ASC.Web.Files
             {
                 throw new HttpException((int)HttpStatusCode.InternalServerError, FilesCommonResource.ErrorMassage_BadRequest, e);
             }
-
-            await Next.Invoke(context);
         }
 
-        private void BulkDownloadFile(HttpContext context)
+        private async Task BulkDownloadFile(HttpContext context)
         {
             if (!SecurityContext.AuthenticateMe(CookiesManager.GetCookies(CookiesType.AuthKey)))
             {
@@ -251,10 +266,11 @@ namespace ASC.Web.Files
                         readStream.Seek(offset, SeekOrigin.Begin);
                     }
 
-                    SendStreamByChunks(context, length, FileConstant.DownloadTitle + ".zip", readStream, ref flushed);
+                    flushed = await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ".zip", readStream, flushed);
                 }
 
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
+                await context.Response.CompleteAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -265,15 +281,28 @@ namespace ASC.Web.Files
             }
         }
 
-        private void DownloadFile(HttpContext context)
+        private async Task DownloadFile(HttpContext context)
+        {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+
+            if (int.TryParse(q, out var id))
+            {
+                await DownloadFile(context, id);
+            }
+            else
+            {
+                await DownloadFile(context, q);
+            }
+        }
+
+        private async Task DownloadFile<T>(HttpContext context, T id)
         {
             var flushed = false;
             try
             {
-                var id = context.Request.Query[FilesLinkUtility.FileId];
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 var readLink = FileShareLink.Check(doc, true, fileDao, out var file);
                 if (!readLink && file == null)
                 {
@@ -352,7 +381,7 @@ namespace ASC.Web.Files
                                 && FFmpegService.IsConvertable(ext))
                             {
                                 const string mp4Name = "content.mp4";
-                                var mp4Path = FileDao.GetUniqFilePath(file, mp4Name);
+                                var mp4Path = fileDao.GetUniqFilePath(file, mp4Name);
                                 var store = GlobalStore.GetStore();
                                 if (!store.IsFile(mp4Path))
                                 {
@@ -403,7 +432,7 @@ namespace ASC.Web.Files
                                 }
                             }
 
-                            SendStreamByChunks(context, length, title, fileStream, ref flushed);
+                            flushed = await SendStreamByChunksAsync(context, length, title, fileStream, flushed);
                         }
                         else
                         {
@@ -424,7 +453,7 @@ namespace ASC.Web.Files
                                 fileStream.Seek(offset, SeekOrigin.Begin);
                             }
 
-                            SendStreamByChunks(context, length, title, fileStream, ref flushed);
+                            flushed = await SendStreamByChunksAsync(context, length, title, fileStream, flushed);
                         }
                     }
                     catch (ThreadAbortException tae)
@@ -441,15 +470,15 @@ namespace ASC.Web.Files
                         if (fileStream != null)
                         {
                             fileStream.Close();
-                            fileStream.Dispose();
+                            await fileStream.DisposeAsync();
                         }
                     }
 
                     try
                     {
-                        context.Response.Body.Flush();
+                        await context.Response.Body.FlushAsync();
                         //context.Response.SuppressContent = true;
-                        //context.ApplicationInstance.CompleteRequest();
+                        await context.Response.CompleteAsync();
                         flushed = true;
                     }
                     catch (HttpException ex)
@@ -475,7 +504,7 @@ namespace ASC.Web.Files
                 if (!flushed && !context.RequestAborted.IsCancellationRequested)
                 {
                     context.Response.StatusCode = 400;
-                    context.Response.WriteAsync(HttpUtility.HtmlEncode(ex.Message)).Wait();
+                    await context.Response.WriteAsync(HttpUtility.HtmlEncode(ex.Message));
                 }
             }
         }
@@ -513,41 +542,50 @@ namespace ASC.Web.Files
             return length;
         }
 
-        private void SendStreamByChunks(HttpContext context, long toRead, string title, Stream fileStream, ref bool flushed)
+        private async Task<bool> SendStreamByChunksAsync(HttpContext context, long toRead, string title, Stream fileStream, bool flushed)
         {
+            var cl = 0;
             //context.Response.Buffer = false;
             context.Response.Headers.Add("Connection", "Keep-Alive");
-            context.Response.Headers.Add("Content-Length", toRead.ToString(CultureInfo.InvariantCulture));
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(title));
             context.Response.ContentType = MimeMapping.GetMimeMapping(title);
 
-            const int bufferSize = 32 * 1024; // 32KB
+            var bufferSize = Convert.ToInt32(Math.Min(Convert.ToInt64(32 * 1024), toRead)); // 32KB
             var buffer = new byte[bufferSize];
             while (toRead > 0)
             {
-                var length = fileStream.Read(buffer, 0, bufferSize);
+                var length = await fileStream.ReadAsync(buffer, 0, bufferSize);
+                cl += length;
+                await context.Response.Body.WriteAsync(buffer, 0, length, context.RequestAborted);
+                await context.Response.Body.FlushAsync();
+                flushed = true;
+                toRead -= length;
+            }
 
-                if (!context.RequestAborted.IsCancellationRequested)
-                {
-                    context.Response.Body.Write(buffer, 0, length);
-                    context.Response.Body.Flush();
-                    flushed = true;
-                    toRead -= length;
-                }
-                else
-                {
-                    toRead = -1;
-                    Logger.Warn(string.Format("IsClientConnected is false. Why? Download file {0} Connection is lost. ", title));
-                }
+            context.Response.Headers.Add("Content-Length", cl.ToString(CultureInfo.InvariantCulture));
+
+            return flushed;
+        }
+
+        private async Task StreamFile(HttpContext context)
+        {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+
+            if (int.TryParse(q, out var id))
+            {
+                await StreamFile(context, id);
+            }
+            else
+            {
+                await StreamFile(context, q);
             }
         }
 
-        private void StreamFile(HttpContext context)
+        private async Task StreamFile<T>(HttpContext context, T id)
         {
             try
             {
-                var fileDao = DaoFactory.FileDao;
-                var id = context.Request.Query[FilesLinkUtility.FileId];
+                var fileDao = DaoFactory.GetFileDao<T>();
                 if (!int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version))
                 {
                     version = 0;
@@ -560,7 +598,7 @@ namespace ASC.Web.Files
                 if (linkRight == FileShare.Restrict && !SecurityContext.IsAuthenticated)
                 {
                     var auth = context.Request.Query[FilesLinkUtility.AuthKey];
-                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id + version, auth.FirstOrDefault() ?? "", Global.StreamUrlExpire);
+                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id.ToString() + version, auth.FirstOrDefault() ?? "", Global.StreamUrlExpire);
                     if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                     {
                         var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -568,7 +606,7 @@ namespace ASC.Web.Files
                         Logger.Error($"{FilesLinkUtility.AuthKey} {validateResult}: {context.Request.Url()}", exc);
 
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException).Wait();
+                        await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                         return;
                     }
 
@@ -581,9 +619,8 @@ namespace ASC.Web.Files
                             {
                                 throw new Exception("Invalid header " + header);
                             }
-                            header = header.Substring("Bearer ".Length);
 
-                            JsonWebToken.JsonSerializer = new DocumentService.JwtSerializer();
+                            header = header.Substring("Bearer ".Length);
 
                             var stringPayload = JsonWebToken.Decode(header, FileUtility.SignatureSecret);
 
@@ -611,7 +648,7 @@ namespace ASC.Web.Files
                         {
                             Logger.Error("Download stream header " + context.Request.Url(), ex);
                             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException).Wait();
+                            await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                             return;
                         }
                     }
@@ -639,7 +676,7 @@ namespace ASC.Web.Files
 
                 if (!string.IsNullOrEmpty(file.Error))
                 {
-                    context.Response.WriteAsync(file.Error).Wait();
+                    await context.Response.WriteAsync(file.Error);
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return;
                 }
@@ -647,26 +684,24 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(file.Title));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(file.Title);
 
-                using (var stream = fileDao.GetFileStream(file))
-                {
-                    context.Response.Headers.Add("Content-Length",
-                                               stream.CanSeek
-                                                   ? stream.Length.ToString(CultureInfo.InvariantCulture)
-                                                   : file.ContentLength.ToString(CultureInfo.InvariantCulture));
-                    stream.StreamCopyTo(context.Response.Body);
-                }
+                using var stream = fileDao.GetFileStream(file);
+                context.Response.Headers.Add("Content-Length",
+                    stream.CanSeek
+                    ? stream.Length.ToString(CultureInfo.InvariantCulture)
+                    : file.ContentLength.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
                 Logger.Error("Error for: " + context.Request.Url(), ex);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.WriteAsync(ex.Message).Wait();
+                await context.Response.WriteAsync(ex.Message);
                 return;
             }
 
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -676,7 +711,7 @@ namespace ASC.Web.Files
             }
         }
 
-        private void EmptyFile(HttpContext context)
+        private async Task EmptyFile(HttpContext context)
         {
             try
             {
@@ -690,9 +725,8 @@ namespace ASC.Web.Files
                         {
                             throw new Exception("Invalid header " + header);
                         }
-                        header = header.Substring("Bearer ".Length);
 
-                        JsonWebToken.JsonSerializer = new DocumentService.JwtSerializer();
+                        header = header.Substring("Bearer ".Length);
 
                         var stringPayload = JsonWebToken.Decode(header, FileUtility.SignatureSecret);
 
@@ -720,7 +754,7 @@ namespace ASC.Web.Files
                     {
                         Logger.Error("Download stream header " + context.Request.Url(), ex);
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException).Wait();
+                        await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                         return;
                     }
                 }
@@ -736,7 +770,7 @@ namespace ASC.Web.Files
                 if (!storeTemplate.IsFile("", path))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    context.Response.WriteAsync(FilesCommonResource.ErrorMassage_FileNotFound).Wait();
+                    await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_FileNotFound);
                     return;
                 }
 
@@ -748,19 +782,19 @@ namespace ASC.Web.Files
                     stream.CanSeek
                     ? stream.Length.ToString(CultureInfo.InvariantCulture)
                     : storeTemplate.GetFileSize("", path).ToString(CultureInfo.InvariantCulture));
-                stream.StreamCopyTo(context.Response.Body);
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
                 Logger.Error("Error for: " + context.Request.Url(), ex);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.WriteAsync(ex.Message).Wait();
+                await context.Response.WriteAsync(ex.Message);
                 return;
             }
 
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -770,7 +804,7 @@ namespace ASC.Web.Files
             }
         }
 
-        private void TempFile(HttpContext context)
+        private async Task TempFile(HttpContext context)
         {
             var fileName = context.Request.Query[FilesLinkUtility.FileTitle];
             var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
@@ -783,7 +817,7 @@ namespace ASC.Web.Files
                 Logger.Error($"{FilesLinkUtility.AuthKey} {validateResult}: {context.Request.Url()}", exc);
 
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
+                await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                 return;
             }
 
@@ -798,21 +832,21 @@ namespace ASC.Web.Files
             if (!store.IsFile(FileConstant.StorageDomainTmp, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                context.Response.WriteAsync(FilesCommonResource.ErrorMassage_FileNotFound).Wait();
+                await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_FileNotFound);
                 return;
             }
 
             using (var readStream = store.GetReadStream(FileConstant.StorageDomainTmp, path))
             {
                 context.Response.Headers.Add("Content-Length", readStream.Length.ToString(CultureInfo.InvariantCulture));
-                readStream.StreamCopyTo(context.Response.Body);
+                await readStream.CopyToAsync(context.Response.Body);
             }
 
             store.Delete(FileConstant.StorageDomainTmp, path);
 
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -822,12 +856,25 @@ namespace ASC.Web.Files
             }
         }
 
-        private void DifferenceFile(HttpContext context)
+        private async Task DifferenceFile(HttpContext context)
+        {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+
+            if (int.TryParse(q, out var id))
+            {
+                await DifferenceFile(context, id);
+            }
+            else
+            {
+                await DifferenceFile(context, q);
+            }
+        }
+
+        private async Task DifferenceFile<T>(HttpContext context, T id)
         {
             try
             {
-                var fileDao = DaoFactory.FileDao;
-                var id = context.Request.Query[FilesLinkUtility.FileId];
+                var fileDao = DaoFactory.GetFileDao<T>();
                 int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version);
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
 
@@ -835,7 +882,7 @@ namespace ASC.Web.Files
                 if (linkRight == FileShare.Restrict && !SecurityContext.IsAuthenticated)
                 {
                     var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
-                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id + version, auth ?? "", Global.StreamUrlExpire);
+                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id.ToString() + version, auth ?? "", Global.StreamUrlExpire);
                     if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                     {
                         var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -843,7 +890,7 @@ namespace ASC.Web.Files
                         Logger.Error($"{FilesLinkUtility.AuthKey} {validateResult}: {context.Request.Url()}", exc);
 
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException).Wait();
+                        await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_SecurityException);
                         return;
                     }
                 }
@@ -872,7 +919,7 @@ namespace ASC.Web.Files
 
                 if (!string.IsNullOrEmpty(file.Error))
                 {
-                    context.Response.WriteAsync(file.Error).Wait();
+                    await context.Response.WriteAsync(file.Error);
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return;
                 }
@@ -883,20 +930,20 @@ namespace ASC.Web.Files
                 using (var stream = fileDao.GetDifferenceStream(file))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    stream.StreamCopyTo(context.Response.Body);
+                    await stream.CopyToAsync(context.Response.Body);
                 }
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.WriteAsync(ex.Message).Wait();
+                await context.Response.WriteAsync(ex.Message);
                 Logger.Error("Error for: " + context.Request.Url(), ex);
                 return;
             }
 
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -906,26 +953,36 @@ namespace ASC.Web.Files
             }
         }
 
-        private static string GetEtag(File file)
+        private static string GetEtag<T>(File<T> file)
         {
             return file.ID + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
         }
 
-        private void CreateFile(HttpContext context)
+        private async Task CreateFile(HttpContext context)
         {
-            var responseMessage = context.Request.Query["response"] == "message";
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
-                folderId = GlobalFolderHelper.FolderMy.ToString();
-            Folder folder;
+            {
+                await CreateFile(context, GlobalFolderHelper.FolderMy);
+            }
+            else
+            {
+                await CreateFile(context, folderId);
+            }
+        }
 
-            var folderDao = DaoFactory.FolderDao;
+        private async Task CreateFile<T>(HttpContext context, T folderId)
+        {
+            var responseMessage = context.Request.Query["response"] == "message";
+            Folder<T> folder;
+
+            var folderDao = DaoFactory.GetFolderDao<T>();
             folder = folderDao.GetFolder(folderId);
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
             if (!FileSecurity.CanCreate(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            File file;
+            File<T> file;
             var fileUri = context.Request.Query[FilesLinkUtility.FileUri];
             var fileTitle = context.Request.Query[FilesLinkUtility.FileTitle];
             try
@@ -945,7 +1002,7 @@ namespace ASC.Web.Files
                 Logger.Error(ex);
                 if (responseMessage)
                 {
-                    context.Response.WriteAsync("error: " + ex.Message).Wait();
+                    await context.Response.WriteAsync("error: " + ex.Message);
                     return;
                 }
                 context.Response.Redirect(PathProvider.StartURL + "#error/" + HttpUtility.UrlEncode(ex.Message), true);
@@ -956,7 +1013,7 @@ namespace ASC.Web.Files
 
             if (responseMessage)
             {
-                context.Response.WriteAsync("ok: " + string.Format(FilesCommonResource.MessageFileCreated, folder.Title)).Wait();
+                await context.Response.WriteAsync("ok: " + string.Format(FilesCommonResource.MessageFileCreated, folder.Title));
                 return;
             }
 
@@ -966,7 +1023,7 @@ namespace ASC.Web.Files
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
-        private File CreateFileFromTemplate(Folder folder, string fileTitle, string docType)
+        private File<T> CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)
         {
             var storeTemplate = GlobalStore.GetStoreTemplate();
 
@@ -975,7 +1032,7 @@ namespace ASC.Web.Files
             var fileExt = FileUtility.InternalExtension[FileType.Document];
             if (!string.IsNullOrEmpty(docType))
             {
-                var tmpFileType = Services.DocumentService.Configuration.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
+                var tmpFileType = Configuration<T>.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
                 FileUtility.InternalExtension.TryGetValue(tmpFileType.Key, out var tmpFileExt);
                 if (!string.IsNullOrEmpty(tmpFileExt))
                     fileExt = tmpFileExt;
@@ -997,23 +1054,23 @@ namespace ASC.Web.Files
                 fileTitle += fileExt;
             }
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
             var stream = storeTemplate.GetReadStream("", templatePath);
             file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(templatePath);
             return fileDao.SaveFile(file, stream);
         }
 
-        private File CreateFileFromUri(Folder folder, string fileUri, string fileTitle)
+        private File<T> CreateFileFromUri<T>(Folder<T> folder, string fileUri, string fileTitle)
         {
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
@@ -1026,7 +1083,7 @@ namespace ASC.Web.Files
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
             var fileStream = new ResponseStream(req.GetResponse());
             file.ContentLength = fileStream.Length;
 
@@ -1035,14 +1092,28 @@ namespace ASC.Web.Files
 
         private void Redirect(HttpContext context)
         {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+            var q1 = context.Request.Query[FilesLinkUtility.FolderId];
+
+            if (int.TryParse(q, out var fileId) && int.TryParse(q1, out var folderId))
+            {
+                Redirect(context, fileId, folderId);
+            }
+            else
+            {
+                Redirect(context, q, q1);
+            }
+        }
+
+        private void Redirect<T>(HttpContext context, T folderId, T fileId)
+        {
             if (!SecurityContext.AuthenticateMe(CookiesManager.GetCookies(CookiesType.AuthKey)))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
             var urlRedirect = string.Empty;
-            var folderId = context.Request.Query[FilesLinkUtility.FolderId];
-            if (!string.IsNullOrEmpty(folderId))
+            if (folderId != null)
             {
                 try
                 {
@@ -1054,10 +1125,9 @@ namespace ASC.Web.Files
                 }
             }
 
-            var fileId = context.Request.Query[FilesLinkUtility.FileId];
-            if (!string.IsNullOrEmpty(fileId))
+            if (fileId != null)
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 var file = fileDao.GetFile(fileId);
                 if (file == null)
                 {
@@ -1073,7 +1143,7 @@ namespace ASC.Web.Files
             context.Response.Redirect(urlRedirect);
         }
 
-        private void TrackFile(HttpContext context)
+        private async Task TrackFile(HttpContext context)
         {
             var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
             var fileId = context.Request.Query[FilesLinkUtility.FileId].FirstOrDefault();
@@ -1116,7 +1186,6 @@ namespace ASC.Web.Files
 
             if (!string.IsNullOrEmpty(FileUtility.SignatureSecret))
             {
-                JsonWebToken.JsonSerializer = new DocumentService.JwtSerializer();
                 if (!string.IsNullOrEmpty(fileData.Token))
                 {
                     try
@@ -1179,7 +1248,43 @@ namespace ASC.Web.Files
             }
             result ??= new DocumentServiceTracker.TrackResponse();
 
-            context.Response.WriteAsync(DocumentServiceTracker.TrackResponse.Serialize(result)).Wait();
+            await context.Response.WriteAsync(DocumentServiceTracker.TrackResponse.Serialize(result));
+        }
+    }
+
+    public static class FileHandlerExtensions
+    {
+        public static DIHelper AddFileHandlerService(this DIHelper services)
+        {
+            services.TryAddScoped<FileHandlerService>();
+            return services
+                .AddFilesLinkUtilityService()
+                .AddTenantExtraService()
+                .AddCookiesManagerService()
+                .AddAuthContextService()
+                .AddSecurityContextService()
+                .AddGlobalStoreService()
+                .AddDaoFactoryService()
+                .AddFileSecurityService()
+                .AddFileMarkerService()
+                .AddSetupInfo()
+                .AddFileUtilityService()
+                .AddGlobalService()
+                .AddEmailValidationKeyProviderService()
+                .AddCoreBaseSettingsService()
+                .AddGlobalFolderHelperService()
+                .AddPathProviderService()
+                .AddUserManagerService()
+                .AddDocumentServiceTrackerHelperService()
+                .AddFilesMessageService()
+                .AddFileConverterService()
+                .AddFileShareLinkService()
+                .AddFFmpegServiceService();
+        }
+
+        public static IApplicationBuilder UseFileHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<FileHandler>();
         }
     }
 }

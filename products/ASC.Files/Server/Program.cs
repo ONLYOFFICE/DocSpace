@@ -40,7 +40,8 @@ namespace ASC.Files
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                    .AddEnvironmentVariables();
+                    .AddEnvironmentVariables()
+                    .AddCommandLine(args);
             });
     }
 }

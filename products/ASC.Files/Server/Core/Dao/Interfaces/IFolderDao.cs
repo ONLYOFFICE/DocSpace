@@ -30,14 +30,14 @@ using System.Threading;
 
 namespace ASC.Files.Core
 {
-    public interface IFolderDao
+    public interface IFolderDao<T>
     {
         /// <summary>
         ///     Get folder by id.
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns>folder</returns>
-        Folder GetFolder(object folderId);
+        Folder<T> GetFolder(T folderId);
 
         /// <summary>
         ///     Returns the folder with the given name and id of the root
@@ -45,27 +45,27 @@ namespace ASC.Files.Core
         /// <param name="title"></param>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        Folder GetFolder(string title, object parentId);
+        Folder<T> GetFolder(string title, T parentId);
 
         /// <summary>
         ///    Gets the root folder
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns>root folder</returns>
-        Folder GetRootFolder(object folderId);
+        Folder<T> GetRootFolder(T folderId);
 
         /// <summary>
         ///    Gets the root folder
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <returns>root folder</returns>
-        Folder GetRootFolderByFile(object fileId);
+        Folder<T> GetRootFolderByFile(T fileId);
 
         /// <summary>
         ///     Get a list of folders in current folder.
         /// </summary>
         /// <param name="parentId"></param>
-        List<Folder> GetFolders(object parentId);
+        List<Folder<T>> GetFolders(T parentId);
 
         /// <summary>
         /// Get a list of folders.
@@ -78,7 +78,7 @@ namespace ASC.Files.Core
         /// <param name="searchText"></param>
         /// <param name="withSubfolders"></param>
         /// <returns></returns>
-        List<Folder> GetFolders(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
+        List<Folder<T>> GetFolders(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
 
         /// <summary>
         /// Gets the folder (s) by ID (s)
@@ -91,27 +91,27 @@ namespace ASC.Files.Core
         /// <param name="searchSubfolders"></param>
         /// <param name="checkShare"></param>
         /// <returns></returns>
-        List<Folder> GetFolders(object[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
+        List<Folder<T>> GetFolders(T[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
 
         /// <summary>
         ///     Get folder, contains folder with id
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
-        List<Folder> GetParentFolders(object folderId);
+        List<Folder<T>> GetParentFolders(T folderId);
 
         /// <summary>
         ///     save or update folder
         /// </summary>
         /// <param name="folder"></param>
         /// <returns></returns>
-        object SaveFolder(Folder folder);
+        T SaveFolder(Folder<T> folder);
 
         /// <summary>
         ///     delete folder
         /// </summary>
         /// <param name="folderId">folder id</param>
-        void DeleteFolder(object folderId);
+        void DeleteFolder(T folderId);
 
         /// <summary>
         ///  move folder
@@ -119,7 +119,10 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <param name="toFolderId">destination folder id</param>
         /// <param name="cancellationToken"></param>
-        object MoveFolder(object folderId, object toFolderId, CancellationToken? cancellationToken);
+        T MoveFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        TTo MoveFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
+        string MoveFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        int MoveFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
         ///     copy folder
@@ -129,7 +132,10 @@ namespace ASC.Files.Core
         /// <param name="cancellationToken"></param>
         /// <returns> 
         /// </returns>
-        Folder CopyFolder(object folderId, object toFolderId, CancellationToken? cancellationToken);
+        Folder<T> CopyFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        Folder<TTo> CopyFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
+        Folder<string> CopyFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        Folder<int> CopyFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
         /// Validate the transfer operation directory to another directory.
@@ -139,35 +145,38 @@ namespace ASC.Files.Core
         /// <returns>
         /// Returns pair of file ID, file name, in which the same name.
         /// </returns>
-        IDictionary<object, string> CanMoveOrCopy(object[] folderIds, object to);
+        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, T to);
+        IDictionary<T, string> CanMoveOrCopy<TTo>(T[] folderIds, TTo to);
+        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, string to);
+        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, int to);
 
         /// <summary>
         ///     Rename folder
         /// </summary>
         /// <param name="folder"></param>
         /// <param name="newTitle">new name</param>
-        object RenameFolder(Folder folder, string newTitle);
+        T RenameFolder(Folder<T> folder, string newTitle);
 
         /// <summary>
         ///    Gets the number of files and folders to the container in your
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
-        int GetItemsCount(object folderId);
+        int GetItemsCount(T folderId);
 
         /// <summary>
         ///    Check folder on emptiness
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
-        bool IsEmpty(object folderId);
+        bool IsEmpty(T folderId);
 
         /// <summary>
         /// Check the need to use the trash before removing
         /// </summary>
         /// <param name="folder"></param>
         /// <returns></returns>
-        bool UseTrashForRemove(Folder folder);
+        bool UseTrashForRemove(Folder<T> folder);
 
         /// <summary>
         /// Check the need to use recursion for operations
@@ -175,14 +184,17 @@ namespace ASC.Files.Core
         /// <param name="folderId"> </param>
         /// <param name="toRootFolderId"> </param>
         /// <returns></returns>
-        bool UseRecursiveOperation(object folderId, object toRootFolderId);
+        bool UseRecursiveOperation(T folderId, T toRootFolderId);
+        bool UseRecursiveOperation<TTo>(T folderId, TTo toRootFolderId);
+        bool UseRecursiveOperation(T folderId, string toRootFolderId);
+        bool UseRecursiveOperation(T folderId, int toRootFolderId);
 
         /// <summary>
         /// Check the possibility to calculate the number of subitems
         /// </summary>
         /// <param name="entryId"> </param>
         /// <returns></returns>
-        bool CanCalculateSubitems(object entryId);
+        bool CanCalculateSubitems(T entryId);
 
         /// <summary>
         /// Returns maximum size of file which can be uploaded to specific folder
@@ -190,7 +202,7 @@ namespace ASC.Files.Core
         /// <param name="folderId">Id of the folder</param>
         /// <param name="chunkedUpload">Determines whenever supposed upload will be chunked (true) or not (false)</param>
         /// <returns>Maximum size of file which can be uploaded to folder</returns>
-        long GetMaxUploadSize(object folderId, bool chunkedUpload = false);
+        long GetMaxUploadSize(T folderId, bool chunkedUpload = false);
 
         #region Only for TMFolderDao
 
@@ -199,7 +211,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderIds"></param>
         /// <param name="newOwnerId"></param>
-        void ReassignFolders(object[] folderIds, Guid newOwnerId);
+        void ReassignFolders(T[] folderIds, Guid newOwnerId);
 
         /// <summary>
         /// Search the list of folders containing text in title
@@ -208,7 +220,7 @@ namespace ASC.Files.Core
         /// <param name="text"></param>
         /// <param name="bunch"></param>
         /// <returns></returns>
-        IEnumerable<Folder> Search(string text, bool bunch = false);
+        IEnumerable<Folder<T>> Search(string text, bool bunch = false);
 
         /// <summary>
         /// Only in TMFolderDao
@@ -218,16 +230,16 @@ namespace ASC.Files.Core
         /// <param name="data"></param>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        object GetFolderID(string module, string bunch, string data, bool createIfNotExists);
+        T GetFolderID(string module, string bunch, string data, bool createIfNotExists);
 
-        IEnumerable<object> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
+        IEnumerable<T> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
 
         /// <summary>
         ///  Returns id folder "Shared Documents"
         /// Only in TMFolderDao
         /// </summary>
         /// <returns></returns>
-        object GetFolderIDCommon(bool createIfNotExists);
+        T GetFolderIDCommon(bool createIfNotExists);
 
         /// <summary>
         ///  Returns id folder "My Documents"
@@ -236,7 +248,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        object GetFolderIDUser(bool createIfNotExists, Guid? userId = null);
+        T GetFolderIDUser(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
         /// Returns id folder "Shared with me"
@@ -244,7 +256,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        object GetFolderIDShare(bool createIfNotExists);
+        T GetFolderIDShare(bool createIfNotExists);
 
         /// <summary>
         /// Returns id folder "Trash"
@@ -253,7 +265,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        object GetFolderIDTrash(bool createIfNotExists, Guid? userId = null);
+        T GetFolderIDTrash(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
         /// Returns id folder "Projects"
@@ -261,7 +273,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        object GetFolderIDProjects(bool createIfNotExists);
+        T GetFolderIDProjects(bool createIfNotExists);
 
 
         /// <summary>
@@ -270,7 +282,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderID"></param>
         /// <returns></returns>
-        string GetBunchObjectID(object folderID);
+        string GetBunchObjectID(T folderID);
 
         /// <summary>
         /// Return ids of related objects
@@ -278,7 +290,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderIDs"></param>
         /// <returns></returns>
-        Dictionary<string, string> GetBunchObjectIDs(List<object> folderIDs);
+        Dictionary<string, string> GetBunchObjectIDs(List<T> folderIDs);
 
         #endregion
     }

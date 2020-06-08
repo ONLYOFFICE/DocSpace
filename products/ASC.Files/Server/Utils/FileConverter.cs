@@ -57,220 +57,32 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-using File = ASC.Files.Core.File;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
-    public class FileConverter
+    internal class FileConverterQueue<T>
     {
-        private static readonly object locker = new object();
-        private static readonly IDictionary<File, ConvertFileOperationResult> conversionQueue = new Dictionary<File, ConvertFileOperationResult>(new FileComparer());
+        private readonly object singleThread = new object();
+        private readonly IDictionary<File<T>, ConvertFileOperationResult> conversionQueue;
+        private readonly Timer timer;
+        private readonly object locker;
         private readonly ICache cache;
-
-        private static Timer timer;
-        private static readonly object singleThread = new object();
         private const int TIMER_PERIOD = 500;
 
-        public FileUtility FileUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public IDaoFactory DaoFactory { get; }
-        public SetupInfo SetupInfo { get; }
-        public PathProvider PathProvider { get; }
-        public FileSecurity FileSecurity { get; }
-        public FileMarker FileMarker { get; }
-        public TenantManager TenantManager { get; }
-        public AuthContext AuthContext { get; }
-        public EntryManager EntryManager { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public FileShareLink FileShareLink { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
         public IServiceProvider ServiceProvider { get; }
-        public IHttpContextAccessor HttpContextAccesor { get; }
-        public ILog Logger { get; }
 
-        public FileConverter(
-            FileUtility fileUtility,
-            FilesLinkUtility filesLinkUtility,
-            IDaoFactory daoFactory,
-            SetupInfo setupInfo,
-            PathProvider pathProvider,
-            FileSecurity fileSecurity,
-            FileMarker fileMarker,
-            TenantManager tenantManager,
-            AuthContext authContext,
-            EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
-            FilesSettingsHelper filesSettingsHelper,
-            GlobalFolderHelper globalFolderHelper,
-            FilesMessageService filesMessageService,
-            FileShareLink fileShareLink,
-            DocumentServiceHelper documentServiceHelper,
-            DocumentServiceConnector documentServiceConnector,
-            IServiceProvider serviceProvider)
+        public FileConverterQueue(IServiceProvider ServiceProvider)
         {
-            FileUtility = fileUtility;
-            FilesLinkUtility = filesLinkUtility;
-            DaoFactory = daoFactory;
-            SetupInfo = setupInfo;
-            PathProvider = pathProvider;
-            FileSecurity = fileSecurity;
-            FileMarker = fileMarker;
-            TenantManager = tenantManager;
-            AuthContext = authContext;
-            EntryManager = entryManager;
-            FilesSettingsHelper = filesSettingsHelper;
-            GlobalFolderHelper = globalFolderHelper;
-            FilesMessageService = filesMessageService;
-            FileShareLink = fileShareLink;
-            DocumentServiceHelper = documentServiceHelper;
-            DocumentServiceConnector = documentServiceConnector;
-            ServiceProvider = serviceProvider;
-            Logger = options.CurrentValue;
+            conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer<T>());
+            timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
+            locker = new object();
+            this.ServiceProvider = ServiceProvider;
             cache = AscCache.Memory;
         }
-        public FileConverter(
-            FileUtility fileUtility,
-            FilesLinkUtility filesLinkUtility,
-            IDaoFactory daoFactory,
-            SetupInfo setupInfo,
-            PathProvider pathProvider,
-            FileSecurity fileSecurity,
-            FileMarker fileMarker,
-            TenantManager tenantManager,
-            AuthContext authContext,
-            EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
-            FilesSettingsHelper filesSettingsHelper,
-            GlobalFolderHelper globalFolderHelper,
-            FilesMessageService filesMessageService,
-            FileShareLink fileShareLink,
-            DocumentServiceHelper documentServiceHelper,
-            DocumentServiceConnector documentServiceConnector,
-            IServiceProvider serviceProvider,
-            IHttpContextAccessor httpContextAccesor)
-            : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
-                  fileMarker, tenantManager, authContext, entryManager, options, filesSettingsHelper,
-                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
-                  serviceProvider)
+
+        public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url)
         {
-            HttpContextAccesor = httpContextAccesor;
-        }
-
-        public bool EnableAsUploaded
-        {
-            get { return FileUtility.ExtsMustConvert.Any() && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
-        }
-
-        public bool MustConvert(File file)
-        {
-            if (file == null) return false;
-
-            var ext = FileUtility.GetFileExtension(file.Title);
-            return FileUtility.ExtsMustConvert.Contains(ext);
-        }
-
-        public bool EnableConvert(File file, string toExtension)
-        {
-            if (file == null || string.IsNullOrEmpty(toExtension))
-            {
-                return false;
-            }
-
-            if (file.Encrypted)
-            {
-                return false;
-            }
-
-            var fileExtension = file.ConvertedExtension;
-            if (fileExtension.Trim('.').Equals(toExtension.Trim('.'), StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            fileExtension = FileUtility.GetFileExtension(file.Title);
-            if (FileUtility.InternalExtension.Values.Contains(toExtension))
-            {
-                return true;
-            }
-
-            return FileUtility.ExtsConvertible.Keys.Contains(fileExtension) && FileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
-        }
-
-        public Stream Exec(File file)
-        {
-            return Exec(file, FileUtility.GetInternalExtension(file.Title));
-        }
-
-        public Stream Exec(File file, string toExtension)
-        {
-            if (!EnableConvert(file, toExtension))
-            {
-                var fileDao = DaoFactory.FileDao;
-                return fileDao.GetFileStream(file);
-            }
-
-            if (file.ContentLength > SetupInfo.AvailableFileSize)
-            {
-                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
-            }
-
-            var fileUri = PathProvider.GetFileStreamUrl(file);
-            var docKey = DocumentServiceHelper.GetDocKey(file);
-            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
-
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
-            return new ResponseStream(((HttpWebRequest)WebRequest.Create(convertUri)).GetResponse());
-        }
-
-        public File ExecSync(File file, string doc)
-        {
-            var fileDao = DaoFactory.FileDao;
-            var fileSecurity = FileSecurity;
-            if (!fileSecurity.CanRead(file))
-            {
-                var readLink = FileShareLink.Check(doc, true, fileDao, out file);
-                if (file == null)
-                {
-                    throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-                }
-                if (!readLink)
-                {
-                    throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
-                }
-            }
-
-            var fileUri = PathProvider.GetFileStreamUrl(file);
-            var fileExtension = file.ConvertedExtension;
-            var toExtension = FileUtility.GetInternalExtension(file.Title);
-            var docKey = DocumentServiceHelper.GetDocKey(file);
-
-            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
-
-            return SaveConvertedFile(file, convertUri);
-        }
-
-        public void ExecAsync(File file, bool deleteAfter, string password = null)
-        {
-            if (!MustConvert(file))
-            {
-                throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
-            }
-            if (!string.IsNullOrEmpty(file.ConvertedType) || FileUtility.InternalExtension.Values.Contains(FileUtility.GetFileExtension(file.Title)))
-            {
-                return;
-            }
-
-            FileMarker.RemoveMarkAsNew(file);
-
             lock (locker)
             {
                 if (conversionQueue.ContainsKey(file))
@@ -287,80 +99,44 @@ namespace ASC.Web.Files.Utils
                     Result = string.Empty,
                     Processed = "",
                     Id = string.Empty,
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
-                    Account = AuthContext.CurrentAccount,
+                    TenantId = tenantId,
+                    Account = account,
                     Delete = deleteAfter,
                     StartDateTime = DateTime.Now,
-                    Url = HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null,
+                    Url = url,
                     Password = password
                 };
                 conversionQueue.Add(file, queueResult);
                 cache.Insert(GetKey(file), queueResult, TimeSpan.FromMinutes(10));
 
-                if (timer == null)
-                {
-                    timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
-                }
-                else
-                {
-                    timer.Change(0, Timeout.Infinite);
-                }
+                timer.Change(0, Timeout.Infinite);
             }
         }
 
-        public bool IsConverting(File file)
+        public ConvertFileOperationResult GetStatus(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
         {
-            if (!MustConvert(file) || !string.IsNullOrEmpty(file.ConvertedType))
+            var file = pair.Key;
+            var key = GetKey(file);
+            var operation = cache.Get<ConvertFileOperationResult>(key);
+            if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
             {
-                return false;
+                lock (locker)
+                {
+                    if (operation.Progress == 100)
+                    {
+                        conversionQueue.Remove(file);
+                        cache.Remove(key);
+                    }
+                    return operation;
+                }
             }
+            return null;
+        }
+
+        public bool IsConverting(File<T> file)
+        {
             var result = cache.Get<ConvertFileOperationResult>(GetKey(file));
             return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
-        }
-
-        public IEnumerable<FileOperationResult> GetStatus(IEnumerable<KeyValuePair<File, bool>> filesPair)
-        {
-            var fileSecurity = FileSecurity;
-            var result = new List<FileOperationResult>();
-            foreach (var pair in filesPair)
-            {
-                var file = pair.Key;
-                var key = GetKey(file);
-                var operation = cache.Get<ConvertFileOperationResult>(key);
-                if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
-                {
-                    result.Add(operation);
-                    lock (locker)
-                    {
-                        if (operation.Progress == 100)
-                        {
-                            conversionQueue.Remove(file);
-                            cache.Remove(key);
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-
-        private string FileJsonSerializer(File file, string folderTitle)
-        {
-            if (file == null) return string.Empty;
-
-            EntryManager.SetFileStatus(file);
-            return
-                string.Format("{{ \"id\": \"{0}\"," +
-                              " \"title\": \"{1}\"," +
-                              " \"version\": \"{2}\"," +
-                              " \"folderId\": \"{3}\"," +
-                              " \"folderTitle\": \"{4}\"," +
-                              " \"fileXml\": \"{5}\" }}",
-                              file.ID,
-                              file.Title,
-                              file.Version,
-                              file.FolderID,
-                              folderTitle ?? "",
-                              File.Serialize(file).Replace('"', '\''));
         }
 
         private void CheckConvertFilesStatus(object _)
@@ -373,10 +149,18 @@ namespace ASC.Web.Files.Utils
                 var userManager = scope.ServiceProvider.GetService<UserManager>();
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+                var FileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
+                var PathProvider = scope.ServiceProvider.GetService<PathProvider>();
+                var SetupInfo = scope.ServiceProvider.GetService<SetupInfo>();
+                var FileUtility = scope.ServiceProvider.GetService<FileUtility>();
+                var DocumentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+                var DocumentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
+                var EntryManager = scope.ServiceProvider.GetService<EntryManager>();
+                var FileConverter = scope.ServiceProvider.GetService<FileConverter>();
 
                 try
                 {
-                    List<File> filesIsConverting;
+                    var filesIsConverting = new List<File<T>>();
                     lock (locker)
                     {
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -386,10 +170,10 @@ namespace ASC.Web.Files.Utils
                                                        DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
                                        .ToList()
                                        .ForEach(x =>
-                                           {
-                                               conversionQueue.Remove(x);
-                                               cache.Remove(GetKey(x.Key));
-                                           });
+                                       {
+                                           conversionQueue.Remove(x);
+                                           cache.Remove(GetKey(x.Key));
+                                       });
 
                         logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
 
@@ -443,7 +227,7 @@ namespace ASC.Web.Files.Utils
                             securityContext.AuthenticateMe(account);
 
                             var user = userManager.GetUsers(account.ID);
-                            var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+                            var culture = string.IsNullOrEmpty(user.CultureName) ? tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
                             Thread.CurrentThread.CurrentCulture = culture;
                             Thread.CurrentThread.CurrentUICulture = culture;
 
@@ -524,12 +308,12 @@ namespace ASC.Web.Files.Utils
                             continue;
                         }
 
-                        File newFile = null;
+                        File<T> newFile = null;
                         var operationResultError = string.Empty;
 
                         try
                         {
-                            newFile = SaveConvertedFile(file, convertedFileUrl);
+                            newFile = FileConverter.SaveConvertedFile(file, convertedFileUrl);
                         }
                         catch (Exception e)
                         {
@@ -554,10 +338,10 @@ namespace ASC.Web.Files.Utils
                                     {
                                         if (newFile != null)
                                         {
-                                            var folderDao = daoFactory.FolderDao;
+                                            var folderDao = daoFactory.GetFolderDao<T>();
                                             var folder = folderDao.GetFolder(newFile.FolderID);
                                             var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
-                                            operationResult.Result = FileJsonSerializer(newFile, folderTitle);
+                                            operationResult.Result = FileJsonSerializer(EntryManager, newFile, folderTitle);
                                         }
 
                                         operationResult.Progress = 100;
@@ -596,22 +380,273 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        private File SaveConvertedFile(File file, string convertedFileUrl)
+        private string GetKey(File<T> f)
+        {
+            return string.Format("fileConvertation-{0}", f.ID);
+        }
+
+        private string FileJsonSerializer(EntryManager EntryManager, File<T> file, string folderTitle)
+        {
+            if (file == null) return string.Empty;
+
+            EntryManager.SetFileStatus(file);
+            return
+                string.Format("{{ \"id\": \"{0}\"," +
+                              " \"title\": \"{1}\"," +
+                              " \"version\": \"{2}\"," +
+                              " \"folderId\": \"{3}\"," +
+                              " \"folderTitle\": \"{4}\"," +
+                              " \"fileXml\": \"{5}\" }}",
+                              file.ID,
+                              file.Title,
+                              file.Version,
+                              file.FolderID,
+                              folderTitle ?? "",
+                              File<T>.Serialize(file).Replace('"', '\''));
+        }
+    }
+
+    public class FileConverter
+    {
+        public FileUtility FileUtility { get; }
+        public FilesLinkUtility FilesLinkUtility { get; }
+        public IDaoFactory DaoFactory { get; }
+        public SetupInfo SetupInfo { get; }
+        public PathProvider PathProvider { get; }
+        public FileSecurity FileSecurity { get; }
+        public FileMarker FileMarker { get; }
+        public TenantManager TenantManager { get; }
+        public AuthContext AuthContext { get; }
+        public EntryManager EntryManager { get; }
+        public FilesSettingsHelper FilesSettingsHelper { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public FilesMessageService FilesMessageService { get; }
+        public FileShareLink FileShareLink { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public IHttpContextAccessor HttpContextAccesor { get; }
+
+        public FileConverter(
+            FileUtility fileUtility,
+            FilesLinkUtility filesLinkUtility,
+            IDaoFactory daoFactory,
+            SetupInfo setupInfo,
+            PathProvider pathProvider,
+            FileSecurity fileSecurity,
+            FileMarker fileMarker,
+            TenantManager tenantManager,
+            AuthContext authContext,
+            EntryManager entryManager,
+            IOptionsMonitor<ILog> options,
+            FilesSettingsHelper filesSettingsHelper,
+            GlobalFolderHelper globalFolderHelper,
+            FilesMessageService filesMessageService,
+            FileShareLink fileShareLink,
+            DocumentServiceHelper documentServiceHelper,
+            DocumentServiceConnector documentServiceConnector,
+            IServiceProvider serviceProvider)
+        {
+            FileUtility = fileUtility;
+            FilesLinkUtility = filesLinkUtility;
+            DaoFactory = daoFactory;
+            SetupInfo = setupInfo;
+            PathProvider = pathProvider;
+            FileSecurity = fileSecurity;
+            FileMarker = fileMarker;
+            TenantManager = tenantManager;
+            AuthContext = authContext;
+            EntryManager = entryManager;
+            FilesSettingsHelper = filesSettingsHelper;
+            GlobalFolderHelper = globalFolderHelper;
+            FilesMessageService = filesMessageService;
+            FileShareLink = fileShareLink;
+            DocumentServiceHelper = documentServiceHelper;
+            DocumentServiceConnector = documentServiceConnector;
+            ServiceProvider = serviceProvider;
+        }
+        public FileConverter(
+            FileUtility fileUtility,
+            FilesLinkUtility filesLinkUtility,
+            IDaoFactory daoFactory,
+            SetupInfo setupInfo,
+            PathProvider pathProvider,
+            FileSecurity fileSecurity,
+            FileMarker fileMarker,
+            TenantManager tenantManager,
+            AuthContext authContext,
+            EntryManager entryManager,
+            IOptionsMonitor<ILog> options,
+            FilesSettingsHelper filesSettingsHelper,
+            GlobalFolderHelper globalFolderHelper,
+            FilesMessageService filesMessageService,
+            FileShareLink fileShareLink,
+            DocumentServiceHelper documentServiceHelper,
+            DocumentServiceConnector documentServiceConnector,
+            IServiceProvider serviceProvider,
+            IHttpContextAccessor httpContextAccesor)
+            : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
+                  fileMarker, tenantManager, authContext, entryManager, options, filesSettingsHelper,
+                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
+                  serviceProvider)
+        {
+            HttpContextAccesor = httpContextAccesor;
+        }
+
+        public bool EnableAsUploaded
+        {
+            get { return FileUtility.ExtsMustConvert.Any() && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
+        }
+
+        public bool MustConvert<T>(File<T> file)
+        {
+            if (file == null) return false;
+
+            var ext = FileUtility.GetFileExtension(file.Title);
+            return FileUtility.ExtsMustConvert.Contains(ext);
+        }
+
+        public bool EnableConvert<T>(File<T> file, string toExtension)
+        {
+            if (file == null || string.IsNullOrEmpty(toExtension))
+            {
+                return false;
+            }
+
+            if (file.Encrypted)
+            {
+                return false;
+            }
+
+            var fileExtension = file.ConvertedExtension;
+            if (fileExtension.Trim('.').Equals(toExtension.Trim('.'), StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            fileExtension = FileUtility.GetFileExtension(file.Title);
+            if (FileUtility.InternalExtension.Values.Contains(toExtension))
+            {
+                return true;
+            }
+
+            return FileUtility.ExtsConvertible.Keys.Contains(fileExtension) && FileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
+        }
+
+        public Stream Exec<T>(File<T> file)
+        {
+            return Exec(file, FileUtility.GetInternalExtension(file.Title));
+        }
+
+        public Stream Exec<T>(File<T> file, string toExtension)
+        {
+            if (!EnableConvert(file, toExtension))
+            {
+                var fileDao = DaoFactory.GetFileDao<T>();
+                return fileDao.GetFileStream(file);
+            }
+
+            if (file.ContentLength > SetupInfo.AvailableFileSize)
+            {
+                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
+            }
+
+            var fileUri = PathProvider.GetFileStreamUrl(file);
+            var docKey = DocumentServiceHelper.GetDocKey(file);
+            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
+
+            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
+            }
+            return new ResponseStream(((HttpWebRequest)WebRequest.Create(convertUri)).GetResponse());
+        }
+
+        public File<T> ExecSync<T>(File<T> file, string doc)
+        {
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var fileSecurity = FileSecurity;
+            if (!fileSecurity.CanRead(file))
+            {
+                var readLink = FileShareLink.Check(doc, true, fileDao, out file);
+                if (file == null)
+                {
+                    throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                }
+                if (!readLink)
+                {
+                    throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                }
+            }
+
+            var fileUri = PathProvider.GetFileStreamUrl(file);
+            var fileExtension = file.ConvertedExtension;
+            var toExtension = FileUtility.GetInternalExtension(file.Title);
+            var docKey = DocumentServiceHelper.GetDocKey(file);
+
+            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
+
+            return SaveConvertedFile(file, convertUri);
+        }
+
+        public void ExecAsync<T>(File<T> file, bool deleteAfter, string password = null)
+        {
+            if (!MustConvert(file))
+            {
+                throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
+            }
+            if (!string.IsNullOrEmpty(file.ConvertedType) || FileUtility.InternalExtension.Values.Contains(FileUtility.GetFileExtension(file.Title)))
+            {
+                return;
+            }
+
+            FileMarker.RemoveMarkAsNew(file);
+            GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null);
+        }
+
+        public bool IsConverting<T>(File<T> file)
+        {
+            if (!MustConvert(file) || !string.IsNullOrEmpty(file.ConvertedType))
+            {
+                return false;
+            }
+
+            return GetFileConverter<T>().IsConverting(file);
+        }
+
+        public IEnumerable<FileOperationResult> GetStatus<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
+        {
+            var result = new List<FileOperationResult>();
+            foreach (var pair in filesPair)
+            {
+                var r = GetFileConverter<T>().GetStatus(pair, FileSecurity);
+
+                if (r != null)
+                {
+                    result.Add(r);
+                }
+            }
+            return result;
+        }
+
+        public File<T> SaveConvertedFile<T>(File<T> file, string convertedFileUrl)
         {
             var fileSecurity = FileSecurity;
-            var fileDao = DaoFactory.FileDao;
-            var folderDao = DaoFactory.FolderDao;
-            File newFile = null;
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var folderDao = DaoFactory.GetFolderDao<T>();
+            File<T> newFile = null;
             var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetInternalExtension(file.Title));
 
             if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit(file))
             {
-                newFile = (File)file.Clone();
+                newFile = (File<T>)file.Clone();
                 newFile.Version++;
             }
             else
             {
-                var folderId = GlobalFolderHelper.FolderMy;
+                var folderId = GlobalFolderHelper.GetFolderMy<T>();
 
                 var parent = folderDao.GetFolder(file.FolderID);
                 if (parent != null
@@ -622,7 +657,7 @@ namespace ASC.Web.Files.Utils
 
                 if (Equals(folderId, 0)) throw new SecurityException(FilesCommonResource.ErrorMassage_FolderNotFound);
 
-                if (FilesSettingsHelper.UpdateIfExist && (parent != null && folderId != parent.ID || !file.ProviderEntry))
+                if (FilesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.ID) || !file.ProviderEntry))
                 {
                     newFile = fileDao.GetFile(folderId, newFileTitle);
                     if (newFile != null && fileSecurity.CanEdit(newFile) && !EntryManager.FileLockedForMe(newFile.ID) && !FileTracker.IsEditing(newFile.ID))
@@ -637,7 +672,7 @@ namespace ASC.Web.Files.Utils
 
                 if (newFile == null)
                 {
-                    newFile = ServiceProvider.GetService<File>();
+                    newFile = ServiceProvider.GetService<File<T>>();
                     newFile.FolderID = folderId;
                 }
             }
@@ -684,7 +719,7 @@ namespace ASC.Web.Files.Utils
             FilesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
             FileMarker.MarkAsNew(newFile);
 
-            var tagDao = DaoFactory.TagDao;
+            var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
             if (tags.Any())
             {
@@ -695,36 +730,32 @@ namespace ASC.Web.Files.Utils
             return newFile;
         }
 
-        private static string GetKey(File f)
+        private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
+    }
+
+    internal class FileComparer<T> : IEqualityComparer<File<T>>
+    {
+        public bool Equals(File<T> x, File<T> y)
         {
-            return string.Format("fileConvertation-{0}", f.ID);
+            return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
         }
 
-
-        private class FileComparer : IEqualityComparer<File>
+        public int GetHashCode(File<T> obj)
         {
-            public bool Equals(File x, File y)
-            {
-                return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
-            }
-
-            public int GetHashCode(File obj)
-            {
-                return obj.ID.GetHashCode() + obj.Version.GetHashCode();
-            }
+            return obj.ID.GetHashCode() + obj.Version.GetHashCode();
         }
+    }
 
-        [DataContract(Name = "operation_result", Namespace = "")]
-        private class ConvertFileOperationResult : FileOperationResult
-        {
-            public DateTime StartDateTime { get; set; }
-            public DateTime StopDateTime { get; set; }
-            public int TenantId { get; set; }
-            public IAccount Account { get; set; }
-            public bool Delete { get; set; }
-            public string Url { get; set; }
-            public string Password { get; set; }
-        }
+    [DataContract(Name = "operation_result", Namespace = "")]
+    internal class ConvertFileOperationResult : FileOperationResult
+    {
+        public DateTime StartDateTime { get; set; }
+        public DateTime StopDateTime { get; set; }
+        public int TenantId { get; set; }
+        public IAccount Account { get; set; }
+        public bool Delete { get; set; }
+        public string Url { get; set; }
+        public string Password { get; set; }
     }
 
     public static class FileConverterExtension
@@ -732,6 +763,8 @@ namespace ASC.Web.Files.Utils
         public static DIHelper AddFileConverterService(this DIHelper services)
         {
             services.TryAddScoped<FileConverter>();
+            services.TryAddSingleton<FileConverterQueue<string>>();
+            services.TryAddSingleton<FileConverterQueue<int>>();
             return services
                 .AddFilesLinkUtilityService()
                 .AddFileUtilityService()

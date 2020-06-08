@@ -1,4 +1,7 @@
 
+using System.Text;
+
+using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -6,6 +9,8 @@ using ASC.Api.Documents;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Web.Files;
+using ASC.Web.Files.HttpHandlers;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +23,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Files
 {
@@ -35,13 +39,19 @@ namespace ASC.Files
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                .AddNewtonsoftJson()
-                .AddXmlSerializerFormatters();
-
-            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new FileEntryWrapperConverter());
+                });
 
             services.AddMemoryCache();
 
@@ -77,7 +87,11 @@ namespace ASC.Files
 
             diHelper
                 .AddDocumentsControllerService()
-                .AddEncryptionControllerService();
+                .AddEncryptionControllerService()
+                .AddFileHandlerService()
+                .AddChunkedUploaderHandlerService()
+                .AddThirdPartyAppHandlerService()
+                .AddDocuSignHandlerService();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
@@ -115,6 +129,34 @@ namespace ASC.Files
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseFileHandler();
+                });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseChunkedUploaderHandler();
+                });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("ThirdPartyAppHandler.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseThirdPartyAppHandler();
+                });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("DocuSignHandler.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseDocuSignHandler();
+                });
 
             app.UseStaticFiles();
         }

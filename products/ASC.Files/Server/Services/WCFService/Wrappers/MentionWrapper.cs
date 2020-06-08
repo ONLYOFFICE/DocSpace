@@ -29,6 +29,7 @@ using System.Runtime.Serialization;
 
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
+using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Web.Files.Services.WCFService
 {
@@ -75,7 +76,7 @@ namespace ASC.Web.Files.Services.WCFService
     public class MentionMessageWrapper
     {
         [DataMember(Name = "actionLink")]
-        public DocumentService.Configuration.EditorConfiguration.ActionLinkConfig ActionLink { get; set; }
+        public ActionLinkConfig ActionLink { get; set; }
 
         [DataMember(Name = "emails")]
         public List<string> Emails { get; set; }

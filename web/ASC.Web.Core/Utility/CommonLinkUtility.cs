@@ -215,7 +215,7 @@ namespace ASC.Web.Studio.Utility
         {
             var productID = Guid.Empty;
 
-            if (HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
                 GetLocationByRequest(out var product, out _);
                 if (product != null) productID = product.ID;
@@ -228,9 +228,9 @@ namespace ASC.Web.Studio.Utility
         {
             var addonID = Guid.Empty;
 
-            if (HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                var addonName = GetAddonNameFromUrl(HttpContext.Request.Url().AbsoluteUri);
+                var addonName = GetAddonNameFromUrl(HttpContextAccessor.HttpContext.Request.Url().AbsoluteUri);
 
                 switch (addonName)
                 {
@@ -254,9 +254,9 @@ namespace ASC.Web.Studio.Utility
         public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
         {
             var currentURL = string.Empty;
-            if (HttpContext?.Request != null)
+            if (HttpContextAccessor?.HttpContext?.Request != null)
             {
-                currentURL = HttpContext.Request.GetUrlRewriter().AbsoluteUri;
+                currentURL = HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
 
                 //TODO ?
                 // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx

@@ -79,7 +79,7 @@ namespace ASC.Core
 
         public void Configure(TenantManager options)
         {
-            options.HttpContext = HttpContextAccessor?.HttpContext;
+            options.HttpContextAccessor = HttpContextAccessor;
             options.CoreBaseSettings = CoreBaseSettings;
             options.CoreSettings = CoreSettings;
 
@@ -91,6 +91,34 @@ namespace ASC.Core
 
     public class TenantManager
     {
+        private class TenantHolder
+        {
+            public Tenant Tenant;
+        }
+
+        private static readonly AsyncLocal<TenantHolder> currentTenant = new AsyncLocal<TenantHolder>();
+
+        public Tenant CurrentTenant
+        {
+            get
+            {
+                return currentTenant.Value?.Tenant;
+            }
+            set
+            {
+                var holder = currentTenant.Value;
+                if (holder != null)
+                {
+                    holder.Tenant = null;
+                }
+
+                if (value != null)
+                {
+                    currentTenant.Value = new TenantHolder { Tenant = value };
+                }
+            }
+        }
+
         public const string CURRENT_TENANT = "CURRENT_TENANT";
         internal ITenantService TenantService { get; set; }
         internal IQuotaService QuotaService { get; set; }
@@ -98,11 +126,9 @@ namespace ASC.Core
 
         private static List<string> thisCompAddresses = new List<string>();
 
-        internal HttpContext HttpContext { get; set; }
+        internal IHttpContextAccessor HttpContextAccessor { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
-
-        public Tenant CurrentTenant { get; set; }
 
         static TenantManager()
         {
@@ -128,7 +154,6 @@ namespace ASC.Core
             ITenantService tenantService,
             IQuotaService quotaService,
             ITariffService tariffService,
-            IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
         {
@@ -137,7 +162,17 @@ namespace ASC.Core
             TariffService = tariffService;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
-            HttpContext = httpContextAccessor?.HttpContext;
+        }
+
+        public TenantManager(
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings) : this(tenantService, quotaService, tariffService, coreBaseSettings, coreSettings)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
@@ -239,6 +274,9 @@ namespace ASC.Core
             {
                 throw new Exception("Could not resolve current tenant :-(.");
             }
+
+            CurrentTenant = tenant;
+
             return tenant;
         }
 
@@ -249,7 +287,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContext);
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor.HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
@@ -257,9 +295,9 @@ namespace ASC.Core
             if (tenant != null)
             {
                 CurrentTenant = tenant;
-                if (HttpContext != null)
+                if (HttpContextAccessor?.HttpContext != null)
                 {
-                    HttpContext.Items[CURRENT_TENANT] = tenant;
+                    HttpContextAccessor.HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();

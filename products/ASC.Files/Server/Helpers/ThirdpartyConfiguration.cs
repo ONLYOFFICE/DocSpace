@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
@@ -50,24 +51,20 @@ namespace ASC.Web.Files.Helpers
         public ThirdpartyConfiguration(
             IConfiguration configuration,
             IDaoFactory daoFactory,
-            BoxLoginProvider boxLoginProvider,
-            DropboxLoginProvider dropboxLoginProvider,
-            OneDriveLoginProvider oneDriveLoginProvider,
-            DocuSignLoginProvider docuSignLoginProvider,
-            GoogleLoginProvider googleLoginProvider)
+            ConsumerFactory consumerFactory)
         {
             Configuration = configuration;
             DaoFactory = daoFactory;
-            BoxLoginProvider = boxLoginProvider;
-            DropboxLoginProvider = dropboxLoginProvider;
-            OneDriveLoginProvider = oneDriveLoginProvider;
-            DocuSignLoginProvider = docuSignLoginProvider;
-            GoogleLoginProvider = googleLoginProvider;
+            BoxLoginProvider = consumerFactory.Get<BoxLoginProvider>();
+            DropboxLoginProvider = consumerFactory.Get<DropboxLoginProvider>();
+            OneDriveLoginProvider = consumerFactory.Get<OneDriveLoginProvider>();
+            DocuSignLoginProvider = consumerFactory.Get<DocuSignLoginProvider>();
+            GoogleLoginProvider = consumerFactory.Get<GoogleLoginProvider>();
         }
 
         public IEnumerable<string> ThirdPartyProviders
         {
-            get { return (Configuration["files:thirdparty:enable"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries); }
+            get { return (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList(); }
         }
 
         public bool SupportInclusion
@@ -85,7 +82,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("box") && BoxLoginProvider.Instance.IsEnabled;
+                return ThirdPartyProviders.Contains("box") && BoxLoginProvider.IsEnabled;
             }
         }
 
@@ -93,7 +90,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("dropboxv2") && DropboxLoginProvider.Instance.IsEnabled;
+                return ThirdPartyProviders.Contains("dropboxv2") && DropboxLoginProvider.IsEnabled;
             }
         }
 
@@ -101,7 +98,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("onedrive") && OneDriveLoginProvider.Instance.IsEnabled;
+                return ThirdPartyProviders.Contains("onedrive") && OneDriveLoginProvider.IsEnabled;
             }
         }
 
@@ -132,19 +129,19 @@ namespace ASC.Web.Files.Helpers
 
         public string DropboxAppKey
         {
-            get { return DropboxLoginProvider.Instance["dropboxappkey"]; }
+            get { return DropboxLoginProvider["dropboxappkey"]; }
         }
 
         public string DropboxAppSecret
         {
-            get { return DropboxLoginProvider.Instance["dropboxappsecret"]; }
+            get { return DropboxLoginProvider["dropboxappsecret"]; }
         }
 
         public bool SupportDocuSignInclusion
         {
             get
             {
-                return ThirdPartyProviders.Contains("docusign") && DocuSignLoginProvider.Instance.IsEnabled;
+                return ThirdPartyProviders.Contains("docusign") && DocuSignLoginProvider.IsEnabled;
             }
         }
 
@@ -152,7 +149,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("google") && GoogleLoginProvider.Instance.IsEnabled;
+                return ThirdPartyProviders.Contains("google") && GoogleLoginProvider.IsEnabled;
             }
         }
     }

@@ -35,7 +35,6 @@ using ASC.Common.Security.Authorizing;
 using ASC.Core.Users;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Security.Authorizing
 {

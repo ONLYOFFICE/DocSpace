@@ -57,7 +57,7 @@ namespace ASC.Files.Core
     [Serializable]
     [DataContract(Name = "file", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
-    public class File : FileEntry
+    public class File<T> : FileEntry<T>
     {
         private FileStatus _status;
 
@@ -75,7 +75,7 @@ namespace ASC.Files.Core
             FileConverter = fileConverter;
         }
 
-        public object FolderID { get; set; }
+        public T FolderID { get; set; }
 
         [DataMember(Name = "version")]
         public int Version { get; set; }
@@ -215,16 +215,34 @@ namespace ASC.Files.Core
         }
 
         public object NativeAccessor { get; set; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
-        public FileConverter FileConverter { get; }
 
-        public static string Serialize(File file)
+        [NonSerialized]
+        private readonly FilesLinkUtility FilesLinkUtility;
+
+        [NonSerialized]
+        private readonly FileUtility FileUtility;
+
+        [NonSerialized]
+        private readonly FileConverter FileConverter;
+
+        private T _folderIdDisplay;
+
+        [DataMember(Name = "folder_id")]
+        public override T FolderIdDisplay
         {
-            using (var ms = new FileEntrySerializer().ToXml(file))
+            get
             {
-                return Encoding.UTF8.GetString(ms.ToArray());
+                if (_folderIdDisplay != null) return _folderIdDisplay;
+
+                return FolderID;
             }
+            set { _folderIdDisplay = value; }
+        }
+
+        public static string Serialize(File<T> file)
+        {
+            using var ms = new FileEntrySerializer().ToXml(file);
+            return Encoding.UTF8.GetString(ms.ToArray());
         }
     }
 }

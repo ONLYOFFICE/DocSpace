@@ -29,21 +29,23 @@ using System.Collections.Generic;
 
 namespace ASC.Files.Core
 {
-    public interface ITagDao
+    public interface ITagDao<T>
     {
-        IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry> fileEntries);
+        IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch);
+
+        IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType);
+
+        IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
+
+        IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<T>> fileEntries);
+
+        IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<T> fileEntry);
 
         IEnumerable<Tag> GetTags(Guid owner, TagType tagType);
 
         IEnumerable<Tag> GetTags(string name, TagType tagType);
 
         IEnumerable<Tag> GetTags(string[] names, TagType tagType);
-
-        IEnumerable<Tag> GetNewTags(Guid subject, Folder parentFolder, bool deepSearch);
-
-        IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry> fileEntries);
-
-        IEnumerable<Tag> GetNewTags(Guid subject, FileEntry fileEntry);
 
         IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag);
 
@@ -56,7 +58,5 @@ namespace ASC.Files.Core
         void RemoveTags(IEnumerable<Tag> tag);
 
         void RemoveTags(Tag tag);
-
-        IEnumerable<Tag> GetTags(object entryID, FileEntryType entryType, TagType tagType);
     }
 }

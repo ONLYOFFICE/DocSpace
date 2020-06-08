@@ -22,10 +22,10 @@
   <ItemGroup>
     <PackageReference Include="Google.Api.Gax" Version="2.10.0" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="2.10.0" />
-    <PackageReference Include="Google.Apis" Version="1.43.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.43.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.43.0" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.43.0.1791" />
+    <PackageReference Include="Google.Apis" Version="1.45.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.45.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.45.0" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.45.0.1964" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.5.0" />
     <PackageReference Include="Grpc.Tools" Version="2.27.0">
       <PrivateAssets>all</PrivateAssets>

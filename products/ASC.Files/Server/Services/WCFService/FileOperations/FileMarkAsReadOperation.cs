@@ -38,14 +38,31 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    class FileMarkAsReadOperationData : FileOperationData
+    class FileMarkAsReadOperationData<T> : FileOperationData<T>
     {
-        public FileMarkAsReadOperationData(List<object> folders, List<object> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
+        public FileMarkAsReadOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, bool holdResult = true)
+            : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult)
+        {
+        }
+        public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
         {
         }
     }
 
-    class FileMarkAsReadOperation : FileOperation<FileMarkAsReadOperationData>
+    class FileMarkAsReadOperation : ComposeFileOperation<FileMarkAsReadOperationData<string>, FileMarkAsReadOperationData<int>>
+    {
+        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileOperation<FileMarkAsReadOperationData<string>, string> f1, FileOperation<FileMarkAsReadOperationData<int>, int> f2)
+            : base(serviceProvider, f1, f2)
+        {
+        }
+
+        public override FileOperationType OperationType
+        {
+            get { return FileOperationType.MarkAsRead; }
+        }
+    }
+
+    class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>, T>
     {
         public override FileOperationType OperationType
         {
@@ -53,7 +70,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData fileOperationData)
+        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData<T> fileOperationData)
             : base(serviceProvider, fileOperationData)
         {
         }
@@ -67,7 +84,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override void Do(IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var entries = new List<FileEntry>();
+            var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
                 entries.AddRange(FolderDao.GetFolders(Folders.ToArray()));
@@ -84,20 +101,20 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
-                    ProcessedFile(x.ID.ToString());
+                    ProcessedFile(((File<T>)x).ID);
                 }
                 else
                 {
-                    ProcessedFolder(x.ID.ToString());
+                    ProcessedFolder(((Folder<T>)x).ID);
                 }
                 ProgressStep();
             });
 
             var newrootfolder = fileMarker
-                .GetRootFoldersIdMarkedAsNew()
+                .GetRootFoldersIdMarkedAsNew<T>()
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
-            Status += string.Join(FileOperation.SPLIT_CHAR, newrootfolder.ToArray());
+            Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
         }
     }
 }

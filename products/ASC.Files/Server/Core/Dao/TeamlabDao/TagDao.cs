@@ -41,7 +41,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
-    internal class TagDao : AbstractDao, ITagDao
+    internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         private static readonly object syncRoot = new object();
 
@@ -73,7 +73,7 @@ namespace ASC.Files.Core.Data
         {
         }
 
-        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry> fileEntries)
+        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = fileEntries.Where(e => e.FileEntryType == FileEntryType.File).Select(e => MappingID(e.ID).ToString()).ToList();
             var foldersId = fileEntries.Where(e => e.FileEntryType == FileEntryType.Folder).Select(e => MappingID(e.ID).ToString()).ToList();
@@ -88,7 +88,7 @@ namespace ASC.Files.Core.Data
             return FromQuery(q);
         }
 
-        public IEnumerable<Tag> GetTags(object entryID, FileEntryType entryType, TagType tagType)
+        public IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType)
         {
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -376,12 +376,12 @@ namespace ASC.Files.Core.Data
             }
         }
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry fileEntry)
+        public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<T> fileEntry)
         {
-            return GetNewTags(subject, new List<FileEntry>(1) { fileEntry });
+            return GetNewTags(subject, new List<FileEntry<T>>(1) { fileEntry });
         }
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry> fileEntries)
+        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<T>> fileEntries)
         {
             List<Tag> result;
 
@@ -414,14 +414,14 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, Folder parentFolder, bool deepSearch)
+        public IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch)
         {
-            if (parentFolder == null || parentFolder.ID == null)
+            if (parentFolder == null || parentFolder.ID.Equals(default(T)))
                 throw new ArgumentException("folderId");
 
             var result = new List<Tag>();
 
-            var monitorFolderIds = new[] { parentFolder.ID }.AsEnumerable();
+            var monitorFolderIds = new object[] { parentFolder.ID }.AsEnumerable();
 
             var getBaseSqlQuery = new Func<IQueryable<TagLinkData>>(() =>
             {
@@ -554,7 +554,7 @@ namespace ASC.Files.Core.Data
 
             result.AddRange(FromQuery(newTagsForFolders));
 
-            var where = (deepSearch ? monitorFolderIds.ToArray() : new[] { parentFolder.ID })
+            var where = (deepSearch ? monitorFolderIds.ToArray() : new object[] { parentFolder.ID })
                 .Select(r => r.ToString())
                 .ToList();
 
@@ -613,7 +613,7 @@ namespace ASC.Files.Core.Data
 
         private Tag ToTag(TagLinkData r)
         {
-            var result = new Tag(r.Tag.Name, r.Tag.Flag, r.Tag.Owner, null, r.Link.TagCount)
+            var result = new Tag(r.Tag.Name, r.Tag.Flag, r.Tag.Owner, r.Link.TagCount)
             {
                 EntryId = MappingID(r.Link.EntryId),
                 EntryType = r.Link.EntryType,
@@ -634,7 +634,8 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ITagDao, TagDao>();
+            services.TryAddScoped<ITagDao<int>, TagDao<int>>();
+            services.TryAddScoped<TagDao<string>>();
             return services
                 .AddUserManagerService()
                 .AddFilesDbContextService()

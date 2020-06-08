@@ -41,8 +41,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Studio.Utility;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.Classes
 {
     public class PathProvider
@@ -108,11 +106,11 @@ namespace ASC.Web.Files.Classes
             return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
         }
 
-        public string GetFolderUrl(Folder folder, int projectID = 0)
+        public string GetFolderUrl<T>(Folder<T> folder, int projectID = 0)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
 
-            var folderDao = DaoFactory.FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<T>();
 
             switch (folder.RootFolderType)
             {
@@ -133,14 +131,14 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        public string GetFolderUrl(object folderId)
+        public string GetFolderUrl<T>(T folderId)
         {
-            var folder = DaoFactory.FolderDao.GetFolder(folderId);
+            var folder = DaoFactory.GetFolderDao<T>().GetFolder(folderId);
 
             return GetFolderUrl(folder);
         }
 
-        public string GetFileStreamUrl(File file, string doc = null, bool lastVersion = false)
+        public string GetFileStreamUrl<T>(File<T> file, string doc = null, bool lastVersion = false)
         {
             if (file == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
 
@@ -164,7 +162,7 @@ namespace ASC.Web.Files.Classes
             return uriBuilder.Uri + "?" + query;
         }
 
-        public string GetFileChangesUrl(File file, string doc = null)
+        public string GetFileChangesUrl<T>(File<T> file, string doc = null)
         {
             if (file == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
 

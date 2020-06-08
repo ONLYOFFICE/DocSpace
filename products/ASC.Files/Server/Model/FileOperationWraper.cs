@@ -80,12 +80,12 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(Name = "files", IsRequired = true, EmitDefaultValue = true)]
-        public List<FileWrapper> Files { get; set; }
+        public List<FileEntryWrapper> Files { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember(Name = "folders", IsRequired = true, EmitDefaultValue = true)]
-        public List<FolderWrapper> Folders { get; set; }
+        public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>
         /// </summary>
@@ -107,8 +107,8 @@ namespace ASC.Api.Documents
                 //Result = "folder_1,file_1",
                 Error = "",
                 Processed = "1",
-                Files = new List<FileWrapper> { FileWrapper.GetSample() },
-                Folders = new List<FolderWrapper> { FolderWrapper.GetSample() }
+                Files = new List<FileEntryWrapper> { FileWrapper<int>.GetSample() },
+                Folders = new List<FileEntryWrapper> { FolderWrapper<int>.GetSample() }
             };
         }
     }
@@ -147,17 +147,53 @@ namespace ASC.Api.Documents
             if (!string.IsNullOrEmpty(o.Result) && result.OperationType != FileOperationType.Delete)
             {
                 var arr = o.Result.Split(':');
-                var folders = arr.Where(s => s.StartsWith("folder_")).Select(s => s.Substring(7));
+                var folders = arr
+                    .Where(s => s.StartsWith("folder_"))
+                    .Select(s => s.Substring(7));
+
                 if (folders.Any())
                 {
-                    var folderDao = DaoFactory.FolderDao;
-                    result.Folders = folderDao.GetFolders(folders.ToArray()).Select(FolderWrapperHelper.Get).ToList();
+                    var fInt = new List<int>();
+                    var fString = new List<string>();
+
+                    foreach (var folder in folders)
+                    {
+                        if (int.TryParse(folder, out var f))
+                        {
+                            fInt.Add(f);
+                        }
+                        else
+                        {
+                            fString.Add(folder);
+                        }
+                    }
+
+                    result.Folders = GetFolders(folders).ToList();
+                    result.Folders.AddRange(GetFolders(fInt));
                 }
-                var files = arr.Where(s => s.StartsWith("file_")).Select(s => s.Substring(5));
+                var files = arr
+                    .Where(s => s.StartsWith("file_"))
+                    .Select(s => s.Substring(5));
+
                 if (files.Any())
                 {
-                    var fileDao = DaoFactory.FileDao;
-                    result.Files = fileDao.GetFiles(files.ToArray()).Select(FilesWrapperHelper.Get).ToList();
+                    var fInt = new List<int>();
+                    var fString = new List<string>();
+
+                    foreach (var file in files)
+                    {
+                        if (int.TryParse(file, out var f))
+                        {
+                            fInt.Add(f);
+                        }
+                        else
+                        {
+                            fString.Add(file);
+                        }
+                    }
+
+                    result.Files = GetFiles(fString).ToList();
+                    result.Files.AddRange(GetFiles(fInt));
                 }
 
                 if (result.OperationType == FileOperationType.Download)
@@ -167,6 +203,22 @@ namespace ASC.Api.Documents
             }
 
             return result;
+
+            IEnumerable<FileEntryWrapper> GetFolders<T>(IEnumerable<T> folders)
+            {
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                return folderDao.GetFolders(folders.ToArray())
+                    .Select(FolderWrapperHelper.Get)
+                    .Cast<FileEntryWrapper>();
+            }
+
+            IEnumerable<FileEntryWrapper> GetFiles<T>(IEnumerable<T> files)
+            {
+                var fileDao = DaoFactory.GetFileDao<T>();
+                return fileDao.GetFiles(files.ToArray())
+                    .Select(FilesWrapperHelper.Get)
+                    .Cast<FileEntryWrapper>();
+            }
         }
     }
     public static class FileOperationWraperHelperExtention

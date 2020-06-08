@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 
@@ -37,10 +38,10 @@ namespace ASC.VoipService.Dao
 
         protected VoipDbContext VoipDbContext { get; set; }
 
-        protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, int tenantID)
+        protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
         {
             VoipDbContext = dbOptions.Get(dbid);
-            TenantID = tenantID;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
         }
 
         protected int TenantID

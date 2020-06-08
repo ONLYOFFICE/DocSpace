@@ -26,23 +26,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
     public class QueueWorker
     {
-        public static Dictionary<string, string> GetHttpHeaders(HttpRequest httpRequest)
+        public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
         {
-            return httpRequest?.Headers.Keys.ToDictionary(key => key, key => httpRequest.Headers[key].ToString());
+            return httpRequest?.Headers;
         }
     }
     public class QueueWorker<T> where T : class, IProgressItem

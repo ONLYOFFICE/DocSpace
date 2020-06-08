@@ -19,10 +19,28 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DocuSign.eSign.dll" Version="4.1.1" />
-    <PackageReference Include="DotNetZip" Version="1.13.5" />
+    <None Remove="proto\BoxCacheItem.proto" />
+    <None Remove="proto\DropboxCacheItem.proto" />
+    <None Remove="proto\GoogleDriveCacheItem.proto" />
+    <None Remove="proto\OneDriveCacheItem.proto" />
+    <None Remove="proto\ProviderAccountCacheItem.proto" />
+    <None Remove="proto\SharePointProviderCacheItem.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Box.V2.Core" Version="3.23.0" />
+    <PackageReference Include="DocuSign.eSign.dll" Version="4.4.1" />
+    <PackageReference Include="DotNetZip" Version="1.13.8" />
+    <PackageReference Include="Dropbox.Api" Version="4.10.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.45.0.1964" />
+    <PackageReference Include="Grpc.Tools" Version="2.27.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.OneDriveSDK" Version="2.0.7" />
+    <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
@@ -32,7 +50,16 @@
     <ProjectReference Include="..\..\..\common\ASC.FederatedLogin\ASC.FederatedLogin.csproj" />
     <ProjectReference Include="..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
     <ProjectReference Include="..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
+    <ProjectReference Include="..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="proto\SharePointProviderCacheItem.proto" />
+    <Protobuf Include="proto\OneDriveCacheItem.proto" />
+    <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
+    <Protobuf Include="proto\BoxCacheItem.proto" />
+    <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
+    <Protobuf Include="proto\DropboxCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\FilesCommonResource.Designer.cs">

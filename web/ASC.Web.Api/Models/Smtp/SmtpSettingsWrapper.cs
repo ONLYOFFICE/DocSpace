@@ -23,36 +23,24 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Api.Settings.Smtp
 {
-    [DataContract(Name = "quota", Namespace = "")]
     public class SmtpSettingsWrapper
     {
-        [DataMember]
         public string Host { get; set; }
 
-        [DataMember]
         public int? Port { get; set; }
 
-        [DataMember]
         public string SenderAddress { get; set; }
 
-        [DataMember]
         public string SenderDisplayName { get; set; }
 
-        [DataMember]
         public string CredentialsUserName { get; set; }
 
-        [DataMember]
         public string CredentialsUserPassword { get; set; }
 
-        [DataMember]
         public bool EnableSSL { get; set; }
 
-        [DataMember]
         public bool EnableAuth { get; set; }
 
         public static SmtpSettingsWrapper GetSample()

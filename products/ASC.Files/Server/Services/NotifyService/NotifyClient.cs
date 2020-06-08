@@ -52,7 +52,7 @@ namespace ASC.Web.Files.Services.NotifyService
             ServiceProvider = serviceProvider;
         }
 
-        public void SendDocuSignComplete(File file, string sourceTitle)
+        public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
         {
             using var scope = ServiceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
@@ -112,7 +112,7 @@ namespace ASC.Web.Files.Services.NotifyService
                 );
         }
 
-        public void SendShareNotice(FileEntry fileEntry, Dictionary<Guid, FileShare> recipients, string message)
+        public void SendShareNotice<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
         {
             if (fileEntry == null || recipients.Count == 0) return;
 
@@ -127,12 +127,12 @@ namespace ASC.Web.Files.Services.NotifyService
             var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            var folderDao = daoFactory.FolderDao;
-            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File)fileEntry).FolderID) == null) return;
+            var folderDao = daoFactory.GetFolderDao<T>();
+            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl(((Folder)fileEntry));
+                          : pathProvider.GetFolderUrl(((Folder<T>)fileEntry));
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 
@@ -160,7 +160,7 @@ namespace ASC.Web.Files.Services.NotifyService
             }
         }
 
-        public void SendEditorMentions(FileEntry file, string documentUrl, List<Guid> recipientIds, string message)
+        public void SendEditorMentions<T>(FileEntry<T> file, string documentUrl, List<Guid> recipientIds, string message)
         {
             if (file == null || recipientIds.Count == 0) return;
 
