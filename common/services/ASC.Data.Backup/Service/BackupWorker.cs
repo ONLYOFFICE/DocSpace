@@ -294,24 +294,18 @@ namespace ASC.Data.Backup.Service
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
-        private TenantManager TenantManager { get; set; }
-        private BackupStorageFactory BackupStorageFactory { get; set; }
-        private NotifyHelper NotifyHelper { get; set; }
-        private BackupRepository BackupRepository { get; set; }
         private ILog Log { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
-        public BackupProgressItem(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, BackupStorageFactory backupStorageFactory, NotifyHelper notifyHelper, TenantManager tenantManager, BackupRepository backupRepository)
+
+        public BackupProgressItem(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             Id = Guid.NewGuid();
 
-            TenantManager = tenantManager;
-            BackupStorageFactory = backupStorageFactory;
-            NotifyHelper = notifyHelper;
-            BackupRepository = backupRepository;
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
 
         }
+
         public void Init(BackupSchedule schedule, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
         {
             UserId = Guid.Empty;
@@ -326,6 +320,7 @@ namespace ASC.Data.Backup.Service
             CurrentRegion = currentRegion;
             ConfigPaths = configPaths;
         }
+
         public void Init(StartBackupRequest request, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
         {
             UserId = Guid.Parse(request.UserId);
@@ -340,6 +335,7 @@ namespace ASC.Data.Backup.Service
             CurrentRegion = currentRegion;
             ConfigPaths = configPaths;
         }
+
         public override void RunJob()
         {
             if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
@@ -347,12 +343,18 @@ namespace ASC.Data.Backup.Service
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             }
 
+            using var scope = ServiceProvider.CreateScope();
+            var TenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var BackupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
+            var BackupRepository = scope.ServiceProvider.GetService<BackupRepository>();
+            var NotifyHelper = scope.ServiceProvider.GetService<NotifyHelper>();
+
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", TenantManager.GetTenant(TenantId).TenantAlias, DateTime.UtcNow, ArchiveFormat);
             var tempFile = Path.Combine(TempFolder, backupName);
             var storagePath = tempFile;
             try
             {
-                var backupTask = ServiceProvider.GetService<BackupPortalTask>();
+                var backupTask = scope.ServiceProvider.GetService<BackupPortalTask>();
                 backupTask.Init(TenantId, ConfigPaths[CurrentRegion], tempFile, Limit);
                 if (!BackupMail)
                 {

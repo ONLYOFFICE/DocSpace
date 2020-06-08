@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Data.Backup.Service;
@@ -62,6 +63,8 @@ namespace ASC.Data.Backup
                         r.stopAfterFinsih = false;
                         r.errorCount = 0;
                     });
+
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false);
                 })
                 .UseConsoleLifetime()
                 .Build();
