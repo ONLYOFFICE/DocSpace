@@ -1,14 +1,16 @@
-﻿using ASC.Common;
-using ASC.Common.Threading.Progress;
-using ASC.Data.Backup.Service;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using ASC.Common.Logging;
 using System.Threading.Tasks;
+
+using ASC.Common;
+using ASC.Common.Logging;
+using ASC.Common.Threading.Progress;
+using ASC.Data.Backup.Service;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup
 {
@@ -50,7 +52,7 @@ namespace ASC.Data.Backup
                     diHelper.AddBackupServiceLauncher();
                     diHelper.AddNLogManager("ASC.Data.Backup");
                     services.AddHostedService<BackupServiceLauncher>();
-                    diHelper.Configure<ProgressQueue<IProgressItem>>(r =>
+                    diHelper.Configure<ProgressQueue<BaseBackupProgressItem>>(r =>
                     {
                         r.workerCount = 1;
                         r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
