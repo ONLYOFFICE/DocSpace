@@ -146,7 +146,7 @@ namespace ASC.Data.Reassigns
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
             services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
             services.TryAddScoped<QueueWorkerRemove>();
 
             return services;
@@ -155,7 +155,7 @@ namespace ASC.Data.Reassigns
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
             services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
             services.TryAddScoped<QueueWorkerReassign>();
 
             return services

@@ -771,7 +771,7 @@ namespace ASC.Data.Backup.Service
 
             services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
             services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>(); ;
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>(); ;
 
             return services
                 .AddTenantManagerService()
