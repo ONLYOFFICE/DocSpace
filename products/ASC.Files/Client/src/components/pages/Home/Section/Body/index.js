@@ -592,14 +592,6 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  onDragOver = (item, e) => {
-    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
-      //console.log("onDragOver");
-      e.currentTarget.style.background = backgroundDragColor;
-    }
-  }
-
   onDragLeave = (item, e) => {
     //console.log("onDragLeave");
     const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
@@ -672,7 +664,8 @@ class SectionBodyContent extends React.Component {
       fileAction,
       onLoading,
       isLoading,
-      currentFolderCount
+      currentFolderCount,
+      currentFolderType
     } = this.props;
 
     const { editingId, showSharingPanel, currentItem } = this.state;
@@ -741,9 +734,9 @@ class SectionBodyContent extends React.Component {
                 const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
                 const element = this.getItemIcon(item, isEdit);
                
-                const selectedItem = selection.find(x => x.id === item.id);
+                const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
                 const isFolder = selectedItem ? false : item.fileExst ? false : true;
-                const draggable = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+                const draggable = selectedItem && currentFolderType !== "Trash";
                 const value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
                 
                 return (
@@ -752,10 +745,9 @@ class SectionBodyContent extends React.Component {
                     onDragEnd={this.onDragEnd}
                     onDragEnter={this.onDragEnter.bind(this, item)}
                     onDragLeave={this.onDragLeave.bind(this, item)}
-                    //onDragOver={this.onDragOver.bind(this, item)}
                     onDragStart={this.onDragStart.bind(this, item)}
                     dragging={this.state.dragging && isFolder}
-                    draggable={!!draggable}
+                    draggable={draggable}
                     currentId={item.id}
                     key={`dnd-key_${item.id}`}
                     {...contextOptionsProps}
