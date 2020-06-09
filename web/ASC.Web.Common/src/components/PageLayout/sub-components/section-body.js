@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { utils, Scrollbar } from "asc-web-components";
 import DragAndDrop from "../../DragAndDrop";
+import SelectedFrame from "./SelectedFrame";
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -70,7 +71,7 @@ class SectionBody extends React.Component {
 
   render() {
     //console.log("PageLayout SectionBody render");
-    const { children, withScroll, autoFocus, pinned, onDrop, uploadFiles } = this.props;
+    const { children, withScroll, autoFocus, pinned, onDrop, uploadFiles, setSelections } = this.props;
 
     const focusProps = autoFocus ? {
       ref: this.focusRef,
@@ -97,13 +98,15 @@ class SectionBody extends React.Component {
     };
 
     return uploadFiles ? (
-      <StyledDropZoneBody
-        isDropZone
-        onDrop={onDrop}
-        withScroll={withScroll}
-      >
-        {renderBody()}
-      </StyledDropZoneBody>
+      <SelectedFrame setSelections={setSelections}>
+        <StyledDropZoneBody
+          isDropZone
+          onDrop={onDrop}
+          withScroll={withScroll}
+        >
+          {renderBody()}
+        </StyledDropZoneBody>
+      </SelectedFrame>
     ) : (
       <StyledSectionBody withScroll={withScroll}>
         {renderBody()}
@@ -119,6 +122,7 @@ SectionBody.propTypes = {
   autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
   onDrop: PropTypes.func,
+  setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
