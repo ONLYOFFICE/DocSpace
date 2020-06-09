@@ -1,6 +1,5 @@
 
 using System.Text;
-using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Core.Auth;
@@ -52,7 +51,6 @@ namespace ASC.Files
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                     options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
                     options.JsonSerializerOptions.Converters.Add(new FileEntryWrapperConverter());
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
             services.AddMemoryCache();
