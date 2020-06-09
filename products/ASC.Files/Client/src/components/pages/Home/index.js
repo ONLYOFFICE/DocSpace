@@ -18,7 +18,7 @@ import {
   SectionFilterContent,
   SectionPagingContent
 } from "./Section";
-import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter  } from "../../../store/files/actions";
+import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile } from "../../../store/files/actions";
 import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
 import store from "../../../store/store";
 const { changeLanguage } = utils;
@@ -411,7 +411,7 @@ class PureHome extends React.Component {
     this.setProgressVisible(false, timeout);
   };
 
-    setNewFilter = () => {
+  setNewFilter = () => {
       const { filter, selection, setFilter } = this.props;
       const newFilter = filter.clone();
       for(let item of selection) {
@@ -466,7 +466,53 @@ class PureHome extends React.Component {
     }).catch(err => this.finishFilesOperations(err));
   }
 
-  
+  setSelections = items => {
+    const { selection, folders, files, selectFile, deselectFile } = this.props;
+
+    if (selection.length > items.length) {
+      //Delete selection
+
+      const newSelection = [];
+      let newFile = null;
+      for (let item of items) {
+        item = item.split("_");
+        if (item[0] === "folder") {
+          newFile = selection.find((x) => x.id === Number(item[1]) && !x.fileExst);
+        } else if (item[0] === "file") {
+          newFile = selection.find((x) => x.id === Number(item[1]) && x.fileExst);
+        }
+        if(newFile) {
+          newSelection.push(newFile);
+        }
+      }
+
+      for(let item of selection) {
+        const element = newSelection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+        if(!element) {
+          deselectFile(item);
+        }
+      }
+
+
+    } else if (selection.length < items.length) {
+      //Add selection
+      for (let item of items) {
+        let newFile = null;
+        item = item.split("_");
+        if (item[0] === "folder") {
+          newFile = folders.find((x) => x.id === Number(item[1]) && !x.fileExst);
+        } else if (item[0] === "file") {
+          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+        }
+        if(newFile) {
+          const existItem = selection.find(x => x.id === newFile.id && x.fileExst === newFile.fileExst);
+          !existItem && selectFile(newFile);
+        }
+      }
+    } else {
+      return;
+    }
+  }
 
   componentDidUpdate(prevProps) {
     if (this.props.selection !== prevProps.selection) {
@@ -526,6 +572,8 @@ class PureHome extends React.Component {
           withBodyAutoFocus
           uploadFiles
           onDrop={this.onDrop}
+          setSelections={this.setSelections}
+          onMouseMove={this.onMouseMove}
           showProgressBar={showProgressBar}
           progressBarValue={progressBarValue}
           progressBarDropDownContent={progressBarContent}
@@ -620,5 +668,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { setSelected, setTreeFolders, getProgress, getFolder, setFilter  }
+  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile }
 )(withRouter(Home));

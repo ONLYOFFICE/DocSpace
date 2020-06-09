@@ -27,7 +27,7 @@ import {
   moveToFolder,
   getProgress
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo, checkFolderType } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo  } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -37,6 +37,8 @@ const { FilesFilter } = api;
 const { FileAction } = constants;
 
 const linkStyles = { isHovered: true, type: "action", fontSize: "14px", className: "empty-folder_link", display: "flex" };
+const backgroundDragColor = "#EFEFB2";
+const backgroundDragEnterColor = "#F8F7BF";
 
 class SectionBodyContent extends React.Component {
   constructor(props) {
@@ -586,7 +588,7 @@ class SectionBodyContent extends React.Component {
     const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
     if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
       //console.log("onDragEnter");
-      e.currentTarget.style.background = "#EFEFB2";
+      e.currentTarget.style.background = backgroundDragColor;
     }
   }
 
@@ -594,7 +596,7 @@ class SectionBodyContent extends React.Component {
     const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
     if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
       //console.log("onDragOver");
-      e.currentTarget.style.background = "#EFEFB2";
+      e.currentTarget.style.background = backgroundDragColor;
     }
   }
 
@@ -604,7 +606,7 @@ class SectionBodyContent extends React.Component {
     if(e.dataTransfer.items.length) {
       e.currentTarget.style.background = "none";
     } else if(!item.fileExst && !isCurrentItem) {
-      e.currentTarget.style.background = "#F8F7BF";
+      e.currentTarget.style.background = backgroundDragEnterColor;
     }
   }
 
@@ -742,6 +744,7 @@ class SectionBodyContent extends React.Component {
                 const selectedItem = selection.find(x => x.id === item.id);
                 const isFolder = selectedItem ? false : item.fileExst ? false : true;
                 const draggable = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+                const value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
                 
                 return (
                   <DragAndDrop
@@ -756,10 +759,9 @@ class SectionBodyContent extends React.Component {
                     currentId={item.id}
                     key={`dnd-key_${item.id}`}
                     {...contextOptionsProps}
-                    //value={value}
+                    value={value}
                   >
                     <SimpleFilesRow
-                    //value={value}
                       key={item.id}
                       data={item}
                       element={element}
