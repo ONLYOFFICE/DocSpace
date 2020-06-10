@@ -40,6 +40,10 @@ class SelectedFrame extends React.Component {
 
   onMouseDown = e => {
     this.container = document.getElementById("rowContainer");
+    if(!this.container) {
+      return;
+    }
+
     const mouseYX = this.getCoords(e);
     const top = mouseYX[0];
     const left = mouseYX[1];
@@ -141,6 +145,10 @@ class SelectedFrame extends React.Component {
 
   componentDidMount() {
     window.addEventListener("mouseup", this.onMouseUp);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("mouseup", this.onMouseUp);
   }
 
   render() {
