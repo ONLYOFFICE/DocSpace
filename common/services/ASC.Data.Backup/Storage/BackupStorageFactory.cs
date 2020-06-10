@@ -37,6 +37,8 @@ using ASC.Data.Backup.Service;
 using ASC.Data.Backup.Utils;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
+using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,10 +51,21 @@ namespace ASC.Data.Backup.Storage
     {
         public IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
-        public BackupStorageFactory(IServiceProvider serviceProvider, IConfiguration configuration)
+        public DocumentsBackupStorage DocumentsBackupStorage { get; }
+        public DataStoreBackupStorage DataStoreBackupStorage { get; }
+        public LocalBackupStorage LocalBackupStorage { get; }
+        public ConsumerBackupStorage ConsumerBackupStorage { get; }
+        public TenantManager TenantManager { get; }
+
+        public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage ,LocalBackupStorage localBackupStorage, IServiceProvider serviceProvider, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
         {
             ServiceProvider = serviceProvider;
             Configuration = configuration;
+            DocumentsBackupStorage = documentsBackupStorage;
+            DataStoreBackupStorage = dataStoreBackupStorage;
+            LocalBackupStorage = localBackupStorage;
+            ConsumerBackupStorage = consumerBackupStorage;
+            TenantManager = tenantManager;
         }
 
         public IBackupStorage GetBackupStorage(BackupRecord record)
@@ -65,25 +78,29 @@ namespace ASC.Data.Backup.Storage
             var settings = Configuration.GetSetting<BackupSettings>("backup");
             var webConfigPath = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
 
-            using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
 
             switch (type)
             {
                 case BackupStorageType.Documents:
                 case BackupStorageType.ThridpartyDocuments:
-                    return new DocumentsBackupStorage(tenantId, webConfigPath, tenantManager, securityContext, daoFactory, storageFactory, ServiceProvider);
+                    {
+                        DocumentsBackupStorage.Init(tenantId, webConfigPath);
+                        return DocumentsBackupStorage;
+                    }
                 case BackupStorageType.DataStore:
-                    return new DataStoreBackupStorage(tenantId, webConfigPath, storageFactory);
+                    {
+                        DataStoreBackupStorage.Init(tenantId, webConfigPath);
+                        return DataStoreBackupStorage;
+                    }
                 case BackupStorageType.Local:
-                    return new LocalBackupStorage();
+                    return LocalBackupStorage;
                 case BackupStorageType.ThirdPartyConsumer:
-                    if (storageParams == null) return null;
-                    tenantManager.SetCurrentTenant(tenantId);
-                    return new ConsumerBackupStorage(storageParams);
+                    {
+                        if (storageParams == null) return null;
+                        TenantManager.SetCurrentTenant(tenantId);
+                        ConsumerBackupStorage.Init(storageParams);
+                        return ConsumerBackupStorage;
+                    }
                 default:
                     throw new InvalidOperationException("Unknown storage type.");
             }
@@ -96,9 +113,11 @@ namespace ASC.Data.Backup.Storage
             services.TryAddScoped<BackupStorageFactory>();
             return services
                 .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddStorageFactoryService()
-                .AddTenantUtilService();
+                .AddDocumentsBackupStorage()
+                .AddDataStoreBackupStorage()
+                .AddLocalBackupStorage()
+                .AddConsumerBackupStorage()
+                .AddFileConverterService();
         }
     }
 }

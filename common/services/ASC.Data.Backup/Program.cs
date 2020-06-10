@@ -52,7 +52,6 @@ namespace ASC.Data.Backup
                     var diHelper = new DIHelper(services);
 
                     diHelper.AddBackupServiceLauncher();
-                    diHelper.AddBackupPortalTaskService();
                     diHelper.AddNLogManager("ASC.Data.Backup");
                     services.AddHostedService<BackupServiceLauncher>();
                     diHelper.Configure<ProgressQueue<BaseBackupProgressItem>>(r =>

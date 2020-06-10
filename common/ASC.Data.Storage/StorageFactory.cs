@@ -330,7 +330,7 @@ namespace ASC.Data.Storage
                 .AddPathUtilsService()
                 .AddEmailValidationKeyProviderService()
                 .AddStorageSettingsService()
-                .AddStorageFactoryConfigService();
+                .AddStorage();
         }
     }
 }

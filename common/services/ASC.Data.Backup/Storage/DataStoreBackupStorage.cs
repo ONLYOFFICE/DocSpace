@@ -26,22 +26,27 @@
 
 using System;
 using System.IO;
+
+using ASC.Common;
 using ASC.Data.Storage;
 
 namespace ASC.Data.Backup.Storage
 {
-    internal class DataStoreBackupStorage : IBackupStorage
+    public class DataStoreBackupStorage : IBackupStorage
     {
-        private readonly string webConfigPath;
-        private readonly int _tenant;
-        private readonly StorageFactory storageFactory;
-        public DataStoreBackupStorage(int tenant, string webConfigPath, StorageFactory storageFactory)
+        private string WebConfigPath { get; set; }
+        private  int Tenant { get; set; }
+        private  StorageFactory StorageFactory { get; set; }
+        public DataStoreBackupStorage(StorageFactory storageFactory)
         {
-            this.webConfigPath = webConfigPath;
-            _tenant = tenant;
-            this.storageFactory = storageFactory;
-        }
 
+            StorageFactory = storageFactory;
+        }
+        public void Init(int tenant, string webConfigPath)
+        {
+            WebConfigPath = webConfigPath;
+            Tenant = tenant;
+        }
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
             using (var stream = File.OpenRead(localPath))
@@ -82,7 +87,18 @@ namespace ASC.Data.Backup.Storage
 
         protected virtual IDataStore GetDataStore()
         {
-            return storageFactory.GetStorage(webConfigPath, _tenant.ToString(), "backup", null);
+            return StorageFactory.GetStorage(WebConfigPath, Tenant.ToString(), "backup", null);
+        }
+
+
+    }
+
+    public static class DataStoreBackupStorageExtension
+    {
+        public static DIHelper AddDataStoreBackupStorage(this DIHelper services)
+        {
+            services.TryAddScoped<DataStoreBackupStorage>();
+            return services.AddStorageFactoryService();
         }
     }
 }

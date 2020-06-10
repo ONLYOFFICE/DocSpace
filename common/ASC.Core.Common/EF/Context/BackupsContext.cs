@@ -21,11 +21,11 @@ namespace ASC.Data.Backup.EF.Context
         }
     }
 
-    public static class BackupRecordContextExtension
+    public static class BackupsContextExtension
     {
-        public static DIHelper AddBackupContext(this DIHelper services)
+        public static DIHelper AddBackupsContext(this DIHelper services)
         {
             return services.AddDbContextManagerService<BackupsContext>();
-        }    
+        }
     }
 }

@@ -33,6 +33,7 @@ using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
@@ -40,14 +41,16 @@ namespace ASC.Data.Backup.Tasks
     public class DeletePortalTask : PortalTaskBase
     {
 
-        private StorageFactory StorageFactory;
-        private StorageFactoryConfig StorageFactoryConfig;
-        public DeletePortalTask(IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-            : base(options, storageFactory , storageFactoryConfig, moduleProvider)
+        private StorageFactory StorageFactory { get; set; }
+        private StorageFactoryConfig StorageFactoryConfig { get; set; }
+        private DbFactory DbFactory { get; set; }
+        public DeletePortalTask(DbFactory dbFactory, IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+            : base(dbFactory,options, storageFactory , storageFactoryConfig, moduleProvider)
         {
             Init(tenantId, configPath);
             StorageFactory = storageFactory;
             StorageFactoryConfig = storageFactoryConfig;
+            DbFactory = dbFactory;
         }
 
         public override void RunJob()
@@ -55,10 +58,9 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("begin delete {0}", TenantId);
             var modulesToProcess = GetModulesToProcess().Reverse().ToList();
             SetStepsCount(ProcessStorage ? modulesToProcess.Count + 1 : modulesToProcess.Count);
-            var dbFactory = new DbFactory(ConfigPath);
             foreach (var module in modulesToProcess)
             {
-                DoDeleteModule(dbFactory, module);
+                DoDeleteModule(module);
             }
             if (ProcessStorage)
             {
@@ -67,12 +69,12 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("end delete {0}", TenantId);
         }
 
-        private void DoDeleteModule(DbFactory dbFactory, IModuleSpecifics module)
+        private void DoDeleteModule(IModuleSpecifics module)
         {
             Logger.DebugFormat("begin delete data for module ({0})", module.ModuleName);
             var tablesCount = module.Tables.Count();
             var tablesProcessed = 0;
-            using (var connection = dbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection())
             {
                 foreach (var table in module.GetTablesOrdered().Reverse().Where(t => !IgnoredTables.Contains(t.Name)))
                 {

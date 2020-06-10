@@ -37,6 +37,7 @@ using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Contracts;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
@@ -191,7 +192,7 @@ namespace ASC.Data.Backup.Service
                 }
                 if (item == null)
                 {
-                    item = factoryProgressItem.CreateRestoreProgressItem(request, TempFolder, UpgradesPath, CurrentRegion);
+                    item = factoryProgressItem.CreateRestoreProgressItem(request, TempFolder, UpgradesPath, CurrentRegion, ConfigPaths);
                     ProgressQueue.Add(item);
                 }
                 return ToBackupProgress(item);
@@ -348,7 +349,6 @@ namespace ASC.Data.Backup.Service
             var BackupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
             var BackupRepository = scope.ServiceProvider.GetService<BackupRepository>();
             var NotifyHelper = scope.ServiceProvider.GetService<NotifyHelper>();
-
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", TenantManager.GetTenant(TenantId).TenantAlias, DateTime.UtcNow, ArchiveFormat);
             var tempFile = Path.Combine(TempFolder, backupName);
             var storagePath = tempFile;
@@ -435,27 +435,17 @@ namespace ASC.Data.Backup.Service
         private string CurrentRegion { get; set; }
         private string UpgradesPath { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
-
-        private TenantManager TenantManager { get; set; }
-        private NotifyHelper NotifyHelper { get; set; }
-        private BackupStorageFactory BackupStorageFactory { get; set; }
         private ILog Log { get; set; }
         private IServiceProvider ServiceProvider { get; set; }
 
         public RestoreProgressItem(
-            BackupStorageFactory backupStorageFactory,
             IOptionsMonitor<ILog> options,
-            NotifyHelper notifyHelper,
-            TenantManager tenantManager,
             IServiceProvider serviceProvider)
         {
-            BackupStorageFactory = backupStorageFactory;
             Log = options.CurrentValue;
-            NotifyHelper = notifyHelper;
-            TenantManager = tenantManager;
             ServiceProvider = serviceProvider;
         }
-        public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion)
+        public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion, Dictionary<string, string> configPaths)
         {
             Id = Guid.NewGuid();
             TenantId = request.TenantId;
@@ -465,15 +455,19 @@ namespace ASC.Data.Backup.Service
             TempFolder = tempFolder;
             UpgradesPath = upgradesPath;
             CurrentRegion = currentRegion;
+            ConfigPaths = configPaths;
         }
         public override void RunJob()
         {
+            using var scope = ServiceProvider.CreateScope();
+            var TenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var BackupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
+            var NotifyHelper = scope.ServiceProvider.GetService<NotifyHelper>();
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
             {
                 NotifyHelper.SendAboutRestoreStarted(TenantId, Notify);
-
                 var storage = BackupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
 
@@ -486,8 +480,8 @@ namespace ASC.Data.Backup.Service
                 var columnMapper = new ColumnMapper();
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
                 columnMapper.Commit();
-
-                var restoreTask = ServiceProvider.GetService<RestorePortalTask>();
+               
+                var restoreTask = scope.ServiceProvider.GetService<RestorePortalTask>();
                 restoreTask.Init(ConfigPaths[CurrentRegion], tempFile, TenantId, columnMapper, UpgradesPath);
                 restoreTask.ProgressChanged += (sender, args) => Percentage = (10d + 0.65 * args.Progress);
                 restoreTask.RunJob();
@@ -632,12 +626,15 @@ namespace ASC.Data.Backup.Service
 
         public override void RunJob()
         {
+            using var scope = ServiceProvider.CreateScope();
+            var TenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var NotifyHelper = scope.ServiceProvider.GetService<NotifyHelper>();
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             var alias = TenantManager.GetTenant(TenantId).TenantAlias;
             try
             {
                 NotifyHelper.SendAboutTransferStart(TenantId, TargetRegion, Notify);
-                var transferProgressItem = ServiceProvider.GetService<TransferPortalTask>();
+                var transferProgressItem = scope.ServiceProvider.GetService<TransferPortalTask>();
                 transferProgressItem.Init(TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, TempFolder);
                 transferProgressItem.ProgressChanged += (sender, args) => Percentage = args.Progress;
                 if (!TransferMail)
@@ -720,11 +717,12 @@ namespace ASC.Data.Backup.Service
             StartRestoreRequest request,
             string tempFolder,
             string upgradesPath,
-            string currentRegion
+            string currentRegion,
+            Dictionary<string, string> configPaths
             )
         {
             var item = ServiceProvider.GetService<RestoreProgressItem>();
-            item.Init(request, tempFolder, upgradesPath, currentRegion);
+            item.Init(request, tempFolder, upgradesPath, currentRegion, configPaths);
             return item;
         }
 
@@ -766,7 +764,9 @@ namespace ASC.Data.Backup.Service
                 .AddStorageFactoryConfigService()
                 .AddLicenseReaderService()
                 .AddNotifyHelperService()
-                .AddBackupPortalTaskService();
+                .AddBackupPortalTaskService()
+                .AddDbFactoryService()
+                .AddRestorePortalTaskService();
         }
     }
 }

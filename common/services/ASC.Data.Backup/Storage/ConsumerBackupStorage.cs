@@ -28,40 +28,40 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 
 namespace ASC.Data.Backup.Storage
 {
-    internal class ConsumerBackupStorage : IBackupStorage
+    public class ConsumerBackupStorage : IBackupStorage
     {
-        private readonly IDataStore store;
+        private IDataStore Store { get; set; }
         private const string Domain = "backup";
-        private StorageSettingsHelper storageSettingsHelper;
+        private StorageSettingsHelper StorageSettingsHelper { get; set; }
         public ConsumerBackupStorage(StorageSettingsHelper storageSettingsHelper)
         {
-            this.storageSettingsHelper = storageSettingsHelper;
+            StorageSettingsHelper = storageSettingsHelper;
         }
-
-        public ConsumerBackupStorage(IReadOnlyDictionary<string, string> storageParams)
+        public void Init(IReadOnlyDictionary<string, string> storageParams)
         {
             var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
-            store = storageSettingsHelper.DataStore(settings); 
+            Store = StorageSettingsHelper.DataStore(settings);
         }
-
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
             using (var stream = File.OpenRead(localPath))
             {
                 var storagePath = Path.GetFileName(localPath);
-                store.Save(Domain, storagePath, stream, ACL.Private);
+                Store.Save(Domain, storagePath, stream, ACL.Private);
                 return storagePath;
             }
         }
 
         public void Download(string storagePath, string targetLocalPath)
         {
-            using (var source = store.GetReadStream(Domain, storagePath))
+            using (var source = Store.GetReadStream(Domain, storagePath))
             using (var destination = File.OpenWrite(targetLocalPath))
             {
                 source.CopyTo(destination);
@@ -70,20 +70,29 @@ namespace ASC.Data.Backup.Storage
 
         public void Delete(string storagePath)
         {
-            if (store.IsFile(Domain, storagePath))
+            if (Store.IsFile(Domain, storagePath))
             {
-                store.Delete(Domain, storagePath);
+                Store.Delete(Domain, storagePath);
             }
         }
 
         public bool IsExists(string storagePath)
         {
-            return store.IsFile(Domain, storagePath);
+            return Store.IsFile(Domain, storagePath);
         }
 
         public string GetPublicLink(string storagePath)
         {
-            return store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
+            return Store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
+        }
+    }
+    public static class ConsumerBackupStorageExtension
+    {
+        public static DIHelper AddConsumerBackupStorage(this DIHelper services)
+        {
+            services.TryAddScoped<ConsumerBackupStorage>();
+            return services
+                .AddStorageSettingsService();
         }
     }
 }

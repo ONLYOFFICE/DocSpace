@@ -42,10 +42,9 @@ using ASC.Data.Storage;
 using ASC.Data.Backup.Exceptions;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
-using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.EF.Context;
 using ASC.Common;
-using ASC.Core.Common.Configuration;
+using ASC.Core.Common.EF;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -58,13 +57,16 @@ namespace ASC.Data.Backup.Tasks
         private TenantManager TenantManager { get; set; }
         private ModuleProvider ModuleProvider { get; set; }
         private BackupsContext BackupRecordContext { get; set; }
+        private DbFactory DbFactory { get; set; }
 
-        public BackupPortalTask(IOptionsMonitor<ILog> options,  CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
-            : base(options, storageFactory,storageFactoryConfig, moduleProvider)
+        public BackupPortalTask(DbFactory dbFactory, DbContextManager<BackupsContext> dbContextManager, IOptionsMonitor<ILog> options, TenantManager tenantManager ,CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+            : base(dbFactory, options, storageFactory,storageFactoryConfig, moduleProvider)
         {
+            DbFactory = dbFactory;
             Dump = coreBaseSettings.Standalone;
             ModuleProvider = moduleProvider;
-            BackupRecordContext = backupRecordContext;
+            TenantManager = tenantManager;
+            BackupRecordContext = dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString);
         }
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
         {
@@ -73,6 +75,7 @@ namespace ASC.Data.Backup.Tasks
             BackupFilePath = toFilePath;
             Limit = limit;
             Init(tenantId, fromConfigPath);
+
         }
         public override void RunJob()
         {
@@ -81,24 +84,23 @@ namespace ASC.Data.Backup.Tasks
 
 
             using (var writer = new ZipWriteOperator(BackupFilePath))
-            {
-                var dbFactory = new DbFactory(ConfigPath);
+            {   
                 if (Dump)
                 {
-                    DoDump(writer, dbFactory);
+                    DoDump(writer);
                 }
                 else
                 {
                    
                     var modulesToProcess = GetModulesToProcess().ToList();
-                    var fileGroups = GetFilesGroup(dbFactory);
+                    var fileGroups = GetFilesGroup();
 
                     var stepscount = ProcessStorage ? fileGroups.Count : 0;
                     SetStepsCount(modulesToProcess.Count + stepscount);
 
                     foreach (var module in modulesToProcess)
                     {
-                        DoBackupModule(writer, dbFactory, module);
+                        DoBackupModule(writer, module);
                     }
                     if (ProcessStorage)
                     {
@@ -109,7 +111,7 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("end backup {0}", TenantId);
         }
 
-        private void DoDump(IDataWriteOperator writer , DbFactory dbFactory)
+        private void DoDump(IDataWriteOperator writer)
         {
             var tmp = Path.GetTempFileName();
             File.AppendAllText(tmp, true.ToString());
@@ -117,7 +119,7 @@ namespace ASC.Data.Backup.Tasks
 
             List<string> tables;
             var files = new List<BackupFileInfo>();
-            using (var connection = dbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
                 command.CommandText = "show tables";
@@ -169,7 +171,7 @@ namespace ASC.Data.Backup.Tasks
                 for (var j = 0; j < TasksLimit && i + j < tables.Count; j++)
                 {
                     var t = tables[i + j];
-                    tasks.Add(Task.Run(() => DumpTableScheme(t, schemeDir, dbFactory)));
+                    tasks.Add(Task.Run(() => DumpTableScheme(t, schemeDir)));
                     if (!excluded.Any(t.StartsWith))
                     {
                         tasks.Add(Task.Run(() => DumpTableData(t, dataDir, dict[t])));
@@ -197,19 +199,19 @@ namespace ASC.Data.Backup.Tasks
 
         private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
         {
-              var files = GetFilesToProcess(tenantId).ToList();
-              var exclude = new List<BackupRecord>(BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null));
+            var files = GetFilesToProcess(tenantId).ToList();
+            var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
               files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
               return files;
 
         }
 
-        private void DumpTableScheme(string t, string dir, DbFactory dbFactory)
+        private void DumpTableScheme(string t, string dir)
         {
             try
             {
                 Logger.DebugFormat("dump table scheme start {0}", t);
-                using (var connection = dbFactory.OpenConnection())
+                using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
                     command.CommandText = string.Format("SHOW CREATE TABLE `{0}`", t);
@@ -266,12 +268,11 @@ namespace ASC.Data.Backup.Tasks
         {
             try
             {
-                var dbFactory = new DbFactory(ConfigPath);
-                using (var connection = dbFactory.OpenConnection())
+                using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = "select table_rows from information_schema.`TABLES` where TABLE_NAME = " + t;
-                    return (int)command.ExecuteScalar();
+                    command.CommandText = "select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '" + t + "'";
+                    return Int32.Parse(command.ExecuteScalar().ToString());
                 }
               /*  using (var dbManager = new DbManager("default", 100000))
                 {
@@ -305,21 +306,25 @@ namespace ASC.Data.Backup.Tasks
                 var primaryIndexStart = 0;
 
                 List<string> columns;
-                var dbFactory = new DbFactory(ConfigPath);
-                using (var connection = dbFactory.OpenConnection())
+                using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
                     command.CommandText = string.Format("SHOW COLUMNS FROM `{0}`", t);
                     columns = ExecuteList(command).Select(r => "`" + Convert.ToString(r[0]) + "`").ToList();
+                    if (command.CommandText.Contains("tenants_quota") || command.CommandText.Contains("webstudio_settings"))
+                    {
+
+                    }
                 }
-                using (var connection = dbFactory.OpenConnection())
+
+                using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
                     command.CommandText = string.Format("select COLUMN_NAME from information_schema.`COLUMNS` where TABLE_SCHEMA = '{0}' and TABLE_NAME = '{1}' and COLUMN_KEY = 'PRI' and DATA_TYPE = 'int'", connection.Database, t);
                     primaryIndex = ExecuteList(command).ConvertAll(r => Convert.ToString(r[0])).FirstOrDefault();
 
                 }
-                using (var connection = dbFactory.OpenConnection())
+                using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
                     command.CommandText = string.Format("SHOW INDEXES FROM {0} WHERE COLUMN_NAME='{1}' AND seq_in_index=1", t, primaryIndex);
@@ -329,10 +334,10 @@ namespace ASC.Data.Backup.Tasks
 
                 if (searchWithPrimary)
                 {
-                    using (var connection = dbFactory.OpenConnection())
+                    using (var connection = DbFactory.OpenConnection())
                     {
                         var command = connection.CreateCommand();
-                        command.CommandText = string.Format("select max({1}), min({1}) form {0}",t, primaryIndex);
+                        command.CommandText = string.Format("select max({1}), min({1}) from {0}",t, primaryIndex);
                         var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
                         primaryIndexStart = minMax.Item2;
                         primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
@@ -390,8 +395,7 @@ namespace ASC.Data.Backup.Tasks
 
         private List<object[]> GetData(string t, List<string> columns, int offset)
         {
-            var dbFactory = new DbFactory(ConfigPath);
-            using (var connection = dbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
                 var selects = "";
@@ -399,7 +403,7 @@ namespace ASC.Data.Backup.Tasks
                 {
                     selects = column + ", ";
                 }
-                selects = selects.Substring(0, selects.Length - 1);
+                selects = selects.Substring(0, selects.Length -2);
                 command.CommandText = string.Format("select {0} from {1} LIMIT {2}, {3}", selects, t, offset, Limit);
                 return ExecuteList(command);
             }
@@ -414,8 +418,7 @@ namespace ASC.Data.Backup.Tasks
         }
         private List<object[]> GetDataWithPrimary(string t, List<string> columns, string primary, int start, int step)
         {
-            var dbFactory = new DbFactory(ConfigPath);
-            using (var connection = dbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
                 var selects = "";
@@ -423,8 +426,8 @@ namespace ASC.Data.Backup.Tasks
                 {
                     selects = column + ", ";
                 }
-                selects = selects.Substring(0, selects.Length - 1);
-                command.CommandText = string.Format("select {0} from {1} where primary <= {2} and primary >= {3}", selects, t, start, start + step);
+                selects = selects.Substring(0, selects.Length - 2);
+                command.CommandText = string.Format("select {0} from {1} where {4} BETWEEN  {2} and {3} ", selects, t, start, start + step, primary);
                 return ExecuteList(command);
             }
           /*  using (var dbManager = new DbManager("default", 100000))
@@ -548,7 +551,7 @@ namespace ASC.Data.Backup.Tasks
 
         private async Task DoDumpFile(BackupFileInfo file, string dir)
         {
-            var storage = storageFactory.GetStorage(ConfigPath, file.Tenant.ToString(), file.Module);
+            var storage = StorageFactory.GetStorage(ConfigPath, file.Tenant.ToString(), file.Module);
             var filePath = Path.Combine(dir, file.GetZipKey());
             var dirName = Path.GetDirectoryName(filePath);
 
@@ -579,24 +582,24 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("archive dir end {0}", subDir);
         }
 
-        private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(DbFactory dbFactory)
+        private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
         {
             var files = GetFilesToProcess(TenantId).ToList();
-            var exclude = new List<BackupRecord>(BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null));
+            var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
 
             return files.GroupBy(file => file.Module).ToList();
         }
 
-        private void DoBackupModule(IDataWriteOperator writer, DbFactory dbFactory, IModuleSpecifics module)
+        private void DoBackupModule(IDataWriteOperator writer, IModuleSpecifics module)
         {
             Logger.DebugFormat("begin saving data for module {0}", module.ModuleName);
             var tablesToProcess = module.Tables.Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None).ToList();
             var tablesCount = tablesToProcess.Count;
             var tablesProcessed = 0;
 
-            using (var connection = dbFactory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection())
             {
                 foreach (var table in tablesToProcess)
                 {
@@ -612,7 +615,7 @@ namespace ASC.Data.Backup.Tasks
                                 do
                                 {
                                     var t = (TableInfo)state;
-                                    var dataAdapter = dbFactory.CreateDataAdapter();
+                                    var dataAdapter = DbFactory.CreateDataAdapter();
                                     dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), TenantId, t, Limit, offset).WithTimeout(600);
                                     counts = ((DbDataAdapter)dataAdapter).Fill(data);
                                     offset += Limit;
@@ -665,7 +668,7 @@ namespace ASC.Data.Backup.Tasks
 
                 foreach (var file in group)
                 {
-                    var storage = storageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
+                    var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
                     var file1 = file;
                     ActionInvoker.Try(state =>
                     {
@@ -735,11 +738,12 @@ namespace ASC.Data.Backup.Tasks
         {
             services.TryAddScoped<BackupPortalTask>();
             return services
-                .AddConsumerFactoryService()
                 .AddCoreConfigurationService()
                 .AddStorageFactoryService()
                 .AddModuleProvider()
-                .AddBackupContext();
+                .AddBackupsContext()
+                .AddTenantManagerService()
+                .AddDbFactoryService();
         }
     }
 }

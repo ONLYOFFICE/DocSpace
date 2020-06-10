@@ -61,13 +61,15 @@ namespace ASC.Data.Backup.Tasks
         public ModuleProvider ModuleProvider { get; set; }
         public BackupsContext BackupRecordContext { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
+        public DbFactory DbFactory { get; set; }
 
         public int Limit { get; private set; }
 
-        public TransferPortalTask(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
-            : base(options, storageFactory, storageFactoryConfig, moduleProvider)
+        public TransferPortalTask(DbFactory dbFactory, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
+            : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             DeleteBackupFileAfterCompletion = true;
+            DbFactory = dbFactory;
             BlockOldPortalAfterStart = true;
             DeleteOldPortalAfterCompletion = true;
             Options = options;
@@ -92,8 +94,8 @@ namespace ASC.Data.Backup.Tasks
         public override void RunJob()
         {
             Logger.DebugFormat("begin transfer {0}", TenantId);
-            var fromDbFactory = new DbFactory(ConfigPath);
-            var toDbFactory = new DbFactory(ToConfigPath);
+            var fromDbFactory = new DbFactory(null);
+            var toDbFactory = new DbFactory(null);
             var tenantAlias = GetTenantAlias(fromDbFactory);
             var backupFilePath = GetBackupFilePath(tenantAlias);
             var columnMapper = new ColumnMapper();
@@ -173,8 +175,8 @@ namespace ASC.Data.Backup.Tasks
             var groupsProcessed = 0;
             foreach (var group in fileGroups)
             {
-                var baseStorage = storageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
-                var destStorage = storageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
+                var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
+                var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
                 var utility = new CrossModuleTransferUtility(Options, baseStorage, destStorage);
 
                 foreach (var file in group)

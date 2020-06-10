@@ -27,9 +27,11 @@
 using System;
 using System.IO;
 
+using ASC.Common;
+
 namespace ASC.Data.Backup.Storage
 {
-    internal class LocalBackupStorage : IBackupStorage
+    public class LocalBackupStorage : IBackupStorage
     {
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
@@ -63,6 +65,14 @@ namespace ASC.Data.Backup.Storage
         public string GetPublicLink(string storagePath)
         {
             return string.Empty;
+        }
+    }
+    public static class LocalBackupStorageExtension
+    {
+        public static DIHelper AddLocalBackupStorage(this DIHelper services)
+        {
+            services.TryAddScoped<LocalBackupStorage>();
+            return services;
         }
     }
 }

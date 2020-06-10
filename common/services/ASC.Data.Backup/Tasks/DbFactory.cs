@@ -28,10 +28,12 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using ASC.Data.Backup.Utils;
+
+using Microsoft.Extensions.Configuration;
+using ASC.Common.Utils;
 using MySql.Data.MySqlClient;
+using ASC.Common;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -39,24 +41,24 @@ namespace ASC.Data.Backup.Tasks
     {
         public const string DefaultConnectionStringName = "default";
 
-        private readonly string configPath;
-        private readonly string connectionStringName;
 
-        private ConnectionStringSettings connectionStringSettings;
         private DbProviderFactory dbProviderFactory;
+        private IConfiguration Configuration { get; set; }
+        private string ConnectionString { get; set; }
+        private string Path { get; set; }
 
-        internal ConnectionStringSettings ConnectionStringSettings
-        {
-            get
-            {
-                if (connectionStringSettings == null)
+        internal ConnectionStringSettings ConnectionStringSettings { get {
+
+                if (string.IsNullOrEmpty(ConnectionString))
                 {
-                    var configuration = ConfigurationProvider.Open(configPath);
-                    connectionStringSettings = configuration.ConnectionStrings.ConnectionStrings[connectionStringName];
+                    return  ConfigurationExtension.GetConnectionStrings(Configuration, DefaultConnectionStringName);
                 }
-                return connectionStringSettings;
-            }
-        }
+                else
+                {
+                    return ConfigurationExtension.GetConnectionStrings(Configuration, ConnectionString);
+                }
+
+            } }
 
         private DbProviderFactory DbProviderFactory
         {
@@ -64,33 +66,22 @@ namespace ASC.Data.Backup.Tasks
             {
                 if (dbProviderFactory == null)
                 {
-                    var xconfig = XDocument.Load(configPath);
-                    var providerInvariantName = ConnectionStringSettings.ProviderName;
-                    var provider = xconfig.XPathSelectElement("/configuration/system.data/DbProviderFactories/add[@invariant='" + providerInvariantName + "']");
-
-                    var type = Type.GetType(provider.Attribute("type").Value, true);
+                    var type = Type.GetType(Configuration["DbProviderFactories:mysql:type"], true);
                     dbProviderFactory = (DbProviderFactory)Activator.CreateInstance(type, true);
                 }
                 return dbProviderFactory;
             }
         }
 
-        public DbFactory(string configPath, string connectionStringName = DefaultConnectionStringName)
+        public DbFactory(IConfiguration configuration)
         {
-            if (string.IsNullOrEmpty(configPath))
-            {
-                throw new ArgumentException("Empty config path.", "configPath");
-            }
-            if (string.IsNullOrEmpty(connectionStringName))
-            {
-                connectionStringName = DefaultConnectionStringName;
-            }
-            this.configPath = PathHelper.ToRootedConfigPath(configPath);
-            this.connectionStringName = connectionStringName;
+            Configuration = configuration;
         }
 
-        public DbConnection OpenConnection()
+        public DbConnection OpenConnection(string path = "default", string connectionString = DefaultConnectionStringName)//TODO
         {
+            ConnectionString = connectionString;
+            Path = path;
             var connection = DbProviderFactory.CreateConnection();
             if (connection != null)
             {
@@ -138,6 +129,14 @@ namespace ASC.Data.Backup.Tasks
                 connectionString = connectionString.TrimEnd(';') + ";Connection Timeout=90";
             }
             return connectionString;
+        }
+    }
+    public static class DbFactoryExtension
+    {
+        public static DIHelper AddDbFactoryService(this DIHelper services)
+        {
+            services.TryAddScoped<DbFactory>();
+            return services;
         }
     }
 }

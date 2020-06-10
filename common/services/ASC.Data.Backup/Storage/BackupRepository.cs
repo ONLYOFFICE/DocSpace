@@ -122,7 +122,7 @@ namespace ASC.Data.Backup.Storage
         {
             services.TryAddScoped<BackupRepository>();
             return services
-                .AddBackupContext();
+                .AddBackupsContext();
         }
     }
 }

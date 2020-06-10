@@ -39,6 +39,12 @@ namespace ASC.Core.Common.Contracts
         public ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
         public ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
 
+        public BackupServiceClient(ICacheNotify<StartBackupRequest> cacheStartBackupRequest, ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest, ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
+        {
+            СacheStartBackupRequest = cacheStartBackupRequest;
+            СacheStartRestoreRequest = cacheStartRestoreRequest;
+            СacheStartTransferRequest = cacheStartTransferRequest;
+        }
         public BackupProgress StartBackup(StartBackupRequest request)
         {
             СacheStartBackupRequest.Publish(request, CacheNotifyAction.InsertOrUpdate);

@@ -44,15 +44,15 @@ namespace ASC.Data.Backup.Tasks
     {
         private const int TransactionLength = 10000;
 
-        private readonly IDataReadOperator _reader;
-        private readonly IModuleSpecifics _module;
-        private readonly ColumnMapper _columnMapper;
-        private readonly DbFactory _factory;
-        private readonly bool _replaceDate;
-        private readonly bool dump;
+        private IDataReadOperator Reader;
+        private IModuleSpecifics Module;
+        private ColumnMapper ColumnMapper;
+        private bool ReplaceDate;
+        private bool Dump;
+        private DbFactory DbFactory;
 
-        public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-            : base(options, storageFactory, storageFactoryConfig, moduleProvider)
+        public RestoreDbModuleTask( IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+            : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader");
@@ -63,23 +63,23 @@ namespace ASC.Data.Backup.Tasks
             if (factory == null)
                 throw new ArgumentNullException("factory");
 
-            _module = module;
-            _reader = reader;
-            _columnMapper = columnMapper;
-            _factory = factory;
-            _replaceDate = replaceDate;
-            this.dump = dump;
+            Module = module;
+            Reader = reader;
+            ColumnMapper = columnMapper;
+            DbFactory = factory;
+            ReplaceDate = replaceDate;
+            this.Dump = dump;
             Init(-1, null);
         }
 
         public override void RunJob()
         {
-            Logger.DebugFormat("begin restore data for module {0}", _module.ModuleName);
-            SetStepsCount(_module.Tables.Count(t => !IgnoredTables.Contains(t.Name)));
+            Logger.DebugFormat("begin restore data for module {0}", Module.ModuleName);
+            SetStepsCount(Module.Tables.Count(t => !IgnoredTables.Contains(t.Name)));
 
-            using (var connection = _factory.OpenConnection())
+            using (var connection = DbFactory.OpenConnection())
             {
-                foreach (var table in _module.GetTablesOrdered().Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
+                foreach (var table in Module.GetTablesOrdered().Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
                 {
                     Logger.DebugFormat("begin restore table {0}", table.Name);
 
@@ -89,7 +89,7 @@ namespace ASC.Data.Backup.Tasks
                         state =>
                             RestoreTable(connection.Fix(), (TableInfo) state, ref transactionsCommited,
                                 ref rowsInserted), table, 5,
-                        onAttemptFailure: error => _columnMapper.Rollback(),
+                        onAttemptFailure: error => ColumnMapper.Rollback(),
                         onFailure: error => { throw ThrowHelper.CantRestoreTable(table.Name, error); });
 
                     SetStepCompleted();
@@ -97,22 +97,22 @@ namespace ASC.Data.Backup.Tasks
                 }
             }
 
-            Logger.DebugFormat("end restore data for module {0}", _module.ModuleName);
+            Logger.DebugFormat("end restore data for module {0}", Module.ModuleName);
         }
 
         private void RestoreTable(DbConnection connection, TableInfo tableInfo, ref int transactionsCommited, ref int rowsInserted)
         {
             SetColumns(connection, tableInfo);
 
-            using (var stream = _reader.GetEntry(KeyHelper.GetTableZipKey(_module, tableInfo.Name)))
+            using (var stream = Reader.GetEntry(KeyHelper.GetTableZipKey(Module, tableInfo.Name)))
             {
-                var lowImportanceRelations = _module
+                var lowImportanceRelations = Module
                     .TableRelations
                     .Where(
                         r =>
                             string.Equals(r.ParentTable, tableInfo.Name, StringComparison.InvariantCultureIgnoreCase))
                     .Where(r => r.Importance == RelationImportance.Low && !r.IsSelfRelation())
-                    .Select(r => Tuple.Create(r, _module.Tables.Single(t => t.Name == r.ChildTable)))
+                    .Select(r => Tuple.Create(r, Module.Tables.Single(t => t.Name == r.ChildTable)))
                     .ToList();
 
                 foreach (
@@ -126,11 +126,11 @@ namespace ASC.Data.Backup.Tasks
                         var rowsSuccess = 0;
                         foreach (var row in rows)
                         {
-                            if (_replaceDate)
+                            if (ReplaceDate)
                             {
                                 foreach (var column in tableInfo.DateColumns)
                                 {
-                                    _columnMapper.SetDateMapping(tableInfo.Name, column, row[column.Key]);
+                                    ColumnMapper.SetDateMapping(tableInfo.Name, column, row[column.Key]);
                                 }
                             }
 
@@ -140,7 +140,7 @@ namespace ASC.Data.Backup.Tasks
                             if (tableInfo.HasIdColumn())
                             {
                                 oldIdValue = row[tableInfo.IdColumn];
-                                newIdValue = _columnMapper.GetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue);
+                                newIdValue = ColumnMapper.GetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue);
                                 if (newIdValue == null)
                                 {
                                     if (tableInfo.IdType == IdType.Guid)
@@ -156,18 +156,18 @@ namespace ASC.Data.Backup.Tasks
                                 }
                                 if (newIdValue != null)
                                 {
-                                    _columnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue,
+                                    ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue,
                                         newIdValue);
                                 }
                             }
 
-                            var insertCommand = _module.CreateInsertCommand(dump, connection, _columnMapper, tableInfo,
+                            var insertCommand = Module.CreateInsertCommand(Dump, connection, ColumnMapper, tableInfo,
                                 row);
                             if (insertCommand == null)
                             {
                                 Logger.WarnFormat("Can't create command to insert row to {0} with values [{1}]", tableInfo,
                                     row);
-                                _columnMapper.Rollback();
+                                ColumnMapper.Rollback();
                                 continue;
                             }
                             insertCommand.WithTimeout(120).ExecuteNonQuery();
@@ -175,13 +175,13 @@ namespace ASC.Data.Backup.Tasks
 
                             if (tableInfo.HasIdColumn() && tableInfo.IdType == IdType.Autoincrement)
                             {
-                                var lastIdCommand = _factory.CreateLastInsertIdCommand();
+                                var lastIdCommand = DbFactory.CreateLastInsertIdCommand();
                                 lastIdCommand.Connection = connection;
                                 newIdValue = Convert.ToInt32(lastIdCommand.ExecuteScalar());
-                                _columnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue, newIdValue);
+                                ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue, newIdValue);
                             }
 
-                            _columnMapper.Commit();
+                            ColumnMapper.Commit();
 
                             foreach (var relation in lowImportanceRelations)
                             {
@@ -194,7 +194,7 @@ namespace ASC.Data.Backup.Tasks
                                 }
 
                                 var oldValue = row[relation.Item1.ParentColumn];
-                                var newValue = _columnMapper.GetMapping(relation.Item1.ParentTable,
+                                var newValue = ColumnMapper.GetMapping(relation.Item1.ParentTable,
                                     relation.Item1.ParentColumn, oldValue);
                                 var command = connection.CreateCommand();
                                 command.CommandText = string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
@@ -203,7 +203,7 @@ namespace ASC.Data.Backup.Tasks
                                         newValue is string ? "'" + newValue + "'" : newValue,
                                         oldValue is string ? "'" + oldValue + "'" : oldValue,
                                         relation.Item2.TenantColumn,
-                                        _columnMapper.GetTenantMapping());
+                                        ColumnMapper.GetTenantMapping());
                                 command.WithTimeout(120).ExecuteNonQuery();
                             }
                         }
@@ -223,7 +223,7 @@ namespace ASC.Data.Backup.Tasks
 
             var rows = DataRowInfoReader.ReadFromStream(xmlStream);
 
-            var selfRelation = _module.TableRelations.SingleOrDefault(x => x.ChildTable == table.Name && x.IsSelfRelation());
+            var selfRelation = Module.TableRelations.SingleOrDefault(x => x.ChildTable == table.Name && x.IsSelfRelation());
             if (selfRelation != null)
             {
                 rows = rows
@@ -243,7 +243,7 @@ namespace ASC.Data.Backup.Tasks
 
         private void SetColumns(DbConnection connection, TableInfo table)
         {
-            var showColumnsCommand = _factory.CreateShowColumnsCommand(table.Name);
+            var showColumnsCommand = DbFactory.CreateShowColumnsCommand(table.Name);
             showColumnsCommand.Connection = connection;
 
             table.Columns = ExecuteArray(showColumnsCommand);

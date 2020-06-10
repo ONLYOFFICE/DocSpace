@@ -87,7 +87,8 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             services.TryAddScoped<ModuleProvider>();
             return services
-                .AddCoreSettingsService();
+                .AddCoreSettingsService()
+                .AddHelpers();
         }
     }
 }

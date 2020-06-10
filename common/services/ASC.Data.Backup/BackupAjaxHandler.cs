@@ -36,7 +36,7 @@ namespace ASC.Data.Backup
         private BackupServiceClient BackupServiceClient { get; }
         #region backup
 
-        public BackupAjaxHandler( IServiceProvider serviceProvider, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
+        public BackupAjaxHandler(BackupServiceClient backupServiceClient, IServiceProvider serviceProvider, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
         {
             TenantManager = tenantManager;
             MessageService = messageService;
@@ -49,7 +49,7 @@ namespace ASC.Data.Backup
             BackupHelper = backupHelper;
             ConsumerFactory = consumerFactory;
             ServiceProvider = serviceProvider;
-            BackupServiceClient = new BackupServiceClient();
+            BackupServiceClient = backupServiceClient;
         }
 
         [AjaxMethod]
@@ -80,7 +80,7 @@ namespace ASC.Data.Backup
             }
 
             MessageService.Send(MessageAction.StartBackupSetting);
-            BackupServiceClient.СacheStartBackupRequest = ServiceProvider.GetService<ICacheNotify<StartBackupRequest>>();
+           
             return BackupServiceClient.StartBackup(backupRequest);
         }
 
@@ -179,7 +179,7 @@ namespace ASC.Data.Backup
             {
                 var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
 
-                var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>("S3");//here
+                var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>("S3");
                 if (!consumer.IsSet)
                 {
                     consumer["acesskey"] = amazonSettings.AccessKeyId;
@@ -255,7 +255,6 @@ namespace ASC.Data.Backup
                 restoreRequest.StorageType = (int)storageType;
                 restoreRequest.FilePathOrId = storageParams["filePath"];
             }
-            BackupServiceClient.СacheStartRestoreRequest = ServiceProvider.GetService<ICacheNotify<StartRestoreRequest>>();
             return BackupServiceClient.StartRestore(restoreRequest);
         }
 
@@ -290,7 +289,6 @@ namespace ASC.Data.Backup
             DemandSize();
 
             MessageService.Send(MessageAction.StartTransferSetting);
-            BackupServiceClient.СacheStartTransferRequest = ServiceProvider.GetService<ICacheNotify<StartTransferRequest>>();
             return BackupServiceClient.StartTransfer(
                 new StartTransferRequest
                 {

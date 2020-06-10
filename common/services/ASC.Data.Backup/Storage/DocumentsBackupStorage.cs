@@ -27,9 +27,11 @@
 using System;
 using System.IO;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 //using File = ASC.Files.Core.File;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -47,29 +49,29 @@ namespace ASC.Data.Backup.Storage
         public IServiceProvider ServiceProvider { get; }
 
         public DocumentsBackupStorage(
-            int tenantId,
-            string webConfigPath,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IDaoFactory daoFactory,
             StorageFactory storageFactory,
             IServiceProvider serviceProvider)
         {
-            TenantId = tenantId;
-            WebConfigPath = webConfigPath;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             DaoFactory = daoFactory;
             StorageFactory = storageFactory;
             ServiceProvider = serviceProvider;
         }
-
+        public void Init(int tenantId,  string webConfigPath)
+        {
+            TenantId = tenantId;
+            WebConfigPath = webConfigPath;
+        }
         public string Upload(string folderId, string localPath, Guid userId)
         {
             TenantManager.SetCurrentTenant(TenantId);
             if (!userId.Equals(Guid.Empty))
             {
-                SecurityContext.AuthenticateMe(userId);
+        //        SecurityContext.AuthenticateMe(userId);
             }
             else
             {
@@ -196,6 +198,18 @@ namespace ASC.Data.Backup.Storage
             // FileDao will use this storage and will not try to create the new one from service config
             StorageFactory.GetStorage(WebConfigPath, TenantId.ToString(), "files");
             return DaoFactory.GetFileDao<T>();
+        }
+    }
+    public static class DocumentsBackupStorageExtension
+    {
+        public static DIHelper AddDocumentsBackupStorage(this DIHelper services)
+        {
+            services.TryAddScoped<DocumentsBackupStorage>();
+            return services
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddStorageFactoryService()
+                .AddDaoFactoryService();
         }
     }
 }

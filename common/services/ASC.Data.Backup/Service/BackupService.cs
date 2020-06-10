@@ -81,6 +81,7 @@ namespace ASC.Data.Backup.Service
         public void StartSubscribeBackup()
         {
             СacheStartBackupRequest.Subscribe((n) => StartBackup(n), CacheNotifyAction.InsertOrUpdate);
+            СacheStartRestoreRequest.Subscribe((n) => StartRestore(n), CacheNotifyAction.InsertOrUpdate);
         }
         public BackupProgress StartBackup(StartBackupRequest request)
         {
@@ -187,7 +188,7 @@ namespace ASC.Data.Backup.Service
                 }
             }
 
-            if (!request.BackupId.Equals(Guid.Empty))
+            if (request.BackupId !="" && !request.BackupId.Equals(Guid.Empty))
             {
                 var backupRecord = BackupRepository.GetBackupRecord(Guid.Parse(request.BackupId));
                 if (backupRecord == null)

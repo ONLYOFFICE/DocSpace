@@ -14,6 +14,7 @@ using ASC.Core.Users;
 using ASC.Data.Backup;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
+using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
@@ -201,9 +202,9 @@ namespace ASC.Web.Api.Controllers
         /// <category>Backup</category>
         /// <returns>Backup Progress</returns>
         [Create("startbackup")]
-        public BackupProgress StartBackup(BackupStorageType storageType, Dictionary<string,string> storageParams, bool backupMail)
+        public BackupProgress StartBackup(Backup backup)
         {
-            return BackupHandler.StartBackup(storageType, storageParams, backupMail);
+            return BackupHandler.StartBackup(backup.StorageType, backup.StorageParams != null? backup.StorageParams : new Dictionary<string, string>(), backup.BackupMail);
         }
 
         /// <summary>
@@ -259,9 +260,9 @@ namespace ASC.Web.Api.Controllers
         /// <category>Backup</category>
         /// <returns>Restore Progress</returns>
         [Create("startrestore")]
-        public BackupProgress StartBackupRestore(string backupId, BackupStorageType storageType, IEnumerable<ItemKeyValuePair<string, string>> storageParams, bool notify)
+        public BackupProgress StartBackupRestore(BackupRestore backupRestore)
         {
-            return BackupHandler.StartRestore(backupId, storageType, storageParams.ToDictionary(r => r.Key, r => r.Value), notify);
+            return BackupHandler.StartRestore(backupRestore.BackupId, backupRestore.StorageType, backupRestore.StorageParams, backupRestore.Notify);
         }
 
         /// <summary>

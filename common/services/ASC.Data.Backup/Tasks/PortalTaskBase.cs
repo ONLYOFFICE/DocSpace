@@ -55,9 +55,10 @@ namespace ASC.Data.Backup.Tasks
         protected const int TasksLimit = 10;
         protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
         protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
-        protected StorageFactory storageFactory;
-        protected StorageFactoryConfig storageFactoryConfig;
-        protected ILog Logger;
+        protected StorageFactory StorageFactory { get; set; }
+        protected StorageFactoryConfig StorageFactoryConfig
+        { get; set; }
+        protected ILog Logger { get; set; }
 
         public int Progress { get; private set; }
 
@@ -65,15 +66,17 @@ namespace ASC.Data.Backup.Tasks
         public string ConfigPath { get; private set; }
 
         public bool ProcessStorage { get; set; }
-        public ModuleProvider moduleProvider { get; set; }
+        public ModuleProvider ModuleProvider { get; set; }
+        public DbFactory DbFactory { get; set; }
 
-        protected PortalTaskBase(IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+        protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
         {
             Logger = options.CurrentValue;
             ProcessStorage = true;
-            this.storageFactory = storageFactory;
-            this.storageFactoryConfig = storageFactoryConfig;
-            this.moduleProvider = moduleProvider;
+            this.StorageFactory = storageFactory;
+            this.StorageFactoryConfig = storageFactoryConfig;
+            this.ModuleProvider = moduleProvider;
+            DbFactory = dbFactory;
         }
         public void Init(int tenantId, string configPath)
         {
@@ -97,16 +100,16 @@ namespace ASC.Data.Backup.Tasks
 
         internal virtual IEnumerable<IModuleSpecifics> GetModulesToProcess()
         {
-            return moduleProvider.AllModules.Where(module => !IgnoredModules.Contains(module.ModuleName));
+            return ModuleProvider.AllModules.Where(module => !IgnoredModules.Contains(module.ModuleName));
         }
 
         protected IEnumerable<BackupFileInfo> GetFilesToProcess(int tenantId)
         {
             var files = new List<BackupFileInfo>();
-            foreach (var module in storageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
+            foreach (var module in StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
             {
-                var store = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToArray();
+                var store = StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
+                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToArray();
 
                 foreach (var domain in domains)
                 {
@@ -145,7 +148,7 @@ namespace ASC.Data.Backup.Tasks
             if (!allowedStorageModules.Contains(storageModuleName))
                 return false;
 
-            var moduleSpecifics = moduleProvider.GetByStorageModule(storageModuleName);
+            var moduleSpecifics = ModuleProvider.GetByStorageModule(storageModuleName);
             return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
         }
 
@@ -236,9 +239,9 @@ namespace ASC.Data.Backup.Tasks
             return result;
         }
 
-        protected void RunMysqlFile(DbFactory dbFactory, string file, bool db = false)
+        protected void RunMysqlFile(string file, bool db = false)
         {
-            var connectionString = ParseConnectionString(dbFactory.ConnectionStringSettings.ConnectionString);
+            var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings.ConnectionString);
             var args = new StringBuilder()
                 .AppendFormat("-h {0} ", connectionString["server"])
                 .AppendFormat("-u {0} ", connectionString["user id"])
@@ -300,8 +303,8 @@ namespace ASC.Data.Backup.Tasks
 
                         try
                         {
-                        var dbFactory = new DbFactory(ConfigPath);
-                        using (var connection = dbFactory.OpenConnection())
+                       
+                        using (var connection = DbFactory.OpenConnection())
                         {
                             var command = connection.CreateCommand();
                             command.CommandText = commandText;
