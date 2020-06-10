@@ -2,6 +2,7 @@
 using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -143,6 +144,121 @@ namespace ASC.Mail.Core.Dao.Entities
         public override object[] GetKeys()
         {
             return new object[] { Id };
+        }
+    }
+
+    public static class MailMailExtension
+    {
+        public static ModelBuilder AddMailMail(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MailMail>(entity =>
+            {
+                entity.HasIndex(e => e.TimeModified)
+                    .HasName("time_modified");
+
+                entity.HasIndex(e => new { e.IdMailbox, e.MimeMessageId })
+                    .HasName("mime_message_id");
+
+                entity.HasIndex(e => new { e.Md5, e.IdMailbox })
+                    .HasName("md5");
+
+                entity.HasIndex(e => new { e.Uidl, e.IdMailbox })
+                    .HasName("uidl");
+
+                entity.HasIndex(e => new { e.ChainId, e.IdMailbox, e.Folder })
+                    .HasName("chain_index_folders");
+
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Folder, e.ChainDate })
+                    .HasName("list_conversations");
+
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Folder, e.DateSent })
+                    .HasName("list_messages");
+
+                entity.Property(e => e.Address)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Bcc)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.CalendarUid)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Cc)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.ChainDate).HasDefaultValueSql("'1975-01-01 00:00:00'");
+
+                entity.Property(e => e.ChainId)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.DateReceived).HasDefaultValueSql("'1975-01-01 00:00:00'");
+
+                entity.Property(e => e.DateSent).HasDefaultValueSql("'1975-01-01 00:00:00'");
+
+                entity.Property(e => e.Folder).HasDefaultValueSql("'1'");
+
+                entity.Property(e => e.FolderRestore).HasDefaultValueSql("'1'");
+
+                entity.Property(e => e.FromText)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.IdUser)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Introduction)
+                    .HasDefaultValueSql("''")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Md5)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.MimeInReplyTo)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.MimeMessageId)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.ReplyTo)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Stream)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Subject)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.TimeModified)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.ToText)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Uidl)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.HasMany(m => m.Attachments)
+                    .WithOne(a => a.Mail)
+                    .HasForeignKey(a => a.IdMail);
+            });
+
+            return modelBuilder;
         }
     }
 }

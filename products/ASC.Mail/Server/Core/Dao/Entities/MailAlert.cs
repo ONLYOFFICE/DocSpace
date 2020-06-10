@@ -2,11 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ASC.Mail.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Mail.Core.Dao.Entities
 {
     [Table("mail_alerts")]
-    public partial class MailAlerts
+    public partial class MailAlert
     {
         [Key]
         [Column("id", TypeName = "int(11)")]
@@ -22,5 +23,29 @@ namespace ASC.Mail.Core.Dao.Entities
         public MailAlertTypes Type { get; set; }
         [Column("data", TypeName = "mediumtext")]
         public string Data { get; set; }
+    }
+
+    public static class MailAlertExtension
+    {
+        public static ModelBuilder AddMailAlert(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MailAlert>(entity =>
+            {
+                entity.HasIndex(e => new { e.Tenant, e.IdUser, e.IdMailbox, e.Type })
+                    .HasName("tenant_id_user_id_mailbox_type");
+
+                entity.Property(e => e.Data)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.IdMailbox).HasDefaultValueSql("'-1'");
+
+                entity.Property(e => e.IdUser)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+
+            return modelBuilder;
+        }
     }
 }

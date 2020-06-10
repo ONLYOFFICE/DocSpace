@@ -97,7 +97,7 @@ namespace ASC.Mail.Core.Dao
 
             using var tr = MailDb.Database.BeginTransaction();
 
-            var dbAlert = new MailAlerts()
+            var dbAlert = new MailAlert()
             {
                 Id = alert.Id,
                 Tenant = Tenant,

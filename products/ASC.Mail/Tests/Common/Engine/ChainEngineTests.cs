@@ -119,6 +119,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
                         .AddTenantManagerService()
                         .AddUserManagerService()
                         .AddSecurityContextService()
+                        .AddAccountEngineService()
                         .AddMailBoxSettingEngineService()
                         .AddMailboxEngineService()
                         .AddApiHelperService()
