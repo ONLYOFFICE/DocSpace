@@ -48,6 +48,7 @@ using Autofac;
 using ASC.ElasticSearch;
 using ASC.Api.Core;
 using ASC.Mail.Exceptions;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Aggregator.Tests.Common.UserFolders
 {
@@ -126,9 +127,8 @@ namespace ASC.Mail.Aggregator.Tests.Common.UserFolders
                         .AddApiHelperService()
                         .AddFolderEngineService()
                         .AddUserFolderEngineService()
-                        .AddFactoryIndexerHelperService()
                         .AddFactoryIndexerService()
-                        .AddFactoryIndexerService<MailWrapper>()
+                        .AddFactoryIndexerService<MailMail>()
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
@@ -202,12 +202,11 @@ namespace ASC.Mail.Aggregator.Tests.Common.UserFolders
             userManager.DeleteUser(TestUser.ID);
 
             // Clear TestUser mail index
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
-            var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
-            var t = scope.ServiceProvider.GetService<MailWrapper>();
-            if (factoryIndexerHelper.Support(t))
-                factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
+            var t = scope.ServiceProvider.GetService<MailMail>();
+            if (factoryIndexer.Support(t))
+                factoryIndexer.DeleteAsync(s => s.Where(m => m.IdUser, TestUser.ID.ToString())).Wait();
 
             // Clear TestUser mail data
             var mailGarbageEngine = scope.ServiceProvider.GetService<MailGarbageEngine>();

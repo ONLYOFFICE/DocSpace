@@ -41,6 +41,7 @@ using ASC.Common.Logging;
 using ASC.Mail.Storage;
 using ASC.Common;
 using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -72,7 +73,7 @@ namespace ASC.Mail.Core.Engine
         public ServerMailboxEngine ServerMailboxEngine { get; }
         public CoreSettings CoreSettings { get; }
         public StorageManager StorageManager { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailMail> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
         public IOptionsMonitor<ILog> Option { get; }
 
@@ -92,7 +93,7 @@ namespace ASC.Mail.Core.Engine
             ServerMailboxEngine serverMailboxEngine, 
             CoreSettings coreSettings,
             StorageManager storageManager,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailMail> factoryIndexer,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -114,7 +115,7 @@ namespace ASC.Mail.Core.Engine
             ServerMailboxEngine = serverMailboxEngine;
             CoreSettings = coreSettings;
             StorageManager = storageManager;
-            FactoryIndexerHelper = factoryIndexerHelper;
+            FactoryIndexer = factoryIndexer;
             ServiceProvider = serviceProvider;
             Option = option;
         }
@@ -287,7 +288,7 @@ namespace ASC.Mail.Core.Engine
             return QueueTask(op, translateMailOperationStatus);
         }
 
-        public MailOperationStatus RemoveUserFolder(uint userFolderId,
+        public MailOperationStatus RemoveUserFolder(int userFolderId,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
             var tenant = TenantManager.GetCurrentTenant();
@@ -321,19 +322,8 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 throw new MailOperationAlreadyRunningException("Remove user folder operation already running.");
 
-            var op = new MailRemoveUserFolderOperation(
-                TenantManager,
-                SecurityContext,
-                DaoFactory,
-                UserFolderEngine, 
-                MessageEngine, 
-                IndexEngine,
-                CoreSettings,
-                StorageManager, 
-                FactoryIndexerHelper, 
-                ServiceProvider,
-                Option,
-                userFolderId);
+            var op = new MailRemoveUserFolderOperation(TenantManager, SecurityContext, DaoFactory, UserFolderEngine,
+                MessageEngine, IndexEngine, CoreSettings, StorageManager, FactoryIndexer, ServiceProvider, Option, userFolderId);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -606,8 +596,7 @@ namespace ASC.Mail.Core.Engine
                 .AddMessageEngineService()
                 .AddServerMailboxEngineService()
                 .AddCoreSettingsService()
-                .AddStorageManagerService()
-                .AddFactoryIndexerHelperService();
+                .AddStorageManagerService();
 
             return services;
         }

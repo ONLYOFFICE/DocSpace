@@ -60,6 +60,7 @@ using ASC.ElasticSearch;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Common;
 using System.Data;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -87,9 +88,8 @@ namespace ASC.Mail.Core.Engine
             StorageManager storageManager,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
-            FileStorageService fileStorageService,
-            FactoryIndexer<MailContactWrapper> factoryIndexer,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FileStorageService<int> fileStorageService,
+            FactoryIndexer<MailContact> factoryIndexer,
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
@@ -121,7 +121,6 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             FileStorageService = fileStorageService;
             FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             HttpContext = httpContextAccessor?.HttpContext;
 
@@ -296,10 +295,10 @@ namespace ASC.Mail.Core.Engine
 
                         if (filters.Any())
                         {
-                            FilterEngine.ApplyFilters(message, draft.Mailbox, new MailFolder(FolderType.Sent, ""), filters);
+                            FilterEngine.ApplyFilters(message, draft.Mailbox, new Models.MailFolder(FolderType.Sent, ""), filters);
                         }
 
-                        IndexEngine.Update(new List<MailWrapper>
+                        IndexEngine.Update(new List<MailMail>
                         {
                             message.ToMailWrapper(draft.Mailbox.TenantId,
                                 new Guid(draft.Mailbox.UserId))
@@ -514,7 +513,7 @@ namespace ASC.Mail.Core.Engine
                 if (treatedAddresses.Contains(email))
                     continue;
 
-                var exp = new FullFilterContactsExp(tenant, user, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
+                var exp = new FullFilterContactsExp(tenant, user, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, 
                     searchTerm: email, infoType: ContactInfoType.Email);
 
                 var contacts = ContactEngine.GetContactCards(exp);
@@ -551,9 +550,8 @@ namespace ASC.Mail.Core.Engine
         public AlertEngine AlertEngine { get; }
         public ContactEngine ContactEngine { get; }
         public SecurityContext SecurityContext { get; }
-        public FileStorageService FileStorageService { get; }
-        public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FileStorageService<int> FileStorageService { get; }
+        public FactoryIndexer<MailContact> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
 
         private void AddNotificationAlertToMailbox(MailDraftData draft, Exception exOnSanding)
@@ -663,8 +661,7 @@ namespace ASC.Mail.Core.Engine
                 .AddCoreSettingsService()
                 .AddStorageFactoryService()
                 .AddFileStorageService()
-                .AddFactoryIndexerService<MailContactWrapper>()
-                .AddFactoryIndexerHelperService();
+                .AddFactoryIndexerService<MailContact>();
 
             return services;
         }

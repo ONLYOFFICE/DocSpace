@@ -489,11 +489,11 @@ namespace ASC.Mail.Core.Engine
                         throw new ArgumentException("Not valid type value in json data of 'Move to' action");
                     }
 
-                    uint folderId;
+                    int folderId;
 
                     if (folderType == FolderType.UserFolder)
                     {
-                        var userFolderId = uint.Parse(dataJson["userFolderId"].ToString());
+                        var userFolderId = int.Parse(dataJson["userFolderId"].ToString());
 
                         var userFolder = UserFolderEngine.Get(userFolderId);
                         if (userFolder == null)
@@ -506,11 +506,11 @@ namespace ASC.Mail.Core.Engine
                     }
                     else
                     {
-                        folderId = (uint) folderType;
+                        folderId = (int) folderType;
                     }
 
                     MessageEngine.SetFolder(ids, folderType,
-                        folderType == FolderType.UserFolder ? folderId : (uint?) null);
+                        folderType == FolderType.UserFolder ? folderId : (int?) null);
                     break;
                 case ActionType.MarkTag:
                     var tagId = Convert.ToInt32(action.Data);

@@ -145,7 +145,7 @@ namespace ASC.Mail.Core.Engine
 
         public void ChangeFolderCounters(
             FolderType folder,
-            uint? userFolder = null,
+            int? userFolder = null,
             int? unreadMessDiff = null,
             int? totalMessDiff = null,
             int? unreadConvDiff = null,

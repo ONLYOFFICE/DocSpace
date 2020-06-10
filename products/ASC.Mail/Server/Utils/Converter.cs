@@ -31,6 +31,7 @@ using System.Linq;
 using System.Net.Mail;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
@@ -192,15 +193,15 @@ namespace ASC.Mail.Utils
             return format.Replace("%EMAILDOMAIN%", host);
         }
 
-        public static MailWrapper ToMailWrapper(this MailMessageData message, int tenant, Guid userId)
+        public static MailMail ToMailWrapper(this MailMessageData message, int tenant, Guid userId)
         {
             var now = DateTime.UtcNow;
 
-            var mailWrapper = new MailWrapper
+            var mail = new MailMail
             {
                 Id = message.Id,
                 TenantId = tenant,
-                UserId = userId,
+                IdUser = userId.ToString(),
                 FromText = message.From,
                 ToText = message.To,
                 Cc = message.Cc,
@@ -208,7 +209,7 @@ namespace ASC.Mail.Utils
                 Subject = message.Subject,
                 Folder = (byte)message.Folder,
                 DateSent = message.Date,
-                MailboxId = message.MailboxId,
+                IdMailbox = message.MailboxId,
                 ChainId = message.ChainId,
                 ChainDate = message.ChainDate,
                 IsRemoved = false,
@@ -216,44 +217,43 @@ namespace ASC.Mail.Utils
                 Importance = message.Important,
                 HasAttachments = message.HasAttachments,
                 WithCalendar = !string.IsNullOrEmpty(message.CalendarUid),
-                LastModifiedOn = now
+                TimeModified = now
             };
 
             if (message.Folder == FolderType.UserFolder && message.UserFolderId.HasValue)
             {
-                mailWrapper.UserFolders = new List<UserFolderWrapper>
+                mail.UserFolders = new List<MailUserFolder>
                 {
-                    new UserFolderWrapper
+                    new MailUserFolder
                     {
-                        Id = (int) message.UserFolderId.Value
+                        Id = message.UserFolderId.Value
                     }
                 };
             }
             else
             {
-                mailWrapper.UserFolders = new List<UserFolderWrapper>();
+                mail.UserFolders = new List<MailUserFolder>();
             }
 
             if (message.TagIds != null && message.TagIds.Any())
             {
-                mailWrapper.Tags = message.TagIds.ConvertAll(tagId => new TagWrapper
+                mail.Tags = message.TagIds.ConvertAll(tagId => new MailTag
                 {
                     Id = tagId,
-                    TenantId = tenant,
-                    LastModifiedOn = now
+                    TenantId = tenant
                 });
             }
             else
             {
-                mailWrapper.Tags = new List<TagWrapper>();
+                mail.Tags = new List<MailTag>();
             }
 
-            return mailWrapper;
+            return mail;
         }
 
         public static MailMessageData ConvertToMailMessage(this MimeMessage mimeMessage, 
-            TenantManager tenantManager, CoreSettings coreSettings, 
-            MailFolder folder, bool unread, string chainId, DateTime? chainDate, string streamId, int mailboxId, 
+            TenantManager tenantManager, CoreSettings coreSettings,
+            Models.MailFolder folder, bool unread, string chainId, DateTime? chainDate, string streamId, int mailboxId, 
             bool createFailedFake = true, ILog log = null)
         {
             MailMessageData message;
@@ -281,41 +281,41 @@ namespace ASC.Mail.Utils
             return message;
         }
 
-        public static MailContactWrapper ToMailContactWrapper(this ContactCard contactCard)
+        public static MailContact ToMailContactWrapper(this ContactCard contactCard)
         {
             var now = DateTime.UtcNow;
 
             var infoList = contactCard.ContactItems.ConvertAll(ToMailContactInfoWrapper);
 
-            var contact = new MailContactWrapper
+            var contact = new MailContact
             {
                 Id = contactCard.ContactInfo.Id,
                 TenantId = contactCard.ContactInfo.Tenant,
-                User = Guid.Parse(contactCard.ContactInfo.User),
+                IdUser = contactCard.ContactInfo.User,
                 Name = contactCard.ContactInfo.ContactName,
-                ContactType = (int)contactCard.ContactInfo.Type,
+                Type = (int)contactCard.ContactInfo.Type,
                 Description = contactCard.ContactInfo.Description,
                 InfoList = infoList,
-                LastModifiedOn = now
+                LastModified = now
             };
 
             return contact;
         }
 
-        public static MailContactInfoWrapper ToMailContactInfoWrapper(this Core.Entities.ContactInfo contactInfo)
+        public static MailContactInfo ToMailContactInfoWrapper(this Core.Entities.ContactInfo contactInfo)
         {
             var now = DateTime.UtcNow;
 
-            var info = new MailContactInfoWrapper
+            var info = new MailContactInfo
             {
                 Id = contactInfo.Id,
                 TenantId = contactInfo.Tenant,
-                User = Guid.Parse(contactInfo.User),
-                ContactId = contactInfo.ContactId,
-                InfoType = contactInfo.Type,
-                Text = contactInfo.Data,
+                IdUser = contactInfo.User,
+                IdContact = contactInfo.ContactId,
+                Type = contactInfo.Type,
+                Data = contactInfo.Data,
                 IsPrimary = contactInfo.IsPrimary,
-                LastModifiedOn = now
+                LastModified = now
             };
 
             return info;

@@ -28,8 +28,8 @@ namespace ASC.Mail.Core.Entities
 {
     public class UserFolderTreeItem
     {
-        public uint FolderId { get; set; }
-        public uint ParentId { get; set; }
+        public int FolderId { get; set; }
+        public int ParentId { get; set; }
         public uint Level { get; set; }
     }
 }

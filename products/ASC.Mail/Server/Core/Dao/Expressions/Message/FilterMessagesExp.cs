@@ -165,22 +165,21 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 filterExp = filterExp.And(m => Ids.Contains(m.Id));
             }
 
-            filterExp = filterExp.And(m => m.Tenant == Tenant && m.IdUser == User && m.IsRemoved == false);
+            filterExp = filterExp.And(m => m.TenantId == Tenant && m.IdUser == User && m.IsRemoved == false);
 
             return filterExp;
         }
 
         public static bool TryGetFullTextSearchIds(
-            FactoryIndexer<MailWrapper> factoryIndexer,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailMail> factoryIndexer,
             IServiceProvider serviceProvider, 
             MailSearchFilterData filter, 
             string user, out List<int> ids, out long total, DateTime? dateSend = null)
         {
             ids = new List<int>();
 
-            var t = serviceProvider.GetService<MailWrapper>();
-            if (!factoryIndexerHelper.Support(t))
+            var t = serviceProvider.GetService<MailMail>();
+            if (!factoryIndexer.Support(t))
             {
                 total = 0;
                 return false;
@@ -193,24 +192,24 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             var userId = new Guid(user);
 
-            Selector<MailWrapper> selector = null;
+            Selector<MailMail> selector = null;
 
             if (!string.IsNullOrEmpty(filter.SearchText))
             {
-                selector = new Selector<MailWrapper>(serviceProvider).MatchAll(filter.SearchText);
+                selector = new Selector<MailMail>(serviceProvider).MatchAll(filter.SearchText);
             }
 
             if (!string.IsNullOrEmpty(filter.FromAddress))
             {
-                Selector<MailWrapper> tempSelector;
+                Selector<MailMail> tempSelector;
 
                 if (filter.PrimaryFolder == FolderType.Sent || filter.PrimaryFolder == FolderType.Draft)
                 {
-                    tempSelector = new Selector<MailWrapper>(serviceProvider).Match(s => s.ToText, filter.FromAddress);
+                    tempSelector = new Selector<MailMail>(serviceProvider).Match(s => s.ToText, filter.FromAddress);
                 }
                 else
                 {
-                    tempSelector = new Selector<MailWrapper>(serviceProvider).Match(s => s.FromText, filter.FromAddress);
+                    tempSelector = new Selector<MailMail>(serviceProvider).Match(s => s.FromText, filter.FromAddress);
                 }
 
                 if (selector != null)
@@ -221,15 +220,15 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (!string.IsNullOrEmpty(filter.ToAddress))
             {
-                Selector<MailWrapper> tempSelector;
+                Selector<MailMail> tempSelector;
 
                 if (filter.PrimaryFolder == FolderType.Sent || filter.PrimaryFolder == FolderType.Draft)
                 {
-                    tempSelector = new Selector<MailWrapper>(serviceProvider).Match(s => s.FromText, filter.ToAddress);
+                    tempSelector = new Selector<MailMail>(serviceProvider).Match(s => s.FromText, filter.ToAddress);
                 }
                 else
                 {
-                    tempSelector = new Selector<MailWrapper>(serviceProvider).Match(s => s.ToText, filter.ToAddress);
+                    tempSelector = new Selector<MailMail>(serviceProvider).Match(s => s.ToText, filter.ToAddress);
                 }
 
                 if (selector != null)
@@ -239,13 +238,13 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             }
 
             if (selector == null)
-                selector = new Selector<MailWrapper>(serviceProvider);
+                selector = new Selector<MailMail>(serviceProvider);
 
             selector.Where(r => r.Folder, (int) filter.PrimaryFolder);
 
             if (filter.MailboxId.HasValue)
             {
-                selector.Where(s => s.MailboxId, filter.MailboxId.Value);
+                selector.Where(s => s.IdMailbox, filter.MailboxId.Value);
             }
 
             if (filter.Unread.HasValue)
@@ -313,7 +312,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 selector.Limit(0, pageSize);
             }
 
-            selector.Where(r => r.UserId, userId)
+            selector.Where(r => r.IdUser, userId.ToString())
                 .Sort(r => r.DateSent, filter.SortOrder == Defines.ASCENDING);
 
             return factoryIndexer.TrySelectIds(s => selector, out ids, out total);

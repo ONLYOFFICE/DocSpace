@@ -196,7 +196,7 @@ namespace ASC.Mail.Extensions
                     .GetDataStoreForAttachments(mailAttachmentData.tenant)
                     .GetReadStream(s3Key))
                 {
-                    stream.StreamCopyTo(ms);
+                    stream.CopyTo(ms);
                 }
             }
             else
@@ -358,7 +358,7 @@ namespace ASC.Mail.Extensions
             };
         }
 
-        public static void ChangeAttachedFileLinksAddresses(this MailDraftData draft, FileStorageService fileStorageService, ILog log = null)
+        public static void ChangeAttachedFileLinksAddresses(this MailDraftData draft, FileStorageService<int> fileStorageService, ILog log = null)
         {
             if (log == null)
                 log = new NullLog();

@@ -85,7 +85,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         public Expression<Func<MailMail, bool>> GetExpression()
         {
-            Expression<Func<MailMail, bool>> exp = m => m.Tenant == Tenant;
+            Expression<Func<MailMail, bool>> exp = m => m.TenantId == Tenant;
 
             if (!string.IsNullOrEmpty(User))
             {

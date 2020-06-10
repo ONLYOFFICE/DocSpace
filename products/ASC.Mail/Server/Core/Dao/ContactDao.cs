@@ -48,11 +48,11 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveContact(Contact contact)
         {
-            var mailContact = new MailContacts
+            var mailContact = new MailContact
             {
-                Id = (uint)contact.Id,
+                Id = contact.Id,
                 IdUser = contact.User,
-                Tenant = contact.Tenant,
+                TenantId = contact.Tenant,
                 Name = contact.ContactName,
                 Address = contact.Address,
                 Description = contact.Description,
@@ -70,7 +70,7 @@ namespace ASC.Mail.Core.Dao
         public int RemoveContacts(List<int> ids)
         {
             var queryDelete = MailDb.MailContactInfo
-                .Where(c => c.Tenant == Tenant 
+                .Where(c => c.TenantId == Tenant 
                     && c.IdUser == UserId 
                     && ids.Contains((int)c.IdContact));
 

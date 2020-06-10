@@ -35,6 +35,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
@@ -72,8 +73,7 @@ namespace ASC.Mail.Core.Engine
         public IndexEngine IndexEngine { get; }
         public AccountEngine AccountEngine { get; }
         public ApiHelper ApiHelper { get; }
-        public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailContact> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
@@ -85,8 +85,7 @@ namespace ASC.Mail.Core.Engine
             IndexEngine indexEngine,
             AccountEngine accountEngine,
             ApiHelper apiHelper,
-            FactoryIndexer<MailContactWrapper> factoryIndexer,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailContact> factoryIndexer,
             WebItemSecurity webItemSecurity,
             CommonLinkUtility commonLinkUtility,
             IServiceProvider serviceProvider,
@@ -99,7 +98,6 @@ namespace ASC.Mail.Core.Engine
             AccountEngine = accountEngine;
             ApiHelper = apiHelper;
             FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             WebItemSecurity = webItemSecurity;
             CommonLinkUtility = commonLinkUtility;
@@ -111,7 +109,7 @@ namespace ASC.Mail.Core.Engine
         {
             var exp = string.IsNullOrEmpty(search) && !contactType.HasValue
                 ? new SimpleFilterContactsExp(Tenant, User, sortorder == Defines.ASCENDING, fromIndex, pageSize)
-                : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, search, contactType,
+                : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, search, contactType,
                     orderAsc: sortorder == Defines.ASCENDING,
                     startIndex: fromIndex, limit: pageSize);
 
@@ -131,7 +129,7 @@ namespace ASC.Mail.Core.Engine
 
         public List<MailContactData> GetContactsByContactInfo(ContactInfoType infoType, string data, bool? isPrimary)
         {
-            var exp = new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
+            var exp = new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, 
                 data, infoType: infoType, isPrimary: isPrimary);
 
             var contacts = GetContactCards(exp);
@@ -281,7 +279,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("IndexEngine->UpdateContactCard()");
 
-            IndexEngine.Update(new List<MailContactWrapper> { contactCard.ToMailContactWrapper() });
+            IndexEngine.Update(new List<MailContact> { contactCard.ToMailContactWrapper() });
 
             return contactCard;
         }
@@ -332,7 +330,7 @@ namespace ASC.Mail.Core.Engine
                     TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
-                    var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
+                    var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, 
                         term, infoType: ContactInfoType.Email, orderAsc: true, limit: maxCountPerSystem);
 
                     var contactCards = GetContactCards(exp);
@@ -450,8 +448,7 @@ namespace ASC.Mail.Core.Engine
                 .AddIndexEngineService()
                 .AddAccountEngineService()
                 .AddApiHelperService()
-                .AddFactoryIndexerService<MailContactWrapper>()
-                .AddFactoryIndexerHelperService()
+                .AddFactoryIndexerService<MailContact>()
                 .AddCommonLinkUtilityService()
                 .AddWebItemSecurity();
 

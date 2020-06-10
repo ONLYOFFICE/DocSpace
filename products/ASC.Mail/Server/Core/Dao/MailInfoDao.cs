@@ -153,7 +153,7 @@ namespace ASC.Mail.Core.Dao
             return dictionary;
         }
 
-        public Dictionary<uint, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
+        public Dictionary<int, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
             var query = MailDb.MailUserFolderXMail
                 .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
@@ -164,7 +164,7 @@ namespace ASC.Mail.Core.Dao
                 })
                 .Where(t => t.UFxMail.Tenant == Tenant)
                 .Where(t => t.UFxMail.IdUser == UserId)
-                .Where(t => userFolderIds.Contains((int)t.UFxMail.IdFolder));
+                .Where(t => userFolderIds.Contains(t.UFxMail.IdFolder));
 
             if (unread.HasValue) {
                 query = query.Where(t => t.Mail.Unread == unread.Value);
@@ -178,7 +178,7 @@ namespace ASC.Mail.Core.Dao
             return dictionary;
         }
 
-        public Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null)
+        public Dictionary<int, int> GetMailUserFolderCount(bool? unread = null)
         {
             var query = MailDb.MailUserFolderXMail
                 .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,

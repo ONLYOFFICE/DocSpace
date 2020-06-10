@@ -50,6 +50,8 @@ using ASC.Api.Core;
 using ASC.Web.Files.Api;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Utils;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
@@ -118,12 +120,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddMailBoxSettingEngineService()
                         .AddMailboxEngineService()
                         .AddApiHelperService()
-                        .AddMailWrapperService()
                         .AddFolderEngineService()
                         .AddUserFolderEngineService()
-                        .AddFactoryIndexerHelperService()
                         .AddFactoryIndexerService()
-                        .AddFactoryIndexerService<MailWrapper>()
+                        .AddFactoryIndexerService<MailMail>()
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
@@ -198,27 +198,27 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
-            var mailWrapper = CreateMailWrapper();
+            var MailMail = CreateMailMail();
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelectIds(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out List<int> mailIds);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out List<int> mailIds);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, mailIds.Count);
-            Assert.AreEqual(mailWrapper.Id, mailIds[0]);
+            Assert.AreEqual(MailMail.Id, mailIds[0]);
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
+                    Id = MailMail.Id,
                     Folder = (byte)FolderType.Sent
                 },
                 true,
@@ -226,7 +226,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
 
             success = factoryIndexer.TrySelect(i => i
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -234,21 +234,21 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var wrapper = wrappers.First();
 
             // No Changes
-            Assert.AreEqual(mailWrapper.Id, wrapper.Id);
-            Assert.AreEqual(mailWrapper.TenantId, wrapper.TenantId);
-            Assert.AreEqual(mailWrapper.UserId, wrapper.UserId);
-            Assert.AreEqual(mailWrapper.FromText, wrapper.FromText);
-            Assert.AreEqual(mailWrapper.ToText, wrapper.ToText);
-            Assert.AreEqual(mailWrapper.Cc, wrapper.Cc);
-            Assert.AreEqual(mailWrapper.Bcc, wrapper.Bcc);
-            Assert.AreEqual(mailWrapper.Subject, wrapper.Subject);
-            Assert.AreEqual(mailWrapper.DateSent, wrapper.DateSent);
-            Assert.AreEqual(mailWrapper.Unread, wrapper.Unread);
-            Assert.AreEqual(mailWrapper.HasAttachments, wrapper.HasAttachments);
-            Assert.AreEqual(mailWrapper.Importance, wrapper.Importance);
-            Assert.AreEqual(mailWrapper.IsRemoved, wrapper.IsRemoved);
-            Assert.AreEqual(mailWrapper.ChainId, wrapper.ChainId);
-            Assert.AreEqual(mailWrapper.ChainDate, wrapper.ChainDate);
+            Assert.AreEqual(MailMail.Id, wrapper.Id);
+            Assert.AreEqual(MailMail.TenantId, wrapper.TenantId);
+            Assert.AreEqual(MailMail.IdUser, wrapper.IdUser);
+            Assert.AreEqual(MailMail.FromText, wrapper.FromText);
+            Assert.AreEqual(MailMail.ToText, wrapper.ToText);
+            Assert.AreEqual(MailMail.Cc, wrapper.Cc);
+            Assert.AreEqual(MailMail.Bcc, wrapper.Bcc);
+            Assert.AreEqual(MailMail.Subject, wrapper.Subject);
+            Assert.AreEqual(MailMail.DateSent, wrapper.DateSent);
+            Assert.AreEqual(MailMail.Unread, wrapper.Unread);
+            Assert.AreEqual(MailMail.HasAttachments, wrapper.HasAttachments);
+            Assert.AreEqual(MailMail.Importance, wrapper.Importance);
+            Assert.AreEqual(MailMail.IsRemoved, wrapper.IsRemoved);
+            Assert.AreEqual(MailMail.ChainId, wrapper.ChainId);
+            Assert.AreEqual(MailMail.ChainDate, wrapper.ChainDate);
             Assert.IsEmpty(wrapper.UserFolders);
 
             // Has Changes
@@ -266,44 +266,44 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
-            var mailWrapper = CreateMailWrapper(true);
+            var MailMail = CreateMailMail(true);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelectIds(i => i
                 .Where(s => s.Folder, (byte)FolderType.UserFolder)
-                .Where(s => s.UserId, TestUser.ID), out List<int> mailIds);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out List<int> mailIds);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, mailIds.Count);
-            Assert.AreEqual(mailWrapper.Id, mailIds[0]);
+            Assert.AreEqual(MailMail.Id, mailIds[0]);
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
+                    Id = MailMail.Id,
                     Folder = (byte)FolderType.Inbox
                 },
                 true,
                 w => w.Folder);
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
-                    UserFolders = new List<UserFolderWrapper>()
+                    Id = MailMail.Id,
+                    UserFolders = new List<MailUserFolder>()
                 },
                 UpdateAction.Replace,
-                w => w.UserFolders);
+                w => w.UserFolders.ToList());
 
 
             success = factoryIndexer.TrySelect(i => i
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -311,21 +311,21 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var wrapper = wrappers.First();
 
             // No Changes
-            Assert.AreEqual(mailWrapper.Id, wrapper.Id);
-            Assert.AreEqual(mailWrapper.TenantId, wrapper.TenantId);
-            Assert.AreEqual(mailWrapper.UserId, wrapper.UserId);
-            Assert.AreEqual(mailWrapper.FromText, wrapper.FromText);
-            Assert.AreEqual(mailWrapper.ToText, wrapper.ToText);
-            Assert.AreEqual(mailWrapper.Cc, wrapper.Cc);
-            Assert.AreEqual(mailWrapper.Bcc, wrapper.Bcc);
-            Assert.AreEqual(mailWrapper.Subject, wrapper.Subject);
-            Assert.AreEqual(mailWrapper.DateSent, wrapper.DateSent);
-            Assert.AreEqual(mailWrapper.Unread, wrapper.Unread);
-            Assert.AreEqual(mailWrapper.HasAttachments, wrapper.HasAttachments);
-            Assert.AreEqual(mailWrapper.Importance, wrapper.Importance);
-            Assert.AreEqual(mailWrapper.IsRemoved, wrapper.IsRemoved);
-            Assert.AreEqual(mailWrapper.ChainId, wrapper.ChainId);
-            Assert.AreEqual(mailWrapper.ChainDate, wrapper.ChainDate);
+            Assert.AreEqual(MailMail.Id, wrapper.Id);
+            Assert.AreEqual(MailMail.TenantId, wrapper.TenantId);
+            Assert.AreEqual(MailMail.IdUser, wrapper.IdUser);
+            Assert.AreEqual(MailMail.FromText, wrapper.FromText);
+            Assert.AreEqual(MailMail.ToText, wrapper.ToText);
+            Assert.AreEqual(MailMail.Cc, wrapper.Cc);
+            Assert.AreEqual(MailMail.Bcc, wrapper.Bcc);
+            Assert.AreEqual(MailMail.Subject, wrapper.Subject);
+            Assert.AreEqual(MailMail.DateSent, wrapper.DateSent);
+            Assert.AreEqual(MailMail.Unread, wrapper.Unread);
+            Assert.AreEqual(MailMail.HasAttachments, wrapper.HasAttachments);
+            Assert.AreEqual(MailMail.Importance, wrapper.Importance);
+            Assert.AreEqual(MailMail.IsRemoved, wrapper.IsRemoved);
+            Assert.AreEqual(MailMail.ChainId, wrapper.ChainId);
+            Assert.AreEqual(MailMail.ChainDate, wrapper.ChainDate);
 
             // Has Changes
             Assert.AreEqual(FolderType.Inbox, (FolderType)wrapper.Folder);
@@ -343,49 +343,49 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
-            var mailWrapper = CreateMailWrapper();
+            var MailMail = CreateMailMail();
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelectIds(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out List<int> mailIds);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out List<int> mailIds);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, mailIds.Count);
-            Assert.AreEqual(mailWrapper.Id, mailIds[0]);
+            Assert.AreEqual(MailMail.Id, mailIds[0]);
 
-            var newUserFolderWrapper = new UserFolderWrapper
+            var newUserFolder = new MailUserFolder
             {
                 Id = 1
             };
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
+                    Id = MailMail.Id,
                     Folder = (byte)FolderType.UserFolder
                 },
                 true,
                 w => w.Folder);
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
-                    UserFolders = new List<UserFolderWrapper> { newUserFolderWrapper }
+                    Id = MailMail.Id,
+                    UserFolders = new List<MailUserFolder> { newUserFolder }
                 },
                 UpdateAction.Replace,
-                w => w.UserFolders);
+                w => w.UserFolders.ToList());
 
 
             success = factoryIndexer.TrySelect(i => i
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -393,27 +393,27 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var wrapper = wrappers.First();
 
             // No Changes
-            Assert.AreEqual(mailWrapper.Id, wrapper.Id);
-            Assert.AreEqual(mailWrapper.TenantId, wrapper.TenantId);
-            Assert.AreEqual(mailWrapper.UserId, wrapper.UserId);
-            Assert.AreEqual(mailWrapper.FromText, wrapper.FromText);
-            Assert.AreEqual(mailWrapper.ToText, wrapper.ToText);
-            Assert.AreEqual(mailWrapper.Cc, wrapper.Cc);
-            Assert.AreEqual(mailWrapper.Bcc, wrapper.Bcc);
-            Assert.AreEqual(mailWrapper.Subject, wrapper.Subject);
-            Assert.AreEqual(mailWrapper.DateSent, wrapper.DateSent);
-            Assert.AreEqual(mailWrapper.Unread, wrapper.Unread);
-            Assert.AreEqual(mailWrapper.HasAttachments, wrapper.HasAttachments);
-            Assert.AreEqual(mailWrapper.Importance, wrapper.Importance);
-            Assert.AreEqual(mailWrapper.IsRemoved, wrapper.IsRemoved);
-            Assert.AreEqual(mailWrapper.ChainId, wrapper.ChainId);
-            Assert.AreEqual(mailWrapper.ChainDate, wrapper.ChainDate);
+            Assert.AreEqual(MailMail.Id, wrapper.Id);
+            Assert.AreEqual(MailMail.TenantId, wrapper.TenantId);
+            Assert.AreEqual(MailMail.IdUser, wrapper.IdUser);
+            Assert.AreEqual(MailMail.FromText, wrapper.FromText);
+            Assert.AreEqual(MailMail.ToText, wrapper.ToText);
+            Assert.AreEqual(MailMail.Cc, wrapper.Cc);
+            Assert.AreEqual(MailMail.Bcc, wrapper.Bcc);
+            Assert.AreEqual(MailMail.Subject, wrapper.Subject);
+            Assert.AreEqual(MailMail.DateSent, wrapper.DateSent);
+            Assert.AreEqual(MailMail.Unread, wrapper.Unread);
+            Assert.AreEqual(MailMail.HasAttachments, wrapper.HasAttachments);
+            Assert.AreEqual(MailMail.Importance, wrapper.Importance);
+            Assert.AreEqual(MailMail.IsRemoved, wrapper.IsRemoved);
+            Assert.AreEqual(MailMail.ChainId, wrapper.ChainId);
+            Assert.AreEqual(MailMail.ChainDate, wrapper.ChainDate);
 
             // Has Changes
             Assert.AreEqual(FolderType.UserFolder, (FolderType)wrapper.Folder);
 
             var userFolder = wrapper.UserFolders.First();
-            Assert.AreEqual(newUserFolderWrapper.Id, userFolder.Id);
+            Assert.AreEqual(newUserFolder.Id, userFolder.Id);
         }
 
         [Test]
@@ -427,10 +427,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var tagIds = new List<int>
             {
@@ -439,13 +439,13 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                 111
             };
 
-            var mailWrapper = CreateMailWrapper(tagIds: tagIds);
+            var MailMail = CreateMailMail(tagIds: tagIds);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -465,18 +465,18 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
-            var mailWrapper = CreateMailWrapper();
+            var MailMail = CreateMailMail();
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -487,23 +487,23 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             const int tag_id = 777;
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
-                    Tags = new List<TagWrapper>
+                    Id = MailMail.Id,
+                    Tags = new List<MailTag>
                     {
-                        new TagWrapper
+                        new MailTag
                         {
                             Id = tag_id
                         }
                     }
                 },
                 UpdateAction.Add,
-                w => w.Tags);
+                w => w.Tags.ToList());
 
             success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -526,10 +526,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var tagIds = new List<int>
             {
@@ -538,13 +538,13 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                 111
             };
 
-            var mailWrapper = CreateMailWrapper(tagIds: tagIds);
+            var MailMail = CreateMailMail(tagIds: tagIds);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -555,23 +555,23 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             const int tag_id = 888;
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
-                    Tags = new List<TagWrapper>
+                    Id = MailMail.Id,
+                    Tags = new List<MailTag>
                     {
-                        new TagWrapper
+                        new MailTag
                         {
                             Id = tag_id
                         }
                     }
                 },
                 UpdateAction.Remove,
-                w => w.Tags);
+                w => w.Tags.ToList());
 
             success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -592,10 +592,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var tagIds = new List<int>
             {
@@ -604,13 +604,13 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                 111
             };
 
-            var mailWrapper = CreateMailWrapper(tagIds: tagIds);
+            var MailMail = CreateMailMail(tagIds: tagIds);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out IReadOnlyCollection<MailWrapper> wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out IReadOnlyCollection<MailMail> wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -619,17 +619,17 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             Assert.AreEqual(3, wrapper.Tags.Count);
 
             factoryIndexer.Update(
-                new MailWrapper
+                new MailMail
                 {
-                    Id = mailWrapper.Id,
-                    Tags = new List<TagWrapper>()
+                    Id = MailMail.Id,
+                    Tags = new List<MailTag>()
                 },
                 UpdateAction.Replace,
-                w => w.Tags);
+                w => w.Tags.ToList());
 
             success = factoryIndexer.TrySelect(i => i
                 .Where(s => s.Folder, (byte)FolderType.Inbox)
-                .Where(s => s.UserId, TestUser.ID), out wrappers);
+                .Where(s => s.IdUser, TestUser.ID.ToString()), out wrappers);
 
             Assert.AreEqual(true, success);
             Assert.AreEqual(1, wrappers.Count);
@@ -639,7 +639,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
         }
 
-        public MailWrapper CreateMailWrapper(bool inUserFolder = false, List<int> tagIds = null)
+        public MailMail CreateMailMail(bool inUserFolder = false, List<int> tagIds = null)
         {
             const string from = "from@from.com";
             const string to = "to@to.com";
@@ -650,11 +650,11 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var now = DateTime.UtcNow;
 
-            var mailWrapper = new MailWrapper
+            var MailMail = new MailMail
             {
                 Id = 1,
                 TenantId = CURRENT_TENANT,
-                UserId = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 FromText = from,
                 ToText = to,
                 Cc = cc,
@@ -663,33 +663,32 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                 Folder = inUserFolder ? (byte)FolderType.UserFolder : (byte)FolderType.Inbox,
                 DateSent = now,
                 Unread = true,
-                MailboxId = 1,
+                IdMailbox = 1,
                 HasAttachments = true,
                 Importance = true,
                 IsRemoved = false,
                 ChainId = chain_id,
                 ChainDate = now,
                 Tags = tagIds == null || !tagIds.Any()
-                    ? new List<TagWrapper>()
-                    : tagIds.ConvertAll(tId => new TagWrapper
+                    ? new List<MailTag>()
+                    : tagIds.ConvertAll(tId => new MailTag
                     {
                         Id = tId,
-                        TenantId = CURRENT_TENANT,
-                        LastModifiedOn = now
+                        TenantId = CURRENT_TENANT
                     }),
                 UserFolders = inUserFolder
-                    ? new List<UserFolderWrapper>
+                    ? new List<MailUserFolder>
                     {
-                        new UserFolderWrapper
+                        new MailUserFolder
                         {
                             Id = 1
                         }
                     }
-                    : new List<UserFolderWrapper>(),
-                LastModifiedOn = now
+                    : new List<MailUserFolder>(),
+                TimeModified = now
             };
 
-            return mailWrapper;
+            return MailMail;
         }
     }
 }

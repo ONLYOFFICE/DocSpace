@@ -50,6 +50,7 @@ using ASC.Mail.Enums.Filter;
 using ASC.Web.Files.Api;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Utils;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
@@ -121,9 +122,8 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddApiHelperService()
                         .AddFolderEngineService()
                         .AddUserFolderEngineService()
-                        .AddFactoryIndexerHelperService()
                         .AddFactoryIndexerService()
-                        .AddFactoryIndexerService<MailWrapper>()
+                        .AddFactoryIndexerService<MailMail>()
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
@@ -187,7 +187,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             userManager.DeleteUser(TestUser.ID);
 
             // Clear TestUser mail index
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
             var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
 
             /*var t = scope.ServiceProvider.GetService<MailWrapper>();

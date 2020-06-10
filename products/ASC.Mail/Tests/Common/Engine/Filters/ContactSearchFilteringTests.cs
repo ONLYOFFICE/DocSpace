@@ -49,6 +49,7 @@ using ASC.Web.Files.Api;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Utils;
 using ASC.Core.Users;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
@@ -118,13 +119,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddMailBoxSettingEngineService()
                         .AddMailboxEngineService()
                         .AddApiHelperService()
-                        .AddMailWrapperService()
-                        .AddMailContactWrapperService()
                         .AddFolderEngineService()
                         .AddUserFolderEngineService()
-                        .AddFactoryIndexerHelperService()
                         .AddFactoryIndexerService()
-                        .AddFactoryIndexerService<MailContactWrapper>()
+                        .AddFactoryIndexerService<MailContact>()
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
@@ -197,46 +195,46 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact = new MailContactWrapper
+            var contact = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 776,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact);
 
             var term = "qqq";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
@@ -257,46 +255,46 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact = new MailContactWrapper
+            var contact = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 776,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact);
 
             var term = "test.ru";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
 
@@ -316,46 +314,46 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact = new MailContactWrapper
+            var contact = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 776,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact);
 
             var term = "qqq@test.ru";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
 
@@ -375,73 +373,73 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact1 = new MailContactWrapper
+            var contact1 = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 1,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq1@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact1);
 
-            var contact2 = new MailContactWrapper
+            var contact2 = new MailContact
             {
                 Id = CONTACT_ID_2,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is SPARTA",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_2,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq2@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_2,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq2@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact2);
 
             var term = "SPARTA";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
 
@@ -461,100 +459,100 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact1 = new MailContactWrapper
+            var contact1 = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 1,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq1@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact1);
 
-            var contact2 = new MailContactWrapper
+            var contact2 = new MailContact
             {
                 Id = CONTACT_ID_2,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is SPARTA",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_2,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq2@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_2,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq2@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact2);
 
-            var contact3 = new MailContactWrapper
+            var contact3 = new MailContact
             {
                 Id = CONTACT_ID_3,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is TROY",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Troy is the best",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_3,
-                        InfoType = (int)ContactInfoType.Email,
-                        Text = "qqq3@test.ru",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_3,
+                        Type = (int)ContactInfoType.Email,
+                        Data = "qqq3@test.ru",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact3);
 
             var term = "description";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
 
@@ -575,100 +573,100 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact1 = new MailContactWrapper
+            var contact1 = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 1,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Phone,
-                        Text = "+7999999997",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Phone,
+                        Data = "+7999999997",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact1);
 
-            var contact2 = new MailContactWrapper
+            var contact2 = new MailContact
             {
                 Id = CONTACT_ID_2,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is SPARTA",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_2,
-                        InfoType = (int)ContactInfoType.Phone,
-                        Text = "+7999999998",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_2,
+                        Type = (int)ContactInfoType.Phone,
+                        Data = "+7999999998",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact2);
 
-            var contact3 = new MailContactWrapper
+            var contact3 = new MailContact
             {
                 Id = CONTACT_ID_3,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is TROY",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Troy is the best",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_3,
-                        InfoType = (int)ContactInfoType.Phone,
-                        Text = "+7999999999",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_3,
+                        Type = (int)ContactInfoType.Phone,
+                        Data = "+7999999999",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact3);
 
             var term = "799";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
 
@@ -690,100 +688,100 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailContactWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailContact>(false, scope.ServiceProvider))
                 return;
 
             var indexEngine = scope.ServiceProvider.GetService<IndexEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
             var now = DateTime.UtcNow;
 
-            var contact1 = new MailContactWrapper
+            var contact1 = new MailContact
             {
                 Id = CONTACT_ID_1,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "Test Contact Name",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 1,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_1,
-                        InfoType = (int)ContactInfoType.Phone,
-                        Text = "+7999999997",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_1,
+                        Type = (int)ContactInfoType.Phone,
+                        Data = "+7999999997",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact1);
 
-            var contact2 = new MailContactWrapper
+            var contact2 = new MailContact
             {
                 Id = CONTACT_ID_2,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is SPARTA",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Some test description",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_2,
-                        InfoType = (int)ContactInfoType.Phone,
-                        Text = "+7999999998",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_2,
+                        Type = (int)ContactInfoType.Phone,
+                        Data = "+7999999998",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact2);
 
-            var contact3 = new MailContactWrapper
+            var contact3 = new MailContact
             {
                 Id = CONTACT_ID_3,
                 TenantId = CURRENT_TENANT,
-                User = TestUser.ID,
+                IdUser = TestUser.ID.ToString(),
                 Name = "This is TROY",
-                ContactType = (int)ContactType.Personal,
+                Type = (int)ContactType.Personal,
                 Description = "Troy is the best",
-                InfoList = new List<MailContactInfoWrapper>
+                InfoList = new List<MailContactInfo>
                 {
-                    new MailContactInfoWrapper
+                    new MailContactInfo
                     {
                         Id = 2,
                         TenantId = CURRENT_TENANT,
-                        User = TestUser.ID,
-                        ContactId = CONTACT_ID_3,
-                        InfoType = (int)ContactInfoType.Phone,
-                        Text = "+7999999999",
+                        IdUser = TestUser.ID.ToString(),
+                        IdContact = CONTACT_ID_3,
+                        Type = (int)ContactInfoType.Phone,
+                        Data = "+7999999999",
                         IsPrimary = true,
-                        LastModifiedOn = now
+                        LastModified = now
                     }
                 },
-                LastModifiedOn = now
+                LastModified = now
             };
 
             indexEngine.Add(contact3);
 
             var term = "+7999999999";
 
-            var selector = new Selector<MailContactWrapper>(ServiceProvider)
+            var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(term)
-                        .Where(s => s.User, TestUser.ID);
+                        .Where(s => s.IdUser, TestUser.ID.ToString());
 
             var success = factoryIndexer.TrySelectIds(s => selector, out List<int> ids);
 

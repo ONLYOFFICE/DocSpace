@@ -51,6 +51,7 @@ using ASC.Mail.Enums.Filter;
 using ASC.Web.Files.Api;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Utils;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Aggregator.Tests.Common.Filters
 {
@@ -126,10 +127,8 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
                         .AddApiHelperService()
                         .AddFolderEngineService()
                         .AddUserFolderEngineService()
-                        .AddFactoryIndexerHelperService()
                         .AddFactoryIndexerService()
-                        .AddMailWrapperService()
-                        .AddFactoryIndexerService<MailWrapper>()
+                        .AddFactoryIndexerService<MailMail>()
                         .AddMailGarbageEngineService()
                         .AddTestEngineService()
                         .AddMessageEngineService()
@@ -209,12 +208,11 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             userManager.DeleteUser(TestUser.ID);
 
             // Clear TestUser mail index
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
-            var factoryIndexerHelper = scope.ServiceProvider.GetService<FactoryIndexerHelper>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
-            var t = scope.ServiceProvider.GetService<MailWrapper>();
-            if (factoryIndexerHelper.Support(t))
-                factoryIndexer.Delete(s => s.Where(m => m.UserId, TestUser.ID));
+            var t = scope.ServiceProvider.GetService<MailMail>();
+            if (factoryIndexer.Support(t))
+                factoryIndexer.Delete(s => s.Where(m => m.IdUser, TestUser.ID.ToString()));
 
 
             // Clear TestUser mail data
@@ -233,12 +231,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             const string subj = "[TEST SUBJECT]";
 
@@ -259,9 +257,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -300,12 +298,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var rndGuid = Guid.NewGuid().ToString("N");
             var subj = string.Format("[TEST SUBJECT] {0} zzz", rndGuid);
@@ -327,9 +325,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -368,12 +366,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -392,9 +390,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -433,12 +431,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -457,9 +455,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -498,12 +496,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -522,9 +520,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -580,12 +578,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -604,9 +602,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -662,12 +660,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -687,9 +685,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -719,12 +717,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var subject = "[TEST SUBJECT]";
 
@@ -745,9 +743,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -793,12 +791,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var subject = "[TEST SUBJECT]";
 
@@ -819,9 +817,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             Assert.Greater(id, 0);
 
@@ -867,12 +865,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var to = "to@to.com";
 
@@ -911,14 +909,14 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             Assert.Greater(id2, 0);
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
-            var mailWrapper2 = message2.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail2 = message2.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper2);
+            factoryIndexer.Index(MailMail2);
 
             var filter = new MailSieveFilterData
             {
@@ -951,12 +949,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -994,18 +992,18 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             Assert.Greater(id2, 0);
 
             var message = messageEngine.GetMessage(id, new MailMessageData.Options());
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
-            var mailWrapper2 = message2.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail2 = message2.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper2);
+            factoryIndexer.Index(MailMail2);
 
-            var selector = new Selector<MailWrapper>(ServiceProvider)
+            var selector = new Selector<MailMail>(ServiceProvider)
                 .Where(m => m.WithCalendar, true)
-                .Where(r => r.UserId, TestUser.ID)
+                .Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, true);
 
             var success = factoryIndexer.TrySelectIds(m => selector, out List<int> mailIds);
@@ -1026,12 +1024,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             const string sort_order = Defines.DESCENDING;
 
@@ -1095,14 +1093,14 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             {
                 var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-                var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+                var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-                factoryIndexer.Index(mailWrapper);
+                factoryIndexer.Index(MailMail);
             }
 
-            var selector = new Selector<MailWrapper>(ServiceProvider)
+            var selector = new Selector<MailMail>(ServiceProvider)
                 .Where(r => r.Folder, (int)FolderType.Inbox)
-                .Where(r => r.UserId, TestUser.ID)
+                .Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, sort_order == Defines.ASCENDING);
 
             var success = factoryIndexer.TrySelectIds(m => selector, out List<int> mailIds);
@@ -1113,11 +1111,11 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             Assert.AreEqual(id3, mailIds[1]);
             Assert.AreEqual(id2, mailIds[2]);
 
-            var selector1 = new Selector<MailWrapper>(ServiceProvider);
+            var selector1 = new Selector<MailMail>(ServiceProvider);
 
             selector1.Where(r => r.Folder, (int)FolderType.Inbox);
 
-            selector1.Where(r => r.UserId, TestUser.ID)
+            selector1.Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, sort_order == Defines.ASCENDING);
 
             success = factoryIndexer.TrySelectIds(m => selector1, out mailIds);
@@ -1131,10 +1129,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var index = 0;
             const int max = 2;
 
-            var selector2 = new Selector<MailWrapper>(ServiceProvider)
+            var selector2 = new Selector<MailMail>(ServiceProvider)
                 .Where(r => r.Folder, (int)FolderType.Inbox)
                 .Limit(index, max)
-                .Where(r => r.UserId, TestUser.ID)
+                .Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, sort_order == Defines.ASCENDING);
 
             success = factoryIndexer.TrySelectIds(m => selector2, out mailIds);
@@ -1146,10 +1144,10 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
 
             index += mailIds.Count;
 
-            var selector3 = new Selector<MailWrapper>(ServiceProvider)
+            var selector3 = new Selector<MailMail>(ServiceProvider)
                 .Where(r => r.Folder, (int)FolderType.Inbox)
                 .Limit(index, max)
-                .Where(r => r.UserId, TestUser.ID)
+                .Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, sort_order == Defines.ASCENDING);
 
             success = factoryIndexer.TrySelectIds(m => selector3, out mailIds);
@@ -1186,12 +1184,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var model = new TestMessageModel
             {
@@ -1253,9 +1251,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             {
                 var message = messageEngine.GetMessage(id, new MailMessageData.Options());
 
-                var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+                var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-                factoryIndexer.Index(mailWrapper);
+                factoryIndexer.Index(MailMail);
             }
 
             var filter = new MailSearchFilterData
@@ -1302,13 +1300,13 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
             var tagEngine = scope.ServiceProvider.GetService<TagEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             var tag1 = tagEngine.CreateTag("Tag1", "4", new List<string>());
 
@@ -1375,23 +1373,23 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             Assert.Greater(id3, 0);
 
             var message = messageEngine.GetMessage(id1, new MailMessageData.Options());
-            var mailWrapper = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail = message.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper);
+            factoryIndexer.Index(MailMail);
 
             var message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
-            var mailWrapper2 = message2.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail2 = message2.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper2);
+            factoryIndexer.Index(MailMail2);
 
             var message3 = messageEngine.GetMessage(id3, new MailMessageData.Options());
-            var mailWrapper3 = message3.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
+            var MailMail3 = message3.ToMailWrapper(CURRENT_TENANT, TestUser.ID);
 
-            factoryIndexer.Index(mailWrapper3);
+            factoryIndexer.Index(MailMail3);
 
-            var selectorOneTag = new Selector<MailWrapper>(ServiceProvider)
+            var selectorOneTag = new Selector<MailMail>(ServiceProvider)
                 .InAll(r => r.Tags.Select(t => t.Id), tagIds2.ToArray())
-                .Where(r => r.UserId, TestUser.ID)
+                .Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, true);
 
             var success = factoryIndexer.TrySelectIds(m => selectorOneTag, out List<int> mailIds);
@@ -1402,9 +1400,9 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             var ids = new[] { id1, id2 };
             Assert.AreEqual(true, mailIds.All(id => ids.Contains(id)));
 
-            var selectorTwoTags = new Selector<MailWrapper>(ServiceProvider)
+            var selectorTwoTags = new Selector<MailMail>(ServiceProvider)
                 .InAll(r => r.Tags.Select(t => t.Id), tagIds1.ToArray())
-                .Where(r => r.UserId, TestUser.ID)
+                .Where(r => r.IdUser, TestUser.ID.ToString())
                 .Sort(r => r.DateSent, true);
 
             success = factoryIndexer.TrySelectIds(m => selectorTwoTags, out mailIds);
@@ -1471,12 +1469,12 @@ namespace ASC.Mail.Aggregator.Tests.Common.Filters
             tenantManager.SetCurrentTenant(CURRENT_TENANT);
             securityContext.AuthenticateMe(TestUser.ID);
 
-            if (!TestHelper.IgnoreIfFullTextSearch<MailWrapper>(false, scope.ServiceProvider))
+            if (!TestHelper.IgnoreIfFullTextSearch<MailMail>(false, scope.ServiceProvider))
                 return;
 
             var testEngine = scope.ServiceProvider.GetService<TestEngine>();
             var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
-            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             const int TOTAL_COUNT = 27;
             const int PAGE_SIZE = 25;

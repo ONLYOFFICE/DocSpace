@@ -46,6 +46,7 @@ using ASC.Mail.Models.Base;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
 using MailMessage = ASC.Mail.Models.MailMessageData;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -371,7 +372,7 @@ namespace ASC.Mail.Core.Engine
             }
             else
             {
-                IndexEngine.Update(new List<MailWrapper>
+                IndexEngine.Update(new List<MailMail>
                 {
                     message.ToMailWrapper(compose.Mailbox.TenantId,
                         new Guid(compose.Mailbox.UserId))

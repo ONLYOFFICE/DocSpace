@@ -48,7 +48,7 @@ namespace ASC.Mail.Core.Dao
         {
             var count = MailDb.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
-                    && m.Tenant == mailBoxData.TenantId
+                    && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
                 .Join(MailDb.MailAttachment, m => m.Id, a => a.IdMail,
                     (m, a) => new
@@ -65,7 +65,7 @@ namespace ASC.Mail.Core.Dao
         {
             var list = MailDb.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
-                    && m.Tenant == mailBoxData.TenantId
+                    && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
                 .Join(MailDb.MailAttachment, m => m.Id, a => a.IdMail,
                     (m, a) => new
@@ -99,7 +99,7 @@ namespace ASC.Mail.Core.Dao
         {
             var count = MailDb.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
-                    && m.Tenant == mailBoxData.TenantId
+                    && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
                 .Count();
 
@@ -110,7 +110,7 @@ namespace ASC.Mail.Core.Dao
         {
             var list = MailDb.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId 
-                    && m.Tenant == mailBoxData.TenantId 
+                    && m.TenantId == mailBoxData.TenantId 
                     && m.IdUser == mailBoxData.UserId)
                 .Select(r => new MailMessageGarbage(mailBoxData.UserId, r.Id, r.Stream))
                 .Take(limit)

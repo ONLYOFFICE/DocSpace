@@ -36,6 +36,7 @@ using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -60,7 +61,7 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public DaoFactory DaoFactory { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailMail> FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; private set; }
 
@@ -68,7 +69,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailMail> factoryIndexerHelper,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -82,14 +83,14 @@ namespace ASC.Mail.Core.Engine
 
         public bool IsIndexAvailable()
         {
-            var t = ServiceProvider.GetService<MailWrapper>();
+            var t = ServiceProvider.GetService<MailMail>();
             if (!FactoryIndexerHelper.Support(t))
             {
                 Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer<MailWrapper>.Support == false");
                 return false;
             }
 
-            var indexer = ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+            var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
             if (!indexer.FactoryIndexerCommon.CheckState(false))
             {
@@ -100,7 +101,7 @@ namespace ASC.Mail.Core.Engine
             return true;
         }
 
-        public void Add<T>(T data) where T : Wrapper, new()
+        public void Add<T>(T data) where T : class, ISearchItem, new()
         {
             var typeParameterType = typeof(T);
 
@@ -124,7 +125,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public void Update(List<MailWrapper> mails, UpdateAction action, Expression<Func<MailWrapper, IList>> fields)
+        public void Update(List<MailMail> mails, UpdateAction action, Expression<Func<MailMail, IList>> fields)
         {
             try
             {
@@ -134,7 +135,7 @@ namespace ASC.Mail.Core.Engine
                 if (!IsIndexAvailable())
                     return;
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+                var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
                 mails.ForEach(x => indexer.Update(x, action, fields));
             }
@@ -145,8 +146,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public void Update(MailWrapper data, Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> expression,
-            UpdateAction action, Expression<Func<MailWrapper, IList>> fields)
+        public void Update(MailMail data, Expression<Func<Selector<MailMail>, Selector<MailMail>>> expression,
+            UpdateAction action, Expression<Func<MailMail, IList>> fields)
         {
             try
             {
@@ -159,7 +160,7 @@ namespace ASC.Mail.Core.Engine
                 if (!IsIndexAvailable())
                     return;
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+                var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
                 indexer.Update(data, expression, action, fields);
             }
@@ -169,8 +170,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public void Update(MailWrapper data, Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> expression,
-            params Expression<Func<MailWrapper, object>>[] fields)
+        public void Update(MailMail data, Expression<Func<Selector<MailMail>, Selector<MailMail>>> expression,
+            params Expression<Func<MailMail, object>>[] fields)
         {
             try
             {
@@ -183,7 +184,7 @@ namespace ASC.Mail.Core.Engine
                 if (!IsIndexAvailable())
                     return;
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+                var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
                 indexer.Update(data, expression, true, fields);
             }
@@ -193,7 +194,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public void Update<T>(List<T> list, params Expression<Func<T, object>>[] fields) where T : Wrapper, new()
+        public void Update<T>(List<T> list, params Expression<Func<T, object>>[] fields) where T : class, ISearchItem, new()
         {
             try
             {
@@ -225,13 +226,13 @@ namespace ASC.Mail.Core.Engine
                 if (!IsIndexAvailable())
                     return;
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+                var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
                 ids.ForEach(id =>
                     indexer.Delete(
-                        r => new Selector<MailWrapper>(ServiceProvider)
+                        r => new Selector<MailMail>(ServiceProvider)
                             .Where(m => m.Id, id)
-                            .Where(e => e.UserId, user)
+                            .Where(e => e.IdUser, user.ToString())
                             .Where(e => e.TenantId, tenant)));
             }
             catch (Exception ex)
@@ -250,12 +251,12 @@ namespace ASC.Mail.Core.Engine
                 if (!IsIndexAvailable())
                     return;
 
-                var selector = new Selector<MailWrapper>(ServiceProvider)
-                    .Where(m => m.MailboxId, mailBox.MailBoxId)
-                    .Where(e => e.UserId, new Guid(mailBox.UserId))
+                var selector = new Selector<MailMail>(ServiceProvider)
+                    .Where(m => m.IdMailbox, mailBox.MailBoxId)
+                    .Where(e => e.IdUser, mailBox.UserId)
                     .Where(e => e.TenantId, mailBox.TenantId);
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+                var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
 
                 indexer.Delete(r => selector);
             }
@@ -275,12 +276,12 @@ namespace ASC.Mail.Core.Engine
                 if (!IsIndexAvailable())
                     return;
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<MailContactWrapper>>();
+                var indexer = ServiceProvider.GetService<FactoryIndexer<MailContact>>();
 
                 indexer.Delete(
-                    r => new Selector<MailContactWrapper>(ServiceProvider)
+                    r => new Selector<MailContact>(ServiceProvider)
                         .In(s => s.Id, ids.ToArray())
-                        .Where(e => e.User, user)
+                        .Where(e => e.IdUser, user.ToString())
                         .Where(e => e.TenantId, tenant));
             }
             catch (Exception ex)
@@ -299,7 +300,7 @@ namespace ASC.Mail.Core.Engine
             services.AddSecurityContextService()
                 .AddTenantManagerService()
                 .AddDaoFactoryService()
-                .AddFactoryIndexerHelperService();
+                .AddFactoryIndexerService<MailMail>();
 
             return services;
         }

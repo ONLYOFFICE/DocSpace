@@ -39,9 +39,9 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         Dictionary<int, int> GetMailCount(IMessagesExp exp);
 
-        Dictionary<uint, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null);
+        Dictionary<int, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null);
 
-        Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null);
+        Dictionary<int, int> GetMailUserFolderCount(bool? unread = null);
 
         Tuple<int, int> GetRangeMails(IMessagesExp exp);
 

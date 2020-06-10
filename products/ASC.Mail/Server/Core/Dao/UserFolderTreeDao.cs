@@ -74,7 +74,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public int InsertFullPathToRoot(uint folderId, uint parentId)
+        public int InsertFullPathToRoot(int folderId, int parentId)
         {
             var treeItems = MailDb.MailUserFolderTree
                 .AsNoTracking()
@@ -104,7 +104,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public void Move(uint folderId, uint toFolderId)
+        public void Move(int folderId, int toFolderId)
         {
             var exp = SimpleUserFoldersTreeExp.CreateBuilder()
                 .SetParent(folderId)

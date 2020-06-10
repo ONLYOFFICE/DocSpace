@@ -49,10 +49,10 @@ namespace ASC.Mail.Core.Dao
         public int SaveContactInfo(ContactInfo contactInfo)
         {
             var mailContactInfo = new MailContactInfo { 
-                Id = (uint)contactInfo.Id,
-                Tenant = contactInfo.Tenant,
+                Id = contactInfo.Id,
+                TenantId = contactInfo.Tenant,
                 IdUser = contactInfo.User,
-                IdContact = (uint)contactInfo.ContactId,
+                IdContact = contactInfo.ContactId,
                 Data = contactInfo.Data,
                 Type = contactInfo.Type,
                 IsPrimary = contactInfo.IsPrimary
@@ -68,7 +68,7 @@ namespace ASC.Mail.Core.Dao
         public int RemoveContactInfo(int id)
         {
             var queryDelete = MailDb.MailContactInfo
-                .Where(c => c.Tenant == Tenant
+                .Where(c => c.TenantId == Tenant
                     && c.IdUser == UserId
                     && c.Id == id);
 
@@ -83,7 +83,7 @@ namespace ASC.Mail.Core.Dao
         public int RemoveByContactIds(List<int> contactIds)
         {
             var queryDelete = MailDb.MailContacts
-                .Where(c => c.Tenant == Tenant
+                .Where(c => c.TenantId == Tenant
                     && c.IdUser == UserId
                     && contactIds.Contains((int)c.Id));
 

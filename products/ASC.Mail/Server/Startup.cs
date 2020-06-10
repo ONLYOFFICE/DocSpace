@@ -1,4 +1,5 @@
 
+using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -17,7 +18,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace ASC.Mail
 {
@@ -34,13 +35,20 @@ namespace ASC.Mail
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                .AddNewtonsoftJson()
-                .AddXmlSerializerFormatters();
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                }); ;
 
-            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
+            //services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
             services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
@@ -74,7 +82,7 @@ namespace ASC.Mail
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Mail");
 
             diHelper
                 .AddMailController();

@@ -56,7 +56,7 @@ namespace ASC.Mail.Core.Dao
             {
                 Id = mail.Id,
                 IdMailbox = mail.MailboxId,
-                Tenant = mail.Tenant,
+                TenantId = mail.Tenant,
                 IdUser = mail.User,
                 Address = mail.Address,
                 Uidl = mail.Uidl,
@@ -153,7 +153,7 @@ namespace ASC.Mail.Core.Dao
                 Id = r.Id,
                 MailboxId = r.IdMailbox,
                 User = r.IdUser,
-                Tenant = r.Tenant,
+                Tenant = r.TenantId,
                 Address = r.Address,
                 Uidl = r.Uidl,
                 Md5 = r.Md5,

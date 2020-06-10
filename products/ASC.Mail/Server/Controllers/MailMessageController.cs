@@ -389,7 +389,7 @@ namespace ASC.Mail.Controllers
         /// <short>Move message to folder</short> 
         /// <category>Messages</category>
         [Update(@"messages/move")]
-        public IEnumerable<int> MoveMessages(List<int> ids, int folder, uint? userFolderId = null)
+        public IEnumerable<int> MoveMessages(List<int> ids, int folder, int? userFolderId = null)
         {
             if (!ids.Any())
                 throw new ArgumentException(@"Empty ids collection", "ids");

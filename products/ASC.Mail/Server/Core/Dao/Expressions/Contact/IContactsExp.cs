@@ -38,6 +38,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
 
         int? Limit { get; }
 
-        Expression<Func<MailContacts, bool>> GetExpression();
+        Expression<Func<MailContact, bool>> GetExpression();
     }
 }

@@ -37,13 +37,13 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
             _exp = new SimpleUserFoldersExp(tenant, user);
         }
 
-        public UserFoldersExpBuilder SetIds(List<uint> ids)
+        public UserFoldersExpBuilder SetIds(List<int> ids)
         {
             _exp.Ids = ids;
             return this;
         }
 
-        public UserFoldersExpBuilder SetParent(uint parentId)
+        public UserFoldersExpBuilder SetParent(int parentId)
         {
             _exp.ParentId = parentId;
             return this;

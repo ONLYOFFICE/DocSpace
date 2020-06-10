@@ -52,7 +52,7 @@ namespace ASC.Mail.Core.Dao
         public ContactCard GetContactCard(int id)
         {
             var contacts = MailDb.MailContacts
-                .Where(c => c.Tenant == Tenant && c.IdUser == UserId && c.Id == id)
+                .Where(c => c.TenantId == Tenant && c.IdUser == UserId && c.Id == id)
                 .Select(ToContact)
                 .ToList();
 
@@ -132,13 +132,13 @@ namespace ASC.Mail.Core.Dao
                     .ToList();
         }
 
-        protected Contact ToContact(MailContacts r)
+        protected Contact ToContact(MailContact r)
         {
             var c = new Contact
             {
                 Id = (int)r.Id,
                 User = r.IdUser,
-                Tenant = r.Tenant,
+                Tenant = r.TenantId,
                 ContactName = r.Name,
                 Address = r.Address,
                 Description = r.Description,
@@ -154,7 +154,7 @@ namespace ASC.Mail.Core.Dao
             var c = new ContactInfo
             {
                 Id = (int)r.Id,
-                Tenant = r.Tenant,
+                Tenant = r.TenantId,
                 User = r.IdUser,
                 ContactId = (int)r.IdContact,
                 Data = r.Data,

@@ -196,7 +196,7 @@ namespace ASC.Mail.Controllers
         /// <short>Move conversations to folder</short>
         /// <category>Conversations</category>
         [Update(@"conversations/move")]
-        public IEnumerable<int> MoveConversations(List<int> ids, int folder, uint? userFolderId = null)
+        public IEnumerable<int> MoveConversations(List<int> ids, int folder, int? userFolderId = null)
         {
             if (!ids.Any())
                 throw new ArgumentException(@"Empty ids collection", "ids");

@@ -32,11 +32,11 @@ namespace ASC.Mail.Core.Dao.Interfaces
     public interface IUserFolderXMailDao
     {
         UserFolderXMail Get(int mailId);
-        List<UserFolderXMail> GetList(uint? folderId = null, List<int> mailIds = null);
-        List<int> GetMailIds(uint folderId);
-        void SetMessagesFolder(IEnumerable<int> messageIds, uint folderId);
+        List<UserFolderXMail> GetList(int? folderId = null, List<int> mailIds = null);
+        List<int> GetMailIds(int folderId);
+        void SetMessagesFolder(IEnumerable<int> messageIds, int folderId);
         int Save(UserFolderXMail item);
-        int Remove(int? mailId = null, uint? folderId = null);
+        int Remove(int? mailId = null, int? folderId = null);
         int Remove(List<int> mailIds);
         int RemoveByMailbox(int mailboxId);
     }

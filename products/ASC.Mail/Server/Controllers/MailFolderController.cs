@@ -75,7 +75,7 @@ namespace ASC.Mail.Controllers
         /// <short>Get folders</short> 
         /// <category>Folders</category>
         [Read(@"userfolders")]
-        public IEnumerable<MailUserFolderData> GetUserFolders(List<uint> ids, uint? parentId)
+        public IEnumerable<MailUserFolderData> GetUserFolders(List<int> ids, int? parentId)
         {
             var list = UserFolderEngine.GetList(ids, parentId);
             return list;
@@ -91,7 +91,7 @@ namespace ASC.Mail.Controllers
         /// <category>Folders</category>
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
         [Create(@"userfolders")]
-        public MailUserFolderData CreateUserFolder(string name, uint parentId = 0)
+        public MailUserFolderData CreateUserFolder(string name, int parentId = 0)
         {
             //Thread.CurrentThread.CurrentCulture = CurrentCulture;
             //Thread.CurrentThread.CurrentUICulture = CurrentCulture;
@@ -127,7 +127,7 @@ namespace ASC.Mail.Controllers
         /// <category>Folders</category>
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
         [Update(@"userfolders/{id}")]
-        public MailUserFolderData UpdateUserFolder(uint id, string name, uint? parentId = null)
+        public MailUserFolderData UpdateUserFolder(int id, string name, int? parentId = null)
         {
             //Thread.CurrentThread.CurrentCulture = CurrentCulture;
             //Thread.CurrentThread.CurrentUICulture = CurrentCulture;

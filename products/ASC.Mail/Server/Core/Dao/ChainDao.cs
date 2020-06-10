@@ -75,7 +75,7 @@ namespace ASC.Mail.Core.Dao
             return dictionary;
         }
 
-        public Dictionary<uint, int> GetChainUserFolderCount(bool? unread = null)
+        public Dictionary<int, int> GetChainUserFolderCount(bool? unread = null)
         {
             var query = MailDb.MailUserFolderXMail
                 .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
@@ -109,7 +109,7 @@ namespace ASC.Mail.Core.Dao
             return dictionary;
         }
 
-        public Dictionary<uint, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
+        public Dictionary<int, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
             var query = MailDb.MailUserFolderXMail
                 .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,

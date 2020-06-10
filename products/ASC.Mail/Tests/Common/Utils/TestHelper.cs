@@ -92,14 +92,14 @@ namespace ASC.Mail.Aggregator.Tests.Common.Utils
             return userManager.SaveUserInfo(user);
         }
 
-        public static bool IgnoreIfFullTextSearch<T>(bool enabled, IServiceProvider serviceProvider) where T : Wrapper
+        public static bool IgnoreIfFullTextSearch<T>(bool enabled, IServiceProvider serviceProvider) where T : class, ISearchItem
         {
             using var scope = serviceProvider.CreateScope();
 
             var t = serviceProvider.GetService<T>();
-            var factoryIndexerHelper = serviceProvider.GetService<FactoryIndexerHelper>();
+            var factoryIndexer = serviceProvider.GetService<FactoryIndexer<T>>();
 
-            if (enabled == factoryIndexerHelper.Support(t))
+            if (enabled == factoryIndexer.Support(t))
             {
                 Assert.Ignore("Test is Ignored until FullTextSearch {0} ", !enabled ? "is not started" : "is started");
 

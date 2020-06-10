@@ -34,10 +34,10 @@ namespace ASC.Mail.Models
     public class MailUserFolderData
     {
         [DataMember(IsRequired = true, Name = "id")]
-        public uint Id { get; set; }
+        public int Id { get; set; }
 
         [DataMember(IsRequired = true, Name = "parent")]
-        public uint ParentId { get; set; }
+        public int ParentId { get; set; }
 
         [DataMember(IsRequired = true, Name = "name")]
         public string Name { get; set; }

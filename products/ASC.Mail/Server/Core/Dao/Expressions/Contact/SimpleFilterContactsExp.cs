@@ -50,9 +50,9 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             Limit = limit;
         }
 
-        public virtual Expression<Func<MailContacts, bool>> GetExpression()
+        public virtual Expression<Func<MailContact, bool>> GetExpression()
         {
-            return r => r.Tenant == Tenant && r.IdUser == User;
+            return r => r.TenantId == Tenant && r.IdUser == User;
         }
     }
 }

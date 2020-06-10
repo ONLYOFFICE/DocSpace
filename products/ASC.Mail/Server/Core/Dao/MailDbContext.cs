@@ -23,7 +23,7 @@ namespace ASC.Mail.Core.Dao
         public virtual DbSet<MailChain> MailChain { get; set; }
         public virtual DbSet<MailChainXCrmEntity> MailChainXCrmEntity { get; set; }
         public virtual DbSet<MailContactInfo> MailContactInfo { get; set; }
-        public virtual DbSet<MailContacts> MailContacts { get; set; }
+        public virtual DbSet<MailContact> MailContacts { get; set; }
         public virtual DbSet<MailDisplayImages> MailDisplayImages { get; set; }
         public virtual DbSet<MailFilter> MailFilter { get; set; }
         public virtual DbSet<MailFolder> MailFolder { get; set; }
@@ -153,7 +153,7 @@ namespace ASC.Mail.Core.Dao
                 entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                entity.HasIndex(e => new { e.Tenant, e.IdUser, e.Data })
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Data })
                     .HasName("tenant_id_user_data");
 
                 entity.Property(e => e.Data)
@@ -167,14 +167,18 @@ namespace ASC.Mail.Core.Dao
                 entity.Property(e => e.LastModified)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+
+                entity.HasOne(a => a.Contact)
+                    .WithMany(m => m.InfoList)
+                    .HasForeignKey(a => a.IdContact);
             });
 
-            modelBuilder.Entity<MailContacts>(entity =>
+            modelBuilder.Entity<MailContact>(entity =>
             {
                 entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                entity.HasIndex(e => new { e.Tenant, e.IdUser, e.Address })
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Address })
                     .HasName("tenant_id_user_name_address");
 
                 entity.Property(e => e.Address)
@@ -196,6 +200,10 @@ namespace ASC.Mail.Core.Dao
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
+
+                entity.HasMany(m => m.InfoList)
+                    .WithOne(a => a.Contact)
+                    .HasForeignKey(a => a.IdContact);
             });
 
             modelBuilder.Entity<MailDisplayImages>(entity =>
@@ -301,10 +309,10 @@ namespace ASC.Mail.Core.Dao
                 entity.HasIndex(e => new { e.ChainId, e.IdMailbox, e.Folder })
                     .HasName("chain_index_folders");
 
-                entity.HasIndex(e => new { e.Tenant, e.IdUser, e.Folder, e.ChainDate })
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Folder, e.ChainDate })
                     .HasName("list_conversations");
 
-                entity.HasIndex(e => new { e.Tenant, e.IdUser, e.Folder, e.DateSent })
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Folder, e.DateSent })
                     .HasName("list_messages");
 
                 entity.Property(e => e.Address)
@@ -694,7 +702,7 @@ namespace ASC.Mail.Core.Dao
 
             modelBuilder.Entity<MailTag>(entity =>
             {
-                entity.HasIndex(e => new { e.Tenant, e.IdUser })
+                entity.HasIndex(e => new { e.TenantId, e.IdUser })
                     .HasName("username");
 
                 entity.Property(e => e.Addresses)
@@ -776,7 +784,7 @@ namespace ASC.Mail.Core.Dao
 
             modelBuilder.Entity<MailUserFolder>(entity =>
             {
-                entity.HasIndex(e => new { e.Tenant, e.IdUser, e.ParentId })
+                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.ParentId })
                     .HasName("tenant_user_parent");
 
                 entity.Property(e => e.IdUser)

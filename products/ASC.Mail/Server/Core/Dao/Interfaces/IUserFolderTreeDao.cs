@@ -34,8 +34,8 @@ namespace ASC.Mail.Core.Dao.Interfaces
     {
         List<UserFolderTreeItem> Get(IUserFoldersTreeExp exp);
         int Save(UserFolderTreeItem item);
-        int InsertFullPathToRoot(uint folderId, uint parentId);
+        int InsertFullPathToRoot(int folderId, int parentId);
         int Remove(IUserFoldersTreeExp exp);
-        void Move(uint folderId, uint toFolderId);
+        void Move(int folderId, int toFolderId);
     }
 }

@@ -441,7 +441,7 @@ namespace ASC.Mail.Core.Engine
             var mb = DaoFactory.MailboxDao.GetMailBox(exp);
 
             var deleteMailboxMessagesQuery = MailDb.MailMail
-                .Where(m => m.IdMailbox == mb.Id && m.Tenant == mb.Tenant && m.IdUser == mb.User);
+                .Where(m => m.IdMailbox == mb.Id && m.TenantId == mb.Tenant && m.IdUser == mb.User);
 
             MailDb.MailMail.RemoveRange(deleteMailboxMessagesQuery);
 
@@ -461,14 +461,14 @@ namespace ASC.Mail.Core.Engine
                 DaoFactory.FolderDao.Delete();
 
                 var deleteContactInfoQuery = MailDb.MailContactInfo
-                    .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
+                    .Where(c => c.IdUser == mb.User && c.TenantId == mb.Tenant);
 
                 MailDb.MailContactInfo.RemoveRange(deleteContactInfoQuery);
 
                 MailDb.SaveChanges();
 
                 var deleteContactsQuery = MailDb.MailContacts
-                    .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
+                    .Where(c => c.IdUser == mb.User && c.TenantId == mb.Tenant);
 
                 MailDb.MailContacts.RemoveRange(deleteContactsQuery);
 

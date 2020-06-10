@@ -41,16 +41,14 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
         public ContactInfoType? InfoType { get; private set; }
         public bool? IsPrimary { get; private set; }
         public MailDbContext MailDb { get; }
-        public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailContact> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
         public string SearchTerm { get; private set; }
         public int? Type { get; set; }
 
         public FullFilterContactsExp(int tenant, string user, 
             MailDbContext mailDbContext,
-            FactoryIndexer<MailContactWrapper> factoryIndexer,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailContact> factoryIndexer,
             IServiceProvider serviceProvider,
             string searchTerm = null, int? type = null, ContactInfoType? infoType = null, 
             bool? isPrimary = null, bool? orderAsc = true, int? startIndex = null,
@@ -61,13 +59,12 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             IsPrimary = isPrimary;
             MailDb = mailDbContext;
             FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             SearchTerm = searchTerm;
             Type = type;
         }
 
-        public override Expression<Func<MailContacts, bool>> GetExpression()
+        public override Expression<Func<MailContact, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
@@ -75,16 +72,16 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             {
                 var foundIndex = false;
 
-                var t = ServiceProvider.GetService<MailContactWrapper>();
-                if (FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+                var t = ServiceProvider.GetService<MailContact>();
+                if (FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
                 {
-                    var selector = new Selector<MailContactWrapper>(ServiceProvider)
+                    var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(SearchTerm)
-                        .Where(s => s.User, new Guid(User));
+                        .Where(s => s.IdUser, User);
 
                     if (InfoType.HasValue)
                     {
-                        selector.InAll(s => s.InfoList.Select(i => i.InfoType), new[] { (int)InfoType.Value });
+                        selector.InAll(s => s.InfoList.Select(i => i.Type), new[] { (int)InfoType.Value });
                     }
 
                     if (IsPrimary.HasValue)
@@ -102,7 +99,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
                 if (!foundIndex)
                 {
                     var contactInfoQuery = MailDb.MailContactInfo
-                        .Where(o => o.Tenant == Tenant 
+                        .Where(o => o.TenantId == Tenant 
                             && o.IdUser == User 
                             && o.Data.Contains(SearchTerm, StringComparison.InvariantCultureIgnoreCase));
 

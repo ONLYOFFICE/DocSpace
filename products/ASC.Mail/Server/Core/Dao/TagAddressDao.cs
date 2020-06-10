@@ -54,7 +54,7 @@ namespace ASC.Mail.Core.Dao
                     Tag = t
                 })
                 .Where(o => o.TagAddress.Address == email)
-                .Where(o => o.Tag.Tenant == Tenant && o.Tag.IdUser == UserId)
+                .Where(o => o.Tag.TenantId == Tenant && o.Tag.IdUser == UserId)
                 .Select(o => (int)o.TagAddress.IdTag)
                 .Distinct()
                 .ToList();

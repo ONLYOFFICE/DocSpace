@@ -33,7 +33,7 @@ namespace ASC.Mail.Core.Entities
         public int Tenant { get; set; }
         public string User { get; set; }
         public int MailId { get; set; }
-        public uint FolderId { get; set; }
+        public int FolderId { get; set; }
         public DateTime TimeModified { get; set; }
     }
 }

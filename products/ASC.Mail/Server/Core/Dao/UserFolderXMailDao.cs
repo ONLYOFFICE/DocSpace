@@ -55,7 +55,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public List<UserFolderXMail> GetList(uint? folderId = null, List<int> mailIds = null)
+        public List<UserFolderXMail> GetList(int? folderId = null, List<int> mailIds = null)
         {
             var query = MailDb.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId);
@@ -75,7 +75,7 @@ namespace ASC.Mail.Core.Dao
             return list;
         }
 
-        public List<int> GetMailIds(uint folderId)
+        public List<int> GetMailIds(int folderId)
         {
             var list = MailDb.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdFolder == folderId)
@@ -85,7 +85,7 @@ namespace ASC.Mail.Core.Dao
             return list;
         }
 
-        public void SetMessagesFolder(IEnumerable<int> messageIds, uint folderId)
+        public void SetMessagesFolder(IEnumerable<int> messageIds, int folderId)
         {
             var idMessages = messageIds as IList<int> ?? messageIds.ToList();
             if (!idMessages.Any())
@@ -132,7 +132,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public int Remove(int? mailId = null, uint? folderId = null)
+        public int Remove(int? mailId = null, int? folderId = null)
         {
             var query = MailDb.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId);
@@ -175,7 +175,7 @@ namespace ASC.Mail.Core.Dao
                     UserFoldertXMail = ufxm,
                     MailMail = m
                 })
-                .Where(o => o.MailMail.IdMailbox == mailboxId && o.MailMail.Tenant == Tenant && o.MailMail.IdUser == UserId)
+                .Where(o => o.MailMail.IdMailbox == mailboxId && o.MailMail.TenantId == Tenant && o.MailMail.IdUser == UserId)
                 .Select(o => o.UserFoldertXMail);
 
             MailDb.MailUserFolderXMail.RemoveRange(queryDelete);

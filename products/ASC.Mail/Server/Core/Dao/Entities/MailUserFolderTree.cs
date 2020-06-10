@@ -10,10 +10,10 @@ namespace ASC.Mail.Core.Dao.Entities
     {
         [Key]
         [Column("folder_id", TypeName = "int(11) unsigned")]
-        public uint FolderId { get; set; }
+        public int FolderId { get; set; }
         [Key]
         [Column("parent_id", TypeName = "int(11) unsigned")]
-        public uint ParentId { get; set; }
+        public int ParentId { get; set; }
         [Column("level", TypeName = "int(11) unsigned")]
         public uint Level { get; set; }
 

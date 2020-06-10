@@ -38,12 +38,13 @@ using Microsoft.Extensions.DependencyInjection;
 using ASC.Mail.Models;
 using ASC.ElasticSearch;
 using System.Data;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
     public class MailRemoveUserFolderOperation : MailOperation
     {
-        private readonly uint _userFolderId;
+        private readonly int _userFolderId;
 
         public override MailOperationType OperationType
         {
@@ -53,7 +54,7 @@ namespace ASC.Mail.Core.Engine.Operations
         public UserFolderEngine UserFolderEngine { get; }
         public MessageEngine MessageEngine { get; }
         public IndexEngine IndexEngine { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailMail> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public MailRemoveUserFolderOperation(
@@ -65,16 +66,16 @@ namespace ASC.Mail.Core.Engine.Operations
             IndexEngine indexEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailMail> factoryIndexer,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> optionsMonitor,
-            uint userFolderId)
+            int userFolderId)
             : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             UserFolderEngine = userFolderEngine;
             MessageEngine = messageEngine;
             IndexEngine = indexEngine;
-            FactoryIndexerHelper = factoryIndexerHelper;
+            FactoryIndexer = factoryIndexer;
             ServiceProvider = serviceProvider;
             _userFolderId = userFolderId;
 
@@ -104,7 +105,7 @@ namespace ASC.Mail.Core.Engine.Operations
             }
         }
 
-        public void Delete(uint folderId)
+        public void Delete(int folderId)
         {
             var affectedIds = new List<int>();
 
@@ -163,11 +164,11 @@ namespace ASC.Mail.Core.Engine.Operations
 
             DaoFactory.UserFolderDao.RecalculateFoldersCount(folder.ParentId);
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t) || !affectedIds.Any())
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t) || !affectedIds.Any())
                 return;
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Folder = (byte)FolderType.Trash
             };

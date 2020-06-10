@@ -32,27 +32,27 @@ namespace ASC.Mail.Core.Dao.Interfaces
 {
     public interface IUserFolderDao
     {
-        UserFolder Get(uint id);
+        UserFolder Get(int id);
 
         UserFolder GetByMail(uint mailId);
 
         List<UserFolder> GetList(IUserFoldersExp exp);
 
-        uint Save(UserFolder folder);
+        int Save(UserFolder folder);
 
-        int Remove(uint id);
+        int Remove(int id);
 
         int Remove(IUserFoldersExp exp);
 
-        void RecalculateFoldersCount(uint id);
+        void RecalculateFoldersCount(int id);
 
-        int SetFolderCounters(uint folderId, int? unreadMess = null, int? totalMess = null,
+        int SetFolderCounters(int folderId, int? unreadMess = null, int? totalMess = null,
             int? unreadConv = null, int? totalConv = null);
 
         /// <summary>
         ///     Update folder counters
         /// </summary>
-        int ChangeFolderCounters(uint folderId, int? unreadMessDiff = null, int? totalMessDiff = null,
+        int ChangeFolderCounters(int folderId, int? unreadMessDiff = null, int? totalMessDiff = null,
             int? unreadConvDiff = null, int? totalConvDiff = null);
     }
 }

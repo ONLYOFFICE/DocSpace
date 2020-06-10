@@ -30,8 +30,8 @@ namespace ASC.Mail.Core.Entities
 {
     public class UserFolder : IEquatable<UserFolder>
     {
-        public uint Id { get; set; }
-        public uint ParentId { get; set; }
+        public int Id { get; set; }
+        public int ParentId { get; set; }
         public string User { get; set; }
         public int Tenant { get; set; }
         public string Name { get; set; }

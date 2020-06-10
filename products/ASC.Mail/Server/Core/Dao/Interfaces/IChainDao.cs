@@ -36,9 +36,9 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         Dictionary<int, int> GetChainCount(IConversationsExp exp);
 
-        Dictionary<uint, int> GetChainUserFolderCount(bool? unread = null);
+        Dictionary<int, int> GetChainUserFolderCount(bool? unread = null);
 
-        Dictionary<uint, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null);
+        Dictionary<int, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null);
 
         int SaveChain(Chain chain);
 

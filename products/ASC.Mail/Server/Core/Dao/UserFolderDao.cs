@@ -46,10 +46,10 @@ namespace ASC.Mail.Core.Dao
         {
         }
 
-        public UserFolder Get(uint id)
+        public UserFolder Get(int id)
         {
             var userFolder = MailDb.MailUserFolder
-                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Id == id)
+                .Where(f => f.TenantId == Tenant && f.IdUser == UserId && f.Id == id)
                 .Select(ToUserFolder)
                 .SingleOrDefault();
 
@@ -114,7 +114,7 @@ namespace ASC.Mail.Core.Dao
             return list;
         }
 
-        public UserFolder GetRootFolder(uint folderId)
+        public UserFolder GetRootFolder(int folderId)
         {
             var parentId = MailDb.MailUserFolderTree
                 .Where(t => t.FolderId == folderId)
@@ -148,7 +148,7 @@ namespace ASC.Mail.Core.Dao
             return GetRootFolder(folderId);
         }
 
-        public List<UserFolder> GetParentFolders(uint folderId)
+        public List<UserFolder> GetParentFolders(int folderId)
         {
             var list = MailDb.MailUserFolder
                 .Join(MailDb.MailUserFolderTree, uf => uf.Id, t => t.ParentId,
@@ -165,13 +165,13 @@ namespace ASC.Mail.Core.Dao
             return list;
         }
 
-        public uint Save(UserFolder folder)
+        public int Save(UserFolder folder)
         {
             var mailUserFolder = new MailUserFolder
             {
                 Id = folder.Id,
-                ParentId = (int)folder.ParentId,
-                Tenant = folder.Tenant,
+                ParentId = folder.ParentId,
+                TenantId = folder.Tenant,
                 IdUser = folder.User,
                 Name = folder.Name,
                 FoldersCount = (uint)folder.FolderCount,
@@ -189,12 +189,12 @@ namespace ASC.Mail.Core.Dao
             return entry.Id;
         }
 
-        public int Remove(uint id)
+        public int Remove(int id)
         {
             var mailUserFolder = new MailUserFolder
             {
                 Id = id,
-                Tenant = Tenant,
+                TenantId = Tenant,
                 IdUser = UserId,
             };
 
@@ -216,7 +216,7 @@ namespace ASC.Mail.Core.Dao
             return count;
         }
 
-        public void RecalculateFoldersCount(uint id)
+        public void RecalculateFoldersCount(int id)
         {
             var toUpdate = MailDb.MailUserFolder
                 .Where(uf => MailDb.MailUserFolderTree
@@ -238,7 +238,7 @@ namespace ASC.Mail.Core.Dao
             var result = MailDb.SaveChanges();
         }
 
-        public int SetFolderCounters(uint folderId, int? unreadMess = null, int? totalMess = null,
+        public int SetFolderCounters(int folderId, int? unreadMess = null, int? totalMess = null,
             int? unreadConv = null, int? totalConv = null)
         {
             if (!unreadMess.HasValue
@@ -250,7 +250,7 @@ namespace ASC.Mail.Core.Dao
             }
 
             var userFolder = MailDb.MailUserFolder
-                .Where(uf => uf.Tenant == Tenant && uf.IdUser == UserId && uf.Id == folderId)
+                .Where(uf => uf.TenantId == Tenant && uf.IdUser == UserId && uf.Id == folderId)
                 .SingleOrDefault();
 
             if (userFolder == null)
@@ -273,7 +273,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public int ChangeFolderCounters(uint folderId, int? unreadMessDiff = null, int? totalMessDiff = null,
+        public int ChangeFolderCounters(int folderId, int? unreadMessDiff = null, int? totalMessDiff = null,
             int? unreadConvDiff = null, int? totalConvDiff = null)
         {
             if (!unreadMessDiff.HasValue
@@ -285,7 +285,7 @@ namespace ASC.Mail.Core.Dao
             }
 
             var userFolder = MailDb.MailUserFolder
-                .Where(uf => uf.Tenant == Tenant && uf.IdUser == UserId && uf.Id == folderId)
+                .Where(uf => uf.TenantId == Tenant && uf.IdUser == UserId && uf.Id == folderId)
                 .SingleOrDefault();
 
             if (userFolder == null)
@@ -333,9 +333,9 @@ namespace ASC.Mail.Core.Dao
             var folder = new UserFolder
             {
                 Id = r.Id,
-                ParentId = (uint)r.ParentId,
+                ParentId = r.ParentId,
                 
-                Tenant = r.Tenant,
+                Tenant = r.TenantId,
                 User = r.IdUser,
                 
                 Name = r.Name,

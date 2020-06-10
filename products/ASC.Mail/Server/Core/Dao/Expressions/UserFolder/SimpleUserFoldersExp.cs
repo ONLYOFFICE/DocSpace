@@ -37,8 +37,8 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
         public int Tenant { get; private set; }
         public string User { get; private set; }
 
-        public List<uint> Ids { get; set; }
-        public uint? ParentId { get; set; }
+        public List<int> Ids { get; set; }
+        public int? ParentId { get; set; }
         public string Name { get; set; }
         public bool? HasMails { get; set; }
         public bool? HasFolders { get; set; }
@@ -61,7 +61,7 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 
         public Expression<Func<MailUserFolder, bool>> GetExpression()
         {
-            Expression<Func<MailUserFolder, bool>> exp = f => f.Tenant == Tenant && f.IdUser == User;
+            Expression<Func<MailUserFolder, bool>> exp = f => f.TenantId == Tenant && f.IdUser == User;
 
             if (Ids != null && Ids.Any())
             {

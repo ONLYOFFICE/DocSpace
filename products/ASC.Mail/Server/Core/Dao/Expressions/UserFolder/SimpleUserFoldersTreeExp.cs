@@ -34,8 +34,8 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 {
     public class SimpleUserFoldersTreeExp : IUserFoldersTreeExp
     {
-        public List<uint> Ids { get; set; }
-        public uint? ParentId { get; set; }
+        public List<int> Ids { get; set; }
+        public int? ParentId { get; set; }
         public uint? Level { get; set; }
 
         public string OrderBy { get; set; }

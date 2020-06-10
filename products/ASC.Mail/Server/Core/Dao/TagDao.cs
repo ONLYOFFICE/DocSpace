@@ -52,13 +52,13 @@ namespace ASC.Mail.Core.Dao
                 return GetCrmTag(id);
 
             var tag = MailDb.MailTag
-                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.TenantId == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Where(r => r.Id == id)
                 .Select(r => new Tag
                 {
                     Id = r.Id,
-                    Tenant = r.Tenant,
+                    Tenant = r.TenantId,
                     User = r.IdUser,
                     TagName = r.Name,
                     Style = r.Style,
@@ -97,13 +97,13 @@ namespace ASC.Mail.Core.Dao
         public Tag GetTag(string name)
         {
             var tag = MailDb.MailTag
-                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.TenantId == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Where(r => r.Name == name)
                 .Select(r => new Tag
                 {
                     Id = r.Id,
-                    Tenant = r.Tenant,
+                    Tenant = r.TenantId,
                     User = r.IdUser,
                     TagName = r.Name,
                     Style = r.Style,
@@ -119,13 +119,13 @@ namespace ASC.Mail.Core.Dao
         public List<Tag> GetTags()
         {
             var tags = MailDb.MailTag
-                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.TenantId == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Select(r => new Tag
                 {
                     Id = r.Id,
                     TagName = r.Name,
-                    Tenant = r.Tenant,
+                    Tenant = r.TenantId,
                     User = r.IdUser,
                     Style = r.Style,
                     Addresses = r.Addresses,
@@ -205,7 +205,7 @@ namespace ASC.Mail.Core.Dao
             var dbTag = new MailTag()
             {
                 Id = tag.Id,
-                Tenant = Tenant,
+                TenantId = Tenant,
                 IdUser = UserId,
                 Name = tag.TagName,
                 Style = tag.Style,
@@ -224,7 +224,7 @@ namespace ASC.Mail.Core.Dao
         public int DeleteTag(int id)
         {
             var range = MailDb.MailTag
-                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.Id == id);
+                .Where(r => r.TenantId == Tenant && r.IdUser == UserId && r.Id == id);
 
             MailDb.MailTag.RemoveRange(range);
 
@@ -234,7 +234,7 @@ namespace ASC.Mail.Core.Dao
         public int DeleteTags(List<int> tagIds)
         {
             var range = MailDb.MailTag
-                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
+                .Where(r => r.TenantId == Tenant && r.IdUser == UserId)
                 .Where(r => tagIds.Contains(r.Id)); ;
 
             MailDb.MailTag.RemoveRange(range);

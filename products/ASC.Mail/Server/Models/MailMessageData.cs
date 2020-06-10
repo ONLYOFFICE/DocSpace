@@ -202,7 +202,7 @@ namespace ASC.Mail.Models
         public FolderType Folder { get; set; }
 
         [DataMember]
-        public uint? UserFolderId { get; set; }
+        public int? UserFolderId { get; set; }
 
         [DataMember]
         public int ChainLength { get; set; }

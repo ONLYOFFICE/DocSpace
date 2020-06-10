@@ -31,6 +31,7 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
@@ -72,8 +73,7 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; }
         public DaoFactory DaoFactory { get; }
         public IndexEngine IndexEngine { get; }
-        public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailMail> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public MailDbContext MailDb { get; }
@@ -83,8 +83,7 @@ namespace ASC.Mail.Core.Engine
             DaoFactory daoFactory,
             IndexEngine indexEngine,
             WebItemSecurity webItemSecurity,
-            FactoryIndexer<MailWrapper> factoryIndexer,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailMail> factoryIndexer,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -97,7 +96,6 @@ namespace ASC.Mail.Core.Engine
             IndexEngine = indexEngine;
 
             FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             WebItemSecurity = webItemSecurity;
 
@@ -538,28 +536,28 @@ namespace ASC.Mail.Core.Engine
 
         private void UpdateIndexerTags(List<int> ids, UpdateAction action, int tagId)
         {
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t) || !FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t) || !FactoryIndexer.FactoryIndexerCommon.CheckState(false))
                 return;
 
             if(ids == null || !ids.Any())
                 return;
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
-                Tags = new List<TagWrapper>
+                Tags = new List<MailTag>
                     {
-                        new TagWrapper
+                        new MailTag
                         {
                             Id = tagId
                         }
                     }
             };
 
-            Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> exp =
+            Expression<Func<Selector<MailMail>, Selector<MailMail>>> exp =
                 s => s.In(m => m.Id, ids.ToArray());
 
-            IndexEngine.Update(data, exp, action, s => s.Tags);
+            IndexEngine.Update(data, exp, action, s => s.Tags.ToList());
         }
 
         private void UpdateTagsCount(Tag tag)
@@ -606,8 +604,7 @@ namespace ASC.Mail.Core.Engine
                 .AddDaoFactoryService()
                 .AddIndexEngineService()
                 .AddWebItemSecurity()
-                .AddFactoryIndexerService<MailWrapper>()
-                .AddFactoryIndexerHelperService();
+                .AddFactoryIndexerService<MailMail>();
 
             return services;
         }

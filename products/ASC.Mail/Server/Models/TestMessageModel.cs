@@ -21,7 +21,7 @@ namespace ASC.Mail.Models
         public List<int> TagIds { get; set; } // = null,
         public string FromAddress { get; set; } // = null,
         public string MimeMessageId { get; set; } // = null,
-        public uint? UserFolderId { get; set; } // = null
+        public int? UserFolderId { get; set; } // = null
         public Stream EmlStream { get; set; } // = null
     }
 }

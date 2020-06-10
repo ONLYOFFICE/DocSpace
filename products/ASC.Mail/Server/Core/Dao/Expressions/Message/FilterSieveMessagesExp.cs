@@ -32,8 +32,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         public int? StartIndex { get; set; }
         public int? Limit { get; set; }
-        public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailMail> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public List<int> TagIds
@@ -48,15 +47,13 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         public FilterSieveMessagesExp(List<int> ids, int tenant, string user, MailSieveFilterData filter, int page,
             int pageSize, 
-            FactoryIndexer<MailWrapper> factoryIndexer, 
-            FactoryIndexerHelper factoryIndexerHelper, 
+            FactoryIndexer<MailMail> factoryIndexer, 
             IServiceProvider serviceProvider)
         {
             Filter = filter;
             Tenant = tenant;
             User = user;
             FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
 
             if (ids.Any())
@@ -72,10 +69,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         public virtual Expression<Func<MailMail, bool>> GetExpression()
         {
             Expression<Func<MailMail, bool>> filterExp = m => 
-                m.Tenant == Tenant && m.IdUser == User && m.IsRemoved == false;
+                m.TenantId == Tenant && m.IdUser == User && m.IsRemoved == false;
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
             {
                 Expression<Func<MailMail, bool>> getConditionExp(MailSieveFilterConditionData c)
                 {
@@ -190,15 +187,14 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         }
 
         public static bool TryGetFullTextSearchIds(
-            FactoryIndexer<MailWrapper> factoryIndexer, 
-            FactoryIndexerHelper factoryIndexerHelper, 
+            FactoryIndexer<MailMail> factoryIndexer, 
             IServiceProvider serviceProvider, 
             MailSieveFilterData filter, string user, out List<int> ids, out long total)
         {
             ids = new List<int>();
 
-            var t = serviceProvider.GetService<MailWrapper>();
-            if (!factoryIndexerHelper.Support(t))
+            var t = serviceProvider.GetService<MailMail>();
+            if (!factoryIndexer.Support(t))
             {
                 total = 0;
                 return false;
@@ -206,7 +202,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             var userId = new Guid(user);
 
-            static Expression<Func<MailWrapper, object>> getExp(ConditionKeyType c)
+            static Expression<Func<MailMail, object>> getExp(ConditionKeyType c)
             {
                 return c switch
                 {
@@ -225,33 +221,33 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                     : c.Value;
             }
 
-            Func<MailSieveFilterConditionData, Selector<MailWrapper>> setSelector = (c) =>
+            Func<MailSieveFilterConditionData, Selector<MailMail>> setSelector = (c) =>
             {
-                Selector<MailWrapper> sel;
+                Selector<MailMail> sel;
 
                 var value = getValue(c);
 
                 if (c.Key == ConditionKeyType.ToOrCc)
                 {
-                    sel = new Selector<MailWrapper>(serviceProvider).Or(
+                    sel = new Selector<MailMail>(serviceProvider).Or(
                         s => s.Match(w => w.ToText, value), 
                         s => s.Match(w => w.Cc, value));
                 }
                 else
                 {
-                    sel = new Selector<MailWrapper>(serviceProvider).Match(getExp(c.Key), value);
+                    sel = new Selector<MailMail>(serviceProvider).Match(getExp(c.Key), value);
                 }
 
                 if (c.Operation == ConditionOperationType.NotMatches ||
                     c.Operation == ConditionOperationType.NotContains)
                 {
-                    return new Selector<MailWrapper>(serviceProvider).Not(s => sel);
+                    return new Selector<MailMail>(serviceProvider).Not(s => sel);
                 }
 
                 return sel;
             };
 
-            var selector = new Selector<MailWrapper>(serviceProvider);
+            var selector = new Selector<MailMail>(serviceProvider);
 
             foreach (var c in filter.Conditions)
             {
@@ -273,7 +269,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (filter.Options.ApplyTo.Mailboxes.Any())
             {
-                selector.In(r => r.MailboxId, filter.Options.ApplyTo.Mailboxes);
+                selector.In(r => r.IdMailbox, filter.Options.ApplyTo.Mailboxes);
             }
 
             if (filter.Options.ApplyTo.WithAttachments != ApplyToAttachmentsType.WithAndWithoutAttachments)
@@ -283,7 +279,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             }
 
             selector
-                .Where(r => r.UserId, userId)
+                .Where(r => r.IdUser, userId.ToString())
                 .Sort(r => r.DateSent, true);
 
             if (!factoryIndexer.TrySelectIds(s => selector, out List<int> mailIds, out total))

@@ -61,6 +61,7 @@ using ASC.Mail.Exceptions;
 using ASC.Web.Core.Files;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SqlClient;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -76,8 +77,7 @@ namespace ASC.Mail.Core.Engine
         public TagEngine TagEngine { get; }
         public TenantUtil TenantUtil { get; }
         public CoreSettings CoreSettings { get; }
-        public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public FactoryIndexer<MailMail> FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
         public StorageFactory StorageFactory { get; }
         public StorageManager StorageManager { get; }
@@ -121,8 +121,7 @@ namespace ASC.Mail.Core.Engine
             FilesIntegration filesIntegration,
             FileSecurity filesSeurity,
             FileConverter fileConverter,
-            FactoryIndexer<MailWrapper> factoryIndexer,
-            FactoryIndexerHelper factoryIndexerHelper,
+            FactoryIndexer<MailMail> factoryIndexer,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -137,7 +136,6 @@ namespace ASC.Mail.Core.Engine
             TenantUtil = tenantUtil;
             CoreSettings = coreSettings;
             FactoryIndexer = factoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             StorageFactory = storageFactory;
             StorageManager = storageManager;
@@ -204,13 +202,13 @@ namespace ASC.Mail.Core.Engine
 
             long total = 0;
 
-            if (filter.UserFolderId.HasValue && UserFolderEngine.Get((uint)filter.UserFolderId.Value) == null)
+            if (filter.UserFolderId.HasValue && UserFolderEngine.Get(filter.UserFolderId.Value) == null)
                 throw new ArgumentException("Folder not found");
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!filter.IsDefault() && FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!filter.IsDefault() && FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
             {
-                if (FilterMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, FactoryIndexerHelper, ServiceProvider,
+                if (FilterMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, ServiceProvider,
                     filter, User, out ids, out total))
                 {
                     if (!ids.Any())
@@ -295,7 +293,7 @@ namespace ASC.Mail.Core.Engine
 
             var res = new List<MailMessageData>();
 
-            if (FilterSieveMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, FactoryIndexerHelper, ServiceProvider,
+            if (FilterSieveMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, ServiceProvider,
                 filter, User, out List<int> ids, out long total))
             {
                 if (!ids.Any())
@@ -305,7 +303,7 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            var exp = new FilterSieveMessagesExp(ids, Tenant, User, filter, page, pageSize, FactoryIndexer, FactoryIndexerHelper, ServiceProvider);
+            var exp = new FilterSieveMessagesExp(ids, Tenant, User, filter, page, pageSize, FactoryIndexer, ServiceProvider);
 
             totalMessagesCount = ids.Any() ? total : DaoFactory.MailInfoDao.GetMailInfoTotal(exp);
 
@@ -330,10 +328,10 @@ namespace ASC.Mail.Core.Engine
             if (mail == null)
                 return -1;
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
             {
-                if (FilterMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, FactoryIndexerHelper, ServiceProvider,
+                if (FilterMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, ServiceProvider,
                     filter, User, out List<int> ids, out long total, mail.DateSent))
                 {
                     if (!ids.Any())
@@ -387,12 +385,12 @@ namespace ASC.Mail.Core.Engine
 
                 var fGroupedChains = chainedMessages.GroupBy(m => new { m.ChainId, m.Folder, m.MailboxId });
 
-                uint? userFolder = null;
+                int? userFolder = null;
 
                 if (chainedMessages.Any(m => m.Folder == FolderType.UserFolder))
                 {
                     var item = DaoFactory.UserFolderXMailDao.Get(ids.First());
-                    userFolder = item == null ? (uint?)null : item.FolderId;
+                    userFolder = item == null ? (int?)null : item.FolderId;
                 }
 
                 foreach (var fChainMessages in fGroupedChains)
@@ -468,7 +466,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Unread = unread
             };
@@ -496,7 +494,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Importance = importance
             };
@@ -524,11 +522,11 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
                 return;
 
-            var mails = mailInfoList.ConvertAll(m => new MailWrapper
+            var mails = mailInfoList.ConvertAll(m => new MailMail
             {
                 Id = m.Id,
                 Folder = (byte)m.FolderRestore
@@ -627,7 +625,7 @@ namespace ASC.Mail.Core.Engine
                 unreadMessDiff, totalMessDiff);
         }
 
-        public void SetFolder(List<int> ids, FolderType folder, uint? userFolderId = null)
+        public void SetFolder(List<int> ids, FolderType folder, int? userFolderId = null)
         {
             if (!ids.Any())
                 throw new ArgumentNullException("ids");
@@ -643,34 +641,34 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
                 return;
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Folder = (byte)folder,
                 UserFolders = userFolderId.HasValue
-                    ? new List<UserFolderWrapper>
+                    ? new List<MailUserFolder>
                     {
-                        new UserFolderWrapper
+                        new MailUserFolder
                         {
-                            Id = (int) userFolderId.Value
+                            Id = userFolderId.Value
                         }
                     }
-                    : new List<UserFolderWrapper>()
+                    : new List<MailUserFolder>()
             };
 
-            Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> exp =
+            Expression<Func<Selector<MailMail>, Selector<MailMail>>> exp =
                 s => s.In(m => m.Id, ids.ToArray());
 
             IndexEngine.Update(data, exp, w => w.Folder);
 
-            IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders);
+            IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders.ToList());
         }
 
         public void SetFolder(IDaoFactory daoFactory, List<int> ids, FolderType toFolder,
-            uint? toUserFolderId = null)
+            int? toUserFolderId = null)
         {
             var query = SimpleMessagesExp.CreateBuilder(Tenant, User)
                         .SetMessageIds(ids)
@@ -684,7 +682,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         public void SetFolder(IDaoFactory daoFactory, List<MailInfo> mailsInfo, FolderType toFolder,
-            uint? toUserFolderId = null)
+            int? toUserFolderId = null)
         {
             if (!mailsInfo.Any())
                 return;
@@ -694,12 +692,12 @@ namespace ASC.Mail.Core.Engine
 
             var messages = mailsInfo.ConvertAll(x =>
             {
-                var srcUserFolderId = (uint?)null;
+                var srcUserFolderId = (int?)null;
 
                 if (x.Folder == FolderType.UserFolder)
                 {
                     var item = DaoFactory.UserFolderXMailDao.Get(x.Id);
-                    srcUserFolderId = item == null ? (uint?)null : item.FolderId;
+                    srcUserFolderId = item == null ? (int?)null : item.FolderId;
                 }
 
                 return new
@@ -850,8 +848,8 @@ namespace ASC.Mail.Core.Engine
 
             QuotaEngine.QuotaUsedDelete(usedQuota);
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
                 return;
 
             IndexEngine.Remove(ids, Tenant, new Guid(User));
@@ -997,7 +995,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         public int MailSave(MailBoxData mailbox, MailMessageData message,
-            int messageId, FolderType folder, FolderType folderRestore, uint? userFolderId,
+            int messageId, FolderType folder, FolderType folderRestore, int? userFolderId,
             string uidl, string md5, bool saveAttachments)
         {
             int id;
@@ -1015,7 +1013,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         public int MailSave(MailBoxData mailbox, MailMessageData message,
-            int messageId, FolderType folder, FolderType folderRestore, uint? userFolderId,
+            int messageId, FolderType folder, FolderType folderRestore, int? userFolderId,
             string uidl, string md5, bool saveAttachments, out long usedQuota)
         {
             var countAttachments = 0;
@@ -1228,8 +1226,8 @@ namespace ASC.Mail.Core.Engine
 
         //TODO: Need refactoring
         public MailMessageData Save(
-            MailBoxData mailbox, MimeMessage mimeMessage, string uidl, MailFolder folder, 
-            uint? userFolderId, bool unread = true, ILog log = null)
+            MailBoxData mailbox, MimeMessage mimeMessage, string uidl, Models.MailFolder folder, 
+            int? userFolderId, bool unread = true, ILog log = null)
         {
             if (mailbox == null)
                 throw new ArgumentException(@"mailbox is null", "mailbox");
@@ -1414,7 +1412,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         private void UpdateMessagesChains(IDaoFactory daoFactory, MailBoxData mailbox, string mimeMessageId, 
-            string chainId, FolderType folder, uint? userFolderId)
+            string chainId, FolderType folder, int? userFolderId)
         {
             var chainsForUpdate = new[] {new {id = chainId, folder}};
 
@@ -1470,8 +1468,8 @@ namespace ASC.Mail.Core.Engine
         }
 
         //TODO: Need refactoring
-        private bool TrySaveMail(MailBoxData mailbox, MailMessageData message, 
-            MailFolder folder, uint? userFolderId, string uidl, string md5, ILog log)
+        private bool TrySaveMail(MailBoxData mailbox, MailMessageData message,
+            Models.MailFolder folder, int? userFolderId, string uidl, string md5, ILog log)
         {
             try
             {
@@ -1699,7 +1697,7 @@ namespace ASC.Mail.Core.Engine
 
             var filter = (MailSearchFilterData)filterData.Clone();
 
-            if (filter.UserFolderId.HasValue && UserFolderEngine.Get((uint)filter.UserFolderId.Value) == null)
+            if (filter.UserFolderId.HasValue && UserFolderEngine.Get(filter.UserFolderId.Value) == null)
                 throw new ArgumentException("Folder not found");
 
             var filteredConversations = GetFilteredConversations(filter, out hasMore);
@@ -1797,12 +1795,12 @@ namespace ASC.Mail.Core.Engine
                     unreadMessagesCountByFolder.Add(message.Folder, 1);
             }
 
-            uint? userFolder = null;
+            int? userFolder = null;
 
             if (unreadMessagesCountByFolder.Keys.Any(k => k == FolderType.UserFolder))
             {
                 var item = DaoFactory.UserFolderXMailDao.Get(ids.First());
-                userFolder = item == null ? (uint?)null : item.FolderId;
+                userFolder = item == null ? (int?)null : item.FolderId;
             }
 
             List<int> ids2Update;
@@ -1850,7 +1848,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Unread = false
             };
@@ -1860,7 +1858,7 @@ namespace ASC.Mail.Core.Engine
             return messages;
         }
 
-        public void SetConversationsFolder(List<int> ids, FolderType folder, uint? userFolderId = null)
+        public void SetConversationsFolder(List<int> ids, FolderType folder, int? userFolderId = null)
         {
             if (!ids.Any())
                 throw new ArgumentNullException("ids");
@@ -1884,30 +1882,30 @@ namespace ASC.Mail.Core.Engine
                 //TODO: fix OperationEngine.ApplyFilters(listObjects.Select(o => o.Id).ToList());
             }
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
                 return;
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Folder = (byte)folder,
                 UserFolders = userFolderId.HasValue
-                    ? new List<UserFolderWrapper>
+                    ? new List<MailUserFolder>
                     {
-                        new UserFolderWrapper
+                        new MailUserFolder
                         {
-                            Id = (int) userFolderId.Value
+                            Id = userFolderId.Value
                         }
                     }
-                    : new List<UserFolderWrapper>()
+                    : new List<MailUserFolder>()
             };
 
-            Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> exp =
+            Expression<Func<Selector<MailMail>, Selector<MailMail>>> exp =
                 s => s.In(m => m.Id, listObjects.Select(o => o.Id).ToArray());
 
             IndexEngine.Update(data, exp, w => w.Folder);
 
-            IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders);
+            IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders.ToList());
         }
 
         public void RestoreConversations(int tenant, string user, List<int> ids)
@@ -1939,11 +1937,11 @@ namespace ASC.Mail.Core.Engine
                 //TODO: fix OperationEngine.ApplyFilters(filterApplyIds);
             }
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
                 return;
 
-            var mails = listObjects.ConvertAll(m => new MailWrapper
+            var mails = listObjects.ConvertAll(m => new MailMail
             {
                 Id = m.Id,
                 Folder = (byte)m.FolderRestore
@@ -1974,8 +1972,8 @@ namespace ASC.Mail.Core.Engine
 
             QuotaEngine.QuotaUsedDelete(usedQuota);
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = ServiceProvider.GetService<MailMail>();
+            if (!FactoryIndexer.Support(t))
                 return;
 
             IndexEngine.Remove(listObjects.Select(info => info.Id).ToList(), Tenant, new Guid(User));
@@ -2033,7 +2031,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            var data = new MailWrapper
+            var data = new MailMail
             {
                 Importance = important
             };
@@ -2125,12 +2123,12 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var info in mailInfoList.GroupBy(t => new { t.id_mailbox, t.chain_id, t.folder }))
             {
-                uint? userFolder = null;
+                int? userFolder = null;
 
                 if (info.Key.folder == FolderType.UserFolder)
                 {
                     var item = DaoFactory.UserFolderXMailDao.Get(ids.First());
-                    userFolder = item == null ? (uint?)null : item.FolderId;
+                    userFolder = item == null ? (int?)null : item.FolderId;
                 }
 
                 UpdateChain(info.Key.chain_id, info.Key.folder, userFolder, info.Key.id_mailbox, tenant, user);
@@ -2146,7 +2144,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         // Method for updating chain flags, date and length.
-        public void UpdateChain(string chainId, FolderType folder, uint? userFolderId, int mailboxId,
+        public void UpdateChain(string chainId, FolderType folder, int? userFolderId, int mailboxId,
             int tenant, string user)
         {
             if (string.IsNullOrEmpty(chainId)) return;
@@ -2368,18 +2366,18 @@ namespace ASC.Mail.Core.Engine
 
                 IMessagesExp exp = null;
 
-                var t = ServiceProvider.GetService<MailWrapper>();
-                if (!filter.IsDefault() && FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+                var t = ServiceProvider.GetService<MailMail>();
+                if (!filter.IsDefault() && FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
                 {
                     filter.Page = chunkIndex * CHUNK_SIZE * pageSize; // Elastic Limit from {index of last message} to {count of messages}
 
-                    if (FilterChainMessagesExp.TryGetFullTextSearchChains(FactoryIndexer, FactoryIndexerHelper, ServiceProvider,
-                        filter, User, out List<MailWrapper> mailWrappers))
+                    if (FilterChainMessagesExp.TryGetFullTextSearchChains(FactoryIndexer, ServiceProvider,
+                        filter, User, out List<MailMail> MailMails))
                     {
-                        if (!mailWrappers.Any())
+                        if (!MailMails.Any())
                             break;
 
-                        var ids = mailWrappers.Select(c => c.Id).ToList();
+                        var ids = MailMails.Select(c => c.Id).ToList();
 
                         exp = SimpleMessagesExp.CreateBuilder(Tenant, User)
                             .SetMessageIds(ids)
@@ -2489,7 +2487,7 @@ namespace ASC.Mail.Core.Engine
         {
             MailAttachmentData result;
 
-            var fileDao = FilesIntegration.GetFileDao();
+            var fileDao = FilesIntegration.DaoFactory.GetFileDao<string>();
 
             var file = string.IsNullOrEmpty(version)
                            ? fileDao.GetFile(fileId)
@@ -2560,7 +2558,7 @@ namespace ASC.Mail.Core.Engine
 
                 using var memStream = new MemoryStream();
 
-                readStream.StreamCopyTo(memStream);
+                readStream.CopyTo(memStream);
                 result = AttachFileToDraft(tenant, user, messageId, fileName, memStream, memStream.Length, null, needSaveToTemp);
                 Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
             }
@@ -2652,7 +2650,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (attachCount == 1)
                 {
-                    var data = new MailWrapper
+                    var data = new MailMail
                     {
                         HasAttachments = true
                     };
@@ -2769,7 +2767,7 @@ namespace ASC.Mail.Core.Engine
 
             if (attachCount == 0)
             {
-                var data = new MailWrapper
+                var data = new MailMail
                 {
                     HasAttachments = false
                 };
@@ -3043,8 +3041,7 @@ namespace ASC.Mail.Core.Engine
                 .AddTenantUtilService()
                 .AddCoreSettingsService()
                 .AddStorageFactoryService()
-                .AddFactoryIndexerService<MailWrapper>()
-                .AddFactoryIndexerHelperService()
+                .AddFactoryIndexerService<MailMail>()
                 .AddStorageManagerService()
                 .AddFilesIntegrationService()
                 .AddFileSecurityService()
