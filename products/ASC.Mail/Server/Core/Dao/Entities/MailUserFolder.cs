@@ -15,7 +15,7 @@ namespace ASC.Mail.Core.Dao.Entities
     public partial class MailUserFolder : BaseEntity, ISearchItem
     {
         [Key]
-        [Column("id", TypeName = "int(11) unsigned")]
+        [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
 
         [Column("parent_id", TypeName = "int(11)")]
