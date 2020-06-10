@@ -34,7 +34,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
-using ASC.FederatedLogin.Helpers;
+//using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Mail.Authorization;
 using ASC.Mail.Clients;
@@ -89,7 +89,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine cacheEngine,
             ServerEngine serverEngine,
             ConsumerFactory consumerFactory,
-            GoogleLoginProvider googleLoginProvider,
+            //GoogleLoginProvider googleLoginProvider,
             MailBoxSettingEngine mailBoxSettingEngine,
             CoreBaseSettings coreBaseSettings,
             SettingsManager settingsManager,
@@ -104,7 +104,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine = cacheEngine;
             ServerEngine = serverEngine;
             ConsumerFactory = consumerFactory;
-            GoogleLoginProvider = googleLoginProvider;
+            //GoogleLoginProvider = googleLoginProvider;
             MailBoxSettingEngine = mailBoxSettingEngine;
             CoreBaseSettings = coreBaseSettings;
             SettingsManager = settingsManager;
@@ -393,7 +393,8 @@ namespace ASC.Mail.Core.Engine
 
         public AccountInfo CreateAccountOAuth(string code, byte type)
         {
-            var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
+			//TODO: Fix
+            /*var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
             if (oAuthToken == null)
                 throw new Exception(@"Empty oauth token");
@@ -428,7 +429,9 @@ namespace ASC.Mail.Core.Engine
                 new MailAutoreplyData(mboxImap.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
                     DateTime.MinValue, string.Empty, string.Empty), true, mboxImap.EMailInFolder, false, false);
 
-            return account;
+            return account;*/
+
+            throw new NotImplementedException();
         }
 
         public AccountInfo UpdateAccount(MailBoxData newMailBoxData, out LoginResult loginResult)
@@ -502,7 +505,8 @@ namespace ASC.Mail.Core.Engine
 
         public AccountInfo UpdateAccountOAuth(int mailboxId, string code, byte type)
         {
-            if (string.IsNullOrEmpty(code))
+            //TODO: Fix
+            /*if (string.IsNullOrEmpty(code))
                 throw new ArgumentException(@"Empty OAuth code", "code");
 
             var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
@@ -557,7 +561,9 @@ namespace ASC.Mail.Core.Engine
                 new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
                     DateTime.MinValue, string.Empty, string.Empty), true, mbox.EmailInFolder, false, false);
 
-            return accountInfo;
+            return accountInfo;*/
+
+            throw new NotImplementedException();
         }
 
         public int SetAccountEnable(MailAddress address, bool enabled, out LoginResult loginResult)
@@ -716,7 +722,9 @@ namespace ASC.Mail.Core.Engine
                 .AddServerEngineService()
                 .AddConsumerFactoryService()
                 .AddCoreBaseSettingsService()
-                .AddGoogleLoginProviderService()
+                //.AddDropboxLoginProviderService()
+                //.AddOneDriveLoginProviderService()
+                //.AddGoogleLoginProviderService()
                 .AddSettingsManagerService();
 
             return services;
