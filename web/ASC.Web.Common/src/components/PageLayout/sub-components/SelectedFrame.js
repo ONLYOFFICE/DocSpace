@@ -55,7 +55,7 @@ class SelectedFrame extends React.Component {
 
         const topStart = top - this.offsetTopStart - itemHeight;
         const topEnd = mouseYX[0] - this.offsetTopEnd - itemHeight;
-        const offsetScroll = this.props.scrollRef.current.viewScrollTop;
+        const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
 
         if (item.offsetTop - offsetScroll >= topStart && item.offsetTop  - offsetScroll <= topEnd) {
           if (currentItem.getAttribute("draggable") === "true") {
@@ -120,7 +120,7 @@ class SelectedFrame extends React.Component {
 
           const topEndDown = mouseYX[0] - this.offsetTopStart - itemHeight;
           const topStartDown = top - this.offsetTopEnd - itemHeight;
-          const offsetScroll = this.props.scrollRef.current.viewScrollTop;
+          const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
 
           if (
             (item.offsetTop - offsetScroll >= topStartUp && item.offsetTop - offsetScroll <= topEndUp) ||
