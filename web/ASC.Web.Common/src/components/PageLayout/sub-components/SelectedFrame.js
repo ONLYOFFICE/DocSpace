@@ -34,8 +34,6 @@ class SelectedFrame extends React.Component {
     const posX = e.pageX;
     const posY = e.pageY;
     return [posY, posX];
-    //posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-    //posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
   };
 
   onMouseDown = e => {
@@ -47,27 +45,28 @@ class SelectedFrame extends React.Component {
     const mouseYX = this.getCoords(e);
     const top = mouseYX[0];
     const left = mouseYX[1];
-    let update = true;
+    let needUpdate = true;
 
     for (let childItem in this.container.childNodes) {
       if (this.container.childNodes[childItem].nodeType === 1) {
         const item = this.container.childNodes[childItem];
-        const item2 = item.childNodes[0];
-        const itemHeight = item2.offsetHeight;
+        const currentItem = item.childNodes[0];
+        const itemHeight = currentItem.offsetHeight;
 
         const topStart = top - this.offsetTopStart - itemHeight;
         const topEnd = mouseYX[0] - this.offsetTopEnd - itemHeight;
+        const offsetScroll = this.props.scrollRef.current.viewScrollTop;
 
-        if (item.offsetTop >= topStart && item.offsetTop <= topEnd) {
-          if (item2.getAttribute("draggable") === "true") {
-            update = false;
+        if (item.offsetTop - offsetScroll >= topStart && item.offsetTop  - offsetScroll <= topEnd) {
+          if (currentItem.getAttribute("draggable") === "true") {
+            needUpdate = false;
             break;
           }
         }
       }
     }
 
-    if (update) {
+    if (needUpdate) {
       document.addEventListener("mousemove", this.onMouseMove, false);
       this.setState({ mouseDown: true, top, left });
     }
@@ -113,20 +112,21 @@ class SelectedFrame extends React.Component {
       for (let childItem in this.container.childNodes) {
         if (this.container.childNodes[childItem].nodeType === 1) {
           const item = this.container.childNodes[childItem];
-          const item2 = item.childNodes[0];
+          const currentItem = item.childNodes[0];
 
-          const itemHeight = item2.offsetHeight;
+          const itemHeight = currentItem.offsetHeight;
           const topStartUp = top - this.offsetTopStart - itemHeight;
           const topEndUp = mouseYX[0] - this.offsetTopEnd - itemHeight;
 
           const topEndDown = mouseYX[0] - this.offsetTopStart - itemHeight;
           const topStartDown = top - this.offsetTopEnd - itemHeight;
+          const offsetScroll = this.props.scrollRef.current.viewScrollTop;
 
           if (
-            (item.offsetTop >= topStartUp && item.offsetTop <= topEndUp) ||
-            (item.offsetTop <= topStartDown && item.offsetTop >= topEndDown)
+            (item.offsetTop - offsetScroll >= topStartUp && item.offsetTop - offsetScroll <= topEndUp) ||
+            (item.offsetTop - offsetScroll <= topStartDown && item.offsetTop - offsetScroll >= topEndDown)
           ) {
-            const value = item2.getAttribute("value");
+            const value = currentItem.getAttribute("value");
             selectedItems.push(value);
           }
         }
@@ -164,6 +164,7 @@ class SelectedFrame extends React.Component {
 
 SelectedFrame.propTypes = {
   children: PropTypes.any,
+  scrollRef: PropTypes.any,
   setSelections: PropTypes.func
 };
 
