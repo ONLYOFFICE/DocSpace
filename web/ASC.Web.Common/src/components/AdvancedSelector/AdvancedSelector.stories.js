@@ -15,7 +15,6 @@ import AdvancedSelector2 from ".";
 import Section from "../../../.storybook/decorators/section";
 import {Button, Avatar, Text} from "asc-web-components";
 import isEqual from "lodash/isEqual";
-import { name, image, internet } from "faker";
 import UserTooltip from "../PeopleSelector/sub-components/UserTooltip";
 
 function getRandomInt(min, max) {
@@ -95,10 +94,10 @@ class ADSelectorExample extends React.Component {
       return {
         key: `user${index}`,
         groups: [additional_group.key],
-        label: name.findName(),
-        avatarUrl: image.avatar(),
-        position: name.jobTitle(),
-        email: internet.email()
+        label: `Demo User ${index}`,
+        avatarUrl: ``,
+        position: `Demo`,
+        email: `demo@demo.demo`
       };
     });
   };
