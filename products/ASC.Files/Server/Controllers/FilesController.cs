@@ -64,7 +64,6 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Newtonsoft.Json.Linq;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
-using SortedByType = ASC.Files.Core.SortedByType;
 
 namespace ASC.Api.Documents
 {
@@ -186,7 +185,7 @@ namespace ASC.Api.Documents
         [Read("@my")]
         public FolderContentWrapper<int> GetMyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -200,7 +199,7 @@ namespace ASC.Api.Documents
         [Read("@projects")]
         public FolderContentWrapper<string> GetProjectsFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderProjects<string>(), userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperString.GetFolder(GlobalFolderHelper.GetFolderProjects<string>(), userIdOrGroupId, filterType, withsubfolders);
         }
 
 
@@ -215,7 +214,7 @@ namespace ASC.Api.Documents
         [Read("@common")]
         public FolderContentWrapper<int> GetCommonFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -229,7 +228,7 @@ namespace ASC.Api.Documents
         [Read("@share")]
         public FolderContentWrapper<int> GetShareFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -243,7 +242,7 @@ namespace ASC.Api.Documents
         [Read("@trash")]
         public FolderContentWrapper<int> GetTrashFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return ToFolderContentWrapper(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperInt.GetFolder(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -1428,51 +1427,6 @@ namespace ASC.Api.Documents
                 version = dsVersion,
                 docServiceUrlApi = url,
             };
-        }
-
-
-        private FolderContentWrapper<string> ToFolderContentWrapper(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
-        {
-            if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
-            {
-                sortBy = SortedByType.AZ;
-            }
-
-            var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId.ToString(),
-                                                                               startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count), //NOTE: last value: Convert.ToInt32(ApiContext.Count) - 1; in ApiContext +1
-                                                                               filterType,
-                                                                               filterType == FilterType.ByUser,
-                                                                               userIdOrGroupId.ToString(),
-                                                                               ApiContext.FilterValue,
-                                                                               false,
-                                                                               withsubfolders,
-                                                                               new OrderBy(sortBy, !ApiContext.SortDescending)),
-                                            startIndex);
-        }
-
-        private FolderContentWrapper<int> ToFolderContentWrapper(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
-        {
-            if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
-            {
-                sortBy = SortedByType.AZ;
-            }
-
-            var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            var items = FileStorageServiceInt.GetFolderItems(
-                folderId,
-                startIndex,
-                Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
-                filterType,
-                filterType == FilterType.ByUser,
-                userIdOrGroupId.ToString(),
-                ApiContext.FilterValue,
-                false,
-                false,
-                new OrderBy(sortBy, !ApiContext.SortDescending));
-
-            return FolderContentWrapperHelper.Get(items, startIndex);
         }
 
         #region wordpress
