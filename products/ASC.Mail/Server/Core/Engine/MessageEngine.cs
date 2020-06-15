@@ -1292,7 +1292,7 @@ namespace ASC.Mail.Core.Engine
 
             if (!TryStoreMailData(message, mailbox, log))
             {
-                return null;
+                throw new Exception("Failed to save message");
             }
 
             log.Debug("MailSave()");
