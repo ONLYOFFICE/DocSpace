@@ -468,11 +468,10 @@ class PureHome extends React.Component {
   }
 
   setSelections = items => {
-    const { selection, folders, files, selectFile, deselectFile } = this.props;
+    const { selection, folders, files, selectFile, deselectFile, fileActionId } = this.props;
 
     if (selection.length > items.length) {
       //Delete selection
-
       const newSelection = [];
       let newFile = null;
       for (let item of items) {
@@ -505,7 +504,7 @@ class PureHome extends React.Component {
         } else if (item[0] === "file") {
           newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
         }
-        if(newFile) {
+        if(newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(x => x.id === newFile.id && x.fileExst === newFile.fileExst);
           !existItem && selectFile(newFile);
         }
@@ -655,7 +654,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { treeFolders, filter, selectedFolder, selected, selection, folders, files } = state.files;
+  const { treeFolders, filter, selectedFolder, selected, selection, folders, files, fileAction } = state.files;
   const { id } = selectedFolder;
   const indexOfTrash = 3;
 
@@ -668,7 +667,8 @@ function mapStateToProps(state) {
     currentFolderId: id,
     filter,
     treeFolders,
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders)
+    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
+    fileActionId: fileAction.id
   };
 }
 

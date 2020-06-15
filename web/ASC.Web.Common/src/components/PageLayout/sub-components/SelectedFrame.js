@@ -38,7 +38,7 @@ class SelectedFrame extends React.Component {
 
   onMouseDown = e => {
     this.container = document.getElementById("rowContainer");
-    if(!this.container) {
+    if(!this.container || e.target.tagName !== "DIV") {
       return;
     }
 
