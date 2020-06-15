@@ -41,25 +41,25 @@ namespace ASC.Data.Backup.Service
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private IConfiguration Configuration { get; set; }
-        private BackupService BackupService { get; set; }
+        private BackupServiceNotifier BackupServiceNotifier { get; }
 
         public BackupServiceLauncher(
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
             IConfiguration configuration,
-            BackupService backupService)
+            BackupServiceNotifier backupServiceNotifier)
         {
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
-            BackupService = backupService;
+            BackupServiceNotifier = backupServiceNotifier;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            BackupService.StartSubscribeBackup();
+            BackupServiceNotifier.Subscribe();
             var settings = Configuration.GetSetting<BackupSettings>("backup");
 
             BackupWorker.Start(settings);
@@ -93,7 +93,7 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupServiceLauncher(this DIHelper services)
         {
-            services.TryAddScoped<BackupServiceLauncher>();
+            services.TryAddSingleton<BackupServiceLauncher>();
             return services
                 .AddBackupCleanerService()
                 .AddBackupSchedulerService()

@@ -29,7 +29,6 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Module;
 
 namespace ASC.Core.Common.Contracts
 {
@@ -45,10 +44,10 @@ namespace ASC.Core.Common.Contracts
             СacheStartRestoreRequest = cacheStartRestoreRequest;
             СacheStartTransferRequest = cacheStartTransferRequest;
         }
-        public BackupProgress StartBackup(StartBackupRequest request)
+
+        public void StartBackup(StartBackupRequest request)
         {
             СacheStartBackupRequest.Publish(request, CacheNotifyAction.InsertOrUpdate);
-            return null;
         }
 
         public BackupProgress GetBackupProgress(int tenantId)
@@ -59,13 +58,13 @@ namespace ASC.Core.Common.Contracts
 
         public void DeleteBackup(Guid backupId)
         {
-           // Channel.DeleteBackup(backupId);
+            // Channel.DeleteBackup(backupId);
 
         }
 
         public void DeleteAllBackups(int tenantId)
         {
-          //  Channel.DeleteAllBackups(tenantId);
+            //  Channel.DeleteAllBackups(tenantId);
         }
 
         public List<BackupHistoryRecord> GetBackupHistory(int tenantId)
@@ -74,10 +73,9 @@ namespace ASC.Core.Common.Contracts
             return null;
         }
 
-        public BackupProgress StartTransfer(StartTransferRequest request)
+        public void StartTransfer(StartTransferRequest request)
         {
             СacheStartTransferRequest.Publish(request, CacheNotifyAction.InsertOrUpdate);
-            return null;
         }
 
         public BackupProgress GetTransferProgress(int tenantID)
@@ -92,10 +90,9 @@ namespace ASC.Core.Common.Contracts
             return null;
         }
 
-        public BackupProgress StartRestore(StartRestoreRequest request)
+        public void StartRestore(StartRestoreRequest request)
         {
             СacheStartRestoreRequest.Publish(request, CacheNotifyAction.InsertOrUpdate);
-            return null;
         }
 
         public BackupProgress GetRestoreProgress(int tenantId)
@@ -112,12 +109,12 @@ namespace ASC.Core.Common.Contracts
 
         public void CreateSchedule(CreateScheduleRequest request)
         {
-          //  Channel.CreateSchedule(request);
+            //  Channel.CreateSchedule(request);
         }
 
         public void DeleteSchedule(int tenantId)
         {
-          //  Channel.DeleteSchedule(tenantId);
+            //  Channel.DeleteSchedule(tenantId);
         }
 
         public ScheduleResponse GetSchedule(int tenantId)
@@ -130,7 +127,7 @@ namespace ASC.Core.Common.Contracts
     {
         public static DIHelper AddBackupServiceClient(this DIHelper services)
         {
-            services.TryAddScoped<BackupServiceClient>();
+            services.TryAddSingleton<BackupServiceClient>();
             return services;
         }
     }

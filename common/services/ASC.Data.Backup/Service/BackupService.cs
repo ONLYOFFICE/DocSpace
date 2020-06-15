@@ -31,22 +31,62 @@ using System.Linq;
 using System.ServiceModel;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Core.Common.Contracts;
 using ASC.Common.Utils;
+using ASC.Core.Common.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Utils;
 
+using Google.Protobuf.WellKnownTypes;
+
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
-using Google.Protobuf.WellKnownTypes;
-using ASC.Common.Caching;
 
 namespace ASC.Data.Backup.Service
 {
+    internal class BackupServiceNotifier
+    {
+        private IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
+        private ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
+        private ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
+
+        public BackupServiceNotifier(
+            IServiceProvider serviceProvider,
+            ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
+            ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
+            ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
+        {
+            ServiceProvider = serviceProvider;
+            СacheStartBackupRequest = cacheStartBackupRequest;
+            СacheStartRestoreRequest = cacheStartRestoreRequest;
+            СacheStartTransferRequest = cacheStartTransferRequest;
+        }
+
+        public void Subscribe()
+        {
+            СacheStartBackupRequest.Subscribe((n) =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var backupService = scope.ServiceProvider.GetService<BackupService>();
+                backupService.StartBackup(n);
+            }
+            , CacheNotifyAction.InsertOrUpdate);
+
+            СacheStartRestoreRequest.Subscribe((n) =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var backupService = scope.ServiceProvider.GetService<BackupService>();
+                backupService.StartRestore(n);
+            }, CacheNotifyAction.InsertOrUpdate);
+        }
+    }
+
     internal class BackupService : IBackupService
     {
         private ILog Log { get; set; }
@@ -54,44 +94,30 @@ namespace ASC.Data.Backup.Service
         private BackupWorker BackupWorker { get; set; }
         public BackupRepository BackupRepository { get; }
         public IConfiguration Configuration { get; }
-        public ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
-        public ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
-        public ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
 
         public BackupService(
             IOptionsMonitor<ILog> options,
             BackupStorageFactory backupStorageFactory,
             BackupWorker backupWorker,
             BackupRepository backupRepository,
-            IConfiguration configuration,
-            ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
-            ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
-            ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
+            IConfiguration configuration)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;
             BackupWorker = backupWorker;
             BackupRepository = backupRepository;
             Configuration = configuration;
-            СacheStartBackupRequest = cacheStartBackupRequest;
-            СacheStartRestoreRequest = cacheStartRestoreRequest;
-            СacheStartTransferRequest = cacheStartTransferRequest;
         }
 
-        public void StartSubscribeBackup()
-        {
-            СacheStartBackupRequest.Subscribe((n) => StartBackup(n), CacheNotifyAction.InsertOrUpdate);
-            СacheStartRestoreRequest.Subscribe((n) => StartRestore(n), CacheNotifyAction.InsertOrUpdate);
-        }
-        public BackupProgress StartBackup(StartBackupRequest request)
+        public void StartBackup(StartBackupRequest request)
         {
             var progress = BackupWorker.StartBackup(request);
             if (!string.IsNullOrEmpty(progress.Error))
             {
                 throw new FaultException();
             }
-            return progress;
         }
+
         public BackupProgress GetBackupProgress(int tenantId)
         {
             var progress = BackupWorker.GetBackupProgress(tenantId);
@@ -158,14 +184,13 @@ namespace ASC.Data.Backup.Service
             return backupHistory;
         }
 
-        public BackupProgress StartTransfer(StartTransferRequest request)
+        public void StartTransfer(StartTransferRequest request)
         {
             var progress = BackupWorker.StartTransfer(request.TenantId, request.TargetRegion, request.BackupMail, request.NotifyUsers);
             if (!string.IsNullOrEmpty(progress.Error))
             {
                 throw new FaultException();
             }
-            return progress;
         }
 
         public BackupProgress GetTransferProgress(int tenantID)
@@ -178,7 +203,7 @@ namespace ASC.Data.Backup.Service
             return progress;
         }
 
-        public BackupProgress StartRestore(StartRestoreRequest request)
+        public void StartRestore(StartRestoreRequest request)
         {
             if ((BackupStorageType)request.StorageType == BackupStorageType.Local)
             {
@@ -188,7 +213,7 @@ namespace ASC.Data.Backup.Service
                 }
             }
 
-            if (request.BackupId !="" && !request.BackupId.Equals(Guid.Empty))
+            if (request.BackupId != "" && !request.BackupId.Equals(Guid.Empty))
             {
                 var backupRecord = BackupRepository.GetBackupRecord(Guid.Parse(request.BackupId));
                 if (backupRecord == null)
@@ -206,7 +231,6 @@ namespace ASC.Data.Backup.Service
             {
                 throw new FaultException();
             }
-            return progress;
         }
 
         public BackupProgress GetRestoreProgress(int tenantId)
@@ -265,7 +289,7 @@ namespace ASC.Data.Backup.Service
         public ScheduleResponse GetSchedule(int tenantId)
         {
             var schedule = BackupRepository.GetBackupSchedule(tenantId);
-            if(schedule != null)
+            if (schedule != null)
             {
                 var tmp = new ScheduleResponse
                 {
@@ -290,6 +314,7 @@ namespace ASC.Data.Backup.Service
         public static DIHelper AddBackupService(this DIHelper services)
         {
             services.TryAddScoped<BackupService>();
+            services.TryAddSingleton<BackupServiceNotifier>();
             return services
                 .AddKafkaService();
         }

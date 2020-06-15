@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
-using ASC.Api.Collections;
+
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
@@ -204,7 +204,8 @@ namespace ASC.Web.Api.Controllers
         [Create("startbackup")]
         public BackupProgress StartBackup(Backup backup)
         {
-            return BackupHandler.StartBackup(backup.StorageType, backup.StorageParams != null? backup.StorageParams : new Dictionary<string, string>(), backup.BackupMail);
+            BackupHandler.StartBackup(backup.StorageType, backup.StorageParams ?? new Dictionary<string, string>(), backup.BackupMail);
+            return BackupHandler.GetBackupProgress();
         }
 
         /// <summary>
@@ -262,7 +263,8 @@ namespace ASC.Web.Api.Controllers
         [Create("startrestore")]
         public BackupProgress StartBackupRestore(BackupRestore backupRestore)
         {
-            return BackupHandler.StartRestore(backupRestore.BackupId, backupRestore.StorageType, backupRestore.StorageParams, backupRestore.Notify);
+            BackupHandler.StartRestore(backupRestore.BackupId, backupRestore.StorageType, backupRestore.StorageParams, backupRestore.Notify);
+            return BackupHandler.GetBackupProgress();
         }
 
         /// <summary>

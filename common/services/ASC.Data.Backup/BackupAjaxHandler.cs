@@ -48,7 +48,7 @@ namespace ASC.Data.Backup
             BackupServiceClient = backupServiceClient;
         }
 
-        public BackupProgress StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
+        public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
         {
 
             DemandPermissionsBackup();
@@ -76,7 +76,7 @@ namespace ASC.Data.Backup
 
             MessageService.Send(MessageAction.StartBackupSetting);
 
-            return BackupServiceClient.StartBackup(backupRequest);
+            BackupServiceClient.StartBackup(backupRequest);
         }
 
         public BackupProgress GetBackupProgress()
@@ -220,7 +220,7 @@ namespace ASC.Data.Backup
 
         #region restore
 
-        public BackupProgress StartRestore(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
+        public void StartRestore(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
         {
             DemandPermissionsRestore();
 
@@ -239,7 +239,7 @@ namespace ASC.Data.Backup
                 restoreRequest.StorageType = (int)storageType;
                 restoreRequest.FilePathOrId = storageParams["filePath"];
             }
-            return BackupServiceClient.StartRestore(restoreRequest);
+            BackupServiceClient.StartRestore(restoreRequest);
         }
 
         public BackupProgress GetRestoreProgress()
@@ -264,13 +264,13 @@ namespace ASC.Data.Backup
 
         #region transfer
 
-        public BackupProgress StartTransfer(string targetRegion, bool notifyUsers, bool transferMail)
+        public void StartTransfer(string targetRegion, bool notifyUsers, bool transferMail)
         {
             DemandPermissionsTransfer();
             DemandSize();
 
             MessageService.Send(MessageAction.StartTransferSetting);
-            return BackupServiceClient.StartTransfer(
+            BackupServiceClient.StartTransfer(
                 new StartTransferRequest
                 {
                     TenantId = GetCurrentTenantId(),

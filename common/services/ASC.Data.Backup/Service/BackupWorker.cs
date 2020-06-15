@@ -62,22 +62,16 @@ namespace ASC.Data.Backup.Service
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
         private string UpgradesPath { get; set; }
-        public BackupRepository BackupRepository { get; }
         public FactoryProgressItem factoryProgressItem { get; set; }
-        public IServiceProvider ServiceProvider { get; set; }
 
         public BackupWorker(
             IOptionsMonitor<ILog> options,
             ProgressQueueOptionsManager<BaseBackupProgressItem> progressQueue,
-            BackupRepository backupRepository,
-            FactoryProgressItem factoryProgressItem,
-            IServiceProvider serviceProvider)
+            FactoryProgressItem factoryProgressItem)
         {
             Log = options.CurrentValue;
-            BackupRepository = backupRepository;
             ProgressQueue = progressQueue.Value;
             this.factoryProgressItem = factoryProgressItem;
-            ServiceProvider = serviceProvider;
         }
 
         public void Start(BackupSettings settings)
@@ -479,7 +473,7 @@ namespace ASC.Data.Backup.Service
                 var columnMapper = new ColumnMapper();
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
                 columnMapper.Commit();
-               
+
                 var restoreTask = scope.ServiceProvider.GetService<RestorePortalTask>();
                 restoreTask.Init(ConfigPaths[CurrentRegion], tempFile, TenantId, columnMapper, UpgradesPath);
                 restoreTask.ProgressChanged += (sender, args) => Percentage = (10d + 0.65 * args.Progress);
@@ -745,8 +739,8 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupWorkerService(this DIHelper services)
         {
-            services.TryAddScoped<BackupWorker>();
-            services.TryAddScoped<FactoryProgressItem>();
+            services.TryAddSingleton<BackupWorker>();
+            services.TryAddSingleton<FactoryProgressItem>();
             services.TryAddScoped<BackupProgressItem>();
             services.TryAddScoped<TransferProgressItem>();
             services.TryAddScoped<RestoreProgressItem>();
