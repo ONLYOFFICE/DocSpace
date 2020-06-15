@@ -31,9 +31,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using ASC.Common.Logging;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
@@ -41,12 +43,12 @@ namespace ASC.Data.Backup.Tasks
     public class ProgressChangedEventArgs : EventArgs
     {
         public int Progress { get; private set; }
-       
+
 
         public ProgressChangedEventArgs(int progress)
         {
             Progress = progress;
-           
+
         }
     }
 
@@ -73,9 +75,9 @@ namespace ASC.Data.Backup.Tasks
         {
             Logger = options.CurrentValue;
             ProcessStorage = true;
-            this.StorageFactory = storageFactory;
-            this.StorageFactoryConfig = storageFactoryConfig;
-            this.ModuleProvider = moduleProvider;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
+            ModuleProvider = moduleProvider;
             DbFactory = dbFactory;
         }
         public void Init(int tenantId, string configPath)
@@ -214,11 +216,7 @@ namespace ASC.Data.Backup.Tasks
 
         protected virtual void OnProgressChanged(ProgressChangedEventArgs eventArgs)
         {
-            var handler = ProgressChanged;
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            ProgressChanged?.Invoke(this, eventArgs);
         }
 
         #endregion
@@ -282,42 +280,42 @@ namespace ASC.Data.Backup.Tasks
 
         protected async Task RunMysqlFile(Stream stream, string delimiter = ";")
         {
-            
-                if (stream == null) return;
 
-                using (var reader = new StreamReader(stream, Encoding.UTF8))
+            if (stream == null) return;
+
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                string commandText;
+
+                while ((commandText = await reader.ReadLineAsync()) != null)
                 {
-                    string commandText;
-
-                    while ((commandText = await reader.ReadLineAsync()) != null)
+                    while (!commandText.EndsWith(delimiter))
                     {
-                        while (!commandText.EndsWith(delimiter))
+                        var newline = await reader.ReadLineAsync();
+                        if (newline == null)
                         {
-                            var newline = await reader.ReadLineAsync();
-                            if (newline == null)
-                            {
-                                break;
-                            }
-                            commandText += newline;
+                            break;
                         }
+                        commandText += newline;
+                    }
 
-                        try
-                        {
-                       
+                    try
+                    {
+
                         using (var connection = DbFactory.OpenConnection())
                         {
                             var command = connection.CreateCommand();
                             command.CommandText = commandText;
                             await command.ExecuteNonQueryAsync();
                         }
-                      //  await dbManager.ExecuteNonQueryAsync(commandText, null);
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Error("Restore", e);
-                        }
+                        //  await dbManager.ExecuteNonQueryAsync(commandText, null);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error("Restore", e);
                     }
                 }
+            }
         }
     }
 }

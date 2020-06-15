@@ -29,26 +29,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
 {
     public class FileBackupProvider : IBackupProvider
     {
-        
+        private IEnumerable<string> allowedModules;
+        private ILog log;
+        private StorageFactory StorageFactory { get; set; }
+        private StorageFactoryConfig StorageFactoryConfig { get; set; }
 
-        private readonly IEnumerable<string> allowedModules;
-        private readonly ILog log;
-        private readonly StorageFactory storageFactory;
-        private readonly StorageFactoryConfig storageFactoryConfig;
-        
         public FileBackupProvider(IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
         {
-            this.storageFactory = storageFactory;
-            this.storageFactoryConfig = storageFactoryConfig;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
             log = options.CurrentValue;
         }
 
@@ -82,7 +82,7 @@ namespace ASC.Data.Backup
                 var backupPath = GetBackupPath(file);
                 if (!backupKeys.Contains(backupPath))
                 {
-                    var storage = storageFactory.GetStorage(config, tenant.ToString(), file.Module);
+                    var storage = StorageFactory.GetStorage(config, tenant.ToString(), file.Module);
                     var errors = 0;
                     while (true)
                     {
@@ -93,7 +93,7 @@ namespace ASC.Data.Backup
                                 var tmpPath = Path.GetTempFileName();
                                 using (var tmpFile = File.OpenWrite(tmpPath))
                                 {
-                                    stream.CopyTo(tmpFile); 
+                                    stream.CopyTo(tmpFile);
                                 }
 
                                 writer.WriteEntry(backupPath, tmpPath);
@@ -125,12 +125,12 @@ namespace ASC.Data.Backup
         private IEnumerable<FileBackupInfo> ComposeFiles(int tenant, string config)
         {
             var files = new List<FileBackupInfo>();
-            foreach (var module in storageFactoryConfig.GetModuleList(config))
+            foreach (var module in StorageFactoryConfig.GetModuleList(config))
             {
                 if (allowedModules.Contains(module))
                 {
-                    var store = storageFactory.GetStorage(config, tenant.ToString(), module);
-                    var domainList = storageFactoryConfig.GetDomainList(config, module);
+                    var store = StorageFactory.GetStorage(config, tenant.ToString(), module);
+                    var domainList = StorageFactoryConfig.GetDomainList(config, module);
                     foreach (var domain in domainList)
                     {
                         files.AddRange(store
@@ -167,7 +167,7 @@ namespace ASC.Data.Backup
                 {
                     using (var entry = dataOperator.GetEntry(GetBackupPath(backupInfo)))
                     {
-                        var storage = storageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
+                        var storage = StorageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
                         try
                         {
                             storage.Save(backupInfo.Domain, backupInfo.Path, entry);
@@ -193,8 +193,7 @@ namespace ASC.Data.Backup
         {
             try
             {
-                var @delegate = ProgressChanged;
-                if (@delegate != null) @delegate(this, new ProgressChangedEventArgs(status, (int)currentProgress));
+                ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, (int)currentProgress));
             }
             catch (Exception error)
             {
@@ -236,7 +235,7 @@ namespace ASC.Data.Backup
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
+                if (obj is null) return false;
                 if (ReferenceEquals(this, obj)) return true;
                 if (obj.GetType() != typeof(FileBackupInfo)) return false;
                 return Equals((FileBackupInfo)obj);
@@ -244,7 +243,7 @@ namespace ASC.Data.Backup
 
             public bool Equals(FileBackupInfo other)
             {
-                if (ReferenceEquals(null, other)) return false;
+                if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return Equals(other.Module, Module) && Equals(other.Domain, Domain) && Equals(other.Path, Path);
             }

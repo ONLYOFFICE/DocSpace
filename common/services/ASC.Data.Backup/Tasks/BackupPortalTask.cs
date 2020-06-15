@@ -33,18 +33,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Data.Backup.EF.Context;
+using ASC.Data.Backup.Exceptions;
+using ASC.Data.Backup.Extensions;
 using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Backup.Extensions;
 using ASC.Data.Storage;
-using ASC.Data.Backup.Exceptions;
-using Newtonsoft.Json;
+
 using Microsoft.Extensions.Options;
-using ASC.Data.Backup.EF.Context;
-using ASC.Common;
-using ASC.Core.Common.EF;
+
+using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -55,16 +58,12 @@ namespace ASC.Data.Backup.Tasks
         public int Limit { get; private set; }
         private bool Dump { get; set; }
         private TenantManager TenantManager { get; set; }
-        private ModuleProvider ModuleProvider { get; set; }
         private BackupsContext BackupRecordContext { get; set; }
-        private DbFactory DbFactory { get; set; }
 
-        public BackupPortalTask(DbFactory dbFactory, DbContextManager<BackupsContext> dbContextManager, IOptionsMonitor<ILog> options, TenantManager tenantManager ,CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-            : base(dbFactory, options, storageFactory,storageFactoryConfig, moduleProvider)
+        public BackupPortalTask(DbFactory dbFactory, DbContextManager<BackupsContext> dbContextManager, IOptionsMonitor<ILog> options, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+            : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            DbFactory = dbFactory;
             Dump = coreBaseSettings.Standalone;
-            ModuleProvider = moduleProvider;
             TenantManager = tenantManager;
             BackupRecordContext = dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString);
         }
@@ -84,14 +83,14 @@ namespace ASC.Data.Backup.Tasks
 
 
             using (var writer = new ZipWriteOperator(BackupFilePath))
-            {   
+            {
                 if (Dump)
                 {
                     DoDump(writer);
                 }
                 else
                 {
-                   
+
                     var modulesToProcess = GetModulesToProcess().ToList();
                     var fileGroups = GetFilesGroup();
 
@@ -125,10 +124,10 @@ namespace ASC.Data.Backup.Tasks
                 command.CommandText = "show tables";
                 tables = ExecuteList(command).Select(r => Convert.ToString(r[0])).ToList();
             }
-          /*  using (var dbManager = new DbManager("default", 100000))
-            {
-                tables = dbManager.ExecuteList("show tables;").Select(r => Convert.ToString(r[0])).ToList();
-            }*/
+            /*  using (var dbManager = new DbManager("default", 100000))
+              {
+                  tables = dbManager.ExecuteList("show tables;").Select(r => Convert.ToString(r[0])).ToList();
+              }*/
 
             var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
             if (ProcessStorage)
@@ -201,8 +200,8 @@ namespace ASC.Data.Backup.Tasks
         {
             var files = GetFilesToProcess(tenantId).ToList();
             var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
-              files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
-              return files;
+            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
+            return files;
 
         }
 
@@ -233,26 +232,26 @@ namespace ASC.Data.Backup.Tasks
 
                     SetStepCompleted();
                 }
-               /* using (var dbManager = new DbManager("default", 100000))
-                {
-                    var createScheme = dbManager.ExecuteList(string.Format("SHOW CREATE TABLE `{0}`", t));
-                    var creates = new StringBuilder();
-                    creates.AppendFormat("DROP TABLE IF EXISTS `{0}`;", t);
-                    creates.AppendLine();
-                    creates.Append(createScheme
-                            .Select(r => Convert.ToString(r[1]))
-                            .FirstOrDefault());
-                    creates.Append(";");
+                /* using (var dbManager = new DbManager("default", 100000))
+                 {
+                     var createScheme = dbManager.ExecuteList(string.Format("SHOW CREATE TABLE `{0}`", t));
+                     var creates = new StringBuilder();
+                     creates.AppendFormat("DROP TABLE IF EXISTS `{0}`;", t);
+                     creates.AppendLine();
+                     creates.Append(createScheme
+                             .Select(r => Convert.ToString(r[1]))
+                             .FirstOrDefault());
+                     creates.Append(";");
 
-                    var path = Path.Combine(dir, t);
-                    using (var stream = File.OpenWrite(path))
-                    {
-                        var bytes = Encoding.UTF8.GetBytes(creates.ToString());
-                        stream.Write(bytes, 0, bytes.Length);
-                    }
+                     var path = Path.Combine(dir, t);
+                     using (var stream = File.OpenWrite(path))
+                     {
+                         var bytes = Encoding.UTF8.GetBytes(creates.ToString());
+                         stream.Write(bytes, 0, bytes.Length);
+                     }
 
-                    SetStepCompleted();
-                }*/
+                     SetStepCompleted();
+                 }*/
 
                 Logger.DebugFormat("dump table scheme stop {0}", t);
             }
@@ -272,13 +271,13 @@ namespace ASC.Data.Backup.Tasks
                 {
                     var command = connection.CreateCommand();
                     command.CommandText = "select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '" + t + "'";
-                    return Int32.Parse(command.ExecuteScalar().ToString());
+                    return int.Parse(command.ExecuteScalar().ToString());
                 }
-              /*  using (var dbManager = new DbManager("default", 100000))
-                {
-                    dbManager.ExecuteNonQuery("analyze table " + t);
-                    return dbManager.ExecuteScalar<int>(new SqlQuery("information_schema.`TABLES`").Select("table_rows").Where("TABLE_NAME", t));
-                }*/
+                /*  using (var dbManager = new DbManager("default", 100000))
+                  {
+                      dbManager.ExecuteNonQuery("analyze table " + t);
+                      return dbManager.ExecuteScalar<int>(new SqlQuery("information_schema.`TABLES`").Select("table_rows").Where("TABLE_NAME", t));
+                  }*/
             }
             catch (Exception e)
             {
@@ -337,7 +336,7 @@ namespace ASC.Data.Backup.Tasks
                     using (var connection = DbFactory.OpenConnection())
                     {
                         var command = connection.CreateCommand();
-                        command.CommandText = string.Format("select max({1}), min({1}) from {0}",t, primaryIndex);
+                        command.CommandText = string.Format("select max({1}), min({1}) from {0}", t, primaryIndex);
                         var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
                         primaryIndexStart = minMax.Item2;
                         primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
@@ -399,11 +398,11 @@ namespace ASC.Data.Backup.Tasks
             {
                 var command = connection.CreateCommand();
                 var selects = "";
-                foreach(var column in columns)
+                foreach (var column in columns)
                 {
                     selects = column + ", ";
                 }
-                selects = selects.Substring(0, selects.Length -2);
+                selects = selects.Substring(0, selects.Length - 2);
                 command.CommandText = string.Format("select {0} from {1} LIMIT {2}, {3}", selects, t, offset, Limit);
                 return ExecuteList(command);
             }
@@ -430,14 +429,14 @@ namespace ASC.Data.Backup.Tasks
                 command.CommandText = string.Format("select {0} from {1} where {4} BETWEEN  {2} and {3} ", selects, t, start, start + step, primary);
                 return ExecuteList(command);
             }
-          /*  using (var dbManager = new DbManager("default", 100000))
-            {
-                var query = new SqlQuery(t)
-                    .Select(columns.ToArray())
-                    .Where(Exp.Between(primary, start, start + step));
+            /*  using (var dbManager = new DbManager("default", 100000))
+              {
+                  var query = new SqlQuery(t)
+                      .Select(columns.ToArray())
+                      .Where(Exp.Between(primary, start, start + step));
 
-                return dbManager.ExecuteList(query);
-            }*/
+                  return dbManager.ExecuteList(query);
+              }*/
         }
 
         private void SaveToFile(Stream fs, string t, IReadOnlyCollection<string> columns, List<object[]> data)

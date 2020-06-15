@@ -33,24 +33,16 @@ using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
 {
     public class DeletePortalTask : PortalTaskBase
     {
-
-        private StorageFactory StorageFactory { get; set; }
-        private StorageFactoryConfig StorageFactoryConfig { get; set; }
-        private DbFactory DbFactory { get; set; }
         public DeletePortalTask(DbFactory dbFactory, IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-            : base(dbFactory,options, storageFactory , storageFactoryConfig, moduleProvider)
+            : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             Init(tenantId, configPath);
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
-            DbFactory = dbFactory;
         }
 
         public override void RunJob()
@@ -83,7 +75,7 @@ namespace ASC.Data.Backup.Tasks
                             var t = (TableInfo)state;
                             module.CreateDeleteCommand(connection.Fix(), TenantId, t).WithTimeout(120).ExecuteNonQuery();
                         }, table, 5, onFailure: error => { throw ThrowHelper.CantDeleteTable(table.Name, error); });
-                    SetCurrentStepProgress((int)((++tablesProcessed*100)/(double)tablesCount));
+                    SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
                 }
             }
             Logger.DebugFormat("end delete data for module ({0})", module.ModuleName);
@@ -104,7 +96,7 @@ namespace ASC.Data.Backup.Tasks
                                       onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
                 }
                 storage.DeleteFiles("\\", "*.*", true);
-                SetCurrentStepProgress((int)((++modulesProcessed*100)/(double)storageModules.Count));
+                SetCurrentStepProgress((int)((++modulesProcessed * 100) / (double)storageModules.Count));
             }
             Logger.Debug("end delete storage");
         }

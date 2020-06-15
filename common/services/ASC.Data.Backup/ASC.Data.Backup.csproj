@@ -12,7 +12,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="AjaxPro.2" Version="6.10.6.2" />
 	  <PackageReference Include="SharpCompress" Version="0.25.0" />
 	</ItemGroup>
 

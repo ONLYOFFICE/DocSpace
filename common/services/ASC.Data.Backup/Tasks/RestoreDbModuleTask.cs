@@ -36,6 +36,7 @@ using ASC.Data.Backup.Extensions;
 using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
@@ -44,31 +45,21 @@ namespace ASC.Data.Backup.Tasks
     {
         private const int TransactionLength = 10000;
 
-        private IDataReadOperator Reader;
-        private IModuleSpecifics Module;
-        private ColumnMapper ColumnMapper;
-        private bool ReplaceDate;
-        private bool Dump;
-        private DbFactory DbFactory;
+        private IDataReadOperator Reader { get; set; }
+        private IModuleSpecifics Module { get; set; }
+        private ColumnMapper ColumnMapper { get; set; }
+        private bool ReplaceDate { get; set; }
+        private bool Dump { get; set; }
 
-        public RestoreDbModuleTask( IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+        public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
             : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
-
-            if (columnMapper == null)
-                throw new ArgumentNullException("columnMapper");
-
-            if (factory == null)
-                throw new ArgumentNullException("factory");
-
+            Reader = reader ?? throw new ArgumentNullException("reader");
+            ColumnMapper = columnMapper ?? throw new ArgumentNullException("columnMapper");
+            DbFactory = factory ?? throw new ArgumentNullException("factory");
             Module = module;
-            Reader = reader;
-            ColumnMapper = columnMapper;
-            DbFactory = factory;
             ReplaceDate = replaceDate;
-            this.Dump = dump;
+            Dump = dump;
             Init(-1, null);
         }
 
@@ -87,7 +78,7 @@ namespace ASC.Data.Backup.Tasks
                     var rowsInserted = 0;
                     ActionInvoker.Try(
                         state =>
-                            RestoreTable(connection.Fix(), (TableInfo) state, ref transactionsCommited,
+                            RestoreTable(connection.Fix(), (TableInfo)state, ref transactionsCommited,
                                 ref rowsInserted), table, 5,
                         onAttemptFailure: error => ColumnMapper.Rollback(),
                         onFailure: error => { throw ThrowHelper.CantRestoreTable(table.Name, error); });
@@ -118,7 +109,7 @@ namespace ASC.Data.Backup.Tasks
                 foreach (
                     var rows in
                         GetRows(tableInfo, stream)
-                            .Skip(transactionsCommited*TransactionLength)
+                            .Skip(transactionsCommited * TransactionLength)
                             .MakeParts(TransactionLength))
                 {
                     using (var transaction = connection.BeginTransaction())
@@ -236,7 +227,7 @@ namespace ASC.Data.Backup.Tasks
 
         private static IEnumerable<DataRowInfo> OrderNode(TreeNode<DataRowInfo> node)
         {
-            var result = new List<DataRowInfo> {node.Entry};
+            var result = new List<DataRowInfo> { node.Entry };
             result.AddRange(node.Children.SelectMany(x => OrderNode(x)));
             return result;
         }

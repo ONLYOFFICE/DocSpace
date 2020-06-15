@@ -40,6 +40,7 @@ using ASC.Core.Tenants;
 using ASC.Data.Backup.Extensions;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
@@ -56,22 +57,17 @@ namespace ASC.Data.Backup.Tasks
         private CoreBaseSettings CoreBaseSettings { get; set; }
         private LicenseReader LicenseReader { get; set; }
         private AscCacheNotify AscCacheNotify { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        private ModuleProvider ModuleProvider { get; set; }
         private IOptionsMonitor<ILog> Options { get; set; }
-        private DbFactory DbFactory { get; set; }
 
         public RestorePortalTask(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, LicenseReader licenseReader, AscCacheNotify ascCacheNotify, ModuleProvider moduleProvider)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            DbFactory = dbFactory;
             CoreBaseSettings = coreBaseSettings;
             LicenseReader = licenseReader;
             AscCacheNotify = ascCacheNotify;
-            StorageFactory = storageFactory;
-            ModuleProvider = moduleProvider;
             Options = options;
         }
+
         public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
         {
             if (fromFilePath == null)
@@ -85,6 +81,7 @@ namespace ASC.Data.Backup.Tasks
             ColumnMapper = columnMapper ?? new ColumnMapper();
             Init(tenantId, toConfigPath);
         }
+
         public override void RunJob()
         {
             Logger.Debug("begin restore portal");

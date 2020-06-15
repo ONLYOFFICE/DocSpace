@@ -28,17 +28,15 @@ using System;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
-using ASC.Core.Tenants;
+
 using ASC.Common.Logging;
+using ASC.Core.Tenants;
 using ASC.Data.Backup.Extensions;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Storage;
-using Microsoft.Extensions.Options;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Common.Caching;
-using ASC.Data.Backup.EF.Context;
+
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -53,39 +51,24 @@ namespace ASC.Data.Backup.Tasks
         public bool BlockOldPortalAfterStart { get; set; }
         public bool DeleteOldPortalAfterCompletion { get; set; }
         public IOptionsMonitor<ILog> Options { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public TenantManager TenantManager { get; set; }
-
-        public LicenseReader LicenseReader { get; set; }
-        public AscCacheNotify AscCacheNotify { get; set; }
-        public ModuleProvider ModuleProvider { get; set; }
-        public BackupsContext BackupRecordContext { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
-        public DbFactory DbFactory { get; set; }
 
         public int Limit { get; private set; }
 
-        public TransferPortalTask(DbFactory dbFactory, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, TenantManager tenantManager, ModuleProvider moduleProvider, BackupsContext backupRecordContext)
+        public TransferPortalTask(DbFactory dbFactory, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             DeleteBackupFileAfterCompletion = true;
-            DbFactory = dbFactory;
             BlockOldPortalAfterStart = true;
             DeleteOldPortalAfterCompletion = true;
             Options = options;
-            CoreBaseSettings = coreBaseSettings;
-            TenantManager = tenantManager;
-            ModuleProvider = moduleProvider;
-            BackupRecordContext = backupRecordContext;
             ServiceProvider = serviceProvider;
         }
+
         public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
         {
             Limit = limit;
-            if (toConfigPath == null)
-                throw new ArgumentNullException("toConfigPath");
-
-            ToConfigPath = toConfigPath;
+            ToConfigPath = toConfigPath ?? throw new ArgumentNullException("toConfigPath");
             Init(tenantId, fromConfigPath);
 
             BackupDirectory = backupDirectory;

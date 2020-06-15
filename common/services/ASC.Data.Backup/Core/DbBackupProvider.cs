@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Xml.Linq;
+
 using ASC.Common;
 
 namespace ASC.Data.Backup
@@ -40,8 +41,6 @@ namespace ASC.Data.Backup
     {
         private readonly List<string> processedTables = new List<string>();
         private readonly DbHelper dbHelper;
-        
-
 
         public string Name
         {
@@ -107,7 +106,7 @@ namespace ASC.Data.Backup
                     Path.Combine(config, "Web.config");
                 return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             }
-            return ConfigurationManager.OpenExeConfiguration(config); 
+            return ConfigurationManager.OpenExeConfiguration(config);
         }
 
         public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
@@ -226,7 +225,7 @@ namespace ASC.Data.Backup
             }
         }
 
-        
+
     }
     public static class DbBackupProviderExtension
     {

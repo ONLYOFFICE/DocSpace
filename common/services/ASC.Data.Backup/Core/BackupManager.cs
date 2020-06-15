@@ -24,12 +24,12 @@
 */
 
 
-using ASC.Common;
-
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
+
+using ASC.Common;
 
 namespace ASC.Data.Backup
 {
@@ -41,13 +41,13 @@ namespace ASC.Data.Backup
         private IDictionary<string, IBackupProvider> providers;
         private readonly string backup;
         private readonly string[] configs;
-        
+
         public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
         public BackupManager(string backup, DbBackupProvider dbBackupProvider)
             : this(backup, dbBackupProvider, null)
         {
-            
+
         }
 
         public BackupManager(string backup, DbBackupProvider dbBackupProvider, params string[] configs)
@@ -117,9 +117,10 @@ namespace ASC.Data.Backup
 
         private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if (ProgressChanged != null) ProgressChanged(this, e);
+            ProgressChanged?.Invoke(this, e);
         }
     }
+
     public static class BackupManagerExtension
     {
         public static DIHelper AddBackupManager(this DIHelper services)

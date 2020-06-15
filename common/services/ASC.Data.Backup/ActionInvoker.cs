@@ -32,7 +32,7 @@ namespace ASC.Data.Backup
     public static class ActionInvoker
     {
         public static void Try(
-            Action action, 
+            Action action,
             int maxAttempts,
             Action<Exception> onFailure = null,
             Action<Exception> onAttemptFailure = null,
@@ -66,15 +66,14 @@ namespace ASC.Data.Backup
                 {
                     if (countAttempts < maxAttempts)
                     {
-                        if (onAttemptFailure != null)
-                            onAttemptFailure(error);
+                        onAttemptFailure?.Invoke(error);
 
-                        if (sleepMs > 0) 
-                            Thread.Sleep(isSleepExponential ? sleepMs*countAttempts : sleepMs);
+                        if (sleepMs > 0)
+                            Thread.Sleep(isSleepExponential ? sleepMs * countAttempts : sleepMs);
                     }
-                    else if (onFailure != null)
+                    else
                     {
-                        onFailure(error);
+                        onFailure?.Invoke(error);
                     }
                 }
             }

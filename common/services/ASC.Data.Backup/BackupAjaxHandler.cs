@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AjaxPro;
+
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -12,13 +11,11 @@ using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Notify.Cron;
 using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Security;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Data.Backup
 {
-    [AjaxNamespace("AjaxPro.Backup")]
     public class BackupAjaxHandler
     {
 
@@ -26,17 +23,17 @@ namespace ASC.Data.Backup
         private MessageService MessageService { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private CoreConfiguration CoreConfiguration { get; }
-        private PermissionContext  PermissionContext { get; }
+        private PermissionContext PermissionContext { get; }
         private SecurityContext SecurityContext { get; }
         private UserManager UserManager { get; }
         private TenantExtra TenantExtra { get; }
         private BackupHelper BackupHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
-        private IServiceProvider ServiceProvider { get; }
         private BackupServiceClient BackupServiceClient { get; }
+
         #region backup
 
-        public BackupAjaxHandler(BackupServiceClient backupServiceClient, IServiceProvider serviceProvider, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
+        public BackupAjaxHandler(BackupServiceClient backupServiceClient, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
         {
             TenantManager = tenantManager;
             MessageService = messageService;
@@ -48,11 +45,9 @@ namespace ASC.Data.Backup
             TenantExtra = tenantExtra;
             BackupHelper = backupHelper;
             ConsumerFactory = consumerFactory;
-            ServiceProvider = serviceProvider;
             BackupServiceClient = backupServiceClient;
         }
 
-        [AjaxMethod]
         public BackupProgress StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
         {
 
@@ -80,20 +75,17 @@ namespace ASC.Data.Backup
             }
 
             MessageService.Send(MessageAction.StartBackupSetting);
-           
+
             return BackupServiceClient.StartBackup(backupRequest);
         }
 
-        [AjaxMethod]
-        [SecurityPassthrough]
         public BackupProgress GetBackupProgress()
         {
             DemandPermissionsBackup();
 
-           return BackupServiceClient.GetBackupProgress(GetCurrentTenantId());
+            return BackupServiceClient.GetBackupProgress(GetCurrentTenantId());
         }
 
-        [AjaxMethod]
         public void DeleteBackup(Guid id)
         {
             DemandPermissionsBackup();
@@ -101,7 +93,6 @@ namespace ASC.Data.Backup
             BackupServiceClient.DeleteBackup(id);
         }
 
-        [AjaxMethod]
         public void DeleteAllBackups()
         {
             DemandPermissionsBackup();
@@ -109,15 +100,12 @@ namespace ASC.Data.Backup
             BackupServiceClient.DeleteAllBackups(GetCurrentTenantId());
         }
 
-        [AjaxMethod]
         public List<BackupHistoryRecord> GetBackupHistory()
         {
             DemandPermissionsBackup();
             return BackupServiceClient.GetBackupHistory(GetCurrentTenantId());
         }
 
-
-        [AjaxMethod]
         public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool backupMail)
         {
             DemandPermissionsBackup();
@@ -152,7 +140,6 @@ namespace ASC.Data.Backup
             BackupServiceClient.CreateSchedule(scheduleRequest);
         }
 
-        [AjaxMethod]
         public Schedule GetSchedule()
         {
             DemandPermissionsBackup();
@@ -213,7 +200,6 @@ namespace ASC.Data.Backup
             return schedule;
         }
 
-        [AjaxMethod]
         public void DeleteSchedule()
         {
             DemandPermissionsBackup();
@@ -234,7 +220,6 @@ namespace ASC.Data.Backup
 
         #region restore
 
-        [AjaxMethod]
         public BackupProgress StartRestore(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
         {
             DemandPermissionsRestore();
@@ -245,8 +230,7 @@ namespace ASC.Data.Backup
                 NotifyAfterCompletion = notify
             };
             restoreRequest.StorageParams.Add(storageParams);
-            Guid guidBackupId;
-            if (Guid.TryParse(backupId, out guidBackupId))
+            if (Guid.TryParse(backupId, out var guidBackupId))
             {
                 restoreRequest.BackupId = guidBackupId.ToString();
             }
@@ -258,8 +242,6 @@ namespace ASC.Data.Backup
             return BackupServiceClient.StartRestore(restoreRequest);
         }
 
-        [AjaxMethod]
-        [SecurityPassthrough]
         public BackupProgress GetRestoreProgress()
         {
             BackupProgress result;
@@ -282,7 +264,6 @@ namespace ASC.Data.Backup
 
         #region transfer
 
-        [AjaxMethod]
         public BackupProgress StartTransfer(string targetRegion, bool notifyUsers, bool transferMail)
         {
             DemandPermissionsTransfer();
@@ -300,12 +281,9 @@ namespace ASC.Data.Backup
 
         }
 
-        [AjaxMethod]
-        [SecurityPassthrough]
         public BackupProgress GetTransferProgress()
         {
-
-             return BackupServiceClient.GetTransferProgress(GetCurrentTenantId());
+            return BackupServiceClient.GetTransferProgress(GetCurrentTenantId());
         }
 
         private void DemandPermissionsTransfer()
@@ -387,17 +365,13 @@ namespace ASC.Data.Backup
 
             public override string ToString()
             {
-                switch (Period)
+                return Period switch
                 {
-                    case BackupPeriod.EveryDay:
-                        return string.Format("0 0 {0} ? * *", Hour);
-                    case BackupPeriod.EveryMonth:
-                        return string.Format("0 0 {0} {1} * ?", Hour, Day);
-                    case BackupPeriod.EveryWeek:
-                        return string.Format("0 0 {0} ? * {1}", Hour, Day);
-                    default:
-                        return base.ToString();
-                }
+                    BackupPeriod.EveryDay => string.Format("0 0 {0} ? * *", Hour),
+                    BackupPeriod.EveryMonth => string.Format("0 0 {0} {1} * ?", Hour, Day),
+                    BackupPeriod.EveryWeek => string.Format("0 0 {0} ? * {1}", Hour, Day),
+                    _ => base.ToString(),
+                };
             }
         }
 
