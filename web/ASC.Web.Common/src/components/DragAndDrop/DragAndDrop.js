@@ -8,41 +8,34 @@ class DragAndDrop extends Component {
   dropRef = React.createRef();
   dragCounter = 0;
 
-  onDragOver = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.props.onDragOver && this.props.onDragOver(e);
-    if(e.dataTransfer.items.length) {
-      this.setState({ drag: true });
-    }
-  };
-
-  onDragEnter = (e) => {
+  onDragEnter = e => {
     this.dragCounter++;
     e.stopPropagation();
     e.preventDefault();
 
     this.props.onDragEnter && this.props.onDragEnter(e);
-    if(e.dataTransfer.items.length) {
+    if (e.dataTransfer.items.length) {
       this.setState({ drag: true });
     }
   };
 
-  onDragLeave = (e) => {
+  onDragLeave = e => {
     this.dragCounter--;
 
-    if(this.dragCounter === 0) {
+    if (this.dragCounter === 0) {
       this.setState({ drag: false });
+      if (this.props.isDropZone) {
+        return false;
+      }
       this.props.onDragLeave && this.props.onDragLeave(e);
     }
     e.stopPropagation();
     e.preventDefault();
   };
 
-  onDrop = (e) => {
+  onDrop = e => {
     e.preventDefault();
     e.stopPropagation();
-    
     this.setState({ drag: false });
     this.props.onDrop && this.props.onDrop(e);
     this.dragCounter = 0;
@@ -51,61 +44,29 @@ class DragAndDrop extends Component {
     }
   };
 
-  onDragStart = (e) => {
-    this.props.onDragStart && this.props.onDragStart(e);
-  };
-
-  onDragEnd = (e) => {
-    this.props.onDragEnd && this.props.onDragEnd(e);
-  }
-
   componentDidMount() {
     let div = this.dropRef.current;
-    div.addEventListener("dragstart", this.onDragStart, false);
-    div.addEventListener("dragend", this.onDragEnd, false);
+    div.addEventListener("drop", this.onDrop);
     div.addEventListener("dragenter", this.onDragEnter);
     div.addEventListener("dragleave", this.onDragLeave);
-    div.addEventListener("dragover", this.onDragOver);
-    div.addEventListener("drop", this.onDrop);
   }
 
   componentWillUnmount() {
     let div = this.dropRef.current;
-    div.removeEventListener("dragstart", this.onDragStart, false);
-    div.removeEventListener("dragend", this.onDragEnd, false);
+    div.removeEventListener("drop", this.onDrop);
     div.removeEventListener("dragenter", this.onDragEnter);
     div.removeEventListener("dragleave", this.onDragLeave);
-    div.removeEventListener("dragover", this.onDragOver);
-    div.removeEventListener("drop", this.onDrop);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { draggable, dragging } = this.props;
-
-    if(draggable !== nextProps.draggable) {
-      return true;
-    }
-
-    if(dragging !== nextProps.dragging) {
-      return true;
-    }
-
-    if(this.state.drag !== nextState.drag) {
-      return true;
-    }
-
-    return false;
   }
 
   render() {
-    const { children, draggable, dragging, isDropZone, ...rest } = this.props;
+    const { children, dragging, isDropZone, className, ...rest } = this.props;
+    const classNameProp = className ? className : "";
 
     return (
       <StyledDragAndDrop
         dragging={dragging}
-        className="drag-and-drop"
+        className={`drag-and-drop draggable${classNameProp}`}
         drag={this.state.drag && isDropZone}
-        draggable={draggable}
         {...rest}
         ref={this.dropRef}
       >
@@ -117,19 +78,16 @@ class DragAndDrop extends Component {
 
 DragAndDrop.propTypes = {
   children: PropTypes.any,
-  draggable: PropTypes.bool,
+  className: PropTypes.string,
   isDropZone: PropTypes.bool,
   dragging: PropTypes.bool,
-  onDragStart: PropTypes.func,
-  onDragEnd: PropTypes.func,
   onDragEnter: PropTypes.func,
   onDragLeave: PropTypes.func,
-  onDragOver: PropTypes.func,
   onDrop: PropTypes.func
-}
+};
 
 DragAndDrop.defaultProps = {
   dragging: false
-}
+};
 
 export default DragAndDrop;

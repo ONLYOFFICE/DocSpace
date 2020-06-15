@@ -58,7 +58,7 @@ class SelectedFrame extends React.Component {
         const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
 
         if (item.offsetTop - offsetScroll >= topStart && item.offsetTop  - offsetScroll <= topEnd) {
-          if (currentItem.getAttribute("draggable") === "true") {
+          if (currentItem.getAttribute("value").split("_")[2]) {
             needUpdate = false;
             break;
           }
