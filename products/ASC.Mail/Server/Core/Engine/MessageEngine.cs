@@ -1354,7 +1354,7 @@ namespace ASC.Mail.Core.Engine
             catch (Exception ex)
             {
                 log.ErrorFormat(
-                    "StoreMailBody() Problems with message saving in messageId={0}. \r\n Exception: \r\n {0}\r\n",
+                    "StoreMailBody() Problems with message saving in messageId={0}. \r\n Exception: \r\n {1}\r\n",
                     messageItem.MimeMessageId, ex.ToString());
 
                 Storage.Delete(string.Empty, savePath);
