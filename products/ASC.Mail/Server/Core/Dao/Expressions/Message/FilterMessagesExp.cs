@@ -49,15 +49,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             get { return Filter.Sort; }
         }
 
-        public bool? OrderAsc
-        {
-            get
-            {
-                return string.IsNullOrEmpty(Filter.SortOrder)
-                    ? (bool?) null
-                    : Filter.SortOrder == Defines.ASCENDING;
-            }
-        }
+        public bool? OrderAsc { get; set; }
 
         public int? StartIndex { get; set; }
 
@@ -91,6 +83,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             }
 
             Limit = Filter.PageSize;
+
+            OrderAsc = string.IsNullOrEmpty(Filter.SortOrder)
+                    ? (bool?)null
+                    : Filter.SortOrder == Defines.ASCENDING;
         }
 
         private const string MM_ALIAS = "mm";

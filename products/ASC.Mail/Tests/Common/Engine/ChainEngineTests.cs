@@ -726,7 +726,7 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
         }
 
         [Test]
-        public void Paging25Total74Test()
+        public void Paging25Total58SortDescTest()
         {
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
@@ -760,70 +760,215 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             var chains1 = messageEngine.GetConversations(filter, out bool hasMore);
 
+            Assert.AreEqual(true, hasMore);
             Assert.IsNotEmpty(chains1);
             Assert.AreEqual(page_size, chains1.Count);
 
+            var firstMessage1 = chains1.First();
+            var lastMessage1 = chains1.Last();
+
+            Assert.Greater(firstMessage1.ChainDate, lastMessage1.ChainDate);
+
             // Go to 2 page
 
-            var last = chains1.Last();
-
-            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
-            filter.FromMessage = last.Id;
+            filter.FromDate = apiDateTimeHelper.Get(lastMessage1.ChainDate);
+            filter.FromMessage = lastMessage1.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
 
             var chains2 = messageEngine.GetConversations(filter, out hasMore);
 
+            Assert.AreEqual(true, hasMore);
             Assert.IsNotEmpty(chains2);
             Assert.AreEqual(page_size, chains2.Count);
 
+            var firstMessage2 = chains2.First();
+            var lastMessage2 = chains2.Last();
+
+            Assert.Greater(firstMessage2.ChainDate, lastMessage2.ChainDate);
+
             // Go to 3 page
 
-            last = chains2.Last();
+            filter.FromDate = apiDateTimeHelper.Get(lastMessage2.ChainDate);
+            filter.FromMessage = lastMessage2.Id;
 
-            filter.FromDate = apiDateTimeHelper.Get(last.ChainDate);
-            filter.FromMessage = last.Id;
             filter.PrevFlag = false;
             filter.PageSize = page_size;
 
             var chains3 = messageEngine.GetConversations(filter, out hasMore);
 
+            Assert.AreEqual(false, hasMore);
             Assert.IsNotEmpty(chains3);
             Assert.AreEqual(last_page_count, chains3.Count);
 
+            var firstMessage3 = chains3.First();
+            var lastMessage3 = chains3.Last();
+
+            Assert.Greater(firstMessage3.ChainDate, lastMessage3.ChainDate);
+
             // Go back to 2 page
 
-            var first = chains3.First();
+            filter.FromDate = apiDateTimeHelper.Get(firstMessage3.ChainDate);
+            filter.FromMessage = firstMessage3.Id;
 
-            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
-            filter.FromMessage = first.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
 
             var chains2Prev = messageEngine.GetConversations(filter, out hasMore);
 
+            Assert.AreEqual(true, hasMore);
             Assert.IsNotEmpty(chains2Prev);
             Assert.AreEqual(page_size, chains2Prev.Count);
 
-            Assert.AreEqual(chains2.First().Id, chains2Prev.First().Id);
-            Assert.AreEqual(chains2.Last().Id, chains2Prev.Last().Id);
+            var firstMessage2Prev = chains2Prev.First();
+            var lastMessage2Prev = chains2Prev.Last();
+
+            Assert.AreEqual(firstMessage2.Id, firstMessage2Prev.Id);
+            Assert.AreEqual(lastMessage2.Id, lastMessage2Prev.Id);
+            Assert.Greater(firstMessage2Prev.ChainDate, lastMessage2Prev.ChainDate);
 
             // Go back to 1 page
 
-            first = chains2Prev.First();
-
-            filter.FromDate = apiDateTimeHelper.Get(first.ChainDate);
-            filter.FromMessage = first.Id;
+            filter.FromDate = apiDateTimeHelper.Get(firstMessage2Prev.ChainDate);
+            filter.FromMessage = firstMessage2Prev.Id;
             filter.PrevFlag = true;
             filter.PageSize = page_size;
 
             var chains1Prev = messageEngine.GetConversations(filter, out hasMore);
 
+            Assert.AreEqual(false, hasMore);
             Assert.IsNotEmpty(chains1Prev);
             Assert.AreEqual(page_size, chains1Prev.Count);
 
-            Assert.AreEqual(chains1.First().Id, chains1Prev.First().Id);
-            Assert.AreEqual(chains1.Last().Id, chains1Prev.Last().Id);
+            var firstMessage1Prev = chains1Prev.First();
+            var lastMessage1Prev = chains1Prev.Last();
+
+            Assert.AreEqual(firstMessage1.Id, firstMessage1Prev.Id);
+            Assert.AreEqual(lastMessage1.Id, lastMessage1Prev.Id);
+            Assert.Greater(firstMessage1Prev.ChainDate, lastMessage1Prev.ChainDate);
+        }
+
+        [Test]
+        public void Paging25Total58SortAscTest()
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var apiDateTimeHelper = scope.ServiceProvider.GetService<ApiDateTimeHelper>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
+
+            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
+
+            const int page_size = 25;
+            const int last_page_count = 8;
+
+            const int n = page_size * 2 + last_page_count;
+
+            CreateFakeMails(n);
+
+            // Go to 1 page
+
+            var filter = new MailSearchFilterData
+            {
+                PrimaryFolder = FolderType.Inbox,
+                PageSize = page_size,
+                Sort = Defines.ORDER_BY_DATE_CHAIN,
+                SortOrder = Defines.ASCENDING
+            };
+
+            bool hasMore;
+
+            var chains1 = messageEngine.GetConversations(filter, out hasMore);
+
+            Assert.AreEqual(true, hasMore);
+            Assert.IsNotEmpty(chains1);
+            Assert.AreEqual(page_size, chains1.Count);
+
+            var firstMessage1 = chains1.First();
+            var lastMessage1 = chains1.Last();
+
+            Assert.Less(firstMessage1.ChainDate, lastMessage1.ChainDate);
+
+            // Go to 2 page
+
+            filter.FromDate = apiDateTimeHelper.Get(lastMessage1.ChainDate);
+            filter.FromMessage = lastMessage1.Id;
+            filter.PrevFlag = false;
+            filter.PageSize = page_size;
+
+            var chains2 = messageEngine.GetConversations(filter, out hasMore);
+
+            Assert.AreEqual(true, hasMore);
+            Assert.IsNotEmpty(chains2);
+            Assert.AreEqual(page_size, chains2.Count);
+
+            var firstMessage2 = chains2.First();
+            var lastMessage2 = chains2.Last();
+
+            Assert.Less(firstMessage2.ChainDate, lastMessage2.ChainDate);
+
+            // Go to 3 page
+
+            filter.FromDate = apiDateTimeHelper.Get(lastMessage2.ChainDate);
+            filter.FromMessage = lastMessage2.Id;
+            filter.PrevFlag = false;
+            filter.PageSize = page_size;
+
+            var chains3 = messageEngine.GetConversations(filter, out hasMore);
+
+            Assert.AreEqual(false, hasMore);
+            Assert.IsNotEmpty(chains3);
+            Assert.AreEqual(last_page_count, chains3.Count);
+
+            var firstMessage3 = chains3.First();
+            var lastMessage3 = chains3.Last();
+
+            Assert.Less(firstMessage3.ChainDate, lastMessage3.ChainDate);
+
+            // Go back to 2 page
+
+            filter.FromDate = apiDateTimeHelper.Get(firstMessage3.ChainDate);
+            filter.FromMessage = firstMessage3.Id;
+            filter.PrevFlag = true;
+            filter.PageSize = page_size;
+
+            var chains2Prev = messageEngine.GetConversations(filter, out hasMore);
+
+            Assert.AreEqual(true, hasMore);
+            Assert.IsNotEmpty(chains2Prev);
+            Assert.AreEqual(page_size, chains2Prev.Count);
+
+            var firstMessage2Prev = chains2Prev.First();
+            var lastMessage2Prev = chains2Prev.Last();
+
+            Assert.AreEqual(firstMessage2.Id, firstMessage2Prev.Id);
+            Assert.AreEqual(lastMessage2.Id, lastMessage2Prev.Id);
+            Assert.Less(firstMessage2Prev.ChainDate, lastMessage2Prev.ChainDate);
+
+            // Go back to 1 page
+
+            filter.FromDate = apiDateTimeHelper.Get(firstMessage2Prev.ChainDate);
+            filter.FromMessage = firstMessage2Prev.Id;
+            filter.PrevFlag = true;
+            filter.PageSize = page_size;
+
+            var chains1Prev = messageEngine.GetConversations(filter, out hasMore);
+
+            Assert.AreEqual(false, hasMore);
+            Assert.IsNotEmpty(chains1Prev);
+            Assert.AreEqual(page_size, chains1Prev.Count);
+
+            var firstMessage1Prev = chains1Prev.First();
+            var lastMessage1Prev = chains1Prev.Last();
+
+            Assert.AreEqual(firstMessage1.Id, firstMessage1Prev.Id);
+            Assert.AreEqual(lastMessage1.Id, lastMessage1Prev.Id);
+            Assert.Less(firstMessage1Prev.ChainDate, lastMessage1Prev.ChainDate);
         }
 
         [Test]

@@ -49,13 +49,26 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (Filter.FromDate.HasValue)
             {
-                if (Filter.PrevFlag.GetValueOrDefault(false))
+                var prevFlag = Filter.PrevFlag.GetValueOrDefault(false);
+
+                if (Filter.SortOrder == Defines.DESCENDING)
                 {
-                    exp = exp.And(m => m.ChainDate >= Filter.FromDate.Value);
+                    exp = prevFlag
+                        ? exp.And(m => m.ChainDate >= Filter.FromDate.Value)
+                        : exp.And(m => m.ChainDate <= Filter.FromDate.Value);
                 }
                 else
                 {
-                    exp = exp.And(m => m.ChainDate <= Filter.FromDate.Value);
+                    exp = prevFlag
+                        ? exp.And(m => m.ChainDate <= Filter.FromDate.Value)
+                        : exp.And(m => m.ChainDate >= Filter.FromDate.Value);
+                }
+
+                if (prevFlag)
+                {
+                    OrderAsc = string.IsNullOrEmpty(Filter.SortOrder)
+                    ? (bool?)null
+                    : !OrderAsc.Value;
                 }
             }
 
@@ -167,13 +180,29 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (filter.FromDate.HasValue)
             {
-                if (filter.PrevFlag.GetValueOrDefault(false))
+                var prevFlag = filter.PrevFlag.GetValueOrDefault(false);
+
+                if (filter.SortOrder == Defines.DESCENDING)
                 {
-                    selector.Ge(r => r.ChainDate, filter.FromDate.Value);
+                    if (prevFlag)
+                    {
+                        selector.Ge(r => r.ChainDate, filter.FromDate.Value);
+                    }
+                    else
+                    {
+                        selector.Le(r => r.ChainDate, filter.FromDate.Value);
+                    }
                 }
                 else
                 {
-                    selector.Le(r => r.ChainDate, filter.FromDate.Value);
+                    if (prevFlag)
+                    {
+                        selector.Le(r => r.ChainDate, filter.FromDate.Value);
+                    }
+                    else
+                    {
+                        selector.Ge(r => r.ChainDate, filter.FromDate.Value);
+                    }
                 }
             }
 

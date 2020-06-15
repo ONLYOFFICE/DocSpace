@@ -2397,7 +2397,6 @@ namespace ASC.Mail.Core.Engine
 
         private List<MailMessageData> GetFilteredConversations(MailSearchFilterData filter, out bool hasMore)
         {
-
             var conversations = new List<MailMessageData>();
             var skipFlag = false;
             var chunkIndex = 0;
@@ -2407,13 +2406,7 @@ namespace ASC.Mail.Core.Engine
                 skipFlag = true;
             }
 
-            // Invert sort order for back paging
-            if (filter.PrevFlag.GetValueOrDefault(false))
-            {
-                filter.SortOrder = filter.SortOrder == Defines.ASCENDING
-                    ? Defines.DESCENDING
-                    : Defines.ASCENDING;
-            }
+            var prevFlag = filter.PrevFlag.GetValueOrDefault(false);
 
             var tenantInfo = TenantManager.GetTenant(Tenant);
             var utcNow = DateTime.UtcNow;
@@ -2438,10 +2431,20 @@ namespace ASC.Mail.Core.Engine
 
                         var ids = MailMails.Select(c => c.Id).ToList();
 
-                        exp = SimpleMessagesExp.CreateBuilder(Tenant, User)
+                        var query = SimpleMessagesExp.CreateBuilder(Tenant, User)
                             .SetMessageIds(ids)
-                            .SetOrderBy(filter.Sort)
-                            .SetOrderAsc(filter.SortOrder == Defines.ASCENDING)
+                            .SetOrderBy(filter.Sort);
+
+                        if (prevFlag)
+                        {
+                            query.SetOrderAsc(!(filter.SortOrder == Defines.ASCENDING));
+                        }
+                        else
+                        {
+                            query.SetOrderAsc(filter.SortOrder == Defines.ASCENDING);
+                        }
+
+                        exp = query
                             .Build();
                     }
                 }
@@ -2504,7 +2507,7 @@ namespace ASC.Mail.Core.Engine
                 conversations = conversations.Take(pageSize).ToList();
             }
 
-            if (filter.PrevFlag.GetValueOrDefault(false))
+            if (prevFlag)
             {
                 conversations.Reverse();
             }
