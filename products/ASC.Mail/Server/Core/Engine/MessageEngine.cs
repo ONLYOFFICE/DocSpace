@@ -1705,6 +1705,15 @@ namespace ASC.Mail.Core.Engine
 
         }
 
+        public List<Chain> GetChainsById(string id)
+        {
+            var exp = SimpleConversationsExp.CreateBuilder(Tenant, User)
+                .SetChainIds(new List<string> { id })
+                .Build();
+
+            return DaoFactory.ChainDao.GetChains(exp);
+        }
+
         public long GetNextConversationId(int id, MailSearchFilterData filter)
         {
             var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(id, Tenant, User));
@@ -2030,13 +2039,26 @@ namespace ASC.Mail.Core.Engine
             using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 Expression<Func<Dao.Entities.MailMail, bool>> exp = t => true;
+
+                var сhains = new List<Tuple<int, string>>();
                 foreach (var chain in chainsInfo)
                 {
+                    var key = new Tuple<int, string>(chain.MailboxId, chain.ChainId);
+
+                    if (сhains.Any() &&
+                            сhains.Contains(key) &&
+                            (chain.Folder == FolderType.Inbox || chain.Folder == FolderType.Sent))
+                    {
+                        continue;
+                    }
+
                     Expression<Func<Dao.Entities.MailMail, bool>> innerWhere = m => m.ChainId == chain.ChainId && m.IdMailbox == chain.MailboxId;
 
                     if (chain.Folder == FolderType.Inbox || chain.Folder == FolderType.Sent)
                     {
                         innerWhere = innerWhere.And(m => m.Folder == (int)FolderType.Inbox || m.Folder == (int)FolderType.Sent);
+
+                        сhains.Add(key);
                     }
                     else
                     {
@@ -2053,9 +2075,16 @@ namespace ASC.Mail.Core.Engine
                     "Importance",
                     important);
 
-                foreach (var message in ids)
+                foreach (var chain in chainsInfo)
                 {
-                    UpdateMessageChainImportanceFlag(tenant, user, message);
+                    DaoFactory.ChainDao.SetFieldValue(
+                        SimpleConversationsExp.CreateBuilder(tenant, user)
+                            .SetChainId(chain.ChainId)
+                            .SetMailboxId(chain.MailboxId)
+                            .SetFolder((int)chain.Folder)
+                            .Build(),
+                        "Importance",
+                        important);
                 }
 
                 tx.Commit();

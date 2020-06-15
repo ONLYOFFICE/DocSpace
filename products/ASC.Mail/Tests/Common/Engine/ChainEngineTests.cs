@@ -1199,5 +1199,147 @@ namespace ASC.Mail.Aggregator.Tests.Common.Engine
 
             #endregion
         }
+
+        [Test]
+        public void SetAndUnsetImportanceByChainedMessagesTest()
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
+            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+            securityContext.AuthenticateMe(TestUser.ID);
+
+            var mailBoxSettingEngine = scope.ServiceProvider.GetService<MailBoxSettingEngine>();
+            var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
+            var userFolderEngine = scope.ServiceProvider.GetService<UserFolderEngine>();
+
+            var mailboxSettings = mailBoxSettingEngine.GetMailBoxSettings(DOMAIN);
+
+            var testMailboxes = mailboxSettings.ToMailboxList("example@example.com", PASSWORD, CURRENT_TENANT, TestUser.ID.ToString());
+
+            var testMailbox2 = testMailboxes.FirstOrDefault();
+
+            if (testMailbox2 == null || !mailboxEngine.SaveMailBox(testMailbox2))
+            {
+                throw new Exception(string.Format("Can't create mailbox with email: {0}", TestUser.Email));
+            }
+
+            var folders = folderEngine.GetFolders();
+
+            Assert.AreEqual(true,
+                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
+
+            var date = DateTime.Now;
+            var mimeMessageId = MailUtil.CreateMessageId(tenantManager, coreSettings);
+
+            var model = new TestMessageModel
+            {
+                FolderId = (int)FolderType.Inbox,
+                UserFolderId = null,
+                MailboxId = TestMailbox.MailBoxId,
+                Unread = true,
+                To = new List<string> { TestMailbox.EMail.Address },
+                Cc = new List<string>(),
+                Bcc = new List<string>(),
+                Subject = "SOME TEXT",
+                Body = "SOME TEXT",
+                MimeMessageId = mimeMessageId,
+                Date = date
+            };
+
+            var id1 = testEngine.CreateSampleMessage(model);
+
+            Assert.Greater(id1, 0);
+
+            var id2 = testEngine.CreateReplyToSampleMessage(id1, "SOME REPLY BODY");
+
+            Assert.Greater(id2, 0);
+
+            folders = folderEngine.GetFolders();
+
+            var inbox = folders.First(f => f.id == FolderType.Inbox);
+
+            Assert.AreEqual(true,
+                inbox.totalMessages == 1 && inbox.unreadMessages == 1 && inbox.total == 1 && inbox.unread == 1);
+
+            var sent = folders.First(f => f.id == FolderType.Sent);
+
+            Assert.AreEqual(true,
+                sent.totalMessages == 1 && sent.unreadMessages == 0 && sent.total == 1 && sent.unread == 0);
+
+            var message1 = messageEngine.GetMessage(id1, new MailMessageData.Options());
+
+            Assert.AreEqual(false, message1.Important);
+
+            var message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
+
+            Assert.AreEqual(false, message2.Important);
+
+            var chains = messageEngine.GetChainsById(mimeMessageId);
+
+            Assert.AreEqual(true, chains.All(c => !c.Importance));
+
+            messageEngine.SetConversationsImportanceFlags(CURRENT_TENANT, TestUser.ID.ToString(), true, new List<int> { id1 });
+
+            message1 = messageEngine.GetMessage(id1, new MailMessageData.Options());
+
+            Assert.AreEqual(true, message1.Important);
+
+            message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
+
+            Assert.AreEqual(true, message2.Important);
+
+            chains = messageEngine.GetChainsById(mimeMessageId);
+
+            Assert.AreEqual(true, chains.All(c => c.Importance));
+
+            messageEngine.SetConversationsImportanceFlags(CURRENT_TENANT, TestUser.ID.ToString(), false, new List<int> { id2 });
+
+            message1 = messageEngine.GetMessage(id1, new MailMessageData.Options());
+
+            Assert.AreEqual(false, message1.Important);
+
+            message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
+
+            Assert.AreEqual(false, message2.Important);
+
+            chains = messageEngine.GetChainsById(mimeMessageId);
+
+            Assert.AreEqual(true, chains.All(c => !c.Importance));
+
+            messageEngine.SetConversationsImportanceFlags(CURRENT_TENANT, TestUser.ID.ToString(), true, new List<int> { id2 });
+
+            message1 = messageEngine.GetMessage(id1, new MailMessageData.Options());
+
+            Assert.AreEqual(true, message1.Important);
+
+            message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
+
+            Assert.AreEqual(true, message2.Important);
+
+            chains = messageEngine.GetChainsById(mimeMessageId);
+
+            Assert.AreEqual(true, chains.All(c => c.Importance));
+
+            messageEngine.SetConversationsImportanceFlags(CURRENT_TENANT, TestUser.ID.ToString(), false, new List<int> { id1 });
+
+            message1 = messageEngine.GetMessage(id1, new MailMessageData.Options());
+
+            Assert.AreEqual(false, message1.Important);
+
+            message2 = messageEngine.GetMessage(id2, new MailMessageData.Options());
+
+            Assert.AreEqual(false, message2.Important);
+
+            chains = messageEngine.GetChainsById(mimeMessageId);
+
+            Assert.AreEqual(true, chains.All(c => !c.Importance));
+        }
     }
 }
