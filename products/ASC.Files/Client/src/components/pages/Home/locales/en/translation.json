@@ -77,5 +77,7 @@
   "Restore": "Restore",
   "ErrorUploadMessage": "You cannot upload a folder or an empty file",
   "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
-  "MoveToOperation": "Moving"
+  "MoveToOperation": "Moving",
+  "TooltipElementMessage": "Move {{element}}",
+  "TooltipElementsMessage": "Move {{element}} elements"
 }

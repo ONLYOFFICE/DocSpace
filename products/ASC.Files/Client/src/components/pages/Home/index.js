@@ -43,7 +43,8 @@ class PureHome extends React.Component {
       files: [],
       uploadedFiles: 0,
       totalSize: 0,
-      percent: 0
+      percent: 0,
+      dragging: false
     };
   }
 
@@ -321,7 +322,7 @@ class PureHome extends React.Component {
       }
     };
     
-    this.setState({ isLoading: true }, () =>
+    this.setState({ isLoading: true, dragging: false }, () =>
       readItems(items, () => this.startUpload(files, folderId))
     );
   };
@@ -514,6 +515,8 @@ class PureHome extends React.Component {
     }
   }
 
+  setDragging = dragging => this.setState({dragging});
+
   componentDidUpdate(prevProps) {
     if (this.props.selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
@@ -532,7 +535,8 @@ class PureHome extends React.Component {
       progressBarLabel,
       overwriteSetting,
       uploadOriginalFormatSetting,
-      hideWindowSetting
+      hideWindowSetting,
+      dragging
     } = this.state;
     const { t } = this.props;
 
@@ -624,6 +628,8 @@ class PureHome extends React.Component {
               finishFilesOperations={this.finishFilesOperations}
               loopFilesOperations={this.loopFilesOperations}
               onDropZoneUpload={this.onDrop}
+              setDragging={this.setDragging}
+              dragging={dragging}
             />
           }
           sectionPagingContent={

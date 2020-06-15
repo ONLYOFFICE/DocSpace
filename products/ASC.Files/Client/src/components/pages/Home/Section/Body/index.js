@@ -40,6 +40,20 @@ const linkStyles = { isHovered: true, type: "action", fontSize: "14px", classNam
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
 
+const CustomTooltip = styled.div`
+  position: fixed;
+  display: none;
+  padding: 8px;
+  z-index: 150;
+  background: #FFF;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+  -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+  -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+`;
+
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -49,9 +63,11 @@ class SectionBodyContent extends React.Component {
       showSharingPanel: false,
       currentItem: null,
       currentMediaFileId: 0,
-      mediaViewerVisible: false,
-      dragging: false
+      mediaViewerVisible: false
     };
+
+    this.tooltipRef = React.createRef();
+    this.currentDroppable = null;
   }
 
   componentDidMount() {
@@ -74,6 +90,19 @@ class SectionBodyContent extends React.Component {
     //       .catch(error => toastr.error(error));
     //   }
     // }
+    window.addEventListener("mouseup", this.onMouseUp);
+    document.addEventListener("mousedown", this.onMouseDown);
+
+    document.addEventListener("dragover", this.onDragOver);
+    document.addEventListener("dragleave", this.onDragLeaveDoc);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("mouseup", this.onMouseUp);
+    document.removeEventListener("mousedown", this.onMouseDown);
+
+    document.removeEventListener("dragover", this.onDragOver);
+    document.removeEventListener("dragleave", this.onDragLeaveDoc);
   }
 
   /* componentDidUpdate(prevProps, prevState) {
@@ -89,10 +118,6 @@ class SectionBodyContent extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if(this.state.showSharingPanel !== nextState.showSharingPanel) {
-      return true;
-    }
-
-    if(this.state.dragging !== nextState.dragging) {
       return true;
     }
 
@@ -587,46 +612,135 @@ class SectionBodyContent extends React.Component {
   onDragEnter = (item, e) => {
     const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
     if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
-      //console.log("onDragEnter");
       e.currentTarget.style.background = backgroundDragColor;
     }
   }
 
   onDragLeave = (item, e) => {
-    //console.log("onDragLeave");
-    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(e.dataTransfer.items.length) {
+    const { selection, dragging, setDragging } = this.props;
+    const isCurrentItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+    if(!e.dataTransfer.items.length) {
       e.currentTarget.style.background = "none";
     } else if(!item.fileExst && !isCurrentItem) {
       e.currentTarget.style.background = backgroundDragEnterColor;
     }
-  }
-
-  onDragStart = (item, e) => {
-    if(this.props.selection.length) {
-      this.setState({dragging: true});
-      //this.props.showReceivedItem(true);
-    }
+    if(dragging && !e.relatedTarget) { setDragging(false); }
   }
 
   onDrop = (item, e) => {
-    const { selection } = this.props;
+    if(e.dataTransfer.items.length > 0 && !item.fileExst) {
+      const { setDragging, onDropZoneUpload } = this.props;
+      e.currentTarget.style.background = backgroundDragEnterColor;
+      setDragging(false);
+      onDropZoneUpload(e, item.id);
+    }
+  }
 
-    if(selection.find(x => x.id === item.id)) {
+  onDragOver = e => {
+    e.preventDefault();
+    const { dragging, setDragging } = this.props;
+    if(e.dataTransfer.items.length > 0 && !dragging) {
+      setDragging(true);
+    }
+  }
+
+  onDragLeaveDoc = e => {
+    e.preventDefault();
+    const { dragging, setDragging } = this.props;
+    if(dragging && !e.relatedTarget) {
+      setDragging(false);
+    }
+  }
+
+  onMouseDown = e => {
+    if(e.target.tagName !== "DIV") { return; }
+    document.addEventListener("mousemove", this.onMouseMove);
+    this.setTooltipPosition(e);
+    const { selection, setDragging } = this.props;
+
+    const elem = e.target.closest('.draggable');
+    if(!elem) {
       return;
     }
-
-    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(e.dataTransfer.items.length > 0) {
-      this.props.onDropZoneUpload(e, item.id);
-    } else if(!item.fileExst && !isCurrentItem) {
-      this.onMoveTo(item.id);
+    const value = elem.getAttribute('value');
+    if(!value) {
+      return;
+    }
+    const splitValue = value.split("_");
+    let item = null;
+    if(splitValue[0] === "folder") {
+      item = selection.find(x => x.id === Number(splitValue[1]) && !x.fileExst);
+    } else {
+      item = selection.find(x => x.id === Number(splitValue[1]) && x.fileExst);
+    }
+    if(item) {
+      setDragging(true);
     }
   }
 
-  onDragEnd = e => {
-    this.setState({dragging: false});
+  onMouseUp = e => {
+    document.removeEventListener("mousemove", this.onMouseMove);
+    this.tooltipRef.current.style.display = "none";
+    const { selection, dragging, setDragging } = this.props;
+    
+    const elem = e.target.closest('.dropable');
+    if(elem && selection.length && dragging) {
+      const value = elem.getAttribute('value');
+      if(!value) {
+        setDragging(false);
+        return;
+      }
+      const splitValue = value.split("_");
+      let item = null;
+      if(splitValue[0] === "folder") {
+        item = selection.find(x => x.id === Number(splitValue[1]) && !x.fileExst);
+      } else {
+        return;
+      }
+      if(item) {
+        setDragging(false);
+        return;
+      } else {
+        setDragging(false);
+        this.onMoveTo(Number(splitValue[1]));
+        return;
+      }
+    } else {
+      setDragging(false);
+      return;
+    }
   }
+
+  onMouseMove = e => {
+    if(this.props.dragging) {
+      const tooltip = this.tooltipRef.current;
+      tooltip.style.display = "block";
+      this.setTooltipPosition(e);
+
+      const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
+      if(!wrapperElement) { return; }
+      const droppable = wrapperElement.closest('.dropable');
+
+      if (this.currentDroppable !== droppable) {
+        if (this.currentDroppable) {
+          this.currentDroppable.style.background = backgroundDragEnterColor;
+        }
+        this.currentDroppable = droppable;
+
+        if (this.currentDroppable) {
+          droppable.style.background = backgroundDragColor;
+          this.currentDroppable = droppable;
+        }
+      }
+    }
+  }
+
+  setTooltipPosition = e => {
+    const tooltip = this.tooltipRef.current;
+    const margin = 8;
+    tooltip.style.left = e.pageX + margin + "px";
+    tooltip.style.top = e.pageY + margin + "px";
+  };
 
   onMoveTo = (destFolderId) => {
     const { selection, moveToFolder, finishFilesOperations, startFilesOperations, t, loopFilesOperations } = this.props;
@@ -654,6 +768,7 @@ class SectionBodyContent extends React.Component {
 
   render() {
     const {
+      t,
       files,
       folders,
       viewer,
@@ -665,12 +780,19 @@ class SectionBodyContent extends React.Component {
       onLoading,
       isLoading,
       currentFolderCount,
-      currentFolderType
+      currentFolderType,
+      dragging
     } = this.props;
 
     const { editingId, showSharingPanel, currentItem } = this.state;
 
     let items = [...folders, ...files];
+    
+    const tooltipLabel = !selection.length
+      ? ""
+      : selection.length > 1
+      ? t("TooltipElementsMessage", { element: selection.length })
+      : t("TooltipElementMessage", { element: selection[0].title });
 
     const SimpleFilesRow = styled(Row)`
       ${(props) =>
@@ -718,6 +840,7 @@ class SectionBodyContent extends React.Component {
       this.renderEmptyFilterContainer()
     ) : (
           <>
+          <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
             <RowContainer draggable useReactWindow={false}>
               {items.map((item) => {
                 const isEdit =
@@ -737,18 +860,17 @@ class SectionBodyContent extends React.Component {
                 const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
                 const isFolder = selectedItem ? false : item.fileExst ? false : true;
                 const draggable = selectedItem && currentFolderType !== "Trash";
-                const value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
-                
+                let value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
+                value += draggable ? "_draggable" : "";
+                const classNameProp = isFolder ? {className: " dropable"} : {};
+
                 return (
                   <DragAndDrop
+                    {...classNameProp}
                     onDrop={this.onDrop.bind(this, item)}
-                    onDragEnd={this.onDragEnd}
                     onDragEnter={this.onDragEnter.bind(this, item)}
                     onDragLeave={this.onDragLeave.bind(this, item)}
-                    onDragStart={this.onDragStart.bind(this, item)}
-                    dragging={this.state.dragging && isFolder}
-                    draggable={draggable}
-                    currentId={item.id}
+                    dragging={dragging && isFolder}
                     key={`dnd-key_${item.id}`}
                     {...contextOptionsProps}
                     value={value}
