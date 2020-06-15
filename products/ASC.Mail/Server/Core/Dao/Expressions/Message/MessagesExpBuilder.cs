@@ -147,6 +147,18 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             return this;
         }
 
+        public MessagesExpBuilder SetSubject(string subject)
+        {
+            _exp.Subject = subject;
+            return this;
+        }
+
+        public MessagesExpBuilder SetDateSent(DateTime dateSent)
+        {
+            _exp.DateSent = dateSent;
+            return this;
+        }
+
         public SimpleMessagesExp Build()
         {
             return _exp;

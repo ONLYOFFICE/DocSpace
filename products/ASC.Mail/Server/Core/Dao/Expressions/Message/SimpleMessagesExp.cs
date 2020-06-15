@@ -57,6 +57,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         public int? StartIndex { get; set; }
         public int? Limit { get; set; }
 
+        public string Subject { get; set; }
+
+        public DateTime? DateSent { get; set; }
+
         public Expression<Func<MailMail, bool>> Exp { get; set; }
 
         public SimpleMessagesExp(int tenant)
@@ -145,6 +149,16 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             if (Unread.HasValue)
             {
                 exp = exp.And(m => m.Unread == Unread.Value);
+            }
+
+            if (!string.IsNullOrEmpty(Subject))
+            {
+                exp = exp.And(m => m.Subject.Equals(Subject));
+            }
+
+            if (DateSent.HasValue)
+            {
+                exp = exp.And(m => m.DateSent.Equals(DateSent.Value));
             }
 
             if (Exp != null)

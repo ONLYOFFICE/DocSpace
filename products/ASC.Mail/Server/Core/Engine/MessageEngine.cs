@@ -1267,7 +1267,7 @@ namespace ASC.Mail.Core.Engine
             log.Debug("UpdateExistingMessages()");
 
             var found = UpdateExistingMessages(mailbox, folder.Folder, uidl, md5,
-                mimeMessage.MessageId, fromThisMailBox, toThisMailBox, tagsIds, log);
+                mimeMessage.MessageId, mimeMessage.Subject, mimeMessage.Date.UtcDateTime, fromThisMailBox, toThisMailBox, tagsIds, log);
 
             var needSave = !found;
             if (!needSave)
@@ -1570,7 +1570,7 @@ namespace ASC.Mail.Core.Engine
         }
         //TODO: Need refactoring
         private bool UpdateExistingMessages(MailBoxData mailbox, FolderType folder, string uidl, string md5,
-            string mimeMessageId, bool fromThisMailBox, bool toThisMailBox, List<int> tagsIds, ILog log)
+            string mimeMessageId, string subject, DateTime dateSent, bool fromThisMailBox, bool toThisMailBox, List<int> tagsIds, ILog log)
         {
             if ((string.IsNullOrEmpty(md5) || md5.Equals(Defines.MD5_EMPTY)) && string.IsNullOrEmpty(mimeMessageId))
             {
@@ -1586,6 +1586,18 @@ namespace ASC.Mail.Core.Engine
                     .Build();
 
                 var messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
+
+                if (!messagesInfo.Any() && folder == FolderType.Sent)
+                {
+                    exp = SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId, null)
+                        .SetMailboxId(mailbox.MailBoxId)
+                        .SetFolder((int)FolderType.Sent)
+                        .SetSubject(subject)
+                        .SetDateSent(dateSent)
+                        .Build();
+
+                    messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
+                }
 
                 if (!messagesInfo.Any())
                     return false;
@@ -1619,9 +1631,27 @@ namespace ASC.Mail.Core.Engine
                         if (clone != null)
                             log.InfoFormat("Message already exists: mailId={0}. Clone", clone.Id);
                         else
-                            log.Info("Message already exists. by MD5/MimeMessageId");
+                    {
+                        var existMessage = messagesInfo.First();
 
-                        return true;
+                        if (!existMessage.IsRemoved)
+                        {
+                            if (string.IsNullOrEmpty(existMessage.Uidl))
+                            {
+                                DaoFactory.MailInfoDao.SetFieldValue(
+                                SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
+                                    .SetMessageId(existMessage.Id)
+                                    .Build(),
+                                "Uidl",
+                                uidl);
+                            }
+                        }
+
+                        log.Info("Message already exists by MD5|MimeMessageId|Subject|DateSent");
+                    }
+
+
+                    return true;
                     }
                 }
                 else
