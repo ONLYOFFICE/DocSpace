@@ -45,6 +45,7 @@ using ASC.Mail.Iterators;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
+using System.Data;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -58,6 +59,7 @@ namespace ASC.Mail.Core.Engine
         public ServerMailboxEngine MailboxEngine1 { get; }
         public MailboxEngine MailboxEngine { get; }
         public ServerMailboxEngine ServerMailboxEngine { get; }
+        public ServerDomainEngine ServerDomainEngine { get; }
         public UserFolderEngine UserFolderEngine { get; }
         public OperationEngine OperationEngine { get; }
         public ApiHelper ApiHelper { get; }
@@ -79,6 +81,7 @@ namespace ASC.Mail.Core.Engine
             DaoFactory daoFactory,
             MailboxEngine mailboxEngine,
             ServerMailboxEngine serverMailboxEngine,
+            ServerDomainEngine serverDomainEngine,
             UserFolderEngine userFolderEngine,
             OperationEngine operationEngine,
             ApiHelper apiHelper,
@@ -92,6 +95,7 @@ namespace ASC.Mail.Core.Engine
             DaoFactory = daoFactory;
             MailboxEngine = mailboxEngine;
             ServerMailboxEngine = serverMailboxEngine;
+            ServerDomainEngine = serverDomainEngine;
             UserFolderEngine = userFolderEngine;
             OperationEngine = operationEngine;
             ApiHelper = apiHelper;
@@ -159,7 +163,74 @@ namespace ASC.Mail.Core.Engine
                 break;
             }
 
+            RemoveUselessMsDomains();
+
             Log.Debug("End ClearMailGarbage()\r\n");
+        }
+
+        public void RemoveUselessMsDomains()
+        {
+            Log.Debug("Start RemoveUselessMsDomains()\r\n");
+
+            try
+            {
+                var domains = ServerDomainEngine.GetAllDomains();
+
+                foreach (var domain in domains)
+                {
+                    if (domain.Tenant == -1)
+                        continue;
+
+                    RemoveDomainIfUseless(domain);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Format("RemoveUselessMsDomains failed. Exception: {0}", ex.ToString()));
+            }
+
+            Log.Debug("End RemoveUselessMsDomains()\r\n");
+        }
+
+        public void RemoveDomainIfUseless(Entities.ServerDomain domain)
+        {
+            try
+            {
+                TenantManager.SetCurrentTenant(domain.Tenant);
+
+                var tenantInfo = TenantManager.GetCurrentTenant();
+
+                if (tenantInfo.Status == TenantStatus.RemovePending)
+                {
+                    Log.InfoFormat("Domain's '{0}' Tenant={1} is removed. Lets remove domain.", domain.Name, domain.Tenant);
+
+                    RemoveDomain(domain);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Format("RemoveDomainIfUseless(Domain: '{0}', ID='{1}') failed. Exception: {2}", domain.Name, domain.Id, ex.ToString()));
+            }
+        }
+
+        public void RemoveDomain(Entities.ServerDomain domain)
+        {
+            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            {
+                DaoFactory.ServerDomainDao.Delete(domain.Id);
+
+                var server = DaoFactory.ServerDao.Get(domain.Tenant);
+
+                if (server == null)
+                    throw new Exception(string.Format("Information for Tenant's Mail Server not found (Tenant = {0})", domain.Tenant));
+
+                var serverEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+
+                serverEngine.RemoveDomain(domain.Name);
+
+                tx.Commit();
+            }
         }
 
         public void ClearUserMail(Guid userId, Tenant tenantId = null)
@@ -631,6 +702,7 @@ namespace ASC.Mail.Core.Engine
                 .AddOperationEngineService()
                 .AddMailboxEngineService()
                 .AddServerMailboxEngineService()
+                .AddServerDomainEngineService()
                 .AddUserFolderEngineService()
                 .AddApiHelperService()
                 .AddStorageFactoryService();

@@ -26,6 +26,7 @@
 
 using System;
 using System.Configuration;
+using ASC.Core;
 using ASC.Web.Studio.Core;
 
 namespace ASC.Mail

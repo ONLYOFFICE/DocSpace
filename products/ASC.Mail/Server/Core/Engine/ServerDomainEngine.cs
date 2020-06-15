@@ -135,6 +135,13 @@ namespace ASC.Mail.Core.Engine
             return list;
         }
 
+        public List<ServerDomain> GetAllDomains()
+        {
+            var domains = DaoFactory.ServerDomainDao.GetAllDomains();
+
+            return domains;
+        }
+
         public ServerDomainData GetCommonDomain()
         {
             var domainCommon = DaoFactory.ServerDomainDao.GetDomains()

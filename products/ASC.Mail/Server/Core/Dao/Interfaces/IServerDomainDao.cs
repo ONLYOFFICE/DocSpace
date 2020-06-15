@@ -37,6 +37,8 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         List<ServerDomain> GetDomains();
 
+        List<ServerDomain> GetAllDomains();
+
         ServerDomain GetDomain(int id);
 
         bool IsDomainExists(string name);

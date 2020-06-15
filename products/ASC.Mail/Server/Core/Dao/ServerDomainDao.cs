@@ -104,6 +104,16 @@ namespace ASC.Mail.Core.Dao
             return list;
         }
 
+        public List<ServerDomain> GetAllDomains()
+        {
+            var query = Query();
+
+            var list = Db.ExecuteList(query)
+                .ConvertAll(ToServerDomain);
+
+            return list;
+        }
+
         public ServerDomain GetDomain(int id)
         {
             var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
