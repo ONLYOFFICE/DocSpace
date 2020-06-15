@@ -106,10 +106,9 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerDomain> GetAllDomains()
         {
-            var query = Query();
-
-            var list = Db.ExecuteList(query)
-                .ConvertAll(ToServerDomain);
+            var list = MailDb.MailServerDomain
+                .Select(ToServerDomain)
+                .ToList();
 
             return list;
         }

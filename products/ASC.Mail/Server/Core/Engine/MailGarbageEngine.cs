@@ -181,7 +181,35 @@ namespace ASC.Mail.Core.Engine
                     if (domain.Tenant == -1)
                         continue;
 
-                    RemoveDomainIfUseless(domain);
+                    var status = GetTenantStatus(domain.Tenant);
+
+                    if (status != TenantStatus.RemovePending)
+                        continue;
+
+                    var exp = new TenantServerMailboxesExp(domain.Tenant, null);
+
+                    var mailboxes = MailboxEngine.GetMailboxDataList(exp);
+
+                    if (mailboxes.Any())
+                    {
+                        Log.WarnFormat("Domain's '{0}' Tenant={1} is removed, but it has unremoved server mailboxes (count={2}). Skip it.",
+                            domain.Name, domain.Tenant, mailboxes.Count);
+
+                        continue;
+                    }
+
+                    Log.InfoFormat("Domain's '{0}' Tenant={1} is removed. Lets remove domain.", domain.Name, domain.Tenant);
+
+                    var count = domains.Count(d => d.Name.Equals(domain.Name, StringComparison.InvariantCultureIgnoreCase));
+
+                    var skipMS = count > 1;
+
+                    if (skipMS)
+                    {
+                        Log.InfoFormat("Domain's '{0}' has duplicated entry for another tenant. Remove only current entry.", domain.Name);
+                    }
+
+                    RemoveDomain(domain, skipMS);
                 }
 
             }
@@ -193,43 +221,51 @@ namespace ASC.Mail.Core.Engine
             Log.Debug("End RemoveUselessMsDomains()\r\n");
         }
 
-        public void RemoveDomainIfUseless(Entities.ServerDomain domain)
+        public TenantStatus GetTenantStatus(int tenant)
         {
             try
             {
-                TenantManager.SetCurrentTenant(domain.Tenant);
+                TenantManager.SetCurrentTenant(tenant);
 
                 var tenantInfo = TenantManager.GetCurrentTenant();
 
-                if (tenantInfo.Status == TenantStatus.RemovePending)
-                {
-                    Log.InfoFormat("Domain's '{0}' Tenant={1} is removed. Lets remove domain.", domain.Name, domain.Tenant);
+                return tenantInfo.Status;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Format("GetTenantStatus(tenant='{0}') failed. Exception: {1}", tenant, ex.ToString()));
+            }
 
-                    RemoveDomain(domain);
+            return TenantStatus.Active;
+        }
+
+        public void RemoveDomain(Entities.ServerDomain domain, bool skipMS = false)
+        {
+            try
+            {
+                using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    DaoFactory.ServerDomainDao.Delete(domain.Id);
+
+                    if (!skipMS)
+                    {
+
+                        var server = DaoFactory.ServerDao.Get(domain.Tenant);
+
+                        if (server == null)
+                            throw new Exception(string.Format("Information for Tenant's Mail Server not found (Tenant = {0})", domain.Tenant));
+
+                        var serverEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+
+                        serverEngine.RemoveDomain(domain.Name);
+                    }
+
+                    tx.Commit();
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(string.Format("RemoveDomainIfUseless(Domain: '{0}', ID='{1}') failed. Exception: {2}", domain.Name, domain.Id, ex.ToString()));
-            }
-        }
-
-        public void RemoveDomain(Entities.ServerDomain domain)
-        {
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
-            {
-                DaoFactory.ServerDomainDao.Delete(domain.Id);
-
-                var server = DaoFactory.ServerDao.Get(domain.Tenant);
-
-                if (server == null)
-                    throw new Exception(string.Format("Information for Tenant's Mail Server not found (Tenant = {0})", domain.Tenant));
-
-                var serverEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
-
-                serverEngine.RemoveDomain(domain.Name);
-
-                tx.Commit();
             }
         }
 

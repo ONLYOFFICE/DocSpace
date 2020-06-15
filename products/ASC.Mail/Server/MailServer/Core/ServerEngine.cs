@@ -172,9 +172,10 @@ namespace ASC.Mail.Server.Core
             }
         }
 
-        public void RemoveDomain(string domain)
+        public void RemoveDomain(string domain, bool withStorageClean = true)
         {
-            ClearDomainStorageSpace(domain);
+            if (withStorageClean)
+                ClearDomainStorageSpace(domain);
 
             using (var db = GetDb())
             {
