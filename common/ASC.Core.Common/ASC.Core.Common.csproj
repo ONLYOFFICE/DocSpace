@@ -30,6 +30,7 @@
   <ItemGroup>
     <None Remove="protos\AzRecordCache.proto" />
     <None Remove="protos\ConsumerCacheItem.proto" />
+    <None Remove="protos\DeleteBackupRequest.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
     <None Remove="protos\NotifyMessage.proto" />
     <None Remove="protos\QuotaCacheItem.proto" />
@@ -69,6 +70,7 @@
     <Protobuf Include="protos\NotifyMessage.proto" />
     <Protobuf Include="protos\SettingsCacheItem.proto" />
     <Protobuf Include="protos\ConsumerCacheItem.proto" />
+    <Protobuf Include="protos\DeleteBackupRequest.proto" />
     <Protobuf Include="protos\TenantCacheItem.proto" />
     <Protobuf Include="protos\GroupCacheItem.proto" />
     <Protobuf Include="protos\UserGroupRefCacheItem.proto" />

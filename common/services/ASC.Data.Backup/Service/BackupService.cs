@@ -52,17 +52,20 @@ namespace ASC.Data.Backup.Service
     internal class BackupServiceNotifier
     {
         private IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<DeleteBackupRequest> СacheDeleteBackupRequest { get; set; }
         private ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
         private ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
         private ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
 
         public BackupServiceNotifier(
             IServiceProvider serviceProvider,
+            ICacheNotify<DeleteBackupRequest> cacheDeleteBackupRequest,
             ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
             ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
             ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
         {
             ServiceProvider = serviceProvider;
+            СacheDeleteBackupRequest = cacheDeleteBackupRequest;
             СacheStartBackupRequest = cacheStartBackupRequest;
             СacheStartRestoreRequest = cacheStartRestoreRequest;
             СacheStartTransferRequest = cacheStartTransferRequest;
@@ -70,6 +73,22 @@ namespace ASC.Data.Backup.Service
 
         public void Subscribe()
         {
+            СacheDeleteBackupRequest.Subscribe((n) =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var backupService = scope.ServiceProvider.GetService<BackupService>();
+                var id = new Guid(n.Id.ToByteArray());
+                if (!id.Equals(Guid.Empty))
+                {
+                    backupService.DeleteBackup(id);
+                }
+                else if (n.TenantId != -1)
+                {
+                    backupService.DeleteAllBackups(n.TenantId);
+                }
+            }
+            , CacheNotifyAction.InsertOrUpdate);
+
             СacheStartBackupRequest.Subscribe((n) =>
             {
                 using var scope = ServiceProvider.CreateScope();

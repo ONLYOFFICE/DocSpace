@@ -30,10 +30,13 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Common.Caching;
 
+using Google.Protobuf;
+
 namespace ASC.Core.Common.Contracts
 {
     public class BackupServiceClient : IBackupService
     {
+        public ICacheNotify<DeleteBackupRequest> CacheDeleteBackupRequest { get; }
         public ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
         public ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
         public ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
@@ -41,12 +44,14 @@ namespace ASC.Core.Common.Contracts
         public ICache Cache { get; }
 
         public BackupServiceClient(
+            ICacheNotify<DeleteBackupRequest> cacheDeleteBackupRequest,
             ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
             ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
             ICacheNotify<StartTransferRequest> cacheStartTransferRequest,
             ICacheNotify<BackupProgress> сacheBackupProgress
             )
         {
+            CacheDeleteBackupRequest = cacheDeleteBackupRequest;
             СacheStartBackupRequest = cacheStartBackupRequest;
             СacheStartRestoreRequest = cacheStartRestoreRequest;
             СacheStartTransferRequest = cacheStartTransferRequest;
@@ -72,13 +77,13 @@ namespace ASC.Core.Common.Contracts
 
         public void DeleteBackup(Guid backupId)
         {
-            // Channel.DeleteBackup(backupId);
+            CacheDeleteBackupRequest.Publish(new DeleteBackupRequest() { Id = ByteString.CopyFrom(backupId.ToByteArray()), TenantId = -1 }, CacheNotifyAction.InsertOrUpdate);
 
         }
 
         public void DeleteAllBackups(int tenantId)
         {
-            //  Channel.DeleteAllBackups(tenantId);
+            CacheDeleteBackupRequest.Publish(new DeleteBackupRequest() { Id = ByteString.CopyFrom(Guid.Empty.ToByteArray()), TenantId = tenantId }, CacheNotifyAction.InsertOrUpdate);
         }
 
         public List<BackupHistoryRecord> GetBackupHistory(int tenantId)

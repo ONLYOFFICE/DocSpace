@@ -1,0 +1,8 @@
+﻿syntax = "proto3";
+
+package ASC.Core.Common.Contracts;
+
+message DeleteBackupRequest {
+    int32 TenantId = 1;
+    bytes Id = 2;
+}
