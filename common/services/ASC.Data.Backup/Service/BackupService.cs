@@ -56,23 +56,40 @@ namespace ASC.Data.Backup.Service
         private ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
         private ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
         private ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
+        public ICacheNotify<CreateScheduleRequest> CreateScheduleRequest { get; }
 
         public BackupServiceNotifier(
             IServiceProvider serviceProvider,
             ICacheNotify<DeleteBackupRequest> cacheDeleteBackupRequest,
             ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
             ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
-            ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
+            ICacheNotify<StartTransferRequest> cacheStartTransferRequest,
+            ICacheNotify<CreateScheduleRequest> createScheduleRequest)
         {
             ServiceProvider = serviceProvider;
             СacheDeleteBackupRequest = cacheDeleteBackupRequest;
             СacheStartBackupRequest = cacheStartBackupRequest;
             СacheStartRestoreRequest = cacheStartRestoreRequest;
             СacheStartTransferRequest = cacheStartTransferRequest;
+            CreateScheduleRequest = createScheduleRequest;
         }
 
         public void Subscribe()
         {
+            CreateScheduleRequest.Subscribe((n) =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var backupService = scope.ServiceProvider.GetService<BackupService>();
+                backupService.CreateSchedule(n);
+            }, CacheNotifyAction.InsertOrUpdate);
+
+            CreateScheduleRequest.Subscribe((n) =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var backupService = scope.ServiceProvider.GetService<BackupService>();
+                backupService.DeleteSchedule(n.TenantId);
+            }, CacheNotifyAction.Remove);
+
             СacheDeleteBackupRequest.Subscribe((n) =>
             {
                 using var scope = ServiceProvider.CreateScope();
@@ -274,7 +291,7 @@ namespace ASC.Data.Backup.Service
             return settings.WebConfigs.Elements.Select(configElement =>
             {
                 var config = Utils.ConfigurationProvider.Open(PathHelper.ToRootedConfigPath(configElement.Path));
-                var baseDomain = config.AppSettings.Settings["core.base-domain"].Value;
+                var baseDomain = config.AppSettings.Settings["core:base-domain"].Value;
                 return new TransferRegion
                 {
                     Name = configElement.Region,

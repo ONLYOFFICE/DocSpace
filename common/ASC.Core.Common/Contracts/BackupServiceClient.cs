@@ -40,6 +40,7 @@ namespace ASC.Core.Common.Contracts
         public ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
         public ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
         public ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
+        public ICacheNotify<CreateScheduleRequest> CreateScheduleRequest { get; }
         public ICacheNotify<BackupProgress> СacheBackupProgress { get; set; }
         public ICache Cache { get; }
 
@@ -48,6 +49,7 @@ namespace ASC.Core.Common.Contracts
             ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
             ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
             ICacheNotify<StartTransferRequest> cacheStartTransferRequest,
+            ICacheNotify<CreateScheduleRequest> createScheduleRequest,
             ICacheNotify<BackupProgress> сacheBackupProgress
             )
         {
@@ -55,6 +57,7 @@ namespace ASC.Core.Common.Contracts
             СacheStartBackupRequest = cacheStartBackupRequest;
             СacheStartRestoreRequest = cacheStartRestoreRequest;
             СacheStartTransferRequest = cacheStartTransferRequest;
+            CreateScheduleRequest = createScheduleRequest;
             СacheBackupProgress = сacheBackupProgress;
             Cache = AscCache.Memory;
 
@@ -86,12 +89,6 @@ namespace ASC.Core.Common.Contracts
             CacheDeleteBackupRequest.Publish(new DeleteBackupRequest() { Id = ByteString.CopyFrom(Guid.Empty.ToByteArray()), TenantId = tenantId }, CacheNotifyAction.InsertOrUpdate);
         }
 
-        public List<BackupHistoryRecord> GetBackupHistory(int tenantId)
-        {
-            // return Channel.GetBackupHistory(tenantId);
-            return null;
-        }
-
         public void StartTransfer(StartTransferRequest request)
         {
             СacheStartTransferRequest.Publish(request, CacheNotifyAction.InsertOrUpdate);
@@ -100,12 +97,6 @@ namespace ASC.Core.Common.Contracts
         public BackupProgress GetTransferProgress(int tenantID)
         {
             return Cache.Get<BackupProgress>(GetCacheKey(tenantID, BackupProgressEnum.Transfer));
-        }
-
-        public List<TransferRegion> GetTransferRegions()
-        {
-            // return Channel.GetTransferRegions();
-            return null;
         }
 
         public void StartRestore(StartRestoreRequest request)
@@ -118,20 +109,37 @@ namespace ASC.Core.Common.Contracts
             return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Restore));
         }
 
-        public string GetTmpFolder()
-        {
-            // return Channel.GetTmpFolder();
-            return null;
-        }
-
         public void CreateSchedule(CreateScheduleRequest request)
         {
-            //  Channel.CreateSchedule(request);
+            CreateScheduleRequest.Publish(request, CacheNotifyAction.InsertOrUpdate);
         }
 
         public void DeleteSchedule(int tenantId)
         {
-            //  Channel.DeleteSchedule(tenantId);
+            CreateScheduleRequest.Publish(new CreateScheduleRequest()
+            {
+                Cron = "",
+                StorageBasePath = "",
+                TenantId = tenantId
+            }, CacheNotifyAction.Remove);
+        }
+
+        public List<BackupHistoryRecord> GetBackupHistory(int tenantId)
+        {
+            // return Channel.GetBackupHistory(tenantId);
+            return null;
+        }
+
+        public List<TransferRegion> GetTransferRegions()
+        {
+            // return Channel.GetTransferRegions();
+            return null;
+        }
+
+        public string GetTmpFolder()
+        {
+            // return Channel.GetTmpFolder();
+            return null;
         }
 
         public ScheduleResponse GetSchedule(int tenantId)

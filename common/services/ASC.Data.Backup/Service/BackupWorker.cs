@@ -706,7 +706,7 @@ namespace ASC.Data.Backup.Service
 
         private string GetLink(string alias, bool isErrorLink)
         {
-            return "http://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core.base-domain"].Value;
+            return "http://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core:base-domain"].Value;
         }
 
         public override object Clone()
