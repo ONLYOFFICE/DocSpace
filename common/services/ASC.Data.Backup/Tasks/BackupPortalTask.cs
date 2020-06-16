@@ -67,6 +67,7 @@ namespace ASC.Data.Backup.Tasks
             TenantManager = tenantManager;
             BackupRecordContext = dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString);
         }
+
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
         {
             if (string.IsNullOrEmpty(toFilePath))
@@ -232,26 +233,6 @@ namespace ASC.Data.Backup.Tasks
 
                     SetStepCompleted();
                 }
-                /* using (var dbManager = new DbManager("default", 100000))
-                 {
-                     var createScheme = dbManager.ExecuteList(string.Format("SHOW CREATE TABLE `{0}`", t));
-                     var creates = new StringBuilder();
-                     creates.AppendFormat("DROP TABLE IF EXISTS `{0}`;", t);
-                     creates.AppendLine();
-                     creates.Append(createScheme
-                             .Select(r => Convert.ToString(r[1]))
-                             .FirstOrDefault());
-                     creates.Append(";");
-
-                     var path = Path.Combine(dir, t);
-                     using (var stream = File.OpenWrite(path))
-                     {
-                         var bytes = Encoding.UTF8.GetBytes(creates.ToString());
-                         stream.Write(bytes, 0, bytes.Length);
-                     }
-
-                     SetStepCompleted();
-                 }*/
 
                 Logger.DebugFormat("dump table scheme stop {0}", t);
             }
@@ -267,17 +248,13 @@ namespace ASC.Data.Backup.Tasks
         {
             try
             {
-                using (var connection = DbFactory.OpenConnection())
-                {
-                    var command = connection.CreateCommand();
-                    command.CommandText = "select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '" + t + "'";
-                    return int.Parse(command.ExecuteScalar().ToString());
-                }
-                /*  using (var dbManager = new DbManager("default", 100000))
-                  {
-                      dbManager.ExecuteNonQuery("analyze table " + t);
-                      return dbManager.ExecuteScalar<int>(new SqlQuery("information_schema.`TABLES`").Select("table_rows").Where("TABLE_NAME", t));
-                  }*/
+                using var connection = DbFactory.OpenConnection();
+                using var analyzeCommand = connection.CreateCommand();
+                analyzeCommand.CommandText = $"analyze table {t}";
+                _ = analyzeCommand.ExecuteNonQuery();
+                using var command = connection.CreateCommand();
+                command.CommandText = "select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '" + t + "'";
+                return int.Parse(command.ExecuteScalar().ToString());
             }
             catch (Exception e)
             {
@@ -394,49 +371,19 @@ namespace ASC.Data.Backup.Tasks
 
         private List<object[]> GetData(string t, List<string> columns, int offset)
         {
-            using (var connection = DbFactory.OpenConnection())
-            {
-                var command = connection.CreateCommand();
-                var selects = "";
-                foreach (var column in columns)
-                {
-                    selects = column + ", ";
-                }
-                selects = selects.Substring(0, selects.Length - 2);
-                command.CommandText = string.Format("select {0} from {1} LIMIT {2}, {3}", selects, t, offset, Limit);
-                return ExecuteList(command);
-            }
-            /*using (var dbManager = new DbManager("default", 100000))
-            {
-                var query = new SqlQuery(t)
-                    .Select(columns.ToArray())
-                    .SetFirstResult(offset)
-                    .SetMaxResults(Limit);
-                return dbManager.ExecuteList(query);
-            }*/
+            using var connection = DbFactory.OpenConnection();
+            var command = connection.CreateCommand();
+            var selects = string.Join(',', columns);
+            command.CommandText = $"select {selects} from {t} LIMIT {offset}, {Limit}";
+            return ExecuteList(command);
         }
         private List<object[]> GetDataWithPrimary(string t, List<string> columns, string primary, int start, int step)
         {
-            using (var connection = DbFactory.OpenConnection())
-            {
-                var command = connection.CreateCommand();
-                var selects = "";
-                foreach (var column in columns)
-                {
-                    selects = column + ", ";
-                }
-                selects = selects.Substring(0, selects.Length - 2);
-                command.CommandText = string.Format("select {0} from {1} where {4} BETWEEN  {2} and {3} ", selects, t, start, start + step, primary);
-                return ExecuteList(command);
-            }
-            /*  using (var dbManager = new DbManager("default", 100000))
-              {
-                  var query = new SqlQuery(t)
-                      .Select(columns.ToArray())
-                      .Where(Exp.Between(primary, start, start + step));
-
-                  return dbManager.ExecuteList(query);
-              }*/
+            using var connection = DbFactory.OpenConnection();
+            var command = connection.CreateCommand();
+            var selects = string.Join(',', columns);
+            command.CommandText = $"select {selects} from {t} where {primary} BETWEEN  {start} and {start + step} ";
+            return ExecuteList(command);
         }
 
         private void SaveToFile(Stream fs, string t, IReadOnlyCollection<string> columns, List<object[]> data)

@@ -37,12 +37,27 @@ namespace ASC.Core.Common.Contracts
         public ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
         public ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
         public ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
+        public ICacheNotify<BackupProgress> СacheBackupProgress { get; set; }
+        public ICache Cache { get; }
 
-        public BackupServiceClient(ICacheNotify<StartBackupRequest> cacheStartBackupRequest, ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest, ICacheNotify<StartTransferRequest> cacheStartTransferRequest)
+        public BackupServiceClient(
+            ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
+            ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
+            ICacheNotify<StartTransferRequest> cacheStartTransferRequest,
+            ICacheNotify<BackupProgress> сacheBackupProgress
+            )
         {
             СacheStartBackupRequest = cacheStartBackupRequest;
             СacheStartRestoreRequest = cacheStartRestoreRequest;
             СacheStartTransferRequest = cacheStartTransferRequest;
+            СacheBackupProgress = сacheBackupProgress;
+            Cache = AscCache.Memory;
+
+            СacheBackupProgress.Subscribe((a) =>
+            {
+                Cache.Insert(GetCacheKey(a.TenantId, a.BackupProgressEnum), a, DateTime.UtcNow.AddDays(1));
+            },
+            CacheNotifyAction.InsertOrUpdate);
         }
 
         public void StartBackup(StartBackupRequest request)
@@ -52,8 +67,7 @@ namespace ASC.Core.Common.Contracts
 
         public BackupProgress GetBackupProgress(int tenantId)
         {
-            //  return Channel.GetBackupProgress(tenantId);
-            return null;
+            return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Backup));
         }
 
         public void DeleteBackup(Guid backupId)
@@ -80,8 +94,7 @@ namespace ASC.Core.Common.Contracts
 
         public BackupProgress GetTransferProgress(int tenantID)
         {
-            // return Channel.GetTransferProgress(tenantID);
-            return null;
+            return Cache.Get<BackupProgress>(GetCacheKey(tenantID, BackupProgressEnum.Transfer));
         }
 
         public List<TransferRegion> GetTransferRegions()
@@ -97,8 +110,7 @@ namespace ASC.Core.Common.Contracts
 
         public BackupProgress GetRestoreProgress(int tenantId)
         {
-            //  return Channel.GetRestoreProgress(tenantId);
-            return null;
+            return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Restore));
         }
 
         public string GetTmpFolder()
@@ -122,6 +134,8 @@ namespace ASC.Core.Common.Contracts
             // return Channel.GetSchedule(tenantId);
             return null;
         }
+
+        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum) => $"{backupProgressEnum}backup{tenantId}";
     }
     public static class BackupServiceClientExtension
     {
