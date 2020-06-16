@@ -33,6 +33,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
+using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Files.Services.DocumentService;
 
@@ -505,6 +506,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
             throw new NotImplementedException();
         }

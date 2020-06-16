@@ -49,7 +49,8 @@ namespace ASC.Feed.Data
         public TenantUtil TenantUtil { get; }
         public FeedDbContext FeedDbContext { get; }
 
-        public FeedAggregateDataProvider(DbContextManager<FeedDbContext> dbContextManager)
+        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FeedDbContext> dbContextManager)
+            : this(authContext, tenantManager, tenantUtil)
         {
             FeedDbContext = dbContextManager.Get(Constants.FeedDbId);
         }
@@ -124,7 +125,10 @@ namespace ASC.Feed.Data
                 if (f.ClearRightsBeforeInsert)
                 {
                     var fu = FeedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
-                    FeedDbContext.FeedUsers.Remove(fu);
+                    if (fu != null)
+                    {
+                        FeedDbContext.FeedUsers.Remove(fu);
+                    }
                 }
 
                 FeedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
@@ -382,6 +386,8 @@ namespace ASC.Feed.Data
     {
         public static DIHelper AddFeedAggregateDataProvider(this DIHelper services)
         {
+            services.TryAddScoped<FeedAggregateDataProvider>();
+
             return services
                 .AddAuthContextService()
                 .AddTenantManagerService()

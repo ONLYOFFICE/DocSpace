@@ -75,6 +75,16 @@ namespace ASC.Core
         }
 
         public UserManager(
+            IHttpContextAccessor httpContextAccessor,
+            IUserService service,
+            TenantManager tenantManager,
+            PermissionContext permissionContext,
+            UserManagerConstants userManagerConstants) : this(service, tenantManager, permissionContext, userManagerConstants)
+        {
+            Accessor = httpContextAccessor;
+        }
+
+        public UserManager(
             IUserService service,
             TenantManager tenantManager,
             PermissionContext permissionContext,
