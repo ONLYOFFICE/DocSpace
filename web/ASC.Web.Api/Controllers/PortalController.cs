@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Security;
 
 using ASC.Api.Core;
@@ -11,6 +12,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
+using ASC.Thumbnails.Svc;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
@@ -19,6 +21,8 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -36,6 +40,7 @@ namespace ASC.Web.Api.Controllers
         public UrlShortener UrlShortener { get; }
         public AuthContext AuthContext { get; }
         public WebItemSecurity WebItemSecurity { get; }
+        public SecurityContext SecurityContext { get; }
         public ILog Log { get; }
 
 
@@ -48,7 +53,8 @@ namespace ASC.Web.Api.Controllers
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
             AuthContext authContext,
-            WebItemSecurity webItemSecurity
+            WebItemSecurity webItemSecurity,
+            SecurityContext securityContext
             )
         {
             Log = options.CurrentValue;
@@ -60,6 +66,7 @@ namespace ASC.Web.Api.Controllers
             UrlShortener = urlShortener;
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
+            SecurityContext = securityContext;
         }
 
         [Read("")]
@@ -148,6 +155,40 @@ namespace ASC.Web.Api.Controllers
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
+        [Read("thumb")]
+        public FileResult GetThumb(string url)
+        {
+            if (!SecurityContext.IsAuthenticated || !ThumbnailHelper.HasService )
+            {
+
+                ProccessFail();
+                return null;
+            }
+            url = url.Replace("&amp;", "&");
+            url = System.Net.WebUtility.UrlEncode(url);
+
+            try
+            {
+                using (var wc = new WebClient())
+                {
+                    var bytes = wc.DownloadData(string.Format(ThumbnailHelper.ServiceUrl, url));
+                    var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+                    return File(bytes, type);
+                   /* context.Response.BinaryWrite(bytes);
+                    context.Response.Flush();*/
+                }
+            }
+            catch
+            {
+                ProccessFail();
+                return null;
+            }
+        }
+
+        private void ProccessFail()
+        {
+         //   context.Response.Redirect("~/Products/Community/Modules/Bookmarking/App_Themes/default/images/noimageavailable.jpg");
+        }
     }
 
     public static class PortalControllerExtension
@@ -167,7 +208,8 @@ namespace ASC.Web.Api.Controllers
                 .AddPaymentManagerService()
                 .AddCommonLinkUtilityService()
                 .AddAuthContextService()
-                .AddWebItemSecurity();
+                .AddWebItemSecurity()
+                .AddSecurityContextService();
         }
     }
 }
