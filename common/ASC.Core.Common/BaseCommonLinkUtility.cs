@@ -231,6 +231,13 @@ namespace ASC.Core.Common
 
             return baseUri.ToString().TrimEnd('/');
         }
+
+        public void Initialize(string serverUri)
+        {
+            var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
+            _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+            _vpath = "/" + uri.AbsolutePath.Trim('/');
+        }
     }
 
     public static class BaseCommonLinkUtilityExtension
