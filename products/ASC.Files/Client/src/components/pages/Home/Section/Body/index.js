@@ -679,9 +679,10 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseUp = e => {
+    const { selection, dragging, setDragging } = this.props;
+    if(!this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
     this.tooltipRef.current.style.display = "none";
-    const { selection, dragging, setDragging } = this.props;
     
     const elem = e.target.closest('.dropable');
     if(elem && selection.length && dragging) {
