@@ -164,7 +164,7 @@ export function fetchFiles(folderId, filter, dispatch) {
     dispatch(setFilesFilter(filterData));
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
-    dispatch(setSelected("close"));
+    //dispatch(setSelected("close")); //TODO: need close but it`s crash first select, need new logic
     return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));
   })
 }
