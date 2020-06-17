@@ -41,6 +41,7 @@ namespace ASC.Web.Api.Controllers
         public AuthContext AuthContext { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public SecurityContext SecurityContext { get; }
+        public ThumbnailHelper ThumbnailHelper { get; }
         public ILog Log { get; }
 
 
@@ -54,7 +55,8 @@ namespace ASC.Web.Api.Controllers
             UrlShortener urlShortener,
             AuthContext authContext,
             WebItemSecurity webItemSecurity,
-            SecurityContext securityContext
+            SecurityContext securityContext,
+            ThumbnailHelper thumbnailHelper
             )
         {
             Log = options.CurrentValue;
@@ -67,6 +69,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
+            ThumbnailHelper = thumbnailHelper;
         }
 
         [Read("")]
@@ -157,7 +160,7 @@ namespace ASC.Web.Api.Controllers
         }
         [Read("thumb")]
         public FileResult GetThumb(string url)
-        {
+       {
             if (!SecurityContext.IsAuthenticated || !ThumbnailHelper.HasService )
             {
 
@@ -171,6 +174,7 @@ namespace ASC.Web.Api.Controllers
             {
                 using (var wc = new WebClient())
                 {
+                    var w = string.Format(ThumbnailHelper.ServiceUrl, url);
                     var bytes = wc.DownloadData(string.Format(ThumbnailHelper.ServiceUrl, url));
                     var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
                     return File(bytes, type);
@@ -178,7 +182,7 @@ namespace ASC.Web.Api.Controllers
                     context.Response.Flush();*/
                 }
             }
-            catch
+            catch(Exception e)
             {
                 ProccessFail();
                 return null;
@@ -209,7 +213,8 @@ namespace ASC.Web.Api.Controllers
                 .AddCommonLinkUtilityService()
                 .AddAuthContextService()
                 .AddWebItemSecurity()
-                .AddSecurityContextService();
+                .AddSecurityContextService()
+                .AddThumbnailHelperService();
         }
     }
 }

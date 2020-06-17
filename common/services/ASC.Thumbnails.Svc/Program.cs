@@ -65,7 +65,7 @@ namespace ASC.Thumbnails.Svc
                         .AddJsonFile($"urlshortener.{env}.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile("thumbnails.json")
+                        .AddJsonFile("thumb.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);

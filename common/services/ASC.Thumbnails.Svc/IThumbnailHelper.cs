@@ -18,6 +18,7 @@ using ASC.Core;
 using ASC.Data.Storage;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Thumbnails.Svc
 {
@@ -32,9 +33,11 @@ namespace ASC.Thumbnails.Svc
     public class ThumbnailHelper
     {
         private IThumbnailHelper Helper { get; set; }
+        private IConfiguration Configuration { get; set; }
 
-        public ThumbnailHelper(WebSiteThumbnailHelper webSiteThumbnailHelper, ServiceThumbnailHelper serviceThumbnailHelper, NullThumbnailHelper nullThumbnailHelper)
+        public ThumbnailHelper(WebSiteThumbnailHelper webSiteThumbnailHelper, ServiceThumbnailHelper serviceThumbnailHelper, NullThumbnailHelper nullThumbnailHelper, IConfiguration configuration)
         {
+            Configuration = configuration;
             if (HasService)
             {
                 Helper =  serviceThumbnailHelper;
@@ -49,14 +52,14 @@ namespace ASC.Thumbnails.Svc
         }
 
 
-        public static bool HasService
+        public bool HasService
         {
-            get { return ConfigurationManager.AppSettings["bookmarking:thumbnail-url"] != null; }
+            get { return Configuration["bookmarking:thumbnail-url"] != null; }
         }
 
-        public static string ServiceUrl
+        public string ServiceUrl
         {
-            get { return ConfigurationManager.AppSettings["bookmarking:thumbnail-url"]; }
+            get { return Configuration["bookmarking:thumbnail-url"]; }
         }
 /*
         public static IThumbnailHelper Instance

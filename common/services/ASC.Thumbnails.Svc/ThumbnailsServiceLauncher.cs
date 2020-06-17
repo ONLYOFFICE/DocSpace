@@ -46,18 +46,20 @@ namespace ASC.Thumbnails.Svc
         private Process Proc { get; set; }
         private ILog Logger { get; set; }
         private IConfiguration Configuration { get; set; }
+        private IHostEnvironment HostEnvironment { get; set; }
 
-        public ThumbnailsServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration)
+        public ThumbnailsServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
             Configuration = configuration;
+            HostEnvironment = hostEnvironment;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var settings = Configuration.GetSetting<ThumbnailsSettings>("backup");
+                var settings = Configuration.GetSetting<ThumbnailsSettings>("thumb");
 
                 StartInfo = new ProcessStartInfo
                 {
@@ -65,7 +67,7 @@ namespace ASC.Thumbnails.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, settings.Path, "index.js"))),
+                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, settings.Path, "index.js"))),
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
 
