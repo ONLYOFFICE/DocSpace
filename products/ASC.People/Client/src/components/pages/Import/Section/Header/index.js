@@ -37,7 +37,7 @@ const SectionHeaderContent = props => {
         <IconButton
           iconName="ArrowPathIcon"
           color="#A3A9AE"
-          size="16"
+          size="17"
           hoverColor="#657077"
           isFill={true}
           onClick={onClickBack}

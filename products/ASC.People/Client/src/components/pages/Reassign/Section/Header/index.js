@@ -33,11 +33,11 @@ const SectionHeaderContent = props => {
 
   return (
     <Wrapper>
-      <div style={{ width: "16px" }}>
+      <div style={{ width: "17px" }}>
         <IconButton
           iconName={"ArrowPathIcon"}
           color="#A3A9AE"
-          size="16"
+          size="17"
           hoverColor="#657077"
           isFill={true}
           onClick={onClickBack}

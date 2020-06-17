@@ -48,7 +48,7 @@ class SectionHeaderContent extends React.Component {
       <Wrapper>
         <IconButton
           iconName="ArrowPathIcon"
-          size="16"
+          size="17"
           color="#A3A9AE"
           hoverColor="#657077"
           isFill={true}
