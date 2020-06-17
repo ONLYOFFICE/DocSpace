@@ -37,8 +37,9 @@ class SelectedFrame extends React.Component {
   };
 
   onMouseDown = e => {
+    const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     this.container = document.getElementById("rowContainer");
-    if(!this.container || e.target.tagName !== "DIV") {
+    if(mouseButton || !this.container || e.target.tagName !== "DIV") {
       return;
     }
 
@@ -136,7 +137,9 @@ class SelectedFrame extends React.Component {
     }
   };
 
-  onMouseUp = () => {
+  onMouseUp = e => {
+    const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
+    if(mouseButton) { return; }
     const frame = this.refFrame.current;
     frame.style.visibility = "hidden";
     document.removeEventListener("mousemove", this.onMouseMove);
