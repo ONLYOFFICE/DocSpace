@@ -59,7 +59,9 @@ export function getFoldersTree() {
             return {
               id: folder.id,
               title: folder.title,
-              foldersCount: folder.foldersCount
+              access: folder.access,
+              foldersCount: folder.foldersCount,
+              rootFolderType: folder.rootFolderType
             }
           }) : null,
           pathParts: data.pathParts,
