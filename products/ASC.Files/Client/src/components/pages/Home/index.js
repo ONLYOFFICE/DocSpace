@@ -410,6 +410,7 @@ class PureHome extends React.Component {
     err && toastr.error(err);
     this.onLoading(false);
     this.setProgressVisible(false, timeout);
+    this.onClose();
   };
 
   setNewFilter = () => {

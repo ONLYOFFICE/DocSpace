@@ -439,7 +439,7 @@ class SectionHeaderContent extends React.Component {
               {folder && (
                 <IconButton
                   iconName="ArrowPathIcon"
-                  size="16"
+                  size="17"
                   color="#A3A9AE"
                   hoverColor="#657077"
                   isFill={true}
@@ -460,7 +460,7 @@ class SectionHeaderContent extends React.Component {
                     className="add-button"
                     directionX="right"
                     iconName="PlusIcon"
-                    size={16}
+                    size={17}
                     color="#657077"
                     getData={this.getContextOptionsPlus}
                     isDisabled={false}
@@ -469,7 +469,7 @@ class SectionHeaderContent extends React.Component {
                     className="option-button"
                     directionX="right"
                     iconName="VerticalDotsIcon"
-                    size={16}
+                    size={17}
                     color="#A3A9AE"
                     getData={this.getContextOptionsFolder}
                     isDisabled={false}
@@ -480,7 +480,7 @@ class SectionHeaderContent extends React.Component {
                     className="add-button"
                     directionX="right"
                     iconName="PlusIcon"
-                    size={16}
+                    size={17}
                     color="#657077"
                     getData={this.getContextOptionsPlus}
                     isDisabled={false}

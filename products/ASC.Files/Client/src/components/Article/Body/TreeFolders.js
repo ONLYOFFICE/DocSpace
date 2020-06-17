@@ -11,6 +11,27 @@ class TreeFolders extends React.Component {
     this.state = { treeData, expandedKeys: props.expandedKeys, loaded: true };
   }
 
+  getFolderIcon = key => {
+    switch (key) {
+      case "0-0":
+        return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
+
+      case "0-1":
+        return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
+
+      case "0-2":
+        return (
+          <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
+        );
+
+      case "0-3":
+        return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
+
+      default:
+        return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+    }
+  };
+
   getItems = data => {
     return data.map(item => {
       if (item.folders && item.folders.length > 0) {
@@ -19,9 +40,7 @@ class TreeFolders extends React.Component {
             id={item.id}
             key={item.id}
             title={item.title}
-            icon={
-              <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />
-            }
+            icon={this.getFolderIcon(item.key)}
           >
             {this.getItems(item.folders)}
           </TreeNode>
@@ -33,7 +52,7 @@ class TreeFolders extends React.Component {
           key={item.id}
           title={item.title}
           isLeaf={item.foldersCount ? false : true}
-          icon={<Icons.CatalogFolderIcon size="scale" isfill color="#657077" />}
+          icon={this.getFolderIcon(item.key)}
         />
       );
     });
@@ -147,12 +166,12 @@ class TreeFolders extends React.Component {
   };
 
   onExpand = (data, treeNode) => {
-    if(treeNode.node && !treeNode.node.props.children) {
-      if(treeNode.expanded) {
+    if (treeNode.node && !treeNode.node.props.children) {
+      if (treeNode.expanded) {
         this.onLoadData(treeNode.node);
       }
     }
-    if(this.props.needUpdate) {
+    if (this.props.needUpdate) {
       const newFilter = this.props.filter.clone();
       newFilter.treeFolders = data;
       this.props.setFilter(newFilter);
@@ -163,7 +182,11 @@ class TreeFolders extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { expandedKeys, data, needUpdate } = this.props;
-    if (needUpdate && expandedKeys && this.state.expandedKeys.length !== expandedKeys.length) {
+    if (
+      needUpdate &&
+      expandedKeys &&
+      this.state.expandedKeys.length !== expandedKeys.length
+    ) {
       this.setState({ expandedKeys });
     }
 
@@ -173,7 +196,13 @@ class TreeFolders extends React.Component {
   }
 
   render() {
-    const { selectedKeys, fakeNewDocuments, isLoading, onSelect, needUpdate } = this.props;
+    const {
+      selectedKeys,
+      fakeNewDocuments,
+      isLoading,
+      onSelect,
+      needUpdate
+    } = this.props;
     const { treeData, expandedKeys, loaded } = this.state;
 
     const loadProp = loaded && needUpdate ? { loadData: this.onLoadData } : {};

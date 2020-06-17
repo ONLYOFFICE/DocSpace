@@ -29,18 +29,21 @@ class PureEditor extends React.Component {
 
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
+    const wrapperStyle = {
+      height: '100vh'
+    }
 
     files.openEdit(fileId)
       .then(config => {
-        if (window.innerWidth < 600) {
+        if (window.innerWidth < 720) {
           config.type = 'mobile';
         }
 
-        window.DocsAPI.DocEditor("editor", config)
+        window.DocsAPI.DocEditor("editor", config);
       });
 
     return (
-      <>
+      <div style={wrapperStyle}>
         <RequestLoader
           visible={isLoading}
           zIndex={256}
@@ -51,7 +54,7 @@ class PureEditor extends React.Component {
           fontColor={"#999"}
         />
         <div id="editor"></div>
-      </>
+      </div>
     );
   }
 }
