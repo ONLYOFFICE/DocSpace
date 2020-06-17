@@ -653,7 +653,8 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseDown = e => {
-    if(e.target.tagName !== "DIV") { return; }
+    const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
+    if(mouseButton || e.target.tagName !== "DIV") { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
     const { selection, setDragging } = this.props;
@@ -680,7 +681,8 @@ class SectionBodyContent extends React.Component {
 
   onMouseUp = e => {
     const { selection, dragging, setDragging } = this.props;
-    if(!this.tooltipRef.current || !dragging) { return; }
+    const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
+    if(mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
     this.tooltipRef.current.style.display = "none";
     

@@ -37,8 +37,9 @@ class SelectedFrame extends React.Component {
   };
 
   onMouseDown = e => {
+    const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     this.container = document.getElementById("rowContainer");
-    if(!this.container || e.target.tagName !== "DIV") {
+    if(mouseButton || !this.container || e.target.tagName !== "DIV") {
       return;
     }
 
@@ -58,7 +59,8 @@ class SelectedFrame extends React.Component {
         const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
 
         if (item.offsetTop - offsetScroll >= topStart && item.offsetTop  - offsetScroll <= topEnd) {
-          if (currentItem.getAttribute("value").split("_")[2]) {
+          const value = currentItem.getAttribute("value");
+          if (value && value.split("_")[2]) {
             needUpdate = false;
             break;
           }
@@ -136,7 +138,9 @@ class SelectedFrame extends React.Component {
     }
   };
 
-  onMouseUp = () => {
+  onMouseUp = e => {
+    const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
+    if(mouseButton) { return; }
     const frame = this.refFrame.current;
     frame.style.visibility = "hidden";
     document.removeEventListener("mousemove", this.onMouseMove);

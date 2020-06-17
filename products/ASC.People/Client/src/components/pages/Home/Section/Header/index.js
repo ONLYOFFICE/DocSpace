@@ -400,7 +400,7 @@ const SectionHeaderContent = props => {
                   directionX="right"
                   title={t("Actions")}
                   iconName="VerticalDotsIcon"
-                  size={16}
+                  size={17}
                   color="#A3A9AE"
                   getData={getContextOptionsGroup}
                   isDisabled={false}
@@ -423,7 +423,7 @@ const SectionHeaderContent = props => {
                     directionX="right"
                     title={t("Actions")}
                     iconName="PlusIcon"
-                    size={16}
+                    size={17}
                     color="#657077"
                     getData={getContextOptionsPlus}
                     isDisabled={false}
