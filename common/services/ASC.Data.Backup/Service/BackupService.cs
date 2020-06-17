@@ -154,18 +154,6 @@ namespace ASC.Data.Backup.Service
             }
         }
 
-        public BackupProgress GetBackupProgress(int tenantId)
-        {
-            var progress = BackupWorker.GetBackupProgress(tenantId);
-            if (progress != null && !string.IsNullOrEmpty(progress.Error))
-            {
-                BackupWorker.ResetBackupError(tenantId);
-                throw new FaultException();
-
-            }
-            return progress;
-        }
-
         public void DeleteBackup(Guid id)
         {
             var backupRecord = BackupRepository.GetBackupRecord(id);
@@ -229,16 +217,6 @@ namespace ASC.Data.Backup.Service
             }
         }
 
-        public BackupProgress GetTransferProgress(int tenantID)
-        {
-            var progress = BackupWorker.GetTransferProgress(tenantID);
-            if (!string.IsNullOrEmpty(progress.Error))
-            {
-                throw new FaultException();
-            }
-            return progress;
-        }
-
         public void StartRestore(StartRestoreRequest request)
         {
             if ((BackupStorageType)request.StorageType == BackupStorageType.Local)
@@ -269,15 +247,19 @@ namespace ASC.Data.Backup.Service
             }
         }
 
+        public BackupProgress GetBackupProgress(int tenantId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BackupProgress GetTransferProgress(int tenantID)
+        {
+            throw new NotImplementedException();
+        }
+
         public BackupProgress GetRestoreProgress(int tenantId)
         {
-            var progress = BackupWorker.GetRestoreProgress(tenantId);
-            if (progress != null && !string.IsNullOrEmpty(progress.Error))
-            {
-                BackupWorker.ResetRestoreError(tenantId);
-                throw new FaultException();
-            }
-            return progress;
+            throw new NotImplementedException();
         }
 
         public string GetTmpFolder()

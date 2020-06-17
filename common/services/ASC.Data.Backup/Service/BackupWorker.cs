@@ -199,14 +199,6 @@ namespace ASC.Data.Backup.Service
             }
         }
 
-        public BackupProgress GetRestoreProgress(int tenantId)
-        {
-            lock (ProgressQueue.SynchRoot)
-            {
-                return ToBackupProgress(ProgressQueue.GetItems().OfType<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
-            }
-        }
-
         public BackupProgress StartTransfer(int tenantId, string targetRegion, bool transferMail, bool notify)
         {
             lock (ProgressQueue.SynchRoot)
@@ -225,14 +217,6 @@ namespace ASC.Data.Backup.Service
                 }
 
                 return ToBackupProgress(item);
-            }
-        }
-
-        public BackupProgress GetTransferProgress(int tenantId)
-        {
-            lock (ProgressQueue.SynchRoot)
-            {
-                return ToBackupProgress(ProgressQueue.GetItems().OfType<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
