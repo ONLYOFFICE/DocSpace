@@ -80,9 +80,9 @@ const StyledTreeMenu = styled(Tree)`
         `
         : ''
     }
-    .rc-tree-title {
+    /* .rc-tree-title {
         width: ${props => props.badgeLabel && 'calc(100% - 60px) !important'};
-    }
+    } */
   
 `;
 
