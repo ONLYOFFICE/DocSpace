@@ -25,6 +25,7 @@ import {
   setAction,
   setTreeFolders,
   moveToFolder,
+  copyToFolder,
   getProgress
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo  } from '../../../../../store/files/selectors';
@@ -744,18 +745,21 @@ class SectionBodyContent extends React.Component {
 
   setTooltipPosition = e => {
     const tooltip = this.tooltipRef.current;
-    const margin = 8;
-    tooltip.style.left = e.pageX + margin + "px";
-    tooltip.style.top = e.pageY + margin + "px";
+    if(tooltip) {
+      const margin = 8;
+      tooltip.style.left = e.pageX + margin + "px";
+      tooltip.style.top = e.pageY + margin + "px";
+    }
   };
 
   onMoveTo = (destFolderId) => {
-    const { selection, moveToFolder, finishFilesOperations, startFilesOperations, t, loopFilesOperations } = this.props;
+    const { selection, startFilesOperations, t, isShare, isCommon, isAdmin } = this.props;
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
 
+    startFilesOperations(t("MoveToOperation"));
     for(let item of selection) {
       if(item.fileExst) {
         fileIds.push(item.id)
@@ -763,19 +767,83 @@ class SectionBodyContent extends React.Component {
         folderIds.push(item.id)
       }
     }
-    
-    startFilesOperations(t("MoveToOperation"));
+
+    if(isAdmin) {
+      if(isShare) {
+        this.copyTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      } else {
+        this.moveTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      }
+    } else {
+      if(isShare || isCommon) {
+        this.copyTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      } else {
+        this.moveTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      }
+    }
+  }
+
+  copyTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
+    const { copyToFolder, loopFilesOperations, finishFilesOperations } = this.props;
+
+    copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
+    .then(res => {
+      const id = res[0] && res[0].id ? res[0].id : null;
+      loopFilesOperations(id, destFolderId, true);
+    })
+    .catch(err => finishFilesOperations(err))
+  }
+
+  moveTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
+    const { moveToFolder, loopFilesOperations, finishFilesOperations } = this.props;
+
     moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-      .then(res => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        loopFilesOperations(id, destFolderId, false);
-      })
-      .catch(err => finishFilesOperations(err))
+    .then(res => {
+      const id = res[0] && res[0].id ? res[0].id : null;
+      loopFilesOperations(id, destFolderId, false);
+    })
+    .catch(err => finishFilesOperations(err))
+  }
+
+  getTooltipLabel = () => {
+    const { t, selection, isAdmin, isShare, isCommon } = this.props;
+    const elementTitle = selection.length && selection[0].title;
+    const elementCount = selection.length;
+    if (selection.length) {
+      if (selection.length > 1) {
+        if (isAdmin) {
+          if (isShare) {
+            return t("TooltipElementsCopyMessage", { element: elementCount });
+          } else {
+            return t("TooltipElementsMoveMessage", { element: elementCount });
+          }
+        } else {
+          if (isShare || isCommon) {
+            return t("TooltipElementsCopyMessage", { element: elementCount });
+          } else {
+            return t("TooltipElementsMoveMessage", { element: elementCount });
+          }
+        }
+      } else {
+        if (isAdmin) {
+          if (isShare) {
+            return t("TooltipElementCopyMessage", { element: elementTitle });
+          } else {
+            return t("TooltipElementMoveMessage", { element: elementTitle });
+          }
+        } else {
+          if (isShare || isCommon) {
+            return t("TooltipElementCopyMessage", { element: elementTitle });
+          } else {
+            return t("TooltipElementMoveMessage", { element: elementTitle });
+          }
+        }
+      }
+    }
   }
 
   render() {
     const {
-      t,
       files,
       folders,
       viewer,
@@ -794,13 +862,9 @@ class SectionBodyContent extends React.Component {
     const { editingId, showSharingPanel, currentItem } = this.state;
 
     let items = [...folders, ...files];
-    
-    const tooltipLabel = !selection.length
-      ? ""
-      : selection.length > 1
-      ? t("TooltipElementsMessage", { element: selection.length })
-      : t("TooltipElementMessage", { element: selection[0].title });
 
+    const tooltipLabel = this.getTooltipLabel();
+    
     const SimpleFilesRow = styled(Row)`
       ${(props) =>
         !props.contextOptions &&
@@ -869,7 +933,7 @@ class SectionBodyContent extends React.Component {
                 const draggable = selectedItem && currentFolderType !== "Trash";
                 let value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
                 value += draggable ? "_draggable" : "";
-                const classNameProp = isFolder ? {className: " dropable"} : {};
+                const classNameProp = isFolder && item.access < 2 ? {className: " dropable"} : {};
 
                 return (
                   <DragAndDrop
@@ -877,7 +941,7 @@ class SectionBodyContent extends React.Component {
                     onDrop={this.onDrop.bind(this, item)}
                     onDragEnter={this.onDragEnter.bind(this, item)}
                     onDragLeave={this.onDragLeave.bind(this, item)}
-                    dragging={dragging && isFolder}
+                    dragging={dragging && isFolder && item.access < 2}
                     key={`dnd-key_${item.id}`}
                     {...contextOptionsProps}
                     value={value}
@@ -941,11 +1005,16 @@ SectionBodyContent.defaultProps = {
 
 const mapStateToProps = state => {
   const { selectedFolder, treeFolders, selection, dragItem } = state.files;
-  const { id, title, foldersCount, filesCount } = selectedFolder;
+  const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
   const myFolderIndex = 0;
+  const shareFolderIndex = 1;
+  const commonFolderIndex = 2;
   const currentFolderCount = filesCount + foldersCount;
+  const myDocumentsId = treeFolders[myFolderIndex].id;
+  const shareFolderId = treeFolders[shareFolderIndex].id;
+  const commonFolderId = treeFolders[commonFolderIndex].id;
 
   return {
     fileAction: state.files.fileAction,
@@ -958,13 +1027,16 @@ const mapStateToProps = state => {
     selection,
     settings: state.auth.settings,
     viewer: state.auth.user,
-    treeFolders: state.files.treeFolders,
+    treeFolders,
     currentFolderType,
     title,
-    myDocumentsId: treeFolders[myFolderIndex].id,
+    myDocumentsId,
     currentFolderCount,
     selectedFolderId: id,
-    dragItem
+    dragItem,
+    isShare: pathParts[0] === shareFolderId,
+    isCommon: pathParts[0] === commonFolderId,
+    isAdmin: state.auth.user.isAdmin
   };
 };
 
@@ -980,6 +1052,7 @@ export default connect(
     setAction,
     setTreeFolders,
     moveToFolder,
+    copyToFolder,
     getProgress
   }
 )(withRouter(withTranslation()(SectionBodyContent)));
