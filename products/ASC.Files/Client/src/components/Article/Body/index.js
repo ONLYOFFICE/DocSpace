@@ -93,8 +93,13 @@ function mapStateToProps(state) {
   const myId = treeFolders[myFolderIndex].id;
   const commonId = treeFolders[commonFolderIndex].id
 
-  const isMy = selectedFolder.pathParts[0] === myId;
-  const isCommon = selectedFolder.pathParts[0] === commonId;
+  const isMy = selectedFolder && 
+    selectedFolder.pathParts && 
+    selectedFolder.pathParts[0] === myId;
+
+  const isCommon = selectedFolder && 
+    selectedFolder.pathParts && 
+    selectedFolder.pathParts[0] === commonId;
 
   return {
     data: treeFolders,
