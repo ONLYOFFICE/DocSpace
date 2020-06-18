@@ -173,6 +173,13 @@ class FilesRowContent extends React.PureComponent {
     }
   };
 
+  onShowVersionHistory = (e) => {
+    const {settings, history} = this.props;
+    const fileId = e.currentTarget.dataset.id;
+
+    history.push(`${settings.homepage}/${fileId}/history`);
+  }
+
   render() {
     const { t, item, fileAction, isLoading, isTrashFolder } = this.props;
     const { itemTitle, editingId/*, loading*/ } = this.state;
@@ -317,8 +324,9 @@ class FilesRowContent extends React.PureComponent {
                     fontWeight={800}
                     label={`Ver.${versionGroup}`}
                     maxWidth="50px"
-                    onClick={() => { }}
+                    onClick={this.onShowVersionHistory}
                     padding="0 5px"
+                    data-id={id}
                   />
                 }
                 {fileStatus === 2 &&
@@ -331,8 +339,9 @@ class FilesRowContent extends React.PureComponent {
                     fontWeight={800}
                     label={`New`}
                     maxWidth="50px"
-                    onClick={() => { }}
+                    onClick={this.onShowVersionHistory}
                     padding="0 5px"
+                    data-id={id}
                   />
                 }
               </div>
@@ -384,13 +393,15 @@ class FilesRowContent extends React.PureComponent {
 
 function mapStateToProps(state) {
   const { filter, fileAction, selectedFolder, treeFolders } = state.files;
+  const { settings } = state.auth;
   const indexOfTrash = 3;
 
   return {
     filter,
     fileAction,
     parentFolder: selectedFolder.id,
-    isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id
+    isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id,
+    settings
   }
 }
 
