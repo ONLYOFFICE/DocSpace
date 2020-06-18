@@ -48,13 +48,14 @@ const TreeNodeMenu = styled(TreeNode)`
 
     position: relative;
 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     .draggable {
         color: #333;
-        -moz-user-select: none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
         /* Required to make elements draggable in old WebKit */
         -khtml-user-drag: element;
         -webkit-user-drag: element;
@@ -91,7 +92,11 @@ const TreeNodeMenu = styled(TreeNode)`
 
         position: absolute;
         left: 0;
+        background: ${props => props.dragging ? "#F8F7BF" : "none"};
 
+        :hover {
+            background: ${props => props.dragging ? "#EFEFB2" : "none"};
+        }
     }
     span.rc-tree-switcher,
     span.rc-tree-iconEle {
@@ -221,6 +226,10 @@ const TreeNodeMenu = styled(TreeNode)`
         border-radius: 3px;
         z-index: 0;
         width: 108%;
+
+        :hover {
+            background: #DFE2E3;
+        }
     }
     
 `;

@@ -680,7 +680,7 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseUp = e => {
-    const { selection, dragging, setDragging } = this.props;
+    const { selection, dragging, setDragging, dragItem } = this.props;
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     if(mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
@@ -710,6 +710,10 @@ class SectionBodyContent extends React.Component {
       }
     } else {
       setDragging(false);
+      if(dragItem) {
+        this.onMoveTo(dragItem);
+        return;
+      }
       return;
     }
   }
@@ -936,7 +940,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection } = state.files;
+  const { selectedFolder, treeFolders, selection, dragItem } = state.files;
   const { id, title, foldersCount, filesCount } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -959,7 +963,8 @@ const mapStateToProps = state => {
     title,
     myDocumentsId: treeFolders[myFolderIndex].id,
     currentFolderCount,
-    selectedFolderId: id
+    selectedFolderId: id,
+    dragItem
   };
 };
 

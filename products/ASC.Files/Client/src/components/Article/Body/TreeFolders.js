@@ -1,7 +1,8 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils } from "asc-web-components";
-import { api } from "asc-web-common";
+import { api, constants } from "asc-web-common";
 const { files } = api;
+const { FolderType, ShareAccessRights } = constants;
 
 class TreeFolders extends React.Component {
   constructor(props) {
@@ -32,8 +33,33 @@ class TreeFolders extends React.Component {
     }
   };
 
+  showDragItems = (item) => {
+    if (item.id === this.props.currentId) {
+      return false;
+    }
+    if (
+      item.rootFolderType === FolderType.SHARE &&
+      item.access === ShareAccessRights.FullAccess
+    ) {
+      return true;
+    } else if (this.props.isMy || this.props.isCommon) {
+      if (
+        (item.pathParts &&
+          (item.pathParts[0] === this.props.myId ||
+            item.pathParts[0] === this.props.commonId)) ||
+        item.rootFolderType === FolderType.USER ||
+        item.rootFolderType === FolderType.COMMON
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   getItems = data => {
     return data.map(item => {
+      const dragging = this.showDragItems(item);
+
       if (item.folders && item.folders.length > 0) {
         return (
           <TreeNode
@@ -41,6 +67,7 @@ class TreeFolders extends React.Component {
             key={item.id}
             title={item.title}
             icon={this.getFolderIcon(item.key)}
+            dragging={this.props.dragging && dragging}
           >
             {this.getItems(item.folders)}
           </TreeNode>
@@ -51,6 +78,7 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
+          dragging={this.props.dragging && dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item.key)}
         />
@@ -195,6 +223,20 @@ class TreeFolders extends React.Component {
     }
   }
 
+  onMouseEnter = (data) => {
+    if (this.props.dragging) {
+      if(data.node.props.dragging) {
+        this.props.setDragItem(data.node.props.id);
+      }
+    }
+  };
+
+  onMouseLeave = data => {
+    if (this.props.dragging && this.props.dragItem) {
+      this.props.setDragItem(null);
+    }
+  };
+
   render() {
     const {
       selectedKeys,
@@ -204,7 +246,6 @@ class TreeFolders extends React.Component {
       needUpdate
     } = this.props;
     const { treeData, expandedKeys, loaded } = this.state;
-
     const loadProp = loaded && needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
@@ -223,6 +264,8 @@ class TreeFolders extends React.Component {
         {...loadProp}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
       >
         {this.getItems(treeData)}
       </TreeMenu>

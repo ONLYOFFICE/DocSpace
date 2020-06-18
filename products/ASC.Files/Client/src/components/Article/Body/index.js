@@ -5,7 +5,8 @@ import TreeFolders from "./TreeFolders";
 import {
   setFilter,
   fetchFiles,
-  setTreeFolders
+  setTreeFolders,
+  setDragItem
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 
@@ -45,7 +46,15 @@ class ArticleBodyContent extends React.Component {
       setFilter,
       setTreeFolders,
       onLoading,
-      isLoading
+      isLoading,
+      dragging,
+      setDragItem,
+      dragItem,
+      isMy,
+      myId,
+      isCommon,
+      commonId,
+      currentId
     } = this.props;
 
     //console.log("Article Body render", this.props, this.state.expandedKeys);
@@ -61,24 +70,46 @@ class ArticleBodyContent extends React.Component {
         expandedKeys={this.state.expandedKeys}
         onLoading={onLoading}
         isLoading={isLoading}
+        dragging={dragging}
+        setDragItem={setDragItem}
+        dragItem={dragItem}
+        isMy={isMy}
+        myId={myId}
+        isCommon={isCommon}
+        commonId={commonId}
+        currentId={currentId}
       />
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter } = state.files;
+  const { treeFolders, selectedFolder, filter, dragItem } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const fakeNewDocuments = 8;
+  const myFolderIndex = 0;
+  const commonFolderIndex = 2;
+
+  const myId = treeFolders[myFolderIndex].id;
+  const commonId = treeFolders[commonFolderIndex].id
+
+  const isMy = selectedFolder.pathParts[0] === myId;
+  const isCommon = selectedFolder.pathParts[0] === commonId;
 
   return {
     data: treeFolders,
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
     fakeNewDocuments,
-    filter
+    filter,
+    isMy,
+    isCommon,
+    myId,
+    commonId,
+    dragItem,
+    currentId: selectedFolder.id
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setTreeFolders })(
+export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem })(
   ArticleBodyContent
 );
