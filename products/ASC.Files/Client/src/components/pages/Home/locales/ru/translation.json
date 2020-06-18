@@ -78,6 +78,8 @@
   "ErrorUploadMessage": "Нельзя загрузить папку или пустой файл",
   "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
   "MoveToOperation": "Перемещение",
-  "TooltipElementMessage": "Переместить {{element}}",
-  "TooltipElementsMessage": "Переместить {{element}} элемента(ов)"
+  "TooltipElementMoveMessage": "Переместить {{element}}",
+  "TooltipElementsMoveMessage": "Переместить {{element}} элемента(ов)",
+  "TooltipElementCopyMessage": "Скопировать {{element}}",
+  "TooltipElementsCopyMessage": "Скопировать {{element}} элемента(ов)"
 }

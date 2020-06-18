@@ -34,25 +34,40 @@ class TreeFolders extends React.Component {
   };
 
   showDragItems = (item) => {
-    if (item.id === this.props.currentId) {
+    const { isAdmin, myId, commonId, isCommon, isMy, isShare, currentId } = this.props;
+    if (item.id === currentId) {
       return false;
     }
+
     if (
       item.rootFolderType === FolderType.SHARE &&
       item.access === ShareAccessRights.FullAccess
     ) {
       return true;
-    } else if (this.props.isMy || this.props.isCommon) {
-      if (
-        (item.pathParts &&
-          (item.pathParts[0] === this.props.myId ||
-            item.pathParts[0] === this.props.commonId)) ||
-        item.rootFolderType === FolderType.USER ||
-        item.rootFolderType === FolderType.COMMON
-      ) {
-        return true;
+    }
+
+    if (isAdmin) {
+      if (isMy || isCommon || isShare) {
+        if (
+          (item.pathParts &&
+            (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
+          item.rootFolderType === FolderType.USER ||
+          item.rootFolderType === FolderType.COMMON
+        ) {
+          return true;
+        }
+      }
+    } else {
+      if (isMy || isCommon || isShare) {
+        if (
+          (item.pathParts && item.pathParts[0] === myId) ||
+          item.rootFolderType === FolderType.USER
+        ) {
+          return true;
+        }
       }
     }
+
     return false;
   };
 

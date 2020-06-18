@@ -54,7 +54,9 @@ class ArticleBodyContent extends React.Component {
       myId,
       isCommon,
       commonId,
-      currentId
+      currentId,
+      isAdmin,
+      isShare
     } = this.props;
 
     //console.log("Article Body render", this.props, this.state.expandedKeys);
@@ -78,6 +80,8 @@ class ArticleBodyContent extends React.Component {
         isCommon={isCommon}
         commonId={commonId}
         currentId={currentId}
+        isAdmin={isAdmin}
+        isShare={isShare}
       />
     );
   }
@@ -88,12 +92,15 @@ function mapStateToProps(state) {
   const currentFolderId = selectedFolder.id.toString();
   const fakeNewDocuments = 8;
   const myFolderIndex = 0;
+  const shareFolderIndex = 1;
   const commonFolderIndex = 2;
 
   const myId = treeFolders[myFolderIndex].id;
-  const commonId = treeFolders[commonFolderIndex].id
+  const shareId = treeFolders[shareFolderIndex].id;
+  const commonId = treeFolders[commonFolderIndex].id;
 
   const isMy = selectedFolder.pathParts[0] === myId;
+  const isShare = selectedFolder.pathParts[0] === shareId;
   const isCommon = selectedFolder.pathParts[0] === commonId;
 
   return {
@@ -103,10 +110,12 @@ function mapStateToProps(state) {
     filter,
     isMy,
     isCommon,
+    isShare,
     myId,
     commonId,
     dragItem,
-    currentId: selectedFolder.id
+    currentId: selectedFolder.id,
+    isAdmin: state.auth.user.isAdmin
   };
 }
 
