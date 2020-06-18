@@ -11,7 +11,8 @@ import {
   SET_SELECTED,
   SET_SELECTION,
   SELECT_FILE,
-  DESELECT_FILE
+  DESELECT_FILE,
+  SET_DRAG_ITEM
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -27,7 +28,8 @@ const initialState = {
   treeFolders: [],
   selected: "none",
   selectedFolder: null,
-  selection: []
+  selection: [],
+  dragItem: null
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -93,6 +95,10 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         fileAction: action.fileAction
       })
+    case SET_DRAG_ITEM: 
+      return Object.assign({}, state, {
+        dragItem: action.dragItem
+      });
     default:
       return state;
   }

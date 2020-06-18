@@ -29,6 +29,7 @@ export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
+export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 
 export function setFile(file) {
   return {
@@ -91,6 +92,13 @@ export function setTreeFolders(treeFolders) {
     type: SET_TREE_FOLDERS,
     treeFolders
   };
+}
+
+export function setDragItem(dragItem) {
+  return {
+    type: SET_DRAG_ITEM,
+    dragItem
+  }
 }
 
 export function setFilesFilter(filter) {

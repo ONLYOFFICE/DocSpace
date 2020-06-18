@@ -596,6 +596,7 @@ class PureHome extends React.Component {
             <ArticleBodyContent
               onLoading={this.onLoading}
               isLoading={isLoading}
+              dragging={dragging}
             />
           }
           sectionHeaderContent={
