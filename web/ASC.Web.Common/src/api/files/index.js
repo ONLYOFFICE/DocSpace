@@ -322,3 +322,10 @@ export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveTy
   const data = { destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter };
   return request({ method: "put", url: "/files/fileops/move", data });
 }
+
+export function getFileVersionInfo(fileId) {
+  return request({
+    method: "get",
+    url: `/files/file/${fileId}/history`
+  });
+}
