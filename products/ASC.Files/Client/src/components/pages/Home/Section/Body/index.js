@@ -28,7 +28,7 @@ import {
   copyToFolder,
   getProgress
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo  } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -118,13 +118,18 @@ class SectionBodyContent extends React.Component {
   } */
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.state.showSharingPanel !== nextState.showSharingPanel) {
+    if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
 
-    if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
+    if (this.props.dragItem !== nextProps.dragItem) {
+      return false;
+    }
+
+    if (!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
       return true;
     }
+
     return false;
   }
 
@@ -188,7 +193,7 @@ class SectionBodyContent extends React.Component {
     const { filter, treeFolders, setTreeFolders, currentFolderType, getProgress, setProgressValue, finishFilesOperations } = this.props;
     getProgress().then(res => {
       const deleteProgress = res.find(x => x.id === id);
-      if(deleteProgress && deleteProgress.progress !== 100) {
+      if (deleteProgress && deleteProgress.progress !== 100) {
         setProgressValue(deleteProgress.progress);
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
@@ -585,34 +590,34 @@ class SectionBodyContent extends React.Component {
       />
     )
   }
-  onMediaViewerClose = () =>{
+  onMediaViewerClose = () => {
     this.setState({
       mediaViewerVisible: false
     });
   }
   onMediaFileClick = (id) => {
-      this.setState({
-        mediaViewerVisible: true,
-        currentMediaFileId: id
-      });
+    this.setState({
+      mediaViewerVisible: true,
+      currentMediaFileId: id
+    });
   }
   onDownloadMediaFile = (id) => {
-    if(this.props.files.length > 0){
+    if (this.props.files.length > 0) {
       let viewUrlFile = this.props.files.find(file => file.id === id).viewUrl;
       return window.open(viewUrlFile, "_blank");
     }
   }
   onDeleteMediaFile = (id) => {
-    if(this.props.files.length > 0){
+    if (this.props.files.length > 0) {
       let file = this.props.files.find(file => file.id === id);
-      if(file)
+      if (file)
         this.onDeleteFile(file.id, file.folderId)
     }
   }
 
   onDragEnter = (item, e) => {
     const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
+    if (!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
       e.currentTarget.style.background = backgroundDragColor;
     }
   }
@@ -620,16 +625,16 @@ class SectionBodyContent extends React.Component {
   onDragLeave = (item, e) => {
     const { selection, dragging, setDragging } = this.props;
     const isCurrentItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(!e.dataTransfer.items.length) {
+    if (!e.dataTransfer.items.length) {
       e.currentTarget.style.background = "none";
-    } else if(!item.fileExst && !isCurrentItem) {
+    } else if (!item.fileExst && !isCurrentItem) {
       e.currentTarget.style.background = backgroundDragEnterColor;
     }
-    if(dragging && !e.relatedTarget) { setDragging(false); }
+    if (dragging && !e.relatedTarget) { setDragging(false); }
   }
 
   onDrop = (item, e) => {
-    if(e.dataTransfer.items.length > 0 && !item.fileExst) {
+    if (e.dataTransfer.items.length > 0 && !item.fileExst) {
       const { setDragging, onDropZoneUpload } = this.props;
       e.currentTarget.style.background = backgroundDragEnterColor;
       setDragging(false);
@@ -640,7 +645,7 @@ class SectionBodyContent extends React.Component {
   onDragOver = e => {
     e.preventDefault();
     const { dragging, setDragging } = this.props;
-    if(e.dataTransfer.items.length > 0 && !dragging) {
+    if (e.dataTransfer.items.length > 0 && !dragging) {
       setDragging(true);
     }
   }
@@ -648,34 +653,34 @@ class SectionBodyContent extends React.Component {
   onDragLeaveDoc = e => {
     e.preventDefault();
     const { dragging, setDragging } = this.props;
-    if(dragging && !e.relatedTarget) {
+    if (dragging && !e.relatedTarget) {
       setDragging(false);
     }
   }
 
   onMouseDown = e => {
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    if(mouseButton || e.target.tagName !== "DIV") { return; }
+    if (mouseButton || e.target.tagName !== "DIV") { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
     const { selection, setDragging } = this.props;
 
     const elem = e.target.closest('.draggable');
-    if(!elem) {
+    if (!elem) {
       return;
     }
     const value = elem.getAttribute('value');
-    if(!value) {
+    if (!value) {
       return;
     }
     const splitValue = value.split("_");
     let item = null;
-    if(splitValue[0] === "folder") {
+    if (splitValue[0] === "folder") {
       item = selection.find(x => x.id === Number(splitValue[1]) && !x.fileExst);
     } else {
       item = selection.find(x => x.id === Number(splitValue[1]) && x.fileExst);
     }
-    if(item) {
+    if (item) {
       setDragging(true);
     }
   }
@@ -683,25 +688,25 @@ class SectionBodyContent extends React.Component {
   onMouseUp = e => {
     const { selection, dragging, setDragging, dragItem } = this.props;
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    if(mouseButton || !this.tooltipRef.current || !dragging) { return; }
+    if (mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
     this.tooltipRef.current.style.display = "none";
-    
+
     const elem = e.target.closest('.dropable');
-    if(elem && selection.length && dragging) {
+    if (elem && selection.length && dragging) {
       const value = elem.getAttribute('value');
-      if(!value) {
+      if (!value) {
         setDragging(false);
         return;
       }
       const splitValue = value.split("_");
       let item = null;
-      if(splitValue[0] === "folder") {
+      if (splitValue[0] === "folder") {
         item = selection.find(x => x.id === Number(splitValue[1]) && !x.fileExst);
       } else {
         return;
       }
-      if(item) {
+      if (item) {
         setDragging(false);
         return;
       } else {
@@ -711,7 +716,7 @@ class SectionBodyContent extends React.Component {
       }
     } else {
       setDragging(false);
-      if(dragItem) {
+      if (dragItem) {
         this.onMoveTo(dragItem);
         return;
       }
@@ -720,13 +725,13 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseMove = e => {
-    if(this.props.dragging) {
+    if (this.props.dragging) {
       const tooltip = this.tooltipRef.current;
       tooltip.style.display = "block";
       this.setTooltipPosition(e);
 
       const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
-      if(!wrapperElement) { return; }
+      if (!wrapperElement) { return; }
       const droppable = wrapperElement.closest('.dropable');
 
       if (this.currentDroppable !== droppable) {
@@ -745,7 +750,7 @@ class SectionBodyContent extends React.Component {
 
   setTooltipPosition = e => {
     const tooltip = this.tooltipRef.current;
-    if(tooltip) {
+    if (tooltip) {
       const margin = 8;
       tooltip.style.left = e.pageX + margin + "px";
       tooltip.style.top = e.pageY + margin + "px";
@@ -760,22 +765,22 @@ class SectionBodyContent extends React.Component {
     const deleteAfter = true;
 
     startFilesOperations(t("MoveToOperation"));
-    for(let item of selection) {
-      if(item.fileExst) {
+    for (let item of selection) {
+      if (item.fileExst) {
         fileIds.push(item.id)
       } else {
         folderIds.push(item.id)
       }
     }
 
-    if(isAdmin) {
-      if(isShare) {
+    if (isAdmin) {
+      if (isShare) {
         this.copyTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
       } else {
         this.moveTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
       }
     } else {
-      if(isShare || isCommon) {
+      if (isShare || isCommon) {
         this.copyTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
       } else {
         this.moveTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
@@ -787,22 +792,22 @@ class SectionBodyContent extends React.Component {
     const { copyToFolder, loopFilesOperations, finishFilesOperations } = this.props;
 
     copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-    .then(res => {
-      const id = res[0] && res[0].id ? res[0].id : null;
-      loopFilesOperations(id, destFolderId, true);
-    })
-    .catch(err => finishFilesOperations(err))
+      .then(res => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        loopFilesOperations(id, destFolderId, true);
+      })
+      .catch(err => finishFilesOperations(err))
   }
 
   moveTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
     const { moveToFolder, loopFilesOperations, finishFilesOperations } = this.props;
 
     moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-    .then(res => {
-      const id = res[0] && res[0].id ? res[0].id : null;
-      loopFilesOperations(id, destFolderId, false);
-    })
-    .catch(err => finishFilesOperations(err))
+      .then(res => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        loopFilesOperations(id, destFolderId, false);
+      })
+      .catch(err => finishFilesOperations(err))
   }
 
   getTooltipLabel = () => {
@@ -864,7 +869,7 @@ class SectionBodyContent extends React.Component {
     let items = [...folders, ...files];
 
     const tooltipLabel = this.getTooltipLabel();
-    
+
     const SimpleFilesRow = styled(Row)`
       ${(props) =>
         !props.contextOptions &&
@@ -884,11 +889,11 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-   
+
     var playlist = [];
     let id = 0;
-    files.forEach(function(file, i, files) {
-      if(isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst)){
+    files.forEach(function (file, i, files) {
+      if (isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst)) {
         playlist.push(
           {
             id: id,
@@ -911,7 +916,7 @@ class SectionBodyContent extends React.Component {
       this.renderEmptyFilterContainer()
     ) : (
           <>
-          <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
+            <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
             <RowContainer draggable useReactWindow={false}>
               {items.map((item) => {
                 const isEdit =
@@ -927,13 +932,13 @@ class SectionBodyContent extends React.Component {
                 const checked = isFileSelected(selection, item.id, item.parentId);
                 const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
                 const element = this.getItemIcon(item, isEdit);
-               
+
                 const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
                 const isFolder = selectedItem ? false : item.fileExst ? false : true;
                 const draggable = selectedItem && currentFolderType !== "Trash";
                 let value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
                 value += draggable ? "_draggable" : "";
-                const classNameProp = isFolder && item.access < 2 ? {className: " dropable"} : {};
+                const classNameProp = isFolder && item.access < 2 ? { className: " dropable" } : {};
 
                 return (
                   <DragAndDrop
@@ -972,7 +977,7 @@ class SectionBodyContent extends React.Component {
             </RowContainer>
             {playlist.length > 0 && this.state.mediaViewerVisible &&
               <MediaViewer
-                currentFileId = {this.state.currentMediaFileId}
+                currentFileId={this.state.currentMediaFileId}
                 allowConvert={true} //TODO
                 canDelete={(fileId) => { return true }} //TODO 
                 canDownload={(fileId) => { return true }} //TODO 
