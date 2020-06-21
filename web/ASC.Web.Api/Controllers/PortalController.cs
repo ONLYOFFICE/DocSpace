@@ -163,35 +163,17 @@ namespace ASC.Web.Api.Controllers
        {
             if (!SecurityContext.IsAuthenticated || !ThumbnailHelper.HasService )
             {
-
-                ProccessFail();
                 return null;
             }
             url = url.Replace("&amp;", "&");
             url = System.Net.WebUtility.UrlEncode(url);
 
-            try
-            {
                 using (var wc = new WebClient())
                 {
-                    var w = string.Format(ThumbnailHelper.ServiceUrl, url);
                     var bytes = wc.DownloadData(string.Format(ThumbnailHelper.ServiceUrl, url));
                     var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
-                    return File(bytes, type);
-                   /* context.Response.BinaryWrite(bytes);
-                    context.Response.Flush();*/
+                   return File(bytes, type);
                 }
-            }
-            catch(Exception e)
-            {
-                ProccessFail();
-                return null;
-            }
-        }
-
-        private void ProccessFail()
-        {
-         //   context.Response.Redirect("~/Products/Community/Modules/Bookmarking/App_Themes/default/images/noimageavailable.jpg");
         }
     }
 

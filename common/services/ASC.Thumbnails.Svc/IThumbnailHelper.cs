@@ -32,23 +32,11 @@ namespace ASC.Thumbnails.Svc
 
     public class ThumbnailHelper
     {
-        private IThumbnailHelper Helper { get; set; }
         private IConfiguration Configuration { get; set; }
 
-        public ThumbnailHelper(WebSiteThumbnailHelper webSiteThumbnailHelper, ServiceThumbnailHelper serviceThumbnailHelper, NullThumbnailHelper nullThumbnailHelper, IConfiguration configuration)
+        public ThumbnailHelper(IConfiguration configuration)
         {
             Configuration = configuration;
-            if (HasService)
-            {
-                Helper =  serviceThumbnailHelper;
-            }
-            if (Environment.OSVersion.Platform == PlatformID.MacOSX ||
-                Environment.OSVersion.Platform == PlatformID.Unix ||
-                Environment.OSVersion.Platform == PlatformID.Xbox)
-            {
-                Helper = nullThumbnailHelper;
-            }
-            Helper = webSiteThumbnailHelper;
         }
 
 
@@ -61,24 +49,6 @@ namespace ASC.Thumbnails.Svc
         {
             get { return Configuration["bookmarking:thumbnail-url"]; }
         }
-/*
-        public static IThumbnailHelper Instance
-        {
-            get
-            {
-                if (HasService)
-                {
-                    return ServiceHelper;
-                }
-                if (Environment.OSVersion.Platform == PlatformID.MacOSX ||
-                    Environment.OSVersion.Platform == PlatformID.Unix ||
-                    Environment.OSVersion.Platform == PlatformID.Xbox)
-                {
-                    return NullHelper;
-                }
-                return ProcessHelper;
-            }
-        }*/
     }
 
     public class ServiceThumbnailHelper : IThumbnailHelper
@@ -423,7 +393,7 @@ namespace ASC.Thumbnails.Svc
     {
         public static DIHelper AddThumbnailHelperService(this DIHelper services)
         {
-            services.TryAddScoped<ThumbnailHelper>();
+            services.TryAddSingleton<ThumbnailHelper>();
             services.TryAddScoped<WebSiteThumbnailHelper>();
             services.TryAddScoped<ServiceThumbnailHelper>();
             services.TryAddScoped<NullThumbnailHelper>();
