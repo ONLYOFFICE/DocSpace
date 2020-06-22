@@ -1,4 +1,5 @@
 import React from "react";
+import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { constants, Headline, store, api } from "asc-web-common";
@@ -161,8 +162,14 @@ class SectionHeaderContent extends React.Component {
     ];
   };
 
-  createLinkForPortalUsers = () =>
-    toastr.info("createLinkForPortalUsers click");
+  createLinkForPortalUsers = () => {
+    const {currentFolderId} = this.props;
+    const { t } = this.props;
+
+    copy(`${window.location.origin}/products/files/filter?folder=${currentFolderId}`);
+
+    toastr.success(t("LinkCopySuccess"));
+  }
 
   onMoveAction = () => this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
 
@@ -231,7 +238,7 @@ class SectionHeaderContent extends React.Component {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: true
+        disabled: false
       },
       { key: "separator-2", isSeparator: true },
       {
