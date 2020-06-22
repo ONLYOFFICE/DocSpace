@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { ReactSVG } from 'react-svg'
 import { withTranslation } from "react-i18next";
 import isEqual from "lodash/isEqual";
+import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import {
   IconButton,
@@ -20,7 +21,6 @@ import {
   deleteFolder,
   deselectFile,
   fetchFiles,
-  fetchFolder,
   selectFile,
   setAction,
   setTreeFolders,
@@ -239,7 +239,17 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickLinkForPortal = item => {
-    return fetchFolder(item.folderId, store.dispatch);
+    const {settings} = this.props;
+    const isFile = !!item.fileExst;
+    const { t } = this.props;
+
+    copy(isFile 
+          ? 
+            item.webUrl 
+          : 
+            `${window.location.origin + settings.homepage}/filter?folder=${item.id}`);
+
+    toastr.success(t("LinkCopySuccess"));
   }
 
   onClickDownload = item => {
@@ -272,7 +282,7 @@ class SectionBodyContent extends React.Component {
         key: "link-for-portal-users",
         label: "Link for portal users",
         onClick: this.onClickLinkForPortal.bind(this, item),
-        disabled: true
+        disabled: false
       },
       {
         key: "sep",
