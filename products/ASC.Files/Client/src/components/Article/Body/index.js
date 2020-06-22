@@ -9,6 +9,7 @@ import {
   setDragItem
 } from "../../../store/files/actions";
 import store from "../../../store/store";
+import isEqual from "lodash/isEqual";
 
 class ArticleBodyContent extends React.Component {
   state = { expandedKeys: this.props.filter.treeFolders };
@@ -37,6 +38,14 @@ class ArticleBodyContent extends React.Component {
     }
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState) || !isEqual(this.props, nextProps)) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     const {
       data,
@@ -49,7 +58,6 @@ class ArticleBodyContent extends React.Component {
       isLoading,
       dragging,
       setDragItem,
-      dragItem,
       isMy,
       myId,
       isCommon,
@@ -74,7 +82,6 @@ class ArticleBodyContent extends React.Component {
         isLoading={isLoading}
         dragging={dragging}
         setDragItem={setDragItem}
-        dragItem={dragItem}
         isMy={isMy}
         myId={myId}
         isCommon={isCommon}
@@ -88,7 +95,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, dragItem } = state.files;
+  const { treeFolders, selectedFolder, filter } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const fakeNewDocuments = 8;
   const myFolderIndex = 0;
@@ -121,7 +128,6 @@ function mapStateToProps(state) {
     isShare,
     myId,
     commonId,
-    dragItem,
     currentId: selectedFolder.id,
     isAdmin: state.auth.user.isAdmin
   };

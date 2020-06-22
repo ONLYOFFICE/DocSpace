@@ -26,7 +26,8 @@ import {
   setTreeFolders,
   moveToFolder,
   copyToFolder,
-  getProgress
+  getProgress,
+  setDragItem
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -686,7 +687,7 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseUp = e => {
-    const { selection, dragging, setDragging, dragItem } = this.props;
+    const { selection, dragging, setDragging, dragItem, setDragItem } = this.props;
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     if (mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
@@ -718,6 +719,7 @@ class SectionBodyContent extends React.Component {
       setDragging(false);
       if (dragItem) {
         this.onMoveTo(dragItem);
+        setDragItem(null);
         return;
       }
       return;
@@ -1058,6 +1060,7 @@ export default connect(
     setTreeFolders,
     moveToFolder,
     copyToFolder,
-    getProgress
+    getProgress,
+    setDragItem
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

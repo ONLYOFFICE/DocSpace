@@ -9,7 +9,7 @@ class TreeFolders extends React.Component {
     super(props);
 
     const treeData = props.data;
-    this.state = { treeData, expandedKeys: props.expandedKeys, loaded: true };
+    this.state = { treeData, expandedKeys: props.expandedKeys };
   }
 
   getFolderIcon = key => {
@@ -220,7 +220,7 @@ class TreeFolders extends React.Component {
       this.props.setFilter(newFilter);
     }
 
-    this.setState({ expandedKeys: data, loaded: false });
+    this.setState({ expandedKeys: data });
   };
 
   componentDidUpdate(prevProps) {
@@ -247,7 +247,7 @@ class TreeFolders extends React.Component {
   };
 
   onMouseLeave = data => {
-    if (this.props.dragging && this.props.dragItem) {
+    if (this.props.dragging) {
       this.props.setDragItem(null);
     }
   };
@@ -260,8 +260,8 @@ class TreeFolders extends React.Component {
       onSelect,
       needUpdate
     } = this.props;
-    const { treeData, expandedKeys, loaded } = this.state;
-    const loadProp = loaded && needUpdate ? { loadData: this.onLoadData } : {};
+    const { treeData, expandedKeys } = this.state;
+    const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
       <TreeMenu
