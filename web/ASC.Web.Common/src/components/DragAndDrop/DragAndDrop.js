@@ -44,11 +44,16 @@ class DragAndDrop extends Component {
     }
   };
 
+  onMouseDown = e => {
+    this.props.onMouseDown && this.props.onMouseDown(e);
+  }
+
   componentDidMount() {
     let div = this.dropRef.current;
     div.addEventListener("drop", this.onDrop);
     div.addEventListener("dragenter", this.onDragEnter);
     div.addEventListener("dragleave", this.onDragLeave);
+    div.addEventListener("mousedown", this.onMouseDown);
   }
 
   componentWillUnmount() {
@@ -56,6 +61,7 @@ class DragAndDrop extends Component {
     div.removeEventListener("drop", this.onDrop);
     div.removeEventListener("dragenter", this.onDragEnter);
     div.removeEventListener("dragleave", this.onDragLeave);
+    div.removeEventListener("mousedown", this.onMouseDown);
   }
 
   render() {
@@ -83,7 +89,8 @@ DragAndDrop.propTypes = {
   dragging: PropTypes.bool,
   onDragEnter: PropTypes.func,
   onDragLeave: PropTypes.func,
-  onDrop: PropTypes.func
+  onDrop: PropTypes.func,
+  onMouseDown: PropTypes.func
 };
 
 DragAndDrop.defaultProps = {
