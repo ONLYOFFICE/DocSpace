@@ -93,7 +93,6 @@ class SectionBodyContent extends React.Component {
     //   }
     // }
     window.addEventListener("mouseup", this.onMouseUp);
-    document.addEventListener("mousedown", this.onMouseDown);
 
     document.addEventListener("dragover", this.onDragOver);
     document.addEventListener("dragleave", this.onDragLeaveDoc);
@@ -101,7 +100,6 @@ class SectionBodyContent extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("mouseup", this.onMouseUp);
-    document.removeEventListener("mousedown", this.onMouseDown);
 
     document.removeEventListener("dragover", this.onDragOver);
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
@@ -671,7 +669,8 @@ class SectionBodyContent extends React.Component {
 
   onMouseDown = e => {
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    if (mouseButton || e.target.tagName !== "DIV") { return; }
+    const label = e.target.getAttribute('label');
+    if (mouseButton || e.target.tagName !== "DIV" || label) { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
     const { selection, setDragging } = this.props;
@@ -958,6 +957,7 @@ class SectionBodyContent extends React.Component {
                     onDrop={this.onDrop.bind(this, item)}
                     onDragEnter={this.onDragEnter.bind(this, item)}
                     onDragLeave={this.onDragLeave.bind(this, item)}
+                    onMouseDown={this.onMouseDown}
                     dragging={dragging && isFolder && item.access < 2}
                     key={`dnd-key_${item.id}`}
                     {...contextOptionsProps}
