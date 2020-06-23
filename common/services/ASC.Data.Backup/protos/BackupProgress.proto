@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-package ASC.Core.Common.Contracts;
+package ASC.Data.Backup.Contracts;
 
 message BackupProgress {
     bool IsCompleted = 1;

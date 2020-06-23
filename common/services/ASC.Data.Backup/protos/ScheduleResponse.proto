@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-package ASC.Core.Common.Contracts;
+package ASC.Data.Backup.Contracts;
 import "google/protobuf/timestamp.proto";
 message ScheduleResponse {
     int32 StorageType = 1;

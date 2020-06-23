@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ASC.Data.Backup.Contracts;
 
-namespace ASC.Web.Api.Models
+namespace ASC.Data.Backup.Models
 {
     public class Backup
     {

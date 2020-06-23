@@ -7,8 +7,10 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
+using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +22,10 @@ namespace ASC.Data.Backup
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -50,7 +56,8 @@ namespace ASC.Data.Backup
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddBackupServiceLauncher();
+                    diHelper.AddBackupServiceLauncher()
+                    .AddBackupController();
                     diHelper.AddNLogManager("ASC.Data.Backup");
                     services.AddHostedService<BackupServiceLauncher>();
                     diHelper.Configure<ProgressQueue<BaseBackupProgressItem>>(r =>

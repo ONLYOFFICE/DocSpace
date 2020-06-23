@@ -34,7 +34,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Core.Common.Contracts;
+using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Utils;
@@ -123,7 +123,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    internal class BackupService : IBackupService
+    public class BackupService : IBackupService
     {
         private ILog Log { get; set; }
         private BackupStorageFactory BackupStorageFactory { get; set; }
@@ -334,7 +334,7 @@ namespace ASC.Data.Backup.Service
             services.TryAddScoped<BackupService>();
             services.TryAddSingleton<BackupServiceNotifier>();
             return services
-                .AddKafkaService();
+                .AddBackupWorkerService();
         }
     }
 }

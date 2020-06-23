@@ -1,12 +1,14 @@
 ﻿syntax = "proto3";
 
-package ASC.Core.Common.Contracts;
+package ASC.Data.Backup.Contracts;
 
-message StartBackupRequest {
+message CreateScheduleRequest {
     int32 TenantId = 1;
-    string UserId = 2;
+    int32 UserId = 2;
     bool BackupMail = 3;
     int32 StorageType = 4;
     string StorageBasePath = 5;
     map<string, string> StorageParams = 6;
+    string Cron  = 7;
+    int32 NumberOfBackupsStored = 8;
 }

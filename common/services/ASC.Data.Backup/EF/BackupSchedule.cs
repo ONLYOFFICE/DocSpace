@@ -2,9 +2,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-using ASC.Core.Common.Contracts;
 using ASC.Core.Common.EF;
+using ASC.Data.Backup.Contracts;
 
 namespace ASC.Data.Backup.EF.Model
 {

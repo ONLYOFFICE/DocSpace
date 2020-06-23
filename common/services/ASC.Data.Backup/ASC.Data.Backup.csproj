@@ -12,9 +12,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="SharpCompress" Version="0.25.0" />
+	  <None Remove="protos\BackupHistoryRecord.proto" />
+	  <None Remove="protos\BackupProgress.proto" />
+	  <None Remove="protos\CreateScheduleRequest.proto" />
+	  <None Remove="protos\DeleteBackupRequest.proto" />
+	  <None Remove="protos\ScheduleResponse.proto" />
+	  <None Remove="protos\StartBackupRequest.proto" />
+	  <None Remove="protos\StartRestoreRequest.proto" />
+	  <None Remove="protos\StartTransferRequest.proto" />
+	  <None Remove="protos\TransferRegion.proto" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Google.Protobuf" Version="3.12.3" />
+	  <PackageReference Include="Grpc" Version="2.29.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.29.0">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="SharpCompress" Version="0.25.0" />
+	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\products\ASC.Files\Server\ASC.Files.csproj" />
 	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
@@ -22,12 +39,24 @@
 	  <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
 	  <ProjectReference Include="..\ASC.Notify\ASC.Notify.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Protobuf Include="protos\BackupHistoryRecord.proto" />
+	  <Protobuf Include="protos\BackupProgress.proto" />
+	  <Protobuf Include="protos\CreateScheduleRequest.proto" />
+	  <Protobuf Include="protos\DeleteBackupRequest.proto" />
+	  <Protobuf Include="protos\ScheduleResponse.proto" />
+	  <Protobuf Include="protos\StartBackupRequest.proto" />
+	  <Protobuf Include="protos\StartRestoreRequest.proto" />
+	  <Protobuf Include="protos\StartTransferRequest.proto" />
+	  <Protobuf Include="protos\TransferRegion.proto" />
+	</ItemGroup>
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)' == 'MySqlConnector'">
 				<Aliases>MySqlConnectorAlias</Aliases>
 			</ReferencePath>
 		</ItemGroup>
+
 	</Target>
 
 </Project>

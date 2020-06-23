@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Common.Contracts;
+using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Service;
 using ASC.Data.Backup.Utils;

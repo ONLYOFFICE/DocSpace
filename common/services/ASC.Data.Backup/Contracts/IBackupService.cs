@@ -28,7 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 
-namespace ASC.Core.Common.Contracts
+using ASC.Data.Backup.Contracts;
+
+namespace ASC.Data.Backup.Contracts
 {
     [ServiceContract]
     public interface IBackupService

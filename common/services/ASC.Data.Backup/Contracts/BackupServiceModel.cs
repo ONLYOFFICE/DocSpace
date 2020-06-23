@@ -26,22 +26,21 @@
 
 using System.Runtime.Serialization;
 
-namespace ASC.Core.Common.Contracts
+namespace ASC.Data.Backup.Contracts
 {
-    [DataContract]
     public enum BackupStorageType
     {
-        [EnumMember] Documents = 0,
+        Documents = 0,
 
-        [EnumMember] ThridpartyDocuments = 1,
+        ThridpartyDocuments = 1,
 
-        [EnumMember] CustomCloud = 2,
+        CustomCloud = 2,
 
-        [EnumMember] Local = 3,
+        Local = 3,
 
-        [EnumMember] DataStore = 4,
+        DataStore = 4,
 
-        [EnumMember] ThirdPartyConsumer = 5
+        ThirdPartyConsumer = 5
     }
     /*
     [DataContract]

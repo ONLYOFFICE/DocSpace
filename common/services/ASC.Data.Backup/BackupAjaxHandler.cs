@@ -6,8 +6,9 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Contracts;
 using ASC.Core.Users;
+using ASC.Data.Backup.Contracts;
+using ASC.Data.Backup.Service;
 using ASC.MessagingSystem;
 using ASC.Notify.Cron;
 using ASC.Web.Core.PublicResources;
@@ -28,12 +29,12 @@ namespace ASC.Data.Backup
         private UserManager UserManager { get; }
         private TenantExtra TenantExtra { get; }
         private BackupHelper BackupHelper { get; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private BackupServiceClient BackupServiceClient { get; }
+        private ConsumerFactory ConsumerFactory { get; }  
+        private BackupService BackupService { get; }
 
         #region backup
 
-        public BackupAjaxHandler(BackupServiceClient backupServiceClient, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
+        public BackupAjaxHandler(BackupService backupService, TenantManager tenantManager, MessageService messageService, CoreBaseSettings coreBaseSettings, CoreConfiguration coreConfiguration, PermissionContext permissionContext, SecurityContext securityContext, UserManager userManager, TenantExtra tenantExtra, BackupHelper backupHelper, ConsumerFactory consumerFactory)
         {
             TenantManager = tenantManager;
             MessageService = messageService;
@@ -45,7 +46,7 @@ namespace ASC.Data.Backup
             TenantExtra = tenantExtra;
             BackupHelper = backupHelper;
             ConsumerFactory = consumerFactory;
-            BackupServiceClient = backupServiceClient;
+            BackupService = backupService;
         }
 
         public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
@@ -76,34 +77,34 @@ namespace ASC.Data.Backup
 
             MessageService.Send(MessageAction.StartBackupSetting);
 
-            BackupServiceClient.StartBackup(backupRequest);
+            BackupService.StartBackup(backupRequest);
         }
 
         public BackupProgress GetBackupProgress()
         {
             DemandPermissionsBackup();
 
-            return BackupServiceClient.GetBackupProgress(GetCurrentTenantId());
+            return BackupService.GetBackupProgress(GetCurrentTenantId());
         }
 
         public void DeleteBackup(Guid id)
         {
             DemandPermissionsBackup();
 
-            BackupServiceClient.DeleteBackup(id);
+            BackupService.DeleteBackup(id);
         }
 
         public void DeleteAllBackups()
         {
             DemandPermissionsBackup();
 
-            BackupServiceClient.DeleteAllBackups(GetCurrentTenantId());
+            BackupService.DeleteAllBackups(GetCurrentTenantId());
         }
 
         public List<BackupHistoryRecord> GetBackupHistory()
         {
             DemandPermissionsBackup();
-            return BackupServiceClient.GetBackupHistory(GetCurrentTenantId());
+            return BackupService.GetBackupHistory(GetCurrentTenantId());
         }
 
         public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool backupMail)
@@ -137,7 +138,7 @@ namespace ASC.Data.Backup
                     break;
             }
 
-            BackupServiceClient.CreateSchedule(scheduleRequest);
+            BackupService.CreateSchedule(scheduleRequest);
         }
 
         public Schedule GetSchedule()
@@ -146,7 +147,7 @@ namespace ASC.Data.Backup
 
             ScheduleResponse response;
 
-            response = BackupServiceClient.GetSchedule(GetCurrentTenantId());
+            response = BackupService.GetSchedule(GetCurrentTenantId());
             if (response == null)
             {
                 return null;
@@ -189,7 +190,7 @@ namespace ASC.Data.Backup
                     StorageType = (int)schedule.StorageType
                 };
                 Schedule.StorageParams.Add(schedule.StorageParams);
-                BackupServiceClient.CreateSchedule(Schedule);
+                BackupService.CreateSchedule(Schedule);
 
             }
             else if ((BackupStorageType)response.StorageType != BackupStorageType.ThirdPartyConsumer)
@@ -204,7 +205,7 @@ namespace ASC.Data.Backup
         {
             DemandPermissionsBackup();
 
-            BackupServiceClient.DeleteSchedule(GetCurrentTenantId());
+            BackupService.DeleteSchedule(GetCurrentTenantId());
 
         }
 
@@ -239,7 +240,7 @@ namespace ASC.Data.Backup
                 restoreRequest.StorageType = (int)storageType;
                 restoreRequest.FilePathOrId = storageParams["filePath"];
             }
-            BackupServiceClient.StartRestore(restoreRequest);
+            BackupService.StartRestore(restoreRequest);
         }
 
         public BackupProgress GetRestoreProgress()
@@ -247,7 +248,7 @@ namespace ASC.Data.Backup
             BackupProgress result;
 
             var tenant = TenantManager.GetCurrentTenant();
-            result = BackupServiceClient.GetRestoreProgress(tenant.TenantId);
+            result = BackupService.GetRestoreProgress(tenant.TenantId);
 
             return result;
         }
@@ -270,7 +271,7 @@ namespace ASC.Data.Backup
             DemandSize();
 
             MessageService.Send(MessageAction.StartTransferSetting);
-            BackupServiceClient.StartTransfer(
+            BackupService.StartTransfer(
                 new StartTransferRequest
                 {
                     TenantId = GetCurrentTenantId(),
@@ -283,7 +284,7 @@ namespace ASC.Data.Backup
 
         public BackupProgress GetTransferProgress()
         {
-            return BackupServiceClient.GetTransferProgress(GetCurrentTenantId());
+            return BackupService.GetTransferProgress(GetCurrentTenantId());
         }
 
         private void DemandPermissionsTransfer()
@@ -301,7 +302,7 @@ namespace ASC.Data.Backup
 
         public string GetTmpFolder()
         {
-            return BackupServiceClient.GetTmpFolder();
+            return BackupService.GetTmpFolder();
         }
 
         private void DemandSize()

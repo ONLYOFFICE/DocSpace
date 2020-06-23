@@ -36,8 +36,8 @@ using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Billing;
-using ASC.Core.Common.Contracts;
 using ASC.Core.Tenants;
+using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Tasks;
@@ -52,7 +52,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
-    internal class BackupWorker
+    public class BackupWorker
     {
         private ILog Log { get; set; }
         private ProgressQueue<BaseBackupProgressItem> ProgressQueue { get; set; }
@@ -73,7 +73,7 @@ namespace ASC.Data.Backup.Service
             Log = options.CurrentValue;
             ProgressQueue = progressQueue.Value;
             CacheBackupProgress = cacheBackupProgress;
-            this.FactoryProgressItem = factoryProgressItem;
+            FactoryProgressItem = factoryProgressItem;
         }
 
         public void Start(BackupSettings settings)
@@ -771,9 +771,9 @@ namespace ASC.Data.Backup.Service
         {
             services.TryAddSingleton<BackupWorker>();
             services.TryAddSingleton<FactoryProgressItem>();
-            services.TryAddScoped<BackupProgressItem>();
-            services.TryAddScoped<TransferProgressItem>();
-            services.TryAddScoped<RestoreProgressItem>();
+            services.TryAddTransient<BackupProgressItem>();
+            services.TryAddTransient<TransferProgressItem>();
+            services.TryAddTransient<RestoreProgressItem>();
 
 
             services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();

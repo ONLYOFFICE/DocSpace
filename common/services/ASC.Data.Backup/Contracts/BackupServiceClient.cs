@@ -32,7 +32,7 @@ using ASC.Common.Caching;
 
 using Google.Protobuf;
 
-namespace ASC.Core.Common.Contracts
+namespace ASC.Data.Backup.Contracts
 {
     public class BackupServiceClient : IBackupService
     {
