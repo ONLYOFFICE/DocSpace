@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Api
 {
-    public class Program
+    public class Program//Configuration["bookmarking:thumbnail-url"]
     {
         public static void Main(string[] args)
         {

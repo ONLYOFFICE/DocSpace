@@ -20,6 +20,7 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -41,7 +42,7 @@ namespace ASC.Web.Api.Controllers
         public AuthContext AuthContext { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public SecurityContext SecurityContext { get; }
-        public ThumbnailHelper ThumbnailHelper { get; }
+        public IConfiguration Configuration { get; set; }
         public ILog Log { get; }
 
 
@@ -56,7 +57,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext authContext,
             WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
-            ThumbnailHelper thumbnailHelper
+            IConfiguration configuration
             )
         {
             Log = options.CurrentValue;
@@ -69,7 +70,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
-            ThumbnailHelper = thumbnailHelper;
+            Configuration = configuration;
         }
 
         [Read("")]
@@ -161,7 +162,7 @@ namespace ASC.Web.Api.Controllers
         [Read("thumb")]
         public FileResult GetThumb(string url)
        {
-            if (!SecurityContext.IsAuthenticated || !ThumbnailHelper.HasService )
+            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null) )
             {
                 return null;
             }
@@ -170,8 +171,8 @@ namespace ASC.Web.Api.Controllers
 
                 using (var wc = new WebClient())
                 {
-                    var bytes = wc.DownloadData(string.Format(ThumbnailHelper.ServiceUrl, url));
-                    var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+                    var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));////Configuration["bookmarking:thumbnail-url"]
+                var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
                    return File(bytes, type);
                 }
         }
@@ -195,8 +196,7 @@ namespace ASC.Web.Api.Controllers
                 .AddCommonLinkUtilityService()
                 .AddAuthContextService()
                 .AddWebItemSecurity()
-                .AddSecurityContextService()
-                .AddThumbnailHelperService();
+                .AddSecurityContextService();
         }
     }
 }
