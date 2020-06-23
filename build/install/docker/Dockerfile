@@ -141,6 +141,7 @@ RUN cd /app/onlyoffice/src/ && \
     cd ../../../ && \
     cd products/ASC.Files/Server && \
     dotnet -d publish -o /var/www/products/ASC.Files/server && \
+    cp -avrf DocStore /var/www/products/ASC.Files/server/ && \
     cd ../../../ && \
     cd products/ASC.Files/Service && \
     dotnet -d publish -o /var/www/products/ASC.Files/service && \
@@ -167,16 +168,16 @@ RUN cd /app/onlyoffice/src/ && \
 
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY config/mysql/dotnet_dump.sql /app/onlyoffice/dotnet_dump.sql
 
-RUN sed -i 's/172.18.0.5/localhost/' /app/onlyoffice/config/appsettings.test.json
+RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
 
 RUN mkdir -p /var/mysqld/ && \
     chown -R mysql:mysql /var/lib/mysql /var/run/mysqld /var/mysqld/ && \
     sudo -u mysql bash -c "/usr/bin/pidproxy /var/mysqld/mysqld.pid /usr/bin/mysqld_safe --pid-file=/var/mysqld/mysqld.pid &" && \
     sleep 5s && \
     mysql -e "CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET utf8 COLLATE 'utf8_general_ci'" && \
-    mysql -D "onlyoffice" < /app/onlyoffice/src/sql/app.sql && \
-    mysql -D "onlyoffice" < /app/onlyoffice/src/sql/app.data.sql && \
+    mysql -D "onlyoffice" < /app/onlyoffice/dotnet_dump.sql && \
     mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
     mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost';' && \
     mysql -D "onlyoffice" -e 'UPDATE core_user SET email = "paul.bannov@gmail.com";' && \
