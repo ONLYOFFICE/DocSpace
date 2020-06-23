@@ -1,0 +1,22 @@
+﻿{
+  "components": [
+    {
+      "type": "ASC.Files.Service.Core.FilesModule, ASC.Files.Service",
+      "services": [
+        {
+          "type": "ASC.Feed.Aggregator.Modules.IFeedModule, ASC.Feed.Aggregator"
+        }
+      ],
+      "instanceScope": "perlifetimescope"
+    },
+    {
+      "type": "ASC.Files.Service.Core.FoldersModule, ASC.Files.Service",
+      "services": [
+        {
+          "type": "ASC.Feed.Aggregator.Modules.IFeedModule, ASC.Feed.Aggregator"
+        }
+      ],
+      "instanceScope": "perlifetimescope"
+    }
+  ]
+}
