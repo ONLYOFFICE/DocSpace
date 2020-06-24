@@ -5,6 +5,7 @@ ARG RELEASE_DATE_SIGN=""
 ARG VERSION="8.9.0.190"
 ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
+ARG GIT_BRANCH="master"
 
 LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
       onlyoffice.community.version="${VERSION}" \
@@ -75,7 +76,10 @@ RUN apt-get -y update && \
                         mysql-client \
                         mysql-server
 
-RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/
+RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/ && \
+    cd /app/onlyoffice/src/ && \
+    git checkout ${GIT_BRANCH} && \
+    git pull
 
 RUN cd /app/onlyoffice/src/ && \
     yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
