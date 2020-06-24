@@ -19,7 +19,7 @@ const StyledTreeContainer = styled.div`
 const StyledTreeMenu = styled(Tree)`
     margin: 0;
     padding: 0;
-    width: 100%;
+    width: 93%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
     &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
