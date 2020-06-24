@@ -255,10 +255,10 @@ class TreeFolders extends React.Component {
   render() {
     const {
       selectedKeys,
-      fakeNewDocuments,
       isLoading,
       onSelect,
-      needUpdate
+      needUpdate,
+      onBadgeClick
     } = this.props;
     const { treeData, expandedKeys } = this.state;
     const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
@@ -274,8 +274,8 @@ class TreeFolders extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={onSelect}
         selectedKeys={selectedKeys}
-        badgeLabel={fakeNewDocuments}
-        onBadgeClick={() => console.log("onBadgeClick")}
+        //badgeLabel={3}
+        //onBadgeClick={onBadgeClick}
         {...loadProp}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}
