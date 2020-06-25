@@ -42,7 +42,7 @@ namespace ASC.Web.Core.Files
     public class FilesLinkUtility
     {
         public const string FilesBaseVirtualPath = "~/products/files/";
-        public const string EditorPage = "doceditor.aspx";
+        public const string EditorPage = "doceditor";
         private readonly string FilesUploaderURL;
         public CommonLinkUtility CommonLinkUtility { get; set; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -73,7 +73,7 @@ namespace ASC.Web.Core.Files
             get { return BaseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
         }
 
-        public const string FileId = "fileid";
+        public const string FileId = "fileId";
         public const string FolderId = "folderid";
         public const string Version = "version";
         public const string FileUri = "fileuri";
