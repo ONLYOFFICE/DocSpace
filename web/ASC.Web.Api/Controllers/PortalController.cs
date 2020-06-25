@@ -158,22 +158,22 @@ namespace ASC.Web.Api.Controllers
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
+
         [Read("thumb")]
         public FileResult GetThumb(string url)
-       {
-            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null) )
+        {
+            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null))
             {
                 return null;
             }
-            url = url.Replace("&amp;", "&");
-            url = System.Net.WebUtility.UrlEncode(url);
 
-                using (var wc = new WebClient())
-                {
-                    var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));////Configuration["bookmarking:thumbnail-url"]
-                var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
-                   return File(bytes, type);
-                }
+            url = url.Replace("&amp;", "&");
+            url = WebUtility.UrlEncode(url);
+
+            using var wc = new WebClient();
+            var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));
+            var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+            return File(bytes, type);
         }
     }
 
