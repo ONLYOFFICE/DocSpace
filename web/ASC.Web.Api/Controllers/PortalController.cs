@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Security;
 
 using ASC.Api.Core;
@@ -18,7 +19,10 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -37,6 +41,8 @@ namespace ASC.Web.Api.Controllers
         public UrlShortener UrlShortener { get; }
         public AuthContext AuthContext { get; }
         public WebItemSecurity WebItemSecurity { get; }
+        public SecurityContext SecurityContext { get; }
+        public IConfiguration Configuration { get; set; }
         public ILog Log { get; }
 
 
@@ -49,7 +55,9 @@ namespace ASC.Web.Api.Controllers
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
             AuthContext authContext,
-            WebItemSecurity webItemSecurity
+            WebItemSecurity webItemSecurity,
+            SecurityContext securityContext,
+            IConfiguration configuration
             )
         {
             Log = options.CurrentValue;
@@ -61,6 +69,8 @@ namespace ASC.Web.Api.Controllers
             UrlShortener = urlShortener;
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
+            SecurityContext = securityContext;
+            Configuration = configuration;
         }
 
         [Read("")]
@@ -150,7 +160,22 @@ namespace ASC.Web.Api.Controllers
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
 
-       
+        [Read("thumb")]
+        public FileResult GetThumb(string url)
+        {
+            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null))
+            {
+                return null;
+            }
+
+            url = url.Replace("&amp;", "&");
+            url = WebUtility.UrlEncode(url);
+
+            using var wc = new WebClient();
+            var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));
+            var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+            return File(bytes, type);
+        }
     }
 
     public static class PortalControllerExtension
@@ -170,7 +195,8 @@ namespace ASC.Web.Api.Controllers
                 .AddPaymentManagerService()
                 .AddCommonLinkUtilityService()
                 .AddAuthContextService()
-                .AddWebItemSecurity();
+                .AddWebItemSecurity()
+                .AddSecurityContextService();
         }
     }
 }

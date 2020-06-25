@@ -1,0 +1,7 @@
+{
+	"thumb": {
+		"path": "../../ASC.Thumbnails",
+		"port": "9800",
+		"savePath": "../../Data/Thumbs/",
+	}
+}
