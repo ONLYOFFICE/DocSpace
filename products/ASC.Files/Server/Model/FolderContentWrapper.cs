@@ -77,6 +77,8 @@ namespace ASC.Api.Documents
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int Total { get; set; }
 
+        public int New { get; set; }
+
         /// <summary>
         /// </summary>
         /// <param name="folderItems"></param>
@@ -151,6 +153,7 @@ namespace ASC.Api.Documents
             result.Current = FolderWrapperHelper.Get(folderItems.FolderInfo);
             result.Count = result.Files.Count + result.Folders.Count;
             result.Total = folderItems.Total;
+            result.New = folderItems.New;
 
             return result;
         }
