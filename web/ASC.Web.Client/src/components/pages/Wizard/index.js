@@ -25,10 +25,8 @@ const settingsPassword = {
 const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
-
   position: absolute;
   height: 56px;
-
   background: #0F4071;
   width: 100%;
 
@@ -38,6 +36,14 @@ const HeaderContent = styled.div`
     position: absolute;
     left: 240px;
     top: 14.5px;
+
+    @media(max-width: 768px) {
+      left: 144px;
+    }
+
+    @media(max-width: 768px) {
+      left: 32px;
+    }
   }
 `;
 
@@ -52,179 +58,210 @@ const sectionHeaderContent = <HeaderContent>
 </HeaderContent>;
 
 const WizardContainer = styled.div`
-  position: flex;
-  flex-direction: column;
-
   .form-container {
     width: 960px;
+    height: 496px;
     margin: 0 auto;
     margin-top: 80px;
+
+    @media(max-width: 768px) {
+      width: 480px
+    }
+
+    @media(max-width: 375px) {
+      width: 311px;
+      margin-top: 32px;
+    }
   }
 
-  .wizard-title {
+  .header-box {
+    height: 64px;
     width: 960px;
-  
-    text-align: center;
-    font-family: Open Sans;
+    font-family: 'Open Sans';
     font-style: normal;
-    font-weight: 600;
-    font-size: 32px;
-    line-height: 36px;
 
-    margin: 10px 12px;
+    .wizard-title {
+      text-align: center;
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 36px;
+      margin: 0px 12px;
+      flex: none;
+      order: 0;
+    }
+
+    .wizard-desc {
+      text-align: center;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      margin: 10px 12px;
+      flex: none;
+      order: 1;
+    }
+
+    @media(max-width: 768px) {
+      .wizard-title, .wizard-desc  {
+        margin: 10px 0px;
+        text-align: left;
+      }
+    }
+
+    @media(max-width: 375px) {
+      width: 311px;
+      
+      .wizard-title {
+        font-size: 23px;
+        line-height: 28px;
+      }
+    }
   }
 
-  .wizard-desc {
-
-    width: 960px;
-
-    text-align: center;
-    font-family: Open Sans;
+  .input-box {
+    width: 311px;
+    height: 212px;
+    font-family: 'Open Sans';
     font-style: normal;
     font-weight: normal;
-    font-size: 13px;
-    line-height: 20px;
+    margin: 32px auto 0 auto;
 
-    margin: 10px 12px;
+    .wizard-input-email {
+      width: 100%;
+      height: 44px;
+      font-size: 16px;
+      line-height: 22px;
+      padding-left: 16px;
+    }
+
+    .wizard-pass { 
+      width: 360px;
+      margin-top: 16px;
+    }
+
+    .wizard-pass input {
+      height: 44px;
+      font-size: 16px;
+      line-height: 22px;
+      padding-left: 15px;
+    }
+
+    .password-tooltip {
+      height: 14px;
+      text-align: left;
+      padding: 0;
+      margin: 0 auto;
+      font-size: 10px;
+      line-height: 14px;
+      color: #A3A9AE;
+    }
+
+    .input-block {
+      width: 100%;
+      height: 44px;
+      margin: 16px auto;
+    }
+
+    .input-file {
+      display: none;
+    }
+
+    .checkbox-container {
+      width: 100%;
+      margin: 17px auto 0 auto;
+    }
+
+    .wizard-checkbox {
+      display: inline-block;
+    }
+
+    .wizard-checkbox span {
+      margin-right: 0.3em;
+      vertical-align: middle;
+    }
+
+    .link {
+      vertical-align: middle;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    @media(max-width: 768px) {
+      width: 480px;
+      
+      .wizard-pass { 
+        
+      }
+
+      .wizard-pass input {
+      
+      }
+    }
+
+    @media(max-width: 768px) {
+      width: 311px;
+    }
   }
 
-  .wizard-input-email {
-    height: 44px;
+  .settings-box {
     width: 311px;
-    margin: 34px auto 0 auto;
-    font-size: 16px;
-    line-height: 22px;
-    font-weight: normal;
-    font-style: normal;
-    font-family: Open Sans;
-    padding-left: 16px;
-  }
-
-  .wizard-pass {
-    width: 360px;
-    margin: 16px 0 0 324px;
-
-  }
-
-  .wizard-pass input {
-    height: 44px;
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 22px;
-    padding-left: 15px;
-  }
-
-  .password-tooltip {
-    height: 14px;
-    width: 311px;
-    text-align: left;
-    padding: 0;
-    margin: 0 auto;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 14px;
-    color: #A3A9AE;
-  }
-
-  .input-block {
-    width: 311px;
-    height: 44px;
-
-    margin: 16px auto 0 auto;
-  }
-
-  .input-file {
-    display: none;
-  }
-
-  .checkbox-container {
-    width: 311px;
-    margin: 17px auto 0 auto;
-  }
-
-  .wizard-checkbox {
-    display: inline-block;
-  }
-
-  .wizard-checkbox span {
-    margin-right: 0.3em;
-    vertical-align: middle;
-  }
-
-  .link {
-    vertical-align: middle;
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 18px;
-  }
-
-  .settings {
-    width: 311px;
-    
     margin: 32px auto 0 auto;
     display: flex;
     flex-direction: row;
     padding: 0;
-  }
 
-  .settings-title-block {
-    position: static;
-    flex: none;
-    order: 0;
-    align-self: flex-start;
-  }
+    .settings-title-block {
+ 
+    }
 
-  .settings-title {
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 20px;
+    .settings-title {
+      font-family: Open Sans;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      margin: 16px 0px;
+    }
 
-    margin: 16px 0px;
-  }
+    .values {
+      margin: 0;
+      padding: 0;
+      margin-left: 16px;
+    }
 
-  .values {
-    position: static;
-    flex: none;
-    order: 1;
-    align-self: flex-start;
-    margin: 0;
-    padding: 0;
-    margin-left: 16px;
-  }
+    .text, .value {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 20px;
+    } 
 
-  .text, .value {
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 20px;
-    padding: 0;
-  } 
+    .text {
+      margin: 16px 0;
+    }
 
-  .text {
-    margin: 16px 0;
-  }
+    .drop-down {
+      display: block;
+      margin: 0 0 16px 0;
+    }
 
-  .drop-down {
-    display: block;
-    margin: 0 0 16px 0;
+    @media(max-width: 768px) {
+      width: 480px;
+    }
+
+    @media(max-width: 768px) {
+      width: 311px;
+    }
   }
 
   .wizard-button {
     display: block;
     width: 311px;
     height: 44px;
-
     margin: 32px auto 0 auto;
+
+    @media(max-width: 768px) {
+      width: 100%;
+    }
   }
 `;
 
@@ -250,107 +287,139 @@ class Body extends Component {
     console.log(this.inputRef.current.value);
   }
 
+  renderHeaderBox = () => {
+    return (
+      <Box className="header-box">
+        <Heading level={1} title="Wizard" className="wizard-title">
+          Welcome to your portal!
+        </Heading>
+        <Text className="wizard-desc">
+          Please setup the portal registration data.
+        </Text>
+      </Box>
+    )
+  }
+
+  renderInputBox = () => {
+    return (
+      <Box className="input-box">
+        <EmailInput
+          className="wizard-input-email"
+          tabIndex={1}
+          id="input-email"
+          name="email-wizard"
+          placeholder={'E-mail'}
+          emailSettings={settings}
+          onValidateInput={() => console.log('email')}
+        />
+        <PasswordInput
+          className="wizard-pass"
+          tabIndex={2}
+          id="first"
+          inputName="firstPass"
+          emailInputName="email-wizard"
+          inputWidth="311px"
+          inputValue={this.state.password}
+          passwordSettings={settingsPassword}
+          isDisabled={false}
+          placeholder={'Password'}
+          onChange={() => console.log('pass onChange')}
+          onValidateInput={this.isValidPassHandler}
+        />
+        <Text className="password-tooltip">
+          2-30 characters
+        </Text>
+        <InputBlock
+          className="input-block"
+          iconName={"CatalogFolderIcon"}
+          onIconClick={this.onIconFileClick}
+          onChange={() => console.log('change')}
+        >
+          <input type="file" className="input-file" ref={this.inputRef}/>
+        </InputBlock>
+        <Box className="checkbox-container">
+          <Checkbox
+            className="wizard-checkbox"
+            id="license"
+            name="confirm"
+            label={'Accept the terms of the'}
+            isChecked={false}
+            isIndeterminate={false}
+            isDisabled={false}
+            onChange={() => {}}
+          />
+          <Link 
+            className="link"
+            type="page" 
+            color="#116d9d" 
+            href="https://gnu.org/licenses/gpl-3.0.html" 
+            isBold={false}
+          >License agreements</Link>
+        </Box>
+      </Box>
+    );
+  }
+
+  renderSettingsBox = () => {
+    return (
+      <Box className="settings-box">
+        <Box className="setting-title-block">
+          <Text className="settings-title">Domain:</Text>
+          <Text className="settings-title">Language:</Text>
+          <Text className="settings-title">Time zone:</Text>
+        </Box>
+        <Box className="values">
+          <Text className="text value">portaldomainname.com</Text>
+          <GroupButton className="drop-down value" label="English (United States)" isDropdown={true}>
+            <DropDownItem 
+              label="English (United States)"
+              onClick={() => console.log('English click')}
+            />
+            <DropDownItem 
+              label="Русский (Российская Федерация)"
+              onClick={() => console.log('Russia click')}
+            />
+          </GroupButton>
+          <GroupButton className="drop-down value" label="UTC" isDropdown={true}>
+            <DropDownItem 
+              label="UTC"
+              onClick={() => console.log('UTC')}
+            />
+            <DropDownItem 
+              label="Not UTC"
+              onClick={() => console.log('Not UTC')}
+            />
+          </GroupButton>
+        </Box>
+      </Box>
+    );
+  }
+
+  renderButtonBox = () => {
+    return (
+      <Button
+        className="wizard-button"
+        primary
+        label={"Continue"}           
+        size="big"
+        onClick={() => console.log('click btn')}
+      />
+    );
+  }
+
   render() {
+    const headerBox = this.renderHeaderBox();
+    const inputBox = this.renderInputBox();
+    const settingsBox = this.renderSettingsBox();
+    const buttonBox = this.renderButtonBox();
 
     return (
       <WizardContainer>
         <Box className="form-container">
-          <Heading level={1} title="Wizard" className="wizard-title">
-            Welcome to your portal!
-          </Heading>
-          <Text className="wizard-desc">
-            Please setup the portal registration data.
-          </Text>
-          <EmailInput
-            className="wizard-input-email"
-            tabIndex={1}
-            id="input-email"
-            name="email-wizard"
-            placeholder={'E-mail'}
-            emailSettings={settings}
-            onValidateInput={() => console.log('email')}
-          />
-          <PasswordInput
-            tabIndex={2}
-            className="wizard-pass"
-            id="first"
-            inputName="firstPass"
-            emailInputName="email-wizard"
-            inputWidth="311px"
-            inputValue={this.state.password}
-            passwordSettings={settingsPassword}
-            isDisabled={false}
-            placeholder={'Password'}
-            onChange={() => console.log('pass onChange')}
-            onValidateInput={this.isValidPassHandler}
-          />
-          <Text className="password-tooltip">
-            2-30 characters
-          </Text>
-          <InputBlock
-            className="input-block"
-            iconName={"CatalogFolderIcon"}
-            onIconClick={this.onIconFileClick}
-            onChange={() => console.log('change')}
-          >
-            <input type="file" className="input-file" ref={this.inputRef}/>
-          </InputBlock>
-          <Box className="checkbox-container">
-            <Checkbox
-              className="wizard-checkbox"
-              id="license"
-              name="confirm"
-              label={'Accept the terms of the'}
-              isChecked={false}
-              isIndeterminate={false}
-              isDisabled={false}
-              onChange={() => {}}
-            />
-            <Link 
-              className="link"
-              type="page" 
-              color="#116d9d" 
-              href="https://gnu.org/licenses/gpl-3.0.html" 
-              isBold={false}
-            >License agreements</Link>
-          </Box>
-          <Box className="settings">
-            <Box className="setting-title-block">
-              <Text className="settings-title">Domain:</Text>
-              <Text className="settings-title">Language:</Text>
-              <Text className="settings-title">Time zone:</Text>
-            </Box>
-            <Box className="values">
-              <Text className="text value">portaldomainname.com</Text>
-              <GroupButton className="drop-down value" label="English (United States)" isDropdown={true}>
-                <DropDownItem 
-                  label="English (United States)"
-                  onClick={() => console.log('English click')}
-                />
-                <DropDownItem 
-                  label="Русский (Российская Федерация)"
-                  onClick={() => console.log('Russia click')}
-                />
-              </GroupButton>
-              <GroupButton className="drop-down value" label="UTC" isDropdown={true}>
-                <DropDownItem 
-                  label="UTC"
-                  onClick={() => console.log('UTC')}
-                />
-                <DropDownItem 
-                  label="Not UTC"
-                  onClick={() => console.log('Not UTC')}
-                />
-              </GroupButton>
-            </Box>
-          </Box>
-          <Button
-            className="wizard-button"
-            primary
-            label={"Continue"}           
-            size="big"
-            onClick={() => console.log('click btn')}
-          />
+          {headerBox}
+          {inputBox}
+          {settingsBox}
+          {buttonBox}
         </Box>
       </WizardContainer>
     )
@@ -363,25 +432,3 @@ const Wizard = props => <PageLayout
 />;
 
 export default withRouter(Wizard);
-
-/* <GroupButton className="text value" label="English (United States)" isDropdown={true}>
-                <DropDownItem 
-                  label="English (United States)"
-                  onClick={() => console.log('English click')}
-                />
-                <DropDownItem 
-                  label="Русский (Российская Федерация)"
-                  onClick={() => console.log('Russia click')}
-                />
-              </GroupButton>
-              <GroupButton className="text value" label="UTC" isDropdown={true}>
-                <DropDownItem 
-                  label="UTC"
-                  onClick={() => console.log('UTC')}
-                />
-                <DropDownItem 
-                  label="Not UTC"
-                  onClick={() => console.log('Not UTC')}
-                />
-              </GroupButton>
-              */
