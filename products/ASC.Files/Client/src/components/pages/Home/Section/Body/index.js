@@ -97,11 +97,11 @@ class SectionBodyContent extends React.Component {
     //   }
     // }
     let previewId = queryString.parse(this.props.location.search).preview;
-    
-    if(previewId){
+
+    if (previewId) {
       this.onMediaFileClick(+previewId);
     }
-    
+
     window.addEventListener("mouseup", this.onMouseUp);
 
     document.addEventListener("dragover", this.onDragOver);
@@ -248,17 +248,17 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickLinkForPortal = item => {
-    const {settings} = this.props;
+    const { settings } = this.props;
     const isFile = !!item.fileExst;
     const { t } = this.props;
 
-    copy(isFile 
-          ? 
-            this.isMediaOrImage(item.fileExst) 
-              ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId}&preview=${item.id}` 
-              : item.webUrl
-          : 
-            `${window.location.origin + settings.homepage}/filter?folder=${item.id}`);
+    copy(isFile
+      ?
+      this.isMediaOrImage(item.fileExst)
+        ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId}&preview=${item.id}`
+        : item.webUrl
+      :
+      `${window.location.origin + settings.homepage}/filter?folder=${item.id}`);
 
     toastr.success(t("LinkCopySuccess"));
   }
@@ -299,11 +299,27 @@ class SectionBodyContent extends React.Component {
         key: "sep",
         isSeparator: true
       },
-      isFile
+      (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "edit",
           label: "Edit",
           onClick: this.onClickLinkEdit.bind(this, item),
+          disabled: false
+        }
+        : null,
+      (isFile && !this.isMediaOrImage(item.fileExst))
+        ? {
+          key: "preview",
+          label: "Preview",
+          onClick: this.onClickLinkEdit.bind(this, item),
+          disabled: true
+        }
+        : null,
+      (isFile && this.isMediaOrImage(item.fileExst))
+        ? {
+          key: "view",
+          label: "View",
+          onClick: this.onMediaFileClick.bind(this, item.id),
           disabled: false
         }
         : null,
@@ -781,7 +797,7 @@ class SectionBodyContent extends React.Component {
   };
 
   isMediaOrImage = (fileExst) => {
-    if(extsMediaPreviewed.includes(fileExst) || extsImagePreviewed.includes(fileExst)) {
+    if (extsMediaPreviewed.includes(fileExst) || extsImagePreviewed.includes(fileExst)) {
       return true
     }
 
