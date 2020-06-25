@@ -60,6 +60,16 @@ const CustomTooltip = styled.div`
   -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
 `;
 
+const SimpleFilesRow = styled(Row)`
+${(props) =>
+    !props.contextOptions &&
+    `
+    & > div:last-child {
+        width: 0px;
+      }
+  `}
+`;
+
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -362,7 +372,6 @@ class SectionBodyContent extends React.Component {
   };
 
   onContentRowSelect = (checked, file) => {
-
     if (!file) return;
 
     if (checked) {
@@ -916,16 +925,6 @@ class SectionBodyContent extends React.Component {
     let items = [...folders, ...files];
 
     const tooltipLabel = this.getTooltipLabel();
-
-    const SimpleFilesRow = styled(Row)`
-      ${(props) =>
-        !props.contextOptions &&
-        `
-          & > div:last-child {
-              width: 0px;
-            }
-        `}
-    `;
 
     if (fileAction && fileAction.type === FileAction.Create) {
       items.unshift({
