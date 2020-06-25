@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-using ASC.Core.Common.Contracts;
+using ASC.Data.Backup.Contracts;
 
 namespace ASC.Web.Api.Models
 {
     public class BackupRestore
     {
-       public string BackupId { get; set; }
+        public string BackupId { get; set; }
         public BackupStorageType StorageType { get; set; }
         public Dictionary<string, string> StorageParams { get; set; }
         public bool Notify { get; set; }
