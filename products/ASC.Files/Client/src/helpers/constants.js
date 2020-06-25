@@ -8,3 +8,4 @@ export const SORT_ORDER = "sortorder";
 export const PAGE = "page";
 export const PAGE_COUNT = "pagecount";
 export const FOLDER = "folder";
+export const PREVIEW = "preview"

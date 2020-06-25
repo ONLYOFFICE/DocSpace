@@ -6,6 +6,7 @@ import { withTranslation } from "react-i18next";
 import isEqual from "lodash/isEqual";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
+import queryString from 'query-string';
 import {
   IconButton,
   Row,
@@ -41,6 +42,9 @@ const { FileAction } = constants;
 const linkStyles = { isHovered: true, type: "action", fontSize: "14px", className: "empty-folder_link", display: "flex" };
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
+
+const extsMediaPreviewed = [".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"];
+const extsImagePreviewed = [".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"];
 
 const CustomTooltip = styled.div`
   position: fixed;
@@ -92,6 +96,12 @@ class SectionBodyContent extends React.Component {
     //       .catch(error => toastr.error(error));
     //   }
     // }
+    let previewId = queryString.parse(this.props.location.search).preview;
+    
+    if(previewId){
+      this.showMediaFile(previewId);
+    }
+    
     window.addEventListener("mouseup", this.onMouseUp);
 
     document.addEventListener("dragover", this.onDragOver);
@@ -244,7 +254,9 @@ class SectionBodyContent extends React.Component {
 
     copy(isFile 
           ? 
-            item.webUrl 
+            this.isMediaOrImage(item.fileExst) 
+              ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId}&preview=${item.id}` 
+              : item.webUrl
           : 
             `${window.location.origin + settings.homepage}/filter?folder=${item.id}`);
 
@@ -768,6 +780,18 @@ class SectionBodyContent extends React.Component {
     }
   };
 
+  showMediaFile = (id) => {
+    this.onMediaFileClick(+id);
+  }
+
+  isMediaOrImage = (fileExst) => {
+    if(extsMediaPreviewed.includes(fileExst) || extsImagePreviewed.includes(fileExst)) {
+      return true
+    }
+
+    return false
+  }
+
   onMoveTo = (destFolderId) => {
     const { selection, startFilesOperations, t, isShare, isCommon, isAdmin } = this.props;
     const folderIds = [];
@@ -999,8 +1023,8 @@ class SectionBodyContent extends React.Component {
                 onDownload={this.onDownloadMediaFile}
                 onClose={this.onMediaViewerClose}
                 onEmptyPlaylistError={this.onMediaViewerClose}
-                extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}  //TODO
-                extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]} //TODO
+                extsMediaPreviewed={extsMediaPreviewed}  //TODO
+                extsImagePreviewed={extsImagePreviewed} //TODO
               />
             }
             {showSharingPanel && (
