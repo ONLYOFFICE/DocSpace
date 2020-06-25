@@ -37,6 +37,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Files.Thirdparty.ProviderDao;
@@ -1081,6 +1082,21 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
+        public (Folder<int>, SmallShareRecord) ToFolderWithShare(DbFolderQueryWithSecurity r)
+        {
+            var file = ToFolder(r.DbFolderQuery);
+            var record = r.Security != null
+                ? new SmallShareRecord
+                {
+                    ShareOn = r.Security.TimeStamp,
+                    ShareBy = r.Security.Owner,
+                    ShareTo = r.Security.Subject
+                }
+                : null;
+
+            return (file, record);
+        }
+
         public string GetBunchObjectID(int folderID)
         {
             return Query(FilesDbContext.BunchObjects)
@@ -1094,6 +1110,51 @@ namespace ASC.Files.Core.Data
             return Query(FilesDbContext.BunchObjects)
                 .Where(r => folderIDs.Any(a => a.ToString() == r.LeftNode))
                 .ToDictionary(r => r.LeftNode, r => r.RightNode);
+        }
+
+        public IEnumerable<(Folder<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        {
+            var q1 = FilesDbContext.Folders
+                .Where(r => r.TenantId == tenant)
+                .Where(r => r.FolderType == FolderType.DEFAULT)
+                .Where(r => r.CreateOn >= from && r.ModifiedOn <= to);
+
+            var q2 = FromQuery(q1)
+                .Select(r => new DbFolderQueryWithSecurity() { DbFolderQuery = r, Security = null });
+
+            var q3 = FilesDbContext.Folders
+                .Where(r => r.TenantId == tenant)
+                .Where(r => r.FolderType == FolderType.DEFAULT);
+
+            var q4 = FromQuery(q3)
+                .Join(FilesDbContext.Security.DefaultIfEmpty(), r => r.folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
+                .Where(r => r.Security.TenantId == tenant)
+                .Where(r => r.Security.EntryType == FileEntryType.Folder)
+                .Where(r => r.Security.Security == FileShare.Restrict)
+                .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
+
+            return q2.Select(ToFolderWithShare).ToList().Union(q4.Select(ToFolderWithShare).ToList());
+        }
+
+        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+        {
+            var q1 = FilesDbContext.Files
+                .Where(r => r.ModifiedOn > fromTime)
+                .Select(r => r.TenantId)
+                .GroupBy(r => r)
+                .Where(r => r.Count() > 0)
+                .Select(r => r.Key)
+                .ToList();
+
+            var q2 = FilesDbContext.Security
+                .Where(r => r.TimeStamp > fromTime)
+                .Select(r => r.TenantId)
+                .GroupBy(r => r)
+                .Where(r => r.Count() > 0)
+                .Select(r => r.Key)
+                .ToList();
+
+            return q1.Union(q2);
         }
 
         private string GetProjectTitle(object folderID)
@@ -1157,6 +1218,12 @@ namespace ASC.Files.Core.Data
         public DbFolder folder { get; set; }
         public DbFolder root { get; set; }
         public bool shared { get; set; }
+    }
+
+    public class DbFolderQueryWithSecurity
+    {
+        public DbFolderQuery DbFolderQuery { get; set; }
+        public DbFilesSecurity Security { get; set; }
     }
 
     public static class FolderDaoExtention

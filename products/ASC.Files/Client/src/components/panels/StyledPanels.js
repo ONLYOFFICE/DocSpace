@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { Scrollbar } from "asc-web-components";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -181,9 +182,20 @@ const StyledSharingHeaderContent = styled.div`
   }
 `;
 
-const StyledSharingBody = styled.div`
+const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
+
+  .nav-thumb-vertical {
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  :hover {
+    .nav-thumb-vertical {
+      opacity: 1;
+    }
+  }
 
   .sharing_panel-text {
     line-height: 24px;

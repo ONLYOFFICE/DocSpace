@@ -76,25 +76,34 @@ namespace ASC.Core
 
         public UserManager(
             IUserService service,
-            IHttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants)
         {
             UserService = service;
-            Accessor = httpContextAccessor;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;
             UserManagerConstants = userManagerConstants;
             Constants = UserManagerConstants.Constants;
         }
 
+        public UserManager(
+            IUserService service,
+            TenantManager tenantManager,
+            PermissionContext permissionContext,
+            UserManagerConstants userManagerConstants,
+            IHttpContextAccessor httpContextAccessor)
+            : this(service, tenantManager, permissionContext, userManagerConstants)
+        {
+            Accessor = httpContextAccessor;
+        }
+
 
         public void ClearCache()
         {
-            if (UserService is ICachedService)
+            if (UserService is ICachedService service)
             {
-                ((ICachedService)UserService).InvalidateCache();
+                service.InvalidateCache();
             }
         }
 

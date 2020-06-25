@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { ReactSVG } from 'react-svg'
 import { withTranslation } from "react-i18next";
 import isEqual from "lodash/isEqual";
+import copy from "copy-to-clipboard";
 import styled from "styled-components";
+import queryString from 'query-string';
 import {
   IconButton,
   Row,
@@ -20,14 +22,15 @@ import {
   deleteFolder,
   deselectFile,
   fetchFiles,
-  fetchFolder,
   selectFile,
   setAction,
   setTreeFolders,
   moveToFolder,
-  getProgress
+  copyToFolder,
+  getProgress,
+  setDragItem
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo  } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -39,6 +42,9 @@ const { FileAction } = constants;
 const linkStyles = { isHovered: true, type: "action", fontSize: "14px", className: "empty-folder_link", display: "flex" };
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
+
+const extsMediaPreviewed = [".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"];
+const extsImagePreviewed = [".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"];
 
 const CustomTooltip = styled.div`
   position: fixed;
@@ -90,8 +96,13 @@ class SectionBodyContent extends React.Component {
     //       .catch(error => toastr.error(error));
     //   }
     // }
+    let previewId = queryString.parse(this.props.location.search).preview;
+    
+    if(previewId){
+      this.showMediaFile(previewId);
+    }
+    
     window.addEventListener("mouseup", this.onMouseUp);
-    document.addEventListener("mousedown", this.onMouseDown);
 
     document.addEventListener("dragover", this.onDragOver);
     document.addEventListener("dragleave", this.onDragLeaveDoc);
@@ -99,7 +110,6 @@ class SectionBodyContent extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("mouseup", this.onMouseUp);
-    document.removeEventListener("mousedown", this.onMouseDown);
 
     document.removeEventListener("dragover", this.onDragOver);
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
@@ -117,13 +127,18 @@ class SectionBodyContent extends React.Component {
   } */
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.state.showSharingPanel !== nextState.showSharingPanel) {
+    if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
 
-    if(!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
+    if (this.props.dragItem !== nextProps.dragItem) {
+      return false;
+    }
+
+    if (!isEqual(this.props, nextProps) || !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)) {
       return true;
     }
+
     return false;
   }
 
@@ -187,7 +202,7 @@ class SectionBodyContent extends React.Component {
     const { filter, treeFolders, setTreeFolders, currentFolderType, getProgress, setProgressValue, finishFilesOperations } = this.props;
     getProgress().then(res => {
       const deleteProgress = res.find(x => x.id === id);
-      if(deleteProgress && deleteProgress.progress !== 100) {
+      if (deleteProgress && deleteProgress.progress !== 100) {
         setProgressValue(deleteProgress.progress);
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
@@ -233,7 +248,19 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickLinkForPortal = item => {
-    return fetchFolder(item.folderId, store.dispatch);
+    const {settings} = this.props;
+    const isFile = !!item.fileExst;
+    const { t } = this.props;
+
+    copy(isFile 
+          ? 
+            this.isMediaOrImage(item.fileExst) 
+              ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId}&preview=${item.id}` 
+              : item.webUrl
+          : 
+            `${window.location.origin + settings.homepage}/filter?folder=${item.id}`);
+
+    toastr.success(t("LinkCopySuccess"));
   }
 
   onClickDownload = item => {
@@ -266,7 +293,7 @@ class SectionBodyContent extends React.Component {
         key: "link-for-portal-users",
         label: "Link for portal users",
         onClick: this.onClickLinkForPortal.bind(this, item),
-        disabled: true
+        disabled: false
       },
       {
         key: "sep",
@@ -584,34 +611,34 @@ class SectionBodyContent extends React.Component {
       />
     )
   }
-  onMediaViewerClose = () =>{
+  onMediaViewerClose = () => {
     this.setState({
       mediaViewerVisible: false
     });
   }
   onMediaFileClick = (id) => {
-      this.setState({
-        mediaViewerVisible: true,
-        currentMediaFileId: id
-      });
+    this.setState({
+      mediaViewerVisible: true,
+      currentMediaFileId: id
+    });
   }
   onDownloadMediaFile = (id) => {
-    if(this.props.files.length > 0){
+    if (this.props.files.length > 0) {
       let viewUrlFile = this.props.files.find(file => file.id === id).viewUrl;
       return window.open(viewUrlFile, "_blank");
     }
   }
   onDeleteMediaFile = (id) => {
-    if(this.props.files.length > 0){
+    if (this.props.files.length > 0) {
       let file = this.props.files.find(file => file.id === id);
-      if(file)
+      if (file)
         this.onDeleteFile(file.id, file.folderId)
     }
   }
 
   onDragEnter = (item, e) => {
     const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
+    if (!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
       e.currentTarget.style.background = backgroundDragColor;
     }
   }
@@ -619,16 +646,16 @@ class SectionBodyContent extends React.Component {
   onDragLeave = (item, e) => {
     const { selection, dragging, setDragging } = this.props;
     const isCurrentItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if(!e.dataTransfer.items.length) {
+    if (!e.dataTransfer.items.length) {
       e.currentTarget.style.background = "none";
-    } else if(!item.fileExst && !isCurrentItem) {
+    } else if (!item.fileExst && !isCurrentItem) {
       e.currentTarget.style.background = backgroundDragEnterColor;
     }
-    if(dragging && !e.relatedTarget) { setDragging(false); }
+    if (dragging && !e.relatedTarget) { setDragging(false); }
   }
 
   onDrop = (item, e) => {
-    if(e.dataTransfer.items.length > 0 && !item.fileExst) {
+    if (e.dataTransfer.items.length > 0 && !item.fileExst) {
       const { setDragging, onDropZoneUpload } = this.props;
       e.currentTarget.style.background = backgroundDragEnterColor;
       setDragging(false);
@@ -639,7 +666,7 @@ class SectionBodyContent extends React.Component {
   onDragOver = e => {
     e.preventDefault();
     const { dragging, setDragging } = this.props;
-    if(e.dataTransfer.items.length > 0 && !dragging) {
+    if (e.dataTransfer.items.length > 0 && !dragging) {
       setDragging(true);
     }
   }
@@ -647,60 +674,61 @@ class SectionBodyContent extends React.Component {
   onDragLeaveDoc = e => {
     e.preventDefault();
     const { dragging, setDragging } = this.props;
-    if(dragging && !e.relatedTarget) {
+    if (dragging && !e.relatedTarget) {
       setDragging(false);
     }
   }
 
   onMouseDown = e => {
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    if(mouseButton || e.target.tagName !== "DIV") { return; }
+    const label = e.target.getAttribute('label');
+    if (mouseButton || e.target.tagName !== "DIV" || label) { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
     const { selection, setDragging } = this.props;
 
     const elem = e.target.closest('.draggable');
-    if(!elem) {
+    if (!elem) {
       return;
     }
     const value = elem.getAttribute('value');
-    if(!value) {
+    if (!value) {
       return;
     }
     const splitValue = value.split("_");
     let item = null;
-    if(splitValue[0] === "folder") {
+    if (splitValue[0] === "folder") {
       item = selection.find(x => x.id === Number(splitValue[1]) && !x.fileExst);
     } else {
       item = selection.find(x => x.id === Number(splitValue[1]) && x.fileExst);
     }
-    if(item) {
+    if (item) {
       setDragging(true);
     }
   }
 
   onMouseUp = e => {
-    const { selection, dragging, setDragging } = this.props;
+    const { selection, dragging, setDragging, dragItem, setDragItem } = this.props;
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    if(mouseButton || !this.tooltipRef.current || !dragging) { return; }
+    if (mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
     this.tooltipRef.current.style.display = "none";
-    
+
     const elem = e.target.closest('.dropable');
-    if(elem && selection.length && dragging) {
+    if (elem && selection.length && dragging) {
       const value = elem.getAttribute('value');
-      if(!value) {
+      if (!value) {
         setDragging(false);
         return;
       }
       const splitValue = value.split("_");
       let item = null;
-      if(splitValue[0] === "folder") {
+      if (splitValue[0] === "folder") {
         item = selection.find(x => x.id === Number(splitValue[1]) && !x.fileExst);
       } else {
         return;
       }
-      if(item) {
+      if (item) {
         setDragging(false);
         return;
       } else {
@@ -710,18 +738,23 @@ class SectionBodyContent extends React.Component {
       }
     } else {
       setDragging(false);
+      if (dragItem) {
+        this.onMoveTo(dragItem);
+        setDragItem(null);
+        return;
+      }
       return;
     }
   }
 
   onMouseMove = e => {
-    if(this.props.dragging) {
+    if (this.props.dragging) {
       const tooltip = this.tooltipRef.current;
       tooltip.style.display = "block";
       this.setTooltipPosition(e);
 
       const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
-      if(!wrapperElement) { return; }
+      if (!wrapperElement) { return; }
       const droppable = wrapperElement.closest('.dropable');
 
       if (this.currentDroppable !== droppable) {
@@ -740,27 +773,70 @@ class SectionBodyContent extends React.Component {
 
   setTooltipPosition = e => {
     const tooltip = this.tooltipRef.current;
-    const margin = 8;
-    tooltip.style.left = e.pageX + margin + "px";
-    tooltip.style.top = e.pageY + margin + "px";
+    if (tooltip) {
+      const margin = 8;
+      tooltip.style.left = e.pageX + margin + "px";
+      tooltip.style.top = e.pageY + margin + "px";
+    }
   };
 
+  showMediaFile = (id) => {
+    this.onMediaFileClick(+id);
+  }
+
+  isMediaOrImage = (fileExst) => {
+    if(extsMediaPreviewed.includes(fileExst) || extsImagePreviewed.includes(fileExst)) {
+      return true
+    }
+
+    return false
+  }
+
   onMoveTo = (destFolderId) => {
-    const { selection, moveToFolder, finishFilesOperations, startFilesOperations, t, loopFilesOperations } = this.props;
+    const { selection, startFilesOperations, t, isShare, isCommon, isAdmin } = this.props;
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
 
-    for(let item of selection) {
-      if(item.fileExst) {
+    startFilesOperations(t("MoveToOperation"));
+    for (let item of selection) {
+      if (item.fileExst) {
         fileIds.push(item.id)
       } else {
         folderIds.push(item.id)
       }
     }
-    
-    startFilesOperations(t("MoveToOperation"));
+
+    if (isAdmin) {
+      if (isShare) {
+        this.copyTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      } else {
+        this.moveTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      }
+    } else {
+      if (isShare || isCommon) {
+        this.copyTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      } else {
+        this.moveTo(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+      }
+    }
+  }
+
+  copyTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
+    const { copyToFolder, loopFilesOperations, finishFilesOperations } = this.props;
+
+    copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
+      .then(res => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        loopFilesOperations(id, destFolderId, true);
+      })
+      .catch(err => finishFilesOperations(err))
+  }
+
+  moveTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
+    const { moveToFolder, loopFilesOperations, finishFilesOperations } = this.props;
+
     moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
@@ -769,9 +845,45 @@ class SectionBodyContent extends React.Component {
       .catch(err => finishFilesOperations(err))
   }
 
+  getTooltipLabel = () => {
+    const { t, selection, isAdmin, isShare, isCommon } = this.props;
+    const elementTitle = selection.length && selection[0].title;
+    const elementCount = selection.length;
+    if (selection.length) {
+      if (selection.length > 1) {
+        if (isAdmin) {
+          if (isShare) {
+            return t("TooltipElementsCopyMessage", { element: elementCount });
+          } else {
+            return t("TooltipElementsMoveMessage", { element: elementCount });
+          }
+        } else {
+          if (isShare || isCommon) {
+            return t("TooltipElementsCopyMessage", { element: elementCount });
+          } else {
+            return t("TooltipElementsMoveMessage", { element: elementCount });
+          }
+        }
+      } else {
+        if (isAdmin) {
+          if (isShare) {
+            return t("TooltipElementCopyMessage", { element: elementTitle });
+          } else {
+            return t("TooltipElementMoveMessage", { element: elementTitle });
+          }
+        } else {
+          if (isShare || isCommon) {
+            return t("TooltipElementCopyMessage", { element: elementTitle });
+          } else {
+            return t("TooltipElementMoveMessage", { element: elementTitle });
+          }
+        }
+      }
+    }
+  }
+
   render() {
     const {
-      t,
       files,
       folders,
       viewer,
@@ -790,12 +902,8 @@ class SectionBodyContent extends React.Component {
     const { editingId, showSharingPanel, currentItem } = this.state;
 
     let items = [...folders, ...files];
-    
-    const tooltipLabel = !selection.length
-      ? ""
-      : selection.length > 1
-      ? t("TooltipElementsMessage", { element: selection.length })
-      : t("TooltipElementMessage", { element: selection[0].title });
+
+    const tooltipLabel = this.getTooltipLabel();
 
     const SimpleFilesRow = styled(Row)`
       ${(props) =>
@@ -816,11 +924,11 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-   
+
     var playlist = [];
     let id = 0;
-    files.forEach(function(file, i, files) {
-      if(isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst)){
+    files.forEach(function (file, i, files) {
+      if (isImage(file.fileExst) || isSound(file.fileExst) || isVideo(file.fileExst)) {
         playlist.push(
           {
             id: id,
@@ -843,7 +951,7 @@ class SectionBodyContent extends React.Component {
       this.renderEmptyFilterContainer()
     ) : (
           <>
-          <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
+            <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
             <RowContainer draggable useReactWindow={false}>
               {items.map((item) => {
                 const isEdit =
@@ -859,13 +967,13 @@ class SectionBodyContent extends React.Component {
                 const checked = isFileSelected(selection, item.id, item.parentId);
                 const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
                 const element = this.getItemIcon(item, isEdit);
-               
+
                 const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
                 const isFolder = selectedItem ? false : item.fileExst ? false : true;
                 const draggable = selectedItem && currentFolderType !== "Trash";
                 let value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
                 value += draggable ? "_draggable" : "";
-                const classNameProp = isFolder ? {className: " dropable"} : {};
+                const classNameProp = isFolder && item.access < 2 ? { className: " dropable" } : {};
 
                 return (
                   <DragAndDrop
@@ -873,7 +981,8 @@ class SectionBodyContent extends React.Component {
                     onDrop={this.onDrop.bind(this, item)}
                     onDragEnter={this.onDragEnter.bind(this, item)}
                     onDragLeave={this.onDragLeave.bind(this, item)}
-                    dragging={dragging && isFolder}
+                    onMouseDown={this.onMouseDown}
+                    dragging={dragging && isFolder && item.access < 2}
                     key={`dnd-key_${item.id}`}
                     {...contextOptionsProps}
                     value={value}
@@ -904,7 +1013,7 @@ class SectionBodyContent extends React.Component {
             </RowContainer>
             {playlist.length > 0 && this.state.mediaViewerVisible &&
               <MediaViewer
-                currentFileId = {this.state.currentMediaFileId}
+                currentFileId={this.state.currentMediaFileId}
                 allowConvert={true} //TODO
                 canDelete={(fileId) => { return true }} //TODO 
                 canDownload={(fileId) => { return true }} //TODO 
@@ -914,8 +1023,8 @@ class SectionBodyContent extends React.Component {
                 onDownload={this.onDownloadMediaFile}
                 onClose={this.onMediaViewerClose}
                 onEmptyPlaylistError={this.onMediaViewerClose}
-                extsMediaPreviewed={[".aac", ".flac", ".m4a", ".mp3", ".oga", ".ogg", ".wav", ".f4v", ".m4v", ".mov", ".mp4", ".ogv", ".webm", ".avi", ".mpg", ".mpeg", ".wmv"]}  //TODO
-                extsImagePreviewed={[".bmp", ".gif", ".jpeg", ".jpg", ".png", ".ico", ".tif", ".tiff", ".webp"]} //TODO
+                extsMediaPreviewed={extsMediaPreviewed}  //TODO
+                extsImagePreviewed={extsImagePreviewed} //TODO
               />
             }
             {showSharingPanel && (
@@ -936,12 +1045,17 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection } = state.files;
-  const { id, title, foldersCount, filesCount } = selectedFolder;
+  const { selectedFolder, treeFolders, selection, dragItem } = state.files;
+  const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
   const myFolderIndex = 0;
+  const shareFolderIndex = 1;
+  const commonFolderIndex = 2;
   const currentFolderCount = filesCount + foldersCount;
+  const myDocumentsId = treeFolders[myFolderIndex].id;
+  const shareFolderId = treeFolders[shareFolderIndex].id;
+  const commonFolderId = treeFolders[commonFolderIndex].id;
 
   return {
     fileAction: state.files.fileAction,
@@ -954,12 +1068,16 @@ const mapStateToProps = state => {
     selection,
     settings: state.auth.settings,
     viewer: state.auth.user,
-    treeFolders: state.files.treeFolders,
+    treeFolders,
     currentFolderType,
     title,
-    myDocumentsId: treeFolders[myFolderIndex].id,
+    myDocumentsId,
     currentFolderCount,
-    selectedFolderId: id
+    selectedFolderId: id,
+    dragItem,
+    isShare: pathParts[0] === shareFolderId,
+    isCommon: pathParts[0] === commonFolderId,
+    isAdmin: state.auth.user.isAdmin
   };
 };
 
@@ -975,6 +1093,8 @@ export default connect(
     setAction,
     setTreeFolders,
     moveToFolder,
-    getProgress
+    copyToFolder,
+    getProgress,
+    setDragItem
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

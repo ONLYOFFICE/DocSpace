@@ -6,6 +6,7 @@
   "UploadToFolder": "Upload to folder",
   "SharingSettings": "Sharing settings",
   "LinkForPortalUsers": "Link for portal users",
+  "LinkCopySuccess": "Link has been copied to the clipboard",
   "MoveTo": "Move to",
   "Copy": "Copy",
   "Download": "Download",
@@ -78,6 +79,8 @@
   "ErrorUploadMessage": "You cannot upload a folder or an empty file",
   "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
   "MoveToOperation": "Moving",
-  "TooltipElementMessage": "Move {{element}}",
-  "TooltipElementsMessage": "Move {{element}} elements"
+  "TooltipElementMoveMessage": "Move {{element}}",
+  "TooltipElementsMoveMessage": "Move {{element}} elements",
+  "TooltipElementCopyMessage": "Copy {{element}}",
+  "TooltipElementsCopyMessage": "Copy {{element}} elements"
 }

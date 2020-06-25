@@ -7,6 +7,7 @@ using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.ElasticSearch;
+using ASC.Feed.Aggregator;
 using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Utils;
 
@@ -39,6 +40,7 @@ namespace ASC.Files.Service
                         )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
+                        .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
@@ -58,8 +60,12 @@ namespace ASC.Files.Service
                         .AddFactoryIndexerFileService()
                         .AddFactoryIndexerFolderService();
 
-                    var a = typeof(FactoryIndexer<ISearchItem>).ToString();
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false, "search.json");
+                    diHelper.AddNLogManager("ASC.Feed.Agregator");
+                    services.AddHostedService<FeedAggregatorService>();
+                    diHelper
+                        .AddFeedAggregatorService();
+
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

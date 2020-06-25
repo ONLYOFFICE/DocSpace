@@ -59,7 +59,9 @@ export function getFoldersTree() {
             return {
               id: folder.id,
               title: folder.title,
-              foldersCount: folder.foldersCount
+              access: folder.access,
+              foldersCount: folder.foldersCount,
+              rootFolderType: folder.rootFolderType
             }
           }) : null,
           pathParts: data.pathParts,
@@ -319,4 +321,11 @@ export function copyToFolder(destFolderId, folderIds, fileIds, conflictResolveTy
 export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
   const data = { destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter };
   return request({ method: "put", url: "/files/fileops/move", data });
+}
+
+export function getFileVersionInfo(fileId) {
+  return request({
+    method: "get",
+    url: `/files/file/${fileId}/history`
+  });
 }

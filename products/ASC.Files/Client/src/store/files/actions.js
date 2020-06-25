@@ -1,5 +1,6 @@
 import { api, history } from "asc-web-common";
 import axios from "axios";
+import queryString from 'query-string';
 import {
   AUTHOR_TYPE,
   FILTER_TYPE,
@@ -9,7 +10,8 @@ import {
   SEARCH,
   SORT_BY,
   SORT_ORDER,
-  FOLDER
+  FOLDER,
+  PREVIEW
 } from "../../helpers/constants";
 import config from "../../../package.json";
 import { getTreeFolders } from "./selectors";
@@ -29,6 +31,7 @@ export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
+export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 
 export function setFile(file) {
   return {
@@ -93,6 +96,13 @@ export function setTreeFolders(treeFolders) {
   };
 }
 
+export function setDragItem(dragItem) {
+  return {
+    type: SET_DRAG_ITEM,
+    dragItem
+  }
+}
+
 export function setFilesFilter(filter) {
   setFilterUrl(filter);
   return {
@@ -124,6 +134,7 @@ export function deselectFile(file) {
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
+  const URLParams = queryString.parse(window.location.href)
 
   if (filter.filterType) {
     params.push(`${FILTER_TYPE}=${filter.filterType}`);
@@ -145,6 +156,10 @@ export function setFilterUrl(filter) {
 
   if (filter.pageCount !== defaultFilter.pageCount) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
+  }
+
+  if(URLParams.preview) {
+    params.push(`${PREVIEW}=${URLParams.preview}`);
   }
 
   params.push(`${PAGE}=${filter.page + 1}`);

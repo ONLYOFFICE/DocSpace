@@ -5,6 +5,7 @@ ARG RELEASE_DATE_SIGN=""
 ARG VERSION="8.9.0.190"
 ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
+ARG GIT_BRANCH="master"
 
 LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
       onlyoffice.community.version="${VERSION}" \
@@ -15,6 +16,8 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
 RUN apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get -y dist-upgrade && \
     apt-get -yq install gnupg2 ca-certificates && \
     apt-get install -yq sudo locales && \
     addgroup --system --gid 107 onlyoffice && \
@@ -24,6 +27,12 @@ RUN apt-get -y update && \
     locale-gen en_US.UTF-8 && \
     apt-get -y update && \
     apt-get install -yq software-properties-common wget curl cron rsyslog && \
+    curl -OL http://dev.mysql.com/get/mysql-apt-config_0.8.15-1_all.deb && \
+    echo "mysql-apt-config mysql-apt-config/repo-codename select bionic" | sudo debconf-set-selections && \
+    echo "mysql-apt-config mysql-apt-config/repo-distro select ubuntu" | sudo debconf-set-selections && \
+    echo "mysql-apt-config mysql-apt-config/select-server select mysql-8.0" | sudo debconf-set-selections && \
+    DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.15-1_all.deb && \
+    rm -f mysql-apt-config_0.8.15-1_all.deb && \
     wget http://nginx.org/keys/nginx_signing.key && \
     apt-key add nginx_signing.key && \
     echo "deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list.d/nginx.list && \
@@ -33,9 +42,9 @@ RUN apt-get -y update && \
     apt-get install -yq apt-transport-https && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
     echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | tee /etc/apt/sources.list.d/mono-official.list && \
-    echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list && \
+    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
     apt-get -y update && \
-    apt-get install -yq elasticsearch=6.5.0 && \
+    apt-get install -yq elasticsearch=7.4.0 && \
     add-apt-repository -y ppa:certbot/certbot && \
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && \
     apt-get install -y nodejs && \
@@ -46,9 +55,9 @@ RUN apt-get -y update && \
     apt-get -y update && \
     apt-get install -yq nginx && \
     cd ~ && \
-    wget http://www-us.apache.org/dist/kafka/2.2.1/kafka_2.12-2.2.1.tgz && \
-    tar xzf kafka_2.12-2.2.1.tgz && \
-    rm kafka_2.12-2.2.1.tgz && \
+    wget https://downloads.apache.org/kafka/2.5.0/kafka_2.12-2.5.0.tgz && \
+    tar xzf kafka_2.12-2.5.0.tgz && \
+    rm kafka_2.12-2.5.0.tgz && \
     echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
     apt-get install -yq libgdiplus \
                         python-certbot-nginx \
@@ -67,19 +76,20 @@ RUN apt-get -y update && \
                         mysql-client \
                         mysql-server
 
-RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/
+RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/ && \
+    cd /app/onlyoffice/src/ && \
+    git checkout ${GIT_BRANCH} && \
+    git pull
 
 RUN cd /app/onlyoffice/src/ && \
     yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
-    npm run build --prefix web/ASC.Web.Components && \
     yarn pack --cwd web/ASC.Web.Components
 	
 RUN cd /app/onlyoffice/src/ && \
     component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-	yarn remove asc-web-components --cwd web/ASC.Web.Common --peer && \
+    yarn remove asc-web-components --cwd web/ASC.Web.Common --peer && \
     yarn add file:../../$component --cwd web/ASC.Web.Common --cache-folder ../../yarn --peer && \
     yarn install --cwd web/ASC.Web.Common --frozen-lockfile > build/ASC.Web.Common.log && \
-    npm run build --prefix web/ASC.Web.Common && \
     yarn pack --cwd web/ASC.Web.Common
 
 RUN cd /app/onlyoffice/src/ && \
@@ -89,10 +99,10 @@ RUN cd /app/onlyoffice/src/ && \
 
 RUN cd /app/onlyoffice/src/ && \
     component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-	common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
-	yarn remove asc-web-components asc-web-common --cwd web/ASC.Web.Client && \
+    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+    yarn remove asc-web-components asc-web-common --cwd web/ASC.Web.Client && \
     yarn add ../../$component --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
-	yarn add ../../$common --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
+    yarn add ../../$common --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
     yarn install --cwd web/ASC.Web.Client --frozen-lockfile || (cd web/ASC.Web.Client && npm i && cd ../../) && \
     npm run build --prefix web/ASC.Web.Client && \
     rm -rf /var/www/studio/client/* && \
@@ -101,10 +111,22 @@ RUN cd /app/onlyoffice/src/ && \
 
 RUN cd /app/onlyoffice/src/ && \
     component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-	common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
-	yarn remove asc-web-components asc-web-common --cwd products/ASC.People/Client && \
+    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+    yarn remove asc-web-components asc-web-common --cwd products/ASC.Files/Client && \
+    yarn add ../../../$component --cwd products/ASC.Files/Client --cache-folder ../../../yarn && \
+    yarn add ../../../$common --cwd products/ASC.Files/Client --cache-folder ../../../yarn && \
+    yarn install --cwd products/ASC.Files/Client --frozen-lockfile || (cd products/ASC.Files/Client && npm i && cd ../../../) && \
+    npm run build --prefix products/ASC.Files/Client && \
+    mkdir -p /var/www/products/ASC.Files/client && \
+    cp -Rf products/ASC.Files/Client/build/* /var/www/products/ASC.Files/client && \
+    mkdir -p /var/www/products/ASC.Files/client/products/files
+
+RUN cd /app/onlyoffice/src/ && \
+    component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+    yarn remove asc-web-components asc-web-common --cwd products/ASC.People/Client && \
     yarn add ../../../$component --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
-	yarn add ../../../$common --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
+    yarn add ../../../$common --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
     yarn install --cwd products/ASC.People/Client --frozen-lockfile || (cd products/ASC.People/Client && npm i && cd ../../../) && \
     npm run build --prefix products/ASC.People/Client && \
     mkdir -p /var/www/products/ASC.People/client && \
@@ -113,11 +135,20 @@ RUN cd /app/onlyoffice/src/ && \
 
 RUN cd /app/onlyoffice/src/ && \
     rm -f /etc/nginx/conf.d/* && \
-    cp -rf config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /var/www/public/ && cp -f public/* /var/www/public/ && \
     mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
+    cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd products/ASC.People/Server && \
     dotnet -d publish -o /var/www/products/ASC.People/server && \
+    cd ../../../ && \
+    cd products/ASC.Files/Server && \
+    dotnet -d publish -o /var/www/products/ASC.Files/server && \
+    cp -avrf DocStore /var/www/products/ASC.Files/server/ && \
+    cd ../../../ && \
+    cd products/ASC.Files/Service && \
+    dotnet -d publish -o /var/www/products/ASC.Files/service && \
     cd ../../../ && \
     cd web/ASC.Web.Api && \
     dotnet -d publish -o /var/www/studio/api && \
@@ -128,25 +159,34 @@ RUN cd /app/onlyoffice/src/ && \
     cd common/services/ASC.Notify && \
     dotnet -d publish -o /var/www/services/notify && \
     cd ../../../ && \
+    cd common/services/ASC.ApiSystem && \
+    dotnet -d publish -o /var/www/services/apisystem && \
+    cd ../../../ && \
+    cd common/services/ASC.UrlShortener.Svc && \
+    dotnet -d publish -o /services/urlshortener/service && \
+    cd ../../../ && \
+    yarn install --cwd common/ASC.UrlShortener --frozen-lockfile && \
+    mkdir -p /var/www/services/urlshortener/client && cp -Rf common/ASC.UrlShortener/* /var/www/services/urlshortener/client && \
     cd common/services/ASC.Studio.Notify && \
     dotnet -d publish -o /var/www/services/studio.notify
 
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY config/mysql/dotnet_dump.sql /app/onlyoffice/dotnet_dump.sql
 
-RUN sed -i 's/172.18.0.5/localhost/' /app/onlyoffice/config/appsettings.test.json
+RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
 
 RUN mkdir -p /var/mysqld/ && \
     chown -R mysql:mysql /var/lib/mysql /var/run/mysqld /var/mysqld/ && \
-    service mysql start && \
+    sudo -u mysql bash -c "/usr/bin/pidproxy /var/mysqld/mysqld.pid /usr/bin/mysqld_safe --pid-file=/var/mysqld/mysqld.pid &" && \
+    sleep 5s && \
     mysql -e "CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET utf8 COLLATE 'utf8_general_ci'" && \
-    mysql -D "onlyoffice" < /app/onlyoffice/src/sql/app.sql && \
-    mysql -D "onlyoffice" < /app/onlyoffice/src/sql/app.data.sql && \
+    mysql -D "onlyoffice" < /app/onlyoffice/dotnet_dump.sql && \
     mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
-    mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost' IDENTIFIED BY "onlyoffice_pass";' && \
+    mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost';' && \
     mysql -D "onlyoffice" -e 'UPDATE core_user SET email = "paul.bannov@gmail.com";' && \
     mysql -D "onlyoffice" -e 'UPDATE core_usersecurity SET pwdhash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", pwdhashsha512 = "USubvPlB+ogq0Q1trcSupg==";' && \
-    service mysql stop
+    killall -u mysql -n mysql
 
 RUN rm -rf /var/lib/apt/lists/*
 
