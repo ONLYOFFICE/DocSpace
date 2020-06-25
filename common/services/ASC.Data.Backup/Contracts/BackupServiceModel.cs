@@ -23,8 +23,8 @@
  *
 */
 
-
-using System.Runtime.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace ASC.Data.Backup.Contracts
 {
@@ -42,147 +42,129 @@ namespace ASC.Data.Backup.Contracts
 
         ThirdPartyConsumer = 5
     }
-    /*
-    [DataContract]
+
     public class StartBackupRequest
     {
-        [DataMember]
         public int TenantId { get; set; }
 
-        [DataMember]
+
         public Guid UserId { get; set; }
 
-        [DataMember]
+
         public bool BackupMail { get; set; }
 
-        [DataMember]
+
         public BackupStorageType StorageType { get; set; }
 
-        [DataMember]
+
         public string StorageBasePath { get; set; }
 
-        [DataMember]
+
         public Dictionary<string, string> StorageParams { get; set; }
     }
 
-    [DataContract]
-    public class BackupProgress
-    {
-        [DataMember]
-        public bool IsCompleted { get; set; }
 
-        [DataMember]
-        public int Progress { get; set; }
-
-        [DataMember]
-        public string Error { get; set; }
-
-        [DataMember]
-        public string Link { get; set; }
-    }
-
-    [DataContract]
     public class BackupHistoryRecord
     {
-        [DataMember]
+
         public Guid Id { get; set; }
 
-        [DataMember]
+
         public string FileName { get; set; }
 
-        [DataMember]
+
         public BackupStorageType StorageType { get; set; }
 
-        [DataMember]
+
         public DateTime CreatedOn { get; set; }
 
-        [DataMember]
+
         public DateTime ExpiresOn { get; set; }
     }
 
-    [DataContract]
+
     public class StartTransferRequest
     {
-        [DataMember]
+
         public int TenantId { get; set; }
 
-        [DataMember]
+
         public string TargetRegion { get; set; }
 
-        [DataMember]
+
         public bool NotifyUsers { get; set; }
 
-        [DataMember]
+
         public bool BackupMail { get; set; }
     }
 
-    [DataContract]
+
     public class TransferRegion
     {
-        [DataMember]
+
         public string Name { get; set; }
 
-        [DataMember]
+
         public string BaseDomain { get; set; }
 
-        [DataMember]
+
         public bool IsCurrentRegion { get; set; }
     }
 
-    [DataContract]
+
     public class StartRestoreRequest
     {
-        [DataMember]
+
         public int TenantId { get; set; }
 
-        [DataMember]
+
         public Guid BackupId { get; set; }
 
-        [DataMember]
+
         public BackupStorageType StorageType { get; set; }
 
-        [DataMember]
+
         public string FilePathOrId { get; set; }
 
-        [DataMember]
+
         public bool NotifyAfterCompletion { get; set; }
 
-        [DataMember]
+
         public Dictionary<string, string> StorageParams { get; set; }
     }
 
-    [DataContract]
+
     public class CreateScheduleRequest : StartBackupRequest
     {
-        [DataMember]
+
         public string Cron { get; set; }
 
-        [DataMember]
+
         public int NumberOfBackupsStored { get; set; }
     }
 
-    [DataContract]
+
     public class ScheduleResponse
     {
-        [DataMember]
+
         public BackupStorageType StorageType { get; set; }
 
-        [DataMember]
+
         public string StorageBasePath { get; set; }
 
-        [DataMember]
+
         public bool BackupMail { get; set; }
 
-        [DataMember]
+
         public int NumberOfBackupsStored { get; set; }
 
-        [DataMember]
+
         public string Cron { get; set; }
 
-        [DataMember]
+
         public DateTime LastBackupTime { get; set; }
 
-        [DataMember]
+
         public Dictionary<string, string> StorageParams { get; set; }
-    }*/
+    }
 }

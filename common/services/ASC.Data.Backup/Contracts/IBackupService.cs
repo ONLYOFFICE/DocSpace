@@ -28,8 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 
-using ASC.Data.Backup.Contracts;
-
 namespace ASC.Data.Backup.Contracts
 {
     [ServiceContract]

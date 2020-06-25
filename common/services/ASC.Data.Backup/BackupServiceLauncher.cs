@@ -41,17 +41,20 @@ namespace ASC.Data.Backup.Service
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private IConfiguration Configuration { get; set; }
+        public BackupServiceNotifier BackupServiceNotifier { get; }
 
         public BackupServiceLauncher(
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            BackupServiceNotifier backupServiceNotifier)
         {
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
+            BackupServiceNotifier = backupServiceNotifier;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

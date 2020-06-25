@@ -348,9 +348,9 @@ namespace ASC.Data.Backup.Service
 
         public void Init(StartBackupRequest request, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
         {
-            UserId = Guid.Parse(request.UserId);
+            UserId = request.UserId;
             TenantId = request.TenantId;
-            StorageType = (BackupStorageType)request.StorageType;
+            StorageType = request.StorageType;
             StorageBasePath = request.StorageBasePath;
             BackupMail = request.BackupMail;
             StorageParams = request.StorageParams.ToDictionary(r => r.Key, r => r.Value);

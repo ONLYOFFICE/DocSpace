@@ -1,13 +1,14 @@
 ﻿
 using System;
 using System.Collections.Generic;
+
+using ASC.Api.Core.Middleware;
+using ASC.Common;
 using ASC.Data.Backup.Contracts;
-using ASC.Web.Api.Routing;
 using ASC.Data.Backup.Models;
+using ASC.Web.Api.Routing;
 
 using Microsoft.AspNetCore.Mvc;
-using ASC.Common;
-using ASC.Api.Core.Middleware;
 
 namespace ASC.Data.Backup.Controllers
 {
@@ -15,7 +16,7 @@ namespace ASC.Data.Backup.Controllers
     [ApiController]
     public class BackupController
     {
-        public BackupAjaxHandler BackupHandler { get; }
+        private BackupAjaxHandler BackupHandler { get; }
         public BackupController(BackupAjaxHandler backupAjaxHandler)
         {
             BackupHandler = backupAjaxHandler;

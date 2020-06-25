@@ -1,9 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Data.Backup.Contracts;
-
-message TransferRegion {
-    string Name = 1;
-    string BaseDomain = 2;
-    bool IsCurrentRegion = 3;
-}

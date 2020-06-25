@@ -39,88 +39,46 @@ using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Utils;
 
-using Google.Protobuf.WellKnownTypes;
-
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
-    internal class BackupServiceNotifier
+    public class BackupServiceNotifier
     {
-        private IServiceProvider ServiceProvider { get; }
-        private ICacheNotify<DeleteBackupRequest> СacheDeleteBackupRequest { get; set; }
-        private ICacheNotify<StartBackupRequest> СacheStartBackupRequest { get; set; }
-        private ICacheNotify<StartRestoreRequest> СacheStartRestoreRequest { get; set; }
-        private ICacheNotify<StartTransferRequest> СacheStartTransferRequest { get; set; }
-        public ICacheNotify<CreateScheduleRequest> CreateScheduleRequest { get; }
+        public ICacheNotify<BackupProgress> СacheBackupProgress { get; }
+        public ICache Cache { get; }
 
-        public BackupServiceNotifier(
-            IServiceProvider serviceProvider,
-            ICacheNotify<DeleteBackupRequest> cacheDeleteBackupRequest,
-            ICacheNotify<StartBackupRequest> cacheStartBackupRequest,
-            ICacheNotify<StartRestoreRequest> cacheStartRestoreRequest,
-            ICacheNotify<StartTransferRequest> cacheStartTransferRequest,
-            ICacheNotify<CreateScheduleRequest> createScheduleRequest)
+        public BackupServiceNotifier(ICacheNotify<BackupProgress> сacheBackupProgress)
         {
-            ServiceProvider = serviceProvider;
-            СacheDeleteBackupRequest = cacheDeleteBackupRequest;
-            СacheStartBackupRequest = cacheStartBackupRequest;
-            СacheStartRestoreRequest = cacheStartRestoreRequest;
-            СacheStartTransferRequest = cacheStartTransferRequest;
-            CreateScheduleRequest = createScheduleRequest;
+            Cache = AscCache.Memory;
+            СacheBackupProgress = сacheBackupProgress;
+
+            СacheBackupProgress.Subscribe((a) =>
+            {
+                Cache.Insert(GetCacheKey(a.TenantId, a.BackupProgressEnum), a, DateTime.UtcNow.AddDays(1));
+            },
+            CacheNotifyAction.InsertOrUpdate);
         }
 
-        public void Subscribe()
+        public BackupProgress GetBackupProgress(int tenantId)
         {
-            CreateScheduleRequest.Subscribe((n) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var backupService = scope.ServiceProvider.GetService<BackupService>();
-                backupService.CreateSchedule(n);
-            }, CacheNotifyAction.InsertOrUpdate);
-
-            CreateScheduleRequest.Subscribe((n) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var backupService = scope.ServiceProvider.GetService<BackupService>();
-                backupService.DeleteSchedule(n.TenantId);
-            }, CacheNotifyAction.Remove);
-
-            СacheDeleteBackupRequest.Subscribe((n) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var backupService = scope.ServiceProvider.GetService<BackupService>();
-                var id = new Guid(n.Id.ToByteArray());
-                if (!id.Equals(Guid.Empty))
-                {
-                    backupService.DeleteBackup(id);
-                }
-                else if (n.TenantId != -1)
-                {
-                    backupService.DeleteAllBackups(n.TenantId);
-                }
-            }
-            , CacheNotifyAction.InsertOrUpdate);
-
-            СacheStartBackupRequest.Subscribe((n) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var backupService = scope.ServiceProvider.GetService<BackupService>();
-                backupService.StartBackup(n);
-            }
-            , CacheNotifyAction.InsertOrUpdate);
-
-            СacheStartRestoreRequest.Subscribe((n) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var backupService = scope.ServiceProvider.GetService<BackupService>();
-                backupService.StartRestore(n);
-            }, CacheNotifyAction.InsertOrUpdate);
+            return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Backup));
         }
+
+        public BackupProgress GetTransferProgress(int tenantID)
+        {
+            return Cache.Get<BackupProgress>(GetCacheKey(tenantID, BackupProgressEnum.Transfer));
+        }
+
+        public BackupProgress GetRestoreProgress(int tenantId)
+        {
+            return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Restore));
+        }
+
+        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum) => $"{backupProgressEnum}backup{tenantId}";
     }
 
     public class BackupService : IBackupService
@@ -128,20 +86,23 @@ namespace ASC.Data.Backup.Service
         private ILog Log { get; set; }
         private BackupStorageFactory BackupStorageFactory { get; set; }
         private BackupWorker BackupWorker { get; set; }
-        public BackupRepository BackupRepository { get; }
-        public IConfiguration Configuration { get; }
+        private BackupRepository BackupRepository { get; }
+        private BackupServiceNotifier BackupServiceNotifier { get; }
+        private IConfiguration Configuration { get; }
 
         public BackupService(
             IOptionsMonitor<ILog> options,
             BackupStorageFactory backupStorageFactory,
             BackupWorker backupWorker,
             BackupRepository backupRepository,
+            BackupServiceNotifier backupServiceNotifier,
             IConfiguration configuration)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;
             BackupWorker = backupWorker;
             BackupRepository = backupRepository;
+            BackupServiceNotifier = backupServiceNotifier;
             Configuration = configuration;
         }
 
@@ -193,11 +154,11 @@ namespace ASC.Data.Backup.Service
                 {
                     backupHistory.Add(new BackupHistoryRecord
                     {
-                        Id = record.Id.ToString(),
+                        Id = record.Id,
                         FileName = record.Name,
-                        StorageType = (int)record.StorageType,
-                        CreatedOn = Timestamp.FromDateTimeOffset(record.CreatedOn),
-                        ExpiresOn = Timestamp.FromDateTimeOffset(record.ExpiresOn)
+                        StorageType = record.StorageType,
+                        CreatedOn = record.CreatedOn,
+                        ExpiresOn = record.ExpiresOn
                     });
                 }
                 else
@@ -227,17 +188,17 @@ namespace ASC.Data.Backup.Service
                 }
             }
 
-            if (request.BackupId != "" && !request.BackupId.Equals(Guid.Empty))
+            if (!request.BackupId.Equals(Guid.Empty))
             {
-                var backupRecord = BackupRepository.GetBackupRecord(Guid.Parse(request.BackupId));
+                var backupRecord = BackupRepository.GetBackupRecord(request.BackupId);
                 if (backupRecord == null)
                 {
                     throw new FileNotFoundException();
                 }
 
                 request.FilePathOrId = backupRecord.StoragePath;
-                request.StorageType = (int)backupRecord.StorageType;
-                request.StorageParams.Add(JsonConvert.DeserializeObject<Dictionary<string, string>>(backupRecord.StorageParams));
+                request.StorageType = backupRecord.StorageType;
+                request.StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(backupRecord.StorageParams);
             }
 
             var progress = BackupWorker.StartRestore(request);
@@ -249,17 +210,17 @@ namespace ASC.Data.Backup.Service
 
         public BackupProgress GetBackupProgress(int tenantId)
         {
-            throw new NotImplementedException();
+            return BackupServiceNotifier.GetBackupProgress(tenantId);
         }
 
-        public BackupProgress GetTransferProgress(int tenantID)
+        public BackupProgress GetTransferProgress(int tenantId)
         {
-            throw new NotImplementedException();
+            return BackupServiceNotifier.GetTransferProgress(tenantId);
         }
 
         public BackupProgress GetRestoreProgress(int tenantId)
         {
-            throw new NotImplementedException();
+            return BackupServiceNotifier.GetRestoreProgress(tenantId);
         }
 
         public string GetTmpFolder()
@@ -293,7 +254,7 @@ namespace ASC.Data.Backup.Service
                     Cron = request.Cron,
                     BackupMail = request.BackupMail,
                     BackupsStored = request.NumberOfBackupsStored,
-                    StorageType = (BackupStorageType)request.StorageType,
+                    StorageType = request.StorageType,
                     StorageBasePath = request.StorageBasePath,
                     StorageParams = JsonConvert.SerializeObject(request.StorageParams)
                 });
@@ -311,14 +272,14 @@ namespace ASC.Data.Backup.Service
             {
                 var tmp = new ScheduleResponse
                 {
-                    StorageType = (int)schedule.StorageType,
+                    StorageType = schedule.StorageType,
                     StorageBasePath = schedule.StorageBasePath,
                     BackupMail = schedule.BackupMail,
                     NumberOfBackupsStored = schedule.BackupsStored,
                     Cron = schedule.Cron,
-                    LastBackupTime = Timestamp.FromDateTimeOffset(schedule.LastBackupTime),
+                    LastBackupTime = schedule.LastBackupTime,
+                    StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams)
                 };
-                tmp.StorageParams.Add(JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams));
                 return tmp;
             }
             else
