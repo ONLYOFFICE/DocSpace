@@ -24,7 +24,6 @@
 */
 
 
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using ASC.Files.Core;
@@ -46,7 +45,6 @@ namespace ASC.Web.Files.Services.WCFService
         [DataMember(IsRequired = false, Name = "folder_info")]
         public Folder<T> FolderInfo { get; set; }
 
-        [DataMember(IsRequired = false, Name = "root_folders_id_marked_as_new")]
-        public Dictionary<T, int> RootFoldersIdMarkedAsNew { get; set; }
+        public int New { get; set; }
     }
 }
