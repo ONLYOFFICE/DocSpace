@@ -455,49 +455,26 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public Dictionary<T, int> GetRootFoldersIdMarkedAsNew<T>()
+        public int GetRootFoldersIdMarkedAsNew<T>(T rootId)
         {
-            var rootIds = new List<T>
-                {
-                    GlobalFolder.GetFolderMy<T>(this, DaoFactory),
-                    GlobalFolder.GetFolderCommon<T>(this, DaoFactory),
-                    GlobalFolder.GetFolderShare<T>(DaoFactory),
-                    GlobalFolder.GetFolderProjects<T>(DaoFactory)
-                };
-
-            var requestIds = new List<T>();
-            var news = new Dictionary<T, int>();
-
-            rootIds.ForEach(rootId =>
-                                {
-                                    var fromCache = GetCountFromCahce(rootId);
-                                    if (fromCache == -1)
-                                    {
-                                        requestIds.Add(rootId);
-                                    }
-                                    else if ((fromCache) > 0)
-                                    {
-                                        news.Add(rootId, fromCache);
-                                    }
-                                });
-
-            if (requestIds.Any())
+            var fromCache = GetCountFromCahce(rootId);
+            if (fromCache == -1)
             {
-                IEnumerable<Tag> requestTags;
                 var tagDao = DaoFactory.GetTagDao<T>();
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                requestTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolders(requestIds.ToArray()));
+                var requestTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolder(rootId));
+                var requestTag = requestTags.FirstOrDefault(tag => tag.EntryId.Equals(rootId));
+                var count = requestTag == null ? 0 : requestTag.Count;
+                InsertToCahce(rootId, count);
 
-                requestIds.ForEach(requestId =>
-                                       {
-                                           var requestTag = requestTags.FirstOrDefault(tag => tag.EntryId.Equals(requestId));
-                                           InsertToCahce(requestId, requestTag == null ? 0 : requestTag.Count);
-                                       });
-
-                news = news.Concat(requestTags.ToDictionary(x => (T)Convert.ChangeType(x.EntryId, typeof(T)), x => x.Count)).ToDictionary(x => x.Key, x => x.Value);
+                return count;
+            }
+            else if (fromCache > 0)
+            {
+                return fromCache;
             }
 
-            return news;
+            return 0;
         }
 
         public List<FileEntry> MarkedItems<T>(Folder<T> folder)

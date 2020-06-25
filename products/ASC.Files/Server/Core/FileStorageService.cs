@@ -309,7 +309,7 @@ namespace ASC.Web.Files.Services.WCFService
                 Entries = new ItemList<FileEntry>(entries.ToList()),
                 FolderPathParts = new ItemList<T>(breadCrumbs.Select(f => f.ID)),
                 FolderInfo = parent,
-                RootFoldersIdMarkedAsNew = FileMarker.GetRootFoldersIdMarkedAsNew<T>()
+                New = FileMarker.GetRootFoldersIdMarkedAsNew(parentId)
             };
 
             return result;
