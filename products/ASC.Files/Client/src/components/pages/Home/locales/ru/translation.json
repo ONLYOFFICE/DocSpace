@@ -82,5 +82,7 @@
   "TooltipElementMoveMessage": "Переместить {{element}}",
   "TooltipElementsMoveMessage": "Переместить {{element}} элемента(ов)",
   "TooltipElementCopyMessage": "Скопировать {{element}}",
-  "TooltipElementsCopyMessage": "Скопировать {{element}} элемента(ов)"
+  "TooltipElementsCopyMessage": "Скопировать {{element}} элемента(ов)",
+  "ShowVersionHistory": "Показать историю версий",
+  "FinalizeVersion": "Сформировать версию"
 }
