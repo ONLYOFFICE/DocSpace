@@ -297,6 +297,8 @@ class SectionBodyContent extends React.Component {
 
     const isFile = !!item.fileExst;
 
+    if (item.id <= 0) return [];
+
     const versionHistoryMenu = isFile
       ? [
           {
@@ -429,7 +431,7 @@ class SectionBodyContent extends React.Component {
     return <ReactSVG
       beforeInjection={svg => {
         svg.setAttribute('style', 'margin-top: 4px');
-        isEdit && svg.setAttribute('style', 'margin-left: 24px');
+        isEdit && svg.setAttribute('style', 'margin: 4px 0 0 24px');
       }}
       src={icon}
       loading={this.svgLoader}
@@ -1003,8 +1005,8 @@ class SectionBodyContent extends React.Component {
             <RowContainer draggable useReactWindow={false}>
               {items.map((item) => {
                 const isEdit =
-                  fileAction.type &&
-                  (editingId === item.id || item.id === -1) &&
+                  !!fileAction.type &&
+                  editingId === item.id &&
                   item.fileExst === fileAction.extension;
                 const contextOptions = this.getFilesContextOptions(
                   item,
@@ -1013,8 +1015,8 @@ class SectionBodyContent extends React.Component {
                 const contextOptionsProps =
                   !contextOptions.length || isEdit ? {} : { contextOptions };
                 const checked = isFileSelected(selection, item.id, item.parentId);
-                const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
-                const element = this.getItemIcon(item, isEdit);
+                const checkedProps = (isEdit || item.id <= 0) ? {} : { checked };
+                const element = this.getItemIcon(item, (isEdit || item.id <= 0));
 
                 const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
                 const isFolder = selectedItem ? false : item.fileExst ? false : true;
