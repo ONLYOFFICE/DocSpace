@@ -99,7 +99,7 @@ class SectionBodyContent extends React.Component {
     let previewId = queryString.parse(this.props.location.search).preview;
     
     if(previewId){
-      this.showMediaFile(previewId);
+      this.onMediaFileClick(+previewId);
     }
     
     window.addEventListener("mouseup", this.onMouseUp);
@@ -779,10 +779,6 @@ class SectionBodyContent extends React.Component {
       tooltip.style.top = e.pageY + margin + "px";
     }
   };
-
-  showMediaFile = (id) => {
-    this.onMediaFileClick(+id);
-  }
 
   isMediaOrImage = (fileExst) => {
     if(extsMediaPreviewed.includes(fileExst) || extsImagePreviewed.includes(fileExst)) {
