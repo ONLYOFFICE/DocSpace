@@ -9,6 +9,7 @@ import MediaScrollButton from "./sub-components/scroll-button"
 import ControlBtn from "./sub-components/control-btn"
 import StyledMediaViewer from "./StyledMediaViewer"
 import isEqual from "lodash/isEqual";
+import Hammer from "hammerjs"
 
 const StyledVideoViewer = styled(VideoViewer)`
     z-index: 4001;
@@ -32,7 +33,34 @@ class MediaViewer extends React.Component {
         this.viewerToolbox = React.createRef();
     }
 
+    updateHammer() {
+        let currentPlaylistPos = this.state.playlistPos;
+
+        let currentFile = this.state.playlist[currentPlaylistPos];
+        let fileTitle = currentFile.title;
+        let url = currentFile.src;
+        var ext = this.getFileExtension(fileTitle) ? this.getFileExtension(fileTitle) : this.getFileExtension(url);
+        var _this = this;
+
+        this.hammer.off('swipeleft', this.nextMedia)
+        this.hammer.off('swiperight', this.prevMedia)
+        this.hammer = null;
+        setTimeout(function () {
+            if (_this.canImageView(ext)) {
+                _this.hammer = Hammer(document.getElementsByClassName('react-viewer-canvas')[0]);
+            } else if (_this.mapSupplied[ext] && _this.mapSupplied[ext].type == mediaTypes.video) {
+                _this.hammer = Hammer(document.getElementsByClassName('playerWrapper')[0]);
+            }
+            if (_this.hammer) {
+                _this.hammer.on('swipeleft', _this.nextMedia);
+                _this.hammer.on('swiperight', _this.prevMedia);
+            }
+        }, 500)
+
+    }
+
     componentDidUpdate(prevProps) {
+        this.updateHammer()
         if (this.props.visible !== prevProps.visible) {
             this.setState(
                 {
@@ -70,6 +98,27 @@ class MediaViewer extends React.Component {
         }
 
     }
+
+    componentDidMount() {
+        var _this = this;
+        setTimeout(function () {
+            if (document.getElementsByClassName('react-viewer-canvas').length > 0) {
+                _this.hammer = Hammer(document.getElementsByClassName('react-viewer-canvas')[0])
+            } else {
+                _this.hammer = Hammer(document.getElementsByClassName('playerWrapper')[0])
+            }
+            if (_this.hammer) {
+                _this.hammer.on('swipeleft', _this.nextMedia);
+                _this.hammer.on('swiperight', _this.prevMedia);
+            }
+        }, 500);
+    }
+
+    componentWillUnmount() {
+        this.hammer.off('swipeleft', this.nextMedia)
+        this.hammer.off('swiperight', this.prevMedia)
+    }
+
     mapSupplied = {
         ".aac": { supply: "m4a", type: mediaTypes.audio },
         ".flac": { supply: "mp3", type: mediaTypes.audio },
@@ -191,8 +240,8 @@ class MediaViewer extends React.Component {
                 {
                     !isImage &&
                     <>
-                        <MediaScrollButton orientation="right" onClick={this.prevMedia} inactive={this.state.playlist.length <= 1}/>
-                        <MediaScrollButton orientation="left" onClick={this.nextMedia} inactive={this.state.playlist.length <= 1}/>
+                        <MediaScrollButton orientation="right" onClick={this.prevMedia} inactive={this.state.playlist.length <= 1} />
+                        <MediaScrollButton orientation="left" onClick={this.nextMedia} inactive={this.state.playlist.length <= 1} />
                     </>
                 }
 
