@@ -354,6 +354,34 @@ namespace ASC.Files.Helpers
             return FileWrapperHelper.Get(file);
         }
 
+        public List<FileEntryWrapper> GetNewItems(T folderId)
+        {
+            return FileStorageService.GetNewItems(folderId)
+                .Select(r =>
+                 {
+                     FileEntryWrapper wrapper = null;
+                     if (r is Folder<int> fol1)
+                     {
+                         wrapper = FolderWrapperHelper.Get(fol1);
+                     }
+                     else if (r is Folder<string> fol2)
+                     {
+                         wrapper = FolderWrapperHelper.Get(fol2);
+                     }
+                     else if (r is File<int> file1)
+                     {
+                         wrapper = FileWrapperHelper.Get(file1);
+                     }
+                     else if (r is File<string> file2)
+                     {
+                         wrapper = FileWrapperHelper.Get(file2);
+                     }
+
+                     return wrapper;
+                 })
+                .ToList();
+        }
+
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
             if (!string.IsNullOrEmpty(title))

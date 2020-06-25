@@ -1030,7 +1030,7 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        public object GetNewItems(T folderId)
+        public List<FileEntry> GetNewItems(T folderId)
         {
             try
             {
@@ -1047,12 +1047,8 @@ namespace ASC.Web.Files.Services.WCFService
                     //MarkAsRead(new List<JsonElement>() { folderId }, new List<JsonElement>() { }); //TODO
                 }
 
-                var response = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StreamContent(serializer.ToXml(new ItemList<FileEntry>(result)))
-                };
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-                return response;
+
+                return result;
             }
             catch (Exception e)
             {
