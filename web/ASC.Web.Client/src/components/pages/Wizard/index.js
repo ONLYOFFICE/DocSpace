@@ -9,7 +9,8 @@ import {
   InputBlock, Checkbox, Link,
   DropDown, GroupButton, 
   DropDownItem, Button, 
-  Box, Loader, utils } from 'asc-web-components';
+  Box, Loader, ModalDialog,
+  utils } from 'asc-web-components';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
@@ -29,6 +30,7 @@ const HeaderContent = styled.div`
   height: 56px;
   background: #0F4071;
   width: 100%;
+  left: 0px;
 
   .header-logo {
     padding: 0;
@@ -41,7 +43,7 @@ const HeaderContent = styled.div`
       left: 144px;
     }
 
-    @media(max-width: 768px) {
+    @media(max-width: 375px) {
       left: 32px;
     }
   }
@@ -63,6 +65,7 @@ const WizardContainer = styled.div`
     height: 496px;
     margin: 0 auto;
     margin-top: 80px;
+    padding: 0;
 
     @media(max-width: 768px) {
       width: 480px
@@ -119,7 +122,6 @@ const WizardContainer = styled.div`
 
   .input-box {
     width: 311px;
-    height: 212px;
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: normal;
@@ -136,6 +138,17 @@ const WizardContainer = styled.div`
     .wizard-pass { 
       width: 360px;
       margin-top: 16px;
+
+      .input-relative {
+        width: 311px;
+
+        @media(max-width: 768px) {
+          width: 480px;
+        }
+        @media(max-width: 375px) {
+          width: 311px;
+        }
+      }
     }
 
     .wizard-pass input {
@@ -187,17 +200,10 @@ const WizardContainer = styled.div`
 
     @media(max-width: 768px) {
       width: 480px;
-      
-      .wizard-pass { 
-        
-      }
-
-      .wizard-pass input {
-      
-      }
+      margin: 32px 0 0 0;
     }
 
-    @media(max-width: 768px) {
+    @media(max-width: 375px) {
       width: 311px;
     }
   }
@@ -208,10 +214,6 @@ const WizardContainer = styled.div`
     display: flex;
     flex-direction: row;
     padding: 0;
-
-    .settings-title-block {
- 
-    }
 
     .settings-title {
       font-family: Open Sans;
@@ -235,6 +237,11 @@ const WizardContainer = styled.div`
       line-height: 20px;
     } 
 
+    .link {
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
     .text {
       margin: 16px 0;
     }
@@ -246,6 +253,7 @@ const WizardContainer = styled.div`
 
     @media(max-width: 768px) {
       width: 480px;
+      margin: 32px 0 0 0;
     }
 
     @media(max-width: 768px) {
@@ -271,7 +279,9 @@ class Body extends Component {
 
     this.state = {
       password: '',
-      isValidPass: false
+      isValidPass: false,
+      isOwner: true,
+      errorLoading: false
     }
 
     this.inputRef = React.createRef();
@@ -285,6 +295,30 @@ class Body extends Component {
     console.log('click')
     this.inputRef.current.click();
     console.log(this.inputRef.current.value);
+  }
+
+  onClickChangeEmail = () => {
+    this.renderModal();
+  }
+
+  renderModal = () => {
+    const { isOwner, errorLoading } = this.state;
+
+    if( !isOwner ) {
+      const header = "Change e-mail"
+      const content = "111";
+
+      return <ModalDialog
+        visible={false}
+        scale={false}
+        displayType="auto"
+        zIndex={310}
+        headerContent={header}
+        bodyContent={content}
+      />
+    } else {
+      return null
+    }
   }
 
   renderHeaderBox = () => {
@@ -301,9 +335,10 @@ class Body extends Component {
   }
 
   renderInputBox = () => {
-    return (
-      <Box className="input-box">
-        <EmailInput
+    const { isOwner } = this.state;
+
+    const inputEmail = isOwner 
+      ? <EmailInput
           className="wizard-input-email"
           tabIndex={1}
           id="input-email"
@@ -312,6 +347,11 @@ class Body extends Component {
           emailSettings={settings}
           onValidateInput={() => console.log('email')}
         />
+      : null
+
+    return (
+      <Box className="input-box">
+        {inputEmail}
         <PasswordInput
           className="wizard-pass"
           tabIndex={2}
@@ -361,15 +401,27 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
+    const { isOwner } = this.state;
+
+    const titleEmail = !isOwner 
+      ? <Text className="settings-title">Email</Text>
+      : null
+    
+    const email = !isOwner 
+      ? <Link className="link value" type="action" onClick={this.onClickChangeEmail}>portaldomainname@mail.com</Link>
+      : null
+
     return (
       <Box className="settings-box">
         <Box className="setting-title-block">
           <Text className="settings-title">Domain:</Text>
+          {titleEmail}
           <Text className="settings-title">Language:</Text>
           <Text className="settings-title">Time zone:</Text>
         </Box>
         <Box className="values">
           <Text className="text value">portaldomainname.com</Text>
+          {email}
           <GroupButton className="drop-down value" label="English (United States)" isDropdown={true}>
             <DropDownItem 
               label="English (United States)"
