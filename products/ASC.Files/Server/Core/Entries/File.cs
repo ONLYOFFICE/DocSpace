@@ -165,7 +165,7 @@ namespace ASC.Files.Core
         }
 
         [DataMember(EmitDefaultValue = false, Name = "locked")]
-        public bool Locked { get; set; }
+        public bool? Locked { get; set; }
 
         [DataMember(EmitDefaultValue = false, Name = "locked_by")]
         public string LockedBy { get; set; }
@@ -183,7 +183,7 @@ namespace ASC.Files.Core
         }
 
         [DataMember(EmitDefaultValue = false, Name = "encrypted")]
-        public bool Encrypted { get; set; }
+        public bool? Encrypted { get; set; }
 
         public ForcesaveType Forcesave { get; set; }
 

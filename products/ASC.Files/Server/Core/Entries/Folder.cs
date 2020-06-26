@@ -65,7 +65,7 @@ namespace ASC.Files.Core
         public int TotalSubFolders { get; set; }
 
         [DataMember(Name = "shareable", EmitDefaultValue = false)]
-        public bool Shareable { get; set; }
+        public bool? Shareable { get; set; }
 
         [DataMember(Name = "isnew")]
         public int NewForMe { get; set; }

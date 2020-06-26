@@ -153,7 +153,7 @@ namespace ASC.Web.Files.Utils
                 file.Comment = FilesCommonResource.CommentUpload;
                 file.Version++;
                 file.VersionGroup++;
-                file.Encrypted = false;
+                file.Encrypted = null;
 
                 return file;
             }
@@ -187,7 +187,7 @@ namespace ASC.Web.Files.Utils
                    && !EntryManager.FileLockedForMe(file.ID)
                    && !FileTracker.IsEditing(file.ID)
                    && file.RootFolderType != FolderType.TRASH
-                   && !file.Encrypted;
+                   && !(file.Encrypted == null ? false : (bool)file.Encrypted);
         }
 
         private T GetFolderId<T>(T folderId, IList<string> relativePath)

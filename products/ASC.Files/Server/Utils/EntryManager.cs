@@ -597,12 +597,12 @@ namespace ASC.Web.Files.Utils
             folder.FolderType = FolderType.DEFAULT;
             folder.ModifiedBy = providerInfo.Owner;
             folder.ModifiedOn = providerInfo.CreateOn;
-            folder.ProviderId = providerInfo.ID;
+            folder.ProviderId = providerInfo.ID == 0 ? null : (int?)providerInfo.ID;
             folder.ProviderKey = providerInfo.ProviderKey;
             folder.RootFolderCreator = providerInfo.Owner;
             folder.RootFolderId = providerInfo.RootFolderId;
             folder.RootFolderType = providerInfo.RootFolderType;
-            folder.Shareable = false;
+            folder.Shareable = null;
             folder.Title = providerInfo.CustomerTitle;
             folder.TotalFiles = 0;
             folder.TotalSubFolders = 0;
@@ -646,7 +646,7 @@ namespace ASC.Web.Files.Utils
                 var tagLocked = tagsLocked.FirstOrDefault(t => t.EntryId.Equals(file.ID));
 
                 var lockedBy = tagLocked != null ? tagLocked.Owner : Guid.Empty;
-                file.Locked = lockedBy != Guid.Empty;
+                file.Locked = lockedBy != Guid.Empty? (bool?)true : null;
                 file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
                     ? Global.GetUserName(lockedBy)
                     : null;

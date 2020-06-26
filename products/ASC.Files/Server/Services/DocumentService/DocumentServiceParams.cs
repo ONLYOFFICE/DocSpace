@@ -53,13 +53,13 @@ namespace ASC.Web.Files.Services.DocumentService
         public string FileProviderKey;
 
         [DataMember(Name = "fileVersion", EmitDefaultValue = false)]
-        public int FileVersion;
+        public int? FileVersion;
 
         [DataMember(Name = "linkToEdit")]
         public string LinkToEdit;
 
         [DataMember(Name = "openHistory", EmitDefaultValue = false)]
-        public bool OpenHistory;
+        public bool? OpenHistory;
 
         [DataMember(Name = "openinigDate")]
         public string OpeninigDate;

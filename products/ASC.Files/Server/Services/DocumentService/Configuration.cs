@@ -680,7 +680,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         [DataMember(Name = "forcesave", EmitDefaultValue = false)]
-        public bool Forcesave
+        public bool? Forcesave
         {
             set { }
             get

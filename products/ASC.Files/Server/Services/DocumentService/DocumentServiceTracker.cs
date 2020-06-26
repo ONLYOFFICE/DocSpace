@@ -472,7 +472,7 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.FilesChangeEditors(fileId, !forcesave);
 
             var result = new TrackResponse { Message = saveMessage };
-            if (string.IsNullOrEmpty(saveMessage) && file != null && file.Encrypted)
+            if (string.IsNullOrEmpty(saveMessage) && file != null && (file.Encrypted != null && (bool)file.Encrypted))
             {
                 result.Addresses = EncryptionAddressHelper.GetAddresses(file.ID.ToString()).ToArray();
             }

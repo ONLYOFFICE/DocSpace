@@ -71,7 +71,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(EmitDefaultValue = false, IsRequired = true)]
-        public long PureContentLength { get; set; }
+        public long? PureContentLength { get; set; }
 
         /// <summary>
         /// </summary>
@@ -108,7 +108,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(EmitDefaultValue = false)]
-        public bool Encrypted { get; set; }
+        public bool? Encrypted { get; set; }
 
         /// <summary>
         /// </summary>
@@ -198,7 +198,7 @@ namespace ASC.Api.Documents
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;
             result.FileStatus = file.FileStatus;
-            result.PureContentLength = file.ContentLength;
+            result.PureContentLength = file.ContentLength == 0 ? null : (long?)file.ContentLength;
             result.Comment = file.Comment;
             result.Encrypted = file.Encrypted;
             try

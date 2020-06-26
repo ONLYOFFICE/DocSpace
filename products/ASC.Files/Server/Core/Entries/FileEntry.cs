@@ -88,7 +88,7 @@ namespace ASC.Files.Core
         public bool Shared { get; set; }
 
         [DataMember(Name = "provider_id", EmitDefaultValue = false)]
-        public int ProviderId { get; set; }
+        public int? ProviderId { get; set; }
 
         [DataMember(Name = "provider_key", EmitDefaultValue = false)]
         public string ProviderKey { get; set; }

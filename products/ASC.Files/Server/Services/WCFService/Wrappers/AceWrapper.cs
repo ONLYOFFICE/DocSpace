@@ -84,7 +84,7 @@ namespace ASC.Web.Files.Services.WCFService
         public string Permissions { get; set; }
 
         [DataMember(Name = "isLink", EmitDefaultValue = false, IsRequired = false)]
-        public bool IsLink { get; set; }
+        public bool? IsLink { get; set; }
 
         public AceShortWrapper(AceWrapper aceWrapper)
         {

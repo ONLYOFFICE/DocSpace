@@ -91,7 +91,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(Order = 55, EmitDefaultValue = false)]
-        public bool ProviderItem { get; set; }
+        public bool? ProviderItem { get; set; }
 
         /// <summary>
         /// </summary>
@@ -101,7 +101,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(Order = 57, EmitDefaultValue = false)]
-        public int ProviderId { get; set; }
+        public int? ProviderId { get; set; }
 
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace ASC.Api.Documents
             Updated = apiDateTimeHelper.Get(entry.ModifiedOn);
             UpdatedBy = employeeWraperHelper.Get(entry.ModifiedBy);
             RootFolderType = entry.RootFolderType;
-            ProviderItem = entry.ProviderEntry;
+            ProviderItem = entry.ProviderEntry == false ? null : (bool?)true;
             ProviderKey = entry.ProviderKey;
             ProviderId = entry.ProviderId;
         }
@@ -189,10 +189,10 @@ namespace ASC.Api.Documents
                 Updated = ApiDateTimeHelper.Get(entry.ModifiedOn),
                 UpdatedBy = EmployeeWraperHelper.Get(entry.ModifiedBy),
                 RootFolderType = entry.RootFolderType,
-                ProviderItem = entry.ProviderEntry,
+                ProviderItem = entry.ProviderEntry == false ? null : (bool?)true,
                 ProviderKey = entry.ProviderKey,
                 ProviderId = entry.ProviderId
-            };
+        };
         }
     }
 

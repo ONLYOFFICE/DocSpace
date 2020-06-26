@@ -61,7 +61,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(EmitDefaultValue = false, IsRequired = false)]
-        public bool IsShareable { get; set; }
+        public bool? IsShareable { get; set; }
 
         /// <summary>
         /// </summary>
@@ -89,7 +89,7 @@ namespace ASC.Api.Documents
                 FilesCount = new Random().Next(),
                 FoldersCount = new Random().Next(),
                 ParentId = new Random().Next(),
-                IsShareable = false
+                IsShareable = null
             };
         }
     }

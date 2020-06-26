@@ -107,7 +107,7 @@ namespace ASC.Files.Thirdparty
             InitFileEntry(folder);
 
             folder.FolderType = FolderType.DEFAULT;
-            folder.Shareable = false;
+            folder.Shareable = null;
             folder.TotalFiles = 0;
             folder.TotalSubFolders = 0;
 
@@ -150,7 +150,7 @@ namespace ASC.Files.Thirdparty
         {
             fileEntry.CreateBy = ProviderInfo.Owner;
             fileEntry.ModifiedBy = ProviderInfo.Owner;
-            fileEntry.ProviderId = ProviderInfo.ID;
+            fileEntry.ProviderId = ProviderInfo.ID == 0 ? null : (int?)ProviderInfo.ID;
             fileEntry.ProviderKey = ProviderInfo.ProviderKey;
             fileEntry.RootFolderCreator = ProviderInfo.Owner;
             fileEntry.RootFolderType = ProviderInfo.RootFolderType;

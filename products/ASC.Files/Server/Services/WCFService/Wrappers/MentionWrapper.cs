@@ -51,7 +51,7 @@ namespace ASC.Web.Files.Services.WCFService
         }
 
         [DataMember(Name = "hasAccess", EmitDefaultValue = false)]
-        public bool HasAccess { get; set; }
+        public bool? HasAccess { get; set; }
 
         [DataMember(Name = "name", EmitDefaultValue = false)]
         public string Name
