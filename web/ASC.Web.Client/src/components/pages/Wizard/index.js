@@ -307,26 +307,72 @@ class Body extends Component {
       password: '',
       isValidPass: false,
       isOwner: true,
-      errorLoading: true,
-      visibleModal: false
+      errorLoading: false,
+      visibleModal: false,
+      path: '',
+      emailValid: false,
+      email: 'portaldomainname@mail.com',
+      license: false
     }
 
     this.inputRef = React.createRef();
   }
 
   isValidPassHandler = (val) => {
-    this.state({ isValidPass: val});
+    this.setState({ isValidPass: val});
   }
 
   onIconFileClick = () => {
-    console.log('click')
+    console.log('input file click');
     this.inputRef.current.click();
-    console.log(this.inputRef.current.value);
   }
 
   onClickChangeEmail = () => {
-    console.log("change mail")
+    console.log("change mail click")
     this.setState({ visibleModal: true })
+  }
+
+  onEmailHandler = result => {
+    this.setState({ emailValid: result.isValid});
+
+    if(result.isValid) {
+      console.log('email is valid')
+      this.setState({ email: result.value });
+    }
+  }
+
+  onChangePassword = e => {
+    console.log('onchange password', e.target.value);
+    this.setState({ password: e.target.value })
+  }
+
+  onChangeFile = e => {
+    console.log('select file', e.target.value)
+    this.setState({ path: e.target.value}) 
+  }
+
+  onInputFile = () => {
+    console.log('on input file inner input')
+    this.setState({path: this.inputRef.current.value});
+  }
+
+  onChangeLicense = () => {
+    console.log('onchage License');
+    this.setState({ license: !this.state.license });
+  }
+
+  onContinueHandler = () => {
+    console.log('continue btn click');
+  }
+
+  onSaveEmailHandler = () => {
+    console.log('save email', this.state.email);
+    this.setState({ visibleModal: false });
+  }
+
+  onCloseModal = () => {
+    console.log('onClose modal');
+    this.setState({ visibleModal: false, errorLoading: false});
   }
 
   renderModalDialog = () => {
@@ -352,7 +398,8 @@ class Body extends Component {
         name="email-wizard"
         placeholder={'E-mail'}
         emailSettings={settings}
-        onValidateInput={() => console.log('change email')}
+        value={this.state.email}
+        onValidateInput={this.onEmailHandler}
       />;
 
       footer = <Button
@@ -361,7 +408,7 @@ class Body extends Component {
         label="Save"
         primary={true}
         size="medium"
-        onClick={() => console.log('Change email button click')}
+        onClick={this.onSaveEmailHandler}
       />;
     }
 
@@ -372,10 +419,8 @@ class Body extends Component {
         zIndex={310}
         headerContent={header}
         bodyContent={content}
-        onClose={() => {
-          console.log('onClose modal')
-          this.setState({ visibleModal: false, errorLoading: false})
-          }}
+        footerContent={footer}
+        onClose={this.onCloseModal}
       />
   }
 
@@ -403,7 +448,7 @@ class Body extends Component {
           name="email-wizard"
           placeholder={'E-mail'}
           emailSettings={settings}
-          onValidateInput={() => console.log('email')}
+          onValidateInput={this.onEmailHandler}
         />
       : null
 
@@ -421,19 +466,23 @@ class Body extends Component {
           passwordSettings={settingsPassword}
           isDisabled={false}
           placeholder={'Password'}
-          onChange={() => console.log('pass onChange')}
+          onChange={this.onChangePassword}
           onValidateInput={this.isValidPassHandler}
         />
         <Text className="password-tooltip">
           2-30 characters
         </Text>
         <InputBlock
+          value={this.state.path}
           className="input-block"
           iconName={"CatalogFolderIcon"}
           onIconClick={this.onIconFileClick}
-          onChange={() => console.log('change')}
+          onChange={this.onChangeFile}
         >
-          <input type="file" className="input-file" ref={this.inputRef}/>
+          <input type="file" 
+            className="input-file" 
+            onInput={this.onInputFile}
+            ref={this.inputRef}/>
         </InputBlock>
         <Box className="checkbox-container">
           <Checkbox
@@ -441,10 +490,10 @@ class Body extends Component {
             id="license"
             name="confirm"
             label={'Accept the terms of the'}
-            isChecked={false}
+            isChecked={this.state.license}
             isIndeterminate={false}
             isDisabled={false}
-            onChange={() => {}}
+            onChange={this.onChangeLicense}
           />
           <Link 
             className="link"
@@ -512,7 +561,7 @@ class Body extends Component {
         primary
         label={"Continue"}           
         size="big"
-        onClick={() => console.log('click btn')}
+        onClick={this.onContinueHandler}
       />
     );
   }
