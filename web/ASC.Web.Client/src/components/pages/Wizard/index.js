@@ -7,17 +7,16 @@ import {
   Heading, Text, 
   EmailInput, PasswordInput, 
   InputBlock, Checkbox, Link,
-  DropDown, GroupButton, 
-  DropDownItem, Button, 
-  Box, Loader, ModalDialog,
-  utils } from 'asc-web-components';
+  GroupButton, DropDownItem, 
+  Button, Box, Loader, 
+  ModalDialog, utils } from 'asc-web-components';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
 settings.allowDomainPunycode = true;
 
 const settingsPassword = {
-  minLength: 6,
+  minLength: 2,
   upperCase: true,
   digits: true,
   specSymbols: true
@@ -271,6 +270,33 @@ const WizardContainer = styled.div`
       width: 100%;
     }
   }
+
+  .modal-change-email {
+    height: 32px;
+    width: 528px;
+
+    @media(max-width: 768px) {
+      width: 293px;
+    }
+  }
+  
+  .modal-button-save {
+    height: 36px;
+    width: 100px;
+
+    @media(max-width: 768px) {
+      width: 293px;
+      height: 32px;
+    }
+  }
+
+  .modal-error-content {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 20px;
+  }
 `;
 
 class Body extends Component {
@@ -281,7 +307,8 @@ class Body extends Component {
       password: '',
       isValidPass: false,
       isOwner: true,
-      errorLoading: false
+      errorLoading: true,
+      visibleModal: false
     }
 
     this.inputRef = React.createRef();
@@ -298,27 +325,58 @@ class Body extends Component {
   }
 
   onClickChangeEmail = () => {
-    this.renderModal();
+    console.log("change mail")
+    this.setState({ visibleModal: true })
   }
 
-  renderModal = () => {
-    const { isOwner, errorLoading } = this.state;
+  renderModalDialog = () => {
+    const { isOwner, errorLoading, visibleModal } = this.state;
+    let header, content, footer;
 
-    if( !isOwner ) {
-      const header = "Change e-mail"
-      const content = "111";
+    const visible = errorLoading ? errorLoading : visibleModal;
 
-      return <ModalDialog
-        visible={false}
+    if(errorLoading) {
+      header = "Ошибка загрузки";
+      content = <span 
+        className="modal-error-content">
+          Лицензия не действительна. Убедитесь что вы выбрали верный файл
+      </span>;
+
+    } else if( visibleModal && isOwner ) {
+      header = "Change e-mail";
+
+      content = <EmailInput
+        className="modal-change-email"
+        tabIndex={1}
+        id="change-email"
+        name="email-wizard"
+        placeholder={'E-mail'}
+        emailSettings={settings}
+        onValidateInput={() => console.log('change email')}
+      />;
+
+      footer = <Button
+        className="modal-button-save"
+        key="saveBtn"
+        label="Save"
+        primary={true}
+        size="medium"
+        onClick={() => console.log('Change email button click')}
+      />;
+    }
+
+    return <ModalDialog
+        visible={visible}
         scale={false}
         displayType="auto"
         zIndex={310}
         headerContent={header}
         bodyContent={content}
+        onClose={() => {
+          console.log('onClose modal')
+          this.setState({ visibleModal: false, errorLoading: false})
+          }}
       />
-    } else {
-      return null
-    }
   }
 
   renderHeaderBox = () => {
@@ -337,7 +395,7 @@ class Body extends Component {
   renderInputBox = () => {
     const { isOwner } = this.state;
 
-    const inputEmail = isOwner 
+    const inputEmail = !isOwner 
       ? <EmailInput
           className="wizard-input-email"
           tabIndex={1}
@@ -403,11 +461,11 @@ class Body extends Component {
   renderSettingsBox = () => {
     const { isOwner } = this.state;
 
-    const titleEmail = !isOwner 
+    const titleEmail = isOwner 
       ? <Text className="settings-title">Email</Text>
       : null
     
-    const email = !isOwner 
+    const email = isOwner 
       ? <Link className="link value" type="action" onClick={this.onClickChangeEmail}>portaldomainname@mail.com</Link>
       : null
 
@@ -464,9 +522,11 @@ class Body extends Component {
     const inputBox = this.renderInputBox();
     const settingsBox = this.renderSettingsBox();
     const buttonBox = this.renderButtonBox();
+    const modalDialog = this.renderModalDialog();
 
     return (
       <WizardContainer>
+        { modalDialog }
         <Box className="form-container">
           {headerBox}
           {inputBox}
