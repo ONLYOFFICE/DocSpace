@@ -119,7 +119,6 @@ class ArticleBodyContent extends React.Component {
             onLoading={onLoading}
             folderId={newFolderId}
             files={newFiles}
-            filter={filter}
           />
         )}
         <TreeFolders

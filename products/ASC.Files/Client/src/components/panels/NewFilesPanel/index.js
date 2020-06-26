@@ -26,7 +26,7 @@ import {
   StyledFooter
 } from "../StyledPanels";
 import { getFileIcon, getFolderIcon, canWebEdit, isImage, isSound, isVideo } from "../../../store/files/selectors";
-import { fetchFiles } from '../../../store/files/actions';
+import { fetchFiles, setMediaViewerData } from '../../../store/files/actions';
 import store from "../../../store/store";
 
 const { changeLanguage } = commonUtils;
@@ -66,14 +66,14 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onNewFilesClick = item => {
-    const { setNewFilesCount, onClose, onLoading, folderId } = this.props;
+    const { setNewFilesCount, onClose, /*onLoading,*/ folderId } = this.props;
     const folderIds = [];
     const fileId = [];
     const isFile = item.fileExst;
 
     isFile ? fileId.push(item.id) : folderIds.push(item.id);
 
-    onLoading(true);
+    //onLoading(true);
 
     api.files.markAsRead(folderIds, fileId)
       .then(() => {
@@ -83,13 +83,13 @@ class NewFilesPanelComponent extends React.Component {
       .catch(err => toastr.error(err))
       .finally(() => {
         !isFile && onClose();
-        onLoading(false);
+        //onLoading(false);
       });
   }
 
   onFilesClick = item => {
     const { id, fileExst, viewUrl } = item;
-    const { filter, /*onMediaFileClick*/ } = this.props;
+    const { filter, setMediaViewerData } = this.props;
     if (!fileExst) {
 
       fetchFiles(id, filter, store.dispatch)
@@ -102,7 +102,8 @@ class NewFilesPanelComponent extends React.Component {
       const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
 
       if (isOpenMedia) {
-        //onMediaFileClick(id);
+        const mediaItem = { visible: true, id };
+        setMediaViewerData(mediaItem);
         return;
       }
 
@@ -191,7 +192,8 @@ const NewFilesPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  return {};
+  const { filter } = state.files
+  return { filter };
 };
 
-export default connect(mapStateToProps, {})(withRouter(NewFilesPanel));
+export default connect(mapStateToProps, { setMediaViewerData })(withRouter(NewFilesPanel));
