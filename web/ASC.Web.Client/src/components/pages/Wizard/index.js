@@ -250,6 +250,12 @@ const WizardContainer = styled.div`
       margin: 0 0 16px 0;
     }
 
+    .drop-down .value {
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+
     @media(max-width: 768px) {
       width: 480px;
       margin: 32px 0 0 0;
@@ -306,13 +312,18 @@ class Body extends Component {
     this.state = {
       password: '',
       isValidPass: false,
-      isOwner: true,
+      isOwner: false,
       errorLoading: false,
       visibleModal: false,
       path: '',
       emailValid: false,
       email: 'portaldomainname@mail.com',
-      license: false
+      license: false,
+      domain: 'portaldomainname.com',
+      languages: [ "English (United States)", "Русский (РФ)" ],
+      timezones: [ "UTC", "Not UTC"],
+      selectLanguage: "English (United States)",
+      selectTimezone: "UTC"
     }
 
     this.inputRef = React.createRef();
@@ -515,7 +526,7 @@ class Body extends Component {
       : null
     
     const email = isOwner 
-      ? <Link className="link value" type="action" onClick={this.onClickChangeEmail}>portaldomainname@mail.com</Link>
+      ? <Link className="link value" type="action" onClick={this.onClickChangeEmail}>{this.state.email}</Link>
       : null
 
     return (
@@ -527,27 +538,29 @@ class Body extends Component {
           <Text className="settings-title">Time zone:</Text>
         </Box>
         <Box className="values">
-          <Text className="text value">portaldomainname.com</Text>
+          <Text className="text value">{this.state.domain}</Text>
           {email}
-          <GroupButton className="drop-down value" label="English (United States)" isDropdown={true}>
-            <DropDownItem 
-              label="English (United States)"
-              onClick={() => console.log('English click')}
-            />
-            <DropDownItem 
-              label="Русский (Российская Федерация)"
-              onClick={() => console.log('Russia click')}
-            />
+          <GroupButton className="drop-down value" label={this.state.selectLanguage} isDropdown={true}>
+            {
+              this.state.languages.map(el => (
+                <DropDownItem 
+                  key={el} 
+                  label={el}
+                  onClick={() => this.setState({ selectLanguage: el })}
+                />
+              ))
+            }
           </GroupButton>
-          <GroupButton className="drop-down value" label="UTC" isDropdown={true}>
-            <DropDownItem 
-              label="UTC"
-              onClick={() => console.log('UTC')}
-            />
-            <DropDownItem 
-              label="Not UTC"
-              onClick={() => console.log('Not UTC')}
-            />
+          <GroupButton className="drop-down value" label={this.state.selectTimezone} isDropdown={true}>
+            {
+              this.state.timezones.map(el => (
+                <DropDownItem 
+                  key={el} 
+                  label={el}
+                  onClick={() => this.setState({ selectTimezone: el })}
+                />
+              ))
+            }
           </GroupButton>
         </Box>
       </Box>
