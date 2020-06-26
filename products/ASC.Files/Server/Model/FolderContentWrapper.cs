@@ -191,6 +191,18 @@ namespace ASC.Api.Documents
                 return;
             }
 
+            if (value is FileWrapper<string> f3)
+            {
+                JsonSerializer.Serialize(writer, f3, typeof(FileWrapper<string>), options);
+                return;
+            }
+
+            if (value is FileWrapper<int> f4)
+            {
+                JsonSerializer.Serialize(writer, f4, typeof(FileWrapper<int>), options);
+                return;
+            }
+
             JsonSerializer.Serialize(writer, value, options);
         }
     }
