@@ -174,7 +174,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const {settings, history} = this.props;
+    const { settings, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
     history.push(`${settings.homepage}/${fileId}/history`);
@@ -192,7 +192,8 @@ class FilesRowContent extends React.PureComponent {
       fileStatus,
       foldersCount,
       id,
-      versionGroup
+      versionGroup,
+      newItems
     } = item;
 
     const SimpleFilesRowContent = styled(RowContent)`
@@ -269,7 +270,7 @@ class FilesRowContent extends React.PureComponent {
             {titleWithoutExt}
           </Link>
           <>
-            {fileExst &&
+            {fileExst ?
               <div className='badges'>
                 <Text
                   className='badge-ext'
@@ -338,6 +339,24 @@ class FilesRowContent extends React.PureComponent {
                     fontSize="10px"
                     fontWeight={800}
                     label={`New`}
+                    maxWidth="50px"
+                    onClick={this.onShowVersionHistory}
+                    padding="0 5px"
+                    data-id={id}
+                  />
+                }
+              </div>
+              :
+              <div className='badges'>
+                { newItems && newItems > 0 &&
+                  <Badge
+                    className='badge-version'
+                    backgroundColor="#ED7309"
+                    borderRadius="11px"
+                    color="#FFFFFF"
+                    fontSize="10px"
+                    fontWeight={800}
+                    label={newItems}
                     maxWidth="50px"
                     onClick={this.onShowVersionHistory}
                     padding="0 5px"
