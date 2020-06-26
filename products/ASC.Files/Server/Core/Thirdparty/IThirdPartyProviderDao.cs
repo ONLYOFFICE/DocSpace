@@ -150,7 +150,7 @@ namespace ASC.Files.Thirdparty
         {
             fileEntry.CreateBy = ProviderInfo.Owner;
             fileEntry.ModifiedBy = ProviderInfo.Owner;
-            fileEntry.ProviderId = ProviderInfo.ID == 0 ? null : (int?)ProviderInfo.ID;
+            fileEntry.ProviderId = ProviderInfo.ID;
             fileEntry.ProviderKey = ProviderInfo.ProviderKey;
             fileEntry.RootFolderCreator = ProviderInfo.Owner;
             fileEntry.RootFolderType = ProviderInfo.RootFolderType;

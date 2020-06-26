@@ -299,7 +299,7 @@ namespace ASC.Web.Files.Services.WCFService
                 parent.ParentFolderID = prevVisible.ID;
             }
 
-            parent.Shareable = (FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE) == false ? null : (bool?)true;
+            parent.Shareable = FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE;
 
             entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
 
@@ -1195,7 +1195,7 @@ namespace ASC.Web.Files.Services.WCFService
                 FileMarker.RemoveMarkAsNewForAll(folder);
             }
 
-            providerDao.RemoveProviderInfo(folder.ProviderId == null ? 0 : (int)folder.ProviderId);
+            providerDao.RemoveProviderInfo(folder.ProviderId);
             FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID.ToString(), providerInfo.ProviderKey);
 
             return folder.ID;
@@ -1709,7 +1709,7 @@ namespace ASC.Web.Files.Services.WCFService
             var users = UserManager.GetUsersByGroup(Constants.GroupEveryone.ID)
                                    .Where(user => !user.ID.Equals(AuthContext.CurrentAccount.ID)
                                                   && !user.ID.Equals(Constants.LostUser.ID))
-                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) == false ? null : (bool?) true })
+                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
                                    .ToList();
 
             users = users
@@ -1736,7 +1736,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var changed = false;
             bool? canShare = null;
-            if (file.Encrypted == null ? false : (bool)file.Encrypted) canShare = false;
+            if (file.Encrypted) canShare = false;
 
             var recipients = new List<Guid>();
             foreach (var email in mentionMessage.Emails)
