@@ -1709,7 +1709,7 @@ namespace ASC.Web.Files.Services.WCFService
             var users = UserManager.GetUsersByGroup(Constants.GroupEveryone.ID)
                                    .Where(user => !user.ID.Equals(AuthContext.CurrentAccount.ID)
                                                   && !user.ID.Equals(Constants.LostUser.ID))
-                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
+                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) == false ? null : (bool?) true })
                                    .ToList();
 
             users = users
