@@ -233,7 +233,7 @@ namespace ASC.Data.Storage
             tenant = TenantPath.CreatePath(tenant);
 
             //remove cache
-            //var store = DataStoreCache.Get(tenant, module);
+            //var store = DataStoreCache.Get(tenant, module);//TODO
             //if (store == null)
             //{
             var section = StorageFactoryConfig.Section;

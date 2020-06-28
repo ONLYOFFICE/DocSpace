@@ -32,10 +32,10 @@ namespace ASC.Core.Notify.Senders
 {
     public class NotifyServiceSender : INotifySender
     {
-        public NotifyService NotifyServiceClient { get; }
+        public NotifyServiceClient NotifyServiceClient { get; }
         public NotifyServiceSender(ICacheNotify<NotifyMessage> cacheNotify)
         {
-            NotifyServiceClient = new NotifyService(cacheNotify);
+            NotifyServiceClient = new NotifyServiceClient(cacheNotify);
         }
 
         public void Init(IDictionary<string, string> properties)
