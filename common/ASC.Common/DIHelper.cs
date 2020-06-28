@@ -58,6 +58,7 @@ namespace ASC.Common
             return this;
         }
 
+
         public DIHelper TryAddSingleton<TService>() where TService : class
         {
             var serviceName = $"{typeof(TService)}";

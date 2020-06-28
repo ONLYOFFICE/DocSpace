@@ -224,7 +224,7 @@ namespace ASC.Data.Reassigns
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
             services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>(); ;
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
             return services;
         }
     }

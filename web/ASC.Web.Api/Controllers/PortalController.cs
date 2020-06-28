@@ -30,6 +30,7 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class PortalController : ControllerBase
     {
+
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
