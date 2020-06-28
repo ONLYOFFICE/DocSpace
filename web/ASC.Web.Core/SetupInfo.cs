@@ -234,7 +234,7 @@ namespace ASC.Web.Studio.Core
 
         }
 
-        public T GetAppSettings<T>(string key, T defaultValue)
+        private T GetAppSettings<T>(string key, T defaultValue)
         {
             var configSetting = Configuration[key];
             if (!string.IsNullOrEmpty(configSetting))

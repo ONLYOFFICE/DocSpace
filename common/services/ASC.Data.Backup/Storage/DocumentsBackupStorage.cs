@@ -61,7 +61,7 @@ namespace ASC.Data.Backup.Storage
             StorageFactory = storageFactory;
             ServiceProvider = serviceProvider;
         }
-        public void Init(int tenantId,  string webConfigPath)
+        public void Init(int tenantId, string webConfigPath)
         {
             TenantId = tenantId;
             WebConfigPath = webConfigPath;
@@ -71,7 +71,7 @@ namespace ASC.Data.Backup.Storage
             TenantManager.SetCurrentTenant(TenantId);
             if (!userId.Equals(Guid.Empty))
             {
-        //        SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMe(userId);
             }
             else
             {
