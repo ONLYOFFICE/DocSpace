@@ -187,7 +187,7 @@ namespace ASC.Web.Files.Utils
                    && !EntryManager.FileLockedForMe(file.ID)
                    && !FileTracker.IsEditing(file.ID)
                    && file.RootFolderType != FolderType.TRASH
-                   && !(file.Encrypted);
+                   && !file.Encrypted == null ? false : (bool) file.Encrypted;
         }
 
         private T GetFolderId<T>(T folderId, IList<string> relativePath)

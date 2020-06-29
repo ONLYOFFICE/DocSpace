@@ -289,7 +289,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 result.CreateOn = DateTime.UtcNow;
                 result.ModifiedBy = Owner;
                 result.ModifiedOn = DateTime.UtcNow;
-                result.ProviderId = ID;
+                result.ProviderId = ID == 0 ? null : (int?)ID;
                 result.ProviderKey = ProviderKey;
                 result.RootFolderCreator = Owner;
                 result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
@@ -310,7 +310,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             result.ModifiedBy = Owner;
             result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
             result.NativeAccessor = file;
-            result.ProviderId = ID;
+            result.ProviderId = ID == 0 ? null : (int?)ID;
             result.ProviderKey = ProviderKey;
             result.Title = MakeTitle(file.Name);
             result.RootFolderId = MakeId(SpRootFolderId);
@@ -506,12 +506,12 @@ namespace ASC.Files.Thirdparty.SharePoint
                 result.FolderType = FolderType.DEFAULT;
                 result.ModifiedBy = Owner;
                 result.ModifiedOn = DateTime.UtcNow;
-                result.ProviderId = ID;
+                result.ProviderId = ID == 0 ? null : (int?)ID;
                 result.ProviderKey = ProviderKey;
                 result.RootFolderCreator = Owner;
                 result.RootFolderId = MakeId(SpRootFolderId);
                 result.RootFolderType = RootFolderType;
-                result.Shareable = false;
+                result.Shareable = null;
                 result.Title = MakeTitle(GetTitleById(errorFolder.ID));
                 result.TotalFiles = 0;
                 result.TotalSubFolders = 0;
@@ -529,12 +529,12 @@ namespace ASC.Files.Thirdparty.SharePoint
             result.FolderType = FolderType.DEFAULT;
             result.ModifiedBy = Owner;
             result.ModifiedOn = CreateOn;
-            result.ProviderId = ID;
+            result.ProviderId = ID == 0 ? null : (int?)ID;
             result.ProviderKey = ProviderKey;
             result.RootFolderCreator = Owner;
             result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
             result.RootFolderType = RootFolderType;
-            result.Shareable = false;
+            result.Shareable = null;
             result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
             result.TotalFiles = 0;
             result.TotalSubFolders = 0;
