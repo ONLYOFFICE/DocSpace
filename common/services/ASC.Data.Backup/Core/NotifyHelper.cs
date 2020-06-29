@@ -157,6 +157,7 @@ namespace ASC.Data.Backup
             services.TryAddSingleton<NotifyHelper>();
 
             return services
+                .AddNotifyConfiguration()
                 .AddStudioNotifySourceService()
                 .AddUserManagerService()
                 .AddStudioNotifyHelperService()
