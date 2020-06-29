@@ -156,7 +156,9 @@ namespace ASC.Data.Backup
         public static DIHelper AddNotifyHelperService(this DIHelper services)
         {
             services.TryAddSingleton<NotifyHelper>();
+
             return services
+                .AddStudioNotifySourceService()
                 .AddUserManagerService()
                 .AddStudioNotifyHelperService()
                 .AddDisplayUserSettingsService();
