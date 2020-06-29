@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -42,6 +43,8 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Files.Core
 {
+    [DataContract(Name = "editHistory", Namespace = "")]
+    [DebuggerDisplay("{ID} v{Version}")]
     public class EditHistory
     {
         public EditHistory(
@@ -59,12 +62,15 @@ namespace ASC.Files.Core
         }
 
         public int ID;
-        public string Key;
-        public int Version;
-        public int VersionGroup;
-        public EditHistoryAuthor ModifiedBy;
-        public string ChangesString;
-     
+        [DataMember(Name = "key")] public string Key;
+        [DataMember(Name = "version")] public int Version;
+        [DataMember(Name = "versionGroup")] public int VersionGroup;
+
+        [DataMember(Name = "user")] public EditHistoryAuthor ModifiedBy;
+
+        [DataMember(Name = "changeshistory")] public string ChangesString;
+
+        [DataMember(Name = "changes")]
         public List<EditHistoryChanges> Changes
         {
             get
@@ -83,18 +89,18 @@ namespace ASC.Files.Core
 
                     changes = jChanges.Children()
                                       .Select(jChange =>
+                                      {
+                                          var jUser = jChange.Value<JObject>("user");
+                                          return new EditHistoryChanges(TenantUtil)
                                           {
-                                              var jUser = jChange.Value<JObject>("user");
-                                              return new EditHistoryChanges(TenantUtil)
+                                              Date = jChange.Value<string>("created"),
+                                              Author = new EditHistoryAuthor(AuthContext, UserManager, DisplayUserSettingsHelper)
                                               {
-                                                  Date = jChange.Value<string>("created"),
-                                                  Author = new EditHistoryAuthor(AuthContext, UserManager, DisplayUserSettingsHelper)
-                                                  {
-                                                      Id = new Guid(jUser.Value<string>("id") ?? Guid.Empty.ToString()),
-                                                      Name = jUser.Value<string>("name"),
-                                                  },
-                                              };
-                                          })
+                                                  Id = new Guid(jUser.Value<string>("id") ?? Guid.Empty.ToString()),
+                                                  Name = jUser.Value<string>("name"),
+                                              },
+                                          };
+                                      })
                                       .ToList();
                     return changes;
                 }
@@ -135,6 +141,7 @@ namespace ASC.Files.Core
 
         public DateTime ModifiedOn;
 
+        [DataMember(Name = "created")]
         public string ModifiedOnString
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
@@ -147,9 +154,11 @@ namespace ASC.Files.Core
         public UserManager UserManager { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
-        public string ServerVersion;
+        [DataMember(Name = "serverVersion")] public string ServerVersion;
     }
 
+    [DataContract(Name = "user", Namespace = "")]
+    [DebuggerDisplay("{Id} {Name}")]
     public class EditHistoryAuthor
     {
         public EditHistoryAuthor(
@@ -191,6 +200,8 @@ namespace ASC.Files.Core
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
     }
 
+    [DataContract(Name = "change", Namespace = "")]
+    [DebuggerDisplay("{Author.Name}")]
     public class EditHistoryChanges
     {
         public EditHistoryChanges(TenantUtil tenantUtil)
@@ -198,18 +209,19 @@ namespace ASC.Files.Core
             TenantUtil = tenantUtil;
         }
 
-        public EditHistoryAuthor Author;
+        [DataMember(Name = "user")] public EditHistoryAuthor Author;
 
-        private DateTime DateTime;
+        private DateTime _date;
 
+        [DataMember(Name = "created")]
         public string Date
         {
-            get { return DateTime.Equals(default) ? null : DateTime.ToString("g"); }
+            get { return _date.Equals(default) ? null : _date.ToString("g"); }
             set
             {
-                if (DateTime.TryParse(value, out DateTime))
+                if (DateTime.TryParse(value, out _date))
                 {
-                    DateTime = TenantUtil.DateTimeFromUtc(DateTime);
+                    _date = TenantUtil.DateTimeFromUtc(_date);
                 }
             }
         }
@@ -217,26 +229,29 @@ namespace ASC.Files.Core
         public TenantUtil TenantUtil { get; }
     }
 
-    
+    [DataContract(Name = "data")]
+    [DebuggerDisplay("{Version}")]
     public class EditHistoryData
     {
-        public string ChangesUrl;
+        [DataMember(Name = "changesUrl")] public string ChangesUrl;
 
-        public string Key;
+        [DataMember(Name = "key")] public string Key;
 
-        public EditHistoryUrl Previous;
+        [DataMember(Name = "previous")] public EditHistoryUrl Previous;
 
-        public string Token;
+        [DataMember(Name = "token")] public string Token;
 
-        public string Url;
+        [DataMember(Name = "url")] public string Url;
 
-        public int Version;
+        [DataMember(Name = "version")] public int Version;
     }
 
+    [DataContract(Name = "url")]
+    [DebuggerDisplay("{Key} - {Url}")]
     public class EditHistoryUrl
     {
-         public string Key;
+        [DataMember(Name = "key")] public string Key;
 
-         public string Url;
+        [DataMember(Name = "url")] public string Url;
     }
 }

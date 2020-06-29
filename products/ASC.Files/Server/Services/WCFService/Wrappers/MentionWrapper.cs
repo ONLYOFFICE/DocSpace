@@ -25,6 +25,7 @@
 
 
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
@@ -32,20 +33,27 @@ using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Web.Files.Services.WCFService
 {
+    [DataContract(Name = "mention", Namespace = "")]
     public class MentionWrapper
     {
+        [DataMember(Name = "email")]
         public string Email
         {
             get { return User.Email; }
             set { }
         }
 
+        [DataMember(Name = "id")]
         public string Id
         {
             get { return User.ID.ToString(); }
             set { }
         }
+
+        [DataMember(Name = "hasAccess")]
         public bool HasAccess { get; set; }
+
+        [DataMember(Name = "name")]
         public string Name
         {
             get { return User.DisplayUserName(false, DisplayUserSettingsHelper); }
@@ -64,10 +72,16 @@ namespace ASC.Web.Files.Services.WCFService
     }
 
 
+    [DataContract(Name = "message", Namespace = "")]
     public class MentionMessageWrapper
     {
+        [DataMember(Name = "actionLink")]
         public ActionLinkConfig ActionLink { get; set; }
+
+        [DataMember(Name = "emails")]
         public List<string> Emails { get; set; }
+
+        [DataMember(Name = "message")]
         public string Message { get; set; }
     }
 }
