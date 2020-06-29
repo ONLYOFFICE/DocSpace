@@ -429,6 +429,7 @@ namespace ASC.Data.Backup.Service
                 }
 
                 IsCompleted = true;
+                backupWorker.PublishProgress(this);
             }
             catch (Exception error)
             {
@@ -438,6 +439,15 @@ namespace ASC.Data.Backup.Service
             }
             finally
             {
+                try
+                {
+                    backupWorker.PublishProgress(this);
+                }
+                catch (Exception error)
+                {
+                    Log.Error("publish", error);
+                }
+
                 try
                 {
                     if (!(storagePath == tempFile && StorageType == BackupStorageType.Local))
@@ -563,9 +573,12 @@ namespace ASC.Data.Backup.Service
 
                 Percentage = 75;
 
+                backupWorker.PublishProgress(this);
+
                 File.Delete(tempFile);
 
                 Percentage = 100;
+                backupWorker.PublishProgress(this);
             }
             catch (Exception error)
             {
@@ -580,6 +593,15 @@ namespace ASC.Data.Backup.Service
             }
             finally
             {
+                try
+                {
+                    backupWorker.PublishProgress(this);
+                }
+                catch (Exception error)
+                {
+                    Log.Error("publish", error);
+                }
+
                 if (File.Exists(tempFile))
                 {
                     File.Delete(tempFile);
@@ -671,6 +693,7 @@ namespace ASC.Data.Backup.Service
 
                 Link = GetLink(alias, false);
                 notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
+                backupWorker.PublishProgress(this);
             }
             catch (Exception error)
             {
@@ -682,6 +705,15 @@ namespace ASC.Data.Backup.Service
             }
             finally
             {
+                try
+                {
+                    backupWorker.PublishProgress(this);
+                }
+                catch (Exception error)
+                {
+                    Log.Error("publish", error);
+                }
+
                 if (File.Exists(tempFile))
                 {
                     File.Delete(tempFile);
