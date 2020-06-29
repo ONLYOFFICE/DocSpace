@@ -24,11 +24,13 @@
 */
 
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Utils;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -37,6 +39,7 @@ namespace ASC.Data.Backup.Service
 {
     internal class BackupServiceLauncher : IHostedService
     {
+        public IServiceProvider ServiceProvider { get; }
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
@@ -44,12 +47,14 @@ namespace ASC.Data.Backup.Service
         public BackupServiceNotifier BackupServiceNotifier { get; }
 
         public BackupServiceLauncher(
+            IServiceProvider serviceProvider,
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
             IConfiguration configuration,
             BackupServiceNotifier backupServiceNotifier)
         {
+            ServiceProvider = serviceProvider;
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
@@ -59,6 +64,8 @@ namespace ASC.Data.Backup.Service
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            NotifyConfiguration.Configure(ServiceProvider);
+
             var settings = Configuration.GetSetting<BackupSettings>("backup");
 
             BackupWorker.Start(settings);
