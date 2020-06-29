@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import styled from "styled-components";
+import i18n from './i18n';
+import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 
 import { PageLayout } from "asc-web-common";
 import { 
@@ -312,7 +315,7 @@ class Body extends Component {
     this.state = {
       password: '',
       isValidPass: false,
-      isOwner: false,
+      isOwner: true,
       errorLoading: false,
       visibleModal: false,
       path: '',
@@ -388,26 +391,28 @@ class Body extends Component {
 
   renderModalDialog = () => {
     const { isOwner, errorLoading, visibleModal } = this.state;
+    const { t } = this.props;
+
     let header, content, footer;
 
     const visible = errorLoading ? errorLoading : visibleModal;
 
     if(errorLoading) {
-      header = "Ошибка загрузки";
+      header = t('errorLicenseTitle');
       content = <span 
         className="modal-error-content">
-          Лицензия не действительна. Убедитесь что вы выбрали верный файл
+          {t('errorLicenseBody')}
       </span>;
 
     } else if( visibleModal && isOwner ) {
-      header = "Change e-mail";
+      header = t('changeEmailTitle');
 
       content = <EmailInput
         className="modal-change-email"
         tabIndex={1}
         id="change-email"
         name="email-wizard"
-        placeholder={'E-mail'}
+        placeholder={t('placeholderEmail')}
         emailSettings={settings}
         value={this.state.email}
         onValidateInput={this.onEmailHandler}
@@ -416,7 +421,7 @@ class Body extends Component {
       footer = <Button
         className="modal-button-save"
         key="saveBtn"
-        label="Save"
+        label={t('changeEmailBtn')}
         primary={true}
         size="medium"
         onClick={this.onSaveEmailHandler}
@@ -436,13 +441,14 @@ class Body extends Component {
   }
 
   renderHeaderBox = () => {
+    const { t } = this.props;
     return (
       <Box className="header-box">
         <Heading level={1} title="Wizard" className="wizard-title">
-          Welcome to your portal!
+          {t('welcome')}
         </Heading>
         <Text className="wizard-desc">
-          Please setup the portal registration data.
+          {t('')}
         </Text>
       </Box>
     )
@@ -450,6 +456,7 @@ class Body extends Component {
 
   renderInputBox = () => {
     const { isOwner } = this.state;
+    const { t } = this.props;
 
     const inputEmail = !isOwner 
       ? <EmailInput
@@ -457,7 +464,7 @@ class Body extends Component {
           tabIndex={1}
           id="input-email"
           name="email-wizard"
-          placeholder={'E-mail'}
+          placeholder={t('email')}
           emailSettings={settings}
           onValidateInput={this.onEmailHandler}
         />
@@ -476,17 +483,18 @@ class Body extends Component {
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
           isDisabled={false}
-          placeholder={'Password'}
+          placeholder={t('placeholderPass')}
           onChange={this.onChangePassword}
           onValidateInput={this.isValidPassHandler}
         />
         <Text className="password-tooltip">
-          2-30 characters
+          {t('tooltipPass')}
         </Text>
         <InputBlock
           value={this.state.path}
           className="input-block"
           iconName={"CatalogFolderIcon"}
+          placeholder={t('placeholderLicense')}
           onIconClick={this.onIconFileClick}
           onChange={this.onChangeFile}
         >
@@ -500,7 +508,7 @@ class Body extends Component {
             className="wizard-checkbox"
             id="license"
             name="confirm"
-            label={'Accept the terms of the'}
+            label={t('license')}
             isChecked={this.state.license}
             isIndeterminate={false}
             isDisabled={false}
@@ -512,7 +520,7 @@ class Body extends Component {
             color="#116d9d" 
             href="https://gnu.org/licenses/gpl-3.0.html" 
             isBold={false}
-          >License agreements</Link>
+          >{t('licenseLink')}</Link>
         </Box>
       </Box>
     );
@@ -520,9 +528,10 @@ class Body extends Component {
 
   renderSettingsBox = () => {
     const { isOwner } = this.state;
+    const { t } = this.props;
 
     const titleEmail = isOwner 
-      ? <Text className="settings-title">Email</Text>
+  ? <Text className="settings-title">{t('email')}</Text>
       : null
     
     const email = isOwner 
@@ -532,10 +541,10 @@ class Body extends Component {
     return (
       <Box className="settings-box">
         <Box className="setting-title-block">
-          <Text className="settings-title">Domain:</Text>
+          <Text className="settings-title">{t('domain')}</Text>
           {titleEmail}
-          <Text className="settings-title">Language:</Text>
-          <Text className="settings-title">Time zone:</Text>
+          <Text className="settings-title">{t('language')}</Text>
+          <Text className="settings-title">{t('timezone')}</Text>
         </Box>
         <Box className="values">
           <Text className="text value">{this.state.domain}</Text>
@@ -568,11 +577,12 @@ class Body extends Component {
   }
 
   renderButtonBox = () => {
+    const { t } = this.props;
     return (
       <Button
         className="wizard-button"
         primary
-        label={"Continue"}           
+        label={t('buttonContinue')}           
         size="big"
         onClick={this.onContinueHandler}
       />
@@ -588,8 +598,9 @@ class Body extends Component {
 
     return (
       <WizardContainer>
-        { modalDialog }
+        
         <Box className="form-container">
+        { modalDialog }
           {headerBox}
           {inputBox}
           {settingsBox}
@@ -600,9 +611,27 @@ class Body extends Component {
   }
 }
 
-const Wizard = props => <PageLayout 
+const WizardPage = props => <PageLayout 
   sectionBodyContent={<Body {...props} />} 
   sectionHeaderContent={sectionHeaderContent}
 />;
 
-export default withRouter(Wizard);
+const WizardWrapper = withTranslation()(WizardPage);
+
+const Wizard = props => {
+  const { language } = props;
+
+  i18n.changeLanguage(language);
+
+  return <WizardWrapper i18n={i18n}  {...props}/>
+}
+
+function mapStateToProps(state) {
+  return {
+    domain: state.wizard.domain,
+    language: state.wizard.language
+  };
+}
+
+export default connect(mapStateToProps)(withRouter(Wizard)); 
+
