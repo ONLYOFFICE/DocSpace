@@ -376,7 +376,8 @@ namespace ASC.Data.Backup.Service
             var backupWorker = scope.ServiceProvider.GetService<BackupWorker>();
 
 
-            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, DateTime.UtcNow, ArchiveFormat);
+            var tenant = tenantManager.GetTenant(TenantId);
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenant.TenantAlias, DateTime.UtcNow, ArchiveFormat);
             var tempFile = Path.Combine(TempFolder, backupName);
             var storagePath = tempFile;
             try
@@ -424,7 +425,7 @@ namespace ASC.Data.Backup.Service
 
                 if (UserId != Guid.Empty && !IsScheduled)
                 {
-                    notifyHelper.SendAboutBackupCompleted(TenantId, UserId, Link);
+                    notifyHelper.SendAboutBackupCompleted(UserId);
                 }
 
                 IsCompleted = true;
@@ -503,13 +504,13 @@ namespace ASC.Data.Backup.Service
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
             {
-                notifyHelper.SendAboutRestoreStarted(TenantId, Notify);
+                tenant = tenantManager.GetTenant(TenantId);
+                notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
 
                 Percentage = 10;
 
-                tenant = tenantManager.GetTenant(TenantId);
                 tenant.SetStatus(TenantStatus.Restoring);
                 tenantManager.SaveTenant(tenant);
 
@@ -536,7 +537,7 @@ namespace ASC.Data.Backup.Service
                         var tenants = tenantManager.GetTenants();
                         foreach (var t in tenants)
                         {
-                            notifyHelper.SendAboutRestoreCompleted(t.TenantId, Notify);
+                            notifyHelper.SendAboutRestoreCompleted(t, Notify);
                         }
                     }
                 }
@@ -557,7 +558,7 @@ namespace ASC.Data.Backup.Service
                     // sleep until tenants cache expires
                     Thread.Sleep(TimeSpan.FromMinutes(2));
 
-                    notifyHelper.SendAboutRestoreCompleted(restoredTenant.TenantId, Notify);
+                    notifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
                 }
 
                 Percentage = 75;
@@ -649,11 +650,12 @@ namespace ASC.Data.Backup.Service
             var backupWorker = scope.ServiceProvider.GetService<BackupWorker>();
 
             var tempFile = PathHelper.GetTempFileName(TempFolder);
-            var alias = tenantManager.GetTenant(TenantId).TenantAlias;
+            var tenant = tenantManager.GetTenant(TenantId);
+            var alias = tenant.TenantAlias;
 
             try
             {
-                notifyHelper.SendAboutTransferStart(TenantId, TargetRegion, Notify);
+                notifyHelper.SendAboutTransferStart(tenant, TargetRegion, Notify);
                 var transferProgressItem = scope.ServiceProvider.GetService<TransferPortalTask>();
                 transferProgressItem.Init(TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, TempFolder);
                 transferProgressItem.ProgressChanged += (sender, args) =>
@@ -668,7 +670,7 @@ namespace ASC.Data.Backup.Service
                 transferProgressItem.RunJob();
 
                 Link = GetLink(alias, false);
-                notifyHelper.SendAboutTransferComplete(TenantId, TargetRegion, Link, !Notify);
+                notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
             }
             catch (Exception error)
             {
@@ -676,7 +678,7 @@ namespace ASC.Data.Backup.Service
                 Error = error;
 
                 Link = GetLink(alias, true);
-                notifyHelper.SendAboutTransferError(TenantId, TargetRegion, Link, !Notify);
+                notifyHelper.SendAboutTransferError(tenant, TargetRegion, Link, !Notify);
             }
             finally
             {

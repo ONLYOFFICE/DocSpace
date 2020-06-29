@@ -25,69 +25,129 @@
 
 
 using System;
+using System.Linq;
+
 using ASC.Common;
-using ASC.Common.Logging;
-using Microsoft.Extensions.Options;
-using ASC.Notify;
+using ASC.Core;
+using ASC.Core.Notify;
+using ASC.Core.Tenants;
+using ASC.Core.Users;
+using ASC.Notify.Model;
+using ASC.Notify.Patterns;
+using ASC.Notify.Recipients;
+using ASC.Web.Core.Users;
+using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.Utility;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Backup
 {
     public class NotifyHelper
     {
-        private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Studio";
-        private const string MethodTransferStart = "MigrationPortalStart";
-        private const string MethodTransferCompleted = "MigrationPortalSuccess";
-        private const string MethodTransferError = "MigrationPortalError";
-        private const string MethodBackupCompleted = "SendMsgBackupCompleted";
-        private const string MethodRestoreStarted = "SendMsgRestoreStarted";
-        private const string MethodRestoreCompleted = "SendMsgRestoreCompleted";
-        private readonly ILog log;
-        private readonly NotifyService notifyService;
+        public IServiceProvider ServiceProvider { get; }
 
-        public NotifyHelper(IOptionsMonitor<ILog> options, NotifyService notifyService)
+        public NotifyHelper(IServiceProvider serviceProvider)
         {
-            this.notifyService = notifyService;
-            log = options.CurrentValue;
-        }
-        public void SendAboutTransferStart(int tenantId, string targetRegion, bool notifyUsers)
-        {
-            SendNotification(MethodTransferStart, tenantId, targetRegion, notifyUsers);
+            ServiceProvider = serviceProvider;
         }
 
-        public void SendAboutTransferComplete(int tenantId, string targetRegion, string targetAddress, bool notifyOnlyOwner)
+        public void SendAboutTransferStart(Tenant tenant, string targetRegion, bool notifyUsers)
         {
-            SendNotification(MethodTransferCompleted, tenantId, targetRegion, targetAddress, !notifyOnlyOwner);
+            MigrationNotify(tenant, Actions.MigrationPortalStart, targetRegion, string.Empty, notifyUsers);
         }
 
-        public void SendAboutTransferError(int tenantId, string targetRegion, string resultAddress, bool notifyOnlyOwner)
+        public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner)
         {
-            SendNotification(MethodTransferError, tenantId, targetRegion, resultAddress, !notifyOnlyOwner);
+            MigrationNotify(tenant, Actions.MigrationPortalSuccess, targetRegion, targetAddress, !notifyOnlyOwner);
         }
 
-        public void SendAboutBackupCompleted(int tenantId, Guid userId, string link)
+        public void SendAboutTransferError(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
         {
-            SendNotification(MethodBackupCompleted, tenantId, userId, link);
+            MigrationNotify(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
         }
 
-        public void SendAboutRestoreStarted(int tenantId, bool notifyAllUsers)
+        public void SendAboutBackupCompleted(Guid userId)
         {
-            SendNotification(MethodRestoreStarted, tenantId, notifyAllUsers);
+            using var scope = ServiceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+
+            client.SendNoticeToAsync(
+                Actions.BackupCreated,
+                new[] { studioNotifyHelper.ToRecipient(userId) },
+                new[] { StudioNotifyService.EMailSenderName },
+                new TagValue(Tags.OwnerName, userManager.GetUsers(userId).DisplayUserName(displayUserSettingsHelper)));
         }
 
-        public void SendAboutRestoreCompleted(int tenantId, bool notifyAllUsers)
+        public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
         {
-            SendNotification(MethodRestoreCompleted, tenantId, notifyAllUsers);
+            using var scope = ServiceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+
+            var owner = userManager.GetUsers(tenant.OwnerId);
+            var users =
+                notifyAllUsers
+                    ? studioNotifyHelper.RecipientFromEmail(userManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
+                    : owner.ActivationStatus == EmployeeActivationStatus.Activated ? studioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
+
+            client.SendNoticeToAsync(
+                Actions.RestoreStarted,
+                users,
+                new[] { StudioNotifyService.EMailSenderName });
         }
 
-        private void SendNotification(string method, int tenantId, params object[] args)
+        public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
         {
-            try
+            using var scope = ServiceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+
+            var owner = userManager.GetUsers(tenant.OwnerId);
+
+            var users =
+                notifyAllUsers
+                    ? userManager.GetUsers(EmployeeStatus.Active).Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray()
+                    : new[] { studioNotifyHelper.ToRecipient(owner.ID) };
+
+            client.SendNoticeToAsync(
+                Actions.RestoreCompleted,
+                users,
+                new[] { StudioNotifyService.EMailSenderName },
+                new TagValue(Tags.OwnerName, owner.DisplayUserName(displayUserSettingsHelper)));
+        }
+
+        private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+
+            var users = userManager.GetUsers()
+                .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
+                .Select(u => studioNotifyHelper.ToRecipient(u.ID))
+                .ToArray();
+
+            if (users.Any())
             {
-                notifyService.InvokeSendMethod(NotifyService, method, tenantId, args);
-            }
-            catch (Exception error)
-            {
-                log.Warn("Error while sending notification", error);
+                client.SendNoticeToAsync(
+                    action,
+                    users,
+                    new[] { StudioNotifyService.EMailSenderName },
+                    new TagValue(Tags.RegionName, TransferResourceHelper.GetRegionDescription(region)),
+                    new TagValue(Tags.PortalUrl, url));
             }
         }
     }
@@ -95,9 +155,11 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddNotifyHelperService(this DIHelper services)
         {
-            services.TryAddScoped<NotifyHelper>();
+            services.TryAddSingleton<NotifyHelper>();
             return services
-                .AddNotifyService();
+                .AddUserManagerService()
+                .AddStudioNotifyHelperService()
+                .AddDisplayUserSettingsService();
         }
     }
 }
