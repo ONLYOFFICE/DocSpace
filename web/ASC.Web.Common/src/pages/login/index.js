@@ -223,16 +223,9 @@ class Form extends Component {
 
     return (
       <FormContainer>
-        <div className="login-header">
-          <img
-            className="login-logo"
-            src="images/dark_general.png"
-            alt="Logo"
-          />
-          <Heading className="login-title" color="#116d9d">
-            {greetingTitle}
-          </Heading>
-        </div>
+        <Heading className="login-title" color="#116d9d">
+          {greetingTitle}
+        </Heading>
 
         <TextInput
           id="login"
