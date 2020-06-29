@@ -25,7 +25,7 @@
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    static class Tags
+    public static class Tags
     {
         public const string UserName = "UserName";
         public const string UserLastName = "UserLastName";
