@@ -29,7 +29,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Core;
-using ASC.Core.Notify;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Model;
@@ -72,7 +71,7 @@ namespace ASC.Data.Backup
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
             var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
@@ -88,7 +87,7 @@ namespace ASC.Data.Backup
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
             var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
@@ -109,7 +108,7 @@ namespace ASC.Data.Backup
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
             var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
@@ -132,7 +131,7 @@ namespace ASC.Data.Backup
             using var scope = ServiceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var users = userManager.GetUsers()
