@@ -1,37 +1,20 @@
-{ 
-  "title": "Portal Setup - Go through these easy steps to start your web office easily",
-  "buttonBox": {
-    "buttonName": "Continue"
-  },
-  "checkboxBox": {
-    "labelSendData": "I agree to send anonymous usage data to improve ONLYOFFICE",
-    "labelAcceptLicense": "By checking this box you accept the terms of the ",
-    "link": "License Agreements"
-  },
-  "languageAndTimezoneBox": {
-    "heading": "Language and Time Zone Settings",
-    "labelLanguage": "Language:",
-    "labelTimezone": "Time Zone:"
-  },
-  "passwordBox": {
-    "heading": "Password",
-    "tooltipPasswordTitle": "Password must contain:",
-    "tooltipPasswordLength": "from 6 to 30 characters",
-    "tooltipPasswordDigits": "digits",
-    "tooltipPasswordCapital": "capital letters",
-    "tooltipPasswordSpecial": "special characters (!@#$%^&*)",
-    "labelFirstPass": "Type password (minimum 5 characters)",
-    "placeholder": "password",
-    "labelSecondPass": "Confirm password"
-  },
-  "registrationSettingsBox": {
-    "heading": "Registration Settings",
-    "labelEmail": "Your portal is registered from the following email: ",
-    "placeholder": "email",
-    "labelDomain": "Your portal is registered to the following domain: "
-  },
-  "welcomeBox": {
-    "heading": "Welcome to Your ONLYOFFICE Portal",
-    "text": "Thank you for choosing ONLYOFFICE! For the security reasons the password setup procedure must be performed."
-  }
+{
+  "title": " Portal Setup - Go through these easy steps to start your web office easily",
+  "welcome": "Welcome to your portal!",
+  "desc": "Please setup the portal registration data.",
+  "placeholderEmail": "E-mail",
+  "placeholderPass": "Password",
+  "tooltipPass": "2-30 characters",
+  "placeholderLicense": "Your license file",
+  "license": "Accept the terms of the ",
+  "licenseLink": "License agreements", 
+  "domain": "Domain:",
+  "email": "E-mail",
+  "language": "Language:",
+  "timezone": "Time zone:",
+  "buttonContinue": "Continue",
+  "errorLicenseTitle": "Loading error", 
+  "errorLicenseBody": "The license is not valid. Make sure you select the correct file",
+  "changeEmailTitle": "Change e-mail",
+  "changeEmailBtn": "Save"
 }

@@ -1,37 +1,20 @@
-{ 
-  "title": "Настройки портала - пройдите эти простые шаги для лёгкого создания своего веб-офиса",
-  "buttonBox": {
-    "buttonName": "Продолжить"
-  },
-  "checkboxBox": {
-    "labelSendData": "Я согласен отправлять анонимные данные об использовании, чтобы улучшить ONLYOFFICE",
-    "labelAcceptLicense": "Установив этот флажок, вы принимаете условия нашего",
-    "link": "Лицензионное соглашение"
-  },
-  "languageAndTimezoneBox": {
-    "heading": "Настройки языка и часового пояса",
-    "labelLanguage": "Язык:",
-    "labelTimezone": "Часовой пояс:"
-  },
-  "passwordBox": {
-    "heading": "Пароль",
-    "tooltipPasswordTitle": "Пароль должен содержать:",
-    "tooltipPasswordLength": "от 6 до 30 символов",
-    "tooltipPasswordDigits": "цифры",
-    "tooltipPasswordCapital": "заглавные буквы",
-    "tooltipPasswordSpecial": "специальные символы (!@#$%^&*)",
-    "labelFirstPass": "Введите пароль (минимум 5 символов)",
-    "placeholder": "пароль",
-    "labelSecondPass": "Подтвердите пароль"
-  },
-  "registrationSettingsBox": {
-    "heading": "Настройки регистрации",
-    "labelEmail": "Ваш портал зарегистрирован со следующего адреса электронной почты:",
-    "placeholder": "email",
-    "labelDomain": "Ваш портал зарегистрирован за следующим доменом:"
-  },
-  "welcomeBox": {
-    "heading": "Добро пожаловать на портал ONLYOFFICE",
-    "text": "Благодарим Вас за выбор ONLYOFFICE! В целях безопасности необходимо выполнить процедуру установки пароля."
-  }
+{
+  "title": " Portal Setup - Go through these easy steps to start your web office easily",
+  "welcome": "Добро пожаловать на Ваш портал!",
+  "desc": "Пожалуйста, настройте регистрационные данные портала.",
+  "placeholderEmail": "E-mail",
+  "placeholderPass": "Пароль",
+  "tooltipPass": "от 2 до 30 символов",
+  "placeholderLicense": "Ваш файл лицензии",
+  "license": "Принять условия ",
+  "licenseLink": "лицензионного соглашения", 
+  "domain": "Домен:",
+  "email": "E-mail",
+  "language": "Язык:",
+  "timezone": "Часовой пояс:",
+  "buttonContinue": "Продолжить",
+  "errorLicenseTitle": "Ошибка загрузки",
+  "errorLicenseBody": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
+  "changeEmailTitle": "Измененить адрес электронной почты",
+  "changeEmailBtn": "Сохранить"
 }
