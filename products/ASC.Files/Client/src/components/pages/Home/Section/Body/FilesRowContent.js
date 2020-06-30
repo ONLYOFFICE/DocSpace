@@ -191,7 +191,7 @@ class FilesRowContent extends React.PureComponent {
     if (item.fileExst) {
       this.setState({fileStatus: 0}, () => 
         api.files
-        .markAsRead([], [])
+        .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
           const dataItem = data.find((x) => x.id === rootFolderId);
