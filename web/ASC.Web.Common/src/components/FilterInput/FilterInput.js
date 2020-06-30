@@ -238,7 +238,7 @@ class FilterInput extends React.Component {
         this.setState({ sortDirection: !!key });
     }
     onClickViewSelector(item) {
-        const itemId = item || (item.target.dataset && item.target.dataset.for);
+        const itemId = (item.target && item.target.dataset.for) || item;
         const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row"
         this.onFilter(this.state.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc", viewAs);
         this.setState({ viewAs: viewAs });
