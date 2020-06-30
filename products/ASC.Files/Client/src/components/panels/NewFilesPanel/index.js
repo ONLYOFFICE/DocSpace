@@ -26,7 +26,7 @@ import {
   StyledFooter
 } from "../StyledPanels";
 import { getFileIcon, getFolderIcon, canWebEdit, isImage, isSound, isVideo } from "../../../store/files/selectors";
-import { fetchFiles, setMediaViewerData } from '../../../store/files/actions';
+import { fetchFiles, setMediaViewerData, setTreeFolders } from '../../../store/files/actions';
 import store from "../../../store/store";
 
 const { changeLanguage } = commonUtils;
@@ -36,6 +36,20 @@ class NewFilesPanelComponent extends React.Component {
     super(props);
 
     changeLanguage(i18n);
+
+    this.state = { files: [] };
+  }
+
+  componentDidMount() {
+    const { folderId, onLoading } = this.props;
+    onLoading(true);
+    api.files
+      .getNewFiles(folderId[folderId.length - 1])
+      .then(files =>
+        this.setState({ files })
+      )
+      .catch((err) => toastr.error(err))
+      .finally(() => onLoading(false));
   }
 
   getItemIcon = (item, isEdit) => {
@@ -57,16 +71,18 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onMarkAsRead = () => {
-    const { folderId, onClose, setNewFilesCount } = this.props;
+    const { folderId, onClose } = this.props;
+    const markAsReadFiles = true;
     api.files
+      //.markAsRead([], [])
       .markAsRead([folderId], [])
-      .then(() => setNewFilesCount(folderId, 0))
+      .then(() => this.setNewFilesCount(folderId, markAsReadFiles))
       .catch(err => toastr.error(err))
       .finally(() => onClose());
   };
 
   onNewFilesClick = item => {
-    const { setNewFilesCount, onClose, /*onLoading,*/ folderId } = this.props;
+    const { onClose, /*onLoading,*/ folderId } = this.props;
     const folderIds = [];
     const fileId = [];
     const isFile = item.fileExst;
@@ -75,9 +91,10 @@ class NewFilesPanelComponent extends React.Component {
 
     //onLoading(true);
 
+    //api.files.markAsRead([], [])
     api.files.markAsRead(folderIds, fileId)
       .then(() => {
-        setNewFilesCount(folderId);
+        this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
       })
       .catch(err => toastr.error(err))
@@ -111,10 +128,59 @@ class NewFilesPanelComponent extends React.Component {
     }
   };
 
+  setNewFilesCount = (folderPath, markAsReadAll, item) => {
+    const { treeFolders, setTreeFolders, setNewItems, folders, files, filter } = this.props;
+    //const newFilter = filter.clone();
+
+    const data = treeFolders;
+    let dataItem;
+
+    const loop = (index, newData) => {
+      dataItem = newData.find(x => x.id === folderPath[index]);
+      if(index === folderPath.length - 1) {
+        const rootItem = data.find(x => x.id === folderPath[0]);
+        const newFilesCounter = dataItem.newItems ? dataItem.newItems : dataItem.new;
+        rootItem.newItems = markAsReadAll ? rootItem.newItems - newFilesCounter : rootItem.newItems - 1;
+        dataItem.newItems = markAsReadAll ? 0 : newFilesCounter - 1;
+        return;
+      } else { loop(index + 1, dataItem.folders); }
+    }
+
+    if(folderPath.length > 1) {
+      loop(0, data);
+    } else {
+      dataItem = data.find(x => x.id === folderPath[0]);
+      dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
+
+      if(item.fileExst) {
+        const fileItem = files.find(x => x.id === item.id && x.fileExst);
+        if(fileItem) {
+          fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
+          //file
+          //fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
+          
+        } else {
+          const a = folders.find(x => x.id === item.folderId);
+          a.new = markAsReadAll ? 0 : a.new - 1;
+
+          //fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
+          //file in folder
+        }
+      } else {
+        const folderItem = folders.find(x => x.id === item.id && !x.fileExst);
+        folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
+      }
+    }
+
+    setNewItems && setNewItems(dataItem.newItems);
+    setTreeFolders(data);
+  }
+
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, onClose, files } = this.props;
+    const { t, visible, onClose } = this.props;
+    const { files } = this.state;
     const zIndex = 310;
 
     return (
@@ -192,8 +258,8 @@ const NewFilesPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  const { filter } = state.files
-  return { filter };
+  const { filter, files, folders, treeFolders, selectedFolder } = state.files
+  return { filter, files, folders, treeFolders, selectedFolder };
 };
 
-export default connect(mapStateToProps, { setMediaViewerData })(withRouter(NewFilesPanel));
+export default connect(mapStateToProps, { setMediaViewerData, setTreeFolders })(withRouter(NewFilesPanel));

@@ -188,7 +188,7 @@ export function fetchFiles(folderId, filter, dispatch) {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     //dispatch(setSelected("close")); //TODO: need close but it`s crash first select, need new logic
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));
+    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts, ...{new: data.new} }));
   })
 }
 
@@ -359,6 +359,7 @@ export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveTy
     return files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
   };
 };
+
 
 /*export function deleteGroup(id) {
   return (dispatch, getState) => {
