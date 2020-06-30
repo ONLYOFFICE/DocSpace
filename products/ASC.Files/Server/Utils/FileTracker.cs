@@ -33,7 +33,6 @@ using ASC.Common.Caching;
 
 namespace ASC.Web.Files.Utils
 {
-    [DataContract]
     public class FileTracker
     {
         private const string TRACKER = "filesTracker";
@@ -43,7 +42,7 @@ namespace ASC.Web.Files.Utils
         public static readonly TimeSpan CacheTimeout = TimeSpan.FromSeconds(60);
         public static readonly TimeSpan CheckRightTimeout = TimeSpan.FromMinutes(1);
 
-        [DataMember] private readonly Dictionary<Guid, TrackInfo> _editingBy;
+        private readonly Dictionary<Guid, TrackInfo> _editingBy;
 
 
         private FileTracker()
@@ -223,18 +222,18 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        [DataContract]
+        
         internal class TrackInfo
         {
-            [DataMember] public DateTime CheckRightTime;
+            public DateTime CheckRightTime;
 
-            [DataMember] public DateTime TrackTime;
+            public DateTime TrackTime;
 
-            [DataMember] public Guid UserId;
+            public Guid UserId;
 
-            [DataMember] public bool NewScheme;
+            public bool NewScheme;
 
-            [DataMember] public bool EditingAlone;
+            public bool EditingAlone;
 
             public TrackInfo()
             {

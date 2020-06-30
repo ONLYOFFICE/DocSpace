@@ -437,100 +437,74 @@ namespace ASC.Web.Core.Files
         {
             public CommandMethod Command { get; set; }
 
-            [DataMember(Name = "c", IsRequired = true)]
+           
             public string C
             {
                 get { return Command.ToString().ToLower(CultureInfo.InvariantCulture); }
             }
-
-            [DataMember(Name = "callback", IsRequired = false, EmitDefaultValue = false)]
+           
             public string Callback { get; set; }
-
-            [DataMember(Name = "key", IsRequired = true)]
+         
             public string Key { get; set; }
-
-            [DataMember(Name = "meta", IsRequired = false, EmitDefaultValue = false)]
+          
             public MetaData Meta { get; set; }
 
-            [DataMember(Name = "users", IsRequired = false, EmitDefaultValue = false)]
             public string[] Users { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
             public string Token { get; set; }
 
             //not used
-            [DataMember(Name = "userdata", IsRequired = false, EmitDefaultValue = false)]
             public string UserData { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "meta", Namespace = "")]
         [DebuggerDisplay("{Title}")]
         public class MetaData
         {
-            [DataMember(Name = "title")]
             public string Title;
         }
 
         [Serializable]
-        [DataContract(Name = "Converion", Namespace = "")]
         [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
         private class ConvertionBody
         {
-            [DataMember(Name = "async")]
             public bool Async { get; set; }
 
-            [DataMember(Name = "filetype", IsRequired = true)]
             public string FileType { get; set; }
 
-            [DataMember(Name = "key", IsRequired = true)]
             public string Key { get; set; }
 
-            [DataMember(Name = "outputtype", IsRequired = true)]
             public string OutputType { get; set; }
 
-            [DataMember(Name = "password", EmitDefaultValue = false)]
             public string Password { get; set; }
 
-            [DataMember(Name = "title")]
             public string Title { get; set; }
 
-            [DataMember(Name = "url", IsRequired = true)]
             public string Url { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
             public string Token { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "Builder", Namespace = "")]
         [DebuggerDisplay("{Key}")]
         private class BuilderBody
         {
-            [DataMember(Name = "async")]
             public bool Async { get; set; }
 
-            [DataMember(Name = "key", IsRequired = true)]
             public string Key { get; set; }
 
-            [DataMember(Name = "url", IsRequired = true)]
             public string Url { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
             public string Token { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "file", Namespace = "")]
         public class FileLink
         {
-            [DataMember(Name = "fileType")]
             public string FileType;
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
             public string Token;
 
-            [DataMember(Name = "url")]
             public string Url;
         }
 

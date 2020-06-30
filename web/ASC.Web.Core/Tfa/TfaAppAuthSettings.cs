@@ -31,7 +31,6 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
-    [DataContract]
     public class TfaAppAuthSettings : ISettings
     {
         public Guid ID
@@ -44,7 +43,6 @@ namespace ASC.Web.Studio.Core.TFA
             return new TfaAppAuthSettings { EnableSetting = false, };
         }
 
-        [DataMember(Name = "Enable")]
         public bool EnableSetting { get; set; }
 
 

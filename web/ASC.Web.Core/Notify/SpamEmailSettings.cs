@@ -32,13 +32,10 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core.Notify
 {
     [Serializable]
-    [DataContract]
     public class SpamEmailSettings : ISettings
     {
-        [DataMember(Name = "MailsSendedCount")]
         public int MailsSendedCount { get; set; }
 
-        [DataMember(Name = "MailsSendedDate")]
         public DateTime MailsSendedDate { get; set; }
 
         public Guid ID

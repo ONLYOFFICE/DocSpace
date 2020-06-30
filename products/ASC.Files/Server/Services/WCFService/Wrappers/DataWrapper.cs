@@ -30,19 +30,14 @@ using ASC.Files.Core;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    [DataContract(Name = "composite_data", Namespace = "")]
     public class DataWrapper<T>
     {
-        [DataMember(IsRequired = false, Name = "entries", EmitDefaultValue = false)]
         public ItemList<FileEntry> Entries { get; set; }
 
-        [DataMember(IsRequired = false, Name = "total")]
         public int Total { get; set; }
 
-        [DataMember(IsRequired = false, Name = "path_parts")]
         public ItemList<T> FolderPathParts { get; set; }
 
-        [DataMember(IsRequired = false, Name = "folder_info")]
         public Folder<T> FolderInfo { get; set; }
 
         public int New { get; set; }

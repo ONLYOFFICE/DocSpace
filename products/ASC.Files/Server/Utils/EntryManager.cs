@@ -32,6 +32,7 @@ using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -596,7 +597,7 @@ namespace ASC.Web.Files.Utils
             folder.FolderType = FolderType.DEFAULT;
             folder.ModifiedBy = providerInfo.Owner;
             folder.ModifiedOn = providerInfo.CreateOn;
-            folder.ProviderId = providerInfo.ID == 0 ? null : (int?)providerInfo.ID;
+            folder.ProviderId = providerInfo.ID;
             folder.ProviderKey = providerInfo.ProviderKey;
             folder.RootFolderCreator = providerInfo.Owner;
             folder.RootFolderId = providerInfo.RootFolderId;
@@ -645,7 +646,7 @@ namespace ASC.Web.Files.Utils
                 var tagLocked = tagsLocked.FirstOrDefault(t => t.EntryId.Equals(file.ID));
 
                 var lockedBy = tagLocked != null ? tagLocked.Owner : Guid.Empty;
-                file.Locked = (lockedBy != Guid.Empty) == false? null : (bool?)(lockedBy != Guid.Empty);
+                file.Locked = lockedBy != Guid.Empty;
                 file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
                     ? Global.GetUserName(lockedBy)
                     : null;

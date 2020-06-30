@@ -344,10 +344,10 @@ namespace ASC.Web.Files.Utils
                 };
                 result.Add(w);
             }
-         
+
             if (entry.FileEntryType == FileEntryType.File && result.All(w => w.SubjectId != FileConstant.ShareLinkId)
                 && entry.FileEntryType == FileEntryType.File
-                && !((File<T>)entry).Encrypted == null ? false : (bool)((File<T>)entry).Encrypted)
+                && !((File<T>)entry).Encrypted)
             {
                 var w = new AceWrapper
                 {

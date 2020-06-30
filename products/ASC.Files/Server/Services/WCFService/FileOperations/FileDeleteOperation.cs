@@ -155,7 +155,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         if (ProviderDao != null)
                         {
-                            ProviderDao.RemoveProviderInfo(folder.ProviderId == null ? 0 : (int) folder.ProviderId);
+                            ProviderDao.RemoveProviderInfo(folder.ProviderId);
                             filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
                         }
 

@@ -28,31 +28,22 @@ using System.Runtime.Serialization;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    [DataContract(Name = "operation_result", Namespace = "")]
     public class FileOperationResult
     {
-        [DataMember(Name = "id")]
         public string Id { get; set; }
 
-        [DataMember(Name = "operation")]
         public FileOperationType OperationType { get; set; }
 
-        [DataMember(Name = "progress")]
         public int Progress { get; set; }
 
-        [DataMember(Name = "source")]
         public string Source { get; set; }
 
-        [DataMember(Name = "result")]
         public string Result { get; set; }
 
-        [DataMember(Name = "error")]
         public string Error { get; set; }
 
-        [DataMember(Name = "processed")]
         public string Processed { get; set; }
 
-        [DataMember(Name = "finished")]
         public bool Finished { get; set; }
     }
 }

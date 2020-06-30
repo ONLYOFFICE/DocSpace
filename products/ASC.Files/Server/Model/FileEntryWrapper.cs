@@ -118,9 +118,9 @@ namespace ASC.Api.Documents
             Updated = apiDateTimeHelper.Get(entry.ModifiedOn);
             UpdatedBy = employeeWraperHelper.Get(entry.ModifiedBy);
             RootFolderType = entry.RootFolderType;
-            ProviderItem = entry.ProviderEntry == false ? null : (bool?)true;
+            ProviderItem = entry.ProviderEntry ? (bool?)true : null;
             ProviderKey = entry.ProviderKey;
-            ProviderId = entry.ProviderId;
+            ProviderId = entry.ProviderId == 0 ? null : (int?) entry.ProviderId;
         }
 
         /// <summary>
@@ -189,10 +189,10 @@ namespace ASC.Api.Documents
                 Updated = ApiDateTimeHelper.Get(entry.ModifiedOn),
                 UpdatedBy = EmployeeWraperHelper.Get(entry.ModifiedBy),
                 RootFolderType = entry.RootFolderType,
-                ProviderItem = entry.ProviderEntry == false ? null : (bool?)true,
+                ProviderItem = entry.ProviderEntry ? (bool?)true : null,
                 ProviderKey = entry.ProviderKey,
-                ProviderId = entry.ProviderId
-        };
+                ProviderId = entry.ProviderId == 0 ? null : (int?)entry.ProviderId
+            };
         }
     }
 

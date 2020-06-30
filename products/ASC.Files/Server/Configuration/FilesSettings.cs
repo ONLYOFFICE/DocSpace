@@ -35,40 +35,28 @@ using ASC.Files.Core;
 namespace ASC.Web.Files.Classes
 {
     [Serializable]
-    [DataContract]
     public class FilesSettings : ISettings
     {
-        [DataMember(Name = "EnableThirdpartySettings")]
         public bool EnableThirdpartySetting { get; set; }
 
-        [DataMember(Name = "FastDelete")]
         public bool FastDeleteSetting { get; set; }
 
-        [DataMember(Name = "StoreOriginalFiles")]
         public bool StoreOriginalFilesSetting { get; set; }
 
-        [DataMember(Name = "UpdateIfExist")]
         public bool UpdateIfExistSetting { get; set; }
 
-        [DataMember(Name = "ConvertNotify")]
         public bool ConvertNotifySetting { get; set; }
 
-        [DataMember(Name = "SortedBy")]
         public SortedByType DefaultSortedBySetting { get; set; }
 
-        [DataMember(Name = "SortedAsc")]
         public bool DefaultSortedAscSetting { get; set; }
 
-        [DataMember(Name = "HideConfirmConvertSave")]
         public bool HideConfirmConvertSaveSetting { get; set; }
 
-        [DataMember(Name = "HideConfirmConvertOpen")]
         public bool HideConfirmConvertOpenSetting { get; set; }
 
-        [DataMember(Name = "Forcesave")]
         public bool ForcesaveSetting { get; set; }
 
-        [DataMember(Name = "StoreForcesave")]
         public bool StoreForcesaveSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

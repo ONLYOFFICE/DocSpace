@@ -47,10 +47,8 @@ using Google.Authenticator;
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
-    [DataContract]
     public class BackupCode
     {
-        [DataMember(Name = "Code")]
         private string code;
 
         public Signature Signature { get; }
@@ -61,7 +59,6 @@ namespace ASC.Web.Studio.Core.TFA
             set { code = Signature.Create(value); }
         }
 
-        [DataMember(Name = "IsUsed")]
         public bool IsUsed { get; set; }
 
         public BackupCode(Signature signature, string code)

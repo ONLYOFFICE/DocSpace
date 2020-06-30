@@ -28,16 +28,12 @@ using System.Runtime.Serialization;
 
 namespace ASC.Web.Files.Core.Entries
 {
-    [DataContract(Name = "encrypted_data", Namespace = "")]
     public class EncryptedData
     {
-        [DataMember(Name = "publicKey")]
         public string PublicKey;
 
-        [DataMember(Name = "fileHash")]
         public string FileHash;
 
-        [DataMember(Name = "data")]
         public string Data;
     }
 }

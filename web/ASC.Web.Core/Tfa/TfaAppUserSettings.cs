@@ -33,13 +33,10 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
-    [DataContract]
     public class TfaAppUserSettings : ISettings
     {
-        [DataMember(Name = "BackupCodes")]
         public IEnumerable<BackupCode> CodesSetting { get; set; }
 
-        [DataMember(Name = "Salt")]
         public long SaltSetting { get; set; }
 
         public Guid ID

@@ -136,10 +136,8 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         [Serializable]
-        [DataContract(Name = "response", Namespace = "")]
         public class TrackResponse
         {
-            [DataMember(Name = "error")]
             public int Error
             {
                 set { }
@@ -151,10 +149,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
             }
 
-            [DataMember(Name = "message", EmitDefaultValue = false)]
             public string Message = null;
 
-            [DataMember(Name = "addresses", EmitDefaultValue = false)]
             public string[] Addresses = null;
 
             public static string Serialize(TrackResponse response)
@@ -472,7 +468,7 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.FilesChangeEditors(fileId, !forcesave);
 
             var result = new TrackResponse { Message = saveMessage };
-            if (string.IsNullOrEmpty(saveMessage) && file != null && (file.Encrypted != null && (bool)file.Encrypted))
+            if (string.IsNullOrEmpty(saveMessage) && file != null && file.Encrypted)
             {
                 result.Addresses = EncryptionAddressHelper.GetAddresses(file.ID.ToString()).ToArray();
             }

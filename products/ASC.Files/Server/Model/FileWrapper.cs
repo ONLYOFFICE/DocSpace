@@ -56,7 +56,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(EmitDefaultValue = true, IsRequired = false)]
-        public int? Version { get; set; }
+        public int Version { get; set; }
 
         /// <summary>
         /// </summary>
@@ -194,13 +194,13 @@ namespace ASC.Api.Documents
             result.FileExst = FileUtility.GetFileExtension(file.Title);
             result.FileType = FileUtility.GetFileTypeByExtention(result.FileExst);
 
-            result.Version = file.Version == 0 ? null : (int?)file.Version;
+            result.Version = file.Version;
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;
             result.FileStatus = file.FileStatus;
             result.PureContentLength = file.ContentLength == 0 ? null : (long?)file.ContentLength;
             result.Comment = file.Comment;
-            result.Encrypted = file.Encrypted;
+            result.Encrypted = file.Encrypted ? (bool?)true : null;
             try
             {
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);

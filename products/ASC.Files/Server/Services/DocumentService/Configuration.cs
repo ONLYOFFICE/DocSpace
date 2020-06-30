@@ -685,10 +685,10 @@ namespace ASC.Web.Files.Services.DocumentService
             set { }
             get
             {
-                return FileUtility.CanForcesave
+                return (FileUtility.CanForcesave
                        && !_configuration.Document.Info.File.ProviderEntry
                        && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.File.ID.ToString()) == null
-                       && FilesSettingsHelper.Forcesave;
+                       && FilesSettingsHelper.Forcesave) ? (bool?)true : null;
             }
         }
 

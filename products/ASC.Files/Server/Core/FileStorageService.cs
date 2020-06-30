@@ -1195,7 +1195,7 @@ namespace ASC.Web.Files.Services.WCFService
                 FileMarker.RemoveMarkAsNewForAll(folder);
             }
 
-            providerDao.RemoveProviderInfo(folder.ProviderId == null ? 0 : (int) folder.ProviderId);
+            providerDao.RemoveProviderInfo(folder.ProviderId);
             FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID.ToString(), providerInfo.ProviderKey);
 
             return folder.ID;
@@ -1736,7 +1736,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var changed = false;
             bool? canShare = null;
-            if (file.Encrypted == null ? false : (bool)file.Encrypted) canShare = false;
+            if (file.Encrypted) canShare = false;
 
             var recipients = new List<Guid>();
             foreach (var email in mentionMessage.Emails)

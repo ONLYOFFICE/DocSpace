@@ -323,22 +323,22 @@ namespace ASC.Web.Files.Helpers
 
             var signers = new List<Signer>();
             docuSignData.Users.ForEach(uid =>
-            {
-                try
                 {
-                    var user = UserManager.GetUsers(uid);
-                    signers.Add(new Signer
+                    try
                     {
-                        Email = user.Email,
-                        Name = user.DisplayUserName(false, DisplayUserSettingsHelper),
-                        RecipientId = user.ID.ToString(),
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Signer is undefined", ex);
-                }
-            });
+                        var user = UserManager.GetUsers(uid);
+                        signers.Add(new Signer
+                        {
+                            Email = user.Email,
+                            Name = user.DisplayUserName(false, DisplayUserSettingsHelper),
+                            RecipientId = user.ID.ToString(),
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Signer is undefined", ex);
+                    }
+                });
 
             var envelopeDefinition = new EnvelopeDefinition
             {
@@ -428,39 +428,30 @@ namespace ASC.Web.Files.Helpers
         }
 
 
-        [DataContract]
         [DebuggerDisplay("{AccountId} {BaseUri}")]
         private class DocuSignAccount
         {
-            [DataMember(Name = "account_id")]
             public string AccountId { get; set; }
 
-            [DataMember(Name = "base_uri")]
             public string BaseUri { get; set; }
         }
 
         [DataContract]
         private class DocuSignUserInfo
         {
-            [DataMember(Name = "accounts")]
             public List<DocuSignAccount> Accounts { get; set; }
         }
     }
 
-    [DataContract(Name = "docusign_data", Namespace = "")]
     [DebuggerDisplay("{Name}")]
     public class DocuSignData
     {
-        [DataMember(Name = "folderId")]
         public string FolderId { get; set; }
 
-        [DataMember(Name = "message")]
         public string Message { get; set; }
 
-        [DataMember(Name = "name", IsRequired = true)]
         public string Name { get; set; }
 
-        [DataMember(Name = "users")]
         public ItemList<Guid> Users { get; set; }
     }
 

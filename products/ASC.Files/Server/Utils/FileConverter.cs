@@ -513,7 +513,7 @@ namespace ASC.Web.Files.Utils
                 return false;
             }
 
-            if (file.Encrypted == null ? false : (bool)file.Encrypted)
+            if (file.Encrypted)
             {
                 return false;
             }

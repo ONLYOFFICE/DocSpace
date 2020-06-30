@@ -74,31 +74,22 @@ namespace ASC.Web.Files.Services.WCFService
         }
 
 
-        [DataContract(Name = "error", Namespace = "")]
         class FileError
         {
-            [DataMember(Name = "Detail")]
             public string Detail { get; set; }
 
-            [DataMember(Name = "message")]
             public string Message { get; set; }
 
-            [DataMember(Name = "inner")]
             public FileErrorInner Inner { get; set; }
 
-            [DataContract(Name = "error", Namespace = "")]
             internal class FileErrorInner
             {
-                [DataMember(Name = "message")]
                 public string Message { get; set; }
 
-                [DataMember(Name = "type")]
                 public string Type { get; set; }
 
-                [DataMember(Name = "source")]
                 public string Source { get; set; }
 
-                [DataMember(Name = "stack")]
                 public string Stack { get; set; }
             }
 

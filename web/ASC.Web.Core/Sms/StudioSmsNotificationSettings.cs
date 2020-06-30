@@ -36,7 +36,6 @@ using ASC.Web.Studio.Utility;
 namespace ASC.Web.Studio.Core.SMS
 {
     [Serializable]
-    [DataContract]
     public class StudioSmsNotificationSettings : ISettings
     {
         public Guid ID
@@ -49,7 +48,6 @@ namespace ASC.Web.Studio.Core.SMS
             return new StudioSmsNotificationSettings { EnableSetting = false, };
         }
 
-        [DataMember(Name = "Enable")]
         public bool EnableSetting { get; set; }
     }
 

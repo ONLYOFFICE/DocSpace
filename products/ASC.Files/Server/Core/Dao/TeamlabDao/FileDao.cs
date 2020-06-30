@@ -429,7 +429,7 @@ namespace ASC.Files.Core.Data
                     ModifiedOn = TenantUtil.DateTimeToUtc(file.ModifiedOn),
                     ConvertedType = file.ConvertedType,
                     Comment = file.Comment,
-                    Encrypted = file.Encrypted == null ? false : (bool)file.Encrypted,
+                    Encrypted = file.Encrypted,
                     Forcesave = file.Forcesave,
                     TenantId = TenantID
                 };
@@ -550,7 +550,7 @@ namespace ASC.Files.Core.Data
                 toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(file.ModifiedOn);
                 toUpdate.ConvertedType = file.ConvertedType;
                 toUpdate.Comment = file.Comment;
-                toUpdate.Encrypted = file.Encrypted == null ? false : (bool)file.Encrypted;
+                toUpdate.Encrypted = file.Encrypted;
                 toUpdate.Forcesave = file.Forcesave;
 
                 FilesDbContext.SaveChanges();
@@ -1009,7 +1009,7 @@ namespace ASC.Files.Core.Data
                 file.ContentLength = uploadSession.BytesTotal;
                 file.ConvertedType = null;
                 file.Comment = FilesCommonResource.CommentUpload;
-                file.Encrypted = uploadSession.Encrypted ? (bool?)true : null;
+                file.Encrypted = uploadSession.Encrypted;
                 return file;
             }
             var result = ServiceProvider.GetService<File<int>>();
@@ -1017,7 +1017,7 @@ namespace ASC.Files.Core.Data
             result.Title = uploadSession.File.Title;
             result.ContentLength = uploadSession.BytesTotal;
             result.Comment = FilesCommonResource.CommentUpload;
-            result.Encrypted = uploadSession.Encrypted ? (bool?)true : null;
+            result.Encrypted = uploadSession.Encrypted;
 
             return result;
         }
@@ -1382,7 +1382,7 @@ namespace ASC.Files.Core.Data
             file.Shared = r.shared;
             file.ConvertedType = r.file.ConvertedType;
             file.Comment = r.file.Comment;
-            file.Encrypted = r.file.Encrypted ? (bool?)true : null;
+            file.Encrypted = r.file.Encrypted;
             file.Forcesave = r.file.Forcesave;
             return file;
         }
