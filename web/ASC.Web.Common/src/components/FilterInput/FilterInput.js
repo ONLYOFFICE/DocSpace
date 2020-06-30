@@ -238,7 +238,7 @@ class FilterInput extends React.Component {
         this.setState({ sortDirection: !!key });
     }
     onClickViewSelector(item) {
-        const itemId = item.target.dataset.for;
+        const itemId = item || (item.target.dataset && item.target.dataset.for);
         const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row"
         this.onFilter(this.state.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc", viewAs);
         this.setState({ viewAs: viewAs });
@@ -585,6 +585,7 @@ class FilterInput extends React.Component {
                     options={getSortData()}
                     isDisabled={isDisabled}
                     onChangeSortId={this.onClickSortItem}
+                    onChangeView={this.onClickViewSelector}
                     onChangeSortDirection={this.onChangeSortDirection}
                     selectedOption={getSortData().length > 0 ? getSortData().find(x => x.key === sortId) : {}}
                     onButtonClick={this.onSortDirectionClick}
