@@ -79,6 +79,7 @@ class SectionFilterContent extends React.Component {
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
+    const viewAs = data.viewAs;
     const authorType = getAuthorType(data.filterValues);
     const withSubfolders = getSearchParams(data.filterValues);
 
@@ -95,6 +96,7 @@ class SectionFilterContent extends React.Component {
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
+    newFilter.viewAs = viewAs;
     newFilter.filterType = filterType;
     newFilter.search = search;
     newFilter.authorType = authorType;
@@ -207,14 +209,21 @@ class SectionFilterContent extends React.Component {
   getSortData = () => {
     const { t } = this.props;
 
-    return [
+    const commonOptions = [
       { key: "lastModifiedDate", label: t("ByLastModifiedDate"), default: true },
       { key: "creationDate", label: t("ByCreationDate"), default: true },
       { key: "title", label: t("ByTitle"), default: true },
       { key: "type", label: t("ByType"), default: true },
       { key: "size", label: t("BySize"), default: true },
-      { key: "author", label: t("ByAuthor"), default: true },
+      { key: "author", label: t("ByAuthor"), default: true }
     ];
+
+    const viewSettings = [
+      { key: "row", label: t("ViewList"), isSetting: true, default: true },
+      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true }
+    ];
+    //TODO: Need use mobile detect for better result
+    return window.innerWidth < 460 ? [...commonOptions,...viewSettings] : commonOptions;
   };
 
   getSelectedFilterData = () => {
@@ -222,7 +231,8 @@ class SectionFilterContent extends React.Component {
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy
+      sortId: filter.sortBy,
+      viewAs: filter.viewAs
     };
 
     selectedFilterData.inputValue = filter.search;
@@ -269,12 +279,12 @@ class SectionFilterContent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (!isEqual(this.props.filter, nextProps.filter) || this.props.selectedFolderId !== nextProps.selectedFolderId || this.state.isReady !== nextState.isReady);
   }
-  
+
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, i18n } = this.props;
-    const filterColumnCount = window.innerWidth < 500 ? {} : {filterColumnCount: 3} 
+    const filterColumnCount = window.innerWidth < 500 ? {} : { filterColumnCount: 3 }
     return (
       <FilterInput
         getFilterData={this.getData}
