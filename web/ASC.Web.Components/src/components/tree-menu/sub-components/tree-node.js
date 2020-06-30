@@ -81,9 +81,10 @@ const TreeNodeMenu = styled(TreeNode)`
         padding: 0;
     }
     .rc-tree-node-content-wrapper {
-        width: 100%;
+        width: 108%;
         display: inline-block;
         padding: 1px 8px 0 8px;
+        min-width: 190px;
         
         cursor: pointer;
         height: 24px;
@@ -225,7 +226,6 @@ const TreeNodeMenu = styled(TreeNode)`
         mix-blend-mode: normal;
         border-radius: 3px;
         z-index: 0;
-        width: 108%;
 
         :hover {
             background: #DFE2E3;

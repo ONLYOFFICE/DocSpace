@@ -32,6 +32,7 @@ export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
+export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 
 export function setFile(file) {
   return {
@@ -128,6 +129,13 @@ export function deselectFile(file) {
   return {
     type: DESELECT_FILE,
     file
+  };
+}
+
+export function setMediaViewerData(mediaViewerData) {
+  return {
+    type: SET_MEDIA_VIEWER_VISIBLE,
+    mediaViewerData
   };
 }
 

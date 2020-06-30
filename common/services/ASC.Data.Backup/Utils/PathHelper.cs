@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,58 +24,44 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
+using System.IO;
+using System.Reflection;
 
-namespace ASC.Core.Common.Contracts
+namespace ASC.Data.Backup.Utils
 {
-    [ServiceContract]
-    public interface IBackupService
+    internal static class PathHelper
     {
-        [OperationContract]
-        BackupProgress StartBackup(StartBackupRequest request);
+        public static string ToRootedPath(string path)
+        {
+            return ToRootedPath(path, Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+        }
 
-        [OperationContract]
-        BackupProgress GetBackupProgress(int tenantId);
+        public static string ToRootedPath(string path, string basePath)
+        {
+            if (!Path.IsPathRooted(path))
+            {
+                path = Path.Combine(basePath, path);
+            }
+            return Path.GetFullPath(path);
+        }
 
-        [OperationContract]
-        void DeleteBackup(Guid backupId);
+        public static string ToRootedConfigPath(string path)
+        {
+            if (!Path.HasExtension(path))
+            {
+                path = Path.Combine(path, "Web.config");
+            }
+            return ToRootedPath(path);
+        }
 
-        [OperationContract]
-        void DeleteAllBackups(int tenantId);
-
-        [OperationContract]
-        List<BackupHistoryRecord> GetBackupHistory(int tenantId);
-
-
-        [OperationContract]
-        BackupProgress StartTransfer(StartTransferRequest request);
-
-        [OperationContract]
-        BackupProgress GetTransferProgress(int tenantId);
-
-        [OperationContract]
-        List<TransferRegion> GetTransferRegions();
-
-
-        [OperationContract]
-        BackupProgress StartRestore(StartRestoreRequest request);
-
-        [OperationContract]
-        BackupProgress GetRestoreProgress(int tenantId);
-
-        [OperationContract]
-        string GetTmpFolder();
-
-
-        [OperationContract]
-        void CreateSchedule(CreateScheduleRequest request);
-
-        [OperationContract]
-        void DeleteSchedule(int tenantId);
-
-        [OperationContract]
-        ScheduleResponse GetSchedule(int tenantId);
+        public static string GetTempFileName(string tempDir)
+        {
+            string tempPath;
+            do
+            {
+                tempPath = Path.Combine(tempDir, Path.GetRandomFileName());
+            } while (File.Exists(tempPath));
+            return tempPath;
+        }
     }
 }

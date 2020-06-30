@@ -28,7 +28,7 @@ using ASC.Notify.Model;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    static class Actions
+    public static class Actions
     {
         public static readonly INotifyAction AdminNotify = new NotifyAction("admin_notify", "admin notifications");
         public static readonly INotifyAction PeriodicNotify = new NotifyAction("periodic_notify", "periodic notifications");
@@ -50,7 +50,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static readonly INotifyAction PortalDeactivate = new NotifyAction("portal_deactivate", "portal deactivate");
         public static readonly INotifyAction PortalDelete = new NotifyAction("portal_delete", "portal delete");
         public static readonly INotifyAction PortalDeleteSuccessV10 = new NotifyAction("portal_delete_success_v10");
-        
+
         public static readonly INotifyAction ProfileDelete = new NotifyAction("profile_delete", "profile_delete");
         public static readonly INotifyAction ProfileHasDeletedItself = new NotifyAction("profile_has_deleted_itself", "profile_has_deleted_itself");
         public static readonly INotifyAction ReassignsCompleted = new NotifyAction("reassigns_completed", "reassigns_completed");

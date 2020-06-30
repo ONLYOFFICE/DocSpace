@@ -11,10 +11,11 @@ import {
   RowContainer,
   Text,
   Link,
-  Button
+  Button,
+  toastr
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
+import { utils as commonUtils, api } from "asc-web-common";
 import i18n from "./i18n";
 import { ReactSVG } from 'react-svg'
 import {
@@ -24,7 +25,9 @@ import {
   StyledBody,
   StyledFooter
 } from "../StyledPanels";
-import { getFileIcon, getFolderIcon } from '../../../store/files/selectors';
+import { getFileIcon, getFolderIcon, canWebEdit, isImage, isSound, isVideo } from "../../../store/files/selectors";
+import { fetchFiles, setMediaViewerData } from '../../../store/files/actions';
+import store from "../../../store/store";
 
 const { changeLanguage } = commonUtils;
 
@@ -35,21 +38,79 @@ class NewFilesPanelComponent extends React.Component {
     changeLanguage(i18n);
   }
 
-    getItemIcon = (item, isEdit) => {
+  getItemIcon = (item, isEdit) => {
     const extension = item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
 
-    return <ReactSVG
-      beforeInjection={svg => {
-        svg.setAttribute('style', 'margin-top: 4px');
-        isEdit && svg.setAttribute('style', 'margin-left: 24px');
-      }}
-      src={icon}
-      loading={this.svgLoader}
-    />;
+    return (
+      <ReactSVG
+        beforeInjection={(svg) => {
+          svg.setAttribute("style", "margin-top: 4px");
+          isEdit && svg.setAttribute("style", "margin-left: 24px");
+        }}
+        src={icon}
+        loading={this.svgLoader}
+      />
+    );
   };
+
+  onMarkAsRead = () => {
+    const { folderId, onClose, setNewFilesCount } = this.props;
+    api.files
+      .markAsRead([folderId], [])
+      .then(() => setNewFilesCount(folderId, 0))
+      .catch(err => toastr.error(err))
+      .finally(() => onClose());
+  };
+
+  onNewFilesClick = item => {
+    const { setNewFilesCount, onClose, /*onLoading,*/ folderId } = this.props;
+    const folderIds = [];
+    const fileId = [];
+    const isFile = item.fileExst;
+
+    isFile ? fileId.push(item.id) : folderIds.push(item.id);
+
+    //onLoading(true);
+
+    api.files.markAsRead(folderIds, fileId)
+      .then(() => {
+        setNewFilesCount(folderId);
+        this.onFilesClick(item);
+      })
+      .catch(err => toastr.error(err))
+      .finally(() => {
+        !isFile && onClose();
+        //onLoading(false);
+      });
+  }
+
+  onFilesClick = item => {
+    const { id, fileExst, viewUrl } = item;
+    const { filter, setMediaViewerData } = this.props;
+    if (!fileExst) {
+
+      fetchFiles(id, filter, store.dispatch)
+        .catch(err => toastr.error(err))
+    } else {
+      if (canWebEdit(fileExst)) {
+        return window.open(`./doceditor?fileId=${id}`, "_blank");
+      }
+
+      const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
+
+      if (isOpenMedia) {
+        const mediaItem = { visible: true, id };
+        setMediaViewerData(mediaItem);
+        return;
+      }
+
+      return window.open(viewUrl, "_blank");
+    }
+  };
+
 
   render() {
     //console.log("NewFiles panel render");
@@ -72,7 +133,7 @@ class NewFilesPanelComponent extends React.Component {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <RowContent>
+                      <RowContent onClick={this.onNewFilesClick.bind(this, file)}>
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -101,9 +162,9 @@ class NewFilesPanelComponent extends React.Component {
                 label={t("MarkAsRead")}
                 size="big"
                 primary
-                //onClick={this.onSaveClick}
+                onClick={this.onMarkAsRead}
               />
-                <Button
+              <Button
                 className="sharing_panel-button"
                 label={t("CloseButton")}
                 size="big"
@@ -131,7 +192,8 @@ const NewFilesPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  return {};
+  const { filter } = state.files
+  return { filter };
 };
 
-export default connect(mapStateToProps, {})(withRouter(NewFilesPanel));
+export default connect(mapStateToProps, { setMediaViewerData })(withRouter(NewFilesPanel));

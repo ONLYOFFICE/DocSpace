@@ -58,6 +58,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.UrlShortener.Svc", "com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Feed.Aggregator", "common\services\ASC.Feed.Aggregator\ASC.Feed.Aggregator.csproj", "{07CCC11F-76CB-448E-B15A-72E09FBB348B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Thumbnails.Svc", "common\services\ASC.Thumbnails.Svc\ASC.Thumbnails.Svc.csproj", "{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Backup", "common\services\ASC.Data.Backup\ASC.Data.Backup.csproj", "{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,6 +172,14 @@ Global
 		{07CCC11F-76CB-448E-B15A-72E09FBB348B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07CCC11F-76CB-448E-B15A-72E09FBB348B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07CCC11F-76CB-448E-B15A-72E09FBB348B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D2F61B2-B1F4-45F0-83CA-03370FD6E62C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

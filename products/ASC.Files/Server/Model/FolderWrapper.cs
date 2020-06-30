@@ -63,6 +63,8 @@ namespace ASC.Api.Documents
         [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public bool IsShareable { get; set; }
 
+        public int New { get; set; }
+
         /// <summary>
         /// </summary>
         /// <param name="folder"></param>
@@ -134,6 +136,7 @@ namespace ASC.Api.Documents
             result.FilesCount = folder.TotalFiles;
             result.FoldersCount = folder.TotalSubFolders;
             result.IsShareable = folder.Shareable;
+            result.New = folder.NewForMe;
 
             return result;
         }

@@ -42,8 +42,8 @@ class MediaViewer extends React.Component {
         var ext = this.getFileExtension(fileTitle) ? this.getFileExtension(fileTitle) : this.getFileExtension(url);
         var _this = this;
 
-        this.hammer.off('swipeleft', this.nextMedia)
-        this.hammer.off('swiperight', this.prevMedia)
+        this.hammer && this.hammer.off('swipeleft', this.nextMedia)
+        this.hammer && this.hammer.off('swiperight', this.prevMedia)
         this.hammer = null;
         setTimeout(function () {
             if (_this.canImageView(ext)) {

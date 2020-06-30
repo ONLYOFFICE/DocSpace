@@ -268,6 +268,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("{folderId}/news")]
+        public List<FileEntryWrapper> GetNewItems(string folderId)
+        {
+            return FilesControllerHelperString.GetNewItems(folderId);
+        }
+
+        [Read("{folderId:int}/news")]
+        public List<FileEntryWrapper> GetNewItems(int folderId)
+        {
+            return FilesControllerHelperInt.GetNewItems(folderId);
+        }
+
         /// <summary>
         /// Uploads the file specified with single file upload or standart multipart/form-data method to 'My Documents' section
         /// </summary>

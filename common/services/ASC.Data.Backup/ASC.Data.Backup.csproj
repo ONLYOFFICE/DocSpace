@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="protos\BackupProgress.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Google.Protobuf" Version="3.12.3" />
+	  <PackageReference Include="Grpc" Version="2.30.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.30.0">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="SharpCompress" Version="0.25.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\products\ASC.Files\Server\ASC.Files.csproj" />
+	  <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
+	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
+	  <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Protobuf Include="protos\BackupProgress.proto" />
+	</ItemGroup>
+	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+		<ItemGroup>
+			<ReferencePath Condition="'%(FileName)' == 'MySqlConnector'">
+				<Aliases>MySqlConnectorAlias</Aliases>
+			</ReferencePath>
+		</ItemGroup>
+
+	</Target>
+
+</Project>
