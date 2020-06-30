@@ -209,7 +209,7 @@ class SectionFilterContent extends React.Component {
   getSortData = () => {
     const { t } = this.props;
 
-    let commonOptions = [
+    const commonOptions = [
       { key: "lastModifiedDate", label: t("ByLastModifiedDate"), default: true },
       { key: "creationDate", label: t("ByCreationDate"), default: true },
       { key: "title", label: t("ByTitle"), default: true },
@@ -218,10 +218,10 @@ class SectionFilterContent extends React.Component {
       { key: "author", label: t("ByAuthor"), default: true }
     ];
 
-    let viewSettings = [
-      { key: "row", label: "Row", isSetting: true, default: true },
-      { key: "tile", label: "Tile", isSetting: true, default: true }
-    ]
+    const viewSettings = [
+      { key: "row", label: t("ViewList"), isSetting: true, default: true },
+      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true }
+    ];
     //TODO: Need use mobile detect for better result
     return window.innerWidth < 460 ? [...commonOptions,...viewSettings] : commonOptions;
   };
