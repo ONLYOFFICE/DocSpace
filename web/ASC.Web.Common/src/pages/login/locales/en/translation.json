@@ -10,7 +10,7 @@
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Please enter the email you used while registering on the portal. The password recovery instructions will be send to that email address.",
   "SendButton": "Send",
   "CancelButton": "Cancel",
-  "Remember": "Remember",
+  "Remember": "Remember me",
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to the settings.",
   "CookieSettingsTitle": "Session Lifetime",
   "Authorization": "Authorization",
