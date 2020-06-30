@@ -325,23 +325,22 @@ class Body extends Component {
       path: '',
       emailValid: false,
       email: '',
+      newEmail: '',
       license: false,
-      selectLanguage: "",
-      selectTimezone: "",
-      valid: false
+      selectLanguage: props.languages[0],
+      selectTimezone: props.timezones[0]
     }
 
     this.inputRef = React.createRef();
   }
 
   componentDidMount() {
-    const { t, getParams } = this.props;
+    const { t } = this.props;
     document.title = t('title');
-    getParams();
   }
 
   isValidPassHandler = val => {
-    this.setState({ isValidPass: val}, () => console.log(this.state.isValidPass));
+    this.setState({ isValidPass: val });
   }
 
   onChangePassword = e => {
@@ -425,7 +424,7 @@ class Body extends Component {
 
   onCloseModal = () => {
     console.log('onClose modal');
-    this.setState({ visibleModal: false, errorLoading: false});
+    this.setState({ visibleModal: false, errorLoading: false });
   }
 
   onSelectTimezoneHandler = el => {
@@ -440,7 +439,7 @@ class Body extends Component {
 
   renderModalDialog = () => {
     const { errorLoading, visibleModal } = this.state;
-    const { t, isOwner } = this.props;
+    const { t, isOwner, ownerEmail } = this.props;
 
     let header, content, footer;
 
@@ -463,7 +462,7 @@ class Body extends Component {
         name="email-wizard"
         placeholder={t('placeholderEmail')}
         emailSettings={settings}
-        value={this.state.email}
+        value={ownerEmail}
         onValidateInput={this.onEmailHandler}
       />;
 
@@ -582,7 +581,7 @@ class Body extends Component {
       ? <Text className="settings-title">{t('email')}</Text>
       : null
     
-    const email = isOwner 
+    const contentEmail = isOwner 
       ? <Link className="link value" type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
       : null
 
@@ -596,8 +595,8 @@ class Body extends Component {
         </Box>
         <Box className="values">
           <Text className="text value">{domain}</Text>
-          {email}
-          <GroupButton className="drop-down value" label={selectLanguage ? selectLanguage : languages[0]} isDropdown={true}>
+          {contentEmail}
+          <GroupButton className="drop-down value" label={selectLanguage} isDropdown={true}>
             {
               languages.map(el => (
                 <DropDownItem 
@@ -608,7 +607,7 @@ class Body extends Component {
               ))
             }
           </GroupButton>
-          <GroupButton className="drop-down value" label={selectTimezone ? selectTimezone : timezones[0]} isDropdown={true}>
+          <GroupButton className="drop-down value" label={selectTimezone} isDropdown={true}>
             {
               timezones.map(el => (
                 <DropDownItem 
@@ -688,4 +687,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { getParams, setOwnerToSrv, saveNewEmail })(withRouter(Wizard)); 
-

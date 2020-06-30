@@ -18,12 +18,11 @@ const ownerReducer = ( state = initState, action) => {
       return Object.assign({}, state, action.params);
     
     case SET_OWNER:
-      return Object.assign({}, state, {
-        isOwner: true,
-        owner: action.owner
-      });
+      console.log('SET_OWNER', action.owner);
+      return state;
 
     case SET_NEW_EMAIL:
+      console.log('SET_NEW_EMAIL', action.newEmail);
       return Object.assign({}, state, { ownerEmail: action.newEmail });
     
     default:

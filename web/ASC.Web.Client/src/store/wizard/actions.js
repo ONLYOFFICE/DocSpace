@@ -37,7 +37,6 @@ export function getParams() {
 export function setOwnerToSrv(owner) {
   return dispatch => {
     return  setTimeout(() => {
-      console.log(owner);
       dispatch(setOwner(owner));
     }, 3000);
   }
@@ -45,13 +44,16 @@ export function setOwnerToSrv(owner) {
 
 export function saveNewEmail(newEmail) {
   return dispatch => {
-    return dispatch(setNewEmail(newEmail));
+    return setTimeout(() => {
+      dispatch(setNewEmail(newEmail));
+    }, 3000)
+    
   }
 }
 
 const initParams = () => {
   return {
-    isOwner: false,
+    isOwner: true,
     ownerEmail: 'portaldomainname@mail.com',
     domain: 'portaldomainname.com',
     language: "ru-RU",

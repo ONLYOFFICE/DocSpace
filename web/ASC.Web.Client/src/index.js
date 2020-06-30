@@ -7,6 +7,8 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store as commonStore, constants, history, ErrorBoundary} from "asc-web-common";
 
+import { getParams } from './store/wizard/actions';
+
 const {
   getUserInfo,
   getPortalSettings,
@@ -18,9 +20,13 @@ const { AUTH_KEY } = constants;
 const token = localStorage.getItem(AUTH_KEY);
 
 if (!token) {
+  store.dispatch(getParams());
+  history.push('/wizard');
+  /*
   getPortalSettings(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))
-    .catch(e => history.push('/wizard')); //`/login/error=${e}`
+    .catch(e => history.push(`/login/error=${e}`));
+  */
 } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
   getUserInfo(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))
