@@ -38,6 +38,7 @@ class SubModalDialog extends React.Component {
             size="base"
             scale={true}
             tabIndex={1}
+            style={{marginTop: "16px"}}
             isDisabled={isLoading}
             value={email}
             onChange={onChangeEmail}
