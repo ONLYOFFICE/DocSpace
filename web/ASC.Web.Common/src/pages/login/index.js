@@ -223,7 +223,7 @@ class Form extends Component {
 
     return (
       <FormContainer>
-        <Heading className="login-title" color="#116d9d">
+        <Heading className="login-title" color="#333333">
           {greetingTitle}
         </Heading>
 
