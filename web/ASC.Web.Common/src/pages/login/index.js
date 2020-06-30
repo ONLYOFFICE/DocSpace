@@ -294,7 +294,7 @@ class Form extends Component {
               className="login-checkbox"
               isChecked={isChecked}
               onChange={this.onChangeCheckbox}
-              label={t("Remember")}
+              label={<Text fontSize='13px'>{t("Remember")}</Text>}
             />
             <HelpButton
               className="login-tooltip"
