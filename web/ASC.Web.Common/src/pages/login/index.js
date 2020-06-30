@@ -254,6 +254,7 @@ class Form extends Component {
 
         <PasswordInput
           passwordSettings={this.settings}
+          NewPasswordButtonVisible={false}
           className="login-input"
           id="password"
           inputName="password"

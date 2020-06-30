@@ -404,14 +404,14 @@ class PasswordInput extends React.Component {
           </TooltipStyle>
           <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
         </PasswordProgress>
-        <NewPasswordButton>
+        { this.props.NewPasswordButtonVisible && <NewPasswordButton>
           <Icons.RefreshIcon
             size="medium"
             color={iconsColor}
             isfill={true}
             onClick={this.onGeneratePassword}
           />
-        </NewPasswordButton>
+        </NewPasswordButton>}
         <CopyLink>
           <Link
             type="action"
@@ -462,6 +462,7 @@ PasswordInput.propTypes = {
   tooltipPasswordSpecial: PropTypes.string,
 
   generatorSpecial: PropTypes.string,
+  NewPasswordButtonVisible: PropTypes.bool,
   passwordSettings: PropTypes.object.isRequired,
 
   onValidateInput: PropTypes.func,
@@ -484,6 +485,7 @@ PasswordInput.defaultProps = {
   clipCopiedResource: 'Copied',
 
   generatorSpecial: '!@#$%^&*',
+  NewPasswordButtonVisible: true,
   className: '',
   tooltipOffsetLeft: 110
 }
