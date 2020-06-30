@@ -1,4 +1,4 @@
-import { INIT_WIZARD, SET_OWNER } from "./actions";
+import { INIT_WIZARD, SET_OWNER, SET_NEW_EMAIL } from "./actions";
 // import { api } from "asc-web-common";
 
 const initState = { 
@@ -20,9 +20,11 @@ const ownerReducer = ( state = initState, action) => {
     case SET_OWNER:
       return Object.assign({}, state, {
         isOwner: true,
-        timezone: action.owner.timezone,
-        language: action.owner.language
+        owner: action.owner
       });
+
+    case SET_NEW_EMAIL:
+      return Object.assign({}, state, { ownerEmail: action.newEmail });
     
     default:
       return state;

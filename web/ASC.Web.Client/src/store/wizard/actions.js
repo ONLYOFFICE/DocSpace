@@ -4,6 +4,7 @@
 export const INIT_WIZARD = 'INIT_WIZARD'; 
 export const SET_OWNER = 'SET_OWNER'; 
 export const GET_PARAMS = 'GET_PARAMS';
+export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
 
 export function initWizard(params) { 
   return {
@@ -13,10 +14,16 @@ export function initWizard(params) {
 }
 
 export function setOwner(owner) {
-  console.log(owner)
   return { 
     type: SET_OWNER, 
     owner
+  }
+}
+
+export function setNewEmail(newEmail) {
+  return {
+    type: SET_NEW_EMAIL,
+    newEmail
   }
 }
 
@@ -29,14 +36,22 @@ export function getParams() {
 
 export function setOwnerToSrv(owner) {
   return dispatch => {
-    setDummy(owner);
-    return dispatch(setOwner(owner));
+    return  setTimeout(() => {
+      console.log(owner);
+      dispatch(setOwner(owner));
+    }, 3000);
+  }
+}
+
+export function saveNewEmail(newEmail) {
+  return dispatch => {
+    return dispatch(setNewEmail(newEmail));
   }
 }
 
 const initParams = () => {
   return {
-    isOwner: true,
+    isOwner: false,
     ownerEmail: 'portaldomainname@mail.com',
     domain: 'portaldomainname.com',
     language: "ru-RU",
@@ -44,8 +59,4 @@ const initParams = () => {
     languages: [ "English (United States)", "Русский (РФ)" ],
     timezones: [ "UTC", "Not UTC"]    
   }
-}
-
-const setDummy = (owner) => {
-  console.log(owner);
 }

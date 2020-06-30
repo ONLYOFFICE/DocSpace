@@ -14,7 +14,7 @@ import {
   Button, Box, Loader, 
   ModalDialog, utils } from 'asc-web-components';
 
-import { getParams, setOwnerToSrv } from '../../../store/wizard/actions';
+import { getParams, setOwnerToSrv, saveNewEmail } from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
@@ -327,7 +327,8 @@ class Body extends Component {
       email: '',
       license: false,
       selectLanguage: "",
-      selectTimezone: ""
+      selectTimezone: "",
+      valid: false
     }
 
     this.inputRef = React.createRef();
@@ -339,10 +340,15 @@ class Body extends Component {
     getParams();
   }
 
-  isValidPassHandler = (val) => {
-    this.setState({ isValidPass: val});
+  isValidPassHandler = val => {
+    this.setState({ isValidPass: val}, () => console.log(this.state.isValidPass));
   }
 
+  onChangePassword = e => {
+    console.log('onchange password', e.target.value);
+    this.setState({ password: e.target.value });
+  }
+  
   onIconFileClick = () => {
     console.log('input file click');
     this.inputRef.current.click();
@@ -362,11 +368,6 @@ class Body extends Component {
     }
   }
 
-  onChangePassword = e => {
-    console.log('onchange password', e.target.value);
-    this.setState({ password: e.target.value })
-  }
-
   onChangeFile = e => {
     console.log('select file', e.target.value)
     this.setState({ path: e.target.value}) 
@@ -378,16 +379,43 @@ class Body extends Component {
   }
 
   onChangeLicense = () => {
-    console.log('onchage License');
+    console.log('onchange License');
     this.setState({ license: !this.state.license });
   }
 
   onContinueHandler = () => {
     console.log('continue btn click');
+    const valid = this.checkingValid();
+    if (valid) { 
+      console.log('valid params');
+      const { setOwnerToSrv } = this.props;
+      const owner = {
+        password: this.state.password,
+        email: this.state.email,
+        language: this.state.selectLanguage,
+        timezone: this.state.selectTimezone
+      }
+      setOwnerToSrv(owner);
+    }
+    else {
+      console.log('not valid params');
+    }
+  }
+
+  checkingValid = () => {
+    const { isValidPass, emailValid, path, license } = this.state;
+    
+    if( isValidPass && emailValid && path && license ) {
+      return true;
+    }
+
+    return false;
   }
 
   onSaveEmailHandler = () => {
+    const { saveNewEmail } = this.props;
     console.log('save email', this.state.email);
+    saveNewEmail(this.state.email)
     this.setState({ visibleModal: false });
   }
 
@@ -473,7 +501,6 @@ class Body extends Component {
 
   renderInputBox = () => {
     const { t, isOwner } = this.props;
-    console.log(isOwner)
     const inputEmail = !isOwner 
       ? <EmailInput
           className="wizard-input-email"
@@ -655,5 +682,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { getParams, setOwnerToSrv })(withRouter(Wizard)); 
+export default connect(mapStateToProps, { getParams, setOwnerToSrv, saveNewEmail })(withRouter(Wizard)); 
 
