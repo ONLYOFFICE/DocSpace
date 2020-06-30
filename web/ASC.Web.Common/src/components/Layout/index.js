@@ -74,7 +74,7 @@ class Layout extends React.Component {
     const newState = {
       isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
       isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
-      isHeaderAvailable: mainModules.length > 0,
+      isHeaderAvailable: mainModules.length > 0 || !props.currentUser,
       isNavAvailable: mainModules.length > 0,
       isAsideAvailable: !!props.asideContent,
 
