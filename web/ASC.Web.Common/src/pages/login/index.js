@@ -9,7 +9,8 @@ import {
   Link,
   toastr,
   Checkbox,
-  HelpButton
+  HelpButton,
+  PasswordInput
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -203,6 +204,13 @@ class Form extends Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
+  settings = {
+    minLength: 6,
+    upperCase: false,
+    digits: false,
+    specSymbols: false
+  }
+
   render() {
     const { greetingTitle, match, t } = this.props;
 
@@ -244,7 +252,26 @@ class Form extends Component {
           className="login-input"
         />
 
-        <TextInput
+        <PasswordInput
+          passwordSettings={this.settings}
+          className="login-input"
+          id="password"
+          inputName="password"
+          placeholder={t("Password")}
+          type="password"
+          hasError={!passwordValid}
+          inputValue={password}
+          size="huge"
+          scale={true}
+          tabIndex={2}
+          isDisabled={isLoading}
+          autoComplete="current-password"
+          onChange={this.onChangePassword}
+          onKeyDown={this.onKeyPress}
+
+        />
+
+        {/* <TextInput
           id="password"
           name="password"
           type="password"
@@ -259,7 +286,7 @@ class Form extends Component {
           onChange={this.onChangePassword}
           onKeyDown={this.onKeyPress}
           className="login-input"
-        />
+        /> */}
 
         <div className="login-forgot-wrapper">
           <div className="login-checkbox-wrapper">
