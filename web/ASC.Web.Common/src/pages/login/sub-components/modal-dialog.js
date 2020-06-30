@@ -17,7 +17,7 @@ class SubModalDialog extends React.Component {
       <ModalDialog
         visible={openDialog}
         headerContent={
-          <Text isBold={false} fontSize='21px'>
+          <Text isBold={true} fontSize='21px'>
             {t("PasswordRecoveryTitle")}
           </Text>
         }
