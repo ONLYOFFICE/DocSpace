@@ -73,9 +73,20 @@ class NewFilesPanelComponent extends React.Component {
   onMarkAsRead = () => {
     const { folderId, onClose } = this.props;
     const markAsReadFiles = true;
+
+    const folderIds = [];
+    const fileIds = [];
+
+    for(let item of this.state.files) {
+      if(item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+
     api.files
-      //.markAsRead([], [])
-      .markAsRead([folderId], [])
+      .markAsRead(folderIds, fileIds)
       .then(() => this.setNewFilesCount(folderId, markAsReadFiles))
       .catch(err => toastr.error(err))
       .finally(() => onClose());
@@ -129,8 +140,8 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const { treeFolders, setTreeFolders, setNewItems, folders, files, filter } = this.props;
-    //const newFilter = filter.clone();
+    const { treeFolders, setTreeFolders, folders, files, filter } = this.props;
+    const newFilter = filter.clone();
 
     const data = treeFolders;
     let dataItem;
@@ -142,6 +153,7 @@ class NewFilesPanelComponent extends React.Component {
         const newFilesCounter = dataItem.newItems ? dataItem.newItems : dataItem.new;
         rootItem.newItems = markAsReadAll ? rootItem.newItems - newFilesCounter : rootItem.newItems - 1;
         dataItem.newItems = markAsReadAll ? 0 : newFilesCounter - 1;
+        fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
         return;
       } else { loop(index + 1, dataItem.folders); }
     }
@@ -152,27 +164,21 @@ class NewFilesPanelComponent extends React.Component {
       dataItem = data.find(x => x.id === folderPath[0]);
       dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
 
-      if(item.fileExst) {
+      if(item && item.fileExst) {
         const fileItem = files.find(x => x.id === item.id && x.fileExst);
         if(fileItem) {
           fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
-          //file
-          //fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
-          
         } else {
-          const a = folders.find(x => x.id === item.folderId);
-          a.new = markAsReadAll ? 0 : a.new - 1;
-
-          //fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
-          //file in folder
+          const filesFolder = folders.find(x => x.id === item.folderId);
+          filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
         }
-      } else {
+        fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
+      } else if(item && !item.fileExst) {
         const folderItem = folders.find(x => x.id === item.id && !x.fileExst);
         folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
       }
     }
-
-    setNewItems && setNewItems(dataItem.newItems);
+  
     setTreeFolders(data);
   }
 

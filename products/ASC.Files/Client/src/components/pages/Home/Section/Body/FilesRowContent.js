@@ -29,7 +29,6 @@ class FilesRowContent extends React.PureComponent {
       editingId: props.fileAction.id,
       showNewFilesPanel: false,
       newFolderId: [],
-      fileStatus: props.item.fileStatus,
       newItems: props.item.new
       //loading: false
     };
@@ -187,19 +186,18 @@ class FilesRowContent extends React.PureComponent {
 
   onBadgeClick = () => {
     const { showNewFilesPanel } = this.state;
-    const { item, treeFolders, setTreeFolders, rootFolderId, newItems } = this.props;
+    const { item, treeFolders, setTreeFolders, rootFolderId, newItems, filter } = this.props;
     if (item.fileExst) {
-      this.setState({fileStatus: 0}, () => 
-        api.files
-        .markAsRead([], [item.id])
-        .then(() => {
-          const data = treeFolders;
-          const dataItem = data.find((x) => x.id === rootFolderId);
-          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
-          setTreeFolders(data);
-        })
-        .catch((err) => toastr.error(err))
-      )
+      api.files
+      .markAsRead([], [item.id])
+      .then(() => {
+        const data = treeFolders;
+        const dataItem = data.find((x) => x.id === rootFolderId);
+        dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
+        setTreeFolders(data);
+        fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
+      })
+      .catch((err) => toastr.error(err))
     } else {
       const newFolderId = this.props.selectedFolder.pathParts;
       newFolderId.push(item.id);
@@ -215,11 +213,9 @@ class FilesRowContent extends React.PureComponent {
     this.setState({showNewFilesPanel: !showNewFilesPanel});
   };
 
-  setNewItems = newItems => this.setState({ newItems });
-
   render() {
     const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
-    const { itemTitle, editingId, showNewFilesPanel, fileStatus, newItems, newFolderId } = this.state;
+    const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId } = this.state;
     const {
       contentLength,
       updated,
@@ -227,6 +223,7 @@ class FilesRowContent extends React.PureComponent {
       fileExst,
       filesCount,
       foldersCount,
+      fileStatus,
       id,
       versionGroup
     } = item;
@@ -295,7 +292,6 @@ class FilesRowContent extends React.PureComponent {
             onClose={this.onShowNewFilesPanel}
             onLoading={onLoading}
             folderId={newFolderId}
-            setNewItems={this.setNewItems}
             folders={folders}
           />
         )}
