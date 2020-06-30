@@ -63,12 +63,12 @@ const HeaderComponent = React.memo(props => {
   const currentModule = props.currentModule && props.currentModule.title;
   return (
     <Header module={currentModule}>
-      <NavItem
+      { props.currentUser && <NavItem
         iconName="MenuIcon"
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
         noHover={true}
-      />
+      />}
       <a className="header-logo-wrapper" href="/">
         <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
         <img
@@ -89,7 +89,8 @@ HeaderComponent.propTypes = {
   badgeNumber: PropTypes.number,
   onClick: PropTypes.func,
   onLogoClick: PropTypes.func,
-  currentModule: PropTypes.object
+  currentModule: PropTypes.object,
+  currentUser: PropTypes.object
 };
 
 export default HeaderComponent;

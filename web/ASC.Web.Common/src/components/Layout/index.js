@@ -181,6 +181,7 @@ class Layout extends React.Component {
             onClick={this.showNav}
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
+            user={this.state.currentUser}
           />
         )}
         {this.state.isNavAvailable && (
