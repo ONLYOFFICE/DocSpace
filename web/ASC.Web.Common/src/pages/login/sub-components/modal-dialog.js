@@ -55,16 +55,6 @@ class SubModalDialog extends React.Component {
             isLoading={isLoading}
             isDisabled={isLoading}
             tabIndex={2}
-          />,
-          <Button
-            key="CancelBtn"
-            label={t("CancelButton")}
-            size="big"
-            scale={false}
-            primary={false}
-            onClick={onDialogClose}
-            isDisabled={isLoading}
-            tabIndex={3}
           />
         ]}
         onClose={onDialogClose}
