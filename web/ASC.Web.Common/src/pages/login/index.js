@@ -307,6 +307,7 @@ class Form extends Component {
           className="login-button"
           primary
           size="big"
+          scale={true}
           label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
           tabIndex={3}
           isDisabled={isLoading}
