@@ -279,10 +279,11 @@ class Form extends Component {
           </div>
 
           <Link
-            fontSize='12px'
+            fontSize='13px'
+            color="#316DAA"
             className="login-link"
             type="page"
-            isHovered={true}
+            isHovered={false}
             onClick={this.onClick}
           >
             {t("ForgotPassword")}
