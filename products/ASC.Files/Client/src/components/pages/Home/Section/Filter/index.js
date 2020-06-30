@@ -79,6 +79,7 @@ class SectionFilterContent extends React.Component {
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
+    const viewAs = data.viewAs;
     const authorType = getAuthorType(data.filterValues);
     const withSubfolders = getSearchParams(data.filterValues);
 
@@ -95,6 +96,7 @@ class SectionFilterContent extends React.Component {
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
+    newFilter.viewAs = viewAs;
     newFilter.filterType = filterType;
     newFilter.search = search;
     newFilter.authorType = authorType;
@@ -222,7 +224,8 @@ class SectionFilterContent extends React.Component {
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy
+      sortId: filter.sortBy,
+      viewAs: filter.viewAs
     };
 
     selectedFilterData.inputValue = filter.search;
