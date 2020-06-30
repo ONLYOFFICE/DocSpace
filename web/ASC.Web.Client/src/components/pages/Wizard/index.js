@@ -388,12 +388,16 @@ class Body extends Component {
     const valid = this.checkingValid();
     if (valid) { 
       console.log('valid params');
+
       const { setOwnerToSrv } = this.props;
+      const licenseFile = this.inputRef.current.files[0];
+
       const owner = {
         password: this.state.password,
         email: this.state.email,
         language: this.state.selectLanguage,
-        timezone: this.state.selectTimezone
+        timezone: this.state.selectTimezone,
+        licenseFile: licenseFile
       }
       setOwnerToSrv(owner);
     }
@@ -541,7 +545,8 @@ class Body extends Component {
           onIconClick={this.onIconFileClick}
           onChange={this.onChangeFile}
         >
-          <input type="file" 
+          <input 
+            type="file" 
             className="input-file" 
             onInput={this.onInputFile}
             ref={this.inputRef}/>
