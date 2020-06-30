@@ -89,7 +89,8 @@ HeaderComponent.propTypes = {
   badgeNumber: PropTypes.number,
   onClick: PropTypes.func,
   onLogoClick: PropTypes.func,
-  currentModule: PropTypes.object
+  currentModule: PropTypes.object,
+  currentUser: PropTypes.object
 };
 
 export default HeaderComponent;
