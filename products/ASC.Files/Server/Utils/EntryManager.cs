@@ -602,7 +602,7 @@ namespace ASC.Web.Files.Utils
             folder.RootFolderCreator = providerInfo.Owner;
             folder.RootFolderId = providerInfo.RootFolderId;
             folder.RootFolderType = providerInfo.RootFolderType;
-            folder.Shareable = null;
+            folder.Shareable = false;
             folder.Title = providerInfo.CustomerTitle;
             folder.TotalFiles = 0;
             folder.TotalSubFolders = 0;

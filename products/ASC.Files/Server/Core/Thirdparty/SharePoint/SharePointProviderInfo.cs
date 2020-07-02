@@ -511,7 +511,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 result.RootFolderCreator = Owner;
                 result.RootFolderId = MakeId(SpRootFolderId);
                 result.RootFolderType = RootFolderType;
-                result.Shareable = null;
+                result.Shareable = false;
                 result.Title = MakeTitle(GetTitleById(errorFolder.ID));
                 result.TotalFiles = 0;
                 result.TotalSubFolders = 0;
@@ -534,7 +534,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             result.RootFolderCreator = Owner;
             result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
             result.RootFolderType = RootFolderType;
-            result.Shareable = null;
+            result.Shareable = false;
             result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
             result.TotalFiles = 0;
             result.TotalSubFolders = 0;

@@ -107,7 +107,7 @@ namespace ASC.Files.Thirdparty
             InitFileEntry(folder);
 
             folder.FolderType = FolderType.DEFAULT;
-            folder.Shareable = null;
+            folder.Shareable = false;
             folder.TotalFiles = 0;
             folder.TotalSubFolders = 0;
 
