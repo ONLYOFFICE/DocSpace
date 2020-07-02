@@ -193,6 +193,7 @@ class ImageViewer extends React.Component {
                 <StyledViewer
                     inactive={inactive}
                     visible={visible}
+                    zoomSpeed={0.1}
                     customToolbar={(toolbars) => {
                         return customToolbar;
                     }}
