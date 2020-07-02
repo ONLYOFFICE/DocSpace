@@ -18,7 +18,7 @@ const App = () => {
           fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
         >
           <Switch>
-            <Route exact path="/wizard" component={Wizard} />
+            <PublicRoute path="/wizard" component={Wizard} />
             <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
             <Route path="/confirm" component={Confirm} />
             <PrivateRoute exact path={["/","/error=:error"]} component={Home} />

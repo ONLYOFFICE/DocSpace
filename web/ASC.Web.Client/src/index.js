@@ -7,12 +7,13 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store as commonStore, constants, history, ErrorBoundary} from "asc-web-common";
 
-import { getParams } from './store/wizard/actions';
+//import { getParams } from './store/wizard/actions';
 
 const {
   getUserInfo,
   getPortalSettings,
-  setIsLoaded
+  setIsLoaded,
+  setSettings
 } = commonStore.auth.actions;
 
 const { AUTH_KEY } = constants;
@@ -20,13 +21,12 @@ const { AUTH_KEY } = constants;
 const token = localStorage.getItem(AUTH_KEY);
 
 if (!token) {
-  store.dispatch(getParams());
-  history.push('/wizard');
-  /*
+  store.dispatch(setSettings({fakeToken: '123'}));
+
   getPortalSettings(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))
     .catch(e => history.push(`/login/error=${e}`));
-  */
+  
 } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
   getUserInfo(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))

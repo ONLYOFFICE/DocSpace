@@ -82,7 +82,6 @@ const WizardContainer = styled.div`
   }
 
   .header-box {
-    height: 64px;
     width: 960px;
     font-family: 'Open Sans';
     font-style: normal;
@@ -93,8 +92,6 @@ const WizardContainer = styled.div`
       font-size: 32px;
       line-height: 36px;
       margin: 0px 12px;
-      flex: none;
-      order: 0;
     }
 
     .wizard-desc {
@@ -643,7 +640,7 @@ class Body extends Component {
     const settingsBox = this.renderSettingsBox();
     const buttonBox = this.renderButtonBox();
     const modalDialog = this.renderModalDialog();
-
+    
     return (
       <WizardContainer>
         
