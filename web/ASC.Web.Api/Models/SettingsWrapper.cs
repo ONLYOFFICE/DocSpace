@@ -51,6 +51,8 @@ namespace ASC.Api.Settings
 
         public string NameSchemaId { get; set; }
 
+        public string WizardToken { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper

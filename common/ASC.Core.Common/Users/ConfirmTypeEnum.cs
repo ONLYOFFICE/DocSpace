@@ -23,6 +23,7 @@
         PhoneAuth,
         Auth,
         TfaActivation,
-        TfaAuth
+        TfaAuth,
+        Wizard
     }
 }

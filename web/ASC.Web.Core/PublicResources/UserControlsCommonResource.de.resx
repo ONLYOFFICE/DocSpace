@@ -58,6 +58,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LicenseException" xml:space="preserve">
+    <value>Lizenz ist abgelaufen oder Benutzer-Quote zusammenfällt die Lizenz nicht.</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>Lizenzschlüssel ist nicht korrekt</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Sie müssen Lizenzschlüssel einsetzen</value>
+  </data>
   <data name="TariffPerMonth" xml:space="preserve">
     <value>Monat</value>
   </data>
@@ -66,5 +75,11 @@
   </data>
   <data name="TariffPerYear3" xml:space="preserve">
     <value>3 Jahre</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Nachname</value>
   </data>
 </root>

@@ -117,7 +117,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UserControlsCommonResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.ru.resx">

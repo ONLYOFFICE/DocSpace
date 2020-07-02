@@ -68,6 +68,7 @@ using ASC.Web.Studio.Core.SMS;
 using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
+using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
@@ -99,6 +100,7 @@ namespace ASC.Api.Settings
         public SmsProviderManager SmsProviderManager { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
+        public FirstTimeTenantSettings FirstTimeTenantSettings { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
@@ -178,7 +180,8 @@ namespace ASC.Api.Settings
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter,
-            CustomNamingPeople customNamingPeople)
+            CustomNamingPeople customNamingPeople,
+            FirstTimeTenantSettings firstTimeTenantSettings)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -188,6 +191,7 @@ namespace ASC.Api.Settings
             SmsProviderManager = smsProviderManager;
             TimeZoneConverter = timeZoneConverter;
             CustomNamingPeople = customNamingPeople;
+            FirstTimeTenantSettings = firstTimeTenantSettings;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -246,6 +250,11 @@ namespace ASC.Api.Settings
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
+            }
+            else if (!SettingsManager.Load<WizardSettings>().Completed)
+            {
+
+                settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
             }
 
             return settings;
@@ -830,20 +839,16 @@ namespace ASC.Api.Settings
         }
 
         [Update("wizard/complete")]
-        public WizardSettings CompleteWizard()
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        public WizardSettings CompleteWizard(WizardModel wizardModel)
         {
+            ApiContext.AuthByClaim();
+
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var settings = SettingsManager.Load<WizardSettings>();
-
-            if (settings.Completed)
-                return settings;
-
-            settings.Completed = true;
-            SettingsManager.Save(settings);
-
-            return settings;
+            return FirstTimeTenantSettings.SaveData(wizardModel);
         }
+
 
         [Update("tfaapp")]
         public bool TfaSettings(TfaModel model)
@@ -1537,7 +1542,8 @@ namespace ASC.Api.Settings
                 .AddEmployeeWraper()
                 .AddConsumerFactoryService()
                 .AddSmsProviderManagerService()
-                .AddCustomNamingPeopleService();
+                .AddCustomNamingPeopleService()
+                .AddFirstTimeTenantSettings();
         }
     }
 }
