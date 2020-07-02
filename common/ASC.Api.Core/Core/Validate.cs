@@ -25,6 +25,7 @@
 
 
 using System;
+
 using ASC.Common.Web;
 
 namespace ASC.Api.Utils
@@ -54,6 +55,11 @@ namespace ASC.Api.Utils
         public static T NotFoundIfNull<T>(this T item, string message) where T : class
         {
             return item.IfNull(() => { throw new ItemNotFoundException(message); });
+        }
+
+        public static T? NullIfDefault<T>(this T item) where T : struct
+        {
+            return item.Equals(default(T)) ? default(T?) : item;
         }
     }
 }

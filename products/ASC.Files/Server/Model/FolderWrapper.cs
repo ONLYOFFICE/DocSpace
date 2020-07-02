@@ -28,6 +28,7 @@ using System;
 using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
@@ -135,7 +136,7 @@ namespace ASC.Api.Documents
 
             result.FilesCount = folder.TotalFiles;
             result.FoldersCount = folder.TotalSubFolders;
-            result.IsShareable = folder.Shareable ? (bool?)true : null;
+            result.IsShareable = folder.Shareable.NullIfDefault();
             result.New = folder.NewForMe;
 
             return result;

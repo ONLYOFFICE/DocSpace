@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
@@ -198,9 +199,9 @@ namespace ASC.Api.Documents
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;
             result.FileStatus = file.FileStatus;
-            result.PureContentLength = file.ContentLength == 0 ? null : (long?)file.ContentLength;
+            result.PureContentLength = file.ContentLength.NullIfDefault();
             result.Comment = file.Comment;
-            result.Encrypted = file.Encrypted ? (bool?)true : null;
+            result.Encrypted = file.Encrypted.NullIfDefault();
             try
             {
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);

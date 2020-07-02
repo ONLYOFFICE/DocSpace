@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -171,8 +172,8 @@ namespace ASC.Data.Backup
                 StorageType = response.StorageType,
                 StorageParams = response.StorageParams.ToDictionary(r => r.Key, r => r.Value) ?? new Dictionary<string, string>(),
                 CronParams = new CronParams(response.Cron),
-                BackupMail = response.BackupMail ? (bool?)true : null,
-                BackupsStored = response.NumberOfBackupsStored == 0 ? null : (int?)response.NumberOfBackupsStored,
+                BackupMail = response.BackupMail.NullIfDefault(),
+                BackupsStored = response.NumberOfBackupsStored.NullIfDefault(),
                 LastBackupTime = response.LastBackupTime
             };
 
