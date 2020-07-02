@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import {
+  Box,
   Button,
   TextInput,
   Text,
@@ -23,7 +24,7 @@ import { sendInstructionsToChangePassword } from "../../api/people";
 
 const FormContainer = styled.form`
   margin: 50px auto 0 auto;
-  max-width: 432px;
+  max-width: 311px;
 
   .login-header {
     min-height: 79px;
@@ -40,7 +41,7 @@ const FormContainer = styled.form`
   }
 
   .login-input {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
 
   .login-forgot-wrapper {
@@ -80,6 +81,16 @@ const FormContainer = styled.form`
 
   .login-button-dialog {
     margin-right: 8px;
+  }
+
+  .login-bottom-border {
+    width: 138px;
+    height: 1px;
+    background: #ECEEF1;
+  }
+
+  .login-bottom-text {
+    margin: 0 8px;
   }
 `;
 
@@ -232,7 +243,7 @@ class Form extends Component {
     return (
       <FormContainer>
         <Heading className="login-title" color="#333333">
-          {greetingTitle}
+          <Text fontSize="32px" fontWeight={600}>{greetingTitle}</Text>
         </Heading>
 
         <TextInput
@@ -351,6 +362,11 @@ class Form extends Component {
         <Text fontSize='14px' color="#c30">
           {errorText}
         </Text>
+        <Box displayProp="flex" alignItems="center">
+        <div className="login-bottom-border"></div>
+        <Text className="login-bottom-text" color="#A3A9AE">OR</Text>
+        <div className="login-bottom-border"></div>
+        </Box>
       </FormContainer>
     );
   }
