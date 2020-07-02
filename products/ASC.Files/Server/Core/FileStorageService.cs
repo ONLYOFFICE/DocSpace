@@ -299,7 +299,7 @@ namespace ASC.Web.Files.Services.WCFService
                 parent.ParentFolderID = prevVisible.ID;
             }
 
-            parent.Shareable = (FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE) ? (bool?)true : null;
+            parent.Shareable =FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE;
 
             entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
 
