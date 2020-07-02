@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
-import { api } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import {
   setFilter,
@@ -17,8 +16,7 @@ class ArticleBodyContent extends React.Component {
   state = {
     expandedKeys: this.props.filter.treeFolders,
     data: this.props.data,
-    showNewFilesPanel: false,
-    newFiles: []
+    showNewFilesPanel: false
   };
 
   componentDidUpdate(prevProps) {
@@ -31,6 +29,9 @@ class ArticleBodyContent extends React.Component {
       this.setState({ expandedKeys: filter.treeFolders });
     }
 
+    //console.log(prevProps.data);
+    //console.log(data);
+
     if (!utils.array.isArrayEqual(prevProps.data, data)) {
       this.setState({ data });
     }
@@ -41,7 +42,7 @@ class ArticleBodyContent extends React.Component {
       return true;
     }
 
-    return false;
+    return true;
   }
 
   onSelect = data => {
@@ -60,28 +61,12 @@ class ArticleBodyContent extends React.Component {
 
   onShowNewFilesPanel = (folderId) => {
     const { showNewFilesPanel } = this.state;
-    const { onLoading } = this.props;
-    if(typeof(folderId) === "number") {
-      onLoading(true);
-      api.files
-        .getNewFiles(folderId)
-        .then((res) =>
-          this.setState({
-            showNewFilesPanel: !showNewFilesPanel,
-            newFiles: res,
-            newFolderId: folderId
-          })
-        )
-        .catch((err) => toastr.error(err))
-        .finally(() => onLoading(false));
-    } else {
-      this.setState({showNewFilesPanel: !showNewFilesPanel});
-    }
+    this.setState({showNewFilesPanel: !showNewFilesPanel, newFolderId: [folderId]});
   };
 
-  setNewFilesCount = (id, filesCount) => {
+  setNewFilesCount = (folderPath, filesCount) => {
     const data = this.state.data;
-    const dataItem = data.find(x => x.id === id);
+    const dataItem = data.find(x => x.id === folderPath[0]);
     dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
     this.setState({ data });
   }
@@ -106,7 +91,7 @@ class ArticleBodyContent extends React.Component {
       isShare
     } = this.props;
 
-    const { showNewFilesPanel, expandedKeys, newFiles, newFolderId } = this.state;
+    const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
     //console.log("Article Body render", this.props, this.state.expandedKeys);
     return (
@@ -118,7 +103,10 @@ class ArticleBodyContent extends React.Component {
             setNewFilesCount={this.setNewFilesCount}
             onLoading={onLoading}
             folderId={newFolderId}
-            files={newFiles}
+            treeFolders={data}
+            setTreeFolders={setTreeFolders}
+
+            //setNewItems={this.setNewItems}
           />
         )}
         <TreeFolders

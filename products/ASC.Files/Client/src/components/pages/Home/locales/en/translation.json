@@ -82,5 +82,7 @@
   "TooltipElementMoveMessage": "Move {{element}}",
   "TooltipElementsMoveMessage": "Move {{element}} elements",
   "TooltipElementCopyMessage": "Copy {{element}}",
-  "TooltipElementsCopyMessage": "Copy {{element}} elements"
+  "TooltipElementsCopyMessage": "Copy {{element}} elements",
+  "ViewList": "List",
+  "ViewTiles": "Tiles"
 }

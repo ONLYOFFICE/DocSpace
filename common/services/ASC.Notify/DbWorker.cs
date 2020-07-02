@@ -156,6 +156,7 @@ namespace ASC.Notify
                 }
 
                 dbContext.SaveChanges();
+                tx.Commit();
 
                 return messages;
             }
