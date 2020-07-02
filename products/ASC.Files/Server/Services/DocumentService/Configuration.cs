@@ -679,16 +679,15 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "forcesave", EmitDefaultValue = false)]
         public bool? Forcesave
         {
             set { }
             get
             {
-                return (FileUtility.CanForcesave
+                return FileUtility.CanForcesave
                        && !_configuration.Document.Info.File.ProviderEntry
                        && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.File.ID.ToString()) == null
-                       && FilesSettingsHelper.Forcesave) ? (bool?)true : null;
+                       && FilesSettingsHelper.Forcesave;
             }
         }
 
