@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Security;
 
 using ASC.Common;
@@ -436,7 +435,6 @@ namespace ASC.Web.Files.Helpers
             public string BaseUri { get; set; }
         }
 
-        [DataContract]
         private class DocuSignUserInfo
         {
             public List<DocuSignAccount> Accounts { get; set; }

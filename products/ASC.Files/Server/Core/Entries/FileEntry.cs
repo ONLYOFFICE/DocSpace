@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;

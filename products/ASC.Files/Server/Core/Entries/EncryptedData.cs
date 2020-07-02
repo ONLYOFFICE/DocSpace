@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Web.Files.Core.Entries
 {
     public class EncryptedData

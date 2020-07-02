@@ -29,7 +29,6 @@
 using System;
 using System.Diagnostics;
 using System.Net;
-using System.Runtime.Serialization;
 
 using ASC.Common.Logging;
 using ASC.Files.Resources;
