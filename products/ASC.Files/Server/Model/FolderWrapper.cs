@@ -135,7 +135,7 @@ namespace ASC.Api.Documents
 
             result.FilesCount = folder.TotalFiles;
             result.FoldersCount = folder.TotalSubFolders;
-            result.IsShareable = folder.Shareable;
+            result.IsShareable = folder.Shareable ? (bool?)true : null;
             result.New = folder.NewForMe;
 
             return result;
