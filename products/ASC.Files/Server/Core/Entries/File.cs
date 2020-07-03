@@ -27,11 +27,9 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using System.Text;
 
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
@@ -237,12 +235,6 @@ namespace ASC.Files.Core
                 return FolderID;
             }
             set { _folderIdDisplay = value; }
-        }
-
-        public static string Serialize(File<T> file)
-        {
-            using var ms = new FileEntrySerializer().ToXml(file);
-            return Encoding.UTF8.GetString(ms.ToArray());
         }
     }
 }
