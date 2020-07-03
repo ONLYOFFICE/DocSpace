@@ -25,7 +25,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const renderComponent = useCallback(
     props => {
-      console.log(!token && fakeToken)
+      
       if (fakeToken) {
         return (
           <Redirect 

@@ -8,6 +8,16 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 
     const renderComponent = useCallback(
         props => {
+            if(!token) {
+                return (
+                    <Redirect
+                        to={{
+                            pathname: "/wizard",
+                            state: { from: props.location }
+                        }}
+                    />
+                );
+            }
             if(token) {
                 return (
                     <Redirect
