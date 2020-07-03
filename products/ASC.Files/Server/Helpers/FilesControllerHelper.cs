@@ -13,6 +13,7 @@ using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Api.Utils;
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -33,6 +34,7 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
@@ -80,6 +82,7 @@ namespace ASC.Files.Helpers
         public EasyBibHelper EasyBibHelper { get; }
         public ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         public ProductEntryPoint ProductEntryPoint { get; }
+        public ILog Logger { get; set; }
 
         /// <summary>
         /// </summary>
@@ -114,7 +117,8 @@ namespace ASC.Files.Helpers
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            ProductEntryPoint productEntryPoint)
+            ProductEntryPoint productEntryPoint,
+            IOptionsMonitor<ILog> optionMonitor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -149,6 +153,7 @@ namespace ASC.Files.Helpers
             EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             ProductEntryPoint = productEntryPoint;
+            Logger = optionMonitor.Get("ASC.Files");
         }
 
         public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
@@ -423,8 +428,15 @@ namespace ASC.Files.Helpers
                 };
                 if (!string.IsNullOrEmpty(r.Result))
                 {
-                    var jResult = JObject.Parse(r.Result);
-                    o.File = GetFileInfo(jResult.Value<T>("id"), jResult.Value<int>("version"));
+                    try
+                    {
+                        var jResult = JsonSerializer.Deserialize<File<T>>(r.Result);
+                        o.File = GetFileInfo(jResult.ID, jResult.Version);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
                 }
                 return o;
             });
