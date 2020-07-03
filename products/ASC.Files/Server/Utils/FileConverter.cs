@@ -32,6 +32,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Security;
+using System.Text.Json;
 using System.Threading;
 using System.Web;
 
@@ -396,13 +397,18 @@ namespace ASC.Web.Files.Utils
                               " \"version\": \"{2}\"," +
                               " \"folderId\": \"{3}\"," +
                               " \"folderTitle\": \"{4}\"," +
-                              " \"fileXml\": \"{5}\" }}",
+                              " \"fileJson\": \"{5}\" }}",
                               file.ID,
                               file.Title,
                               file.Version,
                               file.FolderID,
                               folderTitle ?? "",
-                              File<T>.Serialize(file).Replace('"', '\''));
+                              JsonSerializer.Serialize(file, typeof(File<T>), new JsonSerializerOptions()
+                              {
+                                  IgnoreNullValues = true,
+                                  IgnoreReadOnlyProperties = true,
+                                  WriteIndented = false
+                              }));
         }
     }
 
