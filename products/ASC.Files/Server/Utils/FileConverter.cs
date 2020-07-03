@@ -391,25 +391,35 @@ namespace ASC.Web.Files.Utils
             if (file == null) return string.Empty;
 
             EntryManager.SetFileStatus(file);
-            return
-                string.Format("{{ \"id\": \"{0}\"," +
-                              " \"title\": \"{1}\"," +
-                              " \"version\": \"{2}\"," +
-                              " \"folderId\": \"{3}\"," +
-                              " \"folderTitle\": \"{4}\"," +
-                              " \"fileJson\": \"{5}\" }}",
-                              file.ID,
-                              file.Title,
-                              file.Version,
-                              file.FolderID,
-                              folderTitle ?? "",
-                              JsonSerializer.Serialize(file, typeof(File<T>), new JsonSerializerOptions()
-                              {
-                                  IgnoreNullValues = true,
-                                  IgnoreReadOnlyProperties = true,
-                                  WriteIndented = false
-                              }));
+
+            var options = new JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                IgnoreReadOnlyProperties = true,
+                WriteIndented = false
+            };
+
+            return JsonSerializer.Serialize(
+                                  new FileJsonSerializerData<T>()
+                                  {
+                                      Id = file.ID,
+                                      Title = file.Title,
+                                      Version = file.Version,
+                                      FolderID = file.FolderID,
+                                      FolderTitle = folderTitle ?? "",
+                                      FileJson = JsonSerializer.Serialize(file, options)
+                                  }, options);
         }
+    }
+
+    public class FileJsonSerializerData<T>
+    {
+        public T Id { get; set; }
+        public string Title { get; set; }
+        public int Version { get; set; }
+        public T FolderID { get; set; }
+        public string FolderTitle { get; set; }
+        public string FileJson { get; set; }
     }
 
     public class FileConverter
