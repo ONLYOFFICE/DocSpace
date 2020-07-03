@@ -3,7 +3,7 @@ import { Box, Text, Icons } from "asc-web-components";
 import SubModalDialog from "./recover-modal-dialog";
 
 const RecoverAccess = () => {
-    
+
     const [visible, setVisible] = useState(false);
 
     const onRecoverClick = () => {
@@ -12,6 +12,9 @@ const RecoverAccess = () => {
     const onRecoverModalClose = () => {
         setVisible(false);
     }
+
+    console.log("render");
+    
 
     return (
         <Box widthProp="100%"
