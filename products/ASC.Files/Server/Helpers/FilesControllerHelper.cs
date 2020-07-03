@@ -430,8 +430,8 @@ namespace ASC.Files.Helpers
                 {
                     try
                     {
-                        var jResult = JsonSerializer.Deserialize<File<T>>(r.Result);
-                        o.File = GetFileInfo(jResult.ID, jResult.Version);
+                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result);
+                        o.File = GetFileInfo(jResult.Id, jResult.Version);
                     }
                     catch (Exception e)
                     {
