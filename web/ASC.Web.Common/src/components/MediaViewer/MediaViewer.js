@@ -48,6 +48,7 @@ class MediaViewer extends React.Component {
             this.hammer.off('pinchout', this.prevMedia);
             this.hammer.off('pinchin', this.prevMedia);
             this.hammer.off('pinchend', this.prevMedia);
+            this.hammer.off('doubletap', this.prevMedia);
         }
         this.hammer = null;
         setTimeout(function () {
@@ -58,6 +59,8 @@ class MediaViewer extends React.Component {
                 _this.hammer.on('pinchout', _this.handleZoomOut);
                 _this.hammer.on('pinchin', _this.handleZoomIn);
                 _this.hammer.on('pinchend', _this.handleZoomEnd);
+                _this.hammer.on('doubletap', _this.doubleTap);
+
             } else if (_this.mapSupplied[ext] && (_this.mapSupplied[ext].type == mediaTypes.video || _this.mapSupplied[ext].type == mediaTypes.audio)) {
                 _this.hammer = Hammer(document.getElementsByClassName('videoViewerOverlay')[0]);
             }
@@ -113,14 +116,15 @@ class MediaViewer extends React.Component {
         var _this = this;
         setTimeout(function () {
             if (document.getElementsByClassName('react-viewer-canvas').length > 0) {
-                _this.hammer = Hammer(document.getElementsByClassName('react-viewer-canvas')[0])
+                _this.hammer = Hammer(document.getElementsByClassName('react-viewer-canvas')[0]);
                 var pinch = new Hammer.Pinch();
                 _this.hammer.add([pinch]);
                 _this.hammer.on('pinchout', _this.handleZoomOut);
                 _this.hammer.on('pinchin', _this.handleZoomIn);
                 _this.hammer.on('pinchend', _this.handleZoomEnd);
+                _this.hammer.on('doubletap', _this.doubleTap);
             } else {
-                _this.hammer = Hammer(document.getElementsByClassName('videoViewerOverlay')[0])
+                _this.hammer = Hammer(document.getElementsByClassName('videoViewerOverlay')[0]);
             }
             if (_this.hammer) {
                 _this.hammer.on('swipeleft', _this.nextMedia);
@@ -130,11 +134,12 @@ class MediaViewer extends React.Component {
     }
 
     componentWillUnmount() {
-        this.hammer.off('swipeleft', this.nextMedia)
-        this.hammer.off('swiperight', this.prevMedia)
-        this.hammer.off('pinchout', this.prevMedia)
-        this.hammer.off('pinchin', this.prevMedia)
-        this.hammer.off('pinchend', this.prevMedia)
+        this.hammer.off('swipeleft', this.nextMedia);
+        this.hammer.off('swiperight', this.prevMedia);
+        this.hammer.off('pinchout', this.prevMedia);
+        this.hammer.off('pinchin', this.prevMedia);
+        this.hammer.off('pinchend', this.prevMedia);
+        this.hammer.off('doubletap', this.prevMedia);
     }
 
     mapSupplied = {
@@ -197,6 +202,9 @@ class MediaViewer extends React.Component {
             this.zoom = e.scale;
             document.querySelector('li[data-key="zoomIn"]').click()
         }
+    }
+    doubleTap = () =>{
+        document.querySelector('li[data-key="zoomIn"]').click()
     }
     prevMedia = () => {
 

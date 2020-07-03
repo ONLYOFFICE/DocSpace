@@ -282,27 +282,28 @@ class SectionBodyContent extends React.Component {
 
   getFilesContextOptions = (item, viewer) => {
     const isFile = !!item.fileExst;
+    const { t } = this.props;
 
     if (item.id <= 0) return [];
 
     const menu = [
       {
         key: "sharing-settings",
-        label: "Sharing settings",
+        label: t("SharingSettings"),
         onClick: this.onClickShare.bind(this, item),
         disabled: item.access !== 1 && item.access !== 0
       },
       isFile
         ? {
           key: "send-by-email",
-          label: "Send by e-mail",
+          label: t("SendByEmail"),
           onClick: () => { },
           disabled: true
         }
         : null,
       {
         key: "link-for-portal-users",
-        label: "Link for portal users",
+        label: t("LinkForPortalUsers"),
         onClick: this.onClickLinkForPortal.bind(this, item),
         disabled: false
       },
@@ -313,7 +314,7 @@ class SectionBodyContent extends React.Component {
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "edit",
-          label: "Edit",
+          label: t("edit"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: false
         }
@@ -321,7 +322,7 @@ class SectionBodyContent extends React.Component {
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "preview",
-          label: "Preview",
+          label: t("Preview"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: true
         }
@@ -329,7 +330,7 @@ class SectionBodyContent extends React.Component {
       (isFile && this.isMediaOrImage(item.fileExst))
         ? {
           key: "view",
-          label: "View",
+          label: t("View"),
           onClick: this.onMediaFileClick.bind(this, item.id),
           disabled: false
         }
@@ -337,20 +338,20 @@ class SectionBodyContent extends React.Component {
       isFile
         ? {
           key: "download",
-          label: "Download",
+          label: t("Download"),
           onClick: this.onClickDownload.bind(this, item),
           disabled: false
         }
         : null,
       {
         key: "rename",
-        label: "Rename",
+        label: t("Rename"),
         onClick: this.onClickRename.bind(this, item),
         disabled: false
       },
       {
         key: "delete",
-        label: "Delete",
+        label: t("Delete"),
         onClick: this.onClickDelete.bind(this, item),
         disabled: false
       },
