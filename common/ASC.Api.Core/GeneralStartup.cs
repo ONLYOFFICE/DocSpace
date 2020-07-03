@@ -2,30 +2,21 @@
 using ASC.Api.Core.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using ASC.Common.DependencyInjection;
+using Microsoft.AspNetCore.Authentication;
+using ASC.Api.Core.Auth;
 
 namespace ASC.Api.Core
 {
-    public class Startup
+    public static class GeneralStartup
     {
-        public IConfiguration Configuration { get; }
-        public IHostEnvironment HostEnvironment { get; }
-
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public static void ConfigureServices(IServiceCollection services, bool confirmAddScheme)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
-        }
-        public void ConfigureServices(IServiceCollection services)
-        {
+           
             services.AddHttpContextAccessor();
 
             services.AddControllers()
@@ -52,9 +43,20 @@ namespace ASC.Api.Core
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+
+            if (confirmAddScheme)
+            {
+                services.AddAuthentication("cookie")
+                       .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
+                       .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+            }
+            else
+            {
+                services.AddAuthentication("cookie")
+                       .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+            }         
         }
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

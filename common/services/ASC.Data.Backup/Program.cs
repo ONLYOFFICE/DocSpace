@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using ASC.Api.Core;
-using ASC.Api.Core.Auth;
-using ASC.Common;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
-using ASC.Common.Threading.Progress;
-using ASC.Data.Backup.Controllers;
-using ASC.Data.Backup.Service;
-using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup
@@ -52,28 +42,6 @@ namespace ASC.Data.Backup
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables();
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    var diHelper = new DIHelper(services);
-
-                    diHelper.AddBackupServiceLauncher()
-                    .AddBackupController();
-                    diHelper.AddNLogManager("ASC.Data.Backup");
-                    services.AddHostedService<BackupServiceLauncher>();
-                    diHelper.Configure<ProgressQueue<BaseBackupProgressItem>>(r =>
-                    {
-                        r.workerCount = 1;
-                        r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-                        r.removeAfterCompleted = true;
-                        r.stopAfterFinsih = false;
-                        r.errorCount = 0;
-                    });
-
-                    services.AddAuthentication("cookie")
-                        .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });                 
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false);
                 })
                 .UseConsoleLifetime()
                 .Build();
