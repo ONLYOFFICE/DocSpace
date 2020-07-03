@@ -1,10 +1,5 @@
-
-using ASC.Api.Core;
-using ASC.Api.Core.Auth;
-using ASC.Api.Core.Core;
+﻿using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
-
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,8 +10,9 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ASC.Common.DependencyInjection;
 
-namespace ASC.Data.Backup
+namespace ASC.Api.Core
 {
     public class Startup
     {
@@ -28,23 +24,18 @@ namespace ASC.Data.Backup
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
         }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                    .AddXmlSerializerFormatters()
-                    .AddJsonOptions(options =>
-                    {
-                        options.JsonSerializerOptions.WriteIndented = false;
-                        options.JsonSerializerOptions.IgnoreNullValues = true;
-                        options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-                    });
-
-            services.AddAuthentication("cookie")
-                    .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
-                    .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                });
 
             var builder = services.AddMvcCore(config =>
             {
@@ -61,26 +52,14 @@ namespace ASC.Data.Backup
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-
-            app.UseCors(builder =>
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-
             app.UseRouting();
 
             app.UseAuthentication();
