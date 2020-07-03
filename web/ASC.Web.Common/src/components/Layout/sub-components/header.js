@@ -4,6 +4,7 @@ import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import { utils } from "asc-web-components";
+import RecoverAccess from "../sub-components/recover-access";
 const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
@@ -63,7 +64,7 @@ const HeaderComponent = React.memo(props => {
   const currentModule = props.currentModule && props.currentModule.title;
   return (
     <Header module={currentModule}>
-      { props.currentUser && <NavItem
+      {props.currentUser && <NavItem
         iconName="MenuIcon"
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
@@ -76,6 +77,7 @@ const HeaderComponent = React.memo(props => {
           src="images/nav.logo.opened.react.svg"
         />
       </a>
+      { !localStorage.getItem("asc_auth_key") && <RecoverAccess /> }
       <Headline className="header-module-title" type="header" color="#FFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
