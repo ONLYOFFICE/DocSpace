@@ -77,7 +77,7 @@ const HeaderComponent = React.memo(props => {
           src="images/nav.logo.opened.react.svg"
         />
       </a>
-      { !localStorage.getItem("asc_auth_key") && <RecoverAccess /> }
+      { !localStorage.getItem("asc_auth_key") && <RecoverAccess t={props.t} /> }
       <Headline className="header-module-title" type="header" color="#FFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
@@ -92,7 +92,8 @@ HeaderComponent.propTypes = {
   onClick: PropTypes.func,
   onLogoClick: PropTypes.func,
   currentModule: PropTypes.object,
-  currentUser: PropTypes.object
+  currentUser: PropTypes.object,
+  t: PropTypes.func.isRequired
 };
 
 export default HeaderComponent;

@@ -7,6 +7,8 @@ import Main from "./sub-components/main";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
 
 class Layout extends React.Component {
   constructor(props) {
@@ -45,7 +47,7 @@ class Layout extends React.Component {
       }
     }
     if (props.availableModules && this.state.availableModules) {
-        hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
+      hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
     }
     return hash;
   };
@@ -182,6 +184,7 @@ class Layout extends React.Component {
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
             currentUser={this.props.currentUser}
+            t={this.props.t}
           />
         )}
         {this.state.isNavAvailable && (
@@ -226,7 +229,7 @@ class Layout extends React.Component {
         <Main fullscreen={!this.state.isNavAvailable}>
           {this.props.children}
         </Main>
-        
+
       </>
     );
   }
@@ -265,4 +268,22 @@ Layout.defaultProps = {
   availableModules: []
 };
 
-export default Layout;
+const LayoutTranslationWrapper = withTranslation()(Layout);
+
+const LayoutWithI18n = props => {
+
+  const { language } = props;
+  i18n.changeLanguage(language);
+
+  return (
+    <>
+      <LayoutTranslationWrapper i18n={i18n} {...props} />
+    </>
+  );
+};
+
+LayoutWithI18n.propTypes = {
+  language: PropTypes.string.isRequired
+};
+
+export default LayoutWithI18n;
