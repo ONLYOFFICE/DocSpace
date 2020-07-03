@@ -314,7 +314,7 @@ class SectionBodyContent extends React.Component {
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "edit",
-          label: t("edit"),
+          label: t("Edit"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: false
         }
