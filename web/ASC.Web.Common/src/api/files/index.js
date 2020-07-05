@@ -61,11 +61,13 @@ export function getFoldersTree() {
               title: folder.title,
               access: folder.access,
               foldersCount: folder.foldersCount,
-              rootFolderType: folder.rootFolderType
+              rootFolderType: folder.rootFolderType,
+              newItems: folder.new
             }
           }) : null,
           pathParts: data.pathParts,
-          foldersCount: index !== trashIndex ? data.current.foldersCount : null
+          foldersCount: index !== trashIndex ? data.current.foldersCount : null,
+          newItems: data.new
         }
       })
     ))
@@ -327,5 +329,17 @@ export function getFileVersionInfo(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/history`
+  });
+}
+
+export function markAsRead(folderIds, fileIds) {
+  const data = { folderIds, fileIds};
+  return request({ method: "put", url: "/files/fileops/markasread", data });
+}
+
+export function getNewFiles(folderId) {
+  return request({
+    method: "get",
+    url: `/files/${folderId}/news`
   });
 }

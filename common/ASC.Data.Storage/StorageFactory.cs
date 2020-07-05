@@ -233,7 +233,7 @@ namespace ASC.Data.Storage
             tenant = TenantPath.CreatePath(tenant);
 
             //remove cache
-            //var store = DataStoreCache.Get(tenant, module);
+            //var store = DataStoreCache.Get(tenant, module);//TODO
             //if (store == null)
             //{
             var section = StorageFactoryConfig.Section;
@@ -324,12 +324,13 @@ namespace ASC.Data.Storage
             services.TryAddSingleton<StorageFactoryListener>();
 
             return services
+                .AddConsumerFactoryService()
                 .AddTenantManagerService()
                 .AddCoreBaseSettingsService()
                 .AddPathUtilsService()
                 .AddEmailValidationKeyProviderService()
                 .AddStorageSettingsService()
-                .AddStorageFactoryConfigService();
+                .AddStorage();
         }
     }
 }

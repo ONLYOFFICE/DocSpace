@@ -32,6 +32,7 @@ export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
+export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 
 export function setFile(file) {
   return {
@@ -131,6 +132,13 @@ export function deselectFile(file) {
   };
 }
 
+export function setMediaViewerData(mediaViewerData) {
+  return {
+    type: SET_MEDIA_VIEWER_VISIBLE,
+    mediaViewerData
+  };
+}
+
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -180,7 +188,7 @@ export function fetchFiles(folderId, filter, dispatch) {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     //dispatch(setSelected("close")); //TODO: need close but it`s crash first select, need new logic
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));
+    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts, ...{new: data.new} }));
   })
 }
 
@@ -351,6 +359,7 @@ export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveTy
     return files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
   };
 };
+
 
 /*export function deleteGroup(id) {
   return (dispatch, getState) => {

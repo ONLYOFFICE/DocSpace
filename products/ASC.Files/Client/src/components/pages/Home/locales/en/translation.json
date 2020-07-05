@@ -5,8 +5,12 @@
   "NewFolder": "New folder",
   "UploadToFolder": "Upload to folder",
   "SharingSettings": "Sharing settings",
+  "SendByEmail": "Send by e-mail",
   "LinkForPortalUsers": "Link for portal users",
   "LinkCopySuccess": "Link has been copied to the clipboard",
+  "Edit": "Edit",
+  "Preview": "Preview",
+  "View": "View",
   "MoveTo": "Move to",
   "Copy": "Copy",
   "Download": "Download",
@@ -83,6 +87,8 @@
   "TooltipElementsMoveMessage": "Move {{element}} elements",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
+  "ViewList": "List",
+  "ViewTiles": "Tiles",
   "ShowVersionHistory": "Show version history",
   "FinalizeVersion": "Finalize version"
 }

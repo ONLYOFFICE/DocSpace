@@ -5,10 +5,11 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, toastr } from "asc-web-components";
-import { constants } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
+import { constants, api } from 'asc-web-common';
+import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
+import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
@@ -25,7 +26,10 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.fileAction.id
+      editingId: props.fileAction.id,
+      showNewFilesPanel: false,
+      newFolderId: [],
+      newItems: props.item.new
       //loading: false
     };
   }
@@ -174,23 +178,52 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const {settings, history} = this.props;
+    const { settings, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
     history.push(`${settings.homepage}/${fileId}/history`);
   }
 
+  onBadgeClick = () => {
+    const { showNewFilesPanel } = this.state;
+    const { item, treeFolders, setTreeFolders, rootFolderId, newItems, filter } = this.props;
+    if (item.fileExst) {
+      api.files
+      .markAsRead([], [item.id])
+      .then(() => {
+        const data = treeFolders;
+        const dataItem = data.find((x) => x.id === rootFolderId);
+        dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
+        setTreeFolders(data);
+        fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
+      })
+      .catch((err) => toastr.error(err))
+    } else {
+      const newFolderId = this.props.selectedFolder.pathParts;
+      newFolderId.push(item.id);
+      this.setState({
+        showNewFilesPanel: !showNewFilesPanel,
+        newFolderId,
+      });
+    }
+  }
+
+  onShowNewFilesPanel = () => {
+    const { showNewFilesPanel } = this.state;
+    this.setState({showNewFilesPanel: !showNewFilesPanel});
+  };
+
   render() {
-    const { t, item, fileAction, isLoading, isTrashFolder } = this.props;
-    const { itemTitle, editingId/*, loading*/ } = this.state;
+    const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
+    const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId } = this.state;
     const {
       contentLength,
       updated,
       createdBy,
       fileExst,
       filesCount,
-      fileStatus,
       foldersCount,
+      fileStatus,
       id,
       versionGroup
     } = item;
@@ -238,6 +271,7 @@ class FilesRowContent extends React.PureComponent {
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
+    const showNew = item.new && item.new > 0;
 
     return isEdit
       ? <EditingWrapperComponent
@@ -251,6 +285,16 @@ class FilesRowContent extends React.PureComponent {
         cancelUpdateItem={this.cancelUpdateItem}
       />
       : (
+      <>
+        {showNewFilesPanel && (
+          <NewFilesPanel
+            visible={showNewFilesPanel}
+            onClose={this.onShowNewFilesPanel}
+            onLoading={onLoading}
+            folderId={newFolderId}
+            folders={folders}
+          />
+        )}
         <SimpleFilesRowContent
           sideColor="#333"
           isFile={fileExst}
@@ -269,7 +313,7 @@ class FilesRowContent extends React.PureComponent {
             {titleWithoutExt}
           </Link>
           <>
-            {fileExst &&
+            {fileExst ?
               <div className='badges'>
                 <Text
                   className='badge-ext'
@@ -339,7 +383,25 @@ class FilesRowContent extends React.PureComponent {
                     fontWeight={800}
                     label={`New`}
                     maxWidth="50px"
-                    onClick={this.onShowVersionHistory}
+                    onClick={this.onBadgeClick}
+                    padding="0 5px"
+                    data-id={id}
+                  />
+                }
+              </div>
+              :
+              <div className='badges'>
+                { !!showNew &&
+                  <Badge
+                    className='badge-version'
+                    backgroundColor="#ED7309"
+                    borderRadius="11px"
+                    color="#FFFFFF"
+                    fontSize="10px"
+                    fontWeight={800}
+                    label={newItems}
+                    maxWidth="50px"
+                    onClick={this.onBadgeClick}
                     padding="0 5px"
                     data-id={id}
                   />
@@ -387,12 +449,13 @@ class FilesRowContent extends React.PureComponent {
               : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
           </Text>
         </SimpleFilesRowContent>
+        </>
       )
   }
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders } = state.files;
+  const { filter, fileAction, selectedFolder, treeFolders, folders } = state.files;
   const { settings } = state.auth;
   const indexOfTrash = 3;
 
@@ -401,10 +464,15 @@ function mapStateToProps(state) {
     fileAction,
     parentFolder: selectedFolder.id,
     isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id,
-    settings
+    settings,
+    treeFolders,
+    rootFolderId: selectedFolder.pathParts[0],
+    newItems: selectedFolder.new,
+    selectedFolder,
+    folders
   }
 }
 
-export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setFilter })(
+export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders })(
   withRouter(withTranslation()(FilesRowContent))
 );

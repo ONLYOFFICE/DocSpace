@@ -1,5 +1,5 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons, toastr, utils } from "asc-web-components";
+import { TreeMenu, TreeNode, Icons, toastr, utils, Badge } from "asc-web-components";
 import { api, constants } from "asc-web-common";
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -12,17 +12,38 @@ class TreeFolders extends React.Component {
     this.state = { treeData, expandedKeys: props.expandedKeys };
   }
 
-  getFolderIcon = key => {
-    switch (key) {
+  getFolderIcon = item => {
+    const showItem = item.newItems ? item.newItems > 0 : false;
+    const style = {position: "absolute", right: 0, top: 2}
+    const badgeProps = {
+      label: item.newItems,
+      backgroundColor: "#ED7309",
+      color: "#FFF",
+      fontSize: "11px",
+      fontWeight: 800,
+      borderRadius: "11px",
+      padding: "0 5px",
+      style,
+    };
+
+    switch (item.key) {
       case "0-0":
         return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
 
       case "0-1":
-        return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
+        return (
+          <>
+            <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />
+            {showItem && <Badge {...badgeProps} onClick={this.props.onBadgeClick.bind(this, item.id)} />}
+          </>
+        );
 
       case "0-2":
         return (
-          <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
+          <>
+            <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
+            {showItem && <Badge {...badgeProps} onClick={this.props.onBadgeClick.bind(this, item.id)} />}
+          </>
         );
 
       case "0-3":
@@ -81,7 +102,7 @@ class TreeFolders extends React.Component {
             id={item.id}
             key={item.id}
             title={item.title}
-            icon={this.getFolderIcon(item.key)}
+            icon={this.getFolderIcon(item)}
             dragging={this.props.dragging && dragging}
           >
             {this.getItems(item.folders)}
@@ -95,7 +116,7 @@ class TreeFolders extends React.Component {
           title={item.title}
           dragging={this.props.dragging && dragging}
           isLeaf={item.foldersCount ? false : true}
-          icon={this.getFolderIcon(item.key)}
+          icon={this.getFolderIcon(item)}
         />
       );
     });
@@ -253,13 +274,7 @@ class TreeFolders extends React.Component {
   };
 
   render() {
-    const {
-      selectedKeys,
-      isLoading,
-      onSelect,
-      needUpdate,
-      onBadgeClick
-    } = this.props;
+    const { selectedKeys, isLoading, onSelect, needUpdate } = this.props;
     const { treeData, expandedKeys } = this.state;
     const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
@@ -274,8 +289,6 @@ class TreeFolders extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={onSelect}
         selectedKeys={selectedKeys}
-        //badgeLabel={3}
-        //onBadgeClick={onBadgeClick}
         {...loadProp}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}

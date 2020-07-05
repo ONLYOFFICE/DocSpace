@@ -12,7 +12,8 @@ import {
   SET_SELECTION,
   SELECT_FILE,
   DESELECT_FILE,
-  SET_DRAG_ITEM
+  SET_DRAG_ITEM,
+  SET_MEDIA_VIEWER_VISIBLE
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -29,7 +30,8 @@ const initialState = {
   selected: "none",
   selectedFolder: null,
   selection: [],
-  dragItem: null
+  dragItem: null,
+  mediaViewerData: {visible: false, id: null}
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -98,6 +100,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_DRAG_ITEM: 
       return Object.assign({}, state, {
         dragItem: action.dragItem
+      });
+    case SET_MEDIA_VIEWER_VISIBLE: 
+      return Object.assign({}, state, {
+        mediaViewerData: action.mediaViewerData
       });
     default:
       return state;

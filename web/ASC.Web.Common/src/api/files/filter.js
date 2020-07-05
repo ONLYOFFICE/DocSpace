@@ -5,6 +5,7 @@ const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "lastModifiedDate";
 const DEFAULT_SORT_ORDER = "ascending";
+const DEFAULT_VIEW = "row";
 const DEFAULT_FILTER_TYPE = null;
 const DEFAULT_SEARCH_TYPE = true; //withSubfolders
 const DEFAULT_SEARCH = null;
@@ -29,6 +30,7 @@ class FilesFilter {
     total = DEFAULT_TOTAL,
     sortBy = DEFAULT_SORT_BY,
     sortOrder = DEFAULT_SORT_ORDER,
+    viewAs = DEFAULT_VIEW,
     filterType = DEFAULT_FILTER_TYPE,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
@@ -41,6 +43,7 @@ class FilesFilter {
     this.pageCount = pageCount;
     this.sortBy = sortBy;
     this.sortOrder = sortOrder;
+    this.viewAs = viewAs;
     this.filterType = filterType;
     this.withSubfolders = withSubfolders;
     this.search = search;
@@ -106,6 +109,7 @@ class FilesFilter {
       this.total,
       this.sortBy,
       this.sortOrder,
+      this.viewAs,
       this.filterType,
       this.withSubfolders,
       this.search,
@@ -124,6 +128,7 @@ class FilesFilter {
       this.search === filter.search &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
+      this.viewAs === filter.viewAs &&
       this.page === filter.page &&
       this.selectedItem.key === filter.selectedItem.key &&
       this.folder === filter.folder &&

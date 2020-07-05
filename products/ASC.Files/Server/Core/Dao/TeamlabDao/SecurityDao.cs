@@ -351,9 +351,11 @@ namespace ASC.Files.Core.Data
             Owner = r.Owner,
             Share = r.Security
         };
+
         private FileShareRecord ToFileShareRecord(SecurityTreeRecord r)
         {
             var result = ToFileShareRecord(r.DbFilesSecurity);
+            result.EntryId = r.DbFolderTree.FolderId;
             result.Level = r.DbFolderTree?.Level ?? -1;
             return result;
         }

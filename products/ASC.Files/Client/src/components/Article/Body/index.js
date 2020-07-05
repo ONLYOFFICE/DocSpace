@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { toastr } from "asc-web-components";
+import { toastr, utils } from "asc-web-components";
 import TreeFolders from "./TreeFolders";
 import {
   setFilter,
@@ -15,17 +15,34 @@ import { NewFilesPanel } from "../../panels";
 class ArticleBodyContent extends React.Component {
   state = {
     expandedKeys: this.props.filter.treeFolders,
-    showNewFilesPanel: false,
+    data: this.props.data,
+    showNewFilesPanel: false
   };
 
   componentDidUpdate(prevProps) {
+    const { filter, data } = this.props;
     if (
-      this.props.filter.treeFolders.length !==
+      filter.treeFolders.length !==
       prevProps.filter.treeFolders.length ||
-      this.state.expandedKeys.length !== this.props.filter.treeFolders.length
+      this.state.expandedKeys.length !== filter.treeFolders.length
     ) {
-      this.setState({ expandedKeys: this.props.filter.treeFolders });
+      this.setState({ expandedKeys: filter.treeFolders });
     }
+
+    //console.log(prevProps.data);
+    //console.log(data);
+
+    if (!utils.array.isArrayEqual(prevProps.data, data)) {
+      this.setState({ data });
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState) || !isEqual(this.props, nextProps)) {
+      return true;
+    }
+
+    return true;
   }
 
   onSelect = data => {
@@ -42,17 +59,17 @@ class ArticleBodyContent extends React.Component {
     }
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!isEqual(this.state, nextState) || !isEqual(this.props, nextProps)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  onShowNewFilesPanel = () => {
-    this.setState({showNewFilesPanel: !this.state.showNewFilesPanel});
+  onShowNewFilesPanel = (folderId) => {
+    const { showNewFilesPanel } = this.state;
+    this.setState({showNewFilesPanel: !showNewFilesPanel, newFolderId: [folderId]});
   };
+
+  setNewFilesCount = (folderPath, filesCount) => {
+    const data = this.state.data;
+    const dataItem = data.find(x => x.id === folderPath[0]);
+    dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
+    this.setState({ data });
+  }
 
   render() {
     const {
@@ -74,9 +91,7 @@ class ArticleBodyContent extends React.Component {
       isShare
     } = this.props;
 
-    const { showNewFilesPanel, expandedKeys } = this.state;
-
-    const fakeFiles = this.props.selection;
+    const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
     //console.log("Article Body render", this.props, this.state.expandedKeys);
     return (
@@ -85,7 +100,13 @@ class ArticleBodyContent extends React.Component {
           <NewFilesPanel
             visible={showNewFilesPanel}
             onClose={this.onShowNewFilesPanel}
-            files={fakeFiles}
+            setNewFilesCount={this.setNewFilesCount}
+            onLoading={onLoading}
+            folderId={newFolderId}
+            treeFolders={data}
+            setTreeFolders={setTreeFolders}
+
+            //setNewItems={this.setNewItems}
           />
         )}
         <TreeFolders

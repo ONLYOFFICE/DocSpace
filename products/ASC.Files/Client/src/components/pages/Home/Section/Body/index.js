@@ -28,7 +28,8 @@ import {
   moveToFolder,
   copyToFolder,
   getProgress,
-  setDragItem
+  setDragItem,
+  setMediaViewerData
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -77,9 +78,7 @@ class SectionBodyContent extends React.Component {
     this.state = {
       editingId: null,
       showSharingPanel: false,
-      currentItem: null,
-      currentMediaFileId: 0,
-      mediaViewerVisible: false
+      currentItem: null
     };
 
     this.tooltipRef = React.createRef();
@@ -296,6 +295,7 @@ class SectionBodyContent extends React.Component {
     const { t } = this.props;
 
     const isFile = !!item.fileExst;
+    const { t } = this.props;
 
     if (item.id <= 0) return [];
 
@@ -325,21 +325,21 @@ class SectionBodyContent extends React.Component {
     const menu = [
       {
         key: "sharing-settings",
-        label: "Sharing settings",
+        label: t("SharingSettings"),
         onClick: this.onClickShare.bind(this, item),
         disabled: item.access !== 1 && item.access !== 0
       },
       isFile
         ? {
           key: "send-by-email",
-          label: "Send by e-mail",
+          label: t("SendByEmail"),
           onClick: () => { },
           disabled: true
         }
         : null,
       {
         key: "link-for-portal-users",
-        label: "Link for portal users",
+        label: t("LinkForPortalUsers"),
         onClick: this.onClickLinkForPortal.bind(this, item),
         disabled: false
       },
@@ -351,7 +351,7 @@ class SectionBodyContent extends React.Component {
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "edit",
-          label: "Edit",
+          label: t("Edit"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: false
         }
@@ -359,7 +359,7 @@ class SectionBodyContent extends React.Component {
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "preview",
-          label: "Preview",
+          label: t("Preview"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: true
         }
@@ -367,7 +367,7 @@ class SectionBodyContent extends React.Component {
       (isFile && this.isMediaOrImage(item.fileExst))
         ? {
           key: "view",
-          label: "View",
+          label: t("View"),
           onClick: this.onMediaFileClick.bind(this, item.id),
           disabled: false
         }
@@ -375,20 +375,20 @@ class SectionBodyContent extends React.Component {
       isFile
         ? {
           key: "download",
-          label: "Download",
+          label: t("Download"),
           onClick: this.onClickDownload.bind(this, item),
           disabled: false
         }
         : null,
       {
         key: "rename",
-        label: "Rename",
+        label: t("Rename"),
         onClick: this.onClickRename.bind(this, item),
         disabled: false
       },
       {
         key: "delete",
-        label: "Delete",
+        label: t("Delete"),
         onClick: this.onClickDelete.bind(this, item),
         disabled: false
       },
@@ -676,15 +676,12 @@ class SectionBodyContent extends React.Component {
     )
   }
   onMediaViewerClose = () => {
-    this.setState({
-      mediaViewerVisible: false
-    });
+    const item = { visible: false, id: null };
+    this.props.setMediaViewerData(item);
   }
   onMediaFileClick = (id) => {
-    this.setState({
-      mediaViewerVisible: true,
-      currentMediaFileId: id
-    });
+    const item = { visible: true, id };
+    this.props.setMediaViewerData(item);
   }
   onDownloadMediaFile = (id) => {
     if (this.props.files.length > 0) {
@@ -956,7 +953,9 @@ class SectionBodyContent extends React.Component {
       isLoading,
       currentFolderCount,
       currentFolderType,
-      dragging
+      dragging,
+      mediaViewerVisible,
+      currentMediaFileId
     } = this.props;
 
     const { editingId, showSharingPanel, currentItem } = this.state;
@@ -1061,13 +1060,13 @@ class SectionBodyContent extends React.Component {
                 );
               })}
             </RowContainer>
-            {playlist.length > 0 && this.state.mediaViewerVisible &&
+            {playlist.length > 0 && mediaViewerVisible &&
               <MediaViewer
-                currentFileId={this.state.currentMediaFileId}
+                currentFileId={currentMediaFileId}
                 allowConvert={true} //TODO
                 canDelete={(fileId) => { return true }} //TODO 
                 canDownload={(fileId) => { return true }} //TODO 
-                visible={this.state.mediaViewerVisible}
+                visible={mediaViewerVisible}
                 playlist={playlist}
                 onDelete={this.onDeleteMediaFile}
                 onDownload={this.onDownloadMediaFile}
@@ -1095,7 +1094,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection, dragItem } = state.files;
+  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData } = state.files;
   const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -1127,7 +1126,9 @@ const mapStateToProps = state => {
     dragItem,
     isShare: pathParts[0] === shareFolderId,
     isCommon: pathParts[0] === commonFolderId,
-    isAdmin: state.auth.user.isAdmin
+    isAdmin: state.auth.user.isAdmin,
+    mediaViewerVisible: mediaViewerData.visible,
+    currentMediaFileId: mediaViewerData.id
   };
 };
 
@@ -1145,6 +1146,7 @@ export default connect(
     moveToFolder,
     copyToFolder,
     getProgress,
-    setDragItem
+    setDragItem,
+    setMediaViewerData
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

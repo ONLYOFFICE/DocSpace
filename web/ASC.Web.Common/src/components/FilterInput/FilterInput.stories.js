@@ -43,7 +43,8 @@ class FilterStory extends React.Component  {
         inputValue: "text",
         filterValues: [
           {key: "1", group: "filter-status"}
-        ]
+        ],
+        viewAs: "row"
       }
     };
     this.buttonClick = this.buttonClick.bind(this);

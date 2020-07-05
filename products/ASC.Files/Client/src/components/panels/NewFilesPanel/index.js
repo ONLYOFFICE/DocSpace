@@ -11,10 +11,11 @@ import {
   RowContainer,
   Text,
   Link,
-  Button
+  Button,
+  toastr
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
+import { utils as commonUtils, api } from "asc-web-common";
 import i18n from "./i18n";
 import { ReactSVG } from 'react-svg'
 import {
@@ -24,7 +25,9 @@ import {
   StyledBody,
   StyledFooter
 } from "../StyledPanels";
-import { getFileIcon, getFolderIcon } from '../../../store/files/selectors';
+import { getFileIcon, getFolderIcon, canWebEdit, isImage, isSound, isVideo } from "../../../store/files/selectors";
+import { fetchFiles, setMediaViewerData, setTreeFolders } from '../../../store/files/actions';
+import store from "../../../store/store";
 
 const { changeLanguage } = commonUtils;
 
@@ -33,27 +36,157 @@ class NewFilesPanelComponent extends React.Component {
     super(props);
 
     changeLanguage(i18n);
+
+    this.state = { files: [] };
   }
 
-    getItemIcon = (item, isEdit) => {
+  componentDidMount() {
+    const { folderId, onLoading } = this.props;
+    onLoading(true);
+    api.files
+      .getNewFiles(folderId[folderId.length - 1])
+      .then(files =>
+        this.setState({ files })
+      )
+      .catch((err) => toastr.error(err))
+      .finally(() => onLoading(false));
+  }
+
+  getItemIcon = (item, isEdit) => {
     const extension = item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
 
-    return <ReactSVG
-      beforeInjection={svg => {
-        svg.setAttribute('style', 'margin-top: 4px');
-        isEdit && svg.setAttribute('style', 'margin-left: 24px');
-      }}
-      src={icon}
-      loading={this.svgLoader}
-    />;
+    return (
+      <ReactSVG
+        beforeInjection={(svg) => {
+          svg.setAttribute("style", "margin-top: 4px");
+          isEdit && svg.setAttribute("style", "margin-left: 24px");
+        }}
+        src={icon}
+        loading={this.svgLoader}
+      />
+    );
   };
+
+  onMarkAsRead = () => {
+    const { folderId, onClose } = this.props;
+    const markAsReadFiles = true;
+
+    const folderIds = [];
+    const fileIds = [];
+
+    for(let item of this.state.files) {
+      if(item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+
+    api.files
+      .markAsRead(folderIds, fileIds)
+      .then(() => this.setNewFilesCount(folderId, markAsReadFiles))
+      .catch(err => toastr.error(err))
+      .finally(() => onClose());
+  };
+
+  onNewFilesClick = item => {
+    const { onClose, /*onLoading,*/ folderId } = this.props;
+    const folderIds = [];
+    const fileId = [];
+    const isFile = item.fileExst;
+
+    isFile ? fileId.push(item.id) : folderIds.push(item.id);
+
+    //onLoading(true);
+
+    //api.files.markAsRead([], [])
+    api.files.markAsRead(folderIds, fileId)
+      .then(() => {
+        this.setNewFilesCount(folderId, false, item);
+        this.onFilesClick(item);
+      })
+      .catch(err => toastr.error(err))
+      .finally(() => {
+        !isFile && onClose();
+        //onLoading(false);
+      });
+  }
+
+  onFilesClick = item => {
+    const { id, fileExst, viewUrl } = item;
+    const { filter, setMediaViewerData } = this.props;
+    if (!fileExst) {
+
+      fetchFiles(id, filter, store.dispatch)
+        .catch(err => toastr.error(err))
+    } else {
+      if (canWebEdit(fileExst)) {
+        return window.open(`./doceditor?fileId=${id}`, "_blank");
+      }
+
+      const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
+
+      if (isOpenMedia) {
+        const mediaItem = { visible: true, id };
+        setMediaViewerData(mediaItem);
+        return;
+      }
+
+      return window.open(viewUrl, "_blank");
+    }
+  };
+
+  setNewFilesCount = (folderPath, markAsReadAll, item) => {
+    const { treeFolders, setTreeFolders, folders, files, filter } = this.props;
+    const newFilter = filter.clone();
+
+    const data = treeFolders;
+    let dataItem;
+
+    const loop = (index, newData) => {
+      dataItem = newData.find(x => x.id === folderPath[index]);
+      if(index === folderPath.length - 1) {
+        const rootItem = data.find(x => x.id === folderPath[0]);
+        const newFilesCounter = dataItem.newItems ? dataItem.newItems : dataItem.new;
+        rootItem.newItems = markAsReadAll ? rootItem.newItems - newFilesCounter : rootItem.newItems - 1;
+        dataItem.newItems = markAsReadAll ? 0 : newFilesCounter - 1;
+        fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
+        return;
+      } else { loop(index + 1, dataItem.folders); }
+    }
+
+    if(folderPath.length > 1) {
+      loop(0, data);
+    } else {
+      dataItem = data.find(x => x.id === folderPath[0]);
+      dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
+
+      if(item && item.fileExst) {
+        const fileItem = files.find(x => x.id === item.id && x.fileExst);
+        if(fileItem) {
+          fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
+        } else {
+          const filesFolder = folders.find(x => x.id === item.folderId);
+          filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
+        }
+        fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
+      } else if(item && !item.fileExst) {
+        const folderItem = folders.find(x => x.id === item.id && !x.fileExst);
+        folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
+      }
+    }
+  
+    setTreeFolders(data);
+  }
+
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, onClose, files } = this.props;
+    const { t, visible, onClose } = this.props;
+    const { files } = this.state;
     const zIndex = 310;
 
     return (
@@ -72,7 +205,7 @@ class NewFilesPanelComponent extends React.Component {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <RowContent>
+                      <RowContent onClick={this.onNewFilesClick.bind(this, file)}>
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -101,9 +234,9 @@ class NewFilesPanelComponent extends React.Component {
                 label={t("MarkAsRead")}
                 size="big"
                 primary
-                //onClick={this.onSaveClick}
+                onClick={this.onMarkAsRead}
               />
-                <Button
+              <Button
                 className="sharing_panel-button"
                 label={t("CloseButton")}
                 size="big"
@@ -131,7 +264,8 @@ const NewFilesPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  return {};
+  const { filter, files, folders, treeFolders, selectedFolder } = state.files
+  return { filter, files, folders, treeFolders, selectedFolder };
 };
 
-export default connect(mapStateToProps, {})(withRouter(NewFilesPanel));
+export default connect(mapStateToProps, { setMediaViewerData, setTreeFolders })(withRouter(NewFilesPanel));

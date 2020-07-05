@@ -133,6 +133,8 @@ import OrigCrossSidebarIcon from './cross.sidebar.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
 import OrigCheckboxCheckedIcon from './checkbox.checked.react.svg';
 import OrigCheckboxIndeterminateIcon from './checkbox.indeterminate.react.svg';
+import OrigFilterViewSelectorRowIcon from './filter.view.selector.row.react.svg';
+import OrigFilterViewSelectorTileIcon from './filter.view.selector.tile.react.svg';
 
 import OrigEyeIcon from './eye.react.svg';
 import OrigEyeOffIcon from './eye.off.react.svg';
@@ -800,4 +802,12 @@ export const ShareLinkedInIcon = createStyledIcon(
 export const KeyIcon = createStyledIcon(
   OrigKeyIcon,
   'KeyIcon'
+);
+export const FilterViewSelectorRowIcon = createStyledIcon(
+  OrigFilterViewSelectorRowIcon,
+  'FilterViewSelectorRowIcon'
+);
+export const FilterViewSelectorTileIcon = createStyledIcon(
+  OrigFilterViewSelectorTileIcon,
+  'FilterViewSelectorTileIcon'
 );

@@ -4,6 +4,7 @@ import {
   SEARCH,
   SORT_BY,
   SORT_ORDER,
+  VIEW_AS,
   PAGE,
   PAGE_COUNT,
   AUTHOR_TYPE,
@@ -28,6 +29,7 @@ export function getFilterByLocation(location) {
   defaultFilter.withSubfolders;
   const search = urlFilter[SEARCH] || defaultFilter.search;
   const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
+  const viewAs = urlFilter[VIEW_AS] || defaultFilter.viewAs;
   const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
   const page = (urlFilter[PAGE] && (+urlFilter[PAGE]-1)) || defaultFilter.page;
   const pageCount =
@@ -41,6 +43,7 @@ export function getFilterByLocation(location) {
     defaultFilter.total,
     sortBy,
     sortOrder,
+    viewAs,
     filterType,
     withSubfolders,
     search,

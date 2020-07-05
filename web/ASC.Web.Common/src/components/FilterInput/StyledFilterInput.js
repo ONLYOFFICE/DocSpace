@@ -17,7 +17,10 @@ const StyledFilterInput = styled.div`
     .styled-search-input {
       display: block;
       float: left;
-      width: calc(100% - 140px);
+      width: calc(100% - 212px);
+      @media (max-width: 460px) {
+        width: calc(100% - 140px);
+      }
       @media ${mobile} {
           width: calc(100% - 58px);
       }
@@ -121,8 +124,50 @@ const StyledFilterInput = styled.div`
           color: #333;
       }
     }
+`;
 
+export const StyledViewSelector = styled.div`
+  display: flex;
+  float: left;
+  width: 64px;
+  margin-left: 8px;
 
+  @media (max-width: 460px) {
+    display:none;
+  }
+
+  .view-selector-button{
+    border: 1px solid ${props => props.isDisabled ? '#ECEEF1' : '#D0D5DA'};
+    border-radius: 3px;
+    padding: 7px;
+    ${props => props.isDisabled && 'background-color: #F8F9F9;' }
+
+    svg{
+      pointer-events: none;
+    }
+
+    &.active{
+      background-color:#A3A9AE;
+      border-color: #A3A9AE;
+    }
+
+    &:hover{
+      ${props => !props.isDisabled && 'background-color: #A3A9AE;' }
+      ${props => !props.isDisabled && 'border-color: #A3A9AE;' }
+    }
+
+    &:first-child{
+      border-right: none;
+      border-top-right-radius:0;
+      border-bottom-right-radius:0;
+    }
+
+    &:last-child{
+      border-left: none;
+      border-top-left-radius:0;
+      border-bottom-left-radius:0;
+    }
+  }  
 `;
 
 export const StyledFilterItem = styled.div`
@@ -226,6 +271,13 @@ export const StyledHideFilterButton = styled.div`
 
 export const StyledIconButton = styled.div`
     transform: ${state => !state.sortDirection ? 'scale(1, -1)' : 'scale(1)'};
+`;
+
+
+export const StyledIconWrapper = styled.div`
+    display: inline-flex;
+    width: 32px;
+    height: 100%;
 `;
 
 export default StyledFilterInput;
