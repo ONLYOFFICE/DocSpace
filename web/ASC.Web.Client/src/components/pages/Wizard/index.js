@@ -20,13 +20,6 @@ const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
 settings.allowDomainPunycode = true;
 
-const settingsPassword = {
-  minLength: 2,
-  upperCase: true,
-  digits: true,
-  specSymbols: true
-};
-
 const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -501,7 +494,18 @@ class Body extends Component {
   }
 
   renderInputBox = () => {
-    const { t, isOwner } = this.props;
+    const { t, isOwner, settingsPassword, isWizardLoaded } = this.props;
+
+    let tooltipPassLength, tooltipPassTitle, tooltipPassDigits, tooltipPassCapital, tooltipPassSpecial;
+
+    if(isWizardLoaded) {
+      tooltipPassTitle = t('tooltipPasswordTitle');
+      tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
+      tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : settingsPassword.digits;
+      tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : settingsPassword.upperCase;
+      tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : settingsPassword.specSymbols;
+    }
+
     const inputEmail = !isOwner 
       ? <EmailInput
           className="wizard-input-email"
@@ -524,6 +528,11 @@ class Body extends Component {
           inputName="firstPass"
           emailInputName="email-wizard"
           inputWidth="311px"
+          tooltipPasswordTitle={tooltipPassTitle}
+          tooltipPasswordLength={tooltipPassLength}
+          tooltipPasswordDigits={tooltipPassDigits}
+          tooltipPasswordCapital={tooltipPassCapital}
+          tooltipPasswordSpecial={tooltipPassSpecial}
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
           isDisabled={false}
@@ -685,7 +694,7 @@ function mapStateToProps(state) {
     isOwner: state.wizard.isOwner,
     ownerEmail: state.wizard.ownerEmail,
 
-    settings: state.auth.settings.passwordSettings,
+    settingsPassword: state.auth.settings.passwordSettings,
     wizardToken: state.auth.settings.wizardToken,
     isWizardLoaded: state.wizard.isWizardLoaded
   };

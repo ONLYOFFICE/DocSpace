@@ -16,5 +16,10 @@
   "errorLicenseTitle": "Loading error", 
   "errorLicenseBody": "The license is not valid. Make sure you select the correct file",
   "changeEmailTitle": "Change e-mail",
-  "changeEmailBtn": "Save"
+  "changeEmailBtn": "Save",
+  "tooltipPasswordTitle": "Password must contain:",
+  "tooltipPasswordLength": "characters",
+  "tooltipPasswordDigits": "digits",
+  "tooltipPasswordCapital": "capital letters",
+  "tooltipPasswordSpecial": "special characters (!@#$%^&*)"
 }
