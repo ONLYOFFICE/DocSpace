@@ -1,7 +1,8 @@
-import { INIT_WIZARD, SET_OWNER, SET_NEW_EMAIL } from "./actions";
+import { INIT_WIZARD, SET_OWNER, SET_NEW_EMAIL, SET_IS_WIZARD_LOADED } from "./actions";
 // import { api } from "asc-web-common";
 
 const initState = { 
+  isWizardLoaded: false,
   isOwner: false,
   ownerEmail: '',
   domain: '',
@@ -13,6 +14,11 @@ const initState = {
 
 const ownerReducer = ( state = initState, action) => {
   switch(action.type) {
+
+    case SET_IS_WIZARD_LOADED:
+      return Object.assign({}, state, {
+        isWizardLoaded: action.isWizardLoaded
+      });
     
     case INIT_WIZARD:
       return Object.assign({}, state, action.params);

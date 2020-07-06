@@ -5,7 +5,7 @@ import i18n from './i18n';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
-import { PageLayout } from "asc-web-common";
+import { PageLayout, store as commonStore } from "asc-web-common";
 import { 
   Heading, Text, 
   EmailInput, PasswordInput, 
@@ -14,7 +14,7 @@ import {
   Button, Box, Loader, 
   ModalDialog, utils } from 'asc-web-components';
 
-import { getParams, setOwnerToSrv, saveNewEmail } from '../../../store/wizard/actions';
+import { getParams, setOwnerToSrv, saveNewEmail, getWizardInfo } from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
@@ -332,8 +332,9 @@ class Body extends Component {
   }
 
   componentDidMount() {
-    const { t } = this.props;
+    const { t, wizardToken, getWizardInfo } = this.props;
     document.title = t('title');
+    getWizardInfo(wizardToken);
   }
 
   isValidPassHandler = val => {
@@ -634,6 +635,8 @@ class Body extends Component {
   }
 
   render() {
+    const { isWizardLoaded } = this.props;
+
     console.log('wizard render')
     const headerBox = this.renderHeaderBox();
     const inputBox = this.renderInputBox();
@@ -641,18 +644,19 @@ class Body extends Component {
     const buttonBox = this.renderButtonBox();
     const modalDialog = this.renderModalDialog();
     
-    return (
-      <WizardContainer>
-        
-        <Box className="form-container">
-        { modalDialog }
-          {headerBox}
-          {inputBox}
-          {settingsBox}
-          {buttonBox}
-        </Box>
-      </WizardContainer>
-    )
+    const content = isWizardLoaded   
+      ? <WizardContainer>
+          <Box className="form-container">
+          { modalDialog }
+            {headerBox}
+            {inputBox}
+            {settingsBox}
+            {buttonBox}
+          </Box>
+        </WizardContainer>
+      : <Loader className="pageLoader" type="rombs" size='40px' />
+
+    return content;
   }
 }
 
@@ -679,8 +683,15 @@ function mapStateToProps(state) {
     timezone: state.wizard.timezone,
     timezones: state.wizard.timezones,
     isOwner: state.wizard.isOwner,
-    ownerEmail: state.wizard.ownerEmail
+    ownerEmail: state.wizard.ownerEmail,
+
+    settings: state.auth.settings.passwordSettings,
+    wizardToken: state.auth.settings.wizardToken,
+    isWizardLoaded: state.wizard.isWizardLoaded
   };
 }
 
-export default connect(mapStateToProps, { getParams, setOwnerToSrv, saveNewEmail })(withRouter(Wizard)); 
+export default connect(mapStateToProps, { 
+  getParams, setOwnerToSrv, 
+  saveNewEmail, getWizardInfo 
+})(withRouter(Wizard)); 

@@ -1,10 +1,25 @@
-//import { api } from "asc-web-common";
-// import axios from "axios";
+import { store } from "asc-web-common";
+const { getPortalPasswordSettings } = store.auth.actions;
 
 export const INIT_WIZARD = 'INIT_WIZARD'; 
 export const SET_OWNER = 'SET_OWNER'; 
 export const GET_PARAMS = 'GET_PARAMS';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
+export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
+
+export function setIsWizardLoaded(isWizardLoaded) {
+  return {
+    type: SET_IS_WIZARD_LOADED,
+    isWizardLoaded
+  };
+};
+
+export function getWizardInfo(token) {
+  return dispatch => {
+    return getPortalPasswordSettings(dispatch, token)
+      .then(() => dispatch(setIsWizardLoaded(true)));
+  };
+};
 
 export function initWizard(params) { 
   return {
