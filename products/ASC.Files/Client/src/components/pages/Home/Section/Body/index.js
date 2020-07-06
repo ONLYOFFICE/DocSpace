@@ -294,9 +294,7 @@ class SectionBodyContent extends React.Component {
 
   getFilesContextOptions = (item, viewer) => {
     const { t } = this.props;
-
     const isFile = !!item.fileExst;
-    const { t } = this.props;
 
     if (item.id <= 0) return [];
 
