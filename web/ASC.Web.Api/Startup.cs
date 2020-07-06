@@ -48,7 +48,7 @@ namespace ASC.Web.Api
                 .AddPortalController()
                 .AddSettingsController()
                 .AddSmtpSettingsController();
-            GeneralStartup.ConfigureServices(services, true);
+            GeneralStartup.ConfigureServices(services, true, true) ;
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
         }

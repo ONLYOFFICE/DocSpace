@@ -41,7 +41,6 @@ namespace ASC.Files
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            services.AddHttpContextAccessor();
 
             services.AddControllers()
                 .AddXmlSerializerFormatters()
@@ -54,25 +53,6 @@ namespace ASC.Files
                 });
 
             services.AddMemoryCache();
-
-            services.AddAuthentication("cookie")
-                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
-
-            var builder = services.AddMvcCore(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-                config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
-                config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
-                config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
-                config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
-                config.Filters.Add(new CustomResponseFilterAttribute());
-                config.Filters.Add(new CustomExceptionFilterAttribute());
-                config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
-
-                config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
-                config.OutputFormatters.Add(new XmlOutputFormatter());
-            });
 
             var diHelper = new DIHelper(services);
             diHelper
@@ -93,42 +73,14 @@ namespace ASC.Files
                 .AddThirdPartyAppHandlerService()
                 .AddDocuSignHandlerService();
 
+            GeneralStartup.ConfigureServices(services, false, false);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-
-            app.UseCors(builder =>
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseCultureMiddleware();
-
-            app.UseDisposeMiddleware();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapCustom();
-            });
+            GeneralStartup.Configure(app);
 
             app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),

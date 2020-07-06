@@ -1,3 +1,4 @@
+using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
@@ -30,12 +31,9 @@ namespace ASC.Web.Studio
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
 
             services.AddCors();
-
-            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
-
+            
             var diHelper = new DIHelper(services);
 
             diHelper.AddNLogManager("ASC.Api", "ASC.Web");
@@ -45,21 +43,12 @@ namespace ASC.Web.Studio
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService();
-
+            GeneralStartup.ConfigureServices(services, false, false);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

@@ -81,43 +81,13 @@ namespace ASC.People
             diHelper
                 .AddPeopleController()
                 .AddGroupController();
-            GeneralStartup.ConfigureServices(services, true);
+            GeneralStartup.ConfigureServices(services, true,true);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-
-            app.UseCors(builder =>
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseCultureMiddleware();
-
-            app.UseDisposeMiddleware();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapCustom();
-            });
+            GeneralStartup.Configure(app);
         }
     }
 }

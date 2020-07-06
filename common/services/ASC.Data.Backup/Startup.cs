@@ -43,7 +43,7 @@ namespace ASC.Data.Backup
             });
 
            
-            GeneralStartup.ConfigureServices(services, false);
+            GeneralStartup.ConfigureServices(services, false, true);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
         }

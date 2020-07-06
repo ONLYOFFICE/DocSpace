@@ -14,20 +14,21 @@ namespace ASC.Api.Core
 {
     public static class GeneralStartup
     {
-        public static void ConfigureServices(IServiceCollection services, bool confirmAddScheme)
+        public static void ConfigureServices(IServiceCollection services, bool confirmAddScheme, bool addcontrollers)
         {
            
             services.AddHttpContextAccessor();
-
-            services.AddControllers()
-                .AddXmlSerializerFormatters()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.WriteIndented = false;
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
-                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-                });
-
+            if (addcontrollers)
+            {
+                services.AddControllers()
+                    .AddXmlSerializerFormatters()
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.WriteIndented = false;
+                        options.JsonSerializerOptions.IgnoreNullValues = true;
+                        options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                    });
+            }
             var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -54,6 +55,7 @@ namespace ASC.Api.Core
             {
                 services.AddAuthentication("cookie")
                        .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+
             }         
         }
         public static void Configure(IApplicationBuilder app)
