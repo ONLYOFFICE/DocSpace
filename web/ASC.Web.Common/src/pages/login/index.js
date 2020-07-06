@@ -96,7 +96,7 @@ const FormContainer = styled.form`
 
 const RegisterContainer = styled(Box)`
   position: absolute;
-  z-index: 999;
+  z-index: 184;
   width: 100%;
   height: 66px;
   bottom: 0;
