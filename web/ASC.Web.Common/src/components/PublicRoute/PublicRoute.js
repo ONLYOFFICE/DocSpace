@@ -7,18 +7,19 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
     const token = localStorage.getItem(AUTH_KEY);
 
     const renderComponent = useCallback(
-        props => {
-            if(!token) {
+        props => { 
+            if(token) {
                 return (
                     <Redirect
                         to={{
-                            pathname: "/wizard",
+                            pathname: "/",
                             state: { from: props.location }
                         }}
                     />
                 );
             }
-            if(token) {
+
+            if(!token) {
                 return (
                     <Redirect
                         to={{
@@ -31,7 +32,6 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 
             return <Component {...props} />;
         }, [token, Component]); 
-
     return (
         <Route
             {...rest}

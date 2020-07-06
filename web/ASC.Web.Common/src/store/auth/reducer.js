@@ -11,7 +11,6 @@ const initialState = {
   user: {},
   modules: [],
   settings: {
-      fakeToken: '',
       currentProductId: "",
       culture: "en-US",
       cultures: [],

@@ -35,18 +35,22 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         );
       }
 
-      if (!token && isLoaded && wizardToken) {
-        return (
-          <Redirect 
-            to={{
-              pathname: '/wizard',
-              state: {form: props.location}
-            }}
-          />
-        )
-      }
-
       if (!token || (isLoaded && !isAuthenticated)) {
+
+        if (wizardToken) {
+          if(props.history.location.pathname === '/wizard') {
+            return <Component {...props} />;
+          }
+          return (
+            <Redirect 
+              to={{
+                pathname: '/wizard',
+                state: {from: props.location}
+              }}
+            />
+          )
+        }
+        
         return (
           <Redirect
             to={{
