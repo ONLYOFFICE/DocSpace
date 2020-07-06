@@ -11,7 +11,11 @@ const backgroundDragEnterColor = "#F8F7BF";
 const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-node-content-wrapper{
     background: ${props => !props.dragging && "none !important"};
-  }  
+  }
+  
+  .rc-tree-node-selected {
+    background: #DFE2E3 !important;
+  }
 `;
 
 class TreeFolders extends React.Component {
