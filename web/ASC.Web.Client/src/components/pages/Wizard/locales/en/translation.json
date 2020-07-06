@@ -4,7 +4,6 @@
   "desc": "Please setup the portal registration data.",
   "placeholderEmail": "E-mail",
   "placeholderPass": "Password",
-  "tooltipPass": "2-30 characters",
   "placeholderLicense": "Your license file",
   "license": "Accept the terms of the ",
   "licenseLink": "License agreements", 

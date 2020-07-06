@@ -4,7 +4,6 @@
   "desc": "Пожалуйста, настройте регистрационные данные портала.",
   "placeholderEmail": "E-mail",
   "placeholderPass": "Пароль",
-  "tooltipPass": "от 2 до 30 символов",
   "placeholderLicense": "Ваш файл лицензии",
   "license": "Принять условия ",
   "licenseLink": "лицензионного соглашения", 

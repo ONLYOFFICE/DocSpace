@@ -14,7 +14,7 @@ import {
   Button, Box, Loader, 
   ModalDialog, utils } from 'asc-web-components';
 
-import { getParams, setOwnerToSrv, saveNewEmail, getWizardInfo } from '../../../store/wizard/actions';
+import { getWizardInfo } from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
@@ -379,7 +379,6 @@ class Body extends Component {
     if (valid) { 
       console.log('valid params');
 
-      const { setOwnerToSrv } = this.props;
       const licenseFile = this.inputRef.current.files[0];
 
       const owner = {
@@ -389,7 +388,6 @@ class Body extends Component {
         timezone: this.state.selectTimezone,
         licenseFile: licenseFile
       }
-      setOwnerToSrv(owner);
     }
     else {
       console.log('not valid params');
@@ -407,9 +405,7 @@ class Body extends Component {
   }
 
   onSaveEmailHandler = () => {
-    const { saveNewEmail } = this.props;
     console.log('save email', this.state.email);
-    saveNewEmail(this.state.email)
     this.setState({ visibleModal: false });
   }
 
@@ -494,18 +490,14 @@ class Body extends Component {
   }
 
   renderInputBox = () => {
-    const { t, isOwner, settingsPassword, isWizardLoaded } = this.props;
+    const { t, isOwner, settingsPassword } = this.props;
 
-    let tooltipPassLength, tooltipPassTitle, tooltipPassDigits, tooltipPassCapital, tooltipPassSpecial;
-
-    if(isWizardLoaded) {
-      tooltipPassTitle = t('tooltipPasswordTitle');
-      tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
-      tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : settingsPassword.digits;
-      tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : settingsPassword.upperCase;
-      tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : settingsPassword.specSymbols;
-    }
-
+    const tooltipPassTitle = t('tooltipPasswordTitle');
+    const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
+    const tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : null;
+    const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
+    const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
+    
     const inputEmail = !isOwner 
       ? <EmailInput
           className="wizard-input-email"
@@ -540,9 +532,6 @@ class Body extends Component {
           onChange={this.onChangePassword}
           onValidateInput={this.isValidPassHandler}
         />
-        <Text className="password-tooltip">
-          {t('tooltipPass')}
-        </Text>
         <InputBlock
           value={this.state.path}
           className="input-block"
@@ -646,26 +635,26 @@ class Body extends Component {
   render() {
     const { isWizardLoaded } = this.props;
 
-    console.log('wizard render')
-    const headerBox = this.renderHeaderBox();
-    const inputBox = this.renderInputBox();
-    const settingsBox = this.renderSettingsBox();
-    const buttonBox = this.renderButtonBox();
-    const modalDialog = this.renderModalDialog();
-    
-    const content = isWizardLoaded   
-      ? <WizardContainer>
-          <Box className="form-container">
-          { modalDialog }
-            {headerBox}
-            {inputBox}
-            {settingsBox}
-            {buttonBox}
-          </Box>
-        </WizardContainer>
-      : <Loader className="pageLoader" type="rombs" size='40px' />
+    console.log('wizard render', isWizardLoaded)
 
-    return content;
+    if (isWizardLoaded) {
+      const headerBox = this.renderHeaderBox();
+      const inputBox = this.renderInputBox();
+      const settingsBox = this.renderSettingsBox();
+      const buttonBox = this.renderButtonBox();
+      const modalDialog = this.renderModalDialog();
+
+      return <WizardContainer>
+        <Box className="form-container">
+        { modalDialog }
+          {headerBox}
+          {inputBox}
+          {settingsBox}
+          {buttonBox}
+        </Box>
+      </WizardContainer>
+    }
+    return <Loader className="pageLoader" type="rombs" size='40px' />;
   }
 }
 
@@ -700,7 +689,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { 
-  getParams, setOwnerToSrv, 
-  saveNewEmail, getWizardInfo 
+export default connect(mapStateToProps, {  
+  getWizardInfo 
 })(withRouter(Wizard)); 
