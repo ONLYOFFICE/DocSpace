@@ -5,7 +5,7 @@ import i18n from './i18n';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
-import { PageLayout, store as commonStore } from "asc-web-common";
+import { PageLayout } from "asc-web-common";
 import { 
   Heading, Text, 
   EmailInput, PasswordInput, 
@@ -590,7 +590,7 @@ class Body extends Component {
           <Text className="settings-title">{t('timezone')}</Text>
         </Box>
         <Box className="values">
-          <Text className="text value">{domain}</Text>
+          <Text className="text value">{domain ? domain : "someDomain"}</Text>
           {contentEmail}
           <GroupButton className="drop-down value" label={selectLanguage} isDropdown={true}>
             {
@@ -635,7 +635,7 @@ class Body extends Component {
   render() {
     const { isWizardLoaded } = this.props;
 
-    console.log('wizard render', isWizardLoaded)
+    console.log('wizard render', this.props)
 
     if (isWizardLoaded) {
       const headerBox = this.renderHeaderBox();
