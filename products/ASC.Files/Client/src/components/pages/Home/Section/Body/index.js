@@ -28,6 +28,7 @@ import {
   moveToFolder,
   copyToFolder,
   getProgress,
+  setDragging,
   setDragItem,
   setMediaViewerData
 } from '../../../../../store/files/actions';
@@ -1057,7 +1058,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData } = state.files;
+  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData, dragging } = state.files;
   const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -1091,7 +1092,8 @@ const mapStateToProps = state => {
     isCommon: pathParts[0] === commonFolderId,
     isAdmin: state.auth.user.isAdmin,
     mediaViewerVisible: mediaViewerData.visible,
-    currentMediaFileId: mediaViewerData.id
+    currentMediaFileId: mediaViewerData.id,
+    dragging
   };
 };
 
@@ -1109,6 +1111,7 @@ export default connect(
     moveToFolder,
     copyToFolder,
     getProgress,
+    setDragging,
     setDragItem,
     setMediaViewerData
   }

@@ -6,7 +6,8 @@ import {
   setFilter,
   fetchFiles,
   setTreeFolders,
-  setDragItem
+  setDragItem,
+  setDragging
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
@@ -37,13 +38,13 @@ class ArticleBodyContent extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  /*shouldComponentUpdate(nextProps, nextState) {
     if (!isEqual(this.state, nextState) || !isEqual(this.props, nextProps)) {
       return true;
     }
 
-    return true;
-  }
+    return false;
+  }*/
 
   onSelect = data => {
     const { selectedKeys, filter, onLoading } = this.props;
@@ -88,7 +89,9 @@ class ArticleBodyContent extends React.Component {
       commonId,
       currentId,
       isAdmin,
-      isShare
+      isShare,
+      setDragging,
+      onTreeDrop
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -120,6 +123,7 @@ class ArticleBodyContent extends React.Component {
           onLoading={onLoading}
           isLoading={isLoading}
           dragging={dragging}
+          setDragging={setDragging}
           setDragItem={setDragItem}
           isMy={isMy}
           myId={myId}
@@ -129,6 +133,7 @@ class ArticleBodyContent extends React.Component {
           isAdmin={isAdmin}
           isShare={isShare}
           onBadgeClick={this.onShowNewFilesPanel}
+          onTreeDrop={onTreeDrop}
         />
       </>
     );
@@ -136,7 +141,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, selection } = state.files;
+  const { treeFolders, selectedFolder, filter, selection, dragging } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
@@ -169,10 +174,11 @@ function mapStateToProps(state) {
     commonId,
     currentId: selectedFolder.id,
     isAdmin: state.auth.user.isAdmin,
-    selection
+    selection,
+    dragging
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem })(
+export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging })(
   ArticleBodyContent
 );

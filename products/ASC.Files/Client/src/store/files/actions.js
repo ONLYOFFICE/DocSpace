@@ -31,6 +31,7 @@ export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
+export const SET_DRAGGING = "SET_DRAGGING";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 
@@ -95,6 +96,13 @@ export function setTreeFolders(treeFolders) {
     type: SET_TREE_FOLDERS,
     treeFolders
   };
+}
+
+export function setDragging(dragging) {
+  return {
+    type: SET_DRAGGING,
+    dragging
+  }
 }
 
 export function setDragItem(dragItem) {

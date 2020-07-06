@@ -18,7 +18,7 @@ import {
   SectionFilterContent,
   SectionPagingContent
 } from "./Section";
-import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile } from "../../../store/files/actions";
+import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging } from "../../../store/files/actions";
 import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
 import store from "../../../store/store";
 const { changeLanguage } = utils;
@@ -43,8 +43,7 @@ class PureHome extends React.Component {
       files: [],
       uploadedFiles: 0,
       totalSize: 0,
-      percent: 0,
-      dragging: false
+      percent: 0
     };
   }
 
@@ -322,9 +321,10 @@ class PureHome extends React.Component {
       }
     };
     
-    this.setState({ isLoading: true, dragging: false }, () =>
+    this.setState({ isLoading: true }, () => {
+      this.props.setDragging(false);
       readItems(items, () => this.startUpload(files, folderId))
-    );
+    });
   };
 
   startUpload = (files, folderId) => {
@@ -515,8 +515,6 @@ class PureHome extends React.Component {
     }
   }
 
-  setDragging = dragging => this.setState({dragging});
-
   componentDidUpdate(prevProps) {
     if (this.props.selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
@@ -535,8 +533,7 @@ class PureHome extends React.Component {
       progressBarLabel,
       overwriteSetting,
       uploadOriginalFormatSetting,
-      hideWindowSetting,
-      dragging
+      hideWindowSetting
     } = this.state;
     const { t } = this.props;
 
@@ -596,7 +593,7 @@ class PureHome extends React.Component {
             <ArticleBodyContent
               onLoading={this.onLoading}
               isLoading={isLoading}
-              dragging={dragging}
+              onTreeDrop={this.onDrop}
             />
           }
           sectionHeaderContent={
@@ -629,8 +626,6 @@ class PureHome extends React.Component {
               finishFilesOperations={this.finishFilesOperations}
               loopFilesOperations={this.loopFilesOperations}
               onDropZoneUpload={this.onDrop}
-              setDragging={this.setDragging}
-              dragging={dragging}
             />
           }
           sectionPagingContent={
@@ -676,5 +671,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile }
+  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging }
 )(withRouter(Home));

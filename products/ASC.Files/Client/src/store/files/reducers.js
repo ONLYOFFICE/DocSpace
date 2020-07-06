@@ -12,6 +12,7 @@ import {
   SET_SELECTION,
   SELECT_FILE,
   DESELECT_FILE,
+  SET_DRAGGING,
   SET_DRAG_ITEM,
   SET_MEDIA_VIEWER_VISIBLE
 } from "./actions";
@@ -30,6 +31,7 @@ const initialState = {
   selected: "none",
   selectedFolder: null,
   selection: [],
+  dragging: false,
   dragItem: null,
   mediaViewerData: {visible: false, id: null}
 };
@@ -97,6 +99,10 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         fileAction: action.fileAction
       })
+    case SET_DRAGGING: 
+      return Object.assign({}, state, {
+        dragging: action.dragging
+      });
     case SET_DRAG_ITEM: 
       return Object.assign({}, state, {
         dragItem: action.dragItem
