@@ -88,5 +88,7 @@
   "TooltipElementCopyMessage": "Скопировать {{element}}",
   "TooltipElementsCopyMessage": "Скопировать {{element}} элемента(ов)",
   "ViewList": "Список",
-  "ViewTiles": "Плитки"
+  "ViewTiles": "Плитки",
+  "ShowVersionHistory": "Показать историю версий",
+  "FinalizeVersion": "Сформировать версию"
 }

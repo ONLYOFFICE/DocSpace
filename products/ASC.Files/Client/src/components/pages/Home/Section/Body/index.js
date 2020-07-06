@@ -281,11 +281,47 @@ class SectionBodyContent extends React.Component {
     return window.open(`./doceditor?fileId=${item.id}`, "_blank");
   }
 
+  showVersionHistory = (e) => {
+    const {settings, history} = this.props;
+    const fileId = e.currentTarget.dataset.id;
+
+    history.push(`${settings.homepage}/${fileId}/history`);
+  }
+  
+  finalizeVersion = (e) => {
+    console.log("Finalize version clicked", e);
+  }
+
   getFilesContextOptions = (item, viewer) => {
+    const { t } = this.props;
+
     const isFile = !!item.fileExst;
     const { t } = this.props;
 
     if (item.id <= 0) return [];
+
+    const versionHistoryMenu = isFile
+      ? [
+          {
+            key: "show-version-history",
+            label: t("ShowVersionHistory"),
+            onClick: this.showVersionHistory,
+            disabled: false,
+            "data-id": item.id
+          },
+          {
+            key: "finalize-version",
+            label: t("FinalizeVersion"),
+            onClick: this.finalizeVersion,
+            disabled: false,
+            "data-id": item.id
+          },
+          {
+            key: "sep2",
+            isSeparator: true
+          }
+        ]
+      : [];
 
     const menu = [
       {
@@ -312,6 +348,7 @@ class SectionBodyContent extends React.Component {
         key: "sep",
         isSeparator: true
       },
+      ...versionHistoryMenu,
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "edit",

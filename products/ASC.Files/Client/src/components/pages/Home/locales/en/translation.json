@@ -88,5 +88,7 @@
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "ViewList": "List",
-  "ViewTiles": "Tiles"
+  "ViewTiles": "Tiles",
+  "ShowVersionHistory": "Show version history",
+  "FinalizeVersion": "Finalize version"
 }
