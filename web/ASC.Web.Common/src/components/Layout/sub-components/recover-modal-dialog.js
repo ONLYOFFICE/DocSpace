@@ -4,6 +4,10 @@ import { Button, TextInput, Text, ModalDialog, Textarea } from "asc-web-componen
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
+  const onSendRecoverInstructions = () => {
+    alert("Send button clicked")
+  }
+  
   return (
     <ModalDialog
       visible={visible}
@@ -50,7 +54,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           size="big"
           scale={false}
           primary={true}
-          //onClick={onSendPasswordInstructions}
+          onClick={onSendRecoverInstructions}
           //isLoading={isLoading}
           //isDisabled={isLoading}
           tabIndex={2}
