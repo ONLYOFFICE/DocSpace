@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Aside, Box, utils } from "asc-web-components";
+import { Backdrop, Aside, utils } from "asc-web-components";
 import HeaderComponent from "./sub-components/header";
 import Nav from "./sub-components/nav";
 import Main from "./sub-components/main";
