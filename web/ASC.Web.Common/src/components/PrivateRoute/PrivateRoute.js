@@ -17,7 +17,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     allowForMe,
     currentUser,
     computedMatch,
-    fakeToken
+    wizardToken
   } = rest;
 
   const { userId } = computedMatch.params;
@@ -25,8 +25,17 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const renderComponent = useCallback(
     props => {
-      
-      if (fakeToken) {
+      if (!isLoaded) {
+        return (
+          <PageLayout
+            sectionBodyContent={
+              <Loader className="pageLoader" type="rombs" size='40px' />
+            }
+          />
+        );
+      }
+
+      if (!token && isLoaded && wizardToken) {
         return (
           <Redirect 
             to={{
@@ -44,16 +53,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
               pathname: "/login",
               state: { from: props.location }
             }}
-          />
-        );
-      }
-
-      if (!isLoaded) {
-        return (
-          <PageLayout
-            sectionBodyContent={
-              <Loader className="pageLoader" type="rombs" size='40px' />
-            }
           />
         );
       }
@@ -80,6 +79,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       allowForMe,
       currentUser,
       userId,
+      wizardToken,
       Component
     ]
   );
@@ -94,7 +94,7 @@ function mapStateToProps(state) {
     isLoaded: state.auth.isLoaded,
     isAdmin: isAdmin(state.auth.user),
     currentUser: state.auth.user,
-    fakeToken: state.auth.settings.fakeToken
+    wizardToken: state.auth.settings.wizardToken
   };
 }
 
