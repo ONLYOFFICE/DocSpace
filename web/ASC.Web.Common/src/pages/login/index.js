@@ -26,17 +26,18 @@ const FormContainer = styled.form`
   margin: 32px auto 0 auto;
   max-width: 311px;
 
-  .login-header {
+  /* .login-header {
     min-height: 79px;
     margin-bottom: 24px;
 
     .login-logo {
       max-width: 216px;
       max-height: 35px;
-    }
+    } */
 
-    .login-title {
+  .login-title {
       margin: 8px 0;
+      text-align:center;
     }
   }
 
@@ -252,10 +253,12 @@ class Form extends Component {
 
     return (
       <>
-        <Box marginProp="120px 0 0 0">
-          <Heading className="login-title" color="#333333">
-            <Text fontSize="32px" fontWeight={600}>{greetingTitle}</Text>
-          </Heading>
+        <Box marginProp="120px 0 0 0" textAlign="center">
+          <Box>
+            <Text fontSize="32px" fontWeight={600}>
+              {greetingTitle}
+            </Text>
+          </Box>
         </Box>
         <FormContainer>
           <TextInput
