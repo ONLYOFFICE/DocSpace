@@ -23,7 +23,7 @@ import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 
 const FormContainer = styled.form`
-  margin: 50px auto 0 auto;
+  margin: 32px auto 0 auto;
   max-width: 311px;
 
   .login-header {
@@ -92,6 +92,16 @@ const FormContainer = styled.form`
   .login-bottom-text {
     margin: 0 8px;
   }
+`;
+
+const RegisterContainer = styled(Box)`
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  height: 66px;
+  bottom: 0;
+  right: 0;
+  background-color: #F8F9F9;
 `;
 
 class Form extends Component {
@@ -241,133 +251,116 @@ class Form extends Component {
     //console.log("Login render");
 
     return (
-      <FormContainer>
-        <Heading className="login-title" color="#333333">
-          <Text fontSize="32px" fontWeight={600}>{greetingTitle}</Text>
-        </Heading>
+      <>
+        <Box marginProp="120px 0 0 0">
+          <Heading className="login-title" color="#333333">
+            <Text fontSize="32px" fontWeight={600}>{greetingTitle}</Text>
+          </Heading>
+        </Box>
+        <FormContainer>
+          <TextInput
+            id="login"
+            name="login"
+            hasError={!identifierValid}
+            value={identifier}
+            placeholder={t("RegistrationEmailWatermark")}
+            size="huge"
+            scale={true}
+            isAutoFocussed={true}
+            tabIndex={1}
+            isDisabled={isLoading}
+            autoComplete="username"
+            onChange={this.onChangeLogin}
+            onKeyDown={this.onKeyPress}
+            className="login-input"
+          />
+          <PasswordInput
+            passwordSettings={this.settings}
+            NewPasswordButtonVisible={false}
+            className="login-input"
+            id="password"
+            inputName="password"
+            placeholder={t("Password")}
+            type="password"
+            hasError={!passwordValid}
+            inputValue={password}
+            size="huge"
+            scale={true}
+            tabIndex={2}
+            isDisabled={isLoading}
+            autoComplete="current-password"
+            onChange={this.onChangePassword}
+            onKeyDown={this.onKeyPress}
+          />
+          <div className="login-forgot-wrapper">
+            <div className="login-checkbox-wrapper">
+              <Checkbox
+                className="login-checkbox"
+                isChecked={isChecked}
+                onChange={this.onChangeCheckbox}
+                label={<Text fontSize='13px'>{t("Remember")}</Text>}
+              />
+              <HelpButton
+                className="login-tooltip"
+                helpButtonHeaderContent={t("CookieSettingsTitle")}
+                tooltipContent={
+                  <Text fontSize='12px'>{t("RememberHelper")}</Text>
+                }
+              />
+            </div>
 
-        <TextInput
-          id="login"
-          name="login"
-          hasError={!identifierValid}
-          value={identifier}
-          placeholder={t("RegistrationEmailWatermark")}
-          size="huge"
-          scale={true}
-          isAutoFocussed={true}
-          tabIndex={1}
-          isDisabled={isLoading}
-          autoComplete="username"
-          onChange={this.onChangeLogin}
-          onKeyDown={this.onKeyPress}
-          className="login-input"
-        />
-
-        <PasswordInput
-          passwordSettings={this.settings}
-          NewPasswordButtonVisible={false}
-          className="login-input"
-          id="password"
-          inputName="password"
-          placeholder={t("Password")}
-          type="password"
-          hasError={!passwordValid}
-          inputValue={password}
-          size="huge"
-          scale={true}
-          tabIndex={2}
-          isDisabled={isLoading}
-          autoComplete="current-password"
-          onChange={this.onChangePassword}
-          onKeyDown={this.onKeyPress}
-
-        />
-
-        {/* <TextInput
-          id="password"
-          name="password"
-          type="password"
-          hasError={!passwordValid}
-          value={password}
-          placeholder={t("Password")}
-          size="huge"
-          scale={true}
-          tabIndex={2}
-          isDisabled={isLoading}
-          autoComplete="current-password"
-          onChange={this.onChangePassword}
-          onKeyDown={this.onKeyPress}
-          className="login-input"
-        /> */}
-
-        <div className="login-forgot-wrapper">
-          <div className="login-checkbox-wrapper">
-            <Checkbox
-              className="login-checkbox"
-              isChecked={isChecked}
-              onChange={this.onChangeCheckbox}
-              label={<Text fontSize='13px'>{t("Remember")}</Text>}
-            />
-            <HelpButton
-              className="login-tooltip"
-              helpButtonHeaderContent={t("CookieSettingsTitle")}
-              tooltipContent={
-                <Text fontSize='12px'>{t("RememberHelper")}</Text>
-              }
-            />
+            <Link
+              fontSize='13px'
+              color="#316DAA"
+              className="login-link"
+              type="page"
+              isHovered={false}
+              onClick={this.onClick}
+            >
+              {t("ForgotPassword")}
+            </Link>
           </div>
 
-          <Link
-            fontSize='13px'
-            color="#316DAA"
-            className="login-link"
-            type="page"
-            isHovered={false}
-            onClick={this.onClick}
-          >
-            {t("ForgotPassword")}
-          </Link>
-        </div>
+          {openDialog ? (
+            <SubModalDialog
+              openDialog={openDialog}
+              isLoading={isLoading}
+              email={email}
+              onChangeEmail={this.onChangeEmail}
+              onSendPasswordInstructions={this.onSendPasswordInstructions}
+              onDialogClose={this.onDialogClose}
+              t={t}
+            />
+          ) : null}
 
-        {openDialog ? (
-          <SubModalDialog
-            openDialog={openDialog}
+          <Button
+            id="button"
+            className="login-button"
+            primary
+            size="big"
+            scale={true}
+            label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+            tabIndex={3}
+            isDisabled={isLoading}
             isLoading={isLoading}
-            email={email}
-            onChangeEmail={this.onChangeEmail}
-            onSendPasswordInstructions={this.onSendPasswordInstructions}
-            onDialogClose={this.onDialogClose}
-            t={t}
+            onClick={this.onSubmit}
           />
-        ) : null}
 
-        <Button
-          id="button"
-          className="login-button"
-          primary
-          size="big"
-          scale={true}
-          label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-          tabIndex={3}
-          isDisabled={isLoading}
-          isLoading={isLoading}
-          onClick={this.onSubmit}
-        />
-
-        {params.confirmedEmail && (
-          <Text isBold={true} fontSize='16px'>
-            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+          {params.confirmedEmail && (
+            <Text isBold={true} fontSize='16px'>
+              {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+            </Text>
+          )}
+          <Text fontSize='14px' color="#c30">
+            {errorText}
           </Text>
-        )}
-        <Text fontSize='14px' color="#c30">
-          {errorText}
-        </Text>
-        <Box displayProp="flex" alignItems="center">
-        <div className="login-bottom-border"></div>
-        <Text className="login-bottom-text" color="#A3A9AE">OR</Text>
-        <div className="login-bottom-border"></div>
-        </Box>
-      </FormContainer>
+          <Box displayProp="flex" alignItems="center">
+            <div className="login-bottom-border"></div>
+            <Text className="login-bottom-text" color="#A3A9AE">OR</Text>
+            <div className="login-bottom-border"></div>
+          </Box>
+        </FormContainer>
+      </>
     );
   }
 }
@@ -396,9 +389,23 @@ const LoginForm = props => {
 
   i18n.changeLanguage(language);
 
+  const onRegisterClick = () => {
+    alert("Register clicked");
+  }
+
   return (
     <>
-      {isLoaded && <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />}
+      {isLoaded && <>
+        (
+        <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
+        <RegisterContainer paddingProp="24px 50%" onClick={onRegisterClick}>
+          <Text color="#316DAA">
+            Register
+          </Text>
+        </RegisterContainer>
+      )
+      </>
+      }
     </>
   );
 };
