@@ -36,11 +36,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       }
 
       if (!token || (isLoaded && !isAuthenticated)) {
-
-        if (wizardToken) {
-          if(props.history.location.pathname === '/wizard') {
-            return <Component {...props} />;
-          }
+        if(wizardToken) {
           return (
             <Redirect 
               to={{
@@ -49,8 +45,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
               }}
             />
           )
-        }
-        
+        }         
         return (
           <Redirect
             to={{

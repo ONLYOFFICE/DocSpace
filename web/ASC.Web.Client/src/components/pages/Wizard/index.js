@@ -4,6 +4,7 @@ import styled from "styled-components";
 import i18n from './i18n';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom'
 
 import { PageLayout } from "asc-web-common";
 import { 
@@ -14,7 +15,7 @@ import {
   Button, Box, Loader, 
   ModalDialog, utils } from 'asc-web-components';
 
-import { getWizardInfo } from '../../../store/wizard/actions';
+import { getWizardInfo, getPortalTimezones, getPortalCultures, setIsWizardLoaded } from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
@@ -317,17 +318,23 @@ class Body extends Component {
       email: '',
       newEmail: '',
       license: false,
-      selectLanguage: props.languages[0],
-      selectTimezone: props.timezones[0]
+      selectLanguage: props.portalCulture,
+      selectTimezone: props.portalTimezone
     }
 
     this.inputRef = React.createRef();
   }
 
-  componentDidMount() {
-    const { t, wizardToken, getWizardInfo } = this.props;
+  async componentDidMount() {
+    const { t, wizardToken, getWizardInfo, getPortalCultures, getPortalTimezones, setIsWizardLoaded } = this.props;
     document.title = t('title');
-    getWizardInfo(wizardToken);
+
+    //await getPortalTimezones()
+    await getPortalCultures();
+    await getWizardInfo(wizardToken);
+    setIsWizardLoaded(true);
+
+      
   }
 
   isValidPassHandler = val => {
@@ -571,7 +578,7 @@ class Body extends Component {
 
   renderSettingsBox = () => {
     const { selectLanguage, selectTimezone } = this.state;
-    const { isOwner, t, domain, languages, timezones, ownerEmail } = this.props;
+    const { isOwner, t, domain, cultures, timezones, ownerEmail } = this.props;
 
     const titleEmail = isOwner 
       ? <Text className="settings-title">{t('email')}</Text>
@@ -594,7 +601,7 @@ class Body extends Component {
           {contentEmail}
           <GroupButton className="drop-down value" label={selectLanguage} isDropdown={true}>
             {
-              languages.map(el => (
+              cultures.map(el => (
                 <DropDownItem 
                   key={el} 
                   label={el}
@@ -633,7 +640,17 @@ class Body extends Component {
   }
 
   render() {
-    const { isWizardLoaded } = this.props;
+    const { isWizardLoaded, wizardToken } = this.props;
+    if(!wizardToken) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/login",
+            state: { from: this.props.location }
+          }}
+        />
+      );
+    }
 
     console.log('wizard render', this.props)
 
@@ -685,10 +702,13 @@ function mapStateToProps(state) {
 
     settingsPassword: state.auth.settings.passwordSettings,
     wizardToken: state.auth.settings.wizardToken,
-    isWizardLoaded: state.wizard.isWizardLoaded
+    isWizardLoaded: state.wizard.isWizardLoaded, 
+    cultures: state.auth.settings.cultures,
+    portalCulture: state.auth.settings.culture,
+    portalTimezone: state.auth.settings.timezone
   };
 }
 
 export default connect(mapStateToProps, {  
-  getWizardInfo 
+  getWizardInfo, getPortalCultures, getPortalTimezones, setIsWizardLoaded 
 })(withRouter(Wizard)); 
