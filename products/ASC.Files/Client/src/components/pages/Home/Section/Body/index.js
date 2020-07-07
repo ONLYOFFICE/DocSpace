@@ -32,6 +32,7 @@ import {
   moveToFolder,
   copyToFolder,
   getProgress,
+  setDragging,
   setDragItem,
   setMediaViewerData
 } from '../../../../../store/files/actions';
@@ -284,29 +285,64 @@ class SectionBodyContent extends React.Component {
     return window.open(`./doceditor?fileId=${item.id}`, "_blank");
   }
 
+  showVersionHistory = (e) => {
+    const {settings, history} = this.props;
+    const fileId = e.currentTarget.dataset.id;
+
+    history.push(`${settings.homepage}/${fileId}/history`);
+  }
+  
+  finalizeVersion = (e) => {
+    console.log("Finalize version clicked", e);
+  }
+
   getFilesContextOptions = (item, viewer) => {
+    const { t } = this.props;
     const isFile = !!item.fileExst;
 
     if (item.id <= 0) return [];
 
+    const versionHistoryMenu = isFile
+      ? [
+          {
+            key: "show-version-history",
+            label: t("ShowVersionHistory"),
+            onClick: this.showVersionHistory,
+            disabled: false,
+            "data-id": item.id
+          },
+          {
+            key: "finalize-version",
+            label: t("FinalizeVersion"),
+            onClick: this.finalizeVersion,
+            disabled: false,
+            "data-id": item.id
+          },
+          {
+            key: "sep2",
+            isSeparator: true
+          }
+        ]
+      : [];
+
     const menu = [
       {
         key: "sharing-settings",
-        label: "Sharing settings",
+        label: t("SharingSettings"),
         onClick: this.onClickShare.bind(this, item),
         disabled: item.access !== 1 && item.access !== 0
       },
       isFile
         ? {
           key: "send-by-email",
-          label: "Send by e-mail",
+          label: t("SendByEmail"),
           onClick: () => { },
           disabled: true
         }
         : null,
       {
         key: "link-for-portal-users",
-        label: "Link for portal users",
+        label: t("LinkForPortalUsers"),
         onClick: this.onClickLinkForPortal.bind(this, item),
         disabled: false
       },
@@ -314,10 +350,11 @@ class SectionBodyContent extends React.Component {
         key: "sep",
         isSeparator: true
       },
+      ...versionHistoryMenu,
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "edit",
-          label: "Edit",
+          label: t("Edit"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: false
         }
@@ -325,7 +362,7 @@ class SectionBodyContent extends React.Component {
       (isFile && !this.isMediaOrImage(item.fileExst))
         ? {
           key: "preview",
-          label: "Preview",
+          label: t("Preview"),
           onClick: this.onClickLinkEdit.bind(this, item),
           disabled: true
         }
@@ -333,7 +370,7 @@ class SectionBodyContent extends React.Component {
       (isFile && this.isMediaOrImage(item.fileExst))
         ? {
           key: "view",
-          label: "View",
+          label: t("View"),
           onClick: this.onMediaFileClick.bind(this, item.id),
           disabled: false
         }
@@ -341,20 +378,20 @@ class SectionBodyContent extends React.Component {
       isFile
         ? {
           key: "download",
-          label: "Download",
+          label: t("Download"),
           onClick: this.onClickDownload.bind(this, item),
           disabled: false
         }
         : null,
       {
         key: "rename",
-        label: "Rename",
+        label: t("Rename"),
         onClick: this.onClickRename.bind(this, item),
         disabled: false
       },
       {
         key: "delete",
-        label: "Delete",
+        label: t("Delete"),
         onClick: this.onClickDelete.bind(this, item),
         disabled: false
       },
@@ -1132,7 +1169,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData } = state.files;
+  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData, dragging } = state.files;
   const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -1166,7 +1203,8 @@ const mapStateToProps = state => {
     isCommon: pathParts[0] === commonFolderId,
     isAdmin: state.auth.user.isAdmin,
     mediaViewerVisible: mediaViewerData.visible,
-    currentMediaFileId: mediaViewerData.id
+    currentMediaFileId: mediaViewerData.id,
+    dragging
   };
 };
 
@@ -1184,6 +1222,7 @@ export default connect(
     moveToFolder,
     copyToFolder,
     getProgress,
+    setDragging,
     setDragItem,
     setMediaViewerData
   }

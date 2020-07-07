@@ -96,7 +96,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                           bool isAsync,
                                           out string convertedDocumentUri)
         {
-            Logger.DebugFormat("DocService convert from {0} to {1} - {2}", fromExtension, toExtension, documentUri);
+            Logger.Debug($"DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{FilesLinkUtility.DocServiceConverterUrl}");
             try
             {
                 return Web.Core.Files.DocumentService.GetConvertedUri(

@@ -59,10 +59,14 @@ const StyledProgressBar = styled.div`
 
 const ProgressBar = props => {
   const { percent, label, dropDownContent, ...rest } = props;
-  const ref = React.createRef();
+  const progressPercent = percent > 100 ? 100 : percent;
+  const remainPercent = 100 - progressPercent;
 
+  const ref = React.createRef();
   const [isOpen, setIsOpen] = useState(false);
+
   const onLinkClick = () => setIsOpen(!isOpen);
+
   const onClose = e => {
     if (ref.current.contains(e.target)) return;
     setIsOpen(!isOpen);
@@ -70,7 +74,7 @@ const ProgressBar = props => {
 
   //console.log("ProgressBar render");
   return (
-    <StyledProgressBar ref={ref} {...rest} uploadedPercent={percent} remainPercent={100 - percent} >
+    <StyledProgressBar ref={ref} {...rest} uploadedPercent={progressPercent} remainPercent={remainPercent} >
       <Link
         className="progress-bar_full-text"
         color="#333"

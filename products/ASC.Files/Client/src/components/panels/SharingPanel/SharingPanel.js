@@ -390,7 +390,7 @@ class SharingPanelComponent extends React.Component {
     const accessOptions = !this.props.selectedItems.length ? getAccessOption([this.props.selectedItems]) : getAccessOption(this.props.selectedItems);
 
     this.setState(
-      { baseShareData, shareDataItems: arrayItems, showPanel: true, accessOptions },
+      { baseShareData, shareDataItems: arrayItems, accessOptions },
       this.props.onLoading(false)
     );
   };
@@ -434,11 +434,16 @@ class SharingPanelComponent extends React.Component {
     const returnValue = this.getData();
     const folderId = returnValue[0];
     const fileId = returnValue[1];
+    let error = null;
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId).then((res) => {
         this.getShareDataItems(res);
-      });
+      }).catch(err => {
+        this.props.onLoading(false);
+        error = err;
+        toastr.error(err);
+      }).finally(() => !error && this.setState({showPanel: true}));
     }
   };
 
@@ -464,7 +469,7 @@ class SharingPanelComponent extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if(this.state.showPanel !== prevState.showPanel && this.state.showPanel === false) {
-      setTimeout(() => this.props.onClose(), 1000);
+      this.props.onClose();
     }
   }
 
@@ -648,32 +653,39 @@ class SharingPanelComponent extends React.Component {
           </StyledContent>
         </Aside>
 
-        <AddUsersPanel
-          onSharingPanelClose={this.onClose}
-          onClose={this.onShowUsersPanel}
-          visible={showAddUsersPanel}
-          embeddedComponent={accessOptionsComboBox}
-          accessRight={accessRight}
-          shareDataItems={shareDataItems}
-          setShareDataItems={this.setShareDataItems}
-        />
+        {showAddUsersPanel &&
+          <AddUsersPanel
+            onSharingPanelClose={this.onClose}
+            onClose={this.onShowUsersPanel}
+            visible={showAddUsersPanel}
+            embeddedComponent={accessOptionsComboBox}
+            accessRight={accessRight}
+            shareDataItems={shareDataItems}
+            setShareDataItems={this.setShareDataItems}
+          />
+        }
 
-        <AddGroupsPanel
-          onSharingPanelClose={this.onClose}
-          onClose={this.onShowGroupsPanel}
-          visible={showAddGroupsPanel}
-          embeddedComponent={accessOptionsComboBox}
-          accessRight={accessRight}
-          shareDataItems={shareDataItems}
-          setShareDataItems={this.setShareDataItems}
-        />
+        {showAddGroupsPanel &&
+          <AddGroupsPanel
+            onSharingPanelClose={this.onClose}
+            onClose={this.onShowGroupsPanel}
+            visible={showAddGroupsPanel}
+            embeddedComponent={accessOptionsComboBox}
+            accessRight={accessRight}
+            shareDataItems={shareDataItems}
+            setShareDataItems={this.setShareDataItems}
+          />
+        }
 
-        <EmbeddingPanel
-          visible={showEmbeddingPanel}
-          onSharingPanelClose={this.onClose}
-          onClose={this.onShowEmbeddingPanel}
-          embeddingLink={shareLink}
-        />
+        {showEmbeddingPanel && 
+          <EmbeddingPanel
+            visible={showEmbeddingPanel}
+            onSharingPanelClose={this.onClose}
+            onClose={this.onShowEmbeddingPanel}
+            embeddingLink={shareLink}
+          />
+        }
+
       </StyledAsidePanel>
     );
   }

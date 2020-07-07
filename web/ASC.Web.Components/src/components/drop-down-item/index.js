@@ -99,8 +99,8 @@ const DropDownItem = props => {
   const { isSeparator, label, icon, children, disabled , onClick } = props;
   const color = disabled ? '#A3A9AE' : '#333333';
 
-  const onClickAction = () => {
-    onClick && !disabled && onClick();
+  const onClickAction = (e) => {
+    onClick && !disabled && onClick(e);
   }
 
   return (

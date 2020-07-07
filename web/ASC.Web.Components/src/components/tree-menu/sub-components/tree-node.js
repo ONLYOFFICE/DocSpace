@@ -57,8 +57,8 @@ const TreeNodeMenu = styled(TreeNode)`
     .draggable {
         color: #333;
         /* Required to make elements draggable in old WebKit */
-        -khtml-user-drag: element;
-        -webkit-user-drag: element;
+        -khtml-user-drag: none;
+        -webkit-user-drag: none;
     }
     &.drag-over > .draggable {
         background-color: #316ac5;
