@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import { utils } from "asc-web-components";
+
+const tablet = utils.device.tablet;
 
 const ModalDialogContainer = styled.div`
   .flex {
@@ -60,6 +63,43 @@ const ModalDialogContainer = styled.div`
 
       .modal-dialog-checkbox:not(:last-child) {
         padding-bottom: 4px;
+      }
+    }
+
+    .convert_dialog_content {
+      display: flex;
+      padding: 24px 0;
+
+      .convert_dialog_image {
+        display: block;
+        @media ${tablet} {
+          display: none;
+        }
+      }
+
+      .convert_dialog-content {
+        padding-left: 16px;
+
+        @media ${tablet} {
+          padding: 0;
+        }
+
+        .convert_dialog_checkbox {
+          padding-top: 16px;
+        }
+      }
+    }
+    .convert_dialog_footer {
+      display: flex;
+
+      .convert_dialog_button {
+        margin-left: auto;
+      }
+    }
+
+    .modal-dialog-aside-footer {
+      @media ${tablet} {
+        width: 90%;
       }
     }
 `;
