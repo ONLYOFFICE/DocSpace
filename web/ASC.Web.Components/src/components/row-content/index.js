@@ -138,7 +138,7 @@ const RowContent = props => {
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={children[0].props && children[0].props.containerWidth}>
-        <MainContainer>
+        <MainContainer className="rowMainContainer">
           {children[0]}
         </MainContainer>
         <MainIcons>
