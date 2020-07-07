@@ -17,6 +17,12 @@ import {
 
 import { getWizardInfo, getPortalTimezones, getPortalCultures, setIsWizardLoaded } from '../../../store/wizard/actions';
 
+const mapTimezonesToArray = (timezones) => {
+  return timezones.map((timezone) => {
+     return { key: timezone.id, label: timezone.displayName };
+  });
+};
+
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
 settings.allowDomainPunycode = true;
@@ -308,6 +314,10 @@ class Body extends Component {
   constructor(props) {
     super(props);
 
+    const { t } = props;
+
+    document.title = t('title');
+
     this.state = {
       password: '',
       isValidPass: false,
@@ -318,7 +328,8 @@ class Body extends Component {
       email: '',
       newEmail: '',
       license: false,
-      selectLanguage: props.portalCulture,
+      languages: null,
+      selectLanguage: {},
       selectTimezone: props.portalTimezone
     }
 
@@ -327,15 +338,28 @@ class Body extends Component {
 
   async componentDidMount() {
     const { t, wizardToken, getWizardInfo, getPortalCultures, getPortalTimezones, setIsWizardLoaded } = this.props;
-    document.title = t('title');
-
+  
     //await getPortalTimezones()
-    await getPortalCultures();
+    await getPortalCultures()
+      .then(() => {
+        const { cultures, portalCulture } = this.props;
+        const languages = this.mapCulturesToArray(cultures, t);
+        const select = languages.filter(lang => lang.key === portalCulture);
+        this.setState({ languages: languages, selectLanguage: { 
+          key: select[0].key, 
+          label: select[0].label 
+        }})
+      });
+
     await getWizardInfo(wizardToken);
     setIsWizardLoaded(true);
-
-      
   }
+
+  mapCulturesToArray = (cultures, t) => {
+    return cultures.map((culture) => {
+       return { key: culture, label: t(`Culture_${culture}`) };
+    });
+  };
 
   isValidPassHandler = val => {
     this.setState({ isValidPass: val });
@@ -427,8 +451,12 @@ class Body extends Component {
   }
 
   onSelectLanguageHandler = lang => {
-    console.log('on select lang');
-    this.setState({ selectLanguage: lang })
+    console.log('on select lang', lang);
+    this.setState({ 
+      selectLanguage: {
+        key: lang.key,
+        label: lang.label 
+      }});
   }
 
   renderModalDialog = () => {
@@ -577,9 +605,9 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone } = this.state;
-    const { isOwner, t, domain, cultures, timezones, ownerEmail } = this.props;
-
+    const { selectLanguage, selectTimezone, languages } = this.state;
+    const { isOwner, t, domain, timezones, ownerEmail } = this.props;
+    console.log(languages)
     const titleEmail = isOwner 
       ? <Text className="settings-title">{t('email')}</Text>
       : null
@@ -599,15 +627,15 @@ class Body extends Component {
         <Box className="values">
           <Text className="text value">{domain ? domain : "someDomain"}</Text>
           {contentEmail}
-          <GroupButton className="drop-down value" label={selectLanguage} isDropdown={true}>
+          <GroupButton className="drop-down value" label={selectLanguage.label} isDropdown={true}>
             {
-              cultures.map(el => (
+              languages.map(el => (
                 <DropDownItem 
-                  key={el} 
-                  label={el}
+                  key={el.key} 
+                  label={el.label}
                   onClick={() => this.onSelectLanguageHandler(el)}
                 />
-              ))
+              )) 
             }
           </GroupButton>
           <GroupButton className="drop-down value" label={selectTimezone} isDropdown={true}>

@@ -20,5 +20,9 @@
   "tooltipPasswordLength": "символов",
   "tooltipPasswordDigits": "цыфры",
   "tooltipPasswordCapital": "Заглавные буквы",
-  "tooltipPasswordSpecial": "Специальные символы (!@#$%^&*)"
+  "tooltipPasswordSpecial": "Специальные символы (!@#$%^&*)",
+
+  "Culture_en": "Английский (Великобритания)",
+  "Culture_en-US": "Английский (США)",
+  "Culture_ru-RU": "Русский (Россия)"
 }
