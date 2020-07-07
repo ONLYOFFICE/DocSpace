@@ -37,39 +37,32 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Namespace = "")]
     public abstract class FileEntryWrapper
     {
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = true)]
         public string Title { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember]
         public FileShare Access { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember]
         public bool Shared { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 50)]
         public ApiDateTime Created { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 51, EmitDefaultValue = false)]
         public EmployeeWraper CreatedBy { get; set; }
 
         private ApiDateTime _updated;
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 52, EmitDefaultValue = false)]
         public ApiDateTime Updated
         {
             get
@@ -81,27 +74,22 @@ namespace ASC.Api.Documents
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 41, EmitDefaultValue = false)]
         public FolderType RootFolderType { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 41, EmitDefaultValue = false)]
         public EmployeeWraper UpdatedBy { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 55, EmitDefaultValue = false)]
         public bool? ProviderItem { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 56, EmitDefaultValue = false)]
         public string ProviderKey { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Order = 57, EmitDefaultValue = false)]
         public int? ProviderId { get; set; }
 
 
@@ -135,12 +123,10 @@ namespace ASC.Api.Documents
 
     /// <summary>
     /// </summary>
-    [DataContract(Namespace = "")]
     public abstract class FileEntryWrapper<T> : FileEntryWrapper
     {
         /// <summary>
         /// </summary>
-        [DataMember]
         public T Id { get; set; }
 
 

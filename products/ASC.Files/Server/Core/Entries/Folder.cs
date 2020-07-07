@@ -32,25 +32,17 @@ using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
-    [DataContract(Namespace = "")]
     public enum FolderType
     {
-        [EnumMember] DEFAULT = 0,
-
-        [EnumMember] COMMON = 1,
-
-        [EnumMember] BUNCH = 2,
-
-        [EnumMember] TRASH = 3,
-
-        [EnumMember] USER = 5,
-
-        [EnumMember] SHARE = 6,
-
-        [EnumMember] Projects = 8
+        DEFAULT = 0,
+        COMMON = 1,
+        BUNCH = 2,
+        TRASH = 3,
+        USER = 5,
+        SHARE = 6,
+        Projects = 8
     }
 
-    [DataContract(Name = "folder", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID})")]
     public class Folder<T> : FileEntry<T>
     {
@@ -58,19 +50,14 @@ namespace ASC.Files.Core
 
         public T ParentFolderID { get; set; }
 
-        [DataMember(Name = "total_files")]
         public int TotalFiles { get; set; }
 
-        [DataMember(Name = "total_sub_folder")]
         public int TotalSubFolders { get; set; }
 
-        [DataMember(Name = "shareable", EmitDefaultValue = false)]
         public bool Shareable { get; set; }
 
-        [DataMember(Name = "isnew")]
         public int NewForMe { get; set; }
 
-        [DataMember(Name = "folder_url", EmitDefaultValue = false)]
         public string FolderUrl { get; set; }
 
         public override bool IsNew
@@ -81,7 +68,6 @@ namespace ASC.Files.Core
 
         private T _folderIdDisplay;
 
-        [DataMember(Name = "folder_id")]
         public override T FolderIdDisplay
         {
             get

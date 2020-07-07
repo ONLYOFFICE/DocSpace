@@ -41,27 +41,22 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "folder", Namespace = "")]
     public class FolderWrapper<T> : FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = true, EmitDefaultValue = true)]
         public T ParentId { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int FilesCount { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int FoldersCount { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public bool? IsShareable { get; set; }
 
         public int New { get; set; }

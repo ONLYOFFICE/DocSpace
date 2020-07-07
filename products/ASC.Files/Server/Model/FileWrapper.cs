@@ -46,69 +46,56 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "file", Namespace = "")]
     public class FileWrapper<T> : FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public T FolderId { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int Version { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int VersionGroup { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = true)]
         public string ContentLength { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = true)]
         public long? PureContentLength { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public FileStatus FileStatus { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public string ViewUrl { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public string WebUrl { get; set; }
 
         /// <summary>
         ///     
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public FileType FileType { get; set; }
 
         /// <summary>
         ///     
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public string FileExst { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public string Comment { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false)]
         public bool? Encrypted { get; set; }
 
         /// <summary>

@@ -1642,49 +1642,41 @@ namespace ASC.Api.Documents
         /// <summary>
         /// Result of file conversation operation.
         /// </summary>
-        [DataContract(Name = "operation_result", Namespace = "")]
         public class ConversationResult<T>
         {
             /// <summary>
             /// Operation Id.
             /// </summary>
-            [DataMember(Name = "id")]
             public string Id { get; set; }
 
             /// <summary>
             /// Operation type.
             /// </summary>
-            [DataMember(Name = "operation")]
             public FileOperationType OperationType { get; set; }
 
             /// <summary>
             /// Operation progress.
             /// </summary>
-            [DataMember(Name = "progress")]
             public int Progress { get; set; }
 
             /// <summary>
             /// Source files for operation.
             /// </summary>
-            [DataMember(Name = "source")]
             public string Source { get; set; }
 
             /// <summary>
             /// Result file of operation.
             /// </summary>
-            [DataMember(Name = "result")]
             public FileWrapper<T> File { get; set; }
 
             /// <summary>
             /// Error during conversation.
             /// </summary>
-            [DataMember(Name = "error")]
             public string Error { get; set; }
 
             /// <summary>
             /// Is operation processed.
             /// </summary>
-            [DataMember(Name = "processed")]
             public string Processed { get; set; }
         }
     }

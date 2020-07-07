@@ -37,13 +37,10 @@ using ASC.Web.Studio.Core;
 
 namespace ASC.Web.Files.Core.Entries
 {
-    [DataContract(Name = "account", Namespace = "")]
     public class EncryptionAddress
     {
-        [DataMember(Name = "address")]
         public string Address;
 
-        [DataMember(Name = "publicKey")]
         public string PublicKey;
     }
 

@@ -85,7 +85,6 @@ namespace ASC.Files.Core
             set { base.Title = value; }
         }
 
-        [DataMember(Name = "title", IsRequired = true)]
         public override string Title
         {
             get
