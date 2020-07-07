@@ -14,10 +14,10 @@ const RecoverAccess = ({ t }) => {
 
     const onRecoverClick = () => {
         setVisible(true);
-    }
+    };
     const onRecoverModalClose = () => {
         setVisible(false);
-    }
+    };
 
     return (
         <>

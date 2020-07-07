@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, TextInput, Text, ModalDialog, Textarea } from "asc-web-components";
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
+  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
+
   const onSendRecoverInstructions = () => {
     alert("Send button clicked")
-  }
+  };
   
+  const onChangeEmail = (e) => setEmail(e.currentTarget.value);
+  
+  const onChangeDescription = (e) => setDescription(e.currentTarget.value);
+
   return (
     <ModalDialog
       visible={visible}
@@ -36,14 +43,14 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           style={{ marginTop: "16px", marginBottom: "16px" }}
           placeholder={t("RecoverContactEmailPlaceholder")}
           //isDisabled={isLoading}
-          //value={email}
-          onChange={event => console.log(event.target.value)}
+          value={email}
+          onChange={onChangeEmail}
         />,
         <Textarea
           key="text-description"
           placeholder={t("RecoverDescribeYourProblemPlaceholder")}
-          onChange={event => console.log(event.target.value)}
-        //value="value"
+          onChange={onChangeDescription}
+          value={description}
         />
       ]}
       footerContent={[
@@ -72,6 +79,8 @@ SubModalDialog.propTypes = {
   // onChangeEmail: PropTypes.func.isRequired,
   // onSendPasswordInstructions: PropTypes.func.isRequired,
   onRecoverModalClose: PropTypes.func.isRequired,
+  onChangeEmail: PropTypes.func.isRequired,
+  onChangeDescription: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired
   // t: PropTypes.func.isRequired
 };
