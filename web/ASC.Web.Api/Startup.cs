@@ -14,18 +14,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ASC.Web.Api
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
-        public IHostEnvironment HostEnvironment { get; }
-
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment): base(configuration, hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
+
         }
         public void ConfigureServices(IServiceCollection services)
         {
@@ -39,22 +36,22 @@ namespace ASC.Web.Api
                 .AddPaymentFilter()
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
-
-            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
-
+            LogParams = new string[] { "ASC.Api", "ASC.Web" };
             diHelper
                 .AddAuthenticationController()
                 .AddModulesController()
                 .AddPortalController()
                 .AddSettingsController()
                 .AddSmtpSettingsController();
-            GeneralStartup.ConfigureServices(services, true, true) ;
+            addcontrollers = true;
+            confirmAddScheme = true;
+            base.ConfigureServices(services);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
         }
-        public void Configure(IApplicationBuilder app)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            GeneralStartup.Configure(app);
+            base.Configure(app, env);
         }
     }
 }

@@ -3,44 +3,31 @@ using System.Text;
 
 using ASC.Api.Core;
 using ASC.Api.Core.Auth;
-using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Api.Documents;
 using ASC.Common;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Files
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
-        public IHostEnvironment HostEnvironment { get; }
-
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+            : base(configuration, hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
+            
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
 
             services.AddControllers()
                 .AddXmlSerializerFormatters()
@@ -63,7 +50,7 @@ namespace ASC.Files
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            diHelper.AddNLogManager("ASC.Files");
+            LogParams = new string[] { "ASC.Files" };
 
             diHelper
                 .AddDocumentsControllerService()
@@ -73,14 +60,13 @@ namespace ASC.Files
                 .AddThirdPartyAppHandlerService()
                 .AddDocuSignHandlerService();
 
-            GeneralStartup.ConfigureServices(services, false, false);
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            base.ConfigureServices(services);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            GeneralStartup.Configure(app);
+            base.Configure(app, env);
 
             app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),

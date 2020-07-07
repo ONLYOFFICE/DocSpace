@@ -6,50 +6,37 @@ using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
-using ASC.Common.DependencyInjection;
-using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using ASC.Common.Threading.Workers;
 
 namespace ASC.Data.Backup
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
-        public IHostEnvironment HostEnvironment { get; }
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment):base(configuration, hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
+
         }
-        public void ConfigureServices(IServiceCollection services) {
+        public override void ConfigureServices(IServiceCollection services) {
             var diHelper = new DIHelper(services);
 
             diHelper.AddBackupServiceLauncher()
             .AddBackupController();
-            diHelper.AddNLogManager("ASC.Data.Backup");
+            LogParams = new string[] { "ASC.Data.Backup" };
             services.AddHostedService<BackupServiceLauncher>();
-            diHelper.Configure<ProgressQueue<BaseBackupProgressItem>>(r =>
-            {
-                r.workerCount = 1;
-                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-                r.removeAfterCompleted = true;
-                r.stopAfterFinsih = false;
-                r.errorCount = 0;
-            });
-
-           
-            GeneralStartup.ConfigureServices(services, false, true);
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
+            diHelper.AddProgressQueue<BaseBackupProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
+            addcontrollers = true;
+            base.ConfigureServices(services);
         }
-        public void Configure(IApplicationBuilder app)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            GeneralStartup.Configure(app);
+            base.Configure(app, env);
         }
     }
 }

@@ -6,8 +6,6 @@ using ASC.Common.Logging;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
-
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -17,16 +15,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Studio
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
 
-        public IHostEnvironment HostEnvironment { get; }
-
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment): base(configuration, hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -35,19 +28,17 @@ namespace ASC.Web.Studio
             services.AddCors();
             
             var diHelper = new DIHelper(services);
-
-            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
-
+            LogParams = new string[] { "ASC.Api", "ASC.Web" };
             diHelper
                 .AddCookieAuthHandler()
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService();
-            GeneralStartup.ConfigureServices(services, false, false);
+            base.ConfigureServices(services);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

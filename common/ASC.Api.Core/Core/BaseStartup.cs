@@ -9,14 +9,30 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication;
 using ASC.Api.Core.Auth;
+using ASC.Common.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using ASC.Common;
+using ASC.Common.Logging;
 
 namespace ASC.Api.Core
 {
-    public static class GeneralStartup
+    public abstract class BaseStartup
     {
-        public static void ConfigureServices(IServiceCollection services, bool confirmAddScheme, bool addcontrollers)
+        public IConfiguration Configuration { get; }
+        public IHostEnvironment HostEnvironment { get; }
+        public string[] LogParams { get; set; }
+        public bool addcontrollers = false;
+        public bool confirmAddScheme = false;
+
+        public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
-           
+            Configuration = configuration;
+            HostEnvironment = hostEnvironment;
+        }  
+        public virtual void ConfigureServices(IServiceCollection services)
+        {
             services.AddHttpContextAccessor();
             if (addcontrollers)
             {
@@ -55,10 +71,17 @@ namespace ASC.Api.Core
             {
                 services.AddAuthentication("cookie")
                        .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+            }
 
-            }         
+            var diHelper = new DIHelper(services);
+
+            if (LogParams != null) {
+                diHelper.AddNLogManager(LogParams);
+            }
+
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
-        public static void Configure(IApplicationBuilder app)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
