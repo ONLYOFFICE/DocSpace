@@ -19,8 +19,10 @@ import {
   SectionPagingContent
 } from "./Section";
 import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging } from "../../../store/files/actions";
-import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
+import { loopTreeFolders, checkFolderType, canConvert } from "../../../store/files/selectors";
 import store from "../../../store/store";
+import { ConvertDialog } from "../../dialogs";
+
 const { changeLanguage } = utils;
 
 class PureHome extends React.Component {
@@ -43,7 +45,14 @@ class PureHome extends React.Component {
       files: [],
       uploadedFiles: 0,
       totalSize: 0,
-      percent: 0
+      percent: 0,
+
+      showConvertDialog: false,
+      convertFiles: [],
+      convertFilesSize: 0,
+      uploadStatus: null,
+      uploaded: true,
+      uploadToFolder: null
     };
   }
 
@@ -98,7 +107,7 @@ class PureHome extends React.Component {
         })
         .catch((err) => toastr.error(err))
         .finally(() => {
-          this.onLoading(false);
+          this.setState({uploaded: true, isLoading: false});
         });
     } else {
       api.files
@@ -113,66 +122,117 @@ class PureHome extends React.Component {
         })
         .catch((err) => toastr.error(err))
         .finally(() => {
-          this.onLoading(false);
+          this.setState({uploaded: true, isLoading: false});
         });
     }
   };
 
-  sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile, folderId) => {
+  updateConvertProgress = (newState, uploadStatus) => {
+    if (
+      newState.hasOwnProperty("files") ||
+      newState.hasOwnProperty("percent") ||
+      newState.hasOwnProperty("uploadedFiles")
+    ) {
+      let progressVisible = true;
+      let uploadedFiles = newState.uploadedFiles;
+      let percent = newState.percent;
+      
+      const totalFiles = (uploadStatus === "cancel") ? this.state.files.length : this.state.files.length + this.state.convertFiles.length;
+
+      if (newState.uploadedFiles === totalFiles) {
+        percent = 100;
+        newState.percent = 0;
+        newState.uploadedFiles = 0;
+        progressVisible = false;
+      }
+      newState.progressBarValue = percent;
+      newState.progressBarLabel = this.props.t("UploadingLabel", {
+        file: uploadedFiles,
+        totalFiles,
+      });
+
+      this.setState(newState, () => {
+        if (!progressVisible) {
+          this.setProgressVisible(false);
+        }
+      });
+    }
+  }
+
+  sendChunk = (files, location, requestsDataArray, isLatestFile, indexOfFile) => {
+    const { uploadToFolder, totalSize, uploaded, uploadStatus, uploadedFiles } = this.state;
     const sendRequestFunc = (index) => {
       let newState = {};
       api.files
         .uploadFile(location, requestsDataArray[index])
         .then((res) => {
           let newPercent = this.state.percent;
+          const currentFile = files[indexOfFile];
+          const fileId = res.data.data.id;
           const percent = (newPercent +=
-            (files[indexOfFile].size / this.state.totalSize) * 100);
+            (currentFile.size / totalSize) * 100);
+
           if (res.data.data && res.data.data.uploaded) {
-            files[indexOfFile].uploaded = true;
-            newState = { files, percent };
+            newState = { percent };
           }
+
           if (index + 1 !== requestsDataArray.length) {
             sendRequestFunc(index + 1);
+          } else if(uploaded) {
+            api.files.convertFile(fileId).then(res => {
+              if(res && res[0] && res[0].progress !== 100) {
+                const getConvertProgress = () => {
+                  api.files.getConvertFile(fileId).then(res2 => {
+                    if(res2 && res2[0] && res2[0].progress !== 100) {
+                      setTimeout(() => getConvertProgress(), 1000);
+                    } else {
+                      newState = Object.assign({}, newState, {
+                        uploadedFiles: uploadedFiles + 1,
+                      });
+                      this.updateConvertProgress(newState, uploadStatus);
+                      !isLatestFile && this.startSessionFunc(indexOfFile + 1);
+
+                      if(res2[0].error) {
+                        toastr.error(res2[0].error);
+                      }
+                      if(isLatestFile) {
+                        this.updateFiles(uploadToFolder);
+                        return;
+                    }
+                  }
+                  })
+                }
+                getConvertProgress();
+              }
+            })
           } else if (isLatestFile) {
-            this.updateFiles(folderId);
-            newState = Object.assign({}, newState, {
-              uploadedFiles: this.state.uploadedFiles + 1,
-            });
-            return;
+            if(uploaded) {
+              this.updateFiles(uploadToFolder);
+            } else {
+              if(uploadStatus === "convert") {
+                this.setState({uploadStatus: null, uploaded: true});
+                this.startSessionFunc(0);
+                //console.log("UPLOAD FUNCTION");
+              } else if(uploadStatus === "pending") {
+                this.setState({uploaded: true, uploadStatus: null});
+                //console.log("Upload when click button");
+              } else {
+                //console.log("UPDATE");
+                this.setState({uploadStatus: null});
+                this.updateFiles(uploadToFolder);
+              }
+            }
           } else {
-            newState = Object.assign({}, newState, {
-              uploadedFiles: this.state.uploadedFiles + 1,
-            });
-            this.startSessionFunc(indexOfFile + 1, folderId);
+            this.startSessionFunc(indexOfFile + 1);
           }
         })
         .catch((err) => toastr.error(err))
         .finally(() => {
-          if (
-            newState.hasOwnProperty("files") ||
-            newState.hasOwnProperty("percent") ||
-            newState.hasOwnProperty("uploadedFiles")
-          ) {
-            let progressVisible = true;
-            let uploadedFiles = newState.uploadedFiles;
-            let percent = newState.percent;
-            if (newState.uploadedFiles === files.length) {
-              percent = 100;
-              newState.percent = 0;
-              newState.uploadedFiles = 0;
-              progressVisible = false;
-            }
-            newState.progressBarValue = percent;
-            newState.progressBarLabel = this.props.t("UploadingLabel", {
-              file: uploadedFiles,
-              totalFiles: files.length,
+          if(!uploaded) {
+            newState = Object.assign({}, newState, {
+              uploadedFiles: uploadedFiles + 1,
             });
-
-            this.setState(newState, () => {
-              if (!progressVisible) {
-                this.setProgressVisible(false);
-              }
-            });
+            this.updateConvertProgress(newState, uploadStatus);
           }
         });
     };
@@ -180,12 +240,28 @@ class PureHome extends React.Component {
     sendRequestFunc(0);
   };
 
-  startSessionFunc = (indexOfFile, folderId) => {
-    const { files } = this.state;
-    const { currentFolderId } = this.props;
-    const file = files[indexOfFile];
-    const isLatestFile = indexOfFile === files.length - 1;
-    const selectedFolderId = folderId ? folderId : currentFolderId;
+  startSessionFunc = (indexOfFile) => {
+    const { files, convertFiles, uploaded, uploadToFolder } = this.state;
+
+    const currentFiles = uploaded ? convertFiles : files;
+
+    if(!uploaded && files.length === 0) {
+      this.setState({ uploaded: true });
+      return;
+    }
+
+    let file = files[indexOfFile];
+    let isLatestFile = indexOfFile === files.length - 1;
+
+    if(uploaded) {
+      if(convertFiles.length) {
+        file = convertFiles[indexOfFile];
+        isLatestFile = indexOfFile === convertFiles.length - 1;
+      } else {
+        //console.log("Test return empty convert files");
+        return;
+      }
+    }
 
     const fileName = file.name;
     const fileSize = file.size;
@@ -202,15 +278,11 @@ class PureHome extends React.Component {
     let chunk = 0;
 
     api.files
-      .startUploadSession(selectedFolderId, fileName, fileSize, relativePath)
+      .startUploadSession(uploadToFolder, fileName, fileSize, relativePath)
       .then((res) => {
         location = res.data.location;
         while (chunk < chunks) {
           const offset = chunk * chunkSize;
-          //console.log("current chunk..", chunk);
-          //console.log("file blob from offset...", offset);
-          //console.log(file.slice(offset, offset + chunkSize));
-
           const formData = new FormData();
           formData.append("file", file.slice(offset, offset + chunkSize));
           requestsDataArray.push(formData);
@@ -218,7 +290,7 @@ class PureHome extends React.Component {
         }
       })
       .then(
-        () => this.sendChunk(files, location, requestsDataArray, isLatestFile, indexOfFile, selectedFolderId)
+        () => this.sendChunk(currentFiles, location, requestsDataArray, isLatestFile, indexOfFile, uploadToFolder)
       )
       .catch((err) => {
         this.setProgressVisible(false, 0);
@@ -329,27 +401,49 @@ class PureHome extends React.Component {
 
   startUpload = (files, folderId) => {
     const newFiles = [];
-    let total = 0;
+    let filesSize = 0;
+    const convertFiles = [];
+    let convertFilesSize = 0;
 
     for (let item of files) {
       if (item.size !== 0) {
-        newFiles.push(item);
-        total += item.size;
+        const parts = item.name.split(".");
+        const ext = parts.length > 1 ? "." + parts.pop() : "";
+        if(canConvert(ext)) {
+          convertFiles.push(item);
+          convertFilesSize += item.size;
+        } else {
+          newFiles.push(item);
+          filesSize += item.size;
+        }
       } else {
         toastr.error(this.props.t("ErrorUploadMessage"));
       }
     }
-    this.startUploadFiles(newFiles, total, folderId);
-  }
 
-  startUploadFiles = (files, totalSize, folderId) => {
-    if (files.length > 0) {
+    const showConvertDialog = !!convertFiles.length;
+    const uploadStatus = convertFiles.length ? "pending" : null;
+    const uploadToFolder = folderId ? folderId : this.props.currentFolderId;
+
+    const state = { files: newFiles, filesSize, convertFiles, convertFilesSize, uploadToFolder, showConvertDialog, uploaded: false, uploadStatus };
+
+    this.startUploadFiles(state);
+  }
+  
+  startUploadFiles = (state) => {
+    const { files, filesSize, convertFiles, convertFilesSize } = state;
+
+    if (files.length > 0 || convertFiles.length > 0) {
       const progressBarLabel = this.props.t("UploadingLabel", {
         file: 0,
-        totalFiles: files.length,
+        totalFiles: files.length + convertFiles.length
       });
-      this.setState({ files, totalSize, progressBarLabel, showProgressBar: true, isLoading: true },
-        () => { this.startSessionFunc(0, folderId); });
+
+      const totalSize = convertFilesSize + filesSize;
+      const newState = {...state, ...{ totalSize, progressBarLabel, showProgressBar: true, isLoading: true }};
+
+      this.setState(newState, () => { this.startSessionFunc(0); });
+        
     } else if(this.state.isLoading) {
       this.setState({ isLoading: false });
     }
@@ -379,9 +473,9 @@ class PureHome extends React.Component {
   };
 
   setProgressVisible = (visible, timeout) => {
-    const newTimeout = timeout ? timeout : 10000;
+    const newTimeout = timeout ? timeout : 5000;
     if (visible) {
-      this.setState({ showProgressBar: visible });
+      this.setState({ showProgressBar: visible, progressBarValue: 0, percent: 0 });
     } else {
       setTimeout(
         () => this.setState({ showProgressBar: visible, progressBarValue: 0 }),
@@ -515,6 +609,41 @@ class PureHome extends React.Component {
     }
   }
 
+  setConvertDialogVisible = () => {
+    const { files, uploadStatus, uploadToFolder, showConvertDialog } = this.state;
+    if(uploadStatus === null) {
+      const folderId = uploadToFolder;
+      this.updateFiles(folderId);
+
+      const progressBarLabel = this.props.t("UploadingLabel", {
+        file: files.length,
+        totalFiles: files.length
+      });
+
+      const newState = { progressBarLabel, uploadedFiles: 0, percent: 0, progressBarValue: 100, showConvertDialog: !showConvertDialog };
+
+      this.setState(newState, () => this.setProgressVisible(false));
+    } else if(!files.length) {
+      this.setState({showProgressBar: false, showConvertDialog: !showConvertDialog, isLoading: false, uploadStatus: null});
+    } else {
+      const totalFiles = files;
+      this.setState({totalFiles, showConvertDialog: !showConvertDialog, uploadStatus: "cancel"});
+    }
+  }
+
+  onConvert = () => {
+    let newState = {showConvertDialog: false, uploadStatus: "convert"};
+    if(this.state.uploaded) {
+      if(!this.state.showProgressBar) {
+        newState = {...newState, ...{showProgressBar: true, progressBarValue: 0, percent: 0}};
+      }
+
+      this.startSessionFunc(0);
+      //console.log("START onConvert");
+    }
+    this.setState(newState);
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
@@ -533,7 +662,8 @@ class PureHome extends React.Component {
       progressBarLabel,
       overwriteSetting,
       uploadOriginalFormatSetting,
-      hideWindowSetting
+      hideWindowSetting,
+      showConvertDialog
     } = this.state;
     const { t } = this.props;
 
@@ -559,6 +689,13 @@ class PureHome extends React.Component {
 
     return (
       <>
+        {showConvertDialog && (
+          <ConvertDialog
+            visible={showConvertDialog}
+            onClose={this.setConvertDialogVisible}
+            onConvert={this.onConvert}
+          />
+        )}
         <RequestLoader
           visible={isLoading}
           zIndex={256}
