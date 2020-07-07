@@ -253,7 +253,6 @@ namespace ASC.Api.Settings
             }
             else if (!SettingsManager.Load<WizardSettings>().Completed)
             {
-
                 settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
             }
 
@@ -325,9 +324,11 @@ namespace ASC.Api.Settings
             return SetupInfo.EnabledCultures.Select(r => r.Name).ToArray();
         }
 
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
         [Read("timezones")]
-        public List<object> GetTimeZones()
+        public List<TimezonesModel> GetTimeZones()
         {
+            ApiContext.AuthByClaim();
             var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
             if (timeZones.All(tz => tz.Id != "UTC"))
@@ -335,7 +336,7 @@ namespace ASC.Api.Settings
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            var listOfTimezones = new List<object>();
+            var listOfTimezones = new List<TimezonesModel>();
 
             foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
             {
@@ -357,6 +358,13 @@ namespace ASC.Api.Settings
             }
 
             return listOfTimezones;
+        }
+
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Read("machine")]
+        public string GetMachineName()
+        {
+            return Dns.GetHostName().ToLowerInvariant();
         }
 
         /*        [Read("greetingsettings")]
