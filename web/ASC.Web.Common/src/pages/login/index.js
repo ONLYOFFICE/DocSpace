@@ -85,7 +85,7 @@ const FormContainer = styled.form`
   }
 
   .login-bottom-border {
-    width: 138px;
+    width: 100%;
     height: 1px;
     background: #ECEEF1;
   }
@@ -360,7 +360,7 @@ class Form extends Component {
           </Text>
           <Box displayProp="flex" alignItems="center">
             <div className="login-bottom-border"></div>
-            <Text className="login-bottom-text" color="#A3A9AE">OR</Text>
+            <Text className="login-bottom-text" color="#A3A9AE">{t("Or")}</Text>
             <div className="login-bottom-border"></div>
           </Box>
         </FormContainer>
