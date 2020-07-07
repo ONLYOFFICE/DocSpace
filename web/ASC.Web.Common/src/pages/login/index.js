@@ -103,6 +103,7 @@ const RegisterContainer = styled(Box)`
   bottom: 0;
   right: 0;
   background-color: #F8F9F9;
+  cursor: pointer;
 `;
 
 class Form extends Component {
@@ -253,7 +254,7 @@ class Form extends Component {
 
     return (
       <>
-        <Box marginProp="120px 0 0 0" textAlign="center">
+        <Box marginProp="120px 0 0 0" displayProp="flex" justifyContent="center" widthProp="100%">
           <Box>
             <Text fontSize="32px" fontWeight={600}>
               {greetingTitle}
