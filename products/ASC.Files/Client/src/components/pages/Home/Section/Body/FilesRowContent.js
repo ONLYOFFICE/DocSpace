@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, toastr } from "asc-web-components";
+import { RowContent, Link, Text, Icons, IconButton, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
+import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
@@ -29,7 +30,8 @@ class FilesRowContent extends React.PureComponent {
       editingId: props.fileAction.id,
       showNewFilesPanel: false,
       newFolderId: [],
-      newItems: props.item.new
+      newItems: props.item.new,
+      showConvertDialog: false
       //loading: false
     };
   }
@@ -119,7 +121,7 @@ class FilesRowContent extends React.PureComponent {
 
       fetchFiles(id, newFilter, store.dispatch)
         .catch(err => {
-          toastr.error("Something went wrong", err);
+          toastr.error(err);
           onLoading(false);
         })
         .finally(() => onLoading(false));
@@ -213,9 +215,45 @@ class FilesRowContent extends React.PureComponent {
     this.setState({showNewFilesPanel: !showNewFilesPanel});
   };
 
+  setConvertDialogVisible = () =>
+    this.setState({ showConvertDialog: !this.state.showConvertDialog });
+
+    getConvertProgress = fileId => {
+      api.files.getConvertFile(fileId).then(res => {
+        if(res && res[0] && res[0].progress !== 100) {
+          this.props.setProgressValue(res[0].progress);
+          setTimeout(() => this.getConvertProgress(fileId), 1000);
+        } else {
+          const { selectedFolder, filter, onLoading, setProgressValue, finishFilesOperations } = this.props;
+          if(res[0].error) {
+            finishFilesOperations(res[0].error);
+          } else {
+            setProgressValue(100);
+            finishFilesOperations();
+            const newFilter = filter.clone();
+            fetchFiles(selectedFolder.id, newFilter, store.dispatch)
+              .catch(err => toastr.error(err))
+              .finally(() => onLoading(false));
+          }
+        }
+      });
+    }
+  
+  onConvert = () => {
+    const { item, startFilesOperations, t } = this.props;
+    startFilesOperations(t("Convert"));
+    this.setState({showConvertDialog: false}, () => 
+      api.files.convertFile(item.id).then(convertRes => {
+        if(convertRes && convertRes[0] && convertRes[0].progress !== 100) {
+          this.getConvertProgress(item.id);
+        }
+      })
+    );
+  }
+
   render() {
     const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
-    const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId } = this.state;
+    const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId, showConvertDialog } = this.state;
     const {
       contentLength,
       updated,
@@ -286,6 +324,13 @@ class FilesRowContent extends React.PureComponent {
       />
       : (
       <>
+        {showConvertDialog && (
+          <ConvertDialog
+            visible={showConvertDialog}
+            onClose={this.setConvertDialogVisible}
+            onConvert={this.onConvert}
+          />
+        )}
         {showNewFilesPanel && (
           <NewFilesPanel
             visible={showNewFilesPanel}
@@ -327,7 +372,9 @@ class FilesRowContent extends React.PureComponent {
                   {fileExst}
                 </Text>
                 {canConvertFile &&
-                  <Icons.FileActionsConvertIcon
+                  <IconButton
+                    onClick={this.setConvertDialogVisible}
+                    iconName="FileActionsConvertIcon"
                     className='badge'
                     size='small'
                     isfill={true}

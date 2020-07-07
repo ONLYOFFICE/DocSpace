@@ -954,7 +954,10 @@ class SectionBodyContent extends React.Component {
       currentFolderType,
       dragging,
       mediaViewerVisible,
-      currentMediaFileId
+      currentMediaFileId,
+      startFilesOperations,
+      finishFilesOperations,
+      setProgressValue
     } = this.props;
 
     const { editingId, showSharingPanel, currentItem } = this.state;
@@ -1053,6 +1056,9 @@ class SectionBodyContent extends React.Component {
                         onLoading={onLoading}
                         onMediaFileClick={this.onMediaFileClick}
                         isLoading={isLoading}
+                        setProgressValue={setProgressValue}
+                        startFilesOperations={startFilesOperations}
+                        finishFilesOperations={finishFilesOperations}
                       />
                     </SimpleFilesRow>
                   </DragAndDrop>

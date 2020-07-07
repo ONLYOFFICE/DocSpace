@@ -641,7 +641,6 @@ class PureHome extends React.Component {
       }
 
       this.startSessionFunc(0);
-      //console.log("START onConvert");
     }
     this.setState(newState);
   };

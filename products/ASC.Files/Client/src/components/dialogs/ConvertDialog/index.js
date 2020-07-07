@@ -15,7 +15,7 @@ class ConvertDialogComponent extends React.Component {
     changeLanguage(i18n);
 
     this.state = {
-      saveOriginalFormat: false,
+      saveOriginalFormat: true,
       hideMessage: false
     };
   }

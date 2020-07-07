@@ -349,5 +349,5 @@ export function convertFile(fileId) {
 }
 
 export function getConvertFile(fileId) {
-  return request({ method: "put", url: `/files/file/${fileId}/checkconversion` });
+  return request({ method: "get", url: `/files/file/${fileId}/checkconversion` });
 }

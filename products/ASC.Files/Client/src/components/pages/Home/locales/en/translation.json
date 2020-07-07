@@ -90,5 +90,6 @@
   "ViewList": "List",
   "ViewTiles": "Tiles",
   "ShowVersionHistory": "Show version history",
-  "FinalizeVersion": "Finalize version"
+  "FinalizeVersion": "Finalize version",
+  "Convert": "Convert"
 }
