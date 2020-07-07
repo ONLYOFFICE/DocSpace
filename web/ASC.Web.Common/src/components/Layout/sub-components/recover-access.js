@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Text, Icons } from "asc-web-components";
 import SubModalDialog from "./recover-modal-dialog";
 import styled from "styled-components";
+import PropTypes from 'prop-types';
 
 const RecoverAccess = ({ t }) => {
 
@@ -50,5 +51,9 @@ const RecoverAccess = ({ t }) => {
         </>
     )
 }
+
+RecoverAccess.propTypes = {
+    t: PropTypes.func.isRequired
+};
 
 export default RecoverAccess;
