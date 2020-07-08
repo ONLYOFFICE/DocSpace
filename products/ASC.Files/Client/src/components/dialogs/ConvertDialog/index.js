@@ -77,6 +77,7 @@ class ConvertDialogComponent extends React.Component {
           footerContent={
             <div className="convert_dialog_footer">
               <Button
+                className="convert_dialog_button-accept"
                 key="ContinueButton"
                 label={t("ContinueButton")}
                 size="medium"

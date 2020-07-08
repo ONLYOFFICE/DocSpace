@@ -18,7 +18,19 @@ const ModalDialogContainer = styled.div`
   }
 
   .button-dialog {
+    display: inline-block;
     margin-left: 8px;
+
+    @media ${tablet} {
+      display: none;
+    }
+  }
+
+  .button-dialog-accept {
+
+    @media ${tablet} {
+      width: 100%;
+    }
   }
 
   .warning-text {
@@ -58,51 +70,67 @@ const ModalDialogContainer = styled.div`
   }
 
   .modal-dialog-content {
-      padding: 8px 16px;
-      border: 1px solid lightgray;
+    padding: 8px 16px;
+    border: 1px solid lightgray;
 
-      .modal-dialog-checkbox:not(:last-child) {
-        padding-bottom: 4px;
-      }
+    @media ${tablet} {
+      padding: 0;
+      border: 0;
     }
 
-    .convert_dialog_content {
-      display: flex;
-      padding: 24px 0;
-
-      .convert_dialog_image {
-        display: block;
-        @media ${tablet} {
-          display: none;
-        }
-      }
-
-      .convert_dialog-content {
-        padding-left: 16px;
-
-        @media ${tablet} {
-          padding: 0;
-          white-space: normal;
-        }
-
-        .convert_dialog_checkbox {
-          padding-top: 16px;
-        }
-      }
+    .modal-dialog-checkbox:not(:last-child) {
+      padding-bottom: 4px;
     }
-    .convert_dialog_footer {
-      display: flex;
+  }
 
-      .convert_dialog_button {
-        margin-left: auto;
-      }
-    }
+  .convert_dialog_content {
+    display: flex;
+    padding: 24px 0;
 
-    .modal-dialog-aside-footer {
+    .convert_dialog_image {
+      display: block;
       @media ${tablet} {
-        width: 90%;
+        display: none;
       }
     }
+
+    .convert_dialog-content {
+      padding-left: 16px;
+
+      @media ${tablet} {
+        padding: 0;
+        white-space: normal;
+      }
+
+      .convert_dialog_checkbox {
+        padding-top: 16px;
+      }
+    }
+  }
+  .convert_dialog_footer {
+    display: flex;
+
+    .convert_dialog_button {
+      margin-left: auto;
+      display: inline-block;
+
+      @media ${tablet} {
+        display: none;
+      }
+    }
+
+    .convert_dialog_button-accept {
+      @media ${tablet} {
+        width: 100%;
+      }
+    }
+  }
+
+  .modal-dialog-aside-footer {
+    @media ${tablet} {
+      width: 90%;
+    }
+  }
 `;
 
 export default ModalDialogContainer;
