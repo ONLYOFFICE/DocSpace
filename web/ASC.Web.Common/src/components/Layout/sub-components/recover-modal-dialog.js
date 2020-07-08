@@ -1,18 +1,29 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button, TextInput, Text, ModalDialog, Textarea } from "asc-web-components";
+import { Button, TextInput, Text, ModalDialog, Textarea, FieldContainer } from "asc-web-components";
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
+  const [err, setErr] = useState(false);
 
   const onSendRecoverInstructions = () => {
-    alert("Send button clicked")
+    if (!email.trim()) {
+      setErr(true);
+    }
+    else if (!description.trim()) {
+      setErr(true);
+    }
+    else {
+      console.log(`Access recovery sent. 
+      E-mail: ${email}, 
+      Description: ${description}`);
+    }
   };
-  
+
   const onChangeEmail = (e) => setEmail(e.currentTarget.value);
-  
+
   const onChangeDescription = (e) => setDescription(e.currentTarget.value);
 
   return (
@@ -32,26 +43,30 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
         >
           {t("RecoverTextBody")}
         </Text>,
-        <TextInput
-          key="e-mail"
-          id="e-mail"
-          name="e-mail"
-          type="text"
-          size="base"
-          scale={true}
-          tabIndex={1}
-          style={{ marginTop: "16px", marginBottom: "16px" }}
-          placeholder={t("RecoverContactEmailPlaceholder")}
-          //isDisabled={isLoading}
-          value={email}
-          onChange={onChangeEmail}
-        />,
-        <Textarea
-          key="text-description"
-          placeholder={t("RecoverDescribeYourProblemPlaceholder")}
-          onChange={onChangeDescription}
-          value={description}
-        />
+        <FieldContainer key="e-mail" isVertical={true} labelText={"e-mail"}>
+          <TextInput
+            hasError={err}
+            id="e-mail"
+            name="e-mail"
+            type="text"
+            size="base"
+            scale={true}
+            tabIndex={1}
+            style={{ marginTop: "16px", marginBottom: "16px" }}
+            placeholder={t("RecoverContactEmailPlaceholder")}
+            //isDisabled={isLoading}
+            value={email}
+            onChange={onChangeEmail}
+          />
+        </FieldContainer>,
+        <FieldContainer key="text-description" isVertical={true}>
+          <Textarea
+            hasError={err}
+            placeholder={t("RecoverDescribeYourProblemPlaceholder")}
+            value={description}
+            onChange={onChangeDescription}
+          />
+        </FieldContainer>
       ]}
       footerContent={[
         <Button
