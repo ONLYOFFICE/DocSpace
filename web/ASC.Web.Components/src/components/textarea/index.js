@@ -54,6 +54,7 @@ class Textarea extends React.PureComponent {
       id,
       isDisabled,
       isReadOnly,
+      hasError,
       maxLength,
       name,
       onChange,
@@ -68,6 +69,7 @@ class Textarea extends React.PureComponent {
         style={style}
         stype='preMediumBlack'
         isDisabled={isDisabled}
+        hasError={hasError}
       >
         <StyledTextarea
           id={id}
@@ -91,6 +93,7 @@ Textarea.propTypes = {
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   isReadOnly: PropTypes.bool,
+  hasError: PropTypes.bool,
   maxLength: PropTypes.number,
   name: PropTypes.string,
   onChange: PropTypes.func,
@@ -104,6 +107,7 @@ Textarea.defaultProps = {
   className: '',
   isDisabled: false,
   isReadOnly: false,
+  hasError: false,
   placeholder: '',
   tabIndex: -1,
   value: '',
