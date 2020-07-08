@@ -15,13 +15,7 @@ import {
   Button, Box, Loader, 
   ModalDialog, utils } from 'asc-web-components';
 
-import { getWizardInfo, getPortalTimezones, getPortalCultures, setIsWizardLoaded } from '../../../store/wizard/actions';
-
-const mapTimezonesToArray = (timezones) => {
-  return timezones.map((timezone) => {
-     return { key: timezone.id, label: timezone.displayName };
-  });
-};
+import { getWizardInfo, getPortalTimezones, getPortalCultures, setIsWizardLoaded, getMachineName } from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
@@ -220,6 +214,7 @@ const WizardContainer = styled.div`
     padding: 0;
 
     .settings-title {
+
       font-family: Open Sans;
       font-style: normal;
       font-weight: normal;
@@ -229,6 +224,7 @@ const WizardContainer = styled.div`
     }
 
     .values {
+
       margin: 0;
       padding: 0;
       margin-left: 16px;
@@ -337,23 +333,51 @@ class Body extends Component {
   }
 
   async componentDidMount() {
-    const { t, wizardToken, getWizardInfo, getPortalCultures, getPortalTimezones, setIsWizardLoaded } = this.props;
-  
-    //await getPortalTimezones()
+    const { 
+      t, wizardToken, 
+      getWizardInfo, getPortalCultures, 
+      getPortalTimezones, setIsWizardLoaded, 
+      getMachineName 
+    } = this.props;
+    
+    await getWizardInfo(wizardToken);
+    await getPortalTimezones(wizardToken)
+      .then(() => {
+        const { timezones, portalTimezone } = this.props;
+        const zones = this.mapTimezonesToArray(timezones);
+        const select = zones.filter(zone => zone.key === portalTimezone);
+        this.setState({
+          timezones: zones,
+          selectTimezone: {
+            key: select[0].key,
+            label: select[0].label
+          }
+        });
+      });
+
+    await getMachineName(wizardToken);
     await getPortalCultures()
       .then(() => {
         const { cultures, portalCulture } = this.props;
         const languages = this.mapCulturesToArray(cultures, t);
         const select = languages.filter(lang => lang.key === portalCulture);
-        this.setState({ languages: languages, selectLanguage: { 
-          key: select[0].key, 
-          label: select[0].label 
-        }})
+        this.setState({ 
+          languages: languages, 
+          selectLanguage: { 
+            key: select[0].key, 
+            label: select[0].label 
+          }
+        })
       });
-
-    await getWizardInfo(wizardToken);
     setIsWizardLoaded(true);
   }
+
+  mapTimezonesToArray = (timezones) => {
+    return timezones.map((timezone) => {
+       return { key: timezone.id, label: timezone.displayName };
+    });
+  };
+  
 
   mapCulturesToArray = (cultures, t) => {
     return cultures.map((culture) => {
@@ -605,9 +629,9 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages } = this.state;
-    const { isOwner, t, domain, timezones, ownerEmail } = this.props;
-    console.log(languages)
+    const { selectLanguage, selectTimezone, languages, timezones } = this.state;
+    const { isOwner, t, ownerEmail, machineName } = this.props;
+    
     const titleEmail = isOwner 
       ? <Text className="settings-title">{t('email')}</Text>
       : null
@@ -625,7 +649,7 @@ class Body extends Component {
           <Text className="settings-title">{t('timezone')}</Text>
         </Box>
         <Box className="values">
-          <Text className="text value">{domain ? domain : "someDomain"}</Text>
+          <Text className="text value">{machineName}</Text>
           {contentEmail}
           <GroupButton className="drop-down value" label={selectLanguage.label} isDropdown={true}>
             {
@@ -638,12 +662,12 @@ class Body extends Component {
               )) 
             }
           </GroupButton>
-          <GroupButton className="drop-down value" label={selectTimezone} isDropdown={true}>
+          <GroupButton className="drop-down value" label={selectTimezone.label} isDropdown={true}>
             {
               timezones.map(el => (
                 <DropDownItem 
-                  key={el} 
-                  label={el}
+                  key={el.key} 
+                  label={el.label}
                   onClick={() => this.onSelectTimezoneHandler(el)}
                 />
               ))
@@ -720,23 +744,24 @@ const Wizard = props => {
 
 function mapStateToProps(state) {
   return {
-    domain: state.wizard.domain,
-    language: state.wizard.language,
-    languages: state.wizard.languages,
-    timezone: state.wizard.timezone,
-    timezones: state.wizard.timezones,
     isOwner: state.wizard.isOwner,
     ownerEmail: state.wizard.ownerEmail,
 
-    settingsPassword: state.auth.settings.passwordSettings,
-    wizardToken: state.auth.settings.wizardToken,
     isWizardLoaded: state.wizard.isWizardLoaded, 
+    machineName: state.wizard.machineName,
+
+    wizardToken: state.auth.settings.wizardToken,
+    settingsPassword: state.auth.settings.passwordSettings,
+  
     cultures: state.auth.settings.cultures,
     portalCulture: state.auth.settings.culture,
+    timezones: state.auth.settings.timezones,
     portalTimezone: state.auth.settings.timezone
   };
 }
 
 export default connect(mapStateToProps, {  
-  getWizardInfo, getPortalCultures, getPortalTimezones, setIsWizardLoaded 
+  getWizardInfo, getPortalCultures, 
+  getPortalTimezones, setIsWizardLoaded, 
+  getMachineName 
 })(withRouter(Wizard)); 

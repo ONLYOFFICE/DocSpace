@@ -26,11 +26,16 @@ export function getSettings() {
     return request(options);
   }
 
-  export function getPortalTimezones() {
-    return request({
+  export function getPortalTimezones(confirmKey = null) {
+    const options = {
       method: "get",
       url: "/settings/timezones.json"
-    });
+    };
+
+    if(confirmKey)
+      options.headers = { confirm: confirmKey };
+
+      return request(options);
   }
 
   export function setLanguageAndTime(lng, timeZoneID) {
@@ -81,4 +86,16 @@ export function getSettings() {
       method: "get",
       url: `settings/customschemas/${id}.json`
     });
+  }
+
+  export function getMachineName(confirmKey = null) {
+    const options = {
+      method: "get",
+      url: "/settings/machine.json"
+    };
+
+    if(confirmKey)
+      options.headers = { confirm: confirmKey };
+
+      return request(options);
   }
