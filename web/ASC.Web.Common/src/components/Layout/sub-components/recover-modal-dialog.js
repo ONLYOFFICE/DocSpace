@@ -5,15 +5,16 @@ import { Button, TextInput, Text, ModalDialog, Textarea, FieldContainer } from "
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
   const [email, setEmail] = useState("");
+  const [emailErr, setEmailErr] = useState(false);
   const [description, setDescription] = useState("");
-  const [err, setErr] = useState(false);
+  const [descErr, setDescErr] = useState(false);
 
   const onSendRecoverInstructions = () => {
     if (!email.trim()) {
-      setErr(true);
+      setEmailErr(true);
     }
-    else if (!description.trim()) {
-      setErr(true);
+    if (!description.trim()) {
+      setDescErr(true);
     }
     else {
       console.log(`Access recovery sent. 
@@ -43,16 +44,16 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
         >
           {t("RecoverTextBody")}
         </Text>,
-        <FieldContainer key="e-mail" isVertical={true} labelText={"e-mail"}>
+        <FieldContainer key="e-mail" isVertical={true}>
           <TextInput
-            hasError={err}
+            hasError={emailErr}
             id="e-mail"
             name="e-mail"
             type="text"
             size="base"
             scale={true}
             tabIndex={1}
-            style={{ marginTop: "16px", marginBottom: "16px" }}
+           // style={{ marginTop: "16px", marginBottom: "16px" }}
             placeholder={t("RecoverContactEmailPlaceholder")}
             //isDisabled={isLoading}
             value={email}
@@ -61,7 +62,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
         </FieldContainer>,
         <FieldContainer key="text-description" isVertical={true}>
           <Textarea
-            hasError={err}
+            hasError={descErr}
             placeholder={t("RecoverDescribeYourProblemPlaceholder")}
             value={description}
             onChange={onChangeDescription}
