@@ -344,9 +344,13 @@ class Body extends Component {
       getPortalTimezones, setIsWizardLoaded, 
       getMachineName 
     } = this.props;
-    
-    await getWizardInfo(wizardToken);
-    await getPortalTimezones(wizardToken)
+
+    const wizardInfo = new Promise((res, rej) => {
+      getWizardInfo(wizardToken).then(() => res())
+    });
+ 
+    const portalTimezones = new Promise((res, rej) => {
+      getPortalTimezones(wizardToken)
       .then(() => {
         const { timezones, portalTimezone } = this.props;
         const zones = this.mapTimezonesToArray(timezones);
@@ -358,23 +362,42 @@ class Body extends Component {
             label: select[0].label
           }
         });
-      });
+      })
+      .then(() => res())
+    })
 
-    await getMachineName(wizardToken);
-    await getPortalCultures()
-      .then(() => {
-        const { cultures, portalCulture } = this.props;
-        const languages = this.mapCulturesToArray(cultures, t);
-        const select = languages.filter(lang => lang.key === portalCulture);
-        this.setState({ 
-          languages: languages, 
-          selectLanguage: { 
-            key: select[0].key, 
-            label: select[0].label 
-          }
+    const portalLanguages = new Promise((res, rej) => {
+      getPortalCultures()
+        .then(() => {
+          const { cultures, portalCulture } = this.props;
+          const languages = this.mapCulturesToArray(cultures, t);
+          const select = languages.filter(lang => lang.key === portalCulture);
+          this.setState({ 
+            languages: languages, 
+            selectLanguage: { 
+              key: select[0].key, 
+              label: select[0].label 
+            }
+          })
         })
-      });
-    setIsWizardLoaded(true);
+      .then(() => res())
+    })
+
+    const machineName = new Promise((res, rej) => {
+      getMachineName(wizardToken)
+        .then(() => res());
+    })
+
+
+    Promise.all([wizardInfo, portalTimezones, portalLanguages, machineName]).then(() => setIsWizardLoaded(true));
+  }
+
+  shouldComponentUpdate(prevProps) {
+    if(prevProps.isWizardLoaded === true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   mapTimezonesToArray = (timezones) => {
