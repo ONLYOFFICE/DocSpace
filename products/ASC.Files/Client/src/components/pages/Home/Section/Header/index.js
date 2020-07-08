@@ -22,14 +22,6 @@ const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 
 const StyledContainer = styled.div`
-  @media (min-width: 1024px) {
-    ${props =>
-    props.isHeaderVisible &&
-    css`
-        width: calc(100% + 76px);
-      `}
-  }
-
   .header-container {
     position: relative;
     display: flex;
@@ -88,10 +80,6 @@ const StyledContainer = styled.div`
         top: 56px;
         z-index: 180;
       }
-    }
-
-    @media (min-width: 1024px) {
-      margin: 0 -24px;
     }
   }
 `;
