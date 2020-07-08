@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Core.Common.Notify.Push
 {
     public enum PushAction

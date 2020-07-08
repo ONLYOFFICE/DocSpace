@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;

@@ -26,8 +26,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.Serialization;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace ASC.Core.Billing
 {
@@ -44,14 +43,18 @@ namespace ASC.Core.Billing
 
         public bool Customization { get; set; }
 
+        [JsonPropertyName("end_date")]
         public DateTime DueDate { get; set; }
 
+        [JsonPropertyName("portal_count")]
         public int PortalCount { get; set; }
 
         public bool Trial { get; set; }
 
+        [JsonPropertyName("user_quota")]
         public int ActiveUsers { get; set; }
 
+        [JsonPropertyName("customer_id")]
         public string CustomerId { get; set; }
 
         public string Signature { get; set; }
@@ -61,13 +64,22 @@ namespace ASC.Core.Billing
         {
             if (string.IsNullOrEmpty(licenseString)) throw new BillingNotFoundException("License file is empty");
 
-            var licenseJson = JObject.Parse(licenseString);
-            if (licenseJson == null) throw new BillingNotFoundException("Can't parse license");
+            try
+            {
+                var options = new System.Text.Json.JsonSerializerOptions()
+                {
+                };
+                var license = System.Text.Json.JsonSerializer.Deserialize<License>(licenseString);
+                if (license == null) throw new BillingNotFoundException("Can't parse license");
 
-            var license = licenseJson.ToObject<License>();
-            license.OriginalLicense = licenseString;
+                license.OriginalLicense = licenseString;
 
-            return license;
+                return license;
+            }
+            catch (Exception)
+            {
+                throw new BillingNotFoundException("Can't parse license");
+            }
         }
     }
 }

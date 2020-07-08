@@ -25,8 +25,8 @@
 
 
 using ASC.ApiSystem.Interfaces;
+
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace ASC.ApiSystem.Models
 {

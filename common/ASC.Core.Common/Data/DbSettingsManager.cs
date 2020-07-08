@@ -26,11 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Text.Json;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -328,8 +327,7 @@ namespace ASC.Core.Data
 
         private string Serialize(ISettings settings)
         {
-            
-            return JsonSerializer.Serialize(settings, options);
+            return JsonSerializer.Serialize(settings);
         }
 
     }

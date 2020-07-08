@@ -27,7 +27,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace ASC.Core.Tenants
 {
