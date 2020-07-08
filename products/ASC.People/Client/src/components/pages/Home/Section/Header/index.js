@@ -5,7 +5,8 @@ import {
   GroupButtonsMenu,
   DropDownItem,
   toastr,
-  ContextMenuButton
+  ContextMenuButton,
+  utils
 } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { connect } from "react-redux";
@@ -33,17 +34,26 @@ import {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog
 } from "../../../../dialogs";
+const { tablet, desktop } = utils.device;
 
 const { isAdmin } = store.auth.selectors;
 const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
+  @media ${desktop} {
+    ${props =>
+      props.isHeaderVisible &&
+      css`
+        width: calc(100% + 76px);
+      `}
+  }
+
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
-    @media (max-width: 1024px) {
+    @media ${tablet} {
       & > div:first-child {
         ${props =>
           props.isArticlePinned &&
@@ -54,6 +64,10 @@ const StyledContainer = styled.div`
         top: 56px;
         z-index: 180;
       }
+    }
+
+    @media ${desktop} {
+      margin: 0 -24px;
     }
   }
 
@@ -67,7 +81,7 @@ const StyledContainer = styled.div`
     .action-button {
       margin-left: 16px;
 
-      @media (max-width: 1024px) {
+      @media ${tablet} {
         margin-left: auto;
 
         & > div:first-child {
