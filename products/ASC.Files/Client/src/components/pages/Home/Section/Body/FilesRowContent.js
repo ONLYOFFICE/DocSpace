@@ -273,6 +273,8 @@ class FilesRowContent extends React.PureComponent {
     }
 
     .badge {
+      height: 14px;
+      width: 14px;
       margin-right: 8px;
     }
 
