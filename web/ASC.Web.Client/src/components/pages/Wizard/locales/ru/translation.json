@@ -16,7 +16,7 @@
   "errorLicenseBody": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
   "changeEmailTitle": "Измененить адрес электронной почты",
   "changeEmailBtn": "Сохранить",
-  "tooltipPasswordTitle": "Пароль должен сожержать:",
+  "tooltipPasswordTitle": "Пароль должен содержать:",
   "tooltipPasswordLength": "символов",
   "tooltipPasswordDigits": "цыфры",
   "tooltipPasswordCapital": "Заглавные буквы",

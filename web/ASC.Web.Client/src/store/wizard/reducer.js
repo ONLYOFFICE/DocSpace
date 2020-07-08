@@ -4,11 +4,6 @@ const initState = {
   isWizardLoaded: false,
   isOwner: false,
   ownerEmail: '',
-  domain: '',
-  language: '',
-  timezone: '',
-  languages: [],
-  timezones: [],
   machineName: ''
 };
 

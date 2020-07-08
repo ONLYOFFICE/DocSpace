@@ -12,7 +12,7 @@ import {
   EmailInput, PasswordInput, 
   InputBlock, Checkbox, Link,
   GroupButton, DropDownItem, 
-  Button, Box, Loader, 
+  Button, Box, Loader, Scrollbar, 
   ModalDialog, utils 
 } from 'asc-web-components';
 
@@ -25,6 +25,8 @@ import {
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
 settings.allowDomainPunycode = true;
+
+const { tablet, mobile } = utils.device;
 
 const HeaderContent = styled.div`
   display: flex;
@@ -42,11 +44,11 @@ const HeaderContent = styled.div`
     left: 240px;
     top: 14.5px;
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       left: 144px;
     }
 
-    @media(max-width: 375px) {
+    @media ${mobile} {
       left: 32px;
     }
   }
@@ -65,16 +67,17 @@ const sectionHeaderContent = <HeaderContent>
 const WizardContainer = styled.div`
   .form-container {
     width: 960px;
+    
     height: 496px;
     margin: 0 auto;
-    margin-top: 80px;
+    margin-top: 80px; 
     padding: 0;
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       width: 480px
     }
 
-    @media(max-width: 375px) {
+    @media ${mobile} {
       width: 311px;
       margin-top: 32px;
     }
@@ -103,14 +106,14 @@ const WizardContainer = styled.div`
       order: 1;
     }
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       .wizard-title, .wizard-desc  {
         margin: 10px 0px;
         text-align: left;
       }
     }
 
-    @media(max-width: 375px) {
+    @media ${mobile} {
       width: 311px;
       
       .wizard-title {
@@ -148,10 +151,10 @@ const WizardContainer = styled.div`
       .input-relative {
         width: 311px;
 
-        @media(max-width: 768px) {
+        @media ${tablet} {
           width: 480px;
         }
-        @media(max-width: 375px) {
+        @media ${mobile} {
           width: 311px;
         }
       }
@@ -201,12 +204,12 @@ const WizardContainer = styled.div`
       line-height: 18px;
     }
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       width: 480px;
       margin: 32px 0 0 0;
     }
 
-    @media(max-width: 375px) {
+    @media ${mobile} {
       width: 311px;
     }
   }
@@ -219,7 +222,7 @@ const WizardContainer = styled.div`
     padding: 0;
 
     .settings-title {
-
+      width: 66px;
       font-family: Open Sans;
       font-style: normal;
       font-weight: normal;
@@ -229,7 +232,6 @@ const WizardContainer = styled.div`
     }
 
     .values {
-
       margin: 0;
       padding: 0;
       margin-left: 16px;
@@ -262,12 +264,20 @@ const WizardContainer = styled.div`
       text-align: left;
     }
 
-    @media(max-width: 768px) {
+    .language-value{
+      margin: 0;
+    }
+
+    .timezone-value {
+      margin-top: 16px; 
+    }
+
+    @media ${tablet} {
       width: 480px;
       margin: 32px 0 0 0;
     }
 
-    @media(max-width: 768px) {
+    @media ${mobile} {
       width: 311px;
     }
   }
@@ -278,7 +288,7 @@ const WizardContainer = styled.div`
     height: 44px;
     margin: 32px auto 0 auto;
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       width: 100%;
     }
   }
@@ -287,7 +297,7 @@ const WizardContainer = styled.div`
     height: 32px;
     width: 528px;
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       width: 293px;
     }
   }
@@ -296,7 +306,7 @@ const WizardContainer = styled.div`
     height: 36px;
     width: 100px;
 
-    @media(max-width: 768px) {
+    @media ${tablet} {
       width: 293px;
       height: 32px;
     }
@@ -385,15 +395,19 @@ class Body extends Component {
 
     const machineName = new Promise((res, rej) => {
       getMachineName(wizardToken)
-        .then(() => res());
+      .then(() => res());
     })
 
 
-    Promise.all([wizardInfo, portalTimezones, portalLanguages, machineName]).then(() => setIsWizardLoaded(true));
+    Promise.all([
+      wizardInfo, portalTimezones, 
+      portalLanguages, machineName
+    ])
+    .then(() => setIsWizardLoaded(true));
   }
 
-  shouldComponentUpdate(prevProps) {
-    if(prevProps.isWizardLoaded === true) {
+  shouldComponentUpdate(nextProps) {
+    if(nextProps.isWizardLoaded === true) {
       return true;
     } else {
       return false;
@@ -679,7 +693,10 @@ class Body extends Component {
         <Box className="values">
           <Text className="text value">{machineName}</Text>
           {contentEmail}
-          <GroupButton className="drop-down value" label={selectLanguage.label} isDropdown={true}>
+          <GroupButton 
+            className="drop-down value language-value" 
+            label={selectLanguage.label} 
+            isDropdown={true}>
             {
               languages.map(el => (
                 <DropDownItem 
@@ -690,17 +707,22 @@ class Body extends Component {
               )) 
             }
           </GroupButton>
-          <GroupButton className="drop-down value" label={selectTimezone.label} isDropdown={true}>
-            {
-              timezones.map(el => (
-                <DropDownItem 
-                  key={el.key} 
-                  label={el.label}
-                  onClick={() => this.onSelectTimezoneHandler(el)}
-                />
-              ))
-            }
-          </GroupButton>
+          
+            <GroupButton 
+              className="drop-down value timezone-value" 
+              label={selectTimezone.label} 
+              isDropdown={true}>
+              {
+                timezones.map(el => (
+                  <DropDownItem 
+                    key={el.key} 
+                    label={el.label}
+                    onClick={() => this.onSelectTimezoneHandler(el)}
+                  />
+                ))
+              }
+            </GroupButton>
+          
         </Box>
       </Box>
     );
