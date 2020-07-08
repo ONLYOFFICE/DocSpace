@@ -225,6 +225,8 @@ class Form extends Component {
     specSymbols: false
   }
 
+  tooltipPasswordLength = `${this.props.t("PasswordFrom")} ${this.settings.minLength} ${this.props.t("PasswordTo30Char")}`;
+
   render() {
     const { greetingTitle, match, t } = this.props;
 
@@ -272,6 +274,8 @@ class Form extends Component {
           <PasswordInput
             passwordSettings={this.settings}
             NewPasswordButtonVisible={false}
+            tooltipPasswordTitle={t("PasswordMustContain")}
+            tooltipPasswordLength={this.tooltipPasswordLength}
             className="login-input"
             id="password"
             inputName="password"
