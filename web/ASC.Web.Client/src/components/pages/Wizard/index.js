@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 
-import { PageLayout } from "asc-web-common";
+import { PageLayout, history } from "asc-web-common";
 import { 
   Heading, Text, 
   EmailInput, PasswordInput, 
@@ -17,9 +17,9 @@ import {
 } from 'asc-web-components';
 
 import { 
-  getWizardInfo, getPortalTimezones, 
+  getPortalPasswordSettings, getPortalTimezones, 
   getPortalCultures, setIsWizardLoaded, 
-  getMachineName 
+  getMachineName, setPortalOwner 
 } from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
@@ -350,60 +350,46 @@ class Body extends Component {
   async componentDidMount() {
     const { 
       t, wizardToken, 
-      getWizardInfo, getPortalCultures, 
+      getPortalPasswordSettings, getPortalCultures, 
       getPortalTimezones, setIsWizardLoaded, 
       getMachineName 
     } = this.props;
 
-    const wizardInfo = new Promise((res, rej) => {
-      getWizardInfo(wizardToken).then(() => res())
-    });
- 
-    const portalTimezones = new Promise((res, rej) => {
-      getPortalTimezones(wizardToken)
-      .then(() => {
-        const { timezones, portalTimezone } = this.props;
-        const zones = this.mapTimezonesToArray(timezones);
-        const select = zones.filter(zone => zone.key === portalTimezone);
-        this.setState({
-          timezones: zones,
-          selectTimezone: {
-            key: select[0].key,
-            label: select[0].label
-          }
-        });
-      })
-      .then(() => res())
-    })
-
-    const portalLanguages = new Promise((res, rej) => {
-      getPortalCultures()
-        .then(() => {
-          const { cultures, portalCulture } = this.props;
-          const languages = this.mapCulturesToArray(cultures, t);
-          const select = languages.filter(lang => lang.key === portalCulture);
-          this.setState({ 
-            languages: languages, 
-            selectLanguage: { 
-              key: select[0].key, 
-              label: select[0].label 
-            }
+    try {
+      await Promise.all([
+        getPortalPasswordSettings(wizardToken),
+        getMachineName(wizardToken),
+        getPortalTimezones(wizardToken)
+          .then(() => {
+            const { timezones, portalTimezone } = this.props;
+            const zones = this.mapTimezonesToArray(timezones);
+            const select = zones.filter(zone => zone.key === portalTimezone);
+            this.setState({
+              timezones: zones,
+              selectTimezone: {
+                key: select[0].key,
+                label: select[0].label
+              }
+            });
+          }),
+        getPortalCultures()
+          .then(() => {
+            const { cultures, portalCulture } = this.props;
+            const languages = this.mapCulturesToArray(cultures, t);
+            const select = languages.filter(lang => lang.key === portalCulture);
+            this.setState({ 
+              languages: languages, 
+              selectLanguage: { 
+                key: select[0].key, 
+                label: select[0].label 
+              }
+            })
           })
-        })
-      .then(() => res())
-    })
-
-    const machineName = new Promise((res, rej) => {
-      getMachineName(wizardToken)
-      .then(() => res());
-    })
-
-
-    Promise.all([
-      wizardInfo, portalTimezones, 
-      portalLanguages, machineName
-    ])
-    .then(() => setIsWizardLoaded(true));
+      ])
+      .then(() => setIsWizardLoaded(true));
+    } catch(e) {
+      console.error(e);
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -473,18 +459,21 @@ class Body extends Component {
   onContinueHandler = () => {
     console.log('continue btn click');
     const valid = this.checkingValid();
+    const { setPortalOwner } = this.props;
     if (valid) { 
       console.log('valid params');
 
       const licenseFile = this.inputRef.current.files[0];
 
-      const owner = {
-        password: this.state.password,
-        email: this.state.email,
-        language: this.state.selectLanguage,
-        timezone: this.state.selectTimezone,
-        licenseFile: licenseFile
-      }
+      const {
+        password, email,
+        selectLanguage, selectTimezone
+      } = this.state;
+
+      const { wizardToken } = this.props;
+ 
+      setPortalOwner(email, password, selectLanguage.key, wizardToken)
+        .then(() => history.push(`/`))
     }
     else {
       console.log('not valid params');
@@ -754,7 +743,7 @@ class Body extends Component {
       );
     }
 
-    console.log('wizard render', this.props)
+    console.log('wizard render');
 
     if (isWizardLoaded) {
       const headerBox = this.renderHeaderBox();
@@ -811,7 +800,7 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {  
-  getWizardInfo, getPortalCultures, 
+  getPortalPasswordSettings, getPortalCultures, 
   getPortalTimezones, setIsWizardLoaded, 
-  getMachineName 
+  getMachineName, setPortalOwner 
 })(withRouter(Wizard)); 

@@ -99,3 +99,21 @@ export function getSettings() {
 
       return request(options);
   }
+
+  export function setPortalOwner( email, pwd, lng, confirmKey = null ) {
+    const options = { 
+      method: "put",
+      url: "/settings/wizard/complete.json",
+      data: {
+        email: email,
+      pwd: pwd,
+      lng: lng,
+      analytics: true
+      }
+    }
+
+    if( confirmKey ) {
+      options.headers = { confirm: confirmKey};
+    }
+    return request(options);
+  }
