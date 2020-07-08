@@ -13,9 +13,14 @@ import {
   InputBlock, Checkbox, Link,
   GroupButton, DropDownItem, 
   Button, Box, Loader, 
-  ModalDialog, utils } from 'asc-web-components';
+  ModalDialog, utils 
+} from 'asc-web-components';
 
-import { getWizardInfo, getPortalTimezones, getPortalCultures, setIsWizardLoaded, getMachineName } from '../../../store/wizard/actions';
+import { 
+  getWizardInfo, getPortalTimezones, 
+  getPortalCultures, setIsWizardLoaded, 
+  getMachineName 
+} from '../../../store/wizard/actions';
 
 const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
