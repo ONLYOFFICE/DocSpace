@@ -31,10 +31,8 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class StudioDefaultPageSettings : ISettings
     {
-        [DataMember(Name = "DefaultProductID")]
         public Guid DefaultProductID { get; set; }
 
         public Guid ID

@@ -37,28 +37,20 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    [DataContract]
     public class MailWhiteLabelSettings : ISettings
     {
-        [DataMember(Name = "FooterEnabled")]
         public bool FooterEnabled { get; set; }
 
-        [DataMember(Name = "FooterSocialEnabled")]
         public bool FooterSocialEnabled { get; set; }
 
-        [DataMember(Name = "SupportUrl")]
         public string SupportUrl { get; set; }
 
-        [DataMember(Name = "SupportEmail")]
         public string SupportEmail { get; set; }
 
-        [DataMember(Name = "SalesEmail")]
         public string SalesEmail { get; set; }
 
-        [DataMember(Name = "DemotUrl")]
         public string DemotUrl { get; set; }
 
-        [DataMember(Name = "SiteUrl")]
         public string SiteUrl { get; set; }
 
         public Guid ID

@@ -43,10 +43,8 @@ using Newtonsoft.Json;
 namespace ASC.ElasticSearch.Core
 {
     [Serializable]
-    [DataContract]
     public class SearchSettings : ISettings
     {
-        [DataMember(Name = "Data")]
         public string Data { get; set; }
 
         public Guid ID
@@ -173,13 +171,10 @@ namespace ASC.ElasticSearch.Core
     }
 
     [Serializable]
-    [DataContract]
     public class SearchSettingsItem
     {
-        [DataMember(Name = "ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Enabled")]
         public bool Enabled { get; set; }
 
         public string Title { get; set; }

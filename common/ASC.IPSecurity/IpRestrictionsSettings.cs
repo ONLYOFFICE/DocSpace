@@ -31,10 +31,8 @@ using ASC.Core.Common.Settings;
 namespace ASC.IPSecurity
 {
     [Serializable]
-    [DataContract]
     public class IPRestrictionsSettings : ISettings
     {
-        [DataMember(Name = "Enable")]
         public bool Enable { get; set; }
 
         public Guid ID

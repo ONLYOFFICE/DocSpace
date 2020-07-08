@@ -32,39 +32,28 @@ using Newtonsoft.Json.Linq;
 namespace ASC.Core.Billing
 {
     [Serializable]
-    [DataContract(Name = "license", Namespace = "")]
     [DebuggerDisplay("{DueDate}")]
     public class License
     {
         public string OriginalLicense { get; set; }
 
-
-        [DataMember(Name = "affiliate_id")]
         public string AffiliateId { get; set; }
 
         //[Obsolete]
-        [DataMember(Name = "whitelabel")]
         public bool WhiteLabel { get; set; }
 
-        [DataMember(Name = "customization")]
         public bool Customization { get; set; }
 
-        [DataMember(Name = "end_date")]
         public DateTime DueDate { get; set; }
 
-        [DataMember(Name = "portal_count")]
         public int PortalCount { get; set; }
 
-        [DataMember(Name = "trial")]
         public bool Trial { get; set; }
 
-        [DataMember(Name = "user_quota")]
         public int ActiveUsers { get; set; }
 
-        [DataMember(Name = "customer_id")]
         public string CustomerId { get; set; }
 
-        [DataMember(Name = "signature")]
         public string Signature { get; set; }
 
 

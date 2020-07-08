@@ -31,10 +31,8 @@ using ASC.Core.Common.Settings;
 namespace ASC.Core.Tenants
 {
     [Serializable]
-    [DataContract]
     public class PersonalQuotaSettings : ISettings
     {
-        [DataMember(Name = "MaxSpace")]
         public long MaxSpace { get; set; }
 
         public Guid ID

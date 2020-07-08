@@ -37,17 +37,14 @@ using Microsoft.Extensions.Hosting;
 namespace ASC.Web.Core.Utility
 {
     [Serializable]
-    [DataContract]
     public class ColorThemesSettings : ISettings
     {
         public const string ThemeFolderTemplate = "<theme_folder>";
         private const string DefaultName = "pure-orange";
 
 
-        [DataMember(Name = "ColorThemeName")]
         public string ColorThemeName { get; set; }
 
-        [DataMember(Name = "FirstRequest")]
         public bool FirstRequest { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

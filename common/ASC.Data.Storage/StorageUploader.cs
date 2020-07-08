@@ -115,7 +115,6 @@ namespace ASC.Data.Storage
         }
     }
 
-    [DataContract]
     public class MigrateOperation : ProgressBase
     {
         private readonly ILog Log;

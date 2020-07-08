@@ -37,7 +37,6 @@ using ASC.Core;
 
 namespace ASC.Api.Core
 {
-    [DataContract(Name = "date", Namespace = "")]
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
     public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {

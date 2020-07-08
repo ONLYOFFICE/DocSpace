@@ -37,43 +37,30 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    [DataContract]
     public class AdditionalWhiteLabelSettings : ISettings
     {
-        [DataMember(Name = "StartDocsEnabled")]
         public bool StartDocsEnabled { get; set; }
 
-        [DataMember(Name = "HelpCenterEnabled")]
         public bool HelpCenterEnabled { get; set; }
 
-        [DataMember(Name = "FeedbackAndSupportEnabled")]
         public bool FeedbackAndSupportEnabled { get; set; }
 
-        [DataMember(Name = "FeedbackAndSupportUrl")]
         public string FeedbackAndSupportUrl { get; set; }
 
-        [DataMember(Name = "UserForumEnabled")]
         public bool UserForumEnabled { get; set; }
 
-        [DataMember(Name = "UserForumUrl")]
         public string UserForumUrl { get; set; }
 
-        [DataMember(Name = "VideoGuidesEnabled")]
         public bool VideoGuidesEnabled { get; set; }
 
-        [DataMember(Name = "VideoGuidesUrl")]
         public string VideoGuidesUrl { get; set; }
 
-        [DataMember(Name = "SalesEmail")]
         public string SalesEmail { get; set; }
 
-        [DataMember(Name = "BuyUrl")]
         public string BuyUrl { get; set; }
 
-        [DataMember(Name = "LicenseAgreementsEnabled")]
         public bool LicenseAgreementsEnabled { get; set; }
 
-        [DataMember(Name = "LicenseAgreementsUrl")]
         public string LicenseAgreementsUrl { get; set; }
 
         public bool IsDefault(IConfiguration configuration)

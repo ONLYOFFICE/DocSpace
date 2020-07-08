@@ -29,22 +29,16 @@ using System.Runtime.Serialization;
 
 namespace ASC.Api.Settings
 {
-    [DataContract(Name = "statistics", Namespace = "")]
     public class UsageSpaceStatItemWrapper
     {
-        [DataMember]
         public string Name { get; set; }
 
-        [DataMember]
         public string Icon { get; set; }
 
-        [DataMember]
         public bool Disabled { get; set; }
 
-        [DataMember]
         public string Size { get; set; }
 
-        [DataMember]
         public string Url { get; set; }
 
         public static UsageSpaceStatItemWrapper GetSample()
@@ -60,19 +54,14 @@ namespace ASC.Api.Settings
         }
     }
 
-    [DataContract(Name = "statistics", Namespace = "")]
     public class ChartPointWrapper
     {
-        [DataMember]
         public string DisplayDate { get; set; }
 
-        [DataMember]
         public DateTime Date { get; set; }
 
-        [DataMember]
         public int Hosts { get; set; }
 
-        [DataMember]
         public int Hits { get; set; }
 
         public static ChartPointWrapper GetSample()

@@ -49,7 +49,6 @@ using Newtonsoft.Json;
 namespace ASC.FederatedLogin.Profile
 {
     [Serializable]
-    [DataContract(Name = "LoginProfile", Namespace = "")]
     [DebuggerDisplay("{DisplayName} ({Id})")]
     public class LoginProfile
     {
@@ -147,14 +146,12 @@ namespace ASC.FederatedLogin.Profile
             internal set { SetField(WellKnownFields.Auth, value); }
         }
 
-        [DataMember(Name = "AuthorizationError")]
         public string AuthorizationError
         {
             get { return GetField(WellKnownFields.AuthError); }
             internal set { SetField(WellKnownFields.AuthError, value); }
         }
 
-        [DataMember(Name = "Provider")]
         public string Provider
         {
             get { return GetField(WellKnownFields.Provider); }
@@ -177,14 +174,12 @@ namespace ASC.FederatedLogin.Profile
             get { return HashHelper.MD5(UniqueId); }
         }
 
-        [DataMember(Name = "Hash")]
         public string Hash
         {
             get { return Signature?.Create(HashId); }
             set { throw new NotImplementedException(); }
         }
 
-        [DataMember(Name = "Serialized")]
         public string Serialized
         {
             get { return Transport(); }

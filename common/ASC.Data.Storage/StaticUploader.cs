@@ -242,7 +242,6 @@ namespace ASC.Data.Storage
         }
     }
 
-    [DataContract]
     public class UploadOperationProgress : ProgressBase
     {
         private readonly string relativePath;

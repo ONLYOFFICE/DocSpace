@@ -33,13 +33,10 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class PersonalSettings : ISettings
     {
-        [DataMember(Name = "IsNewUser")]
         public bool IsNewUserSetting { get; set; }
 
-        [DataMember(Name = "IsNotActivated")]
         public bool IsNotActivatedSetting { get; set; }
 
         public Guid ID

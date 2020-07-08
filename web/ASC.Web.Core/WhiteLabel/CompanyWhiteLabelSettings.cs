@@ -34,25 +34,18 @@ using Newtonsoft.Json;
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    [DataContract]
     public class CompanyWhiteLabelSettings : ISettings
     {
-        [DataMember(Name = "CompanyName")]
         public string CompanyName { get; set; }
 
-        [DataMember(Name = "Site")]
         public string Site { get; set; }
 
-        [DataMember(Name = "Email")]
         public string Email { get; set; }
 
-        [DataMember(Name = "Address")]
         public string Address { get; set; }
 
-        [DataMember(Name = "Phone")]
         public string Phone { get; set; }
 
-        [DataMember(Name = "IsLicensor")]
         public bool IsLicensor { get; set; }
 
         public bool IsDefault(CoreSettings coreSettings)

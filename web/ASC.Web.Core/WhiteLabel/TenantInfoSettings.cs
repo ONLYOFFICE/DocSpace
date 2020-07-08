@@ -41,15 +41,12 @@ using Microsoft.Extensions.Configuration;
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    [DataContract]
     public class TenantInfoSettings : ISettings
     {
-        [DataMember(Name = "LogoSize")]
         public Size CompanyLogoSize { get; internal set; }
+        
+        public string _companyLogoFileName;
 
-        [DataMember(Name = "LogoFileName")] public string _companyLogoFileName;
-
-        [DataMember(Name = "Default")]
         internal bool _isDefault { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

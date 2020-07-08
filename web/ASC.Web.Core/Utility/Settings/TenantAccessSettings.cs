@@ -31,13 +31,10 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
-    [DataContract]
     public class TenantAccessSettings : ISettings
     {
-        [DataMember(Name = "Anyone")]
         public bool Anyone { get; set; }
 
-        [DataMember(Name = "RegisterUsersImmediately")]
         public bool RegisterUsersImmediately { get; set; }
 
         public Guid ID

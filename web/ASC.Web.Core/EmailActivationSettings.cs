@@ -31,10 +31,8 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class EmailActivationSettings : ISettings
     {
-        [DataMember(Name = "Show")]
         public bool Show { get; set; }
 
         public Guid ID

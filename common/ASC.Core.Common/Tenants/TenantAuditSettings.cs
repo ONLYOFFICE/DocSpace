@@ -31,16 +31,12 @@ using ASC.Core.Common.Settings;
 namespace ASC.Core.Tenants
 {
     [Serializable]
-    [DataContract]
     public class TenantAuditSettings : ISettings
     {
-        [DataMember(Name = "MaxLifeTime")]
         public const int MaxLifeTime = 180;
 
-        [DataMember(Name = "LoginHistoryLifeTime")]
         public int LoginHistoryLifeTime { get; set; }
 
-        [DataMember(Name = "AuditTrailLifeTime")]
         public int AuditTrailLifeTime { get; set; }
 
         public static Guid Guid = new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}");

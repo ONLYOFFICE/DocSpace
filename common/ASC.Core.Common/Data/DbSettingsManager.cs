@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
-
+using System.Text.Json;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -323,29 +323,15 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(string data)
         {
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
-            var settings = GetJsonSerializer(typeof(T)).ReadObject(stream);
-            return (T)settings;
+            return JsonSerializer.Deserialize<T>(data);
         }
 
         private string Serialize(ISettings settings)
         {
-            using var stream = new MemoryStream();
-            GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
-            return Encoding.UTF8.GetString(stream.ToArray());
+            
+            return JsonSerializer.Serialize(settings, options);
         }
 
-        private DataContractJsonSerializer GetJsonSerializer(Type type)
-        {
-            lock (jsonSerializers)
-            {
-                if (!jsonSerializers.ContainsKey(type))
-                {
-                    jsonSerializers[type] = new DataContractJsonSerializer(type);
-                }
-                return jsonSerializers[type];
-            }
-        }
     }
 
     public static class DbSettingsManagerExtension

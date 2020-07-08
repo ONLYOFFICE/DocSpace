@@ -72,13 +72,10 @@ namespace ASC.Data.Storage.Configuration
     }
 
     [Serializable]
-    [DataContract]
     public abstract class BaseStorageSettings<T> : ISettings where T : class, ISettings, new()
     {
-        [DataMember(Name = "Module")]
         public string Module { get; set; }
 
-        [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider) => new T();
@@ -90,7 +87,6 @@ namespace ASC.Data.Storage.Configuration
     }
 
     [Serializable]
-    [DataContract]
     public class StorageSettings : BaseStorageSettings<StorageSettings>
     {
         public override Guid ID
@@ -100,7 +96,6 @@ namespace ASC.Data.Storage.Configuration
     }
 
     [Serializable]
-    [DataContract]
     public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
     {
         public override Guid ID

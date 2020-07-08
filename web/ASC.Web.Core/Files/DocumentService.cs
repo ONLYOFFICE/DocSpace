@@ -431,7 +431,6 @@ namespace ASC.Web.Core.Files
         }
 
         [Serializable]
-        [DataContract(Name = "Command", Namespace = "")]
         [DebuggerDisplay("{Command} ({Key})")]
         private class CommandBody
         {

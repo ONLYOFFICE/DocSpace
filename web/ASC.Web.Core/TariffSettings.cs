@@ -32,21 +32,16 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.UserControls.Management
 {
     [Serializable]
-    [DataContract]
     public class TariffSettings : ISettings
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
-        [DataMember(Name = "HideRecommendation")]
         public bool HideBuyRecommendationSetting { get; set; }
 
-        [DataMember(Name = "HideNotify")]
         public bool HideNotifySetting { get; set; }
 
-        [DataMember(Name = "HidePricingPage")]
         public bool HidePricingPageForUsers { get; set; }
 
-        [DataMember(Name = "LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

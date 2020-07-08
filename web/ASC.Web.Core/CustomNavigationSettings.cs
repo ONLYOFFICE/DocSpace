@@ -32,10 +32,8 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class CustomNavigationSettings : ISettings
     {
-        [DataMember]
         public List<CustomNavigationItem> Items { get; set; }
 
         public Guid ID
@@ -50,28 +48,20 @@ namespace ASC.Web.Studio.Core
     }
 
     [Serializable]
-    [DataContract]
     public class CustomNavigationItem
     {
-        [DataMember]
         public Guid Id { get; set; }
 
-        [DataMember]
         public string Label { get; set; }
 
-        [DataMember]
         public string Url { get; set; }
 
-        [DataMember]
         public string BigImg { get; set; }
 
-        [DataMember]
         public string SmallImg { get; set; }
 
-        [DataMember]
         public bool ShowInMenu { get; set; }
 
-        [DataMember]
         public bool ShowOnHomePage { get; set; }
 
         private static string GetDefaultBigImg()

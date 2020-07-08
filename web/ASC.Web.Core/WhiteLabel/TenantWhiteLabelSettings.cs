@@ -48,39 +48,29 @@ using TMResourceData;
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    [DataContract]
     public class TenantWhiteLabelSettings : ISettings
     {
         public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
 
         #region Logos information: extension, isDefault, text for img auto generating
 
-        [DataMember(Name = "LogoLightSmallExt")]
         internal string _logoLightSmallExt;
 
-        [DataMember(Name = "DefaultLogoLightSmall")]
         internal bool _isDefaultLogoLightSmall { get; set; }
 
-        [DataMember(Name = "LogoDarkExt")]
         internal string _logoDarkExt;
 
-        [DataMember(Name = "DefaultLogoDark")]
         internal bool _isDefaultLogoDark { get; set; }
 
-        [DataMember(Name = "LogoFaviconExt")]
         internal string _logoFaviconExt;
 
-        [DataMember(Name = "DefaultLogoFavicon")]
         internal bool _isDefaultLogoFavicon { get; set; }
 
-        [DataMember(Name = "LogoDocsEditorExt")]
         internal string _logoDocsEditorExt;
 
-        [DataMember(Name = "DefaultLogoDocsEditor")]
         internal bool _isDefaultLogoDocsEditor { get; set; }
 
 
-        [DataMember(Name = "LogoText")]
         private string _logoText { get; set; }
 
         public string GetLogoText(SettingsManager settingsManager)
