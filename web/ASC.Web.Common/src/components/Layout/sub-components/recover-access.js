@@ -6,8 +6,28 @@ import PropTypes from 'prop-types';
 
 const RecoverAccess = ({ t }) => {
 
+    const RecoverWrapper = styled(Box)`
+        padding: 0 240px 0 0;
+        @media(max-width: 768px) {
+            padding: 0 144px 0 0;
+        }
+        @media(max-width: 375px) {
+            padding: 0 32px 0 0;
+        }
+    `;
+
     const RecoverContainer = styled(Box)`
     cursor: pointer;
+    .recover-icon {
+        @media(max-width: 375px) {
+            padding: 16px;
+        }
+    }
+    .recover-text {
+        @media(max-width: 375px) {
+            display: none;
+        }
+    }
     `;
 
     const [visible, setVisible] = useState(false);
@@ -21,10 +41,10 @@ const RecoverAccess = ({ t }) => {
 
     return (
         <>
-            <Box widthProp="100%"
+            <RecoverWrapper widthProp="100%"
                 heightProp="100%"
-                paddingProp="0 240px 0 0"
                 displayProp="flex"
+                //paddingProp="0 240px 0 0"
                 justifyContent="flex-end"
                 alignItems="center">
                 <RecoverContainer
@@ -32,16 +52,16 @@ const RecoverAccess = ({ t }) => {
                     heightProp="100%"
                     displayProp="flex"
                     onClick={onRecoverClick}>
-                    <Box paddingProp="16px 8px 16px 16px">
+                    <Box paddingProp="16px 8px 16px 16px" className="recover-icon">
                         <Icons.UnionIcon />
                     </Box>
-                    <Box paddingProp="18px 16px 18px 0px">
+                    <Box paddingProp="18px 16px 18px 0px" className="recover-text" widthProp="114px">
                         <Text color="#fff" isBold={true}>
                             {t("RecoverAccess")}
                         </Text>
                     </Box>
                 </RecoverContainer>
-            </Box>
+            </RecoverWrapper>
             {visible && <SubModalDialog
                 visible={visible}
                 onRecoverModalClose={onRecoverModalClose}

@@ -6,7 +6,6 @@ import {
   Button,
   TextInput,
   Text,
-  Heading,
   Link,
   toastr,
   Checkbox,
@@ -26,20 +25,12 @@ const FormContainer = styled.form`
   margin: 32px auto 0 auto;
   max-width: 311px;
 
-  /* .login-header {
-    min-height: 79px;
-    margin-bottom: 24px;
-
-    .login-logo {
-      max-width: 216px;
-      max-height: 35px;
-    } */
-
-  .login-title {
-      margin: 8px 0;
-      text-align:center;
+  @media (max-width: 768px) {
+       max-width: 475px;
     }
-  }
+  @media (max-width: 375px) {
+       max-width: 311px;
+    }
 
   .login-input {
     margin-bottom: 16px;

@@ -77,7 +77,7 @@ const HeaderComponent = React.memo(props => {
           src="images/nav.logo.opened.react.svg"
         />
       </a>
-      { !localStorage.getItem("asc_auth_key") && <RecoverAccess t={props.t} /> }
+      {!localStorage.getItem("asc_auth_key") && <RecoverAccess t={props.t} className="recover-container" />}
       <Headline className="header-module-title" type="header" color="#FFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
