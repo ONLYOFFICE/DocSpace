@@ -90,5 +90,6 @@
   "ViewList": "Список",
   "ViewTiles": "Плитки",
   "ShowVersionHistory": "Показать историю версий",
-  "FinalizeVersion": "Сформировать версию"
+  "FinalizeVersion": "Сформировать версию",
+  "Convert": "Конвертация"
 }

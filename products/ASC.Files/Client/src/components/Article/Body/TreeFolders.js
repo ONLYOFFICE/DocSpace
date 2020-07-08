@@ -27,7 +27,7 @@ class TreeFolders extends React.Component {
   }
 
   getFolderIcon = item => {
-    const showItem = item.newItems ? item.newItems > 0 : false;
+    const showItem = item.newItems ? item.newItems > 0 && this.props.needUpdate : false;
     const style = {position: "absolute", right: 0, top: 2}
     const badgeProps = {
       label: item.newItems,

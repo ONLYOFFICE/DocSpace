@@ -343,3 +343,11 @@ export function getNewFiles(folderId) {
     url: `/files/${folderId}/news`
   });
 }
+
+export function convertFile(fileId) {
+  return request({ method: "put", url: `/files/file/${fileId}/checkconversion` });
+}
+
+export function getConvertFile(fileId) {
+  return request({ method: "get", url: `/files/file/${fileId}/checkconversion` });
+}

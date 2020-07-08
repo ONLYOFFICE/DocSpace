@@ -570,6 +570,7 @@ class DownloadDialogComponent extends React.Component {
           footerContent={
             <>
               <Button
+                className="button-dialog-accept"
                 key="DownloadButton"
                 label={t("DownloadButton")}
                 size="medium"

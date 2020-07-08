@@ -961,7 +961,11 @@ class SectionBodyContent extends React.Component {
       currentFolderType,
       dragging,
       mediaViewerVisible,
-      currentMediaFileId, 
+      currentMediaFileId,
+
+      startFilesOperations,
+      finishFilesOperations,
+      setProgressValue,
       filter
     } = this.props;
 
@@ -1115,7 +1119,6 @@ class SectionBodyContent extends React.Component {
                           element={element}
                           onSelect={this.onContentRowSelect}
                           editing={editingId}
-                          viewAs={filter.viewAs}
                           {...checkedProps}
                           {...contextOptionsProps}
                           needForUpdate={this.needForUpdate}
@@ -1128,8 +1131,11 @@ class SectionBodyContent extends React.Component {
                             onLoading={onLoading}
                             onMediaFileClick={this.onMediaFileClick}
                             isLoading={isLoading}
-                          />           
-                        </SimpleFilesRow> 
+                            setProgressValue={setProgressValue}
+                            startFilesOperations={startFilesOperations}
+                            finishFilesOperations={finishFilesOperations}
+                          />
+                        </SimpleFilesRow>
                       </DragAndDrop>
                     );
                   })}

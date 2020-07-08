@@ -198,6 +198,7 @@ class DeleteDialogComponent extends React.Component {
           footerContent={
             <>
               <Button
+                className="button-dialog-accept"
                 key="OkButton"
                 label={t("OKButton")}
                 size="medium"
