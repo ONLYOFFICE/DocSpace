@@ -82,6 +82,7 @@ const ModalDialogContainer = styled.div`
 
         @media ${tablet} {
           padding: 0;
+          white-space: normal;
         }
 
         .convert_dialog_checkbox {
