@@ -23,7 +23,8 @@ const StyledTileContainer = styled.div`
     border-radius:3px;
     border-top-left-radius:0;
     position:relative;
-
+    width: 245px;
+    box-sizing: border-box;
 
     &.folder{
       &:before{
@@ -39,6 +40,14 @@ const StyledTileContainer = styled.div`
         background-color: #fff;
         border-bottom: transparent;
       }    
+    }
+
+    &.file{
+      padding: 0;
+
+      .drag-and-drop{
+        margin: -1px;
+      }
     }
   }
 
@@ -135,7 +144,7 @@ class TileContainer extends React.PureComponent {
             ? <AutoSizer>{renderList}</AutoSizer>
             : children.map((item, index) => (
               !item.props.isFolder && 
-                <div className="tileItemWrapper" key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
+                <div className="tileItemWrapper file" key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
                 {item}
                 </div>
             ))

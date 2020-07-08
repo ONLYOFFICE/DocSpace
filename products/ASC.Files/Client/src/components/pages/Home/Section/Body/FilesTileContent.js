@@ -4,13 +4,14 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, toastr } from "asc-web-components";
+import { Link, Text, Icons, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
+import TileContent from './TileContent';
 
 const { FileAction } = constants;
 
@@ -226,14 +227,17 @@ class FilesTileContent extends React.PureComponent {
     } = item;
 
 
-    const SimpleFilesTileContent = styled(RowContent)`
+    const SimpleFilesTileContent = styled(TileContent)`
 
     .rowMainContainer{
       height: auto;
       max-width: 100%;
+      align-self: flex-end;
     }
 
-
+    .mainIcons{
+      align-self: flex-end;
+    }
 
     .badge-ext {
       margin-left: -8px;
@@ -340,68 +344,6 @@ class FilesTileContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {canConvertFile &&
-                  <Icons.FileActionsConvertIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#A3A9AE'
-                  />
-                }
-                {canEditFile &&
-                  <Icons.AccessEditIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#A3A9AE'
-                  />
-                }
-                {fileStatus === 1 &&
-                  <Icons.FileActionsConvertEditDocIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#3B72A7'
-                  />
-                }
-                {false &&
-                  <Icons.FileActionsLockedIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#3B72A7'
-                  />
-                }
-                {versionGroup > 1 &&
-                  <Badge
-                    className='badge-version'
-                    backgroundColor="#A3A9AE"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={`Ver.${versionGroup}`}
-                    maxWidth="50px"
-                    onClick={this.onShowVersionHistory}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                }
-                {fileStatus === 2 &&
-                  <Badge
-                    className='badge-version'
-                    backgroundColor="#ED7309"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={`New`}
-                    maxWidth="50px"
-                    onClick={this.onBadgeClick}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                }
               </div>
               :
               <div className='badges'>

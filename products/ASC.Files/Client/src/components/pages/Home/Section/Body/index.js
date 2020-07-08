@@ -1049,7 +1049,7 @@ class SectionBodyContent extends React.Component {
                       >
                         <Tile
                           key={item.id}
-                          data={item}
+                          item={item}
                           isFolder={!item.fileExst}
                           element={element}
                           onSelect={this.onContentRowSelect}

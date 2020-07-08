@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { tablet } from '../../utils/device';
 
 const truncateCss = css`
   white-space: nowrap;
@@ -17,12 +16,12 @@ const commonCss = css`
   font-weight: 600;
 `;
 
-const StyledRowContent = styled.div`
+const StyledTileContent = styled.div`
   width: 100%;
   display: inline-flex;
 
   ${props => !props.disableSideInfo && `
-    @media ${tablet} {
+    @media (max-width: 1024px) {
       display: block;
       height: 56px;
     }
@@ -41,7 +40,7 @@ const MainContainerWrapper = styled.div`
   
 
   ${props => !props.disableSideInfo && `
-    @media ${tablet} {
+    @media (max-width: 1024px) {
       min-width: 140px;
       margin-right: 8px;
       margin-top: 8px;
@@ -55,7 +54,7 @@ const MainContainer = styled.div`
   margin-right: 8px;
   max-width: 86%;
 
-  @media ${tablet} {
+  @media (max-width: 1024px) {
     ${truncateCss};
     max-width: 100%;
   }
@@ -70,7 +69,7 @@ const MainIcons = styled.div`
 const SideContainerWrapper = styled.div`
   ${commonCss};
 
-  @media ${tablet} {
+  @media (max-width: 1024px) {
     ${truncateCss};
   }
 
@@ -86,7 +85,7 @@ const SideContainerWrapper = styled.div`
   color: ${props => props.color && props.color};
 
   ${props => !props.disableSideInfo && `
-    @media ${tablet} {
+    @media (max-width: 1024px) {
       display: none;
     }
   `};
@@ -95,7 +94,7 @@ const SideContainerWrapper = styled.div`
 const TabletSideInfo = styled.div`
   display: none;
 
-  @media ${tablet} {
+  @media (max-width: 1024px) {
     display: block;
     min-width: 160px;
     margin: 0 8px;
@@ -122,14 +121,14 @@ const getSideInfo = content => {
   return info;
 };
 
-const RowContent = props => {
-  //console.log("RowContent render");
+const TileContent = props => {
+  //console.log("TileContent render");
   const { children, disableSideInfo, id, className, style, sideColor, onClick } = props;
 
   const sideInfo = getSideInfo(children);
 
   return (
-    <StyledRowContent
+    <StyledTileContent
       disableSideInfo={disableSideInfo}
       id={id}
       className={className}
@@ -163,11 +162,11 @@ const RowContent = props => {
           {sideInfo}
         </TabletSideInfo>
       }
-    </StyledRowContent>
+    </StyledTileContent>
   )
 };
 
-RowContent.propTypes = {
+TileContent.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
   disableSideInfo: PropTypes.bool,
@@ -177,8 +176,8 @@ RowContent.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
-RowContent.defaultProps = {
+TileContent.defaultProps = {
   disableSideInfo: false
 };
 
-export default RowContent;
+export default TileContent;
