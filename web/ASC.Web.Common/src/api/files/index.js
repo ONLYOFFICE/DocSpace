@@ -351,3 +351,12 @@ export function convertFile(fileId) {
 export function getConvertFile(fileId) {
   return request({ method: "get", url: `/files/file/${fileId}/checkconversion` });
 }
+
+export function finalizeVersion(fileId, version, continueVersion) {
+  const data = { fileId, version, continueVersion };
+  return request({
+    method: "put",
+    url: `/files/file/${fileId}/history`, 
+    data
+  });
+}

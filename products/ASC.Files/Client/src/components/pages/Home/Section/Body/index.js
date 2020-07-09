@@ -289,7 +289,23 @@ class SectionBodyContent extends React.Component {
   }
 
   finalizeVersion = (e) => {
-    console.log("Finalize version clicked", e);
+    const { selectedFolderId, filter, onLoading } = this.props;
+
+    const fileId = e.currentTarget.dataset.id;
+    //const version = (e.currentTarget.dataset.version)++;
+
+
+    onLoading(true);
+
+    api.files.finalizeVersion(fileId, 0, false)
+      .then((data) => { 
+        //console.log("api.files.finalizeVersion", data);
+        return fetchFiles(selectedFolderId, filter, store.dispatch)
+            .catch(err =>
+          toastr.error(err)
+        );
+      })
+      .finally(() => onLoading(false));
   }
 
   getFilesContextOptions = (item, viewer) => {
@@ -312,7 +328,8 @@ class SectionBodyContent extends React.Component {
           label: t("FinalizeVersion"),
           onClick: this.finalizeVersion,
           disabled: false,
-          "data-id": item.id
+            "data-id": item.id,
+            "data-version": item.version
         },
         {
           key: "sep2",
