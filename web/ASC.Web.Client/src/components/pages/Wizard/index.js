@@ -403,7 +403,7 @@ class Body extends Component {
 
   mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
-      return { key: timezone.id, label: timezone.displayName };
+      return { key: timezone.id, label: timezone.displayName.substring(0, 30) };
     });
   };
   
@@ -465,7 +465,6 @@ class Body extends Component {
       console.log('valid params');
 
       const licenseFile = this.inputRef.current.files[0];
-
       const {
         password, email,
         selectLanguage, selectTimezone
