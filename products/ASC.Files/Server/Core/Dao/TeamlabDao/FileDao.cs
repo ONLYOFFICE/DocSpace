@@ -879,7 +879,6 @@ namespace ASC.Files.Core.Data
         public void CompleteVersion(int fileId, int fileVersion)
         {
             var toUpdate = Query(FilesDbContext.Files)
-                .AsNoTracking()
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version >= fileVersion);
 
