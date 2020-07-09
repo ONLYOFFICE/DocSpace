@@ -26,7 +26,7 @@
 
 using System;
 using System.Diagnostics;
-
+using System.Text.Json.Serialization;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
@@ -49,14 +49,18 @@ namespace ASC.Files.Core
 
         public T ParentFolderID { get; set; }
 
+        [JsonPropertyName("total_files")]
         public int TotalFiles { get; set; }
 
+        [JsonPropertyName("total_sub_folder")]
         public int TotalSubFolders { get; set; }
 
         public bool Shareable { get; set; }
 
+        [JsonPropertyName("isnew")]
         public int NewForMe { get; set; }
 
+        [JsonPropertyName("folder_url")]
         public string FolderUrl { get; set; }
 
         public override bool IsNew

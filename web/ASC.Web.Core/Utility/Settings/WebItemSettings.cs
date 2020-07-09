@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Text.Json.Serialization;
 using ASC.Core.Common.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +39,7 @@ namespace ASC.Web.Core.Utility.Settings
         {
             get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }
         }
-
+        [JsonPropertyName("Settings")]
         public List<WebItemOption> SettingsCollection { get; set; }
 
         public WebItemSettings()

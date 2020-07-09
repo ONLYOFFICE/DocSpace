@@ -25,7 +25,7 @@
 
 
 using System;
-
+using System.Text.Json.Serialization;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Files.Resources;
@@ -45,18 +45,23 @@ namespace ASC.Web.Files.Services.WCFService
     {
         public Guid SubjectId { get; set; }
 
+        [JsonPropertyName("title")]
         public string SubjectName { get; set; }
 
         public string Link { get; set; }
 
+        [JsonPropertyName("is_group")]
         public bool SubjectGroup { get; set; }
 
         public bool Owner { get; set; }
 
+        [JsonPropertyName("ace_status")]
         public FileShare Share { get; set; }
 
+        [JsonPropertyName("locked")]
         public bool LockedRights { get; set; }
 
+        [JsonPropertyName("disable_remove")]
         public bool DisableRemove { get; set; }
     }
 

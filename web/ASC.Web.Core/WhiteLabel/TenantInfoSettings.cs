@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-
+using System.Text.Json.Serialization;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -42,10 +42,13 @@ namespace ASC.Web.Core.WhiteLabel
     [Serializable]
     public class TenantInfoSettings : ISettings
     {
+        [JsonPropertyName("LogoSize")]
         public Size CompanyLogoSize { get; internal set; }
-        
-        public string _companyLogoFileName;
 
+        [JsonPropertyName("LogoFileName")]
+        public string CompanyLogoFileName;
+
+        [JsonPropertyName("Default")]
         internal bool _isDefault { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
@@ -130,7 +133,7 @@ namespace ASC.Web.Core.WhiteLabel
                 tenantInfoSettings.CompanyLogoSize = image.Size;
                 memory.Seek(0, SeekOrigin.Begin);
                 store.Save(companyLogoFileName, memory);
-                tenantInfoSettings._companyLogoFileName = companyLogoFileName;
+                tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
             }
             tenantInfoSettings._isDefault = false;
 
@@ -145,7 +148,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
-            return store.GetUri(tenantInfoSettings._companyLogoFileName ?? "").ToString();
+            return store.GetUri(tenantInfoSettings.CompanyLogoFileName ?? "").ToString();
         }
 
         /// <summary>
@@ -159,7 +162,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             if (storage == null) return null;
 
-            var fileName = tenantInfoSettings._companyLogoFileName ?? "";
+            var fileName = tenantInfoSettings.CompanyLogoFileName ?? "";
 
             return storage.IsFile(fileName) ? storage.GetReadStream(fileName) : null;
         }

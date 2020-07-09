@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security;
-
+using System.Text.Json.Serialization;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -430,8 +430,10 @@ namespace ASC.Web.Files.Helpers
         [DebuggerDisplay("{AccountId} {BaseUri}")]
         private class DocuSignAccount
         {
+            [JsonPropertyName("account_id")]
             public string AccountId { get; set; }
 
+            [JsonPropertyName("base_uri")]
             public string BaseUri { get; set; }
         }
 

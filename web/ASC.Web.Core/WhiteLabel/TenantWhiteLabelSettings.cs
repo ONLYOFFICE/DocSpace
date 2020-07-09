@@ -30,7 +30,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-
+using System.Text.Json.Serialization;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -53,37 +53,41 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region Logos information: extension, isDefault, text for img auto generating
 
-        internal string _logoLightSmallExt;
+        internal string LogoLightSmallExt { get; set; }
 
-        internal bool _isDefaultLogoLightSmall { get; set; }
+        [JsonPropertyName("DefaultLogoLightSmall")]
+        internal bool IsDefaultLogoLightSmall { get; set; }
 
-        internal string _logoDarkExt;
+        internal string LogoDarkExt { get; set; }
 
-        internal bool _isDefaultLogoDark { get; set; }
+        [JsonPropertyName("DefaultLogoDark")]
+        internal bool IsDefaultLogoDark { get; set; }
 
-        internal string _logoFaviconExt;
+        internal string LogoFaviconExt { get; set; }
 
-        internal bool _isDefaultLogoFavicon { get; set; }
+        [JsonPropertyName("DefaultLogoFavicon")]
+        internal bool IsDefaultLogoFavicon { get; set; }
 
-        internal string _logoDocsEditorExt;
+        internal string LogoDocsEditorExt { get; set; }
 
-        internal bool _isDefaultLogoDocsEditor { get; set; }
+        [JsonPropertyName("DefaultLogoDocsEditor")]
+        internal bool IsDefaultLogoDocsEditor { get; set; }
 
 
-        private string _logoText { get; set; }
+        private string LogoText { get; set; }
 
         public string GetLogoText(SettingsManager settingsManager)
         {
-            if (!string.IsNullOrEmpty(_logoText) && _logoText != DefaultLogoText)
-                return _logoText;
+            if (!string.IsNullOrEmpty(LogoText) && LogoText != DefaultLogoText)
+                return LogoText;
 
             var partnerSettings = settingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
-            return string.IsNullOrEmpty(partnerSettings._logoText) ? DefaultLogoText : partnerSettings._logoText;
+            return string.IsNullOrEmpty(partnerSettings.LogoText) ? DefaultLogoText : partnerSettings.LogoText;
         }
 
         public void SetLogoText(string val)
         {
-            _logoText = val;
+            LogoText = val;
         }
 
         #endregion
@@ -103,17 +107,17 @@ namespace ASC.Web.Core.WhiteLabel
         {
             return new TenantWhiteLabelSettings
             {
-                _logoLightSmallExt = null,
-                _logoDarkExt = null,
-                _logoFaviconExt = null,
-                _logoDocsEditorExt = null,
+                LogoLightSmallExt = null,
+                LogoDarkExt = null,
+                LogoFaviconExt = null,
+                LogoDocsEditorExt = null,
 
-                _isDefaultLogoLightSmall = true,
-                _isDefaultLogoDark = true,
-                _isDefaultLogoFavicon = true,
-                _isDefaultLogoDocsEditor = true,
+                IsDefaultLogoLightSmall = true,
+                IsDefaultLogoDark = true,
+                IsDefaultLogoFavicon = true,
+                IsDefaultLogoDocsEditor = true,
 
-                _logoText = null
+                LogoText = null
             };
         }
         #endregion
@@ -129,10 +133,10 @@ namespace ASC.Web.Core.WhiteLabel
         {
             return type switch
             {
-                WhiteLabelLogoTypeEnum.LightSmall => _isDefaultLogoLightSmall,
-                WhiteLabelLogoTypeEnum.Dark => _isDefaultLogoDark,
-                WhiteLabelLogoTypeEnum.Favicon => _isDefaultLogoFavicon,
-                WhiteLabelLogoTypeEnum.DocsEditor => _isDefaultLogoDocsEditor,
+                WhiteLabelLogoTypeEnum.LightSmall => IsDefaultLogoLightSmall,
+                WhiteLabelLogoTypeEnum.Dark => IsDefaultLogoDark,
+                WhiteLabelLogoTypeEnum.Favicon => IsDefaultLogoFavicon,
+                WhiteLabelLogoTypeEnum.DocsEditor => IsDefaultLogoDocsEditor,
                 _ => true,
             };
         }
@@ -142,16 +146,16 @@ namespace ASC.Web.Core.WhiteLabel
             switch (type)
             {
                 case WhiteLabelLogoTypeEnum.LightSmall:
-                    _isDefaultLogoLightSmall = value;
+                    IsDefaultLogoLightSmall = value;
                     break;
                 case WhiteLabelLogoTypeEnum.Dark:
-                    _isDefaultLogoDark = value;
+                    IsDefaultLogoDark = value;
                     break;
                 case WhiteLabelLogoTypeEnum.Favicon:
-                    _isDefaultLogoFavicon = value;
+                    IsDefaultLogoFavicon = value;
                     break;
                 case WhiteLabelLogoTypeEnum.DocsEditor:
-                    _isDefaultLogoDocsEditor = value;
+                    IsDefaultLogoDocsEditor = value;
                     break;
             }
         }
@@ -160,10 +164,10 @@ namespace ASC.Web.Core.WhiteLabel
         {
             return type switch
             {
-                WhiteLabelLogoTypeEnum.LightSmall => _logoLightSmallExt,
-                WhiteLabelLogoTypeEnum.Dark => _logoDarkExt,
-                WhiteLabelLogoTypeEnum.Favicon => _logoFaviconExt,
-                WhiteLabelLogoTypeEnum.DocsEditor => _logoDocsEditorExt,
+                WhiteLabelLogoTypeEnum.LightSmall => LogoLightSmallExt,
+                WhiteLabelLogoTypeEnum.Dark => LogoDarkExt,
+                WhiteLabelLogoTypeEnum.Favicon => LogoFaviconExt,
+                WhiteLabelLogoTypeEnum.DocsEditor => LogoDocsEditorExt,
                 _ => "",
             };
         }
@@ -173,16 +177,16 @@ namespace ASC.Web.Core.WhiteLabel
             switch (type)
             {
                 case WhiteLabelLogoTypeEnum.LightSmall:
-                    _logoLightSmallExt = fileExt;
+                    LogoLightSmallExt = fileExt;
                     break;
                 case WhiteLabelLogoTypeEnum.Dark:
-                    _logoDarkExt = fileExt;
+                    LogoDarkExt = fileExt;
                     break;
                 case WhiteLabelLogoTypeEnum.Favicon:
-                    _logoFaviconExt = fileExt;
+                    LogoFaviconExt = fileExt;
                     break;
                 case WhiteLabelLogoTypeEnum.DocsEditor:
-                    _logoDocsEditorExt = fileExt;
+                    LogoDocsEditorExt = fileExt;
                     break;
             }
         }
@@ -230,15 +234,15 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantLogoManager tenantLogoManager)
         {
-            tenantWhiteLabelSettings._logoLightSmallExt = null;
-            tenantWhiteLabelSettings._logoDarkExt = null;
-            tenantWhiteLabelSettings._logoFaviconExt = null;
-            tenantWhiteLabelSettings._logoDocsEditorExt = null;
+            tenantWhiteLabelSettings.LogoLightSmallExt = null;
+            tenantWhiteLabelSettings.LogoDarkExt = null;
+            tenantWhiteLabelSettings.LogoFaviconExt = null;
+            tenantWhiteLabelSettings.LogoDocsEditorExt = null;
 
-            tenantWhiteLabelSettings._isDefaultLogoLightSmall = true;
-            tenantWhiteLabelSettings._isDefaultLogoDark = true;
-            tenantWhiteLabelSettings._isDefaultLogoFavicon = true;
-            tenantWhiteLabelSettings._isDefaultLogoDocsEditor = true;
+            tenantWhiteLabelSettings.IsDefaultLogoLightSmall = true;
+            tenantWhiteLabelSettings.IsDefaultLogoDark = true;
+            tenantWhiteLabelSettings.IsDefaultLogoFavicon = true;
+            tenantWhiteLabelSettings.IsDefaultLogoDocsEditor = true;
 
             tenantWhiteLabelSettings.SetLogoText(null);
 

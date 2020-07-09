@@ -37,6 +37,7 @@ namespace ASC.Web.Files.Classes
     [Serializable]
     public class FilesSettings : ISettings
     {
+        [JsonPropertyName("EnableThirdpartySettings")]
         public bool EnableThirdpartySetting { get; set; }
 
         [JsonPropertyName("FastDelete")]

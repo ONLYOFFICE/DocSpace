@@ -141,6 +141,7 @@ namespace ASC.Files.Core
 
         public DateTime ModifiedOn;
 
+        [JsonPropertyName("created")]
         public string ModifiedOnString
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }

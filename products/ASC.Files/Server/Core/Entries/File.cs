@@ -26,7 +26,7 @@
 
 using System;
 using System.Diagnostics;
-
+using System.Text.Json.Serialization;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
@@ -74,6 +74,7 @@ namespace ASC.Files.Core
 
         public int Version { get; set; }
 
+        [JsonPropertyName("version_group")]
         public int VersionGroup { get; set; }
 
         public string Comment { get; set; }
@@ -95,8 +96,10 @@ namespace ASC.Files.Core
             set { base.Title = value; }
         }
 
+        [JsonPropertyName("content_length")]
         public long ContentLength { get; set; }
 
+        [JsonPropertyName("content_length_string")]
         public string ContentLengthString
         {
             get { return FileSizeComment.FilesSizeToString(ContentLength); }
@@ -128,6 +131,7 @@ namespace ASC.Files.Core
             }
         }
 
+        [JsonPropertyName("file_status")]
         public FileStatus FileStatus
         {
             get
@@ -154,6 +158,7 @@ namespace ASC.Files.Core
 
         public bool Locked { get; set; }
 
+        [JsonPropertyName("locked_by")]
         public string LockedBy { get; set; }
 
         public override bool IsNew
@@ -212,6 +217,7 @@ namespace ASC.Files.Core
 
         private T _folderIdDisplay;
 
+        [JsonPropertyName("folder_id")]
         public override T FolderIdDisplay
         {
             get

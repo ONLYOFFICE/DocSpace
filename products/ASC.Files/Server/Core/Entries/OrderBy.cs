@@ -25,6 +25,7 @@
 
 
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace ASC.Files.Core
 {
@@ -42,8 +43,10 @@ namespace ASC.Files.Core
     [DebuggerDisplay("{SortedBy} {IsAsc}")]
     public class OrderBy
     {
+        [JsonPropertyName("is_asc")]
         public bool IsAsc { get; set; }
 
+        [JsonPropertyName("property")]
         public SortedByType SortedBy { get; set; }
 
         public OrderBy(SortedByType sortedByType, bool isAsc)

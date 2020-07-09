@@ -36,6 +36,7 @@ namespace ASC.Core.Billing
     {
         public string OriginalLicense { get; set; }
 
+        [JsonPropertyName("affiliate_id")]
         public string AffiliateId { get; set; }
 
         //[Obsolete]
