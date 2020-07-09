@@ -282,12 +282,12 @@ class SectionBodyContent extends React.Component {
   }
 
   showVersionHistory = (e) => {
-    const {settings, history} = this.props;
+    const { settings, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
     history.push(`${settings.homepage}/${fileId}/history`);
   }
-  
+
   finalizeVersion = (e) => {
     console.log("Finalize version clicked", e);
   }
@@ -300,25 +300,25 @@ class SectionBodyContent extends React.Component {
 
     const versionHistoryMenu = isFile
       ? [
-          {
-            key: "show-version-history",
-            label: t("ShowVersionHistory"),
-            onClick: this.showVersionHistory,
-            disabled: false,
-            "data-id": item.id
-          },
-          {
-            key: "finalize-version",
-            label: t("FinalizeVersion"),
-            onClick: this.finalizeVersion,
-            disabled: false,
-            "data-id": item.id
-          },
-          {
-            key: "sep2",
-            isSeparator: true
-          }
-        ]
+        {
+          key: "show-version-history",
+          label: t("ShowVersionHistory"),
+          onClick: this.showVersionHistory,
+          disabled: false,
+          "data-id": item.id
+        },
+        {
+          key: "finalize-version",
+          label: t("FinalizeVersion"),
+          onClick: this.finalizeVersion,
+          disabled: false,
+          "data-id": item.id
+        },
+        {
+          key: "sep2",
+          isSeparator: true
+        }
+      ]
       : [];
 
     const menu = [
@@ -422,7 +422,10 @@ class SectionBodyContent extends React.Component {
   svgLoader = () => <div style={{ width: '24px' }}></div>;
 
   getItemIcon = (item, isEdit) => {
-    const extension = item.fileExst;
+    const { fileAction } = this.props;
+    
+    const actionExtension = fileAction.extension && `.${fileAction.extension}`;
+    const extension = isEdit ? actionExtension : item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
