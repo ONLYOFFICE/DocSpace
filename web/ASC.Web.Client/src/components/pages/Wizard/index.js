@@ -80,6 +80,7 @@ const WizardContainer = styled.div`
     @media ${mobile} {
       width: 311px;
       margin-top: 32px;
+
     }
   }
 
@@ -610,6 +611,7 @@ class Body extends Component {
           inputName="firstPass"
           emailInputName="email-wizard"
           inputWidth="311px"
+          NewPasswordButtonVisible={false}
           tooltipPasswordTitle={tooltipPassTitle}
           tooltipPasswordLength={tooltipPassLength}
           tooltipPasswordDigits={tooltipPassDigits}
