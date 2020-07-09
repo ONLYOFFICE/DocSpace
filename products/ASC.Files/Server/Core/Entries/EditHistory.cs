@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -59,15 +60,17 @@ namespace ASC.Files.Core
             DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
 
-        public int ID;
-        public string Key;
-        public int Version;
-        public int VersionGroup;
+        public int ID { get; set; }
+        public string Key { get; set; }
+        public int Version { get; set; }
+        public int VersionGroup { get; set; }
 
-        public EditHistoryAuthor ModifiedBy;
+        [JsonPropertyName("user")]
+        public EditHistoryAuthor ModifiedBy { get; set; }
 
-        public string ChangesString;
-   
+        [JsonPropertyName("changeshistory")]
+        public string ChangesString { get; set; }
+
         public List<EditHistoryChanges> Changes
         {
             get
@@ -150,7 +153,7 @@ namespace ASC.Files.Core
         public UserManager UserManager { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
-         public string ServerVersion;
+        public string ServerVersion;
     }
 
     [DebuggerDisplay("{Id} {Name}")]
@@ -166,7 +169,7 @@ namespace ASC.Files.Core
             DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
 
-        public Guid Id;
+        public Guid Id { get; set; }
 
         private string _name;
 
@@ -202,10 +205,12 @@ namespace ASC.Files.Core
             TenantUtil = tenantUtil;
         }
 
-        public EditHistoryAuthor Author;
+        [JsonPropertyName("user")]
+        public EditHistoryAuthor Author { get; set; }
 
         private DateTime _date;
 
+        [JsonPropertyName("created")]
         public string Date
         {
             get { return _date.Equals(default) ? null : _date.ToString("g"); }
@@ -224,24 +229,24 @@ namespace ASC.Files.Core
     [DebuggerDisplay("{Version}")]
     public class EditHistoryData
     {
-        public string ChangesUrl;
+        public string ChangesUrl { get; set; }
 
-        public string Key;
+        public string Key { get; set; }
 
-        public EditHistoryUrl Previous;
+        public EditHistoryUrl Previous { get; set; }
 
-        public string Token;
+        public string Token { get; set; }
 
-        public string Url;
+        public string Url { get; set; }
 
-        public int Version;
+        public int Version { get; set; }
     }
 
     [DebuggerDisplay("{Key} - {Url}")]
     public class EditHistoryUrl
     {
-        public string Key;
+        public string Key { get; set; }
 
-        public string Url;
+        public string Url { get; set; }
     }
 }

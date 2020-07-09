@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Web;
 
 using ASC.Common;
@@ -130,6 +131,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
+        [JsonPropertyName("Error")]
         public string ErrorMessage { get; set; }
 
         #endregion

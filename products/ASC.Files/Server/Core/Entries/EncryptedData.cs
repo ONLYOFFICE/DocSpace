@@ -27,10 +27,10 @@ namespace ASC.Web.Files.Core.Entries
 {
     public class EncryptedData
     {
-        public string PublicKey;
+        public string PublicKey { get; set; }
 
-        public string FileHash;
+        public string FileHash { get; set; }
 
-        public string Data;
+        public string Data { get; set; }
     }
 }

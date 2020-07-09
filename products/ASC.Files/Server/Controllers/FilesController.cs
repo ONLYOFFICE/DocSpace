@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 using ASC.Api.Core;
@@ -1651,6 +1652,7 @@ namespace ASC.Api.Documents
             /// <summary>
             /// Operation type.
             /// </summary>
+            [JsonPropertyName("Operation")]
             public FileOperationType OperationType { get; set; }
 
             /// <summary>
@@ -1666,6 +1668,7 @@ namespace ASC.Api.Documents
             /// <summary>
             /// Result file of operation.
             /// </summary>
+            [JsonPropertyName("result")]
             public FileWrapper<T> File { get; set; }
 
             /// <summary>

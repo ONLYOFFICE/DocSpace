@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Core;
@@ -38,24 +39,34 @@ namespace ASC.Web.Files.Classes
     {
         public bool EnableThirdpartySetting { get; set; }
 
+        [JsonPropertyName("FastDelete")]
         public bool FastDeleteSetting { get; set; }
 
+        [JsonPropertyName("StoreOriginalFiles")]
         public bool StoreOriginalFilesSetting { get; set; }
 
+        [JsonPropertyName("UpdateIfExist")]
         public bool UpdateIfExistSetting { get; set; }
 
+        [JsonPropertyName("ConvertNotify")]
         public bool ConvertNotifySetting { get; set; }
 
+        [JsonPropertyName("DefaultSortedBy")]
         public SortedByType DefaultSortedBySetting { get; set; }
 
+        [JsonPropertyName("DefaultSortedAsc")]
         public bool DefaultSortedAscSetting { get; set; }
 
+        [JsonPropertyName("HideConfirmConvertSave")]
         public bool HideConfirmConvertSaveSetting { get; set; }
 
+        [JsonPropertyName("HideConfirmConvertOpen")]
         public bool HideConfirmConvertOpenSetting { get; set; }
 
+        [JsonPropertyName("Forcesave")]
         public bool ForcesaveSetting { get; set; }
 
+        [JsonPropertyName("StoreForcesave")]
         public bool StoreForcesaveSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

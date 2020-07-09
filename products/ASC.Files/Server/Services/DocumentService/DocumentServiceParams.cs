@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
-
 namespace ASC.Web.Files.Services.DocumentService
 {
     public class DocumentServiceParams
@@ -65,13 +60,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static string Serialize(DocumentServiceParams docServiceParams)
         {
-            using (var ms = new MemoryStream())
-            {
-                var serializer = new DataContractJsonSerializer(typeof (DocumentServiceParams));
-                serializer.WriteObject(ms, docServiceParams);
-                ms.Seek(0, SeekOrigin.Begin);
-                return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-            }
+            return System.Text.Json.JsonSerializer.Serialize(docServiceParams);
         }
     }
 }
