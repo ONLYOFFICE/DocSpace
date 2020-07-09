@@ -235,6 +235,7 @@ const WizardContainer = styled.div`
       margin: 0;
       padding: 0;
       margin-left: 16px;
+      width: 100%;
     }
 
     .text, .value {
@@ -402,7 +403,7 @@ class Body extends Component {
 
   mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
-       return { key: timezone.id, label: timezone.displayName };
+      return { key: timezone.id, label: timezone.displayName };
     });
   };
   
@@ -685,7 +686,8 @@ class Body extends Component {
           <GroupButton 
             className="drop-down value language-value" 
             label={selectLanguage.label} 
-            isDropdown={true}>
+            isDropdown={true}
+            dropDownMaxHeight={300}>
             {
               languages.map(el => (
                 <DropDownItem 
@@ -697,20 +699,21 @@ class Body extends Component {
             }
           </GroupButton>
           
-            <GroupButton 
-              className="drop-down value timezone-value" 
-              label={selectTimezone.label} 
-              isDropdown={true}>
-              {
-                timezones.map(el => (
-                  <DropDownItem 
-                    key={el.key} 
-                    label={el.label}
-                    onClick={() => this.onSelectTimezoneHandler(el)}
-                  />
-                ))
-              }
-            </GroupButton>
+          <GroupButton 
+            className="drop-down value timezone-value" 
+            label={selectTimezone.label} 
+            isDropdown={true}
+            dropDownMaxHeight={300} >
+            {
+              timezones.map(el => (
+                <DropDownItem 
+                  key={el.key} 
+                  label={el.label}
+                  onClick={() => this.onSelectTimezoneHandler(el)}
+                />
+              ))
+            }
+          </GroupButton>
           
         </Box>
       </Box>
