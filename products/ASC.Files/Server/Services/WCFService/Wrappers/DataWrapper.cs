@@ -24,6 +24,7 @@
 */
 
 
+using System.Text.Json.Serialization;
 using ASC.Files.Core;
 
 namespace ASC.Web.Files.Services.WCFService
@@ -34,8 +35,10 @@ namespace ASC.Web.Files.Services.WCFService
 
         public int Total { get; set; }
 
+        [JsonPropertyName("path_parts")]
         public ItemList<T> FolderPathParts { get; set; }
 
+        [JsonPropertyName("folder_info")]
         public Folder<T> FolderInfo { get; set; }
 
         public int New { get; set; }

@@ -46,7 +46,7 @@ namespace ASC.Web.Core.WhiteLabel
         public Size CompanyLogoSize { get; internal set; }
 
         [JsonPropertyName("LogoFileName")]
-        public string CompanyLogoFileName;
+        public string CompanyLogoFileName { get; set; }
 
         [JsonPropertyName("Default")]
         internal bool _isDefault { get; set; }

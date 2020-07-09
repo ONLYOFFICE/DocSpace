@@ -23,12 +23,15 @@
  *
 */
 
+using System.Text.Json.Serialization;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     public class FileOperationResult
     {
         public string Id { get; set; }
 
+        [JsonPropertyName("operation")]
         public FileOperationType OperationType { get; set; }
 
         public int Progress { get; set; }

@@ -25,7 +25,7 @@
 
 
 using System;
-
+using System.Text.Json.Serialization;
 using ASC.Common;
 using ASC.Core.Common.Settings;
 
@@ -34,8 +34,11 @@ namespace ASC.Web.Studio.Core
     [Serializable]
     public class PersonalSettings : ISettings
     {
+
+        [JsonPropertyName("IsNewUser")]
         public bool IsNewUserSetting { get; set; }
 
+        [JsonPropertyName("IsNotActivated")]
         public bool IsNotActivatedSetting { get; set; }
 
         public Guid ID

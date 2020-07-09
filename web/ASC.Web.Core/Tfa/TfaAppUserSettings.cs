@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core.TFA
@@ -34,8 +35,10 @@ namespace ASC.Web.Studio.Core.TFA
     [Serializable]
     public class TfaAppUserSettings : ISettings
     {
+        [JsonPropertyName("BackupCodes")]
         public IEnumerable<BackupCode> CodesSetting { get; set; }
 
+        [JsonPropertyName("Salt")]
         public long SaltSetting { get; set; }
 
         public Guid ID

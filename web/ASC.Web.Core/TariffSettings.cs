@@ -26,7 +26,7 @@
 
 using System;
 using System.Globalization;
-
+using System.Text.Json.Serialization;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.UserControls.Management
@@ -36,12 +36,16 @@ namespace ASC.Web.Studio.UserControls.Management
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
+        [JsonPropertyName("HideRecommendation")]
         public bool HideBuyRecommendationSetting { get; set; }
 
+        [JsonPropertyName("HideNotify")]
         public bool HideNotifySetting { get; set; }
 
+        [JsonPropertyName("HidePricingPage")]
         public bool HidePricingPageForUsers { get; set; }
 
+        [JsonPropertyName("LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
