@@ -14,7 +14,8 @@ const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
 
-  onCreate = (format) => {
+  onCreate = (e) => {
+    const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
@@ -45,17 +46,20 @@ class PureArticleMainButtonContent extends React.Component {
         <DropDownItem
           icon="ActionsDocumentsIcon"
           label={t('NewDocument')}
-          onClick={this.onCreate.bind(this, 'docx')}
+          onClick={this.onCreate}
+          data-format="docx"
         />
         <DropDownItem
           icon="SpreadsheetIcon"
           label={t('NewSpreadsheet')}
-          onClick={this.onCreate.bind(this, 'xlsx')}
+          onClick={this.onCreate}
+          data-format="xlsx"
         />
         <DropDownItem
           icon="ActionsPresentationIcon"
           label={t('NewPresentation')}
-          onClick={this.onCreate.bind(this, 'pptx')}
+          onClick={this.onCreate}
+          data-format="pptx"
         />
         <DropDownItem
           icon="CatalogFolderIcon"
