@@ -10,6 +10,7 @@
   "MessageAuthorize": "Пожалуйста авторизуйтесь.",
   "ForgotPassword": "Забыли пароль?",
   "PasswordRecoveryTitle": "Восстановление пароля",
+  "PasswordRecoveryPlaceholder": "Ваш регистрационный email",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Пожалуйста, введите адрес электронной почты, указанный при регистрации на портале. Инструкции для восстановления пароля будут отправлены на этот адрес электронной почты.",
   "SendButton": "Отправить",
   "CancelButton": "Отмена",

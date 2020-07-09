@@ -31,6 +31,7 @@ class SubModalDialog extends React.Component {
             {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
           </Text>,
           <TextInput
+            placeholder={t("PasswordRecoveryPlaceholder")}
             key="e-mail"
             id="e-mail"
             name="e-mail"
