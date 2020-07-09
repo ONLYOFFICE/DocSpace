@@ -12,7 +12,7 @@ import {
   EmailInput, PasswordInput, 
   InputBlock, Checkbox, Link,
   GroupButton, DropDownItem, 
-  Button, Box, Loader, Scrollbar, 
+  Button, Box, Loader, RequestLoader, 
   ModalDialog, utils 
 } from 'asc-web-components';
 
@@ -335,6 +335,7 @@ class Body extends Component {
       password: '',
       isValidPass: false,
       errorLoading: false,
+      sendingComplete: false,
       visibleModal: false,
       path: '',
       emailValid: false,
@@ -342,8 +343,9 @@ class Body extends Component {
       newEmail: '',
       license: false,
       languages: null,
+      timezones: null,
       selectLanguage: {},
-      selectTimezone: props.portalTimezone
+      selectTimezone: {}
     }
 
     this.inputRef = React.createRef();
@@ -404,11 +406,10 @@ class Body extends Component {
 
   mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
-      return { key: timezone.id, label: timezone.displayName.substring(0, 30) };
+      return { key: timezone.id, label: timezone.displayName.substring(0, 11) };
     });
   };
   
-
   mapCulturesToArray = (cultures, t) => {
     return cultures.map((culture) => {
        return { key: culture, label: t(`Culture_${culture}`) };
@@ -460,10 +461,15 @@ class Body extends Component {
 
   onContinueHandler = () => {
     console.log('continue btn click');
+    //const valid = false;
     const valid = this.checkingValid();
+
+    //setTimeout(() => this.setState({ sendingComplete: false }), 3000)
     const { setPortalOwner } = this.props;
     if (valid) { 
       console.log('valid params');
+
+      this.setState({ sendingComplete: true })
 
       const licenseFile = this.inputRef.current.files[0];
       const {
@@ -475,6 +481,7 @@ class Body extends Component {
  
       setPortalOwner(email, password, selectLanguage.key, wizardToken)
         .then(() => history.push(`/`))
+        .catch(() => this.setState({ errorLoading: true }))
     }
     else {
       console.log('not valid params');
@@ -723,13 +730,17 @@ class Body extends Component {
 
   renderButtonBox = () => {
     const { t } = this.props;
+    const { sendingComplete } = this.state;
+    const labelButton = sendingComplete ? "Loading... Please wait..." : t('buttonContinue')
+
     return (
       <Button
         className="wizard-button"
         primary
-        label={t('buttonContinue')}           
+        label={labelButton}           
         size="big"
         onClick={this.onContinueHandler}
+        isDisabled={sendingComplete}
       />
     );
   }
