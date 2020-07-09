@@ -440,7 +440,8 @@ class SectionBodyContent extends React.Component {
     />;
   };
 
-  onCreate = (format) => {
+  onCreate = (e) => {
+    const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
@@ -492,17 +493,18 @@ class SectionBodyContent extends React.Component {
             fontSize="26px"
             fontWeight="800"
             noHover
-            onClick={this.onCreate.bind(this, "docx")}
+            data-format="docx"
+            onClick={this.onCreate}
           >
             +
           </Link>
-          <Link onClick={this.onCreate.bind(this, "docx")} {...linkStyles}>
+          <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
             {t("Document")},
           </Link>
-          <Link onClick={this.onCreate.bind(this, "xlsx")} {...linkStyles}>
+          <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
             {t("Spreadsheet")},
           </Link>
-          <Link onClick={this.onCreate.bind(this, "pptx")} {...linkStyles}>
+          <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
             {t("Presentation")}
           </Link>
         </div>
@@ -512,12 +514,12 @@ class SectionBodyContent extends React.Component {
             color="#83888d"
             fontSize="26px"
             fontWeight="800"
-            onClick={this.onCreate.bind(this, null)}
+            onClick={this.onCreate}
             noHover
           >
             +
           </Link>
-          <Link {...linkStyles} onClick={this.onCreate.bind(this, null)}>
+          <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
         </div>
