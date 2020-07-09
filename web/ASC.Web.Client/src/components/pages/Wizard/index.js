@@ -12,7 +12,7 @@ import {
   EmailInput, PasswordInput, 
   InputBlock, Checkbox, Link,
   GroupButton, DropDownItem, 
-  Button, Box, Loader, RequestLoader, 
+  Button, Box, Loader, Toast, toastr, 
   ModalDialog, utils 
 } from 'asc-web-components';
 
@@ -329,7 +329,7 @@ class Body extends Component {
 
     const { t } = props;
 
-    document.title = t('title');
+    document.title = t('wizardTitle');
 
     this.state = {
       password: '',
@@ -349,6 +349,7 @@ class Body extends Component {
     }
 
     this.inputRef = React.createRef();
+    this.outerInputRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -461,10 +462,12 @@ class Body extends Component {
 
   onContinueHandler = () => {
     console.log('continue btn click');
-    //const valid = false;
     const valid = this.checkingValid();
 
-    //setTimeout(() => this.setState({ sendingComplete: false }), 3000)
+    // const valid = false;
+    // this.setState({ sendingComplete: true })
+    // setTimeout(() => this.setState({ sendingComplete: false }), 3000)
+
     const { setPortalOwner } = this.props;
     if (valid) { 
       console.log('valid params');
@@ -479,8 +482,8 @@ class Body extends Component {
 
       const { wizardToken } = this.props;
  
-      setPortalOwner(email, password, selectLanguage.key, wizardToken)
-        .then(() => history.push(`/`))
+      setPortalOwner(email, password, selectLanguage.key, wizardToken, selectTimezone, licenseFile)
+        //.then(() => history.push(`/`))
         .catch(() => this.setState({ errorLoading: true }))
     }
     else {
@@ -489,9 +492,22 @@ class Body extends Component {
   }
 
   checkingValid = () => {
+    const { t } = this.props;
     const { isValidPass, emailValid, path, license } = this.state;
+
+    if(!isValidPass) {
+      toastr.error(t('errorPassword'));
+    }
+
+    if(!emailValid) {
+      toastr.error(t('errorEmail'));
+    }
+
+    if(!license) {
+      toastr.error(t('errorLicenseRead'));
+    }
     
-    if( isValidPass && emailValid && path && license ) {
+    if( isValidPass && emailValid && license ) {
       return true;
     }
 
@@ -578,7 +594,7 @@ class Body extends Component {
     return (
       <Box className="header-box">
         <Heading level={1} title="Wizard" className="wizard-title">
-          {t('welcome')}
+          {t('welcomeTitle')}
         </Heading>
         <Text className="wizard-desc">
           {t('desc')}
@@ -632,12 +648,14 @@ class Body extends Component {
           onValidateInput={this.isValidPassHandler}
         />
         <InputBlock
+          tabIndex={3}
           value={this.state.path}
           className="input-block"
           iconName={"CatalogFolderIcon"}
           placeholder={t('placeholderLicense')}
           onIconClick={this.onIconFileClick}
           onChange={this.onChangeFile}
+          //onFocus={this.onIconFileClick}
         >
           <input 
             type="file" 
@@ -731,7 +749,7 @@ class Body extends Component {
   renderButtonBox = () => {
     const { t } = this.props;
     const { sendingComplete } = this.state;
-    const labelButton = sendingComplete ? "Loading... Please wait..." : t('buttonContinue')
+    const labelButton = sendingComplete ? t('buttonLoading') : t('buttonContinue')
 
     return (
       <Button
@@ -768,6 +786,7 @@ class Body extends Component {
       const modalDialog = this.renderModalDialog();
 
       return <WizardContainer>
+        <Toast/>
         <Box className="form-container">
         { modalDialog }
           {headerBox}
