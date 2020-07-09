@@ -74,7 +74,7 @@ class PureArticleMainButtonContent extends React.Component {
           onClick={this.onUploadFolderClick}
         />
         <input
-          id="customFile"
+          id="customFileInput"
           className="custom-file-input"
           multiple
           type="file"
@@ -84,7 +84,7 @@ class PureArticleMainButtonContent extends React.Component {
           style={{ display: "none" }}
         />
         <input
-          id="customFile"
+          id="customFolderInput"
           className="custom-file-input"
           webkitdirectory=""
           mozdirectory=""
