@@ -22,12 +22,6 @@ class ContextMenuButton extends React.Component {
       isOpen: props.opened,
       data: props.data
     };
-
-    this.handleClick = this.handleClick.bind(this);
-    this.stopAction = this.stopAction.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.onIconButtonClick = this.onIconButtonClick.bind(this);
-    this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
   }
 
   handleClick = (e) => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
@@ -58,8 +52,8 @@ class ContextMenuButton extends React.Component {
     this.onIconButtonClick();
   }
 
-  onDropDownItemClick = (item) => {
-    item.onClick && item.onClick();
+  onDropDownItemClick = (item, e) => {
+    item.onClick && item.onClick(e);
     this.toggle(!this.state.isOpen);
   }
 
