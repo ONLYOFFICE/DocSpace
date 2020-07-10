@@ -170,8 +170,11 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onEditComplete = item => {
-    const { folderId, fileAction, filter, treeFolders, setTreeFolders, onLoading } = this.props;
+  onEditComplete = (e) => {
+    const { folderId, fileAction, filter, folders, files, treeFolders, setTreeFolders, onLoading } = this.props;
+    const items = [...folders, ...files];
+    const itemId = e.currentTarget.dataset.itemid;
+    const item = items.filter(o => o.id === itemId);
 
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
       onLoading(true);
@@ -1150,7 +1153,7 @@ class SectionBodyContent extends React.Component {
                             item={item}
                             viewer={viewer}
                             culture={settings.culture}
-                            onEditComplete={this.onEditComplete.bind(this, item)}
+                            onEditComplete={this.onEditComplete}
                             onLoading={onLoading}
                             onMediaFileClick={this.onMediaFileClick}
                             isLoading={isLoading}

@@ -39,7 +39,7 @@ const EditingWrapper = styled.div`
 `;
 
 const EditingWrapperComponent = props => {
-    const { itemTitle, okIcon, cancelIcon, renameTitle, onKeyUpUpdateItem, onClickUpdateItem, cancelUpdateItem } = props;
+    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onKeyUpUpdateItem, onClickUpdateItem, cancelUpdateItem } = props;
     const [loading, setLoading] = useState(false);
 
     const onUpdate = () => {
@@ -47,9 +47,9 @@ const EditingWrapperComponent = props => {
       onClickUpdateItem();
     }
 
-    const onCancel = () => {
+    const onCancel = (e) => {
       setLoading(true);
-      cancelUpdateItem();
+      cancelUpdateItem(e);
     }
 
     return(
@@ -78,6 +78,7 @@ const EditingWrapperComponent = props => {
           isDisabled={loading}
           onClick={onCancel}
           icon={cancelIcon}
+          data-itemid={itemId}
         />
       </EditingWrapper>
     )
