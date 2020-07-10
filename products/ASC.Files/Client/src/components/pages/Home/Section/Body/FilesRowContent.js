@@ -15,6 +15,43 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
 
+const SimpleFilesRowContent = styled(RowContent)`
+.badge-ext {
+  margin-left: -8px;
+  margin-right: 8px;
+}
+
+.badge {
+  height: 14px;
+  width: 14px;
+  margin-right: 8px;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+}
+
+.share-icon {
+  margin-top: -4px;
+  padding-right: 8px;
+}
+`;
+
+const okIcon = <Icons.CheckIcon
+  className='edit-ok-icon'
+  size='scale'
+  isfill={true}
+  color='#A3A9AE'
+/>;
+
+const cancelIcon = <Icons.CrossIcon
+  className='edit-cancel-icon'
+  size='scale'
+  isfill={true}
+  color='#A3A9AE'
+/>;
+
 class FilesRowContent extends React.PureComponent {
 
   constructor(props) {
@@ -191,15 +228,15 @@ class FilesRowContent extends React.PureComponent {
     const { item, treeFolders, setTreeFolders, rootFolderId, newItems, filter } = this.props;
     if (item.fileExst) {
       api.files
-      .markAsRead([], [item.id])
-      .then(() => {
-        const data = treeFolders;
-        const dataItem = data.find((x) => x.id === rootFolderId);
-        dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
-        setTreeFolders(data);
-        fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
-      })
-      .catch((err) => toastr.error(err))
+        .markAsRead([], [item.id])
+        .then(() => {
+          const data = treeFolders;
+          const dataItem = data.find((x) => x.id === rootFolderId);
+          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
+          setTreeFolders(data);
+          fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
+        })
+        .catch((err) => toastr.error(err))
     } else {
       const newFolderId = this.props.selectedFolder.pathParts;
       newFolderId.push(item.id);
@@ -212,39 +249,39 @@ class FilesRowContent extends React.PureComponent {
 
   onShowNewFilesPanel = () => {
     const { showNewFilesPanel } = this.state;
-    this.setState({showNewFilesPanel: !showNewFilesPanel});
+    this.setState({ showNewFilesPanel: !showNewFilesPanel });
   };
 
   setConvertDialogVisible = () =>
     this.setState({ showConvertDialog: !this.state.showConvertDialog });
 
-    getConvertProgress = fileId => {
-      api.files.getConvertFile(fileId).then(res => {
-        if(res && res[0] && res[0].progress !== 100) {
-          this.props.setProgressValue(res[0].progress);
-          setTimeout(() => this.getConvertProgress(fileId), 1000);
+  getConvertProgress = fileId => {
+    api.files.getConvertFile(fileId).then(res => {
+      if (res && res[0] && res[0].progress !== 100) {
+        this.props.setProgressValue(res[0].progress);
+        setTimeout(() => this.getConvertProgress(fileId), 1000);
+      } else {
+        const { selectedFolder, filter, onLoading, setProgressValue, finishFilesOperations } = this.props;
+        if (res[0].error) {
+          finishFilesOperations(res[0].error);
         } else {
-          const { selectedFolder, filter, onLoading, setProgressValue, finishFilesOperations } = this.props;
-          if(res[0].error) {
-            finishFilesOperations(res[0].error);
-          } else {
-            setProgressValue(100);
-            finishFilesOperations();
-            const newFilter = filter.clone();
-            fetchFiles(selectedFolder.id, newFilter, store.dispatch)
-              .catch(err => toastr.error(err))
-              .finally(() => onLoading(false));
-          }
+          setProgressValue(100);
+          finishFilesOperations();
+          const newFilter = filter.clone();
+          fetchFiles(selectedFolder.id, newFilter, store.dispatch)
+            .catch(err => toastr.error(err))
+            .finally(() => onLoading(false));
         }
-      });
-    }
-  
+      }
+    });
+  }
+
   onConvert = () => {
     const { item, startFilesOperations, t } = this.props;
     startFilesOperations(t("Convert"));
-    this.setState({showConvertDialog: false}, () => 
+    this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then(convertRes => {
-        if(convertRes && convertRes[0] && convertRes[0].progress !== 100) {
+        if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
           this.getConvertProgress(item.id);
         }
       })
@@ -266,48 +303,11 @@ class FilesRowContent extends React.PureComponent {
       versionGroup
     } = item;
 
-    const SimpleFilesRowContent = styled(RowContent)`
-    .badge-ext {
-      margin-left: -8px;
-      margin-right: 8px;
-    }
-
-    .badge {
-      height: 14px;
-      width: 14px;
-      margin-right: 8px;
-    }
-
-    .badges {
-      display: flex;
-      align-items: center;
-    }
-
-    .share-icon {
-      margin-top: -4px;
-      padding-right: 8px;
-    }
-    `;
-
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner = createdBy && ((this.props.viewer.id === createdBy.id && t("AuthorMe")) || createdBy.displayName);
     const updatedDate = updated && this.getStatusByDate();
     const canEditFile = fileExst && canWebEdit(fileExst);
     const canConvertFile = fileExst && canConvert(fileExst);
-
-    const okIcon = <Icons.CheckIcon
-      className='edit-ok-icon'
-      size='scale'
-      isfill={true}
-      color='#A3A9AE'
-    />;
-
-    const cancelIcon = <Icons.CrossIcon
-      className='edit-cancel-icon'
-      size='scale'
-      isfill={true}
-      color='#A3A9AE'
-    />;
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
@@ -325,179 +325,178 @@ class FilesRowContent extends React.PureComponent {
         cancelUpdateItem={this.cancelUpdateItem}
       />
       : (
-      <>
-        {showConvertDialog && (
-          <ConvertDialog
-            visible={showConvertDialog}
-            onClose={this.setConvertDialogVisible}
-            onConvert={this.onConvert}
-          />
-        )}
-        {showNewFilesPanel && (
-          <NewFilesPanel
-            visible={showNewFilesPanel}
-            onClose={this.onShowNewFilesPanel}
-            onLoading={onLoading}
-            folderId={newFolderId}
-            folders={folders}
-          />
-        )}
-        <SimpleFilesRowContent
-          sideColor="#333"
-          isFile={fileExst}
-          onClick={this.onMobileRowClick}
-        >
-          <Link
-            containerWidth='100%'
-            type='page'
-            title={titleWithoutExt}
-            fontWeight="bold"
-            fontSize='15px'
-            {...linkStyles}
-            color="#333"
-            isTextOverflow
+        <>
+          {showConvertDialog && (
+            <ConvertDialog
+              visible={showConvertDialog}
+              onClose={this.setConvertDialogVisible}
+              onConvert={this.onConvert}
+            />
+          )}
+          {showNewFilesPanel && (
+            <NewFilesPanel
+              visible={showNewFilesPanel}
+              onClose={this.onShowNewFilesPanel}
+              onLoading={onLoading}
+              folderId={newFolderId}
+              folders={folders}
+            />
+          )}
+          <SimpleFilesRowContent
+            sideColor="#333"
+            isFile={fileExst}
+            onClick={this.onMobileRowClick}
           >
-            {titleWithoutExt}
-          </Link>
-          <>
-            {fileExst ?
-              <div className='badges'>
-                <Text
-                  className='badge-ext'
-                  as="span"
-                  color="#A3A9AE"
-                  fontSize='15px'
-                  fontWeight={600}
-                  title={fileExst}
-                  truncate={true}
-                >
-                  {fileExst}
-                </Text>
-                {canConvertFile &&
-                  <IconButton
-                    onClick={this.setConvertDialogVisible}
-                    iconName="FileActionsConvertIcon"
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#A3A9AE'
-                  />
-                }
-                {canEditFile &&
-                  <Icons.AccessEditIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#A3A9AE'
-                  />
-                }
-                {fileStatus === 1 &&
-                  <Icons.FileActionsConvertEditDocIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#3B72A7'
-                  />
-                }
-                {false &&
-                  <Icons.FileActionsLockedIcon
-                    className='badge'
-                    size='small'
-                    isfill={true}
-                    color='#3B72A7'
-                  />
-                }
-                {versionGroup > 1 &&
-                  <Badge
-                    className='badge-version'
-                    backgroundColor="#A3A9AE"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={`Ver.${versionGroup}`}
-                    maxWidth="50px"
-                    onClick={this.onShowVersionHistory}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                }
-                {fileStatus === 2 &&
-                  <Badge
-                    className='badge-version'
-                    backgroundColor="#ED7309"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={`New`}
-                    maxWidth="50px"
-                    onClick={this.onBadgeClick}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                }
-              </div>
-              :
-              <div className='badges'>
-                { !!showNew &&
-                  <Badge
-                    className='badge-version'
-                    backgroundColor="#ED7309"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={newItems}
-                    maxWidth="50px"
-                    onClick={this.onBadgeClick}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                }
-              </div>
-            }
-          </>
-          <Text
-            containerMinWidth='120px'
-            containerWidth='10%'
-            as="div"
-            color="#333"
-            fontSize='12px'
-            fontWeight={600}
-            title={fileOwner}
-            truncate={true}
-          >
-            {fileOwner}
-          </Text>
-          <Link
-            containerMinWidth='190px'
-            containerWidth='15%'
-            type='page'
-            title={updatedDate}
-            fontSize='12px'
-            fontWeight={400}
-            color="#333"
-            onClick={() => { }}
-            isTextOverflow={true}
-          >
-            {updatedDate && updatedDate}
-          </Link>
-          <Text
-            containerMinWidth='90px'
-            containerWidth='8%'
-            as="div"
-            color="#333"
-            fontSize='12px'
-            fontWeight={600}
-            title=''
-            truncate={true}
-          >
-            {fileExst
-              ? contentLength
-              : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
-          </Text>
-        </SimpleFilesRowContent>
+            <Link
+              containerWidth='100%'
+              type='page'
+              title={titleWithoutExt}
+              fontWeight="bold"
+              fontSize='15px'
+              {...linkStyles}
+              color="#333"
+              isTextOverflow
+            >
+              {titleWithoutExt}
+            </Link>
+            <>
+              {fileExst ?
+                <div className='badges'>
+                  <Text
+                    className='badge-ext'
+                    as="span"
+                    color="#A3A9AE"
+                    fontSize='15px'
+                    fontWeight={600}
+                    title={fileExst}
+                    truncate={true}
+                  >
+                    {fileExst}
+                  </Text>
+                  {canConvertFile &&
+                    <IconButton
+                      onClick={this.setConvertDialogVisible}
+                      iconName="FileActionsConvertIcon"
+                      className='badge'
+                      size='small'
+                      isfill={true}
+                      color='#A3A9AE'
+                    />
+                  }
+                  {canEditFile &&
+                    <Icons.AccessEditIcon
+                      className='badge'
+                      size='small'
+                      isfill={true}
+                      color='#A3A9AE'
+                    />
+                  }
+                  {fileStatus === 1 &&
+                    <Icons.FileActionsConvertEditDocIcon
+                      className='badge'
+                      size='small'
+                      isfill={true}
+                      color='#3B72A7'
+                    />
+                  }
+                  {false &&
+                    <Icons.FileActionsLockedIcon
+                      className='badge'
+                      size='small'
+                      isfill={true}
+                      color='#3B72A7'
+                    />
+                  }
+                  {versionGroup > 1 &&
+                    <Badge
+                      className='badge-version'
+                      backgroundColor="#A3A9AE"
+                      borderRadius="11px"
+                      color="#FFFFFF"
+                      fontSize="10px"
+                      fontWeight={800}
+                      label={`Ver.${versionGroup}`}
+                      maxWidth="50px"
+                      onClick={this.onShowVersionHistory}
+                      padding="0 5px"
+                      data-id={id}
+                    />
+                  }
+                  {fileStatus === 2 &&
+                    <Badge
+                      className='badge-version'
+                      backgroundColor="#ED7309"
+                      borderRadius="11px"
+                      color="#FFFFFF"
+                      fontSize="10px"
+                      fontWeight={800}
+                      label={`New`}
+                      maxWidth="50px"
+                      onClick={this.onBadgeClick}
+                      padding="0 5px"
+                      data-id={id}
+                    />
+                  }
+                </div>
+                :
+                <div className='badges'>
+                  {!!showNew &&
+                    <Badge
+                      className='badge-version'
+                      backgroundColor="#ED7309"
+                      borderRadius="11px"
+                      color="#FFFFFF"
+                      fontSize="10px"
+                      fontWeight={800}
+                      label={newItems}
+                      maxWidth="50px"
+                      onClick={this.onBadgeClick}
+                      padding="0 5px"
+                      data-id={id}
+                    />
+                  }
+                </div>
+              }
+            </>
+            <Text
+              containerMinWidth='120px'
+              containerWidth='10%'
+              as="div"
+              color="#333"
+              fontSize='12px'
+              fontWeight={600}
+              title={fileOwner}
+              truncate={true}
+            >
+              {fileOwner}
+            </Text>
+            <Link
+              containerMinWidth='190px'
+              containerWidth='15%'
+              type='page'
+              title={updatedDate}
+              fontSize='12px'
+              fontWeight={400}
+              color="#333"
+              isTextOverflow={true}
+            >
+              {updatedDate && updatedDate}
+            </Link>
+            <Text
+              containerMinWidth='90px'
+              containerWidth='8%'
+              as="div"
+              color="#333"
+              fontSize='12px'
+              fontWeight={600}
+              title=''
+              truncate={true}
+            >
+              {fileExst
+                ? contentLength
+                : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
+            </Text>
+          </SimpleFilesRowContent>
         </>
       )
   }
