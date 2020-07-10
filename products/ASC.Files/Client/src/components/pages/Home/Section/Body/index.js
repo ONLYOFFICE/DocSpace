@@ -1093,7 +1093,7 @@ class SectionBodyContent extends React.Component {
                             item={item}
                             viewer={viewer}
                             culture={settings.culture}
-                            onEditComplete={this.onEditComplete.bind(this, item)}
+                            onEditComplete={this.onEditComplete}
                             onLoading={onLoading}
                             onMediaFileClick={this.onMediaFileClick}
                             isLoading={isLoading}

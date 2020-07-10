@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { Link, Text, Icons, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders } from '../../../../../store/files/actions';
-import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
+import { canWebEdit, isImage, isSound, isVideo, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
@@ -35,12 +35,12 @@ class FilesTileContent extends React.PureComponent {
     };
   }
 
-  completeAction = () => {
+  completeAction = (e) => {
     //this.setState({ loading: false }, () =>)
-    this.props.onEditComplete();
+    this.props.onEditComplete(e);
   }
 
-  updateItem = () => {
+  updateItem = (e) => {
     const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
 
     const { itemTitle } = this.state;
@@ -48,16 +48,16 @@ class FilesTileContent extends React.PureComponent {
 
     onLoading(true);
     if (originalTitle === itemTitle)
-      return this.completeAction();
+      return this.completeAction(e);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction()).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => onLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction()).finally(() => onLoading(false));
+        .then(() => this.completeAction(e)).finally(() => onLoading(false));
   };
 
-  createItem = () => {
+  createItem = (e) => {
     const { createFile, createFolder, item, onLoading } = this.props;
     const { itemTitle } = this.state;
 
@@ -68,9 +68,9 @@ class FilesTileContent extends React.PureComponent {
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-        .then(() => this.completeAction()).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => onLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction()).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => onLoading(false))
   }
 
   componentDidUpdate(prevProps) {
@@ -86,9 +86,9 @@ class FilesTileContent extends React.PureComponent {
     this.setState({ itemTitle: e.target.value });
   }
 
-  cancelUpdateItem = () => {
+  cancelUpdateItem = (e) => {
     //this.setState({ loading: false });
-    this.completeAction();
+    this.completeAction(e);
   }
 
   onClickUpdateItem = () => {
@@ -219,7 +219,6 @@ class FilesTileContent extends React.PureComponent {
     const { item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
     const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId } = this.state;
     const {
-      updated,
       fileExst,
       id
     } = item;
@@ -271,9 +270,6 @@ class FilesTileContent extends React.PureComponent {
     `;
 
     const titleWithoutExt = getTitleWithoutExst(item);
-    const updatedDate = updated && this.getStatusByDate();
-    const canEditFile = fileExst && canWebEdit(fileExst);
-    const canConvertFile = fileExst && canConvert(fileExst);
 
     const okIcon = <Icons.CheckIcon
       className='edit-ok-icon'
@@ -303,6 +299,7 @@ class FilesTileContent extends React.PureComponent {
         onKeyUpUpdateItem={this.onKeyUpUpdateItem}
         onClickUpdateItem={this.onClickUpdateItem}
         cancelUpdateItem={this.cancelUpdateItem}
+        itemId={id}
       />
       : (
       <>
