@@ -55,7 +55,7 @@ const RecoverAccess = ({ t }) => {
                     <Box paddingProp="16px 8px 16px 16px" className="recover-icon">
                         <Icons.UnionIcon />
                     </Box>
-                    <Box paddingProp="18px 16px 18px 0px" className="recover-text" widthProp="114px">
+                    <Box paddingProp="18px 16px 18px 0px" className="recover-text" widthProp="100%">
                         <Text color="#fff" isBold={true}>
                             {t("RecoverAccess")}
                         </Text>
