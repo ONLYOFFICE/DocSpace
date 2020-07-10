@@ -10,7 +10,8 @@ import {
   toastr,
   Checkbox,
   HelpButton,
-  PasswordInput
+  PasswordInput,
+  FieldContainer
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -38,6 +39,7 @@ const FormContainer = styled.form`
 
   .login-forgot-wrapper {
     height: 36px;
+    padding-bottom: 14px;
 
     .login-checkbox-wrapper {
       position: absolute;
@@ -95,6 +97,13 @@ const RegisterContainer = styled(Box)`
   right: 0;
   background-color: #F8F9F9;
   cursor: pointer;
+`;
+
+export const FieldContainerWrapper = styled(FieldContainer)`
+  .field-label-icon {
+    height: 0;
+    margin: 0;
+  }
 `;
 
 class Form extends Component {
@@ -262,6 +271,7 @@ class Form extends Component {
           </Box>
         </Box>
         <FormContainer>
+          <FieldContainerWrapper isVertical={true} hasError={!identifierValid} errorMessage={t("RequiredFieldMessage")}>
           <TextInput
             id="login"
             name="login"
@@ -278,6 +288,8 @@ class Form extends Component {
             onKeyDown={this.onKeyPress}
             className="login-input"
           />
+          </FieldContainerWrapper>
+          <FieldContainerWrapper isVertical={true} hasError={!passwordValid} errorMessage={t("RequiredFieldMessage")}>
           <PasswordInput
             passwordSettings={this.settings}
             NewPasswordButtonVisible={false}
@@ -298,6 +310,7 @@ class Form extends Component {
             onChange={this.onChangePassword}
             onKeyDown={this.onKeyPress}
           />
+          </FieldContainerWrapper>
           <div className="login-forgot-wrapper">
             <div className="login-checkbox-wrapper">
               <Checkbox

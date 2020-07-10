@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, TextInput, Text, ModalDialog, FieldContainer } from "asc-web-components";
+import { Button, TextInput, Text, ModalDialog } from "asc-web-components";
+import { FieldContainerWrapper } from "../index";
 import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`
@@ -45,22 +46,22 @@ class SubModalDialog extends React.Component {
             >
               {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
             </Text>,
-            <FieldContainer key="e-mail" isVertical={true} hasError={emailError} errorMessage={t("RequiredFieldMessage")}>
-            <TextInput
-              hasError={emailError}
-              placeholder={t("PasswordRecoveryPlaceholder")}
-              id="e-mail"
-              name="e-mail"
-              type="text"
-              size="base"
-              scale={true}
-              tabIndex={1}
-              style={{ marginTop: "16px" }}
-              isDisabled={isLoading}
-              value={email}
-              onChange={onChangeEmail}
-            />
-            </FieldContainer>
+            <FieldContainerWrapper key="e-mail" isVertical={true} hasError={emailError} errorMessage={t("RequiredFieldMessage")}>
+              <TextInput
+                hasError={emailError}
+                placeholder={t("PasswordRecoveryPlaceholder")}
+                id="e-mail"
+                name="e-mail"
+                type="text"
+                size="base"
+                scale={true}
+                tabIndex={1}
+                style={{ marginTop: "16px" }}
+                isDisabled={isLoading}
+                value={email}
+                onChange={onChangeEmail}
+              />
+            </FieldContainerWrapper>
           ]}
           footerContent={[
             <Button
