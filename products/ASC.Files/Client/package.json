@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/products/files",
   "dependencies": {
+    "@welldone-software/why-did-you-render": "^4.2.5",
     "asc-web-common": "file:../../../packages/asc-web-common",
     "asc-web-components": "file:../../../packages/asc-web-components",
     "connected-react-router": "6.6.1",
