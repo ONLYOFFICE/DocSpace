@@ -34,8 +34,8 @@ const SharingRow = (props) => {
     (!selection.length && item.shareLink);
 
   const onCopyInternalLink = () => {
-    const internalLink = item.shareLink.split("&");
-    copy(`${internalLink[0]}&${internalLink[1]}`);
+    const internalLink = selection.webUrl ? selection.webUrl : selection[0].webUrl;
+    copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
 
@@ -108,6 +108,25 @@ const SharingRow = (props) => {
     </ComboBox>
   );
 
+  const onCopyClick = () => {
+    toastr.success(t("LinkCopySuccess"));
+    copy(item.shareLink);
+  }
+
+  const onShareEmail = () => {
+    const itemName = selection.title ? selection.title : selection[0].title;
+    const subject = `You have been granted access to the ${itemName} document`;
+    const body = `You have been granted access to the ${itemName} document. Click the link below to open the document right now: 111${item.shareLink}111`;
+
+    window.open(`mailto:?subject=${subject}&body=${body}`);
+  }
+
+  const onShareTwitter = () =>
+    window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
+
+  const onShareFacebook = () =>
+    window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);
+
   const options = [
     {
       key: 1,
@@ -165,7 +184,7 @@ const SharingRow = (props) => {
     {
       key: "linkItem_0",
       label: t("CopyExternalLink"),
-      onClick: () => toastr.warning(t("CopyExternalLink")),
+      onClick: onCopyClick
     },
     {
       key: "linkItem_1",
@@ -174,7 +193,7 @@ const SharingRow = (props) => {
     {
       key: "linkItem_2",
       label: `${t("ShareVia")} e-mail`,
-      onClick: () => toastr.warning("Share via e-mail"),
+      onClick: onShareEmail
     },
     {
       key: "linkItem_3",
@@ -184,12 +203,12 @@ const SharingRow = (props) => {
     {
       key: "linkItem_4",
       label: `${t("ShareVia")} Facebook`,
-      onClick: () => toastr.warning("Share via Facebook"),
+      onClick: onShareFacebook
     },
     {
       key: "linkItem_5",
       label: `${t("ShareVia")} Twitter`,
-      onClick: () => toastr.warning("Share via Twitter"),
+      onClick: onShareTwitter
     },
     {
       key: "linkItem_6",

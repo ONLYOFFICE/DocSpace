@@ -286,14 +286,30 @@ class SectionBodyContent extends React.Component {
   }
 
   showVersionHistory = (e) => {
-    const {settings, history} = this.props;
+    const { settings, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
     history.push(`${settings.homepage}/${fileId}/history`);
   }
-  
+
   finalizeVersion = (e) => {
-    console.log("Finalize version clicked", e);
+    const { selectedFolderId, filter, onLoading } = this.props;
+
+    const fileId = e.currentTarget.dataset.id;
+    //const version = (e.currentTarget.dataset.version)++;
+
+
+    onLoading(true);
+
+    api.files.finalizeVersion(fileId, 0, false)
+      .then((data) => { 
+        //console.log("api.files.finalizeVersion", data);
+        return fetchFiles(selectedFolderId, filter, store.dispatch)
+            .catch(err =>
+          toastr.error(err)
+        );
+      })
+      .finally(() => onLoading(false));
   }
 
   getFilesContextOptions = (item, viewer) => {
@@ -304,25 +320,26 @@ class SectionBodyContent extends React.Component {
 
     const versionHistoryMenu = isFile
       ? [
-          {
-            key: "show-version-history",
-            label: t("ShowVersionHistory"),
-            onClick: this.showVersionHistory,
-            disabled: false,
-            "data-id": item.id
-          },
-          {
-            key: "finalize-version",
-            label: t("FinalizeVersion"),
-            onClick: this.finalizeVersion,
-            disabled: false,
-            "data-id": item.id
-          },
-          {
-            key: "sep2",
-            isSeparator: true
-          }
-        ]
+        {
+          key: "show-version-history",
+          label: t("ShowVersionHistory"),
+          onClick: this.showVersionHistory,
+          disabled: false,
+          "data-id": item.id
+        },
+        {
+          key: "finalize-version",
+          label: t("FinalizeVersion"),
+          onClick: this.finalizeVersion,
+          disabled: false,
+            "data-id": item.id,
+            "data-version": item.version
+        },
+        {
+          key: "sep2",
+          isSeparator: true
+        }
+      ]
       : [];
 
     const menu = [
@@ -429,7 +446,10 @@ class SectionBodyContent extends React.Component {
   svgLoader = () => <div style={{ width: '24px' }}></div>;
 
   getItemIcon = (item, isEdit) => {
-    const extension = item.fileExst;
+    const { fileAction } = this.props;
+    
+    const actionExtension = fileAction.extension && `.${fileAction.extension}`;
+    const extension = isEdit ? actionExtension : item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
@@ -444,7 +464,8 @@ class SectionBodyContent extends React.Component {
     />;
   };
 
-  onCreate = (format) => {
+  onCreate = (e) => {
+    const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
@@ -496,17 +517,18 @@ class SectionBodyContent extends React.Component {
             fontSize="26px"
             fontWeight="800"
             noHover
-            onClick={this.onCreate.bind(this, "docx")}
+            data-format="docx"
+            onClick={this.onCreate}
           >
             +
           </Link>
-          <Link onClick={this.onCreate.bind(this, "docx")} {...linkStyles}>
+          <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
             {t("Document")},
           </Link>
-          <Link onClick={this.onCreate.bind(this, "xlsx")} {...linkStyles}>
+          <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
             {t("Spreadsheet")},
           </Link>
-          <Link onClick={this.onCreate.bind(this, "pptx")} {...linkStyles}>
+          <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
             {t("Presentation")}
           </Link>
         </div>
@@ -516,12 +538,12 @@ class SectionBodyContent extends React.Component {
             color="#83888d"
             fontSize="26px"
             fontWeight="800"
-            onClick={this.onCreate.bind(this, null)}
+            onClick={this.onCreate}
             noHover
           >
             +
           </Link>
-          <Link {...linkStyles} onClick={this.onCreate.bind(this, null)}>
+          <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
         </div>
@@ -598,17 +620,18 @@ class SectionBodyContent extends React.Component {
             fontSize="26px"
             fontWeight="800"
             noHover
-            onClick={() => console.log("Create document click")}
+            data-format="docx"
+            onClick={this.onCreate}
           >
             +
           </Link>
-          <Link onClick={this.onCreate.bind(this, "docx")} {...linkStyles}>
+          <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
             {t("Document")},
           </Link>
-          <Link onClick={this.onCreate.bind(this, "xlsx")} {...linkStyles}>
+          <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
             {t("Spreadsheet")},
           </Link>
-          <Link onClick={this.onCreate.bind(this, "pptx")} {...linkStyles}>
+          <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
             {t("Presentation")}
           </Link>
         </div>
@@ -618,12 +641,12 @@ class SectionBodyContent extends React.Component {
             color="#83888d"
             fontSize="26px"
             fontWeight="800"
-            onClick={this.onCreate.bind(this, null)}
+            onClick={this.onCreate}
             noHover
           >
             +
           </Link>
-          <Link {...linkStyles} onClick={this.onCreate.bind(this, null)}>
+          <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
         </div>

@@ -90,15 +90,17 @@ class DeleteDialogComponent extends React.Component {
       i++;
     }
 
-    startFilesOperations(t("DeleteOperation"));
     onClose();
-    files
-      .removeFiles(folderIds, fileIds, deleteAfter, immediately)
-      .then(res => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopDeleteOperation(id)
-      })
-      .catch(err => finishFilesOperations(err))
+    if(folderIds.length || fileIds.length) {
+      startFilesOperations(t("DeleteOperation"));
+      files
+        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
+        .then(res => {
+          const id = res[0] && res[0].id ? res[0].id : null;
+          this.loopDeleteOperation(id)
+        })
+        .catch(err => finishFilesOperations(err))
+    }
   };
 
   onChange = event => {

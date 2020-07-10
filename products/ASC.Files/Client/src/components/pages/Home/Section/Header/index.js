@@ -10,7 +10,8 @@ import {
   DropDownItem,
   GroupButtonsMenu,
   IconButton,
-  toastr
+  toastr,
+  utils
 } from "asc-web-components";
 import { fetchFiles, setAction, getProgress } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
@@ -20,9 +21,10 @@ import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/sele
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
+const { tablet, desktop } = utils.device;
 
 const StyledContainer = styled.div`
-  @media (min-width: 1024px) {
+  @media ${desktop} {
     ${props =>
     props.isHeaderVisible &&
     css`
@@ -39,7 +41,7 @@ const StyledContainer = styled.div`
     .arrow-button {
       margin-right: 16px;
 
-      @media (max-width: 1024px) {
+      @media ${tablet} {
         padding: 8px 0 8px 8px;
         margin-left: -8px;
       }
@@ -49,7 +51,7 @@ const StyledContainer = styled.div`
       margin-bottom: -1px;
       margin-left: 16px;
 
-      @media (max-width: 1024px) {
+      @media ${tablet} {
         margin-left: auto;
 
         & > div:first-child {
@@ -63,7 +65,7 @@ const StyledContainer = styled.div`
       margin-bottom: -1px;
       margin-left: 16px;
 
-      @media (max-width: 1024px) {
+      @media ${tablet} {
         & > div:first-child {
           padding: 8px 8px 8px 8px;
           margin-right: -8px;
@@ -77,7 +79,7 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
-    @media (max-width: 1024px) {
+    @media ${tablet} {
       & > div:first-child {
         ${props =>
     props.isArticlePinned &&
@@ -90,7 +92,7 @@ const StyledContainer = styled.div`
       }
     }
 
-    @media (min-width: 1024px) {
+    @media ${desktop} {
       margin: 0 -24px;
     }
   }

@@ -26,6 +26,11 @@ class TreeFolders extends React.Component {
     this.state = { treeData, expandedKeys: props.expandedKeys };
   }
 
+  onBadgeClick = e => {
+    const id = e.currentTarget.dataset.id;
+    this.props.onBadgeClick && this.props.onBadgeClick(id);
+  }
+
   getFolderIcon = item => {
     const showItem = item.newItems ? item.newItems > 0 && this.props.needUpdate : false;
     const style = {position: "absolute", right: 0, top: 2}
@@ -48,7 +53,7 @@ class TreeFolders extends React.Component {
         return (
           <>
             <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />
-            {showItem && <Badge {...badgeProps} onClick={this.props.onBadgeClick.bind(this, item.id)} />}
+            {showItem && <Badge data-id={item.id} {...badgeProps} onClick={this.onBadgeClick} />}
           </>
         );
 
@@ -56,7 +61,7 @@ class TreeFolders extends React.Component {
         return (
           <>
             <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
-            {showItem && <Badge {...badgeProps} onClick={this.props.onBadgeClick.bind(this, item.id)} />}
+            {showItem && <Badge data-id={item.id} {...badgeProps} onClick={this.onBadgeClick} />}
           </>
         );
 
