@@ -284,8 +284,9 @@ class SectionBodyContent extends React.Component {
     return window.open(item.viewUrl, "_blank");
   }
 
-  onClickLinkEdit = item => {
-    return window.open(`./doceditor?fileId=${item.id}`, "_blank");
+  onClickLinkEdit = e => {
+    const id = e.currentTarget.dataset.id;
+    return window.open(`./doceditor?fileId=${id}`, "_blank");
   }
 
   showVersionHistory = (e) => {
@@ -317,7 +318,10 @@ class SectionBodyContent extends React.Component {
 
   getFilesContextOptions = (item, viewer) => {
     const { t } = this.props;
+
     const isFile = !!item.fileExst;
+    const isSharable = item.access !== 1 && item.access !== 0;
+    const isMediaOrImage = this.isMediaOrImage(item.fileExst);
 
     if (item.id <= 0) return [];
 
@@ -350,13 +354,12 @@ class SectionBodyContent extends React.Component {
         key: "sharing-settings",
         label: t("SharingSettings"),
         onClick: this.onClickShare.bind(this, item),
-        disabled: item.access !== 1 && item.access !== 0
+        disabled: isSharable
       },
       isFile
         ? {
           key: "send-by-email",
           label: t("SendByEmail"),
-          onClick: () => { },
           disabled: true
         }
         : null,
@@ -371,23 +374,25 @@ class SectionBodyContent extends React.Component {
         isSeparator: true
       },
       ...versionHistoryMenu,
-      (isFile && !this.isMediaOrImage(item.fileExst))
+      (isFile && !isMediaOrImage)
         ? {
           key: "edit",
           label: t("Edit"),
-          onClick: this.onClickLinkEdit.bind(this, item),
-          disabled: false
+          onClick: this.onClickLinkEdit,
+          disabled: false,
+          'data-id': item.id
         }
         : null,
-      (isFile && !this.isMediaOrImage(item.fileExst))
+      (isFile && !isMediaOrImage)
         ? {
           key: "preview",
           label: t("Preview"),
-          onClick: this.onClickLinkEdit.bind(this, item),
-          disabled: true
+          onClick: this.onClickLinkEdit,
+          disabled: true,
+          'data-id': item.id
         }
         : null,
-      (isFile && this.isMediaOrImage(item.fileExst))
+      (isFile && isMediaOrImage)
         ? {
           key: "view",
           label: t("View"),
@@ -707,6 +712,7 @@ class SectionBodyContent extends React.Component {
       />
     )
   }
+
   onMediaViewerClose = () => {
     const item = { visible: false, id: null };
     this.props.setMediaViewerData(item);
@@ -715,12 +721,14 @@ class SectionBodyContent extends React.Component {
     const item = { visible: true, id };
     this.props.setMediaViewerData(item);
   }
+
   onDownloadMediaFile = (id) => {
     if (this.props.files.length > 0) {
       let viewUrlFile = this.props.files.find(file => file.id === id).viewUrl;
       return window.open(viewUrlFile, "_blank");
     }
   }
+
   onDeleteMediaFile = (id) => {
     if (this.props.files.length > 0) {
       let file = this.props.files.find(file => file.id === id);
