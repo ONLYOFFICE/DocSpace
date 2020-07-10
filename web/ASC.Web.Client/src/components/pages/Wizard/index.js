@@ -67,25 +67,23 @@ const sectionHeaderContent = <HeaderContent>
 const WizardContainer = styled.div`
   .form-container {
     width: 960px;
-    
-    height: 496px;
     margin: 0 auto;
     margin-top: 80px; 
     padding: 0;
 
     @media ${tablet} {
-      width: 480px
+      width: 100%;
+      max-width: 480px;
     }
 
-    @media ${mobile} {
-      width: 311px;
+    @media(max-width: 415px) {
+      width: 100%;
       margin-top: 32px;
-
     }
   }
 
   .header-box {
-    width: 960px;
+    width: 100%;
     font-family: 'Open Sans';
     font-style: normal;
 
@@ -114,9 +112,7 @@ const WizardContainer = styled.div`
       }
     }
 
-    @media ${mobile} {
-      width: 311px;
-      
+    @media(max-width: 415px) {
       .wizard-title {
         font-size: 23px;
         line-height: 28px;
@@ -146,19 +142,8 @@ const WizardContainer = styled.div`
     }
 
     .wizard-pass { 
-      width: 360px;
+      width: 100%;
       margin-top: 16px;
-
-      .input-relative {
-        width: 311px;
-
-        @media ${tablet} {
-          width: 480px;
-        }
-        @media ${mobile} {
-          width: 311px;
-        }
-      }
     }
 
     .wizard-pass input {
@@ -206,12 +191,12 @@ const WizardContainer = styled.div`
     }
 
     @media ${tablet} {
-      width: 480px;
+      width: 100%;
       margin: 32px 0 0 0;
     }
 
-    @media ${mobile} {
-      width: 311px;
+    @media(max-width: 415px) {
+      width: 100%;
     }
   }
 
@@ -279,7 +264,7 @@ const WizardContainer = styled.div`
       margin: 32px 0 0 0;
     }
 
-    @media ${mobile} {
+    @media(max-width: 415px) {
       width: 311px;
     }
   }
@@ -426,8 +411,9 @@ class Body extends Component {
     this.setState({ password: e.target.value });
   }
   
-  onIconFileClick = () => {
+  onIconFileClick = (e) => {
     console.log('input file click');
+    e.target.blur()
     this.inputRef.current.click();
   }
 
@@ -633,7 +619,7 @@ class Body extends Component {
           id="first"
           inputName="firstPass"
           emailInputName="email-wizard"
-          inputWidth="311px"
+          inputWidth="100%"
           NewPasswordButtonVisible={false}
           tooltipPasswordTitle={tooltipPassTitle}
           tooltipPasswordLength={tooltipPassLength}
@@ -655,7 +641,7 @@ class Body extends Component {
           placeholder={t('placeholderLicense')}
           onIconClick={this.onIconFileClick}
           onChange={this.onChangeFile}
-          //onFocus={this.onIconFileClick}
+          onFocus={this.onIconFileClick}
         >
           <input 
             type="file" 
