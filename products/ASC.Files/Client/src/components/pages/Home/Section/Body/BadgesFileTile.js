@@ -6,6 +6,7 @@ import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
 const StyledBadgesFileTile = styled.div`
     display: flex;
     align-self: start;
+    position: relative;
 `;
 
 class BadgesFileTile extends React.PureComponent  {

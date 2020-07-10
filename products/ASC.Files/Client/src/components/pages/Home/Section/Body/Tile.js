@@ -32,6 +32,17 @@ const StyledFileTileTop = styled.div`
   background-color:#F8F9F9;
   padding: 13px;
   height: 157px;
+  position: relative;
+
+  .thumbnailImage{
+    position: absolute;
+    bottom: 0;
+    left:0;
+    right:0;
+    display: block;
+    margin: auto;
+    z-index: 0;
+  }
 `;
 
 const StyledFileTileBottom = styled.div`
@@ -154,6 +165,9 @@ class Tile extends React.Component {
           :
             <>
               <StyledFileTileTop>
+                {item.thumbnail 
+                  ? <img className="thumbnailImage" src={item.thumbnail} alt="thumbnail"/>
+                  : <img className="thumbnailImage" src="images/example-thumbnail.png" alt="thumbnail"/>}
                 {renderCheckbox && (
                   <StyledCheckbox>
                     <Checkbox isChecked={checked} isIndeterminate={indeterminate} onChange={changeCheckbox} />

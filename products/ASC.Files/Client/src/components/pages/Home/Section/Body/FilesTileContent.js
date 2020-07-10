@@ -216,14 +216,12 @@ class FilesTileContent extends React.PureComponent {
 
   render() {
     
-    const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
+    const { item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
     const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId } = this.state;
     const {
       updated,
       fileExst,
-      fileStatus,
-      id,
-      versionGroup
+      id
     } = item;
 
 
@@ -233,6 +231,10 @@ class FilesTileContent extends React.PureComponent {
       height: auto;
       max-width: 100%;
       align-self: flex-end;
+
+      a{
+        word-break: break-word;
+      }
     }
 
     .mainIcons{
