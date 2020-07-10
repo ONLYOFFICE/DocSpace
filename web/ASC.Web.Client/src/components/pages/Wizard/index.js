@@ -48,7 +48,7 @@ const HeaderContent = styled.div`
       left: 144px;
     }
 
-    @media ${mobile} {
+    @media(max-width: 415px) {
       left: 32px;
     }
   }
@@ -314,12 +314,11 @@ class Body extends Component {
 
     const { t } = props;
 
-    document.title = t('wizardTitle');
-
     this.state = {
       password: '',
       isValidPass: false,
       errorLoading: false,
+      errorMessage: null,
       sendingComplete: false,
       visibleModal: false,
       path: '',
@@ -334,7 +333,7 @@ class Body extends Component {
     }
 
     this.inputRef = React.createRef();
-    this.outerInputRef = React.createRef();
+    document.title = t('wizardTitle');
   }
 
   async componentDidMount() {
@@ -344,6 +343,8 @@ class Body extends Component {
       getPortalTimezones, setIsWizardLoaded, 
       getMachineName 
     } = this.props;
+
+    window.addEventListener("keyup", this.onKeyPressHandler);
 
     try {
       await Promise.all([
@@ -376,9 +377,12 @@ class Body extends Component {
             })
           })
       ])
-      .then(() => setIsWizardLoaded(true));
+      .then(() => setIsWizardLoaded(true)); 
     } catch(e) {
-      console.error(e);
+      this.setState({
+        errorLoading: true,
+        errorMessage: e 
+      })
     }
   }
 
@@ -388,6 +392,10 @@ class Body extends Component {
     } else {
       return false;
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.onKeyPressHandler);
   }
 
   mapTimezonesToArray = (timezones) => {
@@ -401,6 +409,10 @@ class Body extends Component {
        return { key: culture, label: t(`Culture_${culture}`) };
     });
   };
+
+  onKeyPressHandler = e => {
+    if (e.key === "Enter") this.onContinueHandler();
+  }
 
   isValidPassHandler = val => {
     this.setState({ isValidPass: val });
@@ -470,10 +482,13 @@ class Body extends Component {
  
       setPortalOwner(email, password, selectLanguage.key, wizardToken, selectTimezone, licenseFile)
         //.then(() => history.push(`/`))
-        .catch(() => this.setState({ errorLoading: true }))
-    }
-    else {
-      console.log('not valid params');
+        .catch((e) => {
+          this.setState({
+            errorLoading: true,
+            sendingComplete: false,
+            errorMessage: e 
+          })
+        })
     }
   }
 
@@ -481,23 +496,15 @@ class Body extends Component {
     const { t } = this.props;
     const { isValidPass, emailValid, path, license } = this.state;
 
-    if(!isValidPass) {
-      toastr.error(t('errorPassword'));
-    }
+    if(!isValidPass) toastr.error(t('errorPassword'));
+  
+    if(!emailValid) toastr.error(t('errorEmail'));
 
-    if(!emailValid) {
-      toastr.error(t('errorEmail'));
-    }
-
-    if(!license) {
-      toastr.error(t('errorLicenseRead'));
-    }
+    if(!license) toastr.error(t('errorLicenseRead'));
     
-    if( isValidPass && emailValid && license ) {
-      return true;
-    }
+    if( isValidPass && emailValid && license ) return true;
 
-    return false;
+    return false; 
   }
 
   onSaveEmailHandler = () => {
@@ -507,7 +514,7 @@ class Body extends Component {
 
   onCloseModal = () => {
     console.log('onClose modal');
-    this.setState({ visibleModal: false, errorLoading: false });
+    this.setState({ visibleModal: false, errorLoading: false, errorMessage: null });
   }
 
   onSelectTimezoneHandler = el => {
@@ -525,7 +532,7 @@ class Body extends Component {
   }
 
   renderModalDialog = () => {
-    const { errorLoading, visibleModal } = this.state;
+    const { errorLoading, visibleModal, errorMessage } = this.state;
     const { t, isOwner, ownerEmail } = this.props;
 
     let header, content, footer;
@@ -536,7 +543,7 @@ class Body extends Component {
       header = t('errorLicenseTitle');
       content = <span 
         className="modal-error-content">
-          {t('errorLicenseBody')}
+          {errorMessage ? errorMessage: t('errorLicenseBody')}
       </span>;
 
     } else if( visibleModal && isOwner ) {
