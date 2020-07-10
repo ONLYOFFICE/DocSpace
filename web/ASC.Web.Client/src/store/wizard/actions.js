@@ -2,7 +2,8 @@ import { store, api } from "asc-web-common";
 const { 
   setPasswordSettings, 
   setTimezones, 
-  setPortalCultures 
+  setPortalCultures,
+  setCompleteWizard 
 } = store.auth.actions;
 
 export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
@@ -62,11 +63,9 @@ export function getMachineName(token) {
   };
 }
 
-export function setPortalOwner(email, pwd, lng, confirmKey) {
+export function setPortalOwner(email, pwd, lng, confirmKey, analytics) {
   return dispatch => {
-    return api.settings.setPortalOwner(email, pwd, lng, confirmKey).then(res => {
-      console.log(res);
-      dispatch(setComplete(true));
-    })
+    return api.settings.setPortalOwner(email, pwd, lng, confirmKey, analytics)
+    .then(res => dispatch(setCompleteWizard()))
   }
 }

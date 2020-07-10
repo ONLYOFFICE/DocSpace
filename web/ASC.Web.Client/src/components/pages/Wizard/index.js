@@ -328,8 +328,8 @@ class Body extends Component {
       license: false,
       languages: null,
       timezones: null,
-      selectLanguage: {},
-      selectTimezone: {}
+      selectLanguage: null,
+      selectTimezone: null
     }
 
     this.inputRef = React.createRef();
@@ -341,10 +341,14 @@ class Body extends Component {
       t, wizardToken, 
       getPortalPasswordSettings, getPortalCultures, 
       getPortalTimezones, setIsWizardLoaded, 
-      getMachineName 
+      getMachineName, history
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
+
+    if(!wizardToken) { 
+      history.push('/');
+    }
 
     try {
       await Promise.all([
@@ -479,16 +483,19 @@ class Body extends Component {
       } = this.state;
 
       const { wizardToken } = this.props;
- 
-      setPortalOwner(email, password, selectLanguage.key, wizardToken, selectTimezone, licenseFile)
-        //.then(() => history.push(`/`))
+
+      const emailTrim = email.trim();
+      const analytics = true
+   
+      setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
+        .then(() => history.push(`/`))
         .catch((e) => {
           this.setState({
             errorLoading: true,
             sendingComplete: false,
             errorMessage: e 
           })
-        })
+        }) 
     }
   }
 
@@ -757,18 +764,8 @@ class Body extends Component {
   }
 
   render() {
-    const { isWizardLoaded, wizardToken } = this.props;
-    if(!wizardToken) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: this.props.location }
-          }}
-        />
-      );
-    }
-
+    const { isWizardLoaded } = this.props;
+  
     console.log('wizard render');
 
     if (isWizardLoaded) {
@@ -815,6 +812,7 @@ function mapStateToProps(state) {
 
     isWizardLoaded: state.wizard.isWizardLoaded, 
     machineName: state.wizard.machineName,
+    isComplete: state.wizard.isComplete,
 
     wizardToken: state.auth.settings.wizardToken,
     settingsPassword: state.auth.settings.passwordSettings,
