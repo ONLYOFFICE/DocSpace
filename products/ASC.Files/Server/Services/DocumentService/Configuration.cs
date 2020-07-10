@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Web;
 
@@ -138,11 +139,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static string Serialize(Configuration<T> configuration)
         {
-            using var ms = new MemoryStream();
-            var serializer = new DataContractJsonSerializer(typeof(Configuration<T>));
-            serializer.WriteObject(ms, configuration);
-            ms.Seek(0, SeekOrigin.Begin);
-            return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+            return JsonSerializer.Serialize(configuration);
         }
     }
     #region Nested Classes
@@ -360,11 +357,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(value)))
-                    {
-                        var serializer = new DataContractJsonSerializer(typeof(ActionLinkConfig));
-                        ActionLink = (ActionLinkConfig)serializer.ReadObject(ms);
-                    }
+                    JsonSerializer.Deserialize<ActionLinkConfig>(value);
                 }
                 catch (Exception)
                 {
@@ -469,13 +462,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static string Serialize(ActionLinkConfig actionLinkConfig)
         {
-            using (var ms = new MemoryStream())
-            {
-                var serializer = new DataContractJsonSerializer(typeof(ActionLinkConfig));
-                serializer.WriteObject(ms, actionLinkConfig);
-                ms.Seek(0, SeekOrigin.Begin);
-                return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-            }
+           return JsonSerializer.Serialize(actionLinkConfig);
         }
     }
 

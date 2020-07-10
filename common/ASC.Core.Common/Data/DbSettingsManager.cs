@@ -110,7 +110,6 @@ namespace ASC.Core.Data
     public class DbSettingsManager
     {
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
-        private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
 
         internal ILog Log { get; set; }
         internal ICache Cache { get; set; }

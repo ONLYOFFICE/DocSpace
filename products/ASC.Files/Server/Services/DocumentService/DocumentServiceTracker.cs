@@ -33,6 +33,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Web;
 
@@ -153,14 +154,8 @@ namespace ASC.Web.Files.Services.DocumentService
             public string[] Addresses = null;
 
             public static string Serialize(TrackResponse response)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    var serializer = new DataContractJsonSerializer(typeof(TrackResponse));
-                    serializer.WriteObject(ms, response);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-                }
+            { 
+                return JsonSerializer.Serialize(response);
             }
         }
 

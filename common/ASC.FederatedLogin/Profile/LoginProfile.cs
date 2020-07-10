@@ -43,7 +43,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-
 using Newtonsoft.Json;
 
 namespace ASC.FederatedLogin.Profile
@@ -410,11 +409,7 @@ namespace ASC.FederatedLogin.Profile
 
         public string ToJson()
         {
-            using var ms = new MemoryStream();
-            var serializer = new DataContractJsonSerializer(typeof(LoginProfile));
-            serializer.WriteObject(ms, this);
-            ms.Seek(0, SeekOrigin.Begin);
-            return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+            return System.Text.Json.JsonSerializer.Serialize(this);
         }
     }
 }
