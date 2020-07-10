@@ -58,7 +58,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           >
             {t("RecoverTextBody")}
           </Text>,
-          <FieldContainer key="e-mail" isVertical={true}>
+          <FieldContainer key="e-mail" isVertical={true} hasError={descErr} errorMessage={t("RecoverErrorMessage")}>
             <TextInput
               hasError={emailErr}
               id="e-mail"
@@ -73,7 +73,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
               onChange={onChangeEmail}
             />
           </FieldContainer>,
-          <FieldContainer key="text-description" isVertical={true}>
+          <FieldContainer key="text-description" isVertical={true} hasError={descErr} errorMessage={t("RecoverErrorMessage")}>
             <Textarea
               hasError={descErr}
               placeholder={t("RecoverDescribeYourProblemPlaceholder")}
