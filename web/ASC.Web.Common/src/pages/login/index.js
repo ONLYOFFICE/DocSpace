@@ -179,7 +179,8 @@ class Form extends Component {
       openDialog: false,
       isDisabled: false,
       isLoading: false,
-      email: ""
+      email: "",
+      emailError: false
     });
   };
 
