@@ -316,6 +316,7 @@ class FilesTileContent extends React.PureComponent {
           sideColor="#333"
           isFile={fileExst}
           onClick={this.onMobileRowClick}
+          disableSideInfo
         >
           <Link
             containerWidth='100%'
