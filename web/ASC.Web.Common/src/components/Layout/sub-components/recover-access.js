@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 const RecoverAccess = ({ t }) => {
 
+
     const RecoverWrapper = styled(Box)`
         padding: 0 240px 0 0;
         @media(max-width: 768px) {

@@ -1,6 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, TextInput, Text, ModalDialog, Textarea, FieldContainer } from "asc-web-components";
+import styled from "styled-components";
+
+const ModalDialogContainer = styled.div`
+  .modal-dialog-aside-footer {
+    @media(max-width: 1024px) {
+      width: 90%;
+    }
+  }
+  .recover-button-dialog {
+    @media(max-width: 1024px) {
+      width: 100%;
+    }
+}`;
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
@@ -28,63 +41,63 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
   const onChangeDescription = (e) => setDescription(e.currentTarget.value);
 
   return (
-    <ModalDialog
-      visible={visible}
-      headerContent={
-        <Text isBold={true} fontSize='21px'>
-          {t("RecoverTitle")}
-        </Text>
-      }
-      bodyContent={[
-        <Text
-          key="text-body"
-          className="text-body"
-          isBold={false}
-          fontSize='13px'
-        >
-          {t("RecoverTextBody")}
-        </Text>,
-        <FieldContainer key="e-mail" isVertical={true}>
-          <TextInput
-            hasError={emailErr}
-            id="e-mail"
-            name="e-mail"
-            type="text"
-            size="base"
-            scale={true}
-            tabIndex={1}
-           // style={{ marginTop: "16px", marginBottom: "16px" }}
-            placeholder={t("RecoverContactEmailPlaceholder")}
+    <ModalDialogContainer>
+      <ModalDialog
+        visible={visible}
+        headerContent={
+          <Text isBold={true} fontSize='21px'>
+            {t("RecoverTitle")}
+          </Text>
+        }
+        bodyContent={[
+          <Text
+            key="text-body"
+            className="text-body"
+            isBold={false}
+            fontSize='13px'
+          >
+            {t("RecoverTextBody")}
+          </Text>,
+          <FieldContainer key="e-mail" isVertical={true}>
+            <TextInput
+              hasError={emailErr}
+              id="e-mail"
+              name="e-mail"
+              type="text"
+              size="base"
+              scale={true}
+              tabIndex={1}
+              placeholder={t("RecoverContactEmailPlaceholder")}
+              //isDisabled={isLoading}
+              value={email}
+              onChange={onChangeEmail}
+            />
+          </FieldContainer>,
+          <FieldContainer key="text-description" isVertical={true}>
+            <Textarea
+              hasError={descErr}
+              placeholder={t("RecoverDescribeYourProblemPlaceholder")}
+              value={description}
+              onChange={onChangeDescription}
+            />
+          </FieldContainer>
+        ]}
+        footerContent={[
+          <Button
+            className="recover-button-dialog"
+            key="SendBtn"
+            label={t("RecoverSendButton")}
+            size="big"
+            primary={true}
+            onClick={onSendRecoverInstructions}
+            //isLoading={isLoading}
             //isDisabled={isLoading}
-            value={email}
-            onChange={onChangeEmail}
+            tabIndex={2}
           />
-        </FieldContainer>,
-        <FieldContainer key="text-description" isVertical={true}>
-          <Textarea
-            hasError={descErr}
-            placeholder={t("RecoverDescribeYourProblemPlaceholder")}
-            value={description}
-            onChange={onChangeDescription}
-          />
-        </FieldContainer>
-      ]}
-      footerContent={[
-        <Button
-          className="login-button-dialog"
-          key="SendBtn"
-          label={t("RecoverSendButton")}
-          size="big"
-          scale={false}
-          primary={true}
-          onClick={onSendRecoverInstructions}
-          //isLoading={isLoading}
-          //isDisabled={isLoading}
-          tabIndex={2}
-        />
-      ]}
-      onClose={onRecoverModalClose}
-    />
+        ]}
+        onClose={onRecoverModalClose}
+      />
+    </ModalDialogContainer>
   );
 }
 
