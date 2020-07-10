@@ -111,6 +111,7 @@ class Form extends Component {
       isChecked: false,
       openDialog: false,
       email: "",
+      emailError: false,
       errorText: ""
     };
   }
@@ -150,6 +151,10 @@ class Form extends Component {
   };
 
   onSendPasswordInstructions = () => {
+    if (!this.state.email.trim()) {
+      this.setState({emailError: true});
+    }
+    else {
     this.setState({ isLoading: true });
     sendInstructionsToChangePassword(this.state.email)
       .then(
@@ -157,6 +162,7 @@ class Form extends Component {
         message => toastr.error(message)
       )
       .finally(this.onDialogClose());
+    }
   };
 
   onDialogClose = () => {
@@ -239,6 +245,7 @@ class Form extends Component {
       isChecked,
       openDialog,
       email,
+      emailError,
       errorText
     } = this.state;
     const { params } = match;
@@ -325,6 +332,7 @@ class Form extends Component {
               openDialog={openDialog}
               isLoading={isLoading}
               email={email}
+              emailError={emailError}
               onChangeEmail={this.onChangeEmail}
               onSendPasswordInstructions={this.onSendPasswordInstructions}
               onDialogClose={this.onDialogClose}

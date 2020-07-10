@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, TextInput, Text, ModalDialog } from "asc-web-components";
+import { Button, TextInput, Text, ModalDialog, FieldContainer } from "asc-web-components";
 import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`
@@ -21,6 +21,7 @@ class SubModalDialog extends React.Component {
       openDialog,
       isLoading,
       email,
+      emailError,
       onChangeEmail,
       onSendPasswordInstructions,
       onDialogClose,
@@ -44,9 +45,10 @@ class SubModalDialog extends React.Component {
             >
               {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
             </Text>,
+            <FieldContainer key="e-mail" isVertical={true} hasError={emailError} errorMessage={t("PasswordRecoveryEmailErrorMessage")}>
             <TextInput
+              hasError={emailError}
               placeholder={t("PasswordRecoveryPlaceholder")}
-              key="e-mail"
               id="e-mail"
               name="e-mail"
               type="text"
@@ -58,6 +60,7 @@ class SubModalDialog extends React.Component {
               value={email}
               onChange={onChangeEmail}
             />
+            </FieldContainer>
           ]}
           footerContent={[
             <Button
@@ -84,6 +87,7 @@ SubModalDialog.propTypes = {
   openDialog: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   email: PropTypes.string.isRequired,
+  emailError: PropTypes.bool.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onSendPasswordInstructions: PropTypes.func.isRequired,
   onDialogClose: PropTypes.func.isRequired,
