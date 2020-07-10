@@ -59,300 +59,303 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
-    <value>Outside portal</value>
+    <value>Außerhalb Portal</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
-    <value>Comment</value>
+    <value>Kommentarе</value>
   </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
-    <value>Form Filling</value>
+    <value>Ausfüllen von Formularen</value>
   </data>
   <data name="AceStatusEnum_Read" xml:space="preserve">
-    <value>Read Only</value>
+    <value>Schreibgeschützt</value>
   </data>
   <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
-    <value>Full Access</value>
+    <value>Voller Zugriff</value>
   </data>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
-    <value>Deny Access</value>
+    <value>Zugriff verweigern</value>
   </data>
   <data name="AceStatusEnum_Review" xml:space="preserve">
     <value>Review</value>
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>Admin</value>
+    <value>Administrator</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
-    <value>To work with the file you must grant access to it</value>
+    <value>Um mit der Datei zu arbeiten, müssen Sie den Zugriff auf sie gewähren</value>
   </data>
   <data name="Author_Me" xml:space="preserve">
-    <value>Me</value>
+    <value>Ich</value>
   </data>
   <data name="CommentAutosave" xml:space="preserve">
-    <value>Autosaved</value>
+    <value>Automatisch gespeichert</value>
   </data>
   <data name="CommentChangeOwner" xml:space="preserve">
-    <value>Changed owner</value>
+    <value>Portalbesitzer wurde geändert</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>Converted from {0}</value>
+    <value>Umgewandelt von {0}</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
-    <value>Copied</value>
+    <value>Kopiert</value>
   </data>
   <data name="CommentCreate" xml:space="preserve">
-    <value>Created</value>
+    <value>Erstellt</value>
   </data>
   <data name="CommentCreateByDocuSign" xml:space="preserve">
-    <value>Created by DocuSign</value>
+    <value>Erstellt mit Hilfe von DocuSign</value>
   </data>
   <data name="CommentEdit" xml:space="preserve">
-    <value>Edited</value>
+    <value>Bearbeitet</value>
   </data>
   <data name="CommentEditEncrypt" xml:space="preserve">
-    <value>Edited with encrypt</value>
+    <value>Mit Verschlüsselung bearbeitet</value>
   </data>
   <data name="CommentEncrypted" xml:space="preserve">
-    <value>Encrypted</value>
+    <value>Verschlüsselt</value>
   </data>
   <data name="CommentForcesave" xml:space="preserve">
-    <value>Saved</value>
+    <value>Gespeichert</value>
   </data>
   <data name="CommentOverwrite" xml:space="preserve">
-    <value>Overwritten</value>
+    <value>Überschrieben</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restored from the revision of {0}</value>
+    <value>Von Revision {0} wieder hergestellt</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Restored from the document change of {0}</value>
+    <value>Aus der Dokumentänderung{0}wiederhergestellt </value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
-    <value>Uploaded</value>
+    <value>Hochgeladen</value>
   </data>
   <data name="DocuSignStatusDeclined" xml:space="preserve">
-    <value>Declined</value>
+    <value>Abgelehnt</value>
   </data>
   <data name="DocuSignStatusError" xml:space="preserve">
-    <value>There was an error during the send operation</value>
+    <value>Während des Versandvorgangs ist ein Fehler aufgetreten
+</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
-    <value>Sending the document via DocuSign has been canceled</value>
+    <value>Versand des Dokumentes via DocuSign wurde abgebrochen</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Document was sent to sign via DocuSign</value>
+    <value>Dokument wurde zur Signierung via DocuSign gesendet</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
-    <value>Voided</value>
+    <value>Aufgehoben</value>
   </data>
   <data name="EditorMentions" xml:space="preserve">
-    <value>Notify when mentioned in document</value>
+    <value>Bei der Erwähnung im Dokument benachrichtigen</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Bad request.</value>
+    <value>Ungültige Anfrage</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
-    <value>You can not select this user</value>
+    <value>Man kann diesen Benutzer nicht auswählen</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>Conversion takes too much time.</value>
+    <value>Umwandlung dauert zu viel Zeit.</value>
   </data>
   <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>You are not allowed to create folders in the Recycle Bin</value>
+    <value>Unmöglich Ordner im Papierkorb zu erstellen</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Error occurred in the Documents Service</value>
+    <value>Fehler in Dokumnetendienstleistungen aufgetreten</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>The file is opened for editing by {0}. Currently, the co-editing feature is not supported for this file format.</value>
+    <value>Die Datei wird zur Bearbeitung von{0}geöffnet. Derzeit wird die Zusammenbearbeitung für dieses Dateiformat nicht unterstützt.
+</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>The file is open for editing in a mobile application by {0}</value>
+    <value>{0} öffnetet die Datei zum Bearbeiten mit der mobilen Anwendung</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
-    <value>Empty file</value>
+    <value>Leere Datei</value>
   </data>
   <data name="ErrorMassage_FileNotFound" xml:space="preserve">
-    <value>The required file was not found</value>
+    <value>Die angefragte Datei wurde nicht gefunden</value>
   </data>
   <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
-    <value>File larger than {0} will not be converted</value>
+    <value>Die Datei mit der Größe höher als {0} wird nicht konvertiert</value>
   </data>
   <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
-    <value>File larger than {0} will not be copied</value>
+    <value>Datei größer als {0} wird nicht kopiert</value>
   </data>
   <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
-    <value>File larger than {0} will not be edited</value>
+    <value>Datei größer als {0} wird nicht bearbeitet </value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>File larger than {0} will not be moved</value>
+    <value>Datei größer als {0} wird nicht verschoben </value>
   </data>
   <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>File larger than {0} will not be archived</value>
+    <value>Die Datei mit der Größe höher als {0} wird nicht archiviert</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
-    <value>You cannot copy the folder to its subfolder</value>
+    <value>Unmöglich das Verzeichnis in sein Unterverzeichnis zu kopieren</value>
   </data>
   <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
-    <value>The required folder was not found</value>
+    <value>Der angefragte Ordner wurde nicht gefunden</value>
   </data>
   <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
-    <value>Incorrect title</value>
+    <value>ungültiger Titel</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value>The file is currently locked by another user</value>
+    <value>Die Datei ist vom anderen Benutzer gesperrt</value>
   </data>
   <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>There are no available accounts to send the message. Go to Mail and connect a mailbox.</value>
+    <value>Es gibt keinen verfügbaren Account, um eine Nachricht zu senden. Greifen Sie auf das Mail zu und wählen Sie die Mailbox ein.</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>At least {0} mail messages could not be sent. Please visit the Mail module to see what the reason for the failure could be.</value>
+    <value>Mindestens {0} E-Mail-Mitteilungen konnten nicht gesendet werden. Gehen Sie in das Modul "E-Mail", um zu erfahren, was der Grund für den Fehler sein könnte.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Too many downloads.</value>
+    <value>Zu viele Dateien werden heruntergeladen.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
-    <value>Sorry, this file format isn't supported</value>
+    <value>Das Dateiformat wird nicht unterstützt</value>
   </data>
   <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>The operation was canceled</value>
+    <value>Die Aktion wurde abgebrochen</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>Author of the save is unknown</value>
+    <value>Der Autor der Speicherung ist unbekannt</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>The file was corrupted when you tried to save it</value>
+    <value>Die Datei wurde beim Versuch der Speicherung beschädigt.</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Failed to get the file to be saved</value>
+    <value>Erhaltung der Datei für die Speicherung ist fehlgeschlagen</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
-    <value>You don't have enough permission to perform the operation</value>
+    <value>Sie haben keine Berechtigung, diese Operation durchzuführen</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Can't authorize at {0} provider with given credentials.</value>
+    <value>Authentifizierung bei Provider {0} mit den gegebenen Zugangsdaten nicht möglich</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
-    <value>You don't have enough permission to create</value>
+    <value>Sie haben keine Berechtigung zum Erstellen</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
-    <value>Cannot delete the file because it is opened for editing</value>
+    <value>Datei kann nicht gelöscht werden, weil sie gerade bearbeitet wird</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>Cannot delete the folder because one of the files is opened for editing</value>
+    <value>Ordner kann nicht gelöscht werden, weil eine der Dateien gerade bearbeitet wird</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
-    <value>You don't have enough permission to delete the file</value>
+    <value>Sie haben keine Berechtigung, die Datei zu löschen</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
-    <value>You don't have enough permission to delete the folder</value>
+    <value>Sie haben keine Berechtigung, den Ordner zu löschen</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
-    <value>You do not have enough permissions to edit the file</value>
+    <value>Keine Bearbeitungsberechtigung für diese Datei</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
-    <value>This document is being edited by you in another tab</value>
+    <value>Dieses Dokument wird von Ihnen in einer anderen Registerkarte bearbeitet.</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>You don't have enough permission to move the file</value>
+    <value>Sie haben keine Berechtigung, die Datei zu verschieben</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
-    <value>You don't have enough permission to move the folder</value>
+    <value>Sie haben keine Berechtigung, den Ordner zu verschieben</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
-    <value>You don't have enough permission to view the file</value>
+    <value>Sie haben keine Berechtigung, die Datei durchzusehen</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
-    <value>You don't have enough permission to view the folder content</value>
+    <value>Sie haben keine Berechtigung, den Inhalt des Ordners zu sehen</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
-    <value>You don't have enough permission to rename the file</value>
+    <value>Sie haben keine Berechtigung, die Datei umzubenennen</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
-    <value>You don't have enough permission to rename the folder</value>
+    <value>Sie haben keine Berechtigung, den Ordner umzubenennen</value>
   </data>
   <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
-    <value>Cannot update the file because it's opened for editing</value>
+    <value>Datei kann nicht aktualisiert werden, weil sie gerade bearbeitet wird</value>
   </data>
   <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
-    <value>You don't have enough permission to view the folder content</value>
+    <value>Sie haben keine Berechtigung, den Inhalt des Ordners zu sehen</value>
   </data>
   <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
-    <value>The content of third party folder are not available. Try to reconnect the account.</value>
+    <value>Der Inhalt der Drittanbietersordner ist nicht verfügbar. Versuchen Sie das Konto wieder zu verbinden.</value>
   </data>
   <data name="ErrorMassage_StartEditing" xml:space="preserve">
-    <value>File editing start error</value>
+    <value>Fehler beim Starten der Dateibearbeitung</value>
   </data>
   <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
-    <value>You cannot update a file which is opened for editing</value>
+    <value>Unmöglich Dateien zu aktualisieren, die für die Bearbeitung geöffnet sind</value>
   </data>
   <data name="ErrorMassage_UserNotFound" xml:space="preserve">
-    <value>User could not be found</value>
+    <value>Benutzer wurde nicht gefunden</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
-    <value>You are not allowed to preview the elements in the Recycle Bin</value>
+    <value>Unmöglich Elemente im Papierkorb durchzusehen</value>
   </data>
   <data name="Everyone" xml:space="preserve">
-    <value>Everyone</value>
+    <value>Jeder</value>
   </data>
   <data name="Guest" xml:space="preserve">
-    <value>Anonymous</value>
+    <value>Anonym</value>
   </data>
   <data name="IndexTitle" xml:space="preserve">
-    <value>Search by contents of documents</value>
+    <value>Suchen nach Dokumentinhalt</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
-    <value>File created in folder "{0}"</value>
+    <value>Die Datei wurde im Ordner"{0}"erstellt</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common Documents' section|Set up access rights to the documents and folders in the 'Common Documents' section</value>
+    <value>dieselben Operationen wie ein Benutzer durchführen|Dropbox-, Box- und sonstige Konten mit der Sektion 'Gemeinsame Dokumente' verknüpfen|Zugriffsrechte für Dokumente und Ordner in der Sektion 'Gemeinsame Dokumente' gewähren</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+    <value>Erstellen, bearbeiten, speichern und geben Sie die Dokumente frei. Arbeiten Sie daran in Echtzeit zusammen. Sicherheit durch garantierte 100% ige Kompatibilität mit MS Office Formaten.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+    <value>Erstellen, bearbeiten, speichern und geben Sie die Dokumente frei. Arbeiten Sie daran in Echtzeit zusammen. Sicherheit durch garantierte 100% ige Kompatibilität mit MS Office Formaten.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>View and download shared documents. Upload files to shared folders. 100% compatibility with docx, xlsx, pptx guaranteed.</value>
+    <value>Erstellen, bearbeiten, speichern und geben Sie die Dokumente frei. Schließen Sie Ihre Google Drive-, Dropbox- und Box-Konten an, sodass Sie alle Dokumente in einem Ort haben.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Documents</value>
+    <value>Dokumente</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Create and edit own documents as well as the shared documents with the proper access rights|Give reading/editing access to other users to the documents and folders|Link Dropbox, Box and other accounts in the 'My documents' section</value>
+    <value>eigene sowie freigegebene Dokumente mit den entsprechenden Zugriffsrechten erstellen und bearbeiten|Zugriff zum Durchsehen/Bearbeiten den anderen Portalbenutzern für Dokumente und Ordner gewähren|Dropbox-, Box- und sonstige Konten mit der Sektion 'Meine Dokumente' verknüpfen</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} removed</value>
+    <value>{!User} entfernt</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>Suche</value>
   </data>
   <data name="ShareFolder" xml:space="preserve">
-    <value>Notify when a folder is shared</value>
+    <value>Bei der Freigabe der Ordner benachrichtigen</value>
   </data>
   <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Notify when document signed via DocuSign</value>
+    <value>Sobald das Dokument via DocuSign signiert ist, bitte benachrichtigen</value>
   </data>
   <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Notify when document in DocuSign changed status</value>
+    <value>Sobald das Dokument in DocuSign seinen Status geändert hat, bitte benachrichtigen
+</value>
   </data>
   <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Notify when a document is shared</value>
+    <value>Bei der Freigabe der Dokumente benachrichtigen</value>
   </data>
   <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Notify when mailing is complete</value>
+    <value>Sobald der E-Mail Versand vollständig ist, bitte benachrichtigen</value>
   </data>
   <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documents of {!user} {0}</value>
+    <value>Dokumente von {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Vorname</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Nachname</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>The file is unlocked</value>
+    <value>Die Datei ist nicht gesperrt</value>
   </data>
 </root>
