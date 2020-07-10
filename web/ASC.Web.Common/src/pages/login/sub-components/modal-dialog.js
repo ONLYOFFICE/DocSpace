@@ -45,7 +45,7 @@ class SubModalDialog extends React.Component {
             >
               {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
             </Text>,
-            <FieldContainer key="e-mail" isVertical={true} hasError={emailError} errorMessage={t("PasswordRecoveryEmailErrorMessage")}>
+            <FieldContainer key="e-mail" isVertical={true} hasError={emailError} errorMessage={t("RequiredFieldMessage")}>
             <TextInput
               hasError={emailError}
               placeholder={t("PasswordRecoveryPlaceholder")}
