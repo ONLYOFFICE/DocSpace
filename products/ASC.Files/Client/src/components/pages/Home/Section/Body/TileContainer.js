@@ -184,7 +184,7 @@ TileContainer.propTypes = {
 TileContainer.defaultProps = {
   itemHeight: 50,
   useReactWindow: true,
-  id: "tileContainer"
+  id: "rowContainer"
 };
 
 export default TileContainer;
