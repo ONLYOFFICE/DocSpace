@@ -173,7 +173,7 @@ class SectionBodyContent extends React.Component {
   onEditComplete = (e) => {
     const { folderId, fileAction, filter, folders, files, treeFolders, setTreeFolders, onLoading } = this.props;
     const items = [...folders, ...files];
-    const itemId = e.currentTarget.dataset.itemid;
+    const itemId = e && e.currentTarget.dataset.itemid;
     const item = items.filter(o => o.id === itemId);
 
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
