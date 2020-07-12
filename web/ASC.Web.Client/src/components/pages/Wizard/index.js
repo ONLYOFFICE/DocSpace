@@ -4,7 +4,7 @@ import styled from "styled-components";
 import i18n from './i18n';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom'
+import PropTypes from 'prop-types';
 
 import { PageLayout, history } from "asc-web-common";
 import { 
@@ -26,7 +26,7 @@ const { EmailSettings } = utils.email;
 const settings = new EmailSettings();
 settings.allowDomainPunycode = true;
 
-const { tablet, mobile } = utils.device;
+const { tablet } = utils.device;
 
 const HeaderContent = styled.div`
   display: flex;
@@ -423,18 +423,15 @@ class Body extends Component {
   }
 
   onChangePassword = e => {
-    console.log('onchange password', e.target.value);
     this.setState({ password: e.target.value });
   }
   
   onIconFileClick = (e) => {
-    console.log('input file click');
     e.target.blur()
     this.inputRef.current.click();
   }
 
   onClickChangeEmail = () => {
-    console.log("change mail click")
     this.setState({ visibleModal: true })
   }
 
@@ -442,48 +439,34 @@ class Body extends Component {
     this.setState({ emailValid: result.isValid});
 
     if(result.isValid) {
-      console.log('email is valid')
       this.setState({ email: result.value });
     }
   }
 
   onChangeFile = e => {
-    console.log('select file', e.target.value)
     this.setState({ path: e.target.value}) 
   }
 
   onInputFile = () => {
-    console.log('on input file inner input')
     this.setState({path: this.inputRef.current.value});
   }
 
   onChangeLicense = () => {
-    console.log('onchange License');
     this.setState({ license: !this.state.license });
   }
 
   onContinueHandler = () => {
-    console.log('continue btn click');
     const valid = this.checkingValid();
 
-    // const valid = false;
-    // this.setState({ sendingComplete: true })
-    // setTimeout(() => this.setState({ sendingComplete: false }), 3000)
-
-    const { setPortalOwner } = this.props;
     if (valid) { 
-      console.log('valid params');
+      const { setPortalOwner, wizardToken } = this.props;
+      const { password, email,
+        selectLanguage, selectTimezone
+      } = this.state;
 
       this.setState({ sendingComplete: true })
 
       const licenseFile = this.inputRef.current.files[0];
-      const {
-        password, email,
-        selectLanguage, selectTimezone
-      } = this.state;
-
-      const { wizardToken } = this.props;
-
       const emailTrim = email.trim();
       const analytics = true
    
@@ -515,22 +498,18 @@ class Body extends Component {
   }
 
   onSaveEmailHandler = () => {
-    console.log('save email', this.state.email);
     this.setState({ visibleModal: false });
   }
 
   onCloseModal = () => {
-    console.log('onClose modal');
     this.setState({ visibleModal: false, errorLoading: false, errorMessage: null });
   }
 
   onSelectTimezoneHandler = el => {
-    console.log('on select timezone');
     this.setState({ selectTimezone: el });
   }
 
   onSelectLanguageHandler = lang => {
-    console.log('on select lang', lang);
     this.setState({ 
       selectLanguage: {
         key: lang.key,
@@ -799,10 +778,24 @@ const WizardWrapper = withTranslation()(WizardPage);
 
 const Wizard = props => {
   const { language } = props;
-
   i18n.changeLanguage(language);
-
   return <WizardWrapper i18n={i18n}  {...props}/>
+}
+
+Wizard.propTypes = {
+  language: PropTypes.string,
+  i18n: PropTypes.func,
+  isOwner: PropTypes.bool,
+  ownerEmail: PropTypes.string,
+  isWizardLoaded: PropTypes.bool.isRequired,
+  machineName: PropTypes.string.isRequired,
+  isComplete: PropTypes.bool.isRequired,
+  wizardToken: PropTypes.string.isRequired,
+  settingsPassword: PropTypes.object,
+  cultures: PropTypes.array.isRequired,
+  portalCulture: PropTypes.string.isRequired,
+  timezones: PropTypes.array.isRequired,
+  portalTimezone: PropTypes.string.isRequired
 }
 
 function mapStateToProps(state) {
