@@ -68,21 +68,25 @@ class FilesFilter {
 
   toDto = () => {
     const {
+      authorType,
+      filterType,
+      folder,
+      page,
       pageCount,
+      search,
       sortBy,
       sortOrder,
-      filterType,
-      withSubfolders,
-      search,
-      authorType
+      withSubfolders
     } = this;
 
     const isFilterSet = (filterType || (search ?? "").trim() || authorType) ? withSubfolders : false;
     const userIdOrGroupId = authorType && authorType.includes('_') ? authorType.slice(authorType.indexOf('_') + 1) : null;
 
     let dtoFilter = {
+      folder: folder,
+      pagecount: pageCount,
       startIndex: this.getStartIndex(),
-      count: pageCount,
+      page: page,
       sortby: sortBy,
       sortOrder: sortOrder,
       filterType: filterType,
