@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, TextInput, Text, ModalDialog, Textarea, FieldContainer } from "asc-web-components";
 import styled from "styled-components";
@@ -28,6 +28,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
   const [emailErr, setEmailErr] = useState(false);
   const [description, setDescription] = useState("");
   const [descErr, setDescErr] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
 
   const onSendRecoverInstructions = () => {
     if (!email.trim()) {
@@ -46,6 +47,10 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
   const onChangeEmail = (e) => setEmail(e.currentTarget.value);
 
   const onChangeDescription = (e) => setDescription(e.currentTarget.value);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWidth(window.innerWidth));
+  }, []);
 
   return (
     <ModalDialogContainer>
@@ -82,6 +87,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           </FieldContainerWrapper>,
           <FieldContainerWrapper key="text-description" isVertical={true} hasError={descErr} errorMessage={t("RecoverErrorMessage")}>
             <Textarea
+              heightScale={width > 1024 ? false : true}
               hasError={descErr}
               placeholder={t("RecoverDescribeYourProblemPlaceholder")}
               value={description}
