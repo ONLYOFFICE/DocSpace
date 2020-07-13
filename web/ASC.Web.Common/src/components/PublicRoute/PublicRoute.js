@@ -23,9 +23,6 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
             }
 
             if(wizardToken) {
-                if(props.location.pathname === '/wizard') {
-                    return <Component {...props} />;
-                }
                 return (
                     <Redirect
                         to={{

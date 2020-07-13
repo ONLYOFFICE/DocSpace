@@ -1,15 +1,11 @@
-import { SET_IS_WIZARD_LOADED } from "./actions";
-// import { api } from "asc-web-common";
+import { SET_IS_WIZARD_LOADED, SET_IS_MACHINE_NAME, SET_COMPLETE } from "./actions";
 
 const initState = { 
   isWizardLoaded: false,
   isOwner: false,
   ownerEmail: '',
-  domain: '',
-  language: '',
-  timezone: '',
-  languages: [],
-  timezones: []
+  machineName: '',
+  isComplete: false
 };
 
 const ownerReducer = ( state = initState, action) => {
@@ -19,6 +15,16 @@ const ownerReducer = ( state = initState, action) => {
       return Object.assign({}, state, {
         isWizardLoaded: action.isWizardLoaded
       });
+
+    case SET_IS_MACHINE_NAME:
+      return Object.assign({}, state, {
+        machineName: action.machineName
+      });
+
+    case SET_COMPLETE:
+      return Object.assign({}, state, {
+        isComplete: action.isComplete
+      })
     
     default:
       return state;

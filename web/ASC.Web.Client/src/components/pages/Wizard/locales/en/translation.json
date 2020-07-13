@@ -1,6 +1,6 @@
 {
-  "title": " Portal Setup - Go through these easy steps to start your web office easily",
-  "welcome": "Welcome to your portal!",
+  "wizardTitle": " Portal Setup - Go through these easy steps to start your web office easily",
+  "welcomeTitle": "Welcome to your portal!",
   "desc": "Please setup the portal registration data.",
   "placeholderEmail": "E-mail",
   "placeholderPass": "Password",
@@ -12,6 +12,7 @@
   "language": "Language:",
   "timezone": "Time zone:",
   "buttonContinue": "Continue",
+  "buttonLoading": "Loading... Please wait...",
   "errorLicenseTitle": "Loading error", 
   "errorLicenseBody": "The license is not valid. Make sure you select the correct file",
   "changeEmailTitle": "Change e-mail",
@@ -24,5 +25,9 @@
 
   "Culture_en": "English (United Kingdom)",
   "Culture_en-US": "English (United States)",
-  "Culture_ru-RU": "Russian (Russia)"
+  "Culture_ru-RU": "Russian (Russia)",
+
+  "errorPassword": "Password does not meet the requirements",
+  "errorEmail": "Invalid Email Address",
+  "errorLicenseRead": "You must accept the terms of the license agreement"
 }

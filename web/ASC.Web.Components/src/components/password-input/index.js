@@ -24,7 +24,6 @@ const StyledInput = styled(SimpleInput)`
   line-height: 32px;
   flex-direction: row;
   flex-wrap: wrap;
-
   @media ${tablet} {
     flex-wrap: wrap;
   } 
@@ -32,16 +31,13 @@ const StyledInput = styled(SimpleInput)`
 
 const PasswordProgress = styled.div`
   ${props => props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`}
-
   .input-relative {
     position: relative;
-
     svg {
       overflow: hidden;
       vertical-align: middle;
     }
   }
-
   *,
   *::before,
   *::after {
@@ -52,13 +48,11 @@ const PasswordProgress = styled.div`
 const NewPasswordButton = styled.div`
   margin: 0 16px;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
-
   svg {
     overflow: hidden;
     vertical-align: middle;
     margin-bottom: 4px;
   }
-
   :hover {
     cursor: pointer;
   }
@@ -66,7 +60,6 @@ const NewPasswordButton = styled.div`
 
 const CopyLink = styled.div`
   margin-top: -6px;
-
   @media ${tablet} {
     width: 100%;
     margin-left: 0px;
@@ -404,14 +397,14 @@ class PasswordInput extends React.Component {
           </TooltipStyle>
           <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
         </PasswordProgress>
-        <NewPasswordButton>
+        { this.props.NewPasswordButtonVisible && <NewPasswordButton>
           <Icons.RefreshIcon
             size="medium"
             color={iconsColor}
             isfill={true}
             onClick={this.onGeneratePassword}
           />
-        </NewPasswordButton>
+        </NewPasswordButton>}
         <CopyLink>
           <Link
             type="action"
@@ -462,6 +455,7 @@ PasswordInput.propTypes = {
   tooltipPasswordSpecial: PropTypes.string,
 
   generatorSpecial: PropTypes.string,
+  NewPasswordButtonVisible: PropTypes.bool,
   passwordSettings: PropTypes.object.isRequired,
 
   onValidateInput: PropTypes.func,
@@ -484,6 +478,7 @@ PasswordInput.defaultProps = {
   clipCopiedResource: 'Copied',
 
   generatorSpecial: '!@#$%^&*',
+  NewPasswordButtonVisible: true,
   className: '',
   tooltipOffsetLeft: 110
 }

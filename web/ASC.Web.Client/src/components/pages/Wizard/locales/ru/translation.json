@@ -1,6 +1,6 @@
 {
-  "title": " Portal Setup - Go through these easy steps to start your web office easily",
-  "welcome": "Добро пожаловать на Ваш портал!",
+  "wizardTitle": "Благодарим Вас за выбор ONLYOFFICE! В целях безопасности необходимо выполнить процедуру установки пароля",
+  "welcomeTitle": "Добро пожаловать на Ваш портал!",
   "desc": "Пожалуйста, настройте регистрационные данные портала.",
   "placeholderEmail": "E-mail",
   "placeholderPass": "Пароль",
@@ -12,11 +12,12 @@
   "language": "Язык:",
   "timezone": "Часовой пояс:",
   "buttonContinue": "Продолжить",
+  "buttonLoading": "Загрузка. Пожалуйста, подождите...",
   "errorLicenseTitle": "Ошибка загрузки",
   "errorLicenseBody": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
   "changeEmailTitle": "Измененить адрес электронной почты",
   "changeEmailBtn": "Сохранить",
-  "tooltipPasswordTitle": "Пароль должен сожержать:",
+  "tooltipPasswordTitle": "Пароль должен содержать:",
   "tooltipPasswordLength": "символов",
   "tooltipPasswordDigits": "цыфры",
   "tooltipPasswordCapital": "Заглавные буквы",
@@ -24,5 +25,9 @@
 
   "Culture_en": "Английский (Великобритания)",
   "Culture_en-US": "Английский (США)",
-  "Culture_ru-RU": "Русский (Россия)"
+  "Culture_ru-RU": "Русский (Россия)",
+
+  "errorPassword": "Пароль не соответсвует требованиям",
+  "errorEmail": "Некорректный адрес электронной почты",
+  "errorLicenseRead": "Необходимо приянть условия лицензионного соглашения"
 }
