@@ -35,6 +35,7 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Files.Resources;
 
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
@@ -45,9 +46,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public IServiceProvider ServiceProvider { get; }
 
-        public FileOperationsManager(DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)
+        public FileOperationsManager(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
-            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "fileOperations", 10);
+            tasks = distributedTaskQueueOptionsManager.Get("fileOperations");
             ServiceProvider = serviceProvider;
         }
 
@@ -238,6 +239,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             services.TryAddSingleton<DistributedTaskCacheNotify>();
             services.TryAddSingleton<FileOperationsManager>();
             services.TryAddScoped<FileOperationsManagerHelper>();
+
+            services
+                .TryAddSingleton<DistributedTaskQueueOptionsManager>()
+                .TryAddSingleton<DistributedTaskQueue>()
+                .AddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
+
+            _ = services.Configure<DistributedTaskQueue>("fileOperations", r =>
+            {
+                r.MaxThreadsCount = 10;
+                //r.errorCount = 1;
+            });
 
             return services
                 .AddAuthContextService()

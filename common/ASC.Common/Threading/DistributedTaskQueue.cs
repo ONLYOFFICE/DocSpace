@@ -34,6 +34,8 @@ using System.Threading.Tasks;
 
 using ASC.Common.Caching;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Common.Threading
 {
     public class DistributedTaskCacheNotify
@@ -88,42 +90,60 @@ namespace ASC.Common.Threading
         }
     }
 
+    public class DistributedTaskQueueOptionsManager : OptionsManager<DistributedTaskQueue>
+    {
+        public DistributedTaskQueueOptionsManager(IOptionsFactory<DistributedTaskQueue> factory) : base(factory)
+        {
+        }
+    }
+
+    public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedTaskQueue>
+    {
+        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+
+        public ConfigureDistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify)
+        {
+            DistributedTaskCacheNotify = distributedTaskCacheNotify;
+        }
+
+        public void Configure(DistributedTaskQueue queue)
+        {
+            queue.DistributedTaskCacheNotify = DistributedTaskCacheNotify;
+        }
+
+        public void Configure(string name, DistributedTaskQueue options)
+        {
+            Configure(options);
+            options.Name = name;
+        }
+    }
+
     public class DistributedTaskQueue
     {
         public static readonly string InstanceId;
 
-        private readonly string key;
-        private readonly ICache cache;
-        private readonly TaskScheduler scheduler;
-        private readonly ConcurrentDictionary<string, CancellationTokenSource> cancelations;
+        private string key;
+        private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
-        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        public string Name { set { key = value + GetType().Name; } }
+        private ICache Cache { get => DistributedTaskCacheNotify.Cache; }
+        private ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get => DistributedTaskCacheNotify.Cancelations; }
+
+        public int MaxThreadsCount
+        {
+            set
+            {
+                Scheduler = value <= 0
+                    ? TaskScheduler.Default
+                    : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
+            }
+        }
+
+        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
 
         static DistributedTaskQueue()
         {
             InstanceId = Process.GetCurrentProcess().Id.ToString();
-        }
-
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="name">Name of queue</param>
-        /// <param name="maxThreadsCount">limit of threads count; Default: -1 - no limit</param>
-        public DistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify, string name, int maxThreadsCount = -1)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            key = name + GetType().Name;
-            scheduler = maxThreadsCount <= 0
-                ? TaskScheduler.Default
-                : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
-            DistributedTaskCacheNotify = distributedTaskCacheNotify;
-            cancelations = DistributedTaskCacheNotify.Cancelations;
-            cache = DistributedTaskCacheNotify.Cache;
         }
 
 
@@ -138,7 +158,7 @@ namespace ASC.Common.Threading
 
             var cancelation = new CancellationTokenSource();
             var token = cancelation.Token;
-            cancelations[distributedTask.Id] = cancelation;
+            Cancelations[distributedTask.Id] = cancelation;
 
             var task = new Task(() => action(distributedTask, token), token, TaskCreationOptions.LongRunning);
             task
@@ -154,12 +174,12 @@ namespace ASC.Common.Threading
             }
             distributedTask.PublishChanges();
 
-            task.Start(scheduler);
+            task.Start(Scheduler);
         }
 
         public IEnumerable<DistributedTask> GetTasks()
         {
-            var tasks = cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
+            var tasks = Cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
             tasks.ForEach(t =>
             {
                 if (t.Publication == null)
@@ -172,7 +192,7 @@ namespace ASC.Common.Threading
 
         public DistributedTask GetTask(string id)
         {
-            var task = new DistributedTask(cache.HashGet<DistributedTaskCache>(key, id));
+            var task = new DistributedTask(Cache.HashGet<DistributedTaskCache>(key, id));
             if (task != null && task.Publication == null)
             {
                 task.Publication = GetPublication();
@@ -211,7 +231,7 @@ namespace ASC.Common.Threading
                     distributedTask.Status = DistributedTaskStatus.Canceled;
                 }
 
-                cancelations.TryRemove(id, out _);
+                Cancelations.TryRemove(id, out _);
 
                 distributedTask.PublishChanges();
             }
