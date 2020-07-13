@@ -26,6 +26,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ASC.Core.Billing
@@ -67,10 +68,7 @@ namespace ASC.Core.Billing
 
             try
             {
-                var options = new System.Text.Json.JsonSerializerOptions()
-                {
-                };
-                var license = System.Text.Json.JsonSerializer.Deserialize<License>(licenseString);
+                var license = JsonSerializer.Deserialize<License>(licenseString);
                 if (license == null) throw new BillingNotFoundException("Can't parse license");
 
                 license.OriginalLicense = licenseString;

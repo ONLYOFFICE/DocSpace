@@ -1316,10 +1316,10 @@ namespace ASC.Api.Documents
         /// <short>Get third party folder</short>
         /// <returns>Connected providers folder</returns>
         [Read("thirdparty/common")]
-        public IEnumerable<Folder<string>> GetCommonThirdPartyFolders()
+        public IEnumerable<FolderWrapper<string>> GetCommonThirdPartyFolders()
         {
             var parent = FileStorageServiceInt.GetFolder(GlobalFolderHelper.FolderCommon);
-            return EntryManager.GetThirpartyFolders(parent);
+            return EntryManager.GetThirpartyFolders(parent).Select(FolderWrapperHelper.Get).ToList();
         }
 
         /// <summary>
