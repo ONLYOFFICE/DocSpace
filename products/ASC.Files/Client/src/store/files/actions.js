@@ -34,6 +34,7 @@ export const SET_ACTION = "SET_ACTION";
 export const SET_DRAGGING = "SET_DRAGGING";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
+export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 
 export function setFile(file) {
@@ -152,6 +153,13 @@ export function setMediaViewerData(mediaViewerData) {
   return {
     type: SET_MEDIA_VIEWER_VISIBLE,
     mediaViewerData
+  };
+}
+
+export function setProgressBarData(progressData) {
+  return {
+    type: SET_PROGRESS_BAR_DATA,
+    progressData
   };
 }
 
@@ -375,6 +383,11 @@ export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveTy
     return files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
   };
 };
+
+export function clearProgressData(dispatch) {
+  const emptyProgressData = { visible: false, percent: 0, label: "" };
+  dispatch(setProgressBarData(emptyProgressData));
+}
 
 
 /*export function deleteGroup(id) {

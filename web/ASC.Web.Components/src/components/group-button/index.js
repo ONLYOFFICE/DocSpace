@@ -140,10 +140,8 @@ class GroupButton extends React.PureComponent {
     this.setSelected(this.props.selected);
   };
 
-  dropDownItemClick = e => {
-    const index = e.currentTarget.dataset.index;
-    const child = this.props.children[index];
-    child.props.onClick && child.props.onClick(e);
+  dropDownItemClick = child => {
+    child.props.onClick && child.props.onClick();
     this.props.onSelect && this.props.onSelect(child);
     this.setSelected(child.props.label);
     this.setIsOpen(!this.state.isOpen);
@@ -211,7 +209,7 @@ class GroupButton extends React.PureComponent {
               {React.Children.map(children, (child) =>
                 <DropDownItem
                   {...child.props}
-                  onClick={this.dropDownItemClick}
+                  onClick={this.dropDownItemClick.bind(this, child)}
                 />
               )}
             </DropDown>

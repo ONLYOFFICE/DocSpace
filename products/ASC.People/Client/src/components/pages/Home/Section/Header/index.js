@@ -164,10 +164,6 @@ const SectionHeaderContent = props => {
     window.open(`mailto: ${str}`, "_self");
   }, [selection]);
 
-  const onSelectorSelect = useCallback((item) => {
-    onSelect && onSelect(item.key);
-  }, [onSelect]);
-
   const menuItems = [
     {
       label: t("LblSelect"),
@@ -176,11 +172,11 @@ const SectionHeaderContent = props => {
       isSelect: true,
       fontWeight: "bold",
       children: [
-        <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
-        <DropDownItem key="disabled" label={t("LblTerminated")} data-index={1} />,
-        <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />
+        <DropDownItem key="active" label={t("LblActive")} />,
+        <DropDownItem key="disabled" label={t("LblTerminated")} />,
+        <DropDownItem key="invited" label={t("LblInvited")} />
       ],
-      onSelect: onSelectorSelect
+      onSelect: item => onSelect(item.key)
     },
     {
       label: t("ChangeToUser", {

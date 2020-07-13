@@ -13,7 +13,7 @@ import {
   toastr,
   utils
 } from "asc-web-components";
-import { fetchFiles, setAction, getProgress } from "../../../../../store/files/actions";
+import { fetchFiles, setAction, getProgress, setProgressBarData, clearProgressData } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
@@ -180,21 +180,25 @@ class SectionHeaderContent extends React.Component {
   loop = url => {
     this.props.getProgress().then(res => {
       if (!url) {
-        this.props.setProgressValue(res[0].progress);
+        this.props.setProgressBarData({visible: true, percent: res[0].progress, label: this.props.t("ArchivingData")});
         setTimeout(() => this.loop(res[0].url), 1000);
       } else {
-        this.props.finishFilesOperations();
+        setTimeout(() => clearProgressData(filesStore.dispatch), 5000);
         return window.open(url, "_blank");
       }
-    }).catch((err) => this.props.finishFilesOperations(err));
+    }).catch((err) => {
+      toastr.error(err);
+      clearProgressData(filesStore.dispatch);
+    });
   }
 
   downloadAction = () => {
+    const { t, selection, setProgressBarData } = this.props;
     const fileIds = [];
     const folderIds = [];
     const items = [];
 
-    for (let item of this.props.selection) {
+    for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id);
         items.push({ id: item.id, fileExst: item.fileExst });
@@ -204,14 +208,17 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    this.props.startFilesOperations(this.props.t("ArchivingData"));
+    setProgressBarData({ visible: true, percent: 0, label: t("ArchivingData")});
 
     api.files
       .downloadFiles(fileIds, folderIds)
       .then(res => {
         this.loop(res[0].url);
       })
-      .catch((err) => this.props.finishFilesOperations(err));
+      .catch((err) => {
+        toastr.error(err);
+        clearProgressData(filesStore.dispatch);
+      });
   }
 
   downloadAsAction = () => this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
@@ -284,12 +291,6 @@ class SectionHeaderContent extends React.Component {
     );
   };
 
-  onSelectorSelect = (item) => {
-    const { onSelect } = this.props;
-
-    onSelect && onSelect(item.key);
-  }
-
   render() {
     //console.log("Body header render");
 
@@ -301,6 +302,7 @@ class SectionHeaderContent extends React.Component {
       isRecycleBinFolder,
       isHeaderChecked,
       isHeaderIndeterminate,
+      onSelect,
       deleteDialogVisible,
       folder,
       onCheck,
@@ -308,11 +310,9 @@ class SectionHeaderContent extends React.Component {
       currentFolderId,
       onLoading,
       isLoading,
-      setProgressValue,
-      startFilesOperations,
-      finishFilesOperations,
       getProgress,
-      loopFilesOperations
+      loopFilesOperations,
+      setProgressBarData
     } = this.props;
     const {
       showDeleteDialog,
@@ -341,50 +341,41 @@ class SectionHeaderContent extends React.Component {
           <DropDownItem
             key="all"
             label={t("All")}
-            data-index={0}
           />,
           <DropDownItem
             key={FilterType.FoldersOnly}
             label={t("Folders")}
-            data-index={1}
           />,
           <DropDownItem
             key={FilterType.DocumentsOnly}
             label={t("Documents")}
-            data-index={2}
           />,
           <DropDownItem
             key={FilterType.PresentationsOnly}
             label={t("Presentations")}
-            data-index={3}
           />,
           <DropDownItem
             key={FilterType.SpreadsheetsOnly}
             label={t("Spreadsheets")}
-            data-index={4}
           />,
           <DropDownItem
             key={FilterType.ImagesOnly}
             label={t("Images")}
-            data-index={5}
           />,
           <DropDownItem
             key={FilterType.MediaOnly}
             label={t("Media")}
-            data-index={6}
           />,
           <DropDownItem
             key={FilterType.ArchiveOnly}
             label={t("Archives")}
-            data-index={7}
           />,
           <DropDownItem
             key={FilterType.FilesOnly}
             label={t("AllFiles")}
-            data-index={8}
           />
         ],
-        onSelect: this.onSelectorSelect
+        onSelect: item => onSelect(item.key)
       },
       {
         label: t("Share"),
@@ -435,9 +426,6 @@ class SectionHeaderContent extends React.Component {
     const operationsPanelProps = {
       onLoading,
       isLoading,
-      setProgressValue,
-      startFilesOperations,
-      finishFilesOperations,
       loopFilesOperations
     };
 
@@ -525,6 +513,7 @@ class SectionHeaderContent extends React.Component {
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
             {...operationsPanelProps}
+            setProgressBarData={setProgressBarData}
             getProgress={getProgress}
             currentFolderId={currentFolderId}
             visible={showEmptyTrashDialog}
@@ -563,8 +552,6 @@ class SectionHeaderContent extends React.Component {
           <DownloadDialog
             visible={showDownloadDialog}
             onClose={this.downloadAsAction}
-            startUploadSession={startFilesOperations}
-            finishFilesOperations={finishFilesOperations}
             onDownloadProgress={this.loop}
           />
         )}
@@ -578,7 +565,7 @@ const mapStateToProps = state => {
     selectedFolder,
     selection,
     treeFolders,
-    filter,
+    filter
   } = state.files;
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
@@ -599,6 +586,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { setAction, getProgress })(
+export default connect(mapStateToProps, { setAction, getProgress, setProgressBarData })(
   withTranslation()(withRouter(SectionHeaderContent))
 );

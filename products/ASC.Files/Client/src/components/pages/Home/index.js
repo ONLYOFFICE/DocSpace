@@ -18,7 +18,7 @@ import {
   SectionFilterContent,
   SectionPagingContent
 } from "./Section";
-import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging } from "../../../store/files/actions";
+import { setSelected, fetchFiles, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging, setProgressBarData, clearProgressData } from "../../../store/files/actions";
 import { loopTreeFolders, checkFolderType, canConvert } from "../../../store/files/selectors";
 import store from "../../../store/store";
 import { ConvertDialog } from "../../dialogs";
@@ -35,9 +35,6 @@ class PureHome extends React.Component {
       isHeaderChecked: false,
       isLoading: false,
 
-      showProgressBar: false,
-      progressBarValue: 0,
-      progressBarLabel: "",
       overwriteSetting: false,
       uploadOriginalFormatSetting: false,
       hideWindowSetting: false,
@@ -124,6 +121,8 @@ class PureHome extends React.Component {
   };
 
   updateConvertProgress = (newState, uploadStatus) => {
+    const { t, setProgressBarData } = this.props;
+
     let progressVisible = true;
     let uploadedFiles = newState.uploadedFiles;
     let percent = newState.percent;
@@ -139,15 +138,11 @@ class PureHome extends React.Component {
       newState.uploadedFiles = 0;
       progressVisible = false;
     }
-    newState.progressBarValue = percent;
-    newState.progressBarLabel = this.props.t("UploadingLabel", {
-      file: uploadedFiles,
-      totalFiles,
-    });
 
     this.setState(newState, () => {
+      setProgressBarData({ label: t("UploadingLabel", { file: uploadedFiles, totalFiles,}), percent, visible: true });
       if(!progressVisible) {
-        this.setProgressVisible(false);
+        setTimeout(() => clearProgressData(store.dispatch), 5000);
       }
     });
   };
@@ -279,8 +274,8 @@ class PureHome extends React.Component {
         () => this.sendChunk(currentFiles, location, requestsDataArray, isLatestFile, indexOfFile, uploadToFolder)
       )
       .catch((err) => {
-        this.setProgressVisible(false, 0);
         toastr.error(err);
+        clearProgressData(store.dispatch);
       });
   };
 
@@ -379,10 +374,8 @@ class PureHome extends React.Component {
       }
     };
 
-    this.setState({ isLoading: true }, () => {
-      this.props.setDragging(false);
-      readItems(items, () => this.startUpload(files, folderId));
-    });
+    this.props.setDragging(false);
+    readItems(items, () => this.startUpload(files, folderId));
   };
 
   startUpload = (files, folderId) => {
@@ -427,18 +420,17 @@ class PureHome extends React.Component {
 
   startUploadFiles = (state) => {
     const { files, filesSize, convertFiles, convertFilesSize } = state;
+    const { t, setProgressBarData } = this.props;
 
     if (files.length > 0 || convertFiles.length > 0) {
-      const progressBarLabel = this.props.t("UploadingLabel", {
-        file: 0,
-        totalFiles: files.length + convertFiles.length
-      });
-
       const totalSize = convertFilesSize + filesSize;
-      const newState = {...state, ...{ totalSize, progressBarLabel, showProgressBar: true, isLoading: true }};
-      this.setState(newState, () => this.startSessionFunc(0));
-    } else if (this.state.isLoading) {
-      this.setState({ isLoading: false });
+      const newState = {...state, ...{ totalSize }};
+      this.setState(newState, () => {
+        const newProgressData = { visible: true, percent: 0, label: "" }
+        newProgressData.label = t("UploadingLabel", { file: 0, totalFiles: files.length + convertFiles.length });
+        setProgressBarData(newProgressData);
+        this.startSessionFunc(0);
+      })
     }
   };
 
@@ -465,24 +457,6 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
-  setProgressVisible = (visible, timeout) => {
-    const newTimeout = timeout ? timeout : 5000;
-    if (visible) {
-      this.setState({
-        showProgressBar: visible,
-        progressBarValue: 0,
-        percent: 0
-      });
-    } else {
-      setTimeout(
-        () => this.setState({ showProgressBar: visible, progressBarValue: 0 }),
-        newTimeout
-      );
-    }
-  };
-  setProgressValue = (value) => this.setState({ progressBarValue: value });
-  setProgressLabel = (label) => this.setState({ progressBarLabel: label });
-
   onChangeOverwrite = () =>
     this.setState({ overwriteSetting: !this.state.overwriteSetting });
   onChangeOriginalFormat = () =>
@@ -491,17 +465,6 @@ class PureHome extends React.Component {
     });
   onChangeWindowVisible = () =>
     this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
-
-  startFilesOperations = (progressBarLabel) => {
-    this.setState({ isLoading: true, progressBarLabel, showProgressBar: true });
-  };
-
-  finishFilesOperations = (err) => {
-    const timeout = err ? 0 : null;
-    err && toastr.error(err);
-    this.setState({isLoading: false}, () => this.setProgressVisible(false, timeout));
-    this.onClose();
-  };
 
   setNewFilter = () => {
     const { filter, selection, setFilter } = this.props;
@@ -517,20 +480,21 @@ class PureHome extends React.Component {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
-    const { getProgress, filter, currentFolderId, treeFolders, getFolder, isRecycleBinFolder } = this.props;
+    const { getProgress, filter, currentFolderId, treeFolders, getFolder, isRecycleBinFolder, progressData, setProgressBarData } = this.props;
     getProgress().then(res => {
       const currentItem = res.find(x => x.id === id);
       if(currentItem && currentItem.progress !== 100) {
-        this.setProgressValue(currentItem.progress);
+        setProgressBarData({ label: progressData.label, percent: currentItem.progress, visible: true });
         setTimeout(() => this.loopFilesOperations(id, destFolderId, isCopy), 1000);
       } else {
+        setProgressBarData({ label: progressData.label, percent: 100, visible: true });
         getFolder(destFolderId).then(data => {
           let newTreeFolders = treeFolders;
           let path = data.pathParts.slice(0);
           let folders = data.folders;
           let foldersCount = data.current.foldersCount;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
+          
               if (!isCopy) {
                 fetchFiles(currentFolderId, filter, store.dispatch)
                   .then((data) => {
@@ -549,21 +513,27 @@ class PureHome extends React.Component {
                     }
                     this.setNewFilter();
                   })
-                  .catch(err => this.finishFilesOperations(err))
-                  .finally(() => {
-                    this.setProgressValue(100);
-                    this.finishFilesOperations();
-                  });
+                  .catch(err => {
+                    toastr.error(err);
+                    clearProgressData(store.dispatch);
+                  })
+                  .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
               } else {
-                this.setProgressValue(100);
-                this.finishFilesOperations();
+                setProgressBarData({ label: progressData.label, percent: 100, visible: true });
+                setTimeout(() => clearProgressData(store.dispatch), 5000);
                 setTreeFolders(newTreeFolders);
               }
             })
-            .catch(err => this.finishFilesOperations(err));
+            .catch(err => {
+              toastr.error(err);
+              clearProgressData(store.dispatch);
+            });
         }
       })
-      .catch((err) => this.finishFilesOperations(err));
+      .catch((err) => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      });
   };
 
   setSelections = items => {
@@ -613,20 +583,24 @@ class PureHome extends React.Component {
 
   setConvertDialogVisible = () => {
     const { files, uploadStatus, uploadToFolder, showConvertDialog } = this.state;
+    const { t, setProgressBarData } = this.props;
     if(uploadStatus === null) {
       const folderId = uploadToFolder;
       this.updateFiles(folderId);
 
-      const progressBarLabel = this.props.t("UploadingLabel", {
-        file: files.length,
-        totalFiles: files.length
+      const newState = { uploadedFiles: 0, percent: 0, showConvertDialog: !showConvertDialog };
+
+      //setProgressBarData(newProgressData);
+      //setProgressBarData({ visible: true, percent: 100, label: t("UploadingLabel", { file: files.length, totalFiles: files.length })});
+
+      this.setState(newState, () => {
+        setTimeout(() => clearProgressData(store.dispatch), 5000);
       });
-
-      const newState = { progressBarLabel, uploadedFiles: 0, percent: 0, progressBarValue: 100, showConvertDialog: !showConvertDialog };
-
-      this.setState(newState, () => this.setProgressVisible(false));
     } else if(!files.length) {
-      this.setState({showProgressBar: false, showConvertDialog: !showConvertDialog, isLoading: false, uploadStatus: null});
+      this.setState(
+        { showConvertDialog: !showConvertDialog, uploadStatus: null },
+        () => clearProgressData(store.dispatch)
+      );
     } else {
       const totalFiles = files;
       this.setState({totalFiles, showConvertDialog: !showConvertDialog, uploadStatus: "cancel"});
@@ -634,15 +608,15 @@ class PureHome extends React.Component {
   };
 
   onConvert = () => {
-    let newState = {showConvertDialog: false, uploadStatus: "convert"};
     if(this.state.uploaded) {
-      if(!this.state.showProgressBar) {
-        newState = {...newState, ...{showProgressBar: true, progressBarValue: 0, percent: 0}};
-      }
-
       this.startSessionFunc(0);
     }
-    this.setState(newState);
+    this.setState({ showConvertDialog: false, uploadStatus: "convert" }, () => {
+      const { progressData, setProgressBarData } = this.props;
+      if(!progressData.visible) {
+        setProgressBarData({ visible: true, percent: 0, label: ""});
+      }
+    });
   };
 
   componentDidUpdate(prevProps) {
@@ -658,15 +632,12 @@ class PureHome extends React.Component {
       isHeaderChecked,
       selected,
       isLoading,
-      showProgressBar,
-      progressBarValue,
-      progressBarLabel,
       overwriteSetting,
       uploadOriginalFormatSetting,
       hideWindowSetting,
       showConvertDialog
     } = this.state;
-    const { t } = this.props;
+    const { t, progressData } = this.props;
 
     const progressBarContent = (
       <div>
@@ -713,18 +684,15 @@ class PureHome extends React.Component {
           onDrop={this.onDrop}
           setSelections={this.setSelections}
           onMouseMove={this.onMouseMove}
-          showProgressBar={showProgressBar}
-          progressBarValue={progressBarValue}
+          showProgressBar={progressData.visible}
+          progressBarValue={progressData.percent}
           progressBarDropDownContent={progressBarContent}
-          progressBarLabel={progressBarLabel}
+          progressBarLabel={progressData.label}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={
             <ArticleMainButtonContent
               onLoading={this.onLoading}
               startUpload={this.startUpload}
-              setProgressVisible={this.setProgressVisible}
-              setProgressValue={this.setProgressValue}
-              setProgressLabel={this.setProgressLabel}
             />
           }
           articleBodyContent={
@@ -744,9 +712,6 @@ class PureHome extends React.Component {
               onClose={this.onClose}
               onLoading={this.onLoading}
               isLoading={isLoading}
-              setProgressValue={this.setProgressValue}
-              startFilesOperations={this.startFilesOperations}
-              finishFilesOperations={this.finishFilesOperations}
               loopFilesOperations={this.loopFilesOperations}
             />
           }
@@ -759,9 +724,6 @@ class PureHome extends React.Component {
               isLoading={isLoading}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
-              setProgressValue={this.setProgressValue}
-              startFilesOperations={this.startFilesOperations}
-              finishFilesOperations={this.finishFilesOperations}
               loopFilesOperations={this.loopFilesOperations}
               onDropZoneUpload={this.onDrop}
             />
@@ -789,7 +751,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { treeFolders, filter, selectedFolder, selected, selection, folders, files, fileAction } = state.files;
+  const { treeFolders, filter, selectedFolder, selected, selection, folders, files, fileAction, progressData } = state.files;
   const { id } = selectedFolder;
   const indexOfTrash = 3;
 
@@ -803,11 +765,11 @@ function mapStateToProps(state) {
     filter,
     treeFolders,
     isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
-    fileActionId: fileAction.id
+    fileActionId: fileAction.id,
+    progressData
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging }
+export default connect(mapStateToProps,
+  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging, setProgressBarData }
 )(withRouter(Home));
