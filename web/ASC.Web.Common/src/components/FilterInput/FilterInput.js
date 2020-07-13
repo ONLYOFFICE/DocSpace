@@ -590,6 +590,7 @@ class FilterInput extends React.Component {
                     onChangeSortDirection={this.onChangeSortDirection}
                     selectedOption={getSortData().length > 0 ? getSortData().find(x => x.key === sortId) : {}}
                     onButtonClick={this.onSortDirectionClick}
+                    viewAs={viewAs}
                     sortDirection={+sortDirection}
                     directionAscLabel={directionAscLabel}
                     directionDescLabel={directionDescLabel}

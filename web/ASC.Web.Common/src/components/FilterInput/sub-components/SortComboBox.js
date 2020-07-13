@@ -60,7 +60,7 @@ class SortComboBox extends React.Component {
   }
   render() {
     const { options, directionAscLabel, directionDescLabel, isDisabled,
-      selectedOption } = this.props;
+      selectedOption, viewAs } = this.props;
     const { sortDirection } = this.state;
 
     let settingsArray = options.filter(item => {
@@ -116,7 +116,7 @@ class SortComboBox extends React.Component {
                 onClick={this.onChangeView}
                 options={settingsArray}
                 orientation='vertical'
-                selected={selectedOption.key}
+                selected={viewAs}
                 spacing='0px'
               />
             </DropDownItem>
@@ -162,6 +162,7 @@ SortComboBox.propTypes = {
   onChangeSortId: PropTypes.func,
   onChangeView: PropTypes.func,
   sortDirection: PropTypes.number,
+  viewAs: PropTypes.string,
 }
 
 SortComboBox.defaultProps = {
