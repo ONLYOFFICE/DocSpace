@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -116,7 +115,6 @@ namespace ASC.Data.Storage
         }
     }
 
-    [DataContract]
     public class MigrateOperation : ProgressBase
     {
         private readonly ILog Log;

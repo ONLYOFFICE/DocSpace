@@ -29,8 +29,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 using ASC.Api.Core;
@@ -1316,10 +1316,10 @@ namespace ASC.Api.Documents
         /// <short>Get third party folder</short>
         /// <returns>Connected providers folder</returns>
         [Read("thirdparty/common")]
-        public IEnumerable<Folder<string>> GetCommonThirdPartyFolders()
+        public IEnumerable<FolderWrapper<string>> GetCommonThirdPartyFolders()
         {
             var parent = FileStorageServiceInt.GetFolder(GlobalFolderHelper.FolderCommon);
-            return EntryManager.GetThirpartyFolders(parent);
+            return EntryManager.GetThirpartyFolders(parent).Select(FolderWrapperHelper.Get).ToList();
         }
 
         /// <summary>
@@ -1642,49 +1642,43 @@ namespace ASC.Api.Documents
         /// <summary>
         /// Result of file conversation operation.
         /// </summary>
-        [DataContract(Name = "operation_result", Namespace = "")]
         public class ConversationResult<T>
         {
             /// <summary>
             /// Operation Id.
             /// </summary>
-            [DataMember(Name = "id")]
             public string Id { get; set; }
 
             /// <summary>
             /// Operation type.
             /// </summary>
-            [DataMember(Name = "operation")]
+            [JsonPropertyName("Operation")]
             public FileOperationType OperationType { get; set; }
 
             /// <summary>
             /// Operation progress.
             /// </summary>
-            [DataMember(Name = "progress")]
             public int Progress { get; set; }
 
             /// <summary>
             /// Source files for operation.
             /// </summary>
-            [DataMember(Name = "source")]
             public string Source { get; set; }
 
             /// <summary>
             /// Result file of operation.
             /// </summary>
-            [DataMember(Name = "result")]
+            [JsonPropertyName("result")]
             public FileWrapper<T> File { get; set; }
 
             /// <summary>
             /// Error during conversation.
             /// </summary>
-            [DataMember(Name = "error")]
             public string Error { get; set; }
 
             /// <summary>
             /// Is operation processed.
             /// </summary>
-            [DataMember(Name = "processed")]
             public string Processed { get; set; }
         }
     }

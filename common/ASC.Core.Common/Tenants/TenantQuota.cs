@@ -27,11 +27,9 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace ASC.Core.Tenants
 {
-    [DataContract]
     [DebuggerDisplay("{Name}")]
     public class TenantQuota : ICloneable
     {
@@ -43,44 +41,32 @@ namespace ASC.Core.Tenants
             ActiveUsers = int.MaxValue,
         };
 
-        [DataMember(Name = "Id", Order = 10)]
         public int Id { get; set; }
 
-        [DataMember(Name = "Name", Order = 20)]
         public string Name { get; set; }
 
-        [DataMember(Name = "MaxFileSize", Order = 30)]
         public long MaxFileSize { get; set; }
 
-        [DataMember(Name = "MaxTotalSize", Order = 40)]
         public long MaxTotalSize { get; set; }
 
-        [DataMember(Name = "ActiveUsers", Order = 50)]
         public int ActiveUsers { get; set; }
 
-        [DataMember(Name = "Features", Order = 60)]
         public string Features { get; set; }
 
-        [DataMember(Name = "Price", Order = 70)]
         public decimal Price { get; set; }
 
-        [DataMember(Name = "Price2", Order = 80)]
         public decimal Price2 { get; set; }
 
-        [DataMember(Name = "AvangateId", Order = 90)]
         public string AvangateId { get; set; }
 
-        [DataMember(Name = "Visible", Order = 100)]
         public bool Visible { get; set; }
 
-        [DataMember(Name = "Year", Order = 110)]
         public bool Year
         {
             get { return GetFeature("year"); }
             set { SetFeature("year", value); }
         }
 
-        [DataMember(Name = "Year3", Order = 110)]
         public bool Year3
         {
             get { return GetFeature("year3"); }

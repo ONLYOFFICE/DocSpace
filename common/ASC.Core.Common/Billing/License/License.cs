@@ -26,45 +26,39 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.Serialization;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ASC.Core.Billing
 {
     [Serializable]
-    [DataContract(Name = "license", Namespace = "")]
     [DebuggerDisplay("{DueDate}")]
     public class License
     {
         public string OriginalLicense { get; set; }
 
-
-        [DataMember(Name = "affiliate_id")]
+        [JsonPropertyName("affiliate_id")]
         public string AffiliateId { get; set; }
 
         //[Obsolete]
-        [DataMember(Name = "whitelabel")]
         public bool WhiteLabel { get; set; }
 
-        [DataMember(Name = "customization")]
         public bool Customization { get; set; }
 
-        [DataMember(Name = "end_date")]
+        [JsonPropertyName("end_date")]
         public DateTime DueDate { get; set; }
 
-        [DataMember(Name = "portal_count")]
+        [JsonPropertyName("portal_count")]
         public int PortalCount { get; set; }
 
-        [DataMember(Name = "trial")]
         public bool Trial { get; set; }
 
-        [DataMember(Name = "user_quota")]
+        [JsonPropertyName("user_quota")]
         public int ActiveUsers { get; set; }
 
-        [DataMember(Name = "customer_id")]
+        [JsonPropertyName("customer_id")]
         public string CustomerId { get; set; }
 
-        [DataMember(Name = "signature")]
         public string Signature { get; set; }
 
 
@@ -72,13 +66,19 @@ namespace ASC.Core.Billing
         {
             if (string.IsNullOrEmpty(licenseString)) throw new BillingNotFoundException("License file is empty");
 
-            var licenseJson = JObject.Parse(licenseString);
-            if (licenseJson == null) throw new BillingNotFoundException("Can't parse license");
+            try
+            {
+                var license = JsonSerializer.Deserialize<License>(licenseString);
+                if (license == null) throw new BillingNotFoundException("Can't parse license");
 
-            var license = licenseJson.ToObject<License>();
-            license.OriginalLicense = licenseString;
+                license.OriginalLicense = licenseString;
 
-            return license;
+                return license;
+            }
+            catch (Exception)
+            {
+                throw new BillingNotFoundException("Can't parse license");
+            }
         }
     }
 }

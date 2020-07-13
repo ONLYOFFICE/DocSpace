@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Common;
 using ASC.Core;
@@ -36,17 +35,14 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "share", Namespace = "")]
     public class FileShareParams
     {
         /// <summary>
         /// </summary>
-        [DataMember(Name = "shareTo", Order = 0)]
         public Guid ShareTo { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "access", Order = 1)]
         public FileShare Access { get; set; }
 
         /// <summary>

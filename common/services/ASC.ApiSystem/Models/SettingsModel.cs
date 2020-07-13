@@ -25,27 +25,22 @@
 
 
 using ASC.ApiSystem.Interfaces;
+
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace ASC.ApiSystem.Models
 {
-    [DataContract]
     public class SettingsModel : IModel
     {
-        [DataMember(IsRequired = false)]
         [StringLength(255)]
         public string PortalName { get; set; }
 
-        [DataMember(IsRequired = false)]
         public int? TenantId { get; set; }
 
 
-        [DataMember(IsRequired = true)]
         [StringLength(255)]
         public string Key { get; set; }
 
-        [DataMember(IsRequired = true)]
         public string Value { get; set; }
     }
 }

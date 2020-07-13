@@ -26,8 +26,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.Serialization;
-
+using System.Text.Json.Serialization;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
@@ -36,24 +35,22 @@ using ASC.Web.Studio.Core;
 namespace ASC.Files.Core
 {
     [Flags]
-    [DataContract(Namespace = "")]
     public enum FileStatus
     {
-        [EnumMember] None = 0x0,
+        None = 0x0,
 
-        [EnumMember] IsEditing = 0x1,
+        IsEditing = 0x1,
 
-        [EnumMember] IsNew = 0x2,
+        IsNew = 0x2,
 
-        [EnumMember] IsConverting = 0x4,
+        IsConverting = 0x4,
 
-        [EnumMember] IsOriginal = 0x8,
+        IsOriginal = 0x8,
 
-        [EnumMember] IsEditingAlone = 0x10
+        IsEditingAlone = 0x10
     }
 
     [Serializable]
-    [DataContract(Name = "file", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
     public class File<T> : FileEntry<T>
     {
@@ -75,13 +72,11 @@ namespace ASC.Files.Core
 
         public T FolderID { get; set; }
 
-        [DataMember(Name = "version")]
         public int Version { get; set; }
 
-        [DataMember(Name = "version_group")]
+        [JsonPropertyName("version_group")]
         public int VersionGroup { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Name = "comment")]
         public string Comment { get; set; }
 
         public string PureTitle
@@ -90,7 +85,6 @@ namespace ASC.Files.Core
             set { base.Title = value; }
         }
 
-        [DataMember(Name = "title", IsRequired = true)]
         public override string Title
         {
             get
@@ -102,10 +96,10 @@ namespace ASC.Files.Core
             set { base.Title = value; }
         }
 
-        [DataMember(EmitDefaultValue = true, Name = "content_length", IsRequired = true)]
+        [JsonPropertyName("content_length")]
         public long ContentLength { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Name = "content_length_string", IsRequired = true)]
+        [JsonPropertyName("content_length_string")]
         public string ContentLengthString
         {
             get { return FileSizeComment.FilesSizeToString(ContentLength); }
@@ -137,7 +131,7 @@ namespace ASC.Files.Core
             }
         }
 
-        [DataMember(EmitDefaultValue = false, Name = "file_status")]
+        [JsonPropertyName("file_status")]
         public FileStatus FileStatus
         {
             get
@@ -162,10 +156,9 @@ namespace ASC.Files.Core
             set { _status = value; }
         }
 
-        [DataMember(EmitDefaultValue = false, Name = "locked")]
         public bool Locked { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Name = "locked_by")]
+        [JsonPropertyName("locked_by")]
         public string LockedBy { get; set; }
 
         public override bool IsNew
@@ -180,7 +173,6 @@ namespace ASC.Files.Core
             }
         }
 
-        [DataMember(EmitDefaultValue = false, Name = "encrypted")]
         public bool Encrypted { get; set; }
 
         public ForcesaveType Forcesave { get; set; }
@@ -225,7 +217,7 @@ namespace ASC.Files.Core
 
         private T _folderIdDisplay;
 
-        [DataMember(Name = "folder_id")]
+        [JsonPropertyName("folder_id")]
         public override T FolderIdDisplay
         {
             get
