@@ -25,9 +25,7 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Json;
 using System.Text.Json;
 
 using ASC.Common;
@@ -247,7 +245,7 @@ namespace ASC.Core.Data
 
                 if (result != null)
                 {
-                    settings = Deserialize<T>(result.ToString());
+                    settings = Deserialize<T>(result);
                 }
                 else
                 {

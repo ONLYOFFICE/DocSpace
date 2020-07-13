@@ -31,7 +31,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -149,12 +148,12 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
             }
 
-            public string Message = null;
+            public string Message { get; set; }
 
-            public string[] Addresses = null;
+            public string[] Addresses { get; set; }
 
             public static string Serialize(TrackResponse response)
-            { 
+            {
                 return JsonSerializer.Serialize(response);
             }
         }
