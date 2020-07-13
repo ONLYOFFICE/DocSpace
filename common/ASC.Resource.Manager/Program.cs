@@ -41,10 +41,10 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                //project = "WebStudio";
-                //module = "Notify";
-                //filePath = "WebstudioNotifyPatternResource.resx";
-                //exportPath = @"C:\Git\portals_core\web\ASC.Web.Core\PublicResources";
+                //project = "Files";
+                //module = "JavaScript";
+                //filePath = "FilesJSResource.resx";
+                //exportPath = @"C:\Git\portals_core\products\ASC.Files\Server\Resources";
 
                 if (format == "json")
                 {
@@ -74,7 +74,7 @@ namespace ASC.Resource.Manager
                 enabledSettings = serviceProvider.GetService<IConfiguration>().GetSetting<EnabledSettings>("enabled");
                 cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = ResourceData.GetAllFiles();
-                //key = CheckExist("WebstudioNotifyPatternResource", "ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core");
+                //key = CheckExist("FilesJSResource", "ASC.Files.Resources.FilesJSResource,ASC.Files");
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);
 
