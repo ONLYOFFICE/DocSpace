@@ -16,7 +16,7 @@ const StyledScrollbar = styled(ClearScrollbar)`
     outline: none;
     }
   width: 100% !important;
-  height: 91px !important;
+  height: ${props => props.heightScale ? '67vh' : '91px'} !important;
   background-color: ${props => props.isDisabled && '#F8F9F9'};
 
 `;
@@ -78,6 +78,7 @@ class Textarea extends React.PureComponent {
       isDisabled,
       isReadOnly,
       hasError,
+      heightScale,
       maxLength,
       name,
       onChange,
@@ -93,6 +94,7 @@ class Textarea extends React.PureComponent {
         stype='preMediumBlack'
         isDisabled={isDisabled}
         hasError={hasError}
+        heightScale={heightScale}
       >
         <StyledTextarea
           id={id}
@@ -117,6 +119,7 @@ Textarea.propTypes = {
   isDisabled: PropTypes.bool,
   isReadOnly: PropTypes.bool,
   hasError: PropTypes.bool,
+  heightScale: PropTypes.bool,
   maxLength: PropTypes.number,
   name: PropTypes.string,
   onChange: PropTypes.func,
@@ -131,6 +134,7 @@ Textarea.defaultProps = {
   isDisabled: false,
   isReadOnly: false,
   hasError: false,
+  heightScale: false,
   placeholder: '',
   tabIndex: -1,
   value: '',
