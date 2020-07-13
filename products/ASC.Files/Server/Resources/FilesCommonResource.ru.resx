@@ -59,300 +59,300 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
-    <value>Outside portal</value>
+    <value>Вне портала</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
-    <value>Comment</value>
+    <value>Комментирование</value>
   </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
-    <value>Form Filling</value>
+    <value>Заполнение форм</value>
   </data>
   <data name="AceStatusEnum_Read" xml:space="preserve">
-    <value>Read Only</value>
+    <value>Только чтение</value>
   </data>
   <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
-    <value>Full Access</value>
+    <value>Полный доступ</value>
   </data>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
-    <value>Deny Access</value>
+    <value>Запретить доступ</value>
   </data>
   <data name="AceStatusEnum_Review" xml:space="preserve">
-    <value>Review</value>
+    <value>Рецензирование</value>
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>Admin</value>
+    <value>Администратор</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
-    <value>To work with the file you must grant access to it</value>
+    <value>Для работы с файлом Вы должны предоставить к нему доступ</value>
   </data>
   <data name="Author_Me" xml:space="preserve">
-    <value>Me</value>
+    <value>Я</value>
   </data>
   <data name="CommentAutosave" xml:space="preserve">
-    <value>Autosaved</value>
+    <value>Сохранена автоматически</value>
   </data>
   <data name="CommentChangeOwner" xml:space="preserve">
-    <value>Changed owner</value>
+    <value>Изменен владелец</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>Converted from {0}</value>
+    <value>Сконвертирована из {0}</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
-    <value>Copied</value>
+    <value>Скопирована</value>
   </data>
   <data name="CommentCreate" xml:space="preserve">
-    <value>Created</value>
+    <value>Создано</value>
   </data>
   <data name="CommentCreateByDocuSign" xml:space="preserve">
-    <value>Created by DocuSign</value>
+    <value>Создана с помощью DocuSign</value>
   </data>
   <data name="CommentEdit" xml:space="preserve">
-    <value>Edited</value>
+    <value>Отредактирована</value>
   </data>
   <data name="CommentEditEncrypt" xml:space="preserve">
-    <value>Edited with encrypt</value>
+    <value>Отредактирована с шифрованием</value>
   </data>
   <data name="CommentEncrypted" xml:space="preserve">
-    <value>Encrypted</value>
+    <value>Зашифрована</value>
   </data>
   <data name="CommentForcesave" xml:space="preserve">
-    <value>Saved</value>
+    <value>Сохранена</value>
   </data>
   <data name="CommentOverwrite" xml:space="preserve">
-    <value>Overwritten</value>
+    <value>Перезаписана</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restored from the revision of {0}</value>
+    <value>Восстановлена из ревизии от {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Restored from the document change of {0}</value>
+    <value>Восстановлена из изменения документа от {0}</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
-    <value>Uploaded</value>
+    <value>Загружена</value>
   </data>
   <data name="DocuSignStatusDeclined" xml:space="preserve">
-    <value>Declined</value>
+    <value>Отклонен</value>
   </data>
   <data name="DocuSignStatusError" xml:space="preserve">
-    <value>There was an error during the send operation</value>
+    <value>В ходе отправки произошла ошибка</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
-    <value>Sending the document via DocuSign has been canceled</value>
+    <value>Отправка документа с помощью DocuSign отменена</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Document was sent to sign via DocuSign</value>
+    <value>Документ отправлен на подпись с помощью DocuSign</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
-    <value>Voided</value>
+    <value>Аннулирован</value>
   </data>
   <data name="EditorMentions" xml:space="preserve">
-    <value>Notify when mentioned in document</value>
+    <value>Оповещать при упоминании в документе</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Bad request.</value>
+    <value>Неверный запрос.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
-    <value>You can not select this user</value>
+    <value>Нельзя выбрать этого пользователя</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>Conversion takes too much time.</value>
+    <value>Конвертация занимает слишком много времени.</value>
   </data>
   <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>You are not allowed to create folders in the Recycle Bin</value>
+    <value>Запрещено создавать папки в корзине</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Error occurred in the Documents Service</value>
+    <value>Произошла ошибка сервиса документов</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>The file is opened for editing by {0}. Currently, the co-editing feature is not supported for this file format.</value>
+    <value>Файл открыт на редактирование пользователем {0}. В настоящее время возможность совместного редактирования не поддерживается для этого формата.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>The file is open for editing in a mobile application by {0}</value>
+    <value>Файл открыт на редактирование в мобильном приложении пользователем: {0}</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
-    <value>Empty file</value>
+    <value>Пустой документ</value>
   </data>
   <data name="ErrorMassage_FileNotFound" xml:space="preserve">
-    <value>The required file was not found</value>
+    <value>Запрашиваемый файл не найден</value>
   </data>
   <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
-    <value>File larger than {0} will not be converted</value>
+    <value>Файл более {0} не будет сконвертирован</value>
   </data>
   <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
-    <value>File larger than {0} will not be copied</value>
+    <value>Файл более {0} не будет скопирован</value>
   </data>
   <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
-    <value>File larger than {0} will not be edited</value>
+    <value>Файл размером более {0} нельзя отредактировать</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>File larger than {0} will not be moved</value>
+    <value>Файл более {0} не будет перемещен</value>
   </data>
   <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>File larger than {0} will not be archived</value>
+    <value>Файл более {0} не будет архивирован</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
-    <value>You cannot copy the folder to its subfolder</value>
+    <value>Нельзя скопировать папку в свою дочернюю папку</value>
   </data>
   <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
-    <value>The required folder was not found</value>
+    <value>Запрашиваемая папка не найдена</value>
   </data>
   <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
-    <value>Incorrect title</value>
+    <value>Некорректное название</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value>The file is currently locked by another user</value>
+    <value>Файл заблокирован другим пользователем</value>
   </data>
   <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>There are no available accounts to send the message. Go to Mail and connect a mailbox.</value>
+    <value>Нет доступных учетных записей, чтобы отправить письмо. Перейдите в Почту и подключите почтовый ящик.</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>At least {0} mail messages could not be sent. Please visit the Mail module to see what the reason for the failure could be.</value>
+    <value>Как минимум {0} писем не удалось отправить. Перейдите в модуль "Почта", чтобы выяснить возможную причину ошибки.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Too many downloads.</value>
+    <value>Слишком много загрузок.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
-    <value>Sorry, this file format isn't supported</value>
+    <value>К сожалению, этот формат файла не поддерживается</value>
   </data>
   <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>The operation was canceled</value>
+    <value>Операция отменена</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>Author of the save is unknown</value>
+    <value>Автор сохранения неизвестен</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>The file was corrupted when you tried to save it</value>
+    <value>Файл был поврежден при попытке сохранения</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Failed to get the file to be saved</value>
+    <value>Не удалось получить файл для сохранения</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
-    <value>You don't have enough permission to perform the operation</value>
+    <value>Недостаточно прав для совершения операции</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Can't authorize at {0} provider with given credentials.</value>
+    <value>Не удается авторизоваться у провайдера {0} с указанными учетными данными.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
-    <value>You don't have enough permission to create</value>
+    <value>У Вас недостаточно прав для создания</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
-    <value>Cannot delete the file because it is opened for editing</value>
+    <value>Невозможно удалить файл, т.к. файл открыт на редактирование</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>Cannot delete the folder because one of the files is opened for editing</value>
+    <value>Невозможно удалить папку, т.к. один из файлов открыт на редактирование</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
-    <value>You don't have enough permission to delete the file</value>
+    <value>Недостаточно прав для удаления файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
-    <value>You don't have enough permission to delete the folder</value>
+    <value>Недостаточно прав для удаления папки</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
-    <value>You do not have enough permissions to edit the file</value>
+    <value>Недостаточно прав для редактирования файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
-    <value>This document is being edited by you in another tab</value>
+    <value>Этот документ редактируется Вами в другой вкладке</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>You don't have enough permission to move the file</value>
+    <value>У вас недостаточно прав для перемещения этого файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
-    <value>You don't have enough permission to move the folder</value>
+    <value>У вас недостаточно прав для перемещения этой папки</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
-    <value>You don't have enough permission to view the file</value>
+    <value>Недостаточно прав для просмотра файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
-    <value>You don't have enough permission to view the folder content</value>
+    <value>Недостаточно прав для просмотра папки</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
-    <value>You don't have enough permission to rename the file</value>
+    <value>Недостаточно прав для переименования файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
-    <value>You don't have enough permission to rename the folder</value>
+    <value>Недостаточно прав для переименования папки</value>
   </data>
   <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
-    <value>Cannot update the file because it's opened for editing</value>
+    <value>Невозможно обновить файл, т.к. файл открыт на редактирование</value>
   </data>
   <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
-    <value>You don't have enough permission to view the folder content</value>
+    <value>Недостаточно прав для просмотра папки</value>
   </data>
   <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
-    <value>The content of third party folder are not available. Try to reconnect the account.</value>
+    <value>Содержимое папки стороннего ресурса недоступно. Попробуйте заново подключить аккаунт.</value>
   </data>
   <data name="ErrorMassage_StartEditing" xml:space="preserve">
-    <value>File editing start error</value>
+    <value>Ошибка запуска редактирования файла</value>
   </data>
   <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
-    <value>You cannot update a file which is opened for editing</value>
+    <value>Нельзя обновлять файл, открытый на редактирование</value>
   </data>
   <data name="ErrorMassage_UserNotFound" xml:space="preserve">
-    <value>User could not be found</value>
+    <value>Пользователь не найден</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
-    <value>You are not allowed to preview the elements in the Recycle Bin</value>
+    <value>Запрещено просматривать элементы корзины</value>
   </data>
   <data name="Everyone" xml:space="preserve">
-    <value>Everyone</value>
+    <value>Все</value>
   </data>
   <data name="Guest" xml:space="preserve">
-    <value>Anonymous</value>
+    <value>Анонимный пользователь</value>
   </data>
   <data name="IndexTitle" xml:space="preserve">
-    <value>Search by contents of documents</value>
+    <value>Поиск по содержимому документов</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
-    <value>File created in folder "{0}"</value>
+    <value>Файл создан в папке "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common Documents' section|Set up access rights to the documents and folders in the 'Common Documents' section</value>
+    <value>Делать то же самое, что и пользователь|Подключать аккаунты Dropbox, Box и другие в разделе 'Общие документы'|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+    <value>Создавайте, редактируйте документы и предоставляйте к ним доступ. Используйте совместное редактирование в режиме реального времени. Гарантируется 100% совместимость с форматами MS Office.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+    <value>Создавайте, редактируйте документы и предоставляйте к ним доступ. Используйте совместное редактирование в режиме реального времени. Гарантируется 100% совместимость с форматами MS Office.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>View and download shared documents. Upload files to shared folders. 100% compatibility with docx, xlsx, pptx guaranteed.</value>
+    <value>Просматривайте и скачивайте документы, к которым предоставлен доступ. Загружайте файлы в общие папки. Гарантируется 100% совместимость с форматами docx, xlsx, pptx.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Documents</value>
+    <value>Документы</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Create and edit own documents as well as the shared documents with the proper access rights|Give reading/editing access to other users to the documents and folders|Link Dropbox, Box and other accounts in the 'My documents' section</value>
+    <value>Создавать и редактировать свои документы, а также те, к которым предоставлен доступ с соответствующими правами|Предоставлять другим пользователям доступ к документам и папкам с правами на чтение/редактирование|Подключать аккаунты Dropbox, Box и другие в разделе 'Мои документы'</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} removed</value>
+    <value>{!User} удален</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>Поиск</value>
   </data>
   <data name="ShareFolder" xml:space="preserve">
-    <value>Notify when a folder is shared</value>
+    <value>Оповещать при предоставлении доступа к папке</value>
   </data>
   <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Notify when document signed via DocuSign</value>
+    <value>Оповещать о подписании документа с помощью DocuSign</value>
   </data>
   <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Notify when document in DocuSign changed status</value>
+    <value>Оповещать об изменении статуса документа в DocuSign</value>
   </data>
   <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Notify when a document is shared</value>
+    <value>Оповещать при предоставлении доступа</value>
   </data>
   <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Notify when mailing is complete</value>
+    <value>Оповещать о завершении рассылки</value>
   </data>
   <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documents of {!user} {0}</value>
+    <value>Документы пользователя {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Имя</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Фамилия</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>The file is unlocked</value>
+    <value>Файл разблокирован</value>
   </data>
 </root>

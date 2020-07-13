@@ -58,13 +58,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TitleNewFilePresentation" xml:space="preserve">
-    <value>New Presentation</value>
+  <data name="CorporateFiles" xml:space="preserve">
+    <value>Documentos comunes</value>
   </data>
-  <data name="TitleNewFileSpreadsheet" xml:space="preserve">
-    <value>New Spreadsheet</value>
+  <data name="MyFiles" xml:space="preserve">
+    <value>Mis documentos</value>
   </data>
-  <data name="TitleNewFileText" xml:space="preserve">
-    <value>New Document</value>
+  <data name="ProjectFiles" xml:space="preserve">
+    <value>Documentos de proyecto</value>
+  </data>
+  <data name="SharedForMe" xml:space="preserve">
+    <value>Compartido para mi</value>
+  </data>
+  <data name="Trash" xml:space="preserve">
+    <value>Papelera de reciclaje</value>
   </data>
 </root>

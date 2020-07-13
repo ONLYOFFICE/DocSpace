@@ -59,12 +59,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TitleNewFilePresentation" xml:space="preserve">
-    <value>New Presentation</value>
+    <value>Nuova presentazione</value>
   </data>
   <data name="TitleNewFileSpreadsheet" xml:space="preserve">
-    <value>New Spreadsheet</value>
+    <value>Nuovo foglio elettronico</value>
   </data>
   <data name="TitleNewFileText" xml:space="preserve">
-    <value>New Document</value>
+    <value>Nuovo documento</value>
   </data>
 </root>

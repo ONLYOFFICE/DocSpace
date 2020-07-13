@@ -73,12 +73,12 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  completeAction = () => {
+  completeAction = (e) => {
     //this.setState({ loading: false }, () =>)
-    this.props.onEditComplete();
+    this.props.onEditComplete(e);
   }
 
-  updateItem = () => {
+  updateItem = (e) => {
     const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
 
     const { itemTitle } = this.state;
@@ -86,29 +86,29 @@ class FilesRowContent extends React.PureComponent {
 
     onLoading(true);
     if (originalTitle === itemTitle)
-      return this.completeAction();
+      return this.completeAction(e);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction()).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => onLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction()).finally(() => onLoading(false));
+        .then(() => this.completeAction(e)).finally(() => onLoading(false));
   };
 
-  createItem = () => {
+  createItem = (e) => {
     const { createFile, createFolder, item, onLoading } = this.props;
     const { itemTitle } = this.state;
 
     onLoading(true);
 
     if (itemTitle.trim() === '')
-      return this.completeAction();
+      return this.completeAction(e);
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-        .then(() => this.completeAction()).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => onLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction()).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => onLoading(false))
   }
 
   componentDidUpdate(prevProps) {
@@ -124,9 +124,9 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ itemTitle: e.target.value });
   }
 
-  cancelUpdateItem = () => {
+  cancelUpdateItem = (e) => {
     //this.setState({ loading: false });
-    this.completeAction();
+    this.completeAction(e);
   }
 
   onClickUpdateItem = () => {
@@ -324,6 +324,7 @@ class FilesRowContent extends React.PureComponent {
         onKeyUpUpdateItem={this.onKeyUpUpdateItem}
         onClickUpdateItem={this.onClickUpdateItem}
         cancelUpdateItem={this.cancelUpdateItem}
+        itemId={id}
       />
       : (
         <>
