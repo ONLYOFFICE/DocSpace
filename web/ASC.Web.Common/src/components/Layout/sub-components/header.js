@@ -5,6 +5,7 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import { utils } from "asc-web-components";
 import RecoverAccess from "../sub-components/recover-access";
+import HeaderLogo from "../sub-components/header-logo";
 const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
@@ -18,10 +19,6 @@ const Header = styled.header`
   width: 100vw;
   height: 56px;
 
-  .header-logo-wrapper {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
-
   .header-module-title {
     display: block;
     font-size: 21px;
@@ -31,37 +28,13 @@ const Header = styled.header`
       display: none;
     }
   }
-
-  .header-logo-min_icon {
-    display: none;
-    cursor: pointer;
-    
-
-    width: 24px;
-    height: 24px;
-    @media (max-width: 620px) {
-      padding: 0 12px 0 0;
-      display: ${props => props.module && "block"};
-    }
-  }
-
-  .header-logo-icon {
-    width: 146px;
-    height: 24px;
-    position: relative;
-    padding: 4px 20px 0 6px;
-    cursor: pointer;
-
-    @media (max-width: 620px) {
-      display: ${props => (props.module ? "none" : "block")};
-      padding: 0px 20px 0 6px;
-    }
-  }
 `;
 
 const HeaderComponent = React.memo(props => {
   //console.log("Header render");
   const currentModule = props.currentModule && props.currentModule.title;
+  const isAuthKey = localStorage.getItem("asc_auth_key");
+  
   return (
     <Header module={currentModule}>
       {props.currentUser && <NavItem
@@ -70,14 +43,8 @@ const HeaderComponent = React.memo(props => {
         onClick={props.onClick}
         noHover={true}
       />}
-      <a className="header-logo-wrapper" href="/">
-        <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
-        <img
-          className="header-logo-icon"
-          src="images/nav.logo.opened.react.svg"
-        />
-      </a>
-      {!localStorage.getItem("asc_auth_key") && <RecoverAccess t={props.t} className="recover-container" />}
+      <HeaderLogo module={module} logged={isAuthKey} />
+      {!isAuthKey && <RecoverAccess t={props.t} className="recover-container" />}
       <Headline className="header-module-title" type="header" color="#FFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
