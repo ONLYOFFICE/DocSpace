@@ -34,7 +34,9 @@ import {
   getProgress,
   setDragging,
   setDragItem,
-  setMediaViewerData
+  setMediaViewerData,
+  setProgressBarData,
+  clearProgressData
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -201,25 +203,28 @@ class SectionBodyContent extends React.Component {
   }
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { deleteFile, t, startFilesOperations, finishFilesOperations } = this.props;
-
-    startFilesOperations(t("DeleteOperation"));
+    const { deleteFile, t, setProgressBarData } = this.props;
+    setProgressBarData({ visible: true, percent: 0, label: t("DeleteOperation")});
     deleteFile(fileId)
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false);
       })
-      .catch(err => finishFilesOperations(err))
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      })
   }
 
   loopDeleteProgress = (id, folderId, isFolder) => {
-    const { filter, treeFolders, setTreeFolders, currentFolderType, getProgress, setProgressValue, finishFilesOperations } = this.props;
+    const { filter, treeFolders, setTreeFolders, currentFolderType, getProgress, t, setProgressBarData } = this.props;
     getProgress().then(res => {
       const deleteProgress = res.find(x => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
-        setProgressValue(deleteProgress.progress);
+        setProgressBarData({ visible: true, percent: deleteProgress.progress, label: t("DeleteOperation") });
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
+        setProgressBarData({ visible: true, percent: 100, label: t("DeleteOperation") });
         fetchFiles(folderId, filter, store.dispatch).then(data => {
           if (currentFolderType !== "Trash" && isFolder) {
             const path = data.selectedFolder.pathParts.slice(0);
@@ -232,22 +237,28 @@ class SectionBodyContent extends React.Component {
           isFolder
             ? toastr.success(`Folder moved to recycle bin`)
             : toastr.success(`File moved to recycle bin`);
-          setProgressValue(100);
-          finishFilesOperations();
-        }).catch(err => finishFilesOperations(err))
+        }).catch(err => {
+          toastr.error(err);
+          clearProgressData(store.dispatch);
+        })
+        .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
       }
     })
   }
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder, startFilesOperations, finishFilesOperations, t } = this.props;
-    startFilesOperations(t("DeleteOperation"));
+    const { deleteFolder, t, setProgressBarData } = this.props;
+    const progressLabel = t("DeleteOperation");
+    setProgressBarData({ visible: true, percent: 0, label: progressLabel });
     deleteFolder(folderId, currentFolderId)
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true);
       })
-      .catch(err => finishFilesOperations(err))
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      })
   }
 
   onClickShare = item => {
@@ -879,13 +890,13 @@ class SectionBodyContent extends React.Component {
   }
 
   onMoveTo = (destFolderId) => {
-    const { selection, startFilesOperations, t, isShare, isCommon, isAdmin } = this.props;
+    const { selection, t, isShare, isCommon, isAdmin, setProgressBarData } = this.props;
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
 
-    startFilesOperations(t("MoveToOperation"));
+    setProgressBarData({ visible: true, percent: 0, label: t("MoveToOperation")});
     for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id)
@@ -910,25 +921,31 @@ class SectionBodyContent extends React.Component {
   }
 
   copyTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
-    const { copyToFolder, loopFilesOperations, finishFilesOperations } = this.props;
+    const { copyToFolder, loopFilesOperations } = this.props;
 
     copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, true);
       })
-      .catch(err => finishFilesOperations(err))
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      })
   }
 
   moveTo = (destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) => {
-    const { moveToFolder, loopFilesOperations, finishFilesOperations } = this.props;
+    const { moveToFolder, loopFilesOperations } = this.props;
 
     moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, false);
       })
-      .catch(err => finishFilesOperations(err))
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      })
   }
 
   getTooltipLabel = () => {
@@ -985,10 +1002,6 @@ class SectionBodyContent extends React.Component {
       dragging,
       mediaViewerVisible,
       currentMediaFileId,
-
-      startFilesOperations,
-      finishFilesOperations,
-      setProgressValue,
       filter
     } = this.props;
 
@@ -1154,9 +1167,6 @@ class SectionBodyContent extends React.Component {
                             onLoading={onLoading}
                             onMediaFileClick={this.onMediaFileClick}
                             isLoading={isLoading}
-                            setProgressValue={setProgressValue}
-                            startFilesOperations={startFilesOperations}
-                            finishFilesOperations={finishFilesOperations}
                           />
                         </SimpleFilesRow>
                       </DragAndDrop>
@@ -1253,6 +1263,7 @@ export default connect(
     getProgress,
     setDragging,
     setDragItem,
-    setMediaViewerData
+    setMediaViewerData,
+    setProgressBarData
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

@@ -82,9 +82,6 @@ class PureVersionHistory extends React.Component {
               <ArticleMainButtonContent
                 onLoading={this.onLoading}
                 startUpload={this.startUpload}
-                setProgressVisible={this.setProgressVisible}
-                setProgressValue={this.setProgressValue}
-                setProgressLabel={this.setProgressLabel}
               />
             }
             articleBodyContent={

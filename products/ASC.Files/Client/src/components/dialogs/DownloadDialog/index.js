@@ -22,7 +22,9 @@ import {
   isPresentation,
   isDocument,
 } from "../../../store/files/selectors";
+import { setProgressBarData, clearProgressData } from "../../../store/files/actions"
 import DownloadContent from "./DownloadContent";
+import store from "../../../store/store";
 
 const { changeLanguage } = utils;
 
@@ -162,18 +164,21 @@ class DownloadDialogComponent extends React.Component {
   }
 
   onDownload = () => {
-    const { startUploadSession, finishFilesOperations, onDownloadProgress, onClose, t } = this.props;
+    const { onDownloadProgress, onClose, t, setProgressBarData } = this.props;
 
     const downloadItems = this.getDownloadItems();
     const fileConvertIds = downloadItems[0];
     const folderIds = downloadItems[1];
 
     if(fileConvertIds.length || folderIds.length) {
-      startUploadSession(t("ArchivingData"));
+      setProgressBarData({ visible: true, percent: 0, label: t("ArchivingData")});
       api.files
         .downloadFormatFiles(fileConvertIds, folderIds)
         .then(() => { onClose(); onDownloadProgress(false); })
-        .catch(err => finishFilesOperations(err));
+        .catch(err => {
+          toastr.error(err);
+          clearProgressData(store.dispatch);
+      });
     }
   };
 
@@ -611,4 +616,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {})(withRouter(DownloadDialog));
+export default connect(mapStateToProps, { setProgressBarData })(withRouter(DownloadDialog));

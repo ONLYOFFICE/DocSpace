@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
@@ -256,17 +256,18 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ showConvertDialog: !this.state.showConvertDialog });
 
   getConvertProgress = fileId => {
+    const { selectedFolder, filter, onLoading, setProgressBarData, t } = this.props;
     api.files.getConvertFile(fileId).then(res => {
       if (res && res[0] && res[0].progress !== 100) {
-        this.props.setProgressValue(res[0].progress);
+        setProgressBarData({ visible: true, percent: res[0].progress, label: t("Convert")});
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
-        const { selectedFolder, filter, onLoading, setProgressValue, finishFilesOperations } = this.props;
         if (res[0].error) {
-          finishFilesOperations(res[0].error);
+          toastr.error(res[0].error);
+          clearProgressData(store.dispatch);
         } else {
-          setProgressValue(100);
-          finishFilesOperations();
+          setProgressBarData({ visible: true, percent: 100, label: t("Convert")});
+          setTimeout(() => clearProgressData(), 5000)
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter, store.dispatch)
             .catch(err => toastr.error(err))
@@ -277,8 +278,8 @@ class FilesRowContent extends React.PureComponent {
   }
 
   onConvert = () => {
-    const { item, startFilesOperations, t } = this.props;
-    startFilesOperations(t("Convert"));
+    const { item, t, setProgressBarData } = this.props;
+    setProgressBarData({ visible: true, percent: 0, label: t("Convert")});
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then(convertRes => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
@@ -521,6 +522,6 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders })(
+export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setProgressBarData })(
   withRouter(withTranslation()(FilesRowContent))
 );

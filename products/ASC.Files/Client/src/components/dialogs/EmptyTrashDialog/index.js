@@ -4,7 +4,7 @@ import { toastr, ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
-import { fetchFiles } from "../../../store/files/actions";
+import { fetchFiles, clearProgressData } from "../../../store/files/actions";
 import store from "../../../store/store";
 
 const { files } = api;
@@ -17,42 +17,52 @@ const EmptyTrashDialogComponent = props => {
     t,
     filter,
     currentFolderId,
-    startFilesOperations,
-    finishFilesOperations,
-    setProgressValue,
+    setProgressBarData,
     getProgress,
     isLoading
   } = props;
 
   changeLanguage(i18n);
-  
+
+ 
   const loopEmptyTrash = useCallback(id => {
     const successMessage = "Success empty recycle bin";
     getProgress().then(res => {
       const currentProcess = res.find(x => x.id === id);
       if(currentProcess && currentProcess.progress !== 100) {
-        setProgressValue(currentProcess.progress);
+        const newProgressData = { visible: true, percent: currentProcess.progress, label: t("DeleteOperation")};
+        setProgressBarData(newProgressData);
         setTimeout(() => loopEmptyTrash(id), 1000);
       } else {
         fetchFiles(currentFolderId, filter, store.dispatch).then(() => {
-          setProgressValue(100);
-          finishFilesOperations();
+          setProgressBarData({ visible: true, percent: 100, label: t("DeleteOperation")});
+          setTimeout(() => clearProgressData(store.dispatch), 5000);
           toastr.success(successMessage);
-        }).catch(err => finishFilesOperations(err))
+        }).catch(err => {
+          toastr.error(err);
+          clearProgressData(store.dispatch);
+        })
       }
-    }).catch(err => finishFilesOperations(err))
-  }, [currentFolderId, filter, finishFilesOperations, setProgressValue, getProgress])
+    }).catch(err => {
+      toastr.error(err);
+      clearProgressData(store.dispatch);
+    })
+  }, [t, currentFolderId, filter, getProgress, setProgressBarData])
 
   const onEmptyTrash = useCallback(() => {
-    startFilesOperations(t("DeleteOperation"));
+    const newProgressData = { visible: true, percent: 0, label: t("DeleteOperation")};
+    setProgressBarData(newProgressData);
     onClose();
     files.emptyTrash()
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopEmptyTrash(id);
       })
-      .catch(err => finishFilesOperations(err))
-  }, [onClose, loopEmptyTrash, startFilesOperations, finishFilesOperations, t]);
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      })
+  }, [onClose, loopEmptyTrash, setProgressBarData, t]);
 
   return (
     <ModalDialogContainer>
