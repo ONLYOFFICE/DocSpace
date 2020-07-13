@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -62,7 +61,7 @@ namespace ASC.Data.Storage
 
         static StaticUploader()
         {
-            Scheduler = new LimitedConcurrencyLevelTaskScheduler(4);
+            Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
             Cache = AscCache.Memory;
             Locker = new object();
             TokenSource = new CancellationTokenSource();
