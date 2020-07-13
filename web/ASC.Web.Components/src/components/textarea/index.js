@@ -10,7 +10,7 @@ const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
     :focus-within {
-      border-color: #2DA7DB;
+      border-color: ${props => props.hasError ? '#c30' : '#2DA7DB'};
     }
     :focus{
     outline: none;
@@ -44,6 +44,29 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
     outline: none;
     }
 
+    ::-webkit-input-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
+
+    :-moz-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
+
+    ::-moz-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
+
+    :-ms-input-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
 `;
 
 class Textarea extends React.PureComponent {
