@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchFiles } from "../../../../../store/files/actions";
+import { fetchFiles, setViewAs } from "../../../../../store/files/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -79,7 +79,6 @@ class SectionFilterContent extends React.Component {
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
-    const viewAs = data.viewAs;
     const authorType = getAuthorType(data.filterValues);
     const withSubfolders = getSearchParams(data.filterValues);
 
@@ -96,7 +95,6 @@ class SectionFilterContent extends React.Component {
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
-    newFilter.viewAs = viewAs;
     newFilter.filterType = filterType;
     newFilter.search = search;
     newFilter.authorType = authorType;
@@ -107,6 +105,10 @@ class SectionFilterContent extends React.Component {
     fetchFiles(selectedFolderId, newFilter, store.dispatch)
       .finally(() => onLoading(false));
   };
+
+  onChangeViewAs = (view) => {
+    this.props.setViewAs(view)
+  }
 
   getData = () => {
     const { t, customNames, user, selectedItem } = this.props;
@@ -231,8 +233,7 @@ class SectionFilterContent extends React.Component {
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy,
-      viewAs: filter.viewAs
+      sortId: filter.sortBy
     };
 
     selectedFilterData.inputValue = filter.search;
@@ -277,7 +278,7 @@ class SectionFilterContent extends React.Component {
 
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (!isEqual(this.props.filter, nextProps.filter) || this.props.selectedFolderId !== nextProps.selectedFolderId || this.state.isReady !== nextState.isReady);
+    return (!isEqual(this.props.filter, nextProps.filter) || this.props.selectedFolderId !== nextProps.selectedFolderId || this.state.isReady !== nextState.isReady || this.props.viewAs !== nextProps.viewAs);
   }
 
 
@@ -291,6 +292,8 @@ class SectionFilterContent extends React.Component {
         getSortData={this.getSortData}
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
+        onChangeViewAs={this.onChangeViewAs}
+        viewAs={this.props.viewAs}
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
@@ -309,11 +312,15 @@ function mapStateToProps(state) {
     filter: state.files.filter,
     customNames: state.auth.settings.customNames,
     selectedFolderId: state.files.selectedFolder.id,
-    selectedItem: state.files.filter.selectedItem
+    selectedItem: state.files.filter.selectedItem,
+    viewAs: state.files.viewAs
   };
 }
 
 export default connect(
   mapStateToProps,
-  { fetchFiles }
+  { 
+    fetchFiles,
+    setViewAs 
+  }
 )(withRouter(withTranslation()(SectionFilterContent)));

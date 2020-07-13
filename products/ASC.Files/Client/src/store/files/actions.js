@@ -34,6 +34,7 @@ export const SET_ACTION = "SET_ACTION";
 export const SET_DRAGGING = "SET_DRAGGING";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
+export const SET_VIEW_AS = "SET_VIEW_AS";
 
 export function setFile(file) {
   return {
@@ -125,6 +126,13 @@ export function setFilter(filter) {
     filter
   };
 };
+
+export function setViewAs(viewAs) {
+  return {
+    type: SET_VIEW_AS,
+    viewAs
+  };
+}
 
 export function selectFile(file) {
   return {

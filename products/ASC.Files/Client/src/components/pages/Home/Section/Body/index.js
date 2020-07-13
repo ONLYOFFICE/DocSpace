@@ -713,6 +713,10 @@ class SectionBodyContent extends React.Component {
     )
   }
 
+  onViewSelectorClick = () => {
+    this.props.setViewAs("tile")
+  }
+
   onMediaViewerClose = () => {
     const item = { visible: false, id: null };
     this.props.setMediaViewerData(item);
@@ -1000,7 +1004,7 @@ class SectionBodyContent extends React.Component {
       startFilesOperations,
       finishFilesOperations,
       setProgressValue,
-      filter
+      viewAs
     } = this.props;
 
     const { editingId, showSharingPanel, currentItem } = this.state;
@@ -1047,7 +1051,7 @@ class SectionBodyContent extends React.Component {
           <>
             <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
 
-              {filter.viewAs === "tile" 
+              {viewAs === "tile" 
                 ? 
                   <TileContainer className="tileContainer" draggable useReactWindow={false}>
                   {items.map((item) => {
@@ -1092,7 +1096,7 @@ class SectionBodyContent extends React.Component {
                           element={element}
                           onSelect={this.onContentRowSelect}
                           editing={editingId}
-                          viewAs={filter.viewAs}
+                          viewAs={viewAs}
                           {...checkedProps}
                           {...contextOptionsProps}
                           needForUpdate={this.needForUpdate}
@@ -1232,6 +1236,7 @@ const mapStateToProps = state => {
     selection,
     settings: state.auth.settings,
     viewer: state.auth.user,
+    viewAs: state.files.viewAs,
     treeFolders,
     currentFolderType,
     title,
