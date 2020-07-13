@@ -25,16 +25,14 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Core.Tenants
 {
     [Serializable]
-    [DataContract]
     public class TenantAnalyticsSettings : ISettings
     {
-        [DataMember(Name = "Analytics")]
         public bool Analytics { get; set; }
 
         public Guid ID

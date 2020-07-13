@@ -28,9 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Security;
-
+using System.Text.Json.Serialization;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -428,39 +427,31 @@ namespace ASC.Web.Files.Helpers
         }
 
 
-        [DataContract]
         [DebuggerDisplay("{AccountId} {BaseUri}")]
         private class DocuSignAccount
         {
-            [DataMember(Name = "account_id", EmitDefaultValue = false)]
+            [JsonPropertyName("account_id")]
             public string AccountId { get; set; }
 
-            [DataMember(Name = "base_uri", EmitDefaultValue = false)]
+            [JsonPropertyName("base_uri")]
             public string BaseUri { get; set; }
         }
 
-        [DataContract]
         private class DocuSignUserInfo
         {
-            [DataMember(Name = "accounts", EmitDefaultValue = false)]
             public List<DocuSignAccount> Accounts { get; set; }
         }
     }
 
-    [DataContract(Name = "docusign_data", Namespace = "")]
     [DebuggerDisplay("{Name}")]
     public class DocuSignData
     {
-        [DataMember(Name = "folderId")]
         public string FolderId { get; set; }
 
-        [DataMember(Name = "message")]
         public string Message { get; set; }
 
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
         public string Name { get; set; }
 
-        [DataMember(Name = "users")]
         public ItemList<Guid> Users { get; set; }
     }
 

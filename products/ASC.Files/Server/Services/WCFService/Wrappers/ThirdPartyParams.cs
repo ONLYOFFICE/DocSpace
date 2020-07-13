@@ -24,27 +24,25 @@
 */
 
 
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using ASC.Files.Core;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    [DataContract(Name = "third_party", Namespace = "")]
     public class ThirdPartyParams
     {
-        [DataMember(Name = "auth_data", EmitDefaultValue = false)]
+        [JsonPropertyName("auth_data")]
         public AuthData AuthData { get; set; }
 
-        [DataMember(Name = "corporate")]
         public bool Corporate { get; set; }
 
-        [DataMember(Name = "customer_title")]
+        [JsonPropertyName("customer_title")]
         public string CustomerTitle { get; set; }
 
-        [DataMember(Name = "provider_id")]
+        [JsonPropertyName("provider_id")]
         public string ProviderId { get; set; }
 
-        [DataMember(Name = "provider_key")]
+        [JsonPropertyName("provider_key")]
         public string ProviderKey { get; set; }
     }
 }
