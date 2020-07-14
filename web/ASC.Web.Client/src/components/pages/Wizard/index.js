@@ -84,8 +84,6 @@ const WizardContainer = styled.div`
 
   .header-box {
     width: 100%;
-    font-family: 'Open Sans';
-    font-style: normal;
 
     .wizard-title {
       text-align: center;
@@ -97,7 +95,6 @@ const WizardContainer = styled.div`
 
     .wizard-desc {
       text-align: center;
-      font-weight: normal;
       font-size: 13px;
       line-height: 20px;
       margin: 10px 12px;
@@ -122,9 +119,6 @@ const WizardContainer = styled.div`
 
   .input-box {
     width: 311px;
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: normal;
     margin: 32px auto 0 auto;
 
     input {
@@ -209,9 +203,6 @@ const WizardContainer = styled.div`
 
     .settings-title {
       width: 66px;
-      font-family: Open Sans;
-      font-style: normal;
-      font-weight: normal;
       font-size: 13px;
       line-height: 20px;
       margin: 16px 0px;
@@ -225,7 +216,6 @@ const WizardContainer = styled.div`
     }
 
     .text, .value {
-      font-style: normal;
       font-weight: 600;
       font-size: 13px;
       line-height: 20px;
@@ -300,9 +290,6 @@ const WizardContainer = styled.div`
   }
 
   .modal-error-content {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: normal;
     font-size: 13px;
     line-height: 20px;
   }
@@ -427,7 +414,7 @@ class Body extends Component {
   }
   
   onIconFileClick = (e) => {
-    e.target.blur()
+    e.target.blur();
     this.inputRef.current.click();
   }
 
@@ -790,7 +777,7 @@ Wizard.propTypes = {
   isWizardLoaded: PropTypes.bool.isRequired,
   machineName: PropTypes.string.isRequired,
   isComplete: PropTypes.bool.isRequired,
-  wizardToken: PropTypes.string.isRequired,
+  wizardToken: PropTypes.string,
   settingsPassword: PropTypes.object,
   cultures: PropTypes.array.isRequired,
   portalCulture: PropTypes.string.isRequired,
