@@ -1,5 +1,5 @@
 {
 	"kafka": {
-		"BootstrapServers": ""
+		"BootstrapServers": "localhost:9092"
 	}
 }
