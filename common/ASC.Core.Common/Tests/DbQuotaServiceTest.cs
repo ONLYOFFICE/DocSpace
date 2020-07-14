@@ -31,7 +31,7 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using System.Runtime.Serialization.Json;
     using System.Text;
-
+    using System.Text.Json;
     using ASC.Core.Billing;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
@@ -100,10 +100,7 @@ namespace ASC.Core.Common.Tests
                 ActiveUsers = 30,
             };
 
-            var serializer = new DataContractJsonSerializer(quota1.GetType());
-            using var ms = new MemoryStream();
-            serializer.WriteObject(ms, quota1);
-            var json = Encoding.UTF8.GetString(ms.ToArray());
+            var json = JsonSerializer.Serialize(quota1);
             Assert.AreEqual("{\"Id\":1024,\"Name\":\"quota1\",\"MaxFileSize\":3,\"MaxTotalSize\":4,\"ActiveUsers\":30,\"Features\":\"trial,year\",\"Price\":12.5,\"Price2\":45.23,\"AvangateId\":\"1\",\"Visible\":true}", json);
         }
 

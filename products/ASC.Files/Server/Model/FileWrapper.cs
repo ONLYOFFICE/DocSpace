@@ -26,9 +26,9 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
@@ -45,70 +45,57 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "file", Namespace = "")]
     public class FileWrapper<T> : FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public T FolderId { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int Version { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int VersionGroup { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = true)]
         public string ContentLength { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = true)]
-        public long PureContentLength { get; set; }
+        public long? PureContentLength { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public FileStatus FileStatus { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public string ViewUrl { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public string WebUrl { get; set; }
 
         /// <summary>
         ///     
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public FileType FileType { get; set; }
 
         /// <summary>
         ///     
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
         public string FileExst { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public string Comment { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false)]
-        public bool Encrypted { get; set; }
+        public bool? Encrypted { get; set; }
 
         /// <summary>
         /// </summary>
@@ -198,9 +185,9 @@ namespace ASC.Api.Documents
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;
             result.FileStatus = file.FileStatus;
-            result.PureContentLength = file.ContentLength;
+            result.PureContentLength = file.ContentLength.NullIfDefault();
             result.Comment = file.Comment;
-            result.Encrypted = file.Encrypted;
+            result.Encrypted = file.Encrypted.NullIfDefault();
             try
             {
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);

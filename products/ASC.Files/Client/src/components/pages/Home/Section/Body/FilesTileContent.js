@@ -15,6 +15,64 @@ import TileContent from './TileContent';
 
 const { FileAction } = constants;
 
+const SimpleFilesTileContent = styled(TileContent)`
+  .rowMainContainer{
+    height: auto;
+    max-width: 100%;
+    align-self: flex-end;
+
+    a{
+      word-break: break-word;
+    }
+  }
+
+  .mainIcons{
+    align-self: flex-end;
+  }
+
+  .badge-ext {
+    margin-left: -8px;
+    margin-right: 8px;
+  }
+
+  .badge {
+    margin-right: 8px;
+  }
+
+  .badges {
+    display: flex;
+    align-items: center;
+  }
+
+  .share-icon {
+    margin-top: -4px;
+    padding-right: 8px;
+  }
+
+  @media (max-width: 1024px) {
+    display: inline-flex;
+    height: auto;
+
+    &>div{
+      margin-top:0;
+    }
+  }
+`;
+
+const okIcon = <Icons.CheckIcon
+  className='edit-ok-icon'
+  size='scale'
+  isfill={true}
+  color='#A3A9AE'
+/>;
+
+const cancelIcon = <Icons.CrossIcon
+  className='edit-cancel-icon'
+  size='scale'
+  isfill={true}
+  color='#A3A9AE'
+/>;
+
 class FilesTileContent extends React.PureComponent {
 
   constructor(props) {
@@ -223,67 +281,7 @@ class FilesTileContent extends React.PureComponent {
       id
     } = item;
 
-
-    const SimpleFilesTileContent = styled(TileContent)`
-
-    .rowMainContainer{
-      height: auto;
-      max-width: 100%;
-      align-self: flex-end;
-
-      a{
-        word-break: break-word;
-      }
-    }
-
-    .mainIcons{
-      align-self: flex-end;
-    }
-
-    .badge-ext {
-      margin-left: -8px;
-      margin-right: 8px;
-    }
-
-    .badge {
-      margin-right: 8px;
-    }
-
-    .badges {
-      display: flex;
-      align-items: center;
-    }
-
-    .share-icon {
-      margin-top: -4px;
-      padding-right: 8px;
-    }
-
-    @media (max-width: 1024px) {
-      display: inline-flex;
-      height: auto;
-
-      &>div{
-        margin-top:0;
-      }
-    }
-    `;
-
     const titleWithoutExt = getTitleWithoutExst(item);
-
-    const okIcon = <Icons.CheckIcon
-      className='edit-ok-icon'
-      size='scale'
-      isfill={true}
-      color='#A3A9AE'
-    />;
-
-    const cancelIcon = <Icons.CrossIcon
-      className='edit-cancel-icon'
-      size='scale'
-      isfill={true}
-      color='#A3A9AE'
-    />;
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
@@ -316,6 +314,7 @@ class FilesTileContent extends React.PureComponent {
           sideColor="#333"
           isFile={fileExst}
           onClick={this.onMobileRowClick}
+          disableSideInfo
         >
           <Link
             containerWidth='100%'

@@ -43,13 +43,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-
 using Newtonsoft.Json;
 
 namespace ASC.FederatedLogin.Profile
 {
     [Serializable]
-    [DataContract(Name = "LoginProfile", Namespace = "")]
     [DebuggerDisplay("{DisplayName} ({Id})")]
     public class LoginProfile
     {
@@ -147,14 +145,12 @@ namespace ASC.FederatedLogin.Profile
             internal set { SetField(WellKnownFields.Auth, value); }
         }
 
-        [DataMember(Name = "AuthorizationError")]
         public string AuthorizationError
         {
             get { return GetField(WellKnownFields.AuthError); }
             internal set { SetField(WellKnownFields.AuthError, value); }
         }
 
-        [DataMember(Name = "Provider")]
         public string Provider
         {
             get { return GetField(WellKnownFields.Provider); }
@@ -177,14 +173,12 @@ namespace ASC.FederatedLogin.Profile
             get { return HashHelper.MD5(UniqueId); }
         }
 
-        [DataMember(Name = "Hash")]
         public string Hash
         {
             get { return Signature?.Create(HashId); }
             set { throw new NotImplementedException(); }
         }
 
-        [DataMember(Name = "Serialized")]
         public string Serialized
         {
             get { return Transport(); }
@@ -415,11 +409,7 @@ namespace ASC.FederatedLogin.Profile
 
         public string ToJson()
         {
-            using var ms = new MemoryStream();
-            var serializer = new DataContractJsonSerializer(typeof(LoginProfile));
-            serializer.WriteObject(ms, this);
-            ms.Seek(0, SeekOrigin.Begin);
-            return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+            return System.Text.Json.JsonSerializer.Serialize(this);
         }
     }
 }

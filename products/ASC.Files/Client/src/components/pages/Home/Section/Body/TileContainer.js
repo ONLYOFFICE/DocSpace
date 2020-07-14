@@ -7,7 +7,6 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { ContextMenu, CustomScrollbarsVirtualList, Heading} from "asc-web-components";
 
 const StyledTileContainer = styled.div`
-  height: ${props => props.useReactWindow ? props.manualHeight ? props.manualHeight : '100%' : 'auto'};
   position: relative;
 
   &.tileContainer{
@@ -111,8 +110,27 @@ class TileContainer extends React.PureComponent {
   }, areEqual);
 
   render() {
-    const { manualHeight, itemHeight, children, useReactWindow, id, className, style } = this.props;
+    const { itemHeight, children, useReactWindow, id, className, style } = this.props;
 
+    const Folders = [];
+    const Files = [];
+
+    children.forEach((item, index) => {
+      if(item.props.isFolder) {  
+        Folders.push(
+          <div className="tileItemWrapper folder" key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
+            {item}
+          </div>
+        )
+      } else {
+          Files.push(
+            <div className="tileItemWrapper file" key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
+              {item}
+            </div>
+          )
+      }
+    });
+    
     const renderList = ({ height, width }) => (
       <List
         className="List"
@@ -128,27 +146,24 @@ class TileContainer extends React.PureComponent {
     );
 
     return (
-      <StyledTileContainer id={id} className={className} style={style} manualHeight={manualHeight} useReactWindow={useReactWindow}>
-        <Heading size="xsmall" className="tileItemsHeading">Folders</Heading>
-          { useReactWindow 
-            ? <AutoSizer>{renderList}</AutoSizer>
-            : children.map((item, index) => (
-              item.props.isFolder && 
-                <div className="tileItemWrapper folder" key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
-                {item}
-                </div>
-            ))
-          }
-        <Heading size="xsmall" className="tileItemsHeading files">Files</Heading>
-          { useReactWindow 
-            ? <AutoSizer>{renderList}</AutoSizer>
-            : children.map((item, index) => (
-              !item.props.isFolder && 
-                <div className="tileItemWrapper file" key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
-                {item}
-                </div>
-            ))
-          }
+      <StyledTileContainer id={id} className={className} style={style} useReactWindow={useReactWindow}>
+        {Folders.length > 0 && 
+          <>
+            <Heading size="xsmall" className="tileItemsHeading">Folders</Heading>
+            {useReactWindow 
+              ? <AutoSizer>{renderList}</AutoSizer>
+              : Folders}
+          </>
+        }
+
+        {Files.length > 0 && 
+          <>
+            <Heading size="xsmall" className="tileItemsHeading">Files</Heading>
+            {useReactWindow 
+              ? <AutoSizer>{renderList}</AutoSizer>
+              : Files}
+          </>
+        }
         
         <ContextMenu targetAreaId={id} options={this.state.contextOptions} />
       </StyledTileContainer>

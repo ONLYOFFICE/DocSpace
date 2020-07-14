@@ -4,6 +4,7 @@ import {
   SET_FILES_FILTER,
   SET_FILES,
   SET_FILTER,
+  SET_VIEW_AS,
   SET_FOLDER,
   SET_FOLDERS,
   SET_TREE_FOLDERS,
@@ -30,6 +31,7 @@ const initialState = {
   folders: null,
   treeFolders: [],
   selected: "none",
+  viewAs: "row",
   selectedFolder: null,
   selection: [],
   dragging: false,
@@ -80,6 +82,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_FILTER:
       return Object.assign({}, state, {
         filter: action.filter
+      });
+    case SET_VIEW_AS:
+      return Object.assign({}, state, {
+        viewAs: action.viewAs
       });
     case SET_FILES_FILTER:
       return Object.assign({}, state, {
