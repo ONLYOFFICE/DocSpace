@@ -93,6 +93,7 @@ const RegisterContainer = styled(Box)`
   z-index: 184;
   width: 100%;
   height: 66px;
+  padding: 1.5em;
   bottom: 0;
   right: 0;
   background-color: #F8F9F9;
@@ -161,16 +162,16 @@ class Form extends Component {
 
   onSendPasswordInstructions = () => {
     if (!this.state.email.trim()) {
-      this.setState({emailError: true});
+      this.setState({ emailError: true });
     }
     else {
-    this.setState({ isLoading: true });
-    sendInstructionsToChangePassword(this.state.email)
-      .then(
-        res => toastr.success(res),
-        message => toastr.error(message)
-      )
-      .finally(this.onDialogClose());
+      this.setState({ isLoading: true });
+      sendInstructionsToChangePassword(this.state.email)
+        .then(
+          res => toastr.success(res),
+          message => toastr.error(message)
+        )
+        .finally(this.onDialogClose());
     }
   };
 
@@ -266,51 +267,51 @@ class Form extends Component {
       <>
         <Box marginProp="120px 0 0 0" displayProp="flex" justifyContent="center" widthProp="100%">
           <Box>
-            <Text fontSize="32px" fontWeight={600}>
+            <Text fontSize="32px" fontWeight={600} textAlign="center">
               {greetingTitle}
             </Text>
           </Box>
         </Box>
         <FormContainer>
           <FieldContainerWrapper isVertical={true} hasError={!identifierValid} errorMessage={t("RequiredFieldMessage")}>
-          <TextInput
-            id="login"
-            name="login"
-            hasError={!identifierValid}
-            value={identifier}
-            placeholder={t("RegistrationEmailWatermark")}
-            size="huge"
-            scale={true}
-            isAutoFocussed={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="username"
-            onChange={this.onChangeLogin}
-            onKeyDown={this.onKeyPress}
-            className="login-input"
-          />
+            <TextInput
+              id="login"
+              name="login"
+              hasError={!identifierValid}
+              value={identifier}
+              placeholder={t("RegistrationEmailWatermark")}
+              size="huge"
+              scale={true}
+              isAutoFocussed={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              autoComplete="username"
+              onChange={this.onChangeLogin}
+              onKeyDown={this.onKeyPress}
+              className="login-input"
+            />
           </FieldContainerWrapper>
           <FieldContainerWrapper isVertical={true} hasError={!passwordValid} errorMessage={t("RequiredFieldMessage")}>
-          <PasswordInput
-            passwordSettings={this.settings}
-            NewPasswordButtonVisible={false}
-            tooltipPasswordTitle={t("PasswordMustContain")}
-            tooltipPasswordLength={this.tooltipPasswordLength}
-            className="login-input"
-            id="password"
-            inputName="password"
-            placeholder={t("Password")}
-            type="password"
-            hasError={!passwordValid}
-            inputValue={password}
-            size="huge"
-            scale={true}
-            tabIndex={2}
-            isDisabled={isLoading}
-            autoComplete="current-password"
-            onChange={this.onChangePassword}
-            onKeyDown={this.onKeyPress}
-          />
+            <PasswordInput
+              passwordSettings={this.settings}
+              NewPasswordButtonVisible={false}
+              tooltipPasswordTitle={t("PasswordMustContain")}
+              tooltipPasswordLength={this.tooltipPasswordLength}
+              className="login-input"
+              id="password"
+              inputName="password"
+              placeholder={t("Password")}
+              type="password"
+              hasError={!passwordValid}
+              inputValue={password}
+              size="huge"
+              scale={true}
+              tabIndex={2}
+              isDisabled={isLoading}
+              autoComplete="current-password"
+              onChange={this.onChangePassword}
+              onKeyDown={this.onKeyPress}
+            />
           </FieldContainerWrapper>
           <div className="login-forgot-wrapper">
             <div className="login-checkbox-wrapper">
@@ -417,14 +418,12 @@ const LoginForm = props => {
   return (
     <>
       {isLoaded && <>
-        (
         <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
-        <RegisterContainer paddingProp="24px 50%" onClick={onRegisterClick}>
-          <Text color="#316DAA">
-            Register
+        <RegisterContainer onClick={onRegisterClick}>
+          <Text color="#316DAA" textAlign="center">
+              Register
           </Text>
         </RegisterContainer>
-      )
       </>
       }
     </>
