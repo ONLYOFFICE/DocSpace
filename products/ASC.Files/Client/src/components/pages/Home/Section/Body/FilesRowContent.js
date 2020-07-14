@@ -508,6 +508,7 @@ function mapStateToProps(state) {
   const { filter, fileAction, selectedFolder, treeFolders, folders } = state.files;
   const { settings } = state.auth;
   const indexOfTrash = 3;
+  const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
 
   return {
     filter,
@@ -516,7 +517,7 @@ function mapStateToProps(state) {
     isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id,
     settings,
     treeFolders,
-    rootFolderId: selectedFolder.pathParts[0],
+    rootFolderId,
     newItems: selectedFolder.new,
     selectedFolder,
     folders
