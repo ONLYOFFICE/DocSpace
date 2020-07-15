@@ -38,7 +38,7 @@ using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
-using ASC.Files.Core.Resources;
+using ASC.Files.Resources;
 using ASC.Web.Files.Classes;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -731,14 +731,7 @@ namespace ASC.Web.Files.Utils
                 .TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>()
                 .AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
 
-            _ = services.Configure<WorkerQueue<AsyncTaskData<T>>>(r =>
-            {
-                r.workerCount = 1;
-                r.waitInterval = (int)TimeSpan.FromSeconds(60).TotalMilliseconds;
-                r.errorCount = 1;
-                r.stopAfterFinsih = false;
-            });
-
+            _ = services.AddWorkerQueue <AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
             return services
                 .AddTenantManagerService()
                 .AddUserManagerService()
