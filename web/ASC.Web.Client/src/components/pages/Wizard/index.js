@@ -319,45 +319,46 @@ class Body extends Component {
 
     if(!wizardToken) { 
       history.push('/');
-    }
+    } else {
 
-    try {
-      await Promise.all([
-        getPortalPasswordSettings(wizardToken),
-        getMachineName(wizardToken),
-        getPortalTimezones(wizardToken)
-          .then(() => {
-            const { timezones, portalTimezone } = this.props;
-            const zones = this.mapTimezonesToArray(timezones);
-            const select = zones.filter(zone => zone.key === portalTimezone);
-            this.setState({
-              timezones: zones,
-              selectTimezone: {
-                key: select[0].key,
-                label: select[0].label
-              }
-            });
-          }),
-        getPortalCultures()
-          .then(() => {
-            const { cultures, portalCulture } = this.props;
-            const languages = this.mapCulturesToArray(cultures, t);
-            const select = languages.filter(lang => lang.key === portalCulture);
-            this.setState({ 
-              languages: languages, 
-              selectLanguage: { 
-                key: select[0].key, 
-                label: select[0].label 
-              }
+      try {
+        await Promise.all([
+          getPortalPasswordSettings(wizardToken),
+          getMachineName(wizardToken),
+          getPortalTimezones(wizardToken)
+            .then(() => {
+              const { timezones, portalTimezone } = this.props;
+              const zones = this.mapTimezonesToArray(timezones);
+              const select = zones.filter(zone => zone.key === portalTimezone);
+              this.setState({
+                timezones: zones,
+                selectTimezone: {
+                  key: select[0].key,
+                  label: select[0].label
+                }
+              });
+            }),
+          getPortalCultures()
+            .then(() => {
+              const { cultures, portalCulture } = this.props;
+              const languages = this.mapCulturesToArray(cultures, t);
+              const select = languages.filter(lang => lang.key === portalCulture);
+              this.setState({ 
+                languages: languages, 
+                selectLanguage: { 
+                  key: select[0].key, 
+                  label: select[0].label 
+                }
+              })
             })
-          })
-      ])
-      .then(() => setIsWizardLoaded(true)); 
-    } catch(e) {
-      this.setState({
-        errorLoading: true,
-        errorMessage: e 
-      })
+        ])
+        .then(() => setIsWizardLoaded(true)); 
+      } catch(e) {
+        this.setState({
+          errorLoading: true,
+          errorMessage: e 
+        })
+      }
     }
   }
 
@@ -410,7 +411,7 @@ class Body extends Component {
 
   onChangeFile = e => this.setState({ path: e.target.value});
 
-  onInputFile = () => this.setState({path: this.inputRef.current.value});
+  onInputFile = () => this.setState({path: this.inputRef.current.files[0].name});
 
   onChangeLicense = () => this.setState({ license: !this.state.license });
 
@@ -760,7 +761,7 @@ const WizardPage = props => {
 }
 
 WizardPage.propTypes = {
-  language: PropTypes.string.isRequired,
+  language: PropTypes.string,
   isLoaded: PropTypes.bool
 }
 
