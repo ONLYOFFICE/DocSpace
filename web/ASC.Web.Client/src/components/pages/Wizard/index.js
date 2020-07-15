@@ -29,8 +29,6 @@ settings.allowDomainPunycode = true;
 const { tablet } = utils.device;
 
 const HeaderContent = styled.div`
-  display: flex;
-  flex-direction: column;
   position: absolute;
   height: 56px;
   background: #0F4071;
@@ -38,8 +36,6 @@ const HeaderContent = styled.div`
   left: 0px;
 
   .header-logo {
-    padding: 0;
-    margin: 0;
     position: absolute;
     left: 240px;
     top: 14.5px;
@@ -69,7 +65,6 @@ const WizardContainer = styled.div`
     width: 960px;
     margin: 0 auto;
     margin-top: 80px; 
-    padding: 0;
 
     @media ${tablet} {
       width: 100%;
@@ -77,7 +72,6 @@ const WizardContainer = styled.div`
     }
 
     @media(max-width: 415px) {
-      width: 100%;
       margin-top: 32px;
     }
   }
@@ -98,8 +92,6 @@ const WizardContainer = styled.div`
       font-size: 13px;
       line-height: 20px;
       margin: 10px 12px;
-      flex: none;
-      order: 1;
     }
 
     @media ${tablet} {
@@ -188,10 +180,6 @@ const WizardContainer = styled.div`
       width: 100%;
       margin: 32px 0 0 0;
     }
-
-    @media(max-width: 415px) {
-      width: 100%;
-    }
   }
 
   .settings-box {
@@ -199,7 +187,6 @@ const WizardContainer = styled.div`
     margin: 32px auto 0 auto;
     display: flex;
     flex-direction: row;
-    padding: 0;
 
     .settings-title {
       width: 66px;
@@ -209,8 +196,6 @@ const WizardContainer = styled.div`
     }
 
     .values {
-      margin: 0;
-      padding: 0;
       margin-left: 16px;
       width: 100%;
     }
@@ -311,7 +296,6 @@ class Body extends Component {
       path: '',
       emailValid: false,
       email: '',
-      newEmail: '',
       license: false,
       languages: null,
       timezones: null,
@@ -405,22 +389,16 @@ class Body extends Component {
     if (e.key === "Enter") this.onContinueHandler();
   }
 
-  isValidPassHandler = val => {
-    this.setState({ isValidPass: val });
-  }
-
-  onChangePassword = e => {
-    this.setState({ password: e.target.value });
-  }
+  isValidPassHandler = val => this.setState({ isValidPass: val });
+  
+  onChangePassword = e => this.setState({ password: e.target.value });
   
   onIconFileClick = (e) => {
     e.target.blur();
     this.inputRef.current.click();
   }
 
-  onClickChangeEmail = () => {
-    this.setState({ visibleModal: true })
-  }
+  onClickChangeEmail = () => this.setState({ visibleModal: true });
 
   onEmailHandler = result => {
     this.setState({ emailValid: result.isValid});
@@ -430,17 +408,11 @@ class Body extends Component {
     }
   }
 
-  onChangeFile = e => {
-    this.setState({ path: e.target.value}) 
-  }
+  onChangeFile = e => this.setState({ path: e.target.value});
 
-  onInputFile = () => {
-    this.setState({path: this.inputRef.current.value});
-  }
+  onInputFile = () => this.setState({path: this.inputRef.current.value});
 
-  onChangeLicense = () => {
-    this.setState({ license: !this.state.license });
-  }
+  onChangeLicense = () => this.setState({ license: !this.state.license });
 
   onContinueHandler = () => {
     const valid = this.checkingValid();
@@ -484,9 +456,7 @@ class Body extends Component {
     return false; 
   }
 
-  onSaveEmailHandler = () => {
-    this.setState({ visibleModal: false });
-  }
+  onSaveEmailHandler = () => this.setState({ visibleModal: false });
 
   onCloseModal = () => {
     this.setState({ visibleModal: false, errorLoading: false, errorMessage: null });
@@ -661,12 +631,12 @@ class Body extends Component {
       : null
     
     const contentEmail = isOwner 
-      ? <Link className="link value" type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
+      ? <Link type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
       : null
 
     return (
       <Box className="settings-box">
-        <Box className="setting-title-block">
+        <Box>
           <Text className="settings-title">{t('domain')}</Text>
           {titleEmail}
           <Text className="settings-title">{t('language')}</Text>
@@ -743,35 +713,22 @@ class Body extends Component {
 
       return <WizardContainer>
         <Toast/>
-        <Box className="form-container">
-        { modalDialog }
-          {headerBox}
-          {inputBox}
-          {settingsBox}
-          {buttonBox}
-        </Box>
+        <form className="form-container">
+          { modalDialog }
+          { headerBox }
+          { inputBox }
+          { settingsBox }
+          { buttonBox }
+        </form>
       </WizardContainer>
     }
     return <Loader className="pageLoader" type="rombs" size='40px' />;
   }
 }
 
-const WizardPage = props => <PageLayout 
-  sectionBodyContent={<Body {...props} />} 
-  sectionHeaderContent={sectionHeaderContent}
-/>;
-
-const WizardWrapper = withTranslation()(WizardPage);
-
-const Wizard = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
-  return <WizardWrapper i18n={i18n}  {...props}/>
-}
-
-Wizard.propTypes = {
+Body.propTypes = {
   language: PropTypes.string,
-  i18n: PropTypes.func,
+  i18n: PropTypes.object,
   isOwner: PropTypes.bool,
   ownerEmail: PropTypes.string,
   isWizardLoaded: PropTypes.bool.isRequired,
@@ -785,6 +742,28 @@ Wizard.propTypes = {
   portalTimezone: PropTypes.string.isRequired
 }
 
+const WizardWrapper = withTranslation()(Body);
+
+const WizardPage = props => {
+  const { language, isLoaded } = props;
+
+  i18n.changeLanguage(language);
+
+  return (
+    <>
+      { isLoaded && <PageLayout 
+          sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />} 
+          sectionHeaderContent={sectionHeaderContent}/>
+      }
+    </>
+  );
+}
+
+WizardPage.propTypes = {
+  language: PropTypes.string.isRequired,
+  isLoaded: PropTypes.bool
+}
+
 function mapStateToProps(state) {
   return {
     isOwner: state.wizard.isOwner,
@@ -796,7 +775,8 @@ function mapStateToProps(state) {
 
     wizardToken: state.auth.settings.wizardToken,
     settingsPassword: state.auth.settings.passwordSettings,
-  
+    
+    isLoaded: state.auth.isLoaded,
     cultures: state.auth.settings.cultures,
     portalCulture: state.auth.settings.culture,
     timezones: state.auth.settings.timezones,
@@ -808,4 +788,4 @@ export default connect(mapStateToProps, {
   getPortalPasswordSettings, getPortalCultures, 
   getPortalTimezones, setIsWizardLoaded, 
   getMachineName, setPortalOwner 
-})(withRouter(Wizard)); 
+})(withRouter(WizardPage)); 
