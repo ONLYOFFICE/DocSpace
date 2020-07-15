@@ -34,7 +34,7 @@ namespace ASC.Common.DependencyInjection
 
             if (!Path.IsPathRooted(folder))
             {
-                if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+                if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
                 {
                     productsDir = Path.GetFullPath(Path.Combine("..", ".."));
                 }
