@@ -54,18 +54,21 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   tabIndex: props.tabIndex
 }))`
   height: ${props =>
+    (props.size === 'large' && '44px') ||
     (props.size === 'big' && '36px') ||
     (props.size === 'medium' && '32px') ||
-    (props.size === 'base' && '24px')
+    (props.size === 'base' && '24px') 
   };
 
   line-height: ${props =>
+  (props.size === 'large' && '20px') ||
     (props.size === 'big' && '19px') ||
     (props.size === 'medium' && '18px') ||
     (props.size === 'base' && '16px')
   };
 
   font-size: ${props =>
+    (props.size === 'large' && '16px') ||
     (props.size === 'big' && '14px') ||
     (props.size === 'medium' && '13px') ||
     (props.size === 'base' && '12px')
@@ -82,6 +85,16 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   ${props => props.scale && `width: 100%;`}
 
   padding: ${props =>
+    (props.size === 'large' && (props.primary 
+      ? (props.icon 
+          ? (props.label ? '11px 20px 13px 20px' : '11px 10px 13px 10px')
+          : (props.label ? '12px 20px 12px 20px' : '12px 10px 12px 10px')
+        ) 
+      : (props.icon 
+          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
+          : (props.label ? '8px 27px 9px 28px' : '8px 10px 9px 10px')
+        ))
+    ) ||
     (props.size === 'big' && (props.primary 
       ? (props.icon 
           ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
@@ -184,7 +197,7 @@ const Icon = ({size, primary, icon}) => (
     { icon && React.cloneElement(icon, 
       { 
         isfill: true, 
-        size: size === "big" ? "medium" : "small", 
+        size: (size === "big" || size === "large") ? "medium" : "small", 
         color: primary ? "#FFFFFF" : '#333333'
     })}
   </div>
@@ -207,7 +220,7 @@ const Button = React.forwardRef((props, ref) => {
     <StyledButton innerRef={ref} {...props} >
       {(isLoading || icon)
         ? (isLoading 
-            ? <Loader type="oval" size={size === "big" ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+            ? <Loader type="oval" size={( size === "big" || size === "large" ) ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
             : <Icon {...iconProps} />)
         : ""
       }
@@ -219,7 +232,7 @@ const Button = React.forwardRef((props, ref) => {
 Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'medium', 'big']),
+  size: PropTypes.oneOf(['base', 'medium', 'big', 'large']),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 

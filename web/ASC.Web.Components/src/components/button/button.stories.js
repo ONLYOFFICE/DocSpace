@@ -13,7 +13,7 @@ storiesOf('Components|Buttons', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('base', () => {
-    const sizeOptions = ['base', 'medium', 'big'];
+    const sizeOptions = ['base', 'medium', 'big', 'large'];
     const iconNames = orderBy(Object.keys(Icons), [name => name.toLowerCase()], ['asc']);
 
     const iconName = select("icon", ['', ...iconNames], '');
