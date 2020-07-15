@@ -102,7 +102,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     (props.size === 'big' && (props.primary 
       ? (props.icon 
           ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
-          : (props.label ? '8px 16px 9px 16px' : '8px 10px 9px 16px')
+          : (props.label ? '8px 16px 8px 16px' : '8px 10px 9px 16px')
         ) 
       : (props.icon 
           ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
@@ -111,12 +111,12 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     ) ||
     (props.size === 'medium' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '6px 16px 8px 16px' : '6px 16px 8px 16px')
-          : (props.label ? '6px 16px 8px 16px' : '6px 16px 8px 16px')
+          ? (props.label ? '6px 16px 9px 16px' : '6px 16px 8px 16px')
+          : (props.label ? '7px 16px 8px 16px' : '6px 16px 8px 16px')
         ) 
       : (props.icon 
-          ? (props.label ? '6px 16px 8px 16px' : '6px 16px 7px 16px')
-          : (props.label ? '6px 16px 8px 16px' : '6px 16px 8px 16px')
+          ? (props.label ? '6px 16px 9px 16px' : '6px 16px 8px 16px')
+          : (props.label ? '7px 16px 8px 16px' : '6px 16px 8px 16px')
         ))
     ) ||
     (props.size === 'base' && (props.primary 
@@ -133,7 +133,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
 
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', normal;
   border: none;
   margin: 0;
   display: inline-block;
