@@ -300,7 +300,8 @@ class Body extends Component {
       languages: null,
       timezones: null,
       selectLanguage: null,
-      selectTimezone: null
+      selectTimezone: null,
+      isRequiredLicense: false
     }
 
     this.inputRef = React.createRef();
@@ -421,14 +422,18 @@ class Body extends Component {
     if (valid) { 
       const { setPortalOwner, wizardToken } = this.props;
       const { password, email,
-        selectLanguage, selectTimezone
+        selectLanguage, selectTimezone,
+        isRequiredLicense
       } = this.state;
+
+      let licenseFile;
 
       this.setState({ sendingComplete: true })
 
-      const licenseFile = this.inputRef.current.files[0];
+      if(isRequiredLicense) licenseFile = this.inputRef.current.files[0];
+
       const emailTrim = email.trim();
-      const analytics = true
+      const analytics = true;
    
       setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
         .then(() => history.push(`/`))
@@ -542,6 +547,7 @@ class Body extends Component {
 
   renderInputBox = () => {
     const { t, isOwner, settingsPassword } = this.props;
+    const { isRequiredLicense } = this.state;
 
     const tooltipPassTitle = t('tooltipPasswordTitle');
     const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
@@ -559,7 +565,26 @@ class Body extends Component {
           emailSettings={settings}
           onValidateInput={this.onEmailHandler}
         />
-      : null
+      : null;
+
+    const inputLicenseFile = isRequiredLicense 
+      ? <InputBlock
+          tabIndex={3}
+          value={this.state.path}
+          className="input-block"
+          iconName={"CatalogFolderIcon"}
+          placeholder={t('placeholderLicense')}
+          onIconClick={this.onIconFileClick}
+          onChange={this.onChangeFile}
+          onFocus={this.onIconFileClick}
+        >
+          <input 
+            type="file" 
+            className="input-file" 
+            onInput={this.onInputFile}
+            ref={this.inputRef}/>
+        </InputBlock>
+      : null;
 
     return (
       <Box className="input-box">
@@ -584,22 +609,7 @@ class Body extends Component {
           onChange={this.onChangePassword}
           onValidateInput={this.isValidPassHandler}
         />
-        <InputBlock
-          tabIndex={3}
-          value={this.state.path}
-          className="input-block"
-          iconName={"CatalogFolderIcon"}
-          placeholder={t('placeholderLicense')}
-          onIconClick={this.onIconFileClick}
-          onChange={this.onChangeFile}
-          onFocus={this.onIconFileClick}
-        >
-          <input 
-            type="file" 
-            className="input-file" 
-            onInput={this.onInputFile}
-            ref={this.inputRef}/>
-        </InputBlock>
+        { inputLicenseFile }
         <Box className="checkbox-container">
           <Checkbox
             className="wizard-checkbox"
