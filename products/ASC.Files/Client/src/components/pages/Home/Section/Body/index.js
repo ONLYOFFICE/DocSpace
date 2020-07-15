@@ -1232,8 +1232,8 @@ const mapStateToProps = state => {
   const commonFolderIndex = 2;
   const currentFolderCount = filesCount + foldersCount;
   const myDocumentsId = treeFolders[myFolderIndex].id;
-  const shareFolderId = treeFolders[shareFolderIndex].id;
-  const commonFolderId = treeFolders[commonFolderIndex].id;
+  const isShare = pathParts && pathParts[0] === treeFolders[shareFolderIndex].id;
+  const isCommon = pathParts && pathParts[0] === treeFolders[commonFolderIndex].id;
 
   return {
     fileAction: state.files.fileAction,
@@ -1254,8 +1254,8 @@ const mapStateToProps = state => {
     currentFolderCount,
     selectedFolderId: id,
     dragItem,
-    isShare: pathParts[0] === shareFolderId,
-    isCommon: pathParts[0] === commonFolderId,
+    isShare,
+    isCommon,
     isAdmin: state.auth.user.isAdmin,
     mediaViewerVisible: mediaViewerData.visible,
     currentMediaFileId: mediaViewerData.id,

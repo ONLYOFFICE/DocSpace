@@ -29,9 +29,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Web;
 
 using ASC.Common;
@@ -68,7 +69,6 @@ namespace ASC.Web.Files.Services.DocumentService
         External,
     }
 
-    [DataContract(Name = "editorConfig", Namespace = "")]
     public class Configuration<T>
     {
         public static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
@@ -99,10 +99,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         #region Property
 
-        [DataMember(Name = "document")]
         public DocumentConfig<T> Document { get; set; }
 
-        [DataMember(Name = "documentType")]
         public string DocumentType
         {
             set { }
@@ -113,13 +111,10 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "editorConfig")]
         public EditorConfiguration<T> EditorConfig { get; set; }
 
-        [DataMember(Name = "token", EmitDefaultValue = false)]
         public string Token { get; set; }
 
-        [DataMember(Name = "type")]
         public string Type
         {
             set { EditorType = (EditorType)Enum.Parse(typeof(EditorType), value, true); }
@@ -137,23 +132,18 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "error", EmitDefaultValue = false)]
+        [JsonPropertyName("Error")]
         public string ErrorMessage { get; set; }
 
         #endregion
 
         public static string Serialize(Configuration<T> configuration)
         {
-            using var ms = new MemoryStream();
-            var serializer = new DataContractJsonSerializer(typeof(Configuration<T>));
-            serializer.WriteObject(ms, configuration);
-            ms.Seek(0, SeekOrigin.Begin);
-            return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+            return JsonSerializer.Serialize(configuration);
         }
     }
     #region Nested Classes
 
-    [DataContract(Name = "document", Namespace = "")]
     public class DocumentConfig<T>
     {
         public string SharedLinkKey;
@@ -171,34 +161,28 @@ namespace ASC.Web.Files.Services.DocumentService
         private string _title = null;
 
 
-        [DataMember(Name = "fileType")]
         public string FileType
         {
             set { }
             get { return Info.File.ConvertedExtension.Trim('.'); }
         }
 
-        [DataMember(Name = "info")]
         public InfoConfig<T> Info { get; set; }
 
-        [DataMember(Name = "key")]
         public string Key
         {
             set { _key = value; }
             get { return DocumentServiceConnector.GenerateRevisionId(_key); }
         }
 
-        [DataMember(Name = "permissions")]
         public PermissionsConfig Permissions { get; set; }
 
-        [DataMember(Name = "title")]
         public string Title
         {
             set { _title = value; }
             get { return _title ?? Info.File.Title; }
         }
 
-        [DataMember(Name = "url")]
         public string Url
         {
             set { _fileUri = DocumentServiceConnector.ReplaceCommunityAdress(value); }
@@ -216,7 +200,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private PathProvider PathProvider { get; }
     }
 
-    [DataContract(Name = "info", Namespace = "")]
     public class InfoConfig<T>
     {
         public File<T> File;
@@ -231,7 +214,6 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         [Obsolete("Use owner (since v5.4)")]
-        [DataMember(Name = "author")]
         public string Author
         {
             set { }
@@ -239,14 +221,12 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         [Obsolete("Use uploaded (since v5.4)")]
-        [DataMember(Name = "created")]
         public string Created
         {
             set { }
             get { return File.CreateOnString; }
         }
 
-        [DataMember(Name = "folder", EmitDefaultValue = false)]
         public string Folder
         {
             set { }
@@ -265,21 +245,18 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "owner")]
         public string Owner
         {
             set { }
             get { return File.CreateByString; }
         }
 
-        [DataMember(Name = "uploaded")]
         public string Uploaded
         {
             set { }
             get { return File.CreateOnString; }
         }
 
-        [DataMember(Name = "sharingSettings", EmitDefaultValue = false)]
         public ItemList<AceShortWrapper> SharingSettings
         {
             set { }
@@ -304,36 +281,26 @@ namespace ASC.Web.Files.Services.DocumentService
         private FileSharing FileSharing { get; }
     }
 
-    [DataContract(Name = "permissions", Namespace = "")]
     public class PermissionsConfig
     {
         [Obsolete("Since DS v5.5")]
-        [DataMember(Name = "changeHistory")]
         public bool ChangeHistory { get; set; } = false;
 
-        [DataMember(Name = "comment")]
         public bool Comment { get; set; } = true;
 
-        [DataMember(Name = "download")]
         public bool Download { get; set; } = true;
 
-        [DataMember(Name = "edit")]
         public bool Edit { get; set; } = true;
 
-        [DataMember(Name = "fillForms")]
         public bool FillForms { get; set; } = true;
 
-        [DataMember(Name = "print")]
         public bool Print { get; set; } = true;
 
-        [DataMember(Name = "rename")]
         public bool Rename { get; set; } = false;
 
-        [DataMember(Name = "review")]
         public bool Review { get; set; } = true;
     }
 
-    [DataContract(Name = "editorConfig", Namespace = "")]
     public class EditorConfiguration<T>
     {
         public EditorConfiguration(
@@ -381,7 +348,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private readonly UserInfo _userInfo;
         private EmbeddedConfig _embeddedConfig;
 
-        [DataMember(Name = "actionLink", EmitDefaultValue = false)]
         public ActionLinkConfig ActionLink { get; set; }
 
         public string ActionLinkString
@@ -391,11 +357,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(value)))
-                    {
-                        var serializer = new DataContractJsonSerializer(typeof(ActionLinkConfig));
-                        ActionLink = (ActionLinkConfig)serializer.ReadObject(ms);
-                    }
+                    JsonSerializer.Deserialize<ActionLinkConfig>(value);
                 }
                 catch (Exception)
                 {
@@ -404,10 +366,8 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "callbackUrl", EmitDefaultValue = false)]
         public string CallbackUrl { get; set; }
 
-        [DataMember(Name = "createUrl", EmitDefaultValue = false)]
         public string CreateUrl
         {
             set { }
@@ -420,23 +380,18 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "plugins", EmitDefaultValue = false)]
         public PluginsConfig Plugins { get; set; }
 
-        [DataMember(Name = "customization", EmitDefaultValue = false)]
         public CustomizationConfig<T> Customization { get; set; }
 
-        [DataMember(Name = "embedded", EmitDefaultValue = false)]
         public EmbeddedConfig Embedded
         {
             set { _embeddedConfig = value; }
             get { return _configuration.Document.Info.Type == EditorType.Embedded ? _embeddedConfig : null; }
         }
 
-        [DataMember(Name = "fileChoiceUrl", EmitDefaultValue = false)]
         public string FileChoiceUrl { get; set; }
 
-        [DataMember(Name = "lang")]
         public string Lang
         {
             set { }
@@ -444,10 +399,8 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         //todo: remove old feild after release 5.2+
-        [DataMember(Name = "mergeFolderUrl", EmitDefaultValue = false)]
         public string MergeFolderUrl { get; set; }
 
-        [DataMember(Name = "mode")]
         public string Mode
         {
             set { }
@@ -459,13 +412,10 @@ namespace ASC.Web.Files.Services.DocumentService
         private FilesLinkUtility FilesLinkUtility { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
-        [DataMember(Name = "saveAsUrl", EmitDefaultValue = false)]
         public string SaveAsUrl { get; set; }
 
-        [DataMember(Name = "sharingSettingsUrl", EmitDefaultValue = false)]
         public string SharingSettingsUrl { get; set; }
 
-        [DataMember(Name = "user")]
         public UserConfig User { get; set; }
 
         private string GetCreateUrl(FileType fileType)
@@ -497,56 +447,41 @@ namespace ASC.Web.Files.Services.DocumentService
 
     #endregion
 
-    [DataContract(Name = "actionLink", Namespace = "")]
     public class ActionLinkConfig
     {
-        [DataMember(Name = "action", EmitDefaultValue = false)]
         public ActionConfig Action { get; set; }
 
 
-        [DataContract(Name = "action", Namespace = "")]
         public class ActionConfig
         {
-            [DataMember(Name = "type", EmitDefaultValue = false)]
             public string Type { get; set; }
 
-            [DataMember(Name = "data", EmitDefaultValue = false)]
             public string Data { get; set; }
         }
 
 
         public static string Serialize(ActionLinkConfig actionLinkConfig)
         {
-            using (var ms = new MemoryStream())
-            {
-                var serializer = new DataContractJsonSerializer(typeof(ActionLinkConfig));
-                serializer.WriteObject(ms, actionLinkConfig);
-                ms.Seek(0, SeekOrigin.Begin);
-                return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-            }
+           return JsonSerializer.Serialize(actionLinkConfig);
         }
     }
 
-    [DataContract(Name = "embedded", Namespace = "")]
     public class EmbeddedConfig
     {
         public string ShareLinkParam { get; set; }
 
-        [DataMember(Name = "embedUrl", EmitDefaultValue = false)]
         public string EmbedUrl
         {
             set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + FilesLinkUtility.EditorPage + "?" + FilesLinkUtility.Action + "=embedded" + ShareLinkParam); }
         }
 
-        [DataMember(Name = "saveUrl", EmitDefaultValue = false)]
         public string SaveUrl
         {
             set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath + "?" + FilesLinkUtility.Action + "=download" + ShareLinkParam); }
         }
 
-        [DataMember(Name = "shareUrl", EmitDefaultValue = false)]
         public string ShareUrl
         {
             set { }
@@ -556,7 +491,6 @@ namespace ASC.Web.Files.Services.DocumentService
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
 
-        [DataMember(Name = "toolbarDocked")]
         public string ToolbarDocked { get => "top"; }
 
         public EmbeddedConfig(BaseCommonLinkUtility baseCommonLinkUtility, FilesLinkUtility filesLinkUtility)
@@ -566,10 +500,8 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
-    [DataContract(Name = "plugins", Namespace = "")]
     public class PluginsConfig
     {
-        [DataMember(Name = "pluginsData", EmitDefaultValue = false)]
         public string[] PluginsData
         {
             set { }
@@ -605,7 +537,6 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
-    [DataContract(Name = "customization", Namespace = "")]
     public class CustomizationConfig<T>
     {
         public CustomizationConfig(
@@ -651,17 +582,14 @@ namespace ASC.Web.Files.Services.DocumentService
         public bool IsRetina = false;
 
 
-        [DataMember(Name = "about")]
         public bool About
         {
             set { }
             get { return !CoreBaseSettings.Standalone && !CoreBaseSettings.CustomMode; }
         }
 
-        [DataMember(Name = "customer")]
         public CustomerConfig<T> Customer { get; set; }
 
-        [DataMember(Name = "feedback", EmitDefaultValue = false)]
         public FeedbackConfig Feedback
         {
             set { }
@@ -679,8 +607,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "forcesave", EmitDefaultValue = false)]
-        public bool Forcesave
+        public bool? Forcesave
         {
             set { }
             get
@@ -692,7 +619,6 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "goback", EmitDefaultValue = false)]
         public GobackConfig Goback
         {
             set { }
@@ -739,7 +665,6 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "loaderLogo", EmitDefaultValue = false)]
         public string LoaderLogo
         {
             set { }
@@ -751,7 +676,6 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "loaderName", EmitDefaultValue = false)]
         public string LoaderName
         {
             set { }
@@ -763,10 +687,8 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "logo")]
         public LogoConfig<T> Logo { get; set; }
 
-        [DataMember(Name = "reviewDisplay", EmitDefaultValue = false)]
         public string ReviewDisplay
         {
             set { }
@@ -786,7 +708,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
     }
 
-    [DataContract(Name = "customer", Namespace = "")]
     public class CustomerConfig<T>
     {
         public CustomerConfig(
@@ -806,14 +727,12 @@ namespace ASC.Web.Files.Services.DocumentService
             _configuration = configuration;
         }
 
-        [DataMember(Name = "logo")]
         public string Logo
         {
             set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina)); }
         }
 
-        [DataMember(Name = "name")]
         public string Name
         {
             set { }
@@ -829,24 +748,18 @@ namespace ASC.Web.Files.Services.DocumentService
         private TenantLogoHelper TenantLogoHelper { get; }
     }
 
-    [DataContract(Name = "feedback", Namespace = "")]
     public class FeedbackConfig
     {
-        [DataMember(Name = "url")]
         public string Url { get; set; }
 
-        [DataMember(Name = "visible")]
         public bool Visible { get => true; }
     }
 
-    [DataContract(Name = "goback", Namespace = "")]
     public class GobackConfig
     {
-        [DataMember(Name = "url", EmitDefaultValue = false)]
         public string Url { get; set; }
     }
 
-    [DataContract(Name = "logo", Namespace = "")]
     public class LogoConfig<T>
     {
         public LogoConfig(
@@ -865,7 +778,6 @@ namespace ASC.Web.Files.Services.DocumentService
             _configuration = configuration;
         }
 
-        [DataMember(Name = "image")]
         public string Image
         {
             set { }
@@ -878,7 +790,6 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "imageEmbedded", EmitDefaultValue = false)]
         public string ImageEmbedded
         {
             set { }
@@ -891,7 +802,6 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        [DataMember(Name = "url")]
         public string Url
         {
             set { }
@@ -903,13 +813,10 @@ namespace ASC.Web.Files.Services.DocumentService
         private SettingsManager SettingsManager { get; }
     }
 
-    [DataContract(Name = "user", Namespace = "")]
     public class UserConfig
     {
-        [DataMember(Name = "id", EmitDefaultValue = false)]
         public string Id { get; set; }
 
-        [DataMember(Name = "name", EmitDefaultValue = false)]
         public string Name { get; set; }
     }
 

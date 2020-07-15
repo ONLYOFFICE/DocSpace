@@ -27,7 +27,6 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -37,7 +36,6 @@ using ASC.Core;
 
 namespace ASC.Api.Core
 {
-    [DataContract(Name = "date", Namespace = "")]
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
     public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {

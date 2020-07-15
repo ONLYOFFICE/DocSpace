@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -39,42 +38,34 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "content", Namespace = "")]
     public class FolderContentWrapper<T>
     {
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public List<FileWrapper<T>> Files { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public FolderWrapper<T> Current { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public object PathParts { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int StartIndex { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int Count { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int Total { get; set; }
 
         public int New { get; set; }

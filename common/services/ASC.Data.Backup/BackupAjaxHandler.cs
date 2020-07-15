@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -171,8 +172,8 @@ namespace ASC.Data.Backup
                 StorageType = response.StorageType,
                 StorageParams = response.StorageParams.ToDictionary(r => r.Key, r => r.Value) ?? new Dictionary<string, string>(),
                 CronParams = new CronParams(response.Cron),
-                BackupMail = response.BackupMail,
-                BackupsStored = response.NumberOfBackupsStored,
+                BackupMail = response.BackupMail.NullIfDefault(),
+                BackupsStored = response.NumberOfBackupsStored.NullIfDefault(),
                 LastBackupTime = response.LastBackupTime
             };
 
@@ -197,9 +198,9 @@ namespace ASC.Data.Backup
                 var Schedule = new CreateScheduleRequest
                 {
                     TenantId = TenantManager.GetCurrentTenant().TenantId,
-                    BackupMail = schedule.BackupMail,
+                    BackupMail = schedule.BackupMail == null ? false : (bool)schedule.BackupMail,
                     Cron = schedule.CronParams.ToString(),
-                    NumberOfBackupsStored = schedule.BackupsStored,
+                    NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                     StorageType = schedule.StorageType,
                     StorageParams = schedule.StorageParams
                 };
@@ -344,8 +345,8 @@ namespace ASC.Data.Backup
             public BackupStorageType StorageType { get; set; }
             public Dictionary<string, string> StorageParams { get; set; }
             public CronParams CronParams { get; set; }
-            public bool BackupMail { get; set; }
-            public int BackupsStored { get; set; }
+            public bool? BackupMail { get; set; }
+            public int? BackupsStored { get; set; }
             public DateTime LastBackupTime { get; set; }
         }
 
