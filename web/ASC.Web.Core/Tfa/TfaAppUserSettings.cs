@@ -27,19 +27,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
-    [DataContract]
     public class TfaAppUserSettings : ISettings
     {
-        [DataMember(Name = "BackupCodes")]
+        [JsonPropertyName("BackupCodes")]
         public IEnumerable<BackupCode> CodesSetting { get; set; }
 
-        [DataMember(Name = "Salt")]
+        [JsonPropertyName("Salt")]
         public long SaltSetting { get; set; }
 
         public Guid ID

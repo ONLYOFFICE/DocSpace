@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AceShareLink" xml:space="preserve">
+    <value>Вне портала</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Комментирование</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Заполнение форм</value>
+  </data>
+  <data name="AceStatusEnum_Read" xml:space="preserve">
+    <value>Только чтение</value>
+  </data>
+  <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
+    <value>Полный доступ</value>
+  </data>
+  <data name="AceStatusEnum_Restrict" xml:space="preserve">
+    <value>Запретить доступ</value>
+  </data>
+  <data name="AceStatusEnum_Review" xml:space="preserve">
+    <value>Рецензирование</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Администратор</value>
+  </data>
+  <data name="AppAccessDenied" xml:space="preserve">
+    <value>Для работы с файлом Вы должны предоставить к нему доступ</value>
+  </data>
+  <data name="Author_Me" xml:space="preserve">
+    <value>Я</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Сохранена автоматически</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>Изменен владелец</value>
+  </data>
+  <data name="CommentConvert" xml:space="preserve">
+    <value>Сконвертирована из {0}</value>
+  </data>
+  <data name="CommentCopy" xml:space="preserve">
+    <value>Скопирована</value>
+  </data>
+  <data name="CommentCreate" xml:space="preserve">
+    <value>Создано</value>
+  </data>
+  <data name="CommentCreateByDocuSign" xml:space="preserve">
+    <value>Создана с помощью DocuSign</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>Отредактирована</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Отредактирована с шифрованием</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Зашифрована</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Сохранена</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>Перезаписана</value>
+  </data>
+  <data name="CommentRevert" xml:space="preserve">
+    <value>Восстановлена из ревизии от {0}</value>
+  </data>
+  <data name="CommentRevertChanges" xml:space="preserve">
+    <value>Восстановлена из изменения документа от {0}</value>
+  </data>
+  <data name="CommentUpload" xml:space="preserve">
+    <value>Загружена</value>
+  </data>
+  <data name="DocuSignStatusDeclined" xml:space="preserve">
+    <value>Отклонен</value>
+  </data>
+  <data name="DocuSignStatusError" xml:space="preserve">
+    <value>В ходе отправки произошла ошибка</value>
+  </data>
+  <data name="DocuSignStatusNotSended" xml:space="preserve">
+    <value>Отправка документа с помощью DocuSign отменена</value>
+  </data>
+  <data name="DocuSignStatusSended" xml:space="preserve">
+    <value>Документ отправлен на подпись с помощью DocuSign</value>
+  </data>
+  <data name="DocuSignStatusVoided" xml:space="preserve">
+    <value>Аннулирован</value>
+  </data>
+  <data name="EditorMentions" xml:space="preserve">
+    <value>Оповещать при упоминании в документе</value>
+  </data>
+  <data name="ErrorMassage_BadRequest" xml:space="preserve">
+    <value>Неверный запрос.</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>Нельзя выбрать этого пользователя</value>
+  </data>
+  <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
+    <value>Конвертация занимает слишком много времени.</value>
+  </data>
+  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
+    <value>Запрещено создавать папки в корзине</value>
+  </data>
+  <data name="ErrorMassage_DocServiceException" xml:space="preserve">
+    <value>Произошла ошибка сервиса документов</value>
+  </data>
+  <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
+    <value>Файл открыт на редактирование пользователем {0}. В настоящее время возможность совместного редактирования не поддерживается для этого формата.</value>
+  </data>
+  <data name="ErrorMassage_EditingMobile" xml:space="preserve">
+    <value>Файл открыт на редактирование в мобильном приложении пользователем: {0}</value>
+  </data>
+  <data name="ErrorMassage_EmptyFile" xml:space="preserve">
+    <value>Пустой документ</value>
+  </data>
+  <data name="ErrorMassage_FileNotFound" xml:space="preserve">
+    <value>Запрашиваемый файл не найден</value>
+  </data>
+  <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
+    <value>Файл более {0} не будет сконвертирован</value>
+  </data>
+  <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
+    <value>Файл более {0} не будет скопирован</value>
+  </data>
+  <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
+    <value>Файл размером более {0} нельзя отредактировать</value>
+  </data>
+  <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
+    <value>Файл более {0} не будет перемещен</value>
+  </data>
+  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
+    <value>Файл более {0} не будет архивирован</value>
+  </data>
+  <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
+    <value>Нельзя скопировать папку в свою дочернюю папку</value>
+  </data>
+  <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
+    <value>Запрашиваемая папка не найдена</value>
+  </data>
+  <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
+    <value>Некорректное название</value>
+  </data>
+  <data name="ErrorMassage_LockedFile" xml:space="preserve">
+    <value>Файл заблокирован другим пользователем</value>
+  </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Нет доступных учетных записей, чтобы отправить письмо. Перейдите в Почту и подключите почтовый ящик.</value>
+  </data>
+  <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
+    <value>Как минимум {0} писем не удалось отправить. Перейдите в модуль "Почта", чтобы выяснить возможную причину ошибки.</value>
+  </data>
+  <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
+    <value>Слишком много загрузок.</value>
+  </data>
+  <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
+    <value>К сожалению, этот формат файла не поддерживается</value>
+  </data>
+  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
+    <value>Операция отменена</value>
+  </data>
+  <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
+    <value>Автор сохранения неизвестен</value>
+  </data>
+  <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
+    <value>Файл был поврежден при попытке сохранения</value>
+  </data>
+  <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
+    <value>Не удалось получить файл для сохранения</value>
+  </data>
+  <data name="ErrorMassage_SecurityException" xml:space="preserve">
+    <value>Недостаточно прав для совершения операции</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
+    <value>Не удается авторизоваться у провайдера {0} с указанными учетными данными.</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
+    <value>У Вас недостаточно прав для создания</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
+    <value>Невозможно удалить файл, т.к. файл открыт на редактирование</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
+    <value>Невозможно удалить папку, т.к. один из файлов открыт на редактирование</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
+    <value>Недостаточно прав для удаления файла</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
+    <value>Недостаточно прав для удаления папки</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
+    <value>Недостаточно прав для редактирования файла</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
+    <value>Этот документ редактируется Вами в другой вкладке</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>У вас недостаточно прав для перемещения этого файла</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>У вас недостаточно прав для перемещения этой папки</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
+    <value>Недостаточно прав для просмотра файла</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
+    <value>Недостаточно прав для просмотра папки</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
+    <value>Недостаточно прав для переименования файла</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
+    <value>Недостаточно прав для переименования папки</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
+    <value>Невозможно обновить файл, т.к. файл открыт на редактирование</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
+    <value>Недостаточно прав для просмотра папки</value>
+  </data>
+  <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
+    <value>Содержимое папки стороннего ресурса недоступно. Попробуйте заново подключить аккаунт.</value>
+  </data>
+  <data name="ErrorMassage_StartEditing" xml:space="preserve">
+    <value>Ошибка запуска редактирования файла</value>
+  </data>
+  <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
+    <value>Нельзя обновлять файл, открытый на редактирование</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>Пользователь не найден</value>
+  </data>
+  <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
+    <value>Запрещено просматривать элементы корзины</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="Guest" xml:space="preserve">
+    <value>Анонимный пользователь</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Поиск по содержимому документов</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>Файл создан в папке "{0}"</value>
+  </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>Делать то же самое, что и пользователь|Подключать аккаунты Dropbox, Box и другие в разделе 'Общие документы'|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
+  </data>
+  <data name="ProductDescription" xml:space="preserve">
+    <value>Создавайте, редактируйте документы и предоставляйте к ним доступ. Используйте совместное редактирование в режиме реального времени. Гарантируется 100% совместимость с форматами MS Office.</value>
+  </data>
+  <data name="ProductDescriptionEx" xml:space="preserve">
+    <value>Создавайте, редактируйте документы и предоставляйте к ним доступ. Используйте совместное редактирование в режиме реального времени. Гарантируется 100% совместимость с форматами MS Office.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Просматривайте и скачивайте документы, к которым предоставлен доступ. Загружайте файлы в общие папки. Гарантируется 100% совместимость с форматами docx, xlsx, pptx.</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Документы</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>Создавать и редактировать свои документы, а также те, к которым предоставлен доступ с соответствующими правами|Предоставлять другим пользователям доступ к документам и папкам с правами на чтение/редактирование|Подключать аккаунты Dropbox, Box и другие в разделе 'Мои документы'</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} удален</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Оповещать при предоставлении доступа к папке</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Оповещать о подписании документа с помощью DocuSign</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Оповещать об изменении статуса документа в DocuSign</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Оповещать при предоставлении доступа</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Оповещать о завершении рассылки</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>Документы пользователя {0}</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="UnlockComment" xml:space="preserve">
+    <value>Файл разблокирован</value>
+  </data>
+</root>

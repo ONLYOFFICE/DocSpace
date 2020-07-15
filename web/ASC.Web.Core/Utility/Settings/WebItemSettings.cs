@@ -26,22 +26,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using ASC.Core.Common.Settings;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Utility.Settings
 {
-    [Serializable]
-    [DataContract]
     public class WebItemSettings : ISettings
     {
         public Guid ID
         {
             get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }
         }
-
-        [DataMember(Name = "Settings")]
+        [JsonPropertyName("Settings")]
         public List<WebItemOption> SettingsCollection { get; set; }
 
         public WebItemSettings()
@@ -67,16 +65,12 @@ namespace ASC.Web.Core.Utility.Settings
         }
 
         [Serializable]
-        [DataContract]
         public class WebItemOption
         {
-            [DataMember(Name = "Id")]
             public Guid ItemID { get; set; }
 
-            [DataMember(Name = "SortOrder")]
             public int SortOrder { get; set; }
 
-            [DataMember(Name = "Disabled")]
             public bool Disabled { get; set; }
         }
     }

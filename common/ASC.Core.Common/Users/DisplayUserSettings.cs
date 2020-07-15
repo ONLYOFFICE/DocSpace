@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Runtime.Serialization;
 using System.Web;
 
 using ASC.Common;
@@ -36,7 +35,6 @@ using ASC.Core.Users;
 namespace ASC.Web.Core.Users
 {
     [Serializable]
-    [DataContract]
     public class DisplayUserSettings : ISettings
     {
         public Guid ID
@@ -44,7 +42,6 @@ namespace ASC.Web.Core.Users
             get { return new Guid("2EF59652-E1A7-4814-BF71-FEB990149428"); }
         }
 
-        [DataMember(Name = "IsDisableGettingStarted")]
         public bool IsDisableGettingStarted { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

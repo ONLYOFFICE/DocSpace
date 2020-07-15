@@ -21,6 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="PublicResources\webstudio_patterns.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="PublicResources\webstudio_patterns.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
@@ -117,7 +125,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UserControlsCommonResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.ru.resx">

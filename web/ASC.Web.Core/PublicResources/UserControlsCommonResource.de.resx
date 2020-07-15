@@ -58,6 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BackupSpaceExceed" xml:space="preserve">
+    <value>Die Backup-Funktion ist nicht verfügbar, weil der Speicherplatz überschreitet {0}. Gehen Sie zum {1}Abschnitt "Statistik"{2} um besetzten Speicherplatz zu überprüfen.</value>
+  </data>
   <data name="TariffPerMonth" xml:space="preserve">
     <value>Monat</value>
   </data>
@@ -66,5 +69,11 @@
   </data>
   <data name="TariffPerYear3" xml:space="preserve">
     <value>3 Jahre</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Nachname</value>
   </data>
 </root>
