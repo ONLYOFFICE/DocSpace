@@ -118,7 +118,8 @@ class Form extends Component {
       openDialog: false,
       email: "",
       emailError: false,
-      errorText: ""
+      errorText: "",
+      socialButtons: []
     };
   }
 
@@ -253,7 +254,8 @@ class Form extends Component {
       openDialog,
       email,
       emailError,
-      errorText
+      errorText,
+      socialButtons
     } = this.state;
     const { params } = match;
 
@@ -370,11 +372,14 @@ class Form extends Component {
           <Text fontSize='14px' color="#c30">
             {errorText}
           </Text>
-          <Box displayProp="flex" alignItems="center">
+
+          {socialButtons.length ? (<Box displayProp="flex" alignItems="center">
             <div className="login-bottom-border"></div>
             <Text className="login-bottom-text" color="#A3A9AE">{t("Or")}</Text>
             <div className="login-bottom-border"></div>
           </Box>
+          ) : null}
+
         </FormContainer>
       </>
     );
@@ -389,7 +394,8 @@ Form.propTypes = {
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
+  socialButtons: PropTypes.array
 };
 
 Form.defaultProps = {
