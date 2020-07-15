@@ -40,7 +40,6 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Files
@@ -154,7 +153,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -349,7 +348,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
