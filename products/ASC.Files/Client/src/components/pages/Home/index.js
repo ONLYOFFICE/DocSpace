@@ -544,6 +544,8 @@ class PureHome extends React.Component {
       const newSelection = [];
       let newFile = null;
       for (let item of items) {
+        if(!item) break   // temporary fall protection selection tile 
+        
         item = item.split("_");
         if (item[0] === "folder") {
           newFile = selection.find((x) => x.id === Number(item[1]) && !x.fileExst);
@@ -564,6 +566,8 @@ class PureHome extends React.Component {
     } else if (selection.length < items.length) {
       //Add selection
       for (let item of items) {
+        if(!item) break // temporary fall protection selection tile 
+
         let newFile = null;
         item = item.split("_");
         if (item[0] === "folder") {
@@ -637,7 +641,7 @@ class PureHome extends React.Component {
       hideWindowSetting,
       showConvertDialog
     } = this.state;
-    const { t, progressData } = this.props;
+    const { t, progressData, viewAs } = this.props;
 
     const progressBarContent = (
       <div>
@@ -688,6 +692,7 @@ class PureHome extends React.Component {
           progressBarValue={progressData.percent}
           progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressData.label}
+          viewAs={viewAs}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={
             <ArticleMainButtonContent
@@ -751,7 +756,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { treeFolders, filter, selectedFolder, selected, selection, folders, files, fileAction, progressData } = state.files;
+  const { treeFolders, filter, selectedFolder, selected, selection, folders, files, fileAction, progressData, viewAs } = state.files;
   const { id } = selectedFolder;
   const indexOfTrash = 3;
 
@@ -766,7 +771,8 @@ function mapStateToProps(state) {
     treeFolders,
     isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
     fileActionId: fileAction.id,
-    progressData
+    progressData,
+    viewAs
   };
 }
 

@@ -14,6 +14,7 @@ const commonStyles = css`
     flex: 1 0 auto;
     padding: 16px 8px 16px 24px;
     outline: none;
+    ${props => props.viewAs == "tile" && "padding-right:0;"}
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
@@ -72,7 +73,7 @@ class SectionBody extends React.Component {
 
   render() {
     //console.log("PageLayout SectionBody render");
-    const { children, withScroll, autoFocus, pinned, onDrop, uploadFiles, setSelections } = this.props;
+    const { children, withScroll, autoFocus, pinned, onDrop, uploadFiles, setSelections, viewAs } = this.props;
 
     const focusProps = autoFocus ? {
       ref: this.focusRef,
@@ -105,12 +106,13 @@ class SectionBody extends React.Component {
           isDropZone
           onDrop={onDrop}
           withScroll={withScroll}
+          viewAs={viewAs}
         >
           {renderBody()}
         </StyledDropZoneBody>
       </SelectedFrame>
     ) : (
-      <StyledSectionBody withScroll={withScroll}>
+      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
         {renderBody()}
       </StyledSectionBody>
     );
@@ -130,14 +132,15 @@ SectionBody.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
     PropTypes.any
-  ])
+  ]),
+  viewAs: PropTypes.string
 };
 
 SectionBody.defaultProps = {
   withScroll: true,
   autoFocus: false,
   pinned: false,
-  uploadFiles: false
+  uploadFiles: false,
 };
 
 export default SectionBody;

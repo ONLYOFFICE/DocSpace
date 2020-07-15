@@ -35,16 +35,10 @@ const MainContainerWrapper = styled.div`
   align-self: center;
   margin-right: auto;
 
-  width: ${props => props.mainContainerWidth ? props.mainContainerWidth : '140px'};
-  min-width: 140px;
-  
-
   ${props => !props.disableSideInfo && `
     @media (max-width: 1024px) {
-      min-width: 140px;
       margin-right: 8px;
       margin-top: 8px;
-      width: 95%;
     }
   `};
 `;
@@ -52,11 +46,9 @@ const MainContainerWrapper = styled.div`
 const MainContainer = styled.div`
   height: 20px;
   margin-right: 8px;
-  max-width: 86%;
 
   @media (max-width: 1024px) {
     ${truncateCss};
-    max-width: 100%;
   }
 
 `;
@@ -80,8 +72,6 @@ const SideContainerWrapper = styled.div`
     vertical-align: middle;
   }
 
-  width: ${props => props.containerWidth ? props.containerWidth : '40px'};
-  min-width: ${props => props.containerMinWidth ? props.containerMinWidth : '40px'};
   color: ${props => props.color && props.color};
 
   ${props => !props.disableSideInfo && `
@@ -96,8 +86,6 @@ const TabletSideInfo = styled.div`
 
   @media (max-width: 1024px) {
     display: block;
-    min-width: 160px;
-    margin: 0 8px;
     color: ${props => props.color && props.color};
 
     ${commonCss};

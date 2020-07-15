@@ -6,23 +6,25 @@ import { FixedSizeList as List, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { ContextMenu, CustomScrollbarsVirtualList, Heading} from "asc-web-components";
 
+const StyledGridWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  width: 100%;
+  grid-gap:22px 16px;
+  padding-bottom: 24px;
+  padding-right: 2px;
+  box-sizing: border-box;
+`;
+
 const StyledTileContainer = styled.div`
   position: relative;
 
-  &.tileContainer{
-  }
-
   .tileItemWrapper{
-    display: inline-flex;
     border: 1px solid #eceef1;
-    padding-right:15px;
-    padding-left: 13px;
-    margin-right:10px;
-    margin-bottom: 16px;
     border-radius:3px;
     border-top-left-radius:0;
     position:relative;
-    width: 245px;
+    min-width: 220px;
     box-sizing: border-box;
 
     &.folder{
@@ -152,7 +154,9 @@ class TileContainer extends React.PureComponent {
             <Heading size="xsmall" className="tileItemsHeading">Folders</Heading>
             {useReactWindow 
               ? <AutoSizer>{renderList}</AutoSizer>
-              : Folders}
+              : <StyledGridWrapper>
+                  {Folders}
+                </StyledGridWrapper>}
           </>
         }
 
@@ -160,8 +164,12 @@ class TileContainer extends React.PureComponent {
           <>
             <Heading size="xsmall" className="tileItemsHeading">Files</Heading>
             {useReactWindow 
-              ? <AutoSizer>{renderList}</AutoSizer>
-              : Files}
+              ? <AutoSizer>{renderList}</AutoSizer> 
+              :
+                <StyledGridWrapper> 
+                  {Files}
+                </StyledGridWrapper>
+              }
           </>
         }
         

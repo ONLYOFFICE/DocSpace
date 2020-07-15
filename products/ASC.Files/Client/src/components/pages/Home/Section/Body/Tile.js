@@ -15,6 +15,11 @@ const FlexBoxStyles = css`
     align-content: center;
 `
 
+const FolderStyles = css`
+  padding-left:13px;
+  box-sizing: border-box;
+`;
+
 const StyledTile = styled.div`
   cursor: default;
 
@@ -22,6 +27,7 @@ const StyledTile = styled.div`
   width: 100%;
 
   ${props => props.isFolder && FlexBoxStyles}
+  ${props => props.isFolder && FolderStyles}
 
 `;
 
@@ -55,7 +61,6 @@ const StyledFileTileBottom = styled.div`
 const StyledContent = styled.div`
   display: flex;
   flex-basis: 100%;
-  min-width: 156px;
 
   a{
     display: block;
@@ -92,13 +97,13 @@ const StyledElement = styled.div`
 `;
 
 const StyledOptionButton = styled.div`
-  display: flex;
-  width: ${props => props.spacerWidth && props.spacerWidth};
+  display: block;
 
   .expandButton > div:first-child {
     padding-top: 8px;
     padding-bottom: 8px;
-    padding-left: 16px;
+    padding-left: 12px;
+    padding-right: 14px;
   }
 `;
 
