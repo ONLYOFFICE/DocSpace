@@ -28,7 +28,6 @@ using System.Runtime.Serialization;
 
 namespace ASC.Files.Core
 {
-    [DataContract]
     public enum FilterType
     {
         [EnumMember] None = 0,

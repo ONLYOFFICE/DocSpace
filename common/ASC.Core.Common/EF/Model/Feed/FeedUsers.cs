@@ -8,7 +8,10 @@ namespace ASC.Core.Common.EF.Model
     [Table("feed_users")]
     public class FeedUsers : BaseEntity
     {
+        [Column("feed_id")]
         public string FeedId { get; set; }
+
+        [Column("user_id")]
         public Guid UserId { get; set; }
 
         public override object[] GetKeys() => new object[] { FeedId, UserId };

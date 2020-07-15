@@ -23,21 +23,14 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Web.Files.Core.Entries
 {
-    [DataContract(Name = "encrypted_data", Namespace = "")]
     public class EncryptedData
     {
-        [DataMember(Name = "publicKey")]
-        public string PublicKey;
+        public string PublicKey { get; set; }
 
-        [DataMember(Name = "fileHash")]
-        public string FileHash;
+        public string FileHash { get; set; }
 
-        [DataMember(Name = "data")]
-        public string Data;
+        public string Data { get; set; }
     }
 }

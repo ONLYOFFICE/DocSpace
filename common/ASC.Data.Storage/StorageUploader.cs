@@ -27,17 +27,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -55,7 +55,7 @@ namespace ASC.Data.Storage
 
         static StorageUploader()
         {
-            Scheduler = new LimitedConcurrencyLevelTaskScheduler(4);
+            Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
             TokenSource = new CancellationTokenSource();
             Cache = AscCache.Memory;
             Locker = new object();
@@ -115,7 +115,6 @@ namespace ASC.Data.Storage
         }
     }
 
-    [DataContract]
     public class MigrateOperation : ProgressBase
     {
         private readonly ILog Log;

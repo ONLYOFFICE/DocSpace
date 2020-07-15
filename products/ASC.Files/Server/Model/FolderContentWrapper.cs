@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -39,43 +38,37 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "content", Namespace = "")]
     public class FolderContentWrapper<T>
     {
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public List<FileWrapper<T>> Files { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public FolderWrapper<T> Current { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public object PathParts { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int StartIndex { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int Count { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public int Total { get; set; }
+
+        public int New { get; set; }
 
         /// <summary>
         /// </summary>
@@ -151,6 +144,7 @@ namespace ASC.Api.Documents
             result.Current = FolderWrapperHelper.Get(folderItems.FolderInfo);
             result.Count = result.Files.Count + result.Folders.Count;
             result.Total = folderItems.Total;
+            result.New = folderItems.New;
 
             return result;
         }
@@ -185,6 +179,18 @@ namespace ASC.Api.Documents
             if (value is FolderWrapper<int> f2)
             {
                 JsonSerializer.Serialize(writer, f2, typeof(FolderWrapper<int>), options);
+                return;
+            }
+
+            if (value is FileWrapper<string> f3)
+            {
+                JsonSerializer.Serialize(writer, f3, typeof(FileWrapper<string>), options);
+                return;
+            }
+
+            if (value is FileWrapper<int> f4)
+            {
+                JsonSerializer.Serialize(writer, f4, typeof(FileWrapper<int>), options);
                 return;
             }
 

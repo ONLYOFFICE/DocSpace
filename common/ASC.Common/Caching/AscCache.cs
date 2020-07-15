@@ -49,7 +49,7 @@ namespace ASC.Common.Caching
             CacheNotify.Publish(new AscCacheItem { Id = ByteString.CopyFrom(Guid.NewGuid().ToByteArray()) }, CacheNotifyAction.Any);
         }
 
-        private static void OnClearCache()
+        public static void OnClearCache()
         {
             var keys = MemoryCache.Default.Select(r => r.Key).ToList();
 

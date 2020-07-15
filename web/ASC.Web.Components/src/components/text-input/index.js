@@ -37,13 +37,15 @@ const StyledInput = styled(Input).attrs((props) => ({
         (props.size === 'base' && '20px') ||
         (props.size === 'middle' && '20px') ||
         (props.size === 'big' && '20px') ||
-        (props.size === 'huge' && '21px')
+        (props.size === 'huge' && '21px') ||
+        (props.size === 'large' && '21px')
     };
     font-size: ${props =>
         (props.size === 'base' && '13px') ||
         (props.size === 'middle' && '14px') ||
         (props.size === 'big' && '16px') ||
-        (props.size === 'huge' && '18px')
+        (props.size === 'huge' && '18px') ||
+        (props.size === 'large' && '16px')
     };
 
     font-weight: ${props => props.fontWeight
@@ -57,7 +59,8 @@ const StyledInput = styled(Input).attrs((props) => ({
         (props.size === 'base' && '5px 7px') ||
         (props.size === 'middle' && '8px 12px') ||
         (props.size === 'big' && '8px 16px') ||
-        (props.size === 'huge' && '8px 20px')
+        (props.size === 'huge' && '8px 20px') ||
+        (props.size === 'large' && '11px 16px')
     };
     transition: all 0.2s ease 0s;
 
@@ -110,7 +113,7 @@ TextInput.propTypes = {
     mask: PropTypes.oneOfType([ PropTypes.array, PropTypes.func ]),
     keepCharPositions: PropTypes.bool,
 
-    size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
+    size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'large']),
     scale: PropTypes.bool,
 
     onChange: PropTypes.func,

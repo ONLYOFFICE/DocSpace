@@ -25,15 +25,15 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Utility
 {
     [Serializable]
-    [DataContract]
     public sealed class PasswordSettings : ISettings
     {
         public Guid ID
@@ -46,25 +46,21 @@ namespace ASC.Web.Core.Utility
         /// <summary>
         /// Minimal length password has
         /// </summary>
-        [DataMember]
         public int MinLength { get; set; }
 
         /// <summary>
         /// Password must contains upper case
         /// </summary>
-        [DataMember]
         public bool UpperCase { get; set; }
 
         /// <summary>
         /// Password must contains digits
         /// </summary>
-        [DataMember]
         public bool Digits { get; set; }
 
         /// <summary>
         /// Password must contains special symbols
         /// </summary>
-        [DataMember]
         public bool SpecSymbols { get; set; }
 
         public ISettings GetDefault(IConfiguration configuration)

@@ -36,6 +36,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Web.Core.Files;
@@ -590,7 +591,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
 
             using (var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
-                                           FileMode.Open, FileAccess.Read, FileShare.None, 4096, FileOptions.DeleteOnClose))
+                                           FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose))
             {
                 return SaveFile(uploadSession.File, fs);
             }
@@ -649,6 +650,16 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
             throw new NotImplementedException();
         }
