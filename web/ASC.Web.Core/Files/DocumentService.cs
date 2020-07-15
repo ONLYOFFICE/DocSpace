@@ -168,6 +168,9 @@ namespace ASC.Web.Core.Files
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
+            logger.Debug($"{documentConverterUrl}");
+            logger.Debug($"{bodyString}");
+
             string dataResponse;
             WebResponse response = null;
             Stream responseStream = null;
