@@ -54,6 +54,7 @@ const StyledFileTileTop = styled.div`
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles}
   padding: 9px 13px;
+  padding-right:0;
   min-height: 56px;
   box-sizing: border-box;
 `;
@@ -181,7 +182,7 @@ class Tile extends React.Component {
                 <BadgesFileTile item={item}/>
               </StyledFileTileTop>
               <StyledFileTileBottom>
-                {renderElement && !isFolder && <StyledElement>{element}</StyledElement>}
+                <StyledElement>{element}</StyledElement>
                 <StyledContent isFolder={isFolder}>{children}</StyledContent>
                 <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                   {renderContext

@@ -724,10 +724,6 @@ class SectionBodyContent extends React.Component {
     )
   }
 
-  onViewSelectorClick = () => {
-    this.props.setViewAs("tile")
-  }
-
   onMediaViewerClose = () => {
     const item = { visible: false, id: null };
     this.props.setMediaViewerData(item);
