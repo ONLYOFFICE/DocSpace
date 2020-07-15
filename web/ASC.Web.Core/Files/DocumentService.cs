@@ -266,7 +266,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { PropertyNameCaseInsensitive = true, IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -444,6 +444,7 @@ namespace ASC.Web.Core.Files
         [DebuggerDisplay("{Command} ({Key})")]
         private class CommandBody
         {
+            [System.Text.Json.Serialization.JsonIgnore]
             public CommandMethod Command { get; set; }
 
 
@@ -470,7 +471,7 @@ namespace ASC.Web.Core.Files
         [DebuggerDisplay("{Title}")]
         public class MetaData
         {
-            public string Title;
+            public string Title { get; set; }
         }
 
         [Serializable]
