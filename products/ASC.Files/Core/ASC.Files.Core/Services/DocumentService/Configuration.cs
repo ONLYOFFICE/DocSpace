@@ -43,7 +43,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
-using ASC.Files.Resources;
+using ASC.Files.Core.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
