@@ -17,9 +17,9 @@ const StyledFilterInput = styled.div`
     .styled-search-input {
       display: block;
       float: left;
-      width: calc(100% - 212px);
+      width: ${props => props.viewAs ? "calc(100% - 212px)" : "calc(100% - 140px)"};
       @media (max-width: 460px) {
-        width: calc(100% - 140px);
+        ${props => props.viewAs && "width: calc(100% - 140px);"}
       }
       @media ${mobile} {
           width: calc(100% - 58px);

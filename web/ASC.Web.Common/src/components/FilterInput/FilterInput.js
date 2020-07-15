@@ -546,7 +546,7 @@ class FilterInput extends React.Component {
                 break;
         }
         return (
-            <StyledFilterInput className={className} id={id} style={style}>
+            <StyledFilterInput viewAs={viewAs} className={className} id={id} style={style}>
                 <div className='styled-search-input' ref={this.searchWrapper}>
                     <SearchInput
                         id={id}
@@ -595,11 +595,13 @@ class FilterInput extends React.Component {
                     directionAscLabel={directionAscLabel}
                     directionDescLabel={directionDescLabel}
                 />
-                <ViewSelector
-                    isDisabled={isDisabled}
-                    onClickViewSelector={this.onClickViewSelector}
-                    viewAs={viewAs}
-                />
+                {viewAs &&
+                    <ViewSelector
+                        isDisabled={isDisabled}
+                        onClickViewSelector={this.onClickViewSelector}
+                        viewAs={viewAs}
+                    />
+                }
             </StyledFilterInput>
 
         );
