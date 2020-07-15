@@ -176,6 +176,7 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 return Web.Core.Files.DocumentService.DocbuilderRequest(
+                    Logger,
                     FileUtility,
                     FilesLinkUtility.DocServiceDocbuilderUrl,
                     GenerateRevisionId(requestKey),
@@ -297,7 +298,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var scriptUrl = BaseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                     scriptUrl = ReplaceCommunityAdress(scriptUrl);
 
-                    Web.Core.Files.DocumentService.DocbuilderRequest(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, out var urls);
+                    Web.Core.Files.DocumentService.DocbuilderRequest(Logger, FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, out var urls);
                 }
                 catch (Exception ex)
                 {

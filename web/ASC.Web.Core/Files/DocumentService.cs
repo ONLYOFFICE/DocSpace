@@ -35,6 +35,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 
@@ -300,7 +301,9 @@ namespace ASC.Web.Core.Files
             return (CommandResultTypes)jResponse.Value<int>("error");
         }
 
-        public static string DocbuilderRequest(FileUtility fileUtility,
+        public static string DocbuilderRequest(
+            ILog logger,
+            FileUtility fileUtility,
             string docbuilderUrl,
             string requestKey,
             string scriptUrl,
@@ -373,7 +376,11 @@ namespace ASC.Web.Core.Files
             if (responseFromService == null) throw new Exception("Invalid answer format");
 
             var errorElement = responseFromService.Value<string>("error");
-            if (!string.IsNullOrEmpty(errorElement)) DocumentServiceException.ProcessResponseError(errorElement);
+            if (!string.IsNullOrEmpty(errorElement))
+            {
+                logger.Error(errorElement);
+                DocumentServiceException.ProcessResponseError(errorElement);
+            }
 
             var isEnd = responseFromService.Value<bool>("end");
 
@@ -435,16 +442,16 @@ namespace ASC.Web.Core.Files
         {
             public CommandMethod Command { get; set; }
 
-           
+
             public string C
             {
                 get { return Command.ToString().ToLower(CultureInfo.InvariantCulture); }
             }
-           
+
             public string Callback { get; set; }
-         
+
             public string Key { get; set; }
-          
+
             public MetaData Meta { get; set; }
 
             public string[] Users { get; set; }
