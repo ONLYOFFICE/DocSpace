@@ -105,7 +105,7 @@ class SortComboBox extends React.Component {
             spacing='0px'
           />
         </DropDownItem>
-        {settingsArray.length !== 0 &&
+        {settingsArray.length !== 0 && viewAs &&
           <>
             <DropDownItem isSeparator />
             <DropDownItem noHover >
@@ -162,7 +162,7 @@ SortComboBox.propTypes = {
   onChangeSortId: PropTypes.func,
   onChangeView: PropTypes.func,
   sortDirection: PropTypes.number,
-  viewAs: PropTypes.string,
+  viewAs: PropTypes.bool,  // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
 }
 
 SortComboBox.defaultProps = {
