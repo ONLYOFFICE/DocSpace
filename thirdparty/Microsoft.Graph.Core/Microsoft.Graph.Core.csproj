@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Microsoft Graph Core Client Library implements core functionality used by Microsoft Graph client libraries.</Description>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <AssemblyTitle>Microsoft Graph Core Client Library</AssemblyTitle>
+    <Authors>Microsoft</Authors>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
+    <AssemblyName>Microsoft.Graph.Core</AssemblyName>
+    <PackageId>Microsoft.Graph.Core</PackageId>
+    <PackageTags>Microsoft Office365;Graph;GraphServiceClient;Outlook;OneDrive;AzureAD;GraphAPI;Productivity;SharePoint;Intune;SDK</PackageTags>
+    <PackageProjectUrl>https://developer.microsoft.com/graph</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/microsoftgraph/msgraph-sdk-dotnet</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>
+      </PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

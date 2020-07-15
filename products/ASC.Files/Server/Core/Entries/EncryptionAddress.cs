@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -37,14 +36,11 @@ using ASC.Web.Studio.Core;
 
 namespace ASC.Web.Files.Core.Entries
 {
-    [DataContract(Name = "account", Namespace = "")]
     public class EncryptionAddress
     {
-        [DataMember(Name = "address")]
-        public string Address;
+        public string Address { get; set; }
 
-        [DataMember(Name = "publicKey")]
-        public string PublicKey;
+        public string PublicKey { get; set; }
     }
 
     public class EncryptionAddressHelper

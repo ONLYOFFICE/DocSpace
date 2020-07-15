@@ -26,21 +26,16 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace ASC.ApiSystem.Models
 {
-    [DataContract]
     public class CoreSettingsModel
     {
-        [DataMember(IsRequired = false)]
         public Int32 Tenant { get; set; }
 
-        [DataMember(IsRequired = true)]
         [StringLength(255)]
         public string Key { get; set; }
 
-        [DataMember(IsRequired = true)]
         public string Value { get; set; }
 
         public CoreSettingsModel()

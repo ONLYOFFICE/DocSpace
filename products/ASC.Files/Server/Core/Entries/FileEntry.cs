@@ -25,14 +25,12 @@
 
 
 using System;
-using System.Runtime.Serialization;
-
+using System.Text.Json.Serialization;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
-    [DataContract(Name = "entry", Namespace = "")]
     [Serializable]
     public abstract class FileEntry : ICloneable
     {
@@ -41,56 +39,52 @@ namespace ASC.Files.Core
             Global = global;
         }
 
-        [DataMember(Name = "title", IsRequired = true)]
         public virtual string Title { get; set; }
 
-        [DataMember(Name = "create_by_id")]
+        [JsonPropertyName("create_by_id")]
         public Guid CreateBy { get; set; }
 
-        [DataMember(Name = "create_by")]
+        [JsonPropertyName("create_by")]
         public string CreateByString
         {
             get { return !CreateBy.Equals(Guid.Empty) ? Global.GetUserName(CreateBy) : _createByString; }
             set { _createByString = value; }
         }
 
-        [DataMember(Name = "create_on")]
+        [JsonPropertyName("create_on")]
         public string CreateOnString
         {
             get { return CreateOn.Equals(default) ? null : CreateOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
-        [DataMember(Name = "modified_on")]
+        [JsonPropertyName("modified_on")]
         public string ModifiedOnString
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
-        [DataMember(Name = "modified_by_id")]
+        [JsonPropertyName("modified_by_id")]
         public Guid ModifiedBy { get; set; }
 
-        [DataMember(Name = "modified_by")]
+        [JsonPropertyName("modified_by")]
         public string ModifiedByString
         {
             get { return !ModifiedBy.Equals(Guid.Empty) ? Global.GetUserName(ModifiedBy) : _modifiedByString; }
             set { _modifiedByString = value; }
         }
 
-        [DataMember(Name = "error", EmitDefaultValue = false)]
         public string Error { get; set; }
 
-        [DataMember(Name = "access")]
         public FileShare Access { get; set; }
 
-        [DataMember(Name = "shared")]
         public bool Shared { get; set; }
 
-        [DataMember(Name = "provider_id", EmitDefaultValue = false)]
+        [JsonPropertyName("provider_id")]
         public int ProviderId { get; set; }
 
-        [DataMember(Name = "provider_key", EmitDefaultValue = false)]
+        [JsonPropertyName("provider_key")]
         public string ProviderKey { get; set; }
         public bool ProviderEntry
         {
@@ -127,7 +121,6 @@ namespace ASC.Files.Core
         }
     }
 
-    [DataContract(Name = "entry", Namespace = "")]
     [Serializable]
     public abstract class FileEntry<T> : FileEntry, ICloneable
     {
@@ -135,11 +128,9 @@ namespace ASC.Files.Core
         {
         }
 
-        [DataMember(Name = "id")]
         public T ID { get; set; }
 
-
-        [DataMember(Name = "folder_id")]
+        [JsonPropertyName("folder_id")]
         public abstract T FolderIdDisplay
         {
             get;

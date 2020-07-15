@@ -337,27 +337,18 @@ namespace ASC.Core.Billing
         Message Request(Message message);
     }
 
-    [DataContract(Name = "Message", Namespace = "http://schemas.datacontract.org/2004/07/BillingService")]
     [Serializable]
     public class Message
     {
-        [DataMember]
         public string Content { get; set; }
 
-        [DataMember]
         public MessageType Type { get; set; }
     }
 
-    [DataContract(Name = "MessageType", Namespace = "http://schemas.datacontract.org/2004/07/BillingService")]
     public enum MessageType
     {
-        [EnumMember]
         Undefined = 0,
-
-        [EnumMember]
         Data = 1,
-
-        [EnumMember]
         Error = 2,
     }
 

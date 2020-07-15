@@ -30,8 +30,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Security;
+using System.Text.Json;
 using System.Threading;
 using System.Web;
 
@@ -146,17 +146,17 @@ namespace ASC.Web.Files.Utils
                 using var scope = ServiceProvider.CreateScope();
                 var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var userManager = scope.ServiceProvider.GetService<UserManager>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-                var FileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
-                var PathProvider = scope.ServiceProvider.GetService<PathProvider>();
-                var SetupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-                var FileUtility = scope.ServiceProvider.GetService<FileUtility>();
-                var DocumentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
-                var DocumentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
-                var EntryManager = scope.ServiceProvider.GetService<EntryManager>();
-                var FileConverter = scope.ServiceProvider.GetService<FileConverter>();
+                UserManager userManager;
+                SecurityContext securityContext;
+                IDaoFactory daoFactory;
+                FileSecurity fileSecurity;
+                PathProvider pathProvider;
+                SetupInfo setupInfo;
+                FileUtility fileUtility;
+                DocumentServiceHelper documentServiceHelper;
+                DocumentServiceConnector documentServiceConnector;
+                EntryManager entryManager;
+                FileConverter fileConverter;
 
                 try
                 {
@@ -188,7 +188,6 @@ namespace ASC.Web.Files.Utils
                             .ToList();
                     }
 
-                    var fileSecurity = FileSecurity;
                     foreach (var file in filesIsConverting)
                     {
                         var fileUri = file.ID.ToString();
@@ -224,6 +223,19 @@ namespace ASC.Web.Files.Utils
                             }
 
                             tenantManager.SetCurrentTenant(tenantId);
+
+                            userManager = scope.ServiceProvider.GetService<UserManager>();
+                            securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                            daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+                            fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
+                            pathProvider = scope.ServiceProvider.GetService<PathProvider>();
+                            setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
+                            fileUtility = scope.ServiceProvider.GetService<FileUtility>();
+                            documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+                            documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
+                            entryManager = scope.ServiceProvider.GetService<EntryManager>();
+                            fileConverter = scope.ServiceProvider.GetService<FileConverter>();
+
                             securityContext.AuthenticateMe(account);
 
                             var user = userManager.GetUsers(account.ID);
@@ -236,19 +248,19 @@ namespace ASC.Web.Files.Utils
                                 //No rights in CRM after upload before attach
                                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
                             }
-                            if (file.ContentLength > SetupInfo.AvailableFileSize)
+                            if (file.ContentLength > setupInfo.AvailableFileSize)
                             {
-                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
+                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize)));
                             }
 
-                            fileUri = PathProvider.GetFileStreamUrl(file);
+                            fileUri = pathProvider.GetFileStreamUrl(file);
 
-                            var toExtension = FileUtility.GetInternalExtension(file.Title);
+                            var toExtension = fileUtility.GetInternalExtension(file.Title);
                             var fileExtension = file.ConvertedExtension;
-                            var docKey = DocumentServiceHelper.GetDocKey(file);
+                            var docKey = documentServiceHelper.GetDocKey(file);
 
-                            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                            fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
+                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
                         }
                         catch (Exception exception)
                         {
@@ -313,7 +325,7 @@ namespace ASC.Web.Files.Utils
 
                         try
                         {
-                            newFile = FileConverter.SaveConvertedFile(file, convertedFileUrl);
+                            newFile = fileConverter.SaveConvertedFile(file, convertedFileUrl);
                         }
                         catch (Exception e)
                         {
@@ -341,7 +353,7 @@ namespace ASC.Web.Files.Utils
                                             var folderDao = daoFactory.GetFolderDao<T>();
                                             var folder = folderDao.GetFolder(newFile.FolderID);
                                             var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
-                                            operationResult.Result = FileJsonSerializer(EntryManager, newFile, folderTitle);
+                                            operationResult.Result = FileJsonSerializer(entryManager, newFile, folderTitle);
                                         }
 
                                         operationResult.Progress = 100;
@@ -390,20 +402,35 @@ namespace ASC.Web.Files.Utils
             if (file == null) return string.Empty;
 
             EntryManager.SetFileStatus(file);
-            return
-                string.Format("{{ \"id\": \"{0}\"," +
-                              " \"title\": \"{1}\"," +
-                              " \"version\": \"{2}\"," +
-                              " \"folderId\": \"{3}\"," +
-                              " \"folderTitle\": \"{4}\"," +
-                              " \"fileXml\": \"{5}\" }}",
-                              file.ID,
-                              file.Title,
-                              file.Version,
-                              file.FolderID,
-                              folderTitle ?? "",
-                              File<T>.Serialize(file).Replace('"', '\''));
+
+            var options = new JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                IgnoreReadOnlyProperties = true,
+                WriteIndented = false
+            };
+
+            return JsonSerializer.Serialize(
+                                  new FileJsonSerializerData<T>()
+                                  {
+                                      Id = file.ID,
+                                      Title = file.Title,
+                                      Version = file.Version,
+                                      FolderID = file.FolderID,
+                                      FolderTitle = folderTitle ?? "",
+                                      FileJson = JsonSerializer.Serialize(file, options)
+                                  }, options);
         }
+    }
+
+    public class FileJsonSerializerData<T>
+    {
+        public T Id { get; set; }
+        public string Title { get; set; }
+        public int Version { get; set; }
+        public T FolderID { get; set; }
+        public string FolderTitle { get; set; }
+        public string FileJson { get; set; }
     }
 
     public class FileConverter
@@ -746,7 +773,6 @@ namespace ASC.Web.Files.Utils
         }
     }
 
-    [DataContract(Name = "operation_result", Namespace = "")]
     internal class ConvertFileOperationResult : FileOperationResult
     {
         public DateTime StartDateTime { get; set; }
