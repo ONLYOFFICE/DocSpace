@@ -1,11 +1,10 @@
 using ASC.Api.Core;
-using ASC.Api.Core.Auth;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -17,23 +16,24 @@ namespace ASC.Web.Studio
 {
     public class Startup : BaseStartup
     {
+        public override string[] LogParams { get => new string[] { "ASC.Web" }; }
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment): base(configuration, hostEnvironment)
+        public override bool AddControllers { get => false; }
+
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
-
             services.AddCors();
-            
+
             var diHelper = new DIHelper(services);
-            LogParams = new string[] { "ASC.Api", "ASC.Web" };
             diHelper
-                .AddCookieAuthHandler()
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService();
+
             base.ConfigureServices(services);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }

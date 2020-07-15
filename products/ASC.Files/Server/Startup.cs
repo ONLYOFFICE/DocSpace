@@ -1,14 +1,13 @@
 
 using System.Text;
+using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
-using ASC.Api.Core.Auth;
-using ASC.Api.Core.Middleware;
 using ASC.Api.Documents;
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,38 +18,22 @@ namespace ASC.Files
 {
     public class Startup : BaseStartup
     {
+        public override string[] LogParams { get => new string[] { "ASC.Files" }; }
+        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter() }; }
+
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
             : base(configuration, hostEnvironment)
         {
-            
+
         }
 
         public override void ConfigureServices(IServiceCollection services)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            services.AddControllers()
-                .AddXmlSerializerFormatters()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.WriteIndented = false;
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
-                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-                    options.JsonSerializerOptions.Converters.Add(new FileEntryWrapperConverter());
-                });
-
             services.AddMemoryCache();
 
             var diHelper = new DIHelper(services);
-            diHelper
-                .AddCookieAuthHandler()
-                .AddCultureMiddleware()
-                .AddIpSecurityFilter()
-                .AddPaymentFilter()
-                .AddProductSecurityFilter()
-                .AddTenantStatusFilter();
-
-            LogParams = new string[] { "ASC.Files" };
 
             diHelper
                 .AddDocumentsControllerService()
@@ -65,7 +48,6 @@ namespace ASC.Files
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             base.Configure(app, env);
 
             app.MapWhen(
@@ -95,8 +77,6 @@ namespace ASC.Files
                 {
                     appBranch.UseDocuSignHandler();
                 });
-
-            app.UseStaticFiles();
         }
     }
 }
