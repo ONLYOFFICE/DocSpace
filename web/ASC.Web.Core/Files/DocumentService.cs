@@ -36,7 +36,6 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 
@@ -94,7 +93,6 @@ namespace ASC.Web.Core.Files
         /// <exception>
         /// </exception>
         public static int GetConvertedUri(
-            ILog logger,
             FileUtility fileUtility,
             string documentConverterUrl,
             string documentUri,
@@ -168,9 +166,6 @@ namespace ASC.Web.Core.Files
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            logger.Debug($"{documentConverterUrl}");
-            logger.Debug($"{bodyString}");
-
             string dataResponse;
             WebResponse response = null;
             Stream responseStream = null;
@@ -211,7 +206,7 @@ namespace ASC.Web.Core.Files
                     response.Dispose();
             }
 
-            return GetResponseUri(logger, dataResponse, out convertedDocumentUri);
+            return GetResponseUri(dataResponse, out convertedDocumentUri);
         }
 
         /// <summary>
@@ -306,7 +301,6 @@ namespace ASC.Web.Core.Files
         }
 
         public static string DocbuilderRequest(
-            ILog logger,
             FileUtility fileUtility,
             string docbuilderUrl,
             string requestKey,
@@ -382,7 +376,6 @@ namespace ASC.Web.Core.Files
             var errorElement = responseFromService.Value<string>("error");
             if (!string.IsNullOrEmpty(errorElement))
             {
-                logger.Error(errorElement);
                 DocumentServiceException.ProcessResponseError(errorElement);
             }
 
@@ -601,7 +594,7 @@ namespace ASC.Web.Core.Files
         /// <param name="jsonDocumentResponse">The resulting json from editing service</param>
         /// <param name="responseUri">Uri to the converted document</param>
         /// <returns>The percentage of completion of conversion</returns>
-        private static int GetResponseUri(ILog logger, string jsonDocumentResponse, out string responseUri)
+        private static int GetResponseUri(string jsonDocumentResponse, out string responseUri)
         {
             if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", "jsonDocumentResponse");
 
@@ -609,11 +602,7 @@ namespace ASC.Web.Core.Files
             if (responseFromService == null) throw new WebException("Invalid answer format");
 
             var errorElement = responseFromService.Value<string>("error");
-            if (!string.IsNullOrEmpty(errorElement))
-            {
-                logger.Error(errorElement);
-                DocumentServiceException.ProcessResponseError(errorElement);
-            }
+            if (!string.IsNullOrEmpty(errorElement)) DocumentServiceException.ProcessResponseError(errorElement);
 
             var isEndConvert = responseFromService.Value<bool>("endConvert");
 

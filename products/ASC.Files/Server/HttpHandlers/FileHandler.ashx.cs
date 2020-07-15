@@ -186,7 +186,6 @@ namespace ASC.Web.Files
 
             try
             {
-                Logger.Debug($"{context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? ""}");
                 switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
                 {
                     case "view":
@@ -707,10 +706,6 @@ namespace ASC.Web.Files
                 //context.ApplicationInstance.CompleteRequest();
             }
             catch (HttpException he)
-            {
-                Logger.ErrorFormat("StreamFile", he);
-            }
-            catch (Exception he)
             {
                 Logger.ErrorFormat("StreamFile", he);
             }
