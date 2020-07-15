@@ -33,10 +33,6 @@ const FormContainer = styled.form`
        max-width: 311px;
     }
 
-  .login-input {
-    margin-bottom: 16px;
-  }
-
   .login-forgot-wrapper {
     height: 36px;
     padding-bottom: 14px;
@@ -288,7 +284,6 @@ class Form extends Component {
               autoComplete="username"
               onChange={this.onChangeLogin}
               onKeyDown={this.onKeyPress}
-              className="login-input"
             />
           </FieldContainerWrapper>
           <FieldContainerWrapper isVertical={true} hasError={!passwordValid} errorMessage={t("RequiredFieldMessage")}>
@@ -297,7 +292,6 @@ class Form extends Component {
               NewPasswordButtonVisible={false}
               tooltipPasswordTitle={t("PasswordMustContain")}
               tooltipPasswordLength={this.tooltipPasswordLength}
-              className="login-input"
               id="password"
               inputName="password"
               placeholder={t("Password")}
@@ -421,7 +415,7 @@ const LoginForm = props => {
         <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
         <RegisterContainer onClick={onRegisterClick}>
           <Text color="#316DAA" textAlign="center">
-              Register
+            Register
           </Text>
         </RegisterContainer>
       </>
