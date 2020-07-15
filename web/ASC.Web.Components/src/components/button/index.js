@@ -65,9 +65,9 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   };
 
   line-height: ${props =>
-  (props.size === 'large' && '20px') ||
-    (props.size === 'big' && '19px') ||
-    (props.size === 'medium' && '18px') ||
+    (props.size === 'large' && '20px') ||
+    (props.size === 'big' && '18px') ||
+    (props.size === 'medium' && '15px') ||
     (props.size === 'base' && '16px')
   };
 
@@ -91,42 +91,42 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   padding: ${props =>
     (props.size === 'large' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '11px 20px 13px 20px' : '11px 10px 13px 10px')
-          : (props.label ? '12px 20px 12px 20px' : '12px 10px 12px 10px')
+          ? (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
+          : (props.label ? '12px 20px 12px 20px' : '12px 20px 12px 20px')
         ) 
       : (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 27px 9px 28px' : '8px 10px 9px 10px')
+          ? (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
+          : (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
         ))
     ) ||
     (props.size === 'big' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 28px 9px 28px' : '8px 10px 9px 10px')
+          ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
+          : (props.label ? '8px 16px 9px 16px' : '8px 10px 9px 16px')
         ) 
       : (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 27px 9px 28px' : '8px 10px 9px 10px')
+          ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
+          : (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
         ))
     ) ||
     (props.size === 'medium' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
-          : (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+          ? (props.label ? '6px 16px 8px 16px' : '6px 16px 8px 16px')
+          : (props.label ? '6px 16px 8px 16px' : '6px 16px 8px 16px')
         ) 
       : (props.icon 
-          ? (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
-          : (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+          ? (props.label ? '6px 16px 8px 16px' : '6px 16px 7px 16px')
+          : (props.label ? '6px 16px 8px 16px' : '6px 16px 8px 16px')
         ))
     ) ||
     (props.size === 'base' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
-          : (props.label ? '3px 24px 5px 24px' : '3px 5px 5px 5px')
+          ? (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px') 
+          : (props.label ? '4px 12px 5px 12px' : '4px 12px 5px 12px')
         )
       : (props.icon 
-          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
-          : (props.label ? '3px 24px 5px 24px' : '3px 5px 5px 5px')
+          ? (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px') 
+          : (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px')
         ))
     )
   };
