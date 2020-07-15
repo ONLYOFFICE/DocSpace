@@ -261,7 +261,7 @@ namespace ASC.Data.Reassigns
 
             services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
             services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
             return services;
         }
     }

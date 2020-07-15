@@ -82,7 +82,7 @@ namespace ASC.ApiSystem.Controllers
             SettingsManager settingsManager,
             ApiSystemHelper apiSystemHelper,
             CommonMethods commonMethods,
-            HostedSolution hostedSolution,
+            IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
             CoreSettings coreSettings,
             TenantDomainValidator tenantDomainValidator,
             UserFormatter userFormatter,
@@ -98,7 +98,7 @@ namespace ASC.ApiSystem.Controllers
             SettingsManager = settingsManager;
             ApiSystemHelper = apiSystemHelper;
             CommonMethods = commonMethods;
-            HostedSolution = hostedSolution;
+            HostedSolution = hostedSolutionOptions.Value;
             CoreSettings = coreSettings;
             TenantDomainValidator = tenantDomainValidator;
             UserFormatter = userFormatter;

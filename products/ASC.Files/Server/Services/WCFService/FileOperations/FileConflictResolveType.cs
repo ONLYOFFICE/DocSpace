@@ -24,17 +24,15 @@
 */
 
 
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    [DataContract]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FileConflictResolveType
-    {
-        [EnumMember] Skip = 0,
-        [EnumMember] Overwrite = 1,
-        [EnumMember] Duplicate = 2
+    { 
+        Skip = 0,
+        Overwrite = 1,
+        Duplicate = 2
     }
 }

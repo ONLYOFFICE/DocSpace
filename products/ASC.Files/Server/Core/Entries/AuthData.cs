@@ -25,24 +25,18 @@
 
 
 using System.Diagnostics;
-using System.Runtime.Serialization;
 
 namespace ASC.Files.Core
 {
-    [DataContract(Name = "AuthData", Namespace = "")]
     [DebuggerDisplay("{Login} {Password} {Token} {Url}")]
     public class AuthData
     {
-        [DataMember(Name = "login")]
         public string Login { get; set; }
 
-        [DataMember(Name = "password")]
         public string Password { get; set; }
 
-        [DataMember(Name = "token")]
         public string Token { get; set; }
 
-        [DataMember(Name = "url")]
         public string Url { get; set; }
 
         public AuthData(string url = null, string login = null, string password = null, string token = null)

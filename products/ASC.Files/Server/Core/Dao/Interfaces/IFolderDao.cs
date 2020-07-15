@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+using ASC.Files.Core.Security;
+
 namespace ASC.Files.Core
 {
     public interface IFolderDao<T>
@@ -291,6 +293,11 @@ namespace ASC.Files.Core
         /// <param name="folderIDs"></param>
         /// <returns></returns>
         Dictionary<string, string> GetBunchObjectIDs(List<T> folderIDs);
+
+
+        IEnumerable<(Folder<T>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
+
+        IEnumerable<T> GetTenantsWithFeeds(DateTime fromTime);
 
         #endregion
     }

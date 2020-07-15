@@ -33,6 +33,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
+using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
@@ -407,6 +408,16 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         }
 
         public string GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
         {
             throw new NotImplementedException();
         }

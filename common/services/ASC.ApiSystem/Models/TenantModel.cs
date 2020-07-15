@@ -27,93 +27,68 @@
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Interfaces;
 using ASC.Core.Tenants;
+
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 
 namespace ASC.ApiSystem.Models
 {
-    [DataContract]
     public class TenantModel : IModel
     {
-        [DataMember(IsRequired = true)]
-        [StringLength(255)]
         public string PortalName { get; set; }
 
-        [DataMember(IsRequired = false)]
         public int? TenantId { get; set; }
 
-
-        [DataMember(IsRequired = false)]
         [StringLength(255)]
         public string AffiliateId { get; set; }
 
-        [DataMember(IsRequired = false)]
         public string Campaign { get; set; }
 
-        [DataMember(IsRequired = true)]
         [StringLength(255)]
         public string FirstName { get; set; }
 
-        [DataMember(IsRequired = true)]
         [Email]
         [StringLength(255)]
         public string Email { get; set; }
 
-        [DataMember(IsRequired = false)]
         public int Industry { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(7)]
         public string Language { get; set; }
 
-        [DataMember(IsRequired = true)]
         [StringLength(255)]
         public string LastName { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(38)]
         public string Module { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(Web.Core.Utility.PasswordSettings.MaxLength)]
         public string Password { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(255)]
         public string PartnerId { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(32)]
         public string Phone { get; set; }
 
-        [DataMember(IsRequired = false)]
         public string RecaptchaResponse { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(20)]
         public string Region { get; set; }
 
-        [DataMember(IsRequired = false)]
         public TenantStatus Status { get; set; }
 
-        [DataMember(IsRequired = false)]
         public bool SkipWelcome { get; set; }
 
-        [DataMember(IsRequired = false)]
         [StringLength(255)]
         public string TimeZoneName { get; set; }
 
-        [DataMember(IsRequired = false)]
         public bool Spam { get; set; }
 
-        [DataMember(IsRequired = false)]
         public bool Calls { get; set; }
 
-        [DataMember(IsRequired = false)]
         public bool Analytics { get; set; }
 
-        [DataMember(IsRequired = false)]
         public string AppKey { get; set; }
     }
 }

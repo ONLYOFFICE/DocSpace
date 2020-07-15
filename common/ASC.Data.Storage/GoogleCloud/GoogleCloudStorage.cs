@@ -48,6 +48,8 @@ using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
+using static Google.Cloud.Storage.V1.UrlSigner;
+
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 
@@ -672,7 +674,7 @@ namespace ASC.Data.Storage.GoogleCloud
             storage.UpdateObject(uploaded);
 
             using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-            var preSignedURL = UrlSigner.FromServiceAccountData(mStream).Sign(_bucket, MakePath(domain, path), expires, null);
+            var preSignedURL = FromServiceAccountData(mStream).Sign(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), UrlSigner.Options.FromExpiration(expires));
 
             //TODO: CNAME!
             return preSignedURL;

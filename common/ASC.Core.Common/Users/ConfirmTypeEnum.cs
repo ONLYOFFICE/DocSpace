@@ -1,10 +1,13 @@
-﻿namespace ASC.Web.Studio.Utility
+﻿using System.Text.Json.Serialization;
+
+namespace ASC.Web.Studio.Utility
 {
     //  emp-invite - confirm ivite by email
     //  portal-suspend - confirm portal suspending - Tenant.SetStatus(TenantStatus.Suspended)
     //  portal-continue - confirm portal continuation  - Tenant.SetStatus(TenantStatus.Active)
     //  portal-remove - confirm portal deletation - Tenant.SetStatus(TenantStatus.RemovePending)
     //  DnsChange - change Portal Address and/or Custom domain name
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ConfirmType
     {
         EmpInvite,

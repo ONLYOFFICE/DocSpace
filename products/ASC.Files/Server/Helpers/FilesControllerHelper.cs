@@ -13,6 +13,7 @@ using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Api.Utils;
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -33,6 +34,7 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
@@ -80,6 +82,7 @@ namespace ASC.Files.Helpers
         public EasyBibHelper EasyBibHelper { get; }
         public ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         public ProductEntryPoint ProductEntryPoint { get; }
+        public ILog Logger { get; set; }
 
         /// <summary>
         /// </summary>
@@ -114,7 +117,8 @@ namespace ASC.Files.Helpers
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            ProductEntryPoint productEntryPoint)
+            ProductEntryPoint productEntryPoint,
+            IOptionsMonitor<ILog> optionMonitor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -149,6 +153,7 @@ namespace ASC.Files.Helpers
             EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             ProductEntryPoint = productEntryPoint;
+            Logger = optionMonitor.Get("ASC.Files");
         }
 
         public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
@@ -354,6 +359,34 @@ namespace ASC.Files.Helpers
             return FileWrapperHelper.Get(file);
         }
 
+        public List<FileEntryWrapper> GetNewItems(T folderId)
+        {
+            return FileStorageService.GetNewItems(folderId)
+                .Select(r =>
+                 {
+                     FileEntryWrapper wrapper = null;
+                     if (r is Folder<int> fol1)
+                     {
+                         wrapper = FolderWrapperHelper.Get(fol1);
+                     }
+                     else if (r is Folder<string> fol2)
+                     {
+                         wrapper = FolderWrapperHelper.Get(fol2);
+                     }
+                     else if (r is File<int> file1)
+                     {
+                         wrapper = FileWrapperHelper.Get(file1);
+                     }
+                     else if (r is File<string> file2)
+                     {
+                         wrapper = FileWrapperHelper.Get(file2);
+                     }
+
+                     return wrapper;
+                 })
+                .ToList();
+        }
+
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
             if (!string.IsNullOrEmpty(title))
@@ -395,8 +428,15 @@ namespace ASC.Files.Helpers
                 };
                 if (!string.IsNullOrEmpty(r.Result))
                 {
-                    var jResult = JObject.Parse(r.Result);
-                    o.File = GetFileInfo(jResult.Value<T>("id"), jResult.Value<int>("version"));
+                    try
+                    {
+                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result);
+                        o.File = GetFileInfo(jResult.Id, jResult.Version);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
                 }
                 return o;
             });

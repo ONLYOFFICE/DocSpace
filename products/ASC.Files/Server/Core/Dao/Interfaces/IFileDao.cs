@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Files.Core
@@ -302,6 +303,10 @@ namespace ASC.Files.Core
         Stream GetDifferenceStream(File<T> file);
 
         bool ContainChanges(T fileId, int fileVersion);
+
+        IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
+
+        IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime);
 
         #endregion
     }

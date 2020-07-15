@@ -61,6 +61,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Backup function is not available as the storage space exceeds {0}. Go to the {1}Statistics section{2} to check the storage space used..
+        /// </summary>
+        public static string BackupSpaceExceed {
+            get {
+                return ResourceManager.GetString("BackupSpaceExceed", resourceCulture);
+            }
+        }
+        
+        /// <summary>        
         ///   Looks up a localized string similar to License expired or user quota does not match the license.
         /// </summary>
         public static string LicenseException {

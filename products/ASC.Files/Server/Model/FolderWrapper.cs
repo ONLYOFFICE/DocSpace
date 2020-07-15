@@ -25,9 +25,9 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
@@ -40,28 +40,25 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "folder", Namespace = "")]
     public class FolderWrapper<T> : FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
-        [DataMember(IsRequired = true, EmitDefaultValue = true)]
         public T ParentId { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int FilesCount { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = true, IsRequired = false)]
         public int FoldersCount { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(EmitDefaultValue = false, IsRequired = false)]
-        public bool IsShareable { get; set; }
+        public bool? IsShareable { get; set; }
+
+        public int New { get; set; }
 
         /// <summary>
         /// </summary>
@@ -89,7 +86,7 @@ namespace ASC.Api.Documents
                 FilesCount = new Random().Next(),
                 FoldersCount = new Random().Next(),
                 ParentId = new Random().Next(),
-                IsShareable = false
+                IsShareable = null
             };
         }
     }
@@ -133,7 +130,8 @@ namespace ASC.Api.Documents
 
             result.FilesCount = folder.TotalFiles;
             result.FoldersCount = folder.TotalSubFolders;
-            result.IsShareable = folder.Shareable;
+            result.IsShareable = folder.Shareable.NullIfDefault();
+            result.New = folder.NewForMe;
 
             return result;
         }

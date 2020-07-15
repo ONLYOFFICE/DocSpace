@@ -26,28 +26,27 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.UserControls.Management
 {
     [Serializable]
-    [DataContract]
     public class TariffSettings : ISettings
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
-        [DataMember(Name = "HideRecommendation")]
+        [JsonPropertyName("HideRecommendation")]
         public bool HideBuyRecommendationSetting { get; set; }
 
-        [DataMember(Name = "HideNotify")]
+        [JsonPropertyName("HideNotify")]
         public bool HideNotifySetting { get; set; }
 
-        [DataMember(Name = "HidePricingPage")]
+        [JsonPropertyName("HidePricingPage")]
         public bool HidePricingPageForUsers { get; set; }
 
-        [DataMember(Name = "LicenseAccept")]
+        [JsonPropertyName("LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

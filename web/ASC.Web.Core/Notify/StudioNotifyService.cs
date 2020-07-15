@@ -58,7 +58,7 @@ namespace ASC.Web.Studio.Core.Notify
     {
         private readonly StudioNotifyServiceHelper client;
 
-        private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
+        public static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
 
         private UserManager UserManager { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
@@ -653,49 +653,6 @@ namespace ASC.Web.Studio.Core.Notify
                 tagValues.ToArray());
         }
 
-        #region Backup & Restore
-
-        public void SendMsgBackupCompleted(Guid userId, string link)
-        {
-            client.SendNoticeToAsync(
-                Actions.BackupCreated,
-                new[] { StudioNotifyHelper.ToRecipient(userId) },
-                new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, UserManager.GetUsers(userId).DisplayUserName(DisplayUserSettingsHelper)));
-        }
-
-        public void SendMsgRestoreStarted(Tenant tenant, bool notifyAllUsers)
-        {
-            var owner = UserManager.GetUsers(tenant.OwnerId);
-            var users =
-                notifyAllUsers
-                    ? StudioNotifyHelper.RecipientFromEmail(UserManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
-                    : owner.ActivationStatus == EmployeeActivationStatus.Activated ? StudioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
-
-            client.SendNoticeToAsync(
-                Actions.RestoreStarted,
-                users,
-                new[] { EMailSenderName });
-        }
-
-        public void SendMsgRestoreCompleted(Tenant tenant, bool notifyAllUsers)
-        {
-            var owner = UserManager.GetUsers(tenant.OwnerId);
-
-            var users =
-                notifyAllUsers
-                    ? UserManager.GetUsers(EmployeeStatus.Active).Select(u => StudioNotifyHelper.ToRecipient(u.ID)).ToArray()
-                    : new[] { StudioNotifyHelper.ToRecipient(owner.ID) };
-
-            client.SendNoticeToAsync(
-                Actions.RestoreCompleted,
-                users,
-                new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettingsHelper)));
-        }
-
-        #endregion
-
         #region Portal Deactivation & Deletion
 
         public void SendMsgPortalDeactivation(Tenant t, string deactivateUrl, string activateUrl)
@@ -860,39 +817,6 @@ namespace ASC.Web.Studio.Core.Notify
         #endregion
 
         #region Migration Portal
-
-        public void MigrationPortalStart(Tenant tenant, string region, bool notify)
-        {
-            MigrationNotify(tenant, Actions.MigrationPortalStart, region, string.Empty, notify);
-        }
-
-        public void MigrationPortalSuccess(Tenant tenant, string region, string url, bool notify)
-        {
-            MigrationNotify(tenant, Actions.MigrationPortalSuccess, region, url, notify);
-        }
-
-        public void MigrationPortalError(Tenant tenant, string region, string url, bool notify)
-        {
-            MigrationNotify(tenant, !string.IsNullOrEmpty(region) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, region, url, notify);
-        }
-
-        private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
-        {
-            var users = UserManager.GetUsers()
-                .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
-                .Select(u => StudioNotifyHelper.ToRecipient(u.ID))
-                .ToArray();
-
-            if (users.Any())
-            {
-                client.SendNoticeToAsync(
-                    action,
-                    users,
-                    new[] { EMailSenderName },
-                    new TagValue(Tags.RegionName, TransferResourceHelper.GetRegionDescription(region)),
-                    new TagValue(Tags.PortalUrl, url));
-            }
-        }
 
         public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath)
         {
