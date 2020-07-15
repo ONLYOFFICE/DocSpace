@@ -53,6 +53,10 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
+  min-width: ${props => 
+    props.size === 'base' ? '60px' : '100px' 
+  };
+
   height: ${props =>
     (props.size === 'large' && '44px') ||
     (props.size === 'big' && '36px') ||
