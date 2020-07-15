@@ -582,7 +582,11 @@ namespace ASC.Web.Core.Files
             if (responseFromService == null) throw new WebException("Invalid answer format");
 
             var errorElement = responseFromService.Value<string>("error");
-            if (!string.IsNullOrEmpty(errorElement)) DocumentServiceException.ProcessResponseError(errorElement);
+            if (!string.IsNullOrEmpty(errorElement))
+            {
+                logger.Error(errorElement);
+                DocumentServiceException.ProcessResponseError(errorElement);
+            }
 
             var isEndConvert = responseFromService.Value<bool>("endConvert");
 
