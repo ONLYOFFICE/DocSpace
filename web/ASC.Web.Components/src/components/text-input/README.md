@@ -39,7 +39,7 @@ const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
 | `onFocus`        |     `func`     |    -     |                -                |    -    | Called when field is focused                                                                           |
 | `placeholder`    |    `string`    |    -     |                -                |    -    | Placeholder text for the input                                                                         |
 | `scale`          |     `bool`     |    -     |                -                |    -    | Indicates the input field has scale                                                                    |
-| `size`           |    `string`    |          | `base`, `middle`, `big`, `huge` | `base`  | Supported size of the input fields.                                                                    |
+| `size`           |    `string`    |          | `base`, `middle`, `big`, `huge`, `large` | `base`  | Supported size of the input fields.                                                                    |
 | `style`          | `obj`, `array` |    -     |                -                |    -    | Accepts css style                                                                                      |
 | `type`           |    `string`    |          |       `text`, `password`        | `text`  | Supported type of the input fields.                                                                    |
 | `value`          |    `string`    |    ✅    |                -                |    -    | Value of the input                                                                                     |
