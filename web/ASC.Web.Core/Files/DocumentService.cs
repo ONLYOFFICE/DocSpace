@@ -94,6 +94,7 @@ namespace ASC.Web.Core.Files
         /// <exception>
         /// </exception>
         public static int GetConvertedUri(
+            ILog logger,
             FileUtility fileUtility,
             string documentConverterUrl,
             string documentUri,
@@ -207,7 +208,7 @@ namespace ASC.Web.Core.Files
                     response.Dispose();
             }
 
-            return GetResponseUri(dataResponse, out convertedDocumentUri);
+            return GetResponseUri(logger, dataResponse, out convertedDocumentUri);
         }
 
         /// <summary>
@@ -574,7 +575,7 @@ namespace ASC.Web.Core.Files
         /// <param name="jsonDocumentResponse">The resulting json from editing service</param>
         /// <param name="responseUri">Uri to the converted document</param>
         /// <returns>The percentage of completion of conversion</returns>
-        private static int GetResponseUri(string jsonDocumentResponse, out string responseUri)
+        private static int GetResponseUri(ILog logger, string jsonDocumentResponse, out string responseUri)
         {
             if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", "jsonDocumentResponse");
 

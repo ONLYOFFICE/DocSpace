@@ -100,6 +100,7 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 return Web.Core.Files.DocumentService.GetConvertedUri(
+                    Logger,
                     FileUtility,
                     FilesLinkUtility.DocServiceConverterUrl,
                     documentUri,
@@ -251,7 +252,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, false, FileUtility.SignatureSecret, out convertedFileUri);
+                    Web.Core.Files.DocumentService.GetConvertedUri(Logger, FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, false, FileUtility.SignatureSecret, out convertedFileUri);
                 }
                 catch (Exception ex)
                 {
