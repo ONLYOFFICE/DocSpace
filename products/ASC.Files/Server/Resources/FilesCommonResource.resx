@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -117,9 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Access" xml:space="preserve">
-    <value>Access</value>
-  </data>
   <data name="AceShareLink" xml:space="preserve">
     <value>Outside portal</value>
   </data>
@@ -141,62 +79,20 @@
   <data name="AceStatusEnum_Review" xml:space="preserve">
     <value>Review</value>
   </data>
-  <data name="Action" xml:space="preserve">
-    <value>Operation</value>
-  </data>
   <data name="Admin" xml:space="preserve">
     <value>Admin</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
     <value>To work with the file you must grant access to it</value>
   </data>
-  <data name="AppButtonConvert" xml:space="preserve">
-    <value>CONTINUE</value>
-  </data>
-  <data name="AppConvertCopy" xml:space="preserve">
-    <value>Opening this file in ONLYOFFICE™ will create a new copy of this file in Office Open XML format in your Google Drive. This way the original file will not be modified. To further edit the file in ONLYOFFICE™ you will have to open a new copy.</value>
-  </data>
-  <data name="AppConvertCopyHide" xml:space="preserve">
-    <value>Do not show this again</value>
-  </data>
-  <data name="AppEnterName" xml:space="preserve">
-    <value>Enter Filename</value>
-  </data>
-  <data name="AppEnterType" xml:space="preserve">
-    <value>Select File Type</value>
-  </data>
-  <data name="Author" xml:space="preserve">
-    <value>Author</value>
-  </data>
   <data name="Author_Me" xml:space="preserve">
     <value>Me</value>
   </data>
-  <data name="ButtonCancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="ButtonClose" xml:space="preserve">
-    <value>Close</value>
-  </data>
-  <data name="ButtonConvertOpen" xml:space="preserve">
-    <value>Convert &amp; Open</value>
-  </data>
-  <data name="ButtonDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="ButtonDownload" xml:space="preserve">
-    <value>Download</value>
-  </data>
-  <data name="ButtonEdit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="ButtonSave" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="Comment" xml:space="preserve">
-    <value>Comment</value>
-  </data>
   <data name="CommentAutosave" xml:space="preserve">
     <value>Autosaved</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>Changed owner</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
     <value>Converted from {0}</value>
@@ -223,46 +119,16 @@
     <value>Saved</value>
   </data>
   <data name="CommentOverwrite" xml:space="preserve">
-    <value>Overwrited</value>
+    <value>Overwritten</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restored from revision of {0}</value>
+    <value>Restored from the revision of {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Restored from editing session revision of {0}</value>
-  </data>
-  <data name="CommentChangeOwner" xml:space="preserve">
-    <value>Changed owner</value>
+    <value>Restored from the document change of {0}</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Uploaded</value>
-  </data>
-  <data name="ConnectionUrl" xml:space="preserve">
-    <value>Connection url</value>
-  </data>
-  <data name="Convert" xml:space="preserve">
-    <value>Convert</value>
-  </data>
-  <data name="ConvertForEdit" xml:space="preserve">
-    <value>The document converted to {0} to allow its editing</value>
-  </data>
-  <data name="ConvertTo" xml:space="preserve">
-    <value>Convert into</value>
-  </data>
-  <data name="CreatingDate" xml:space="preserve">
-    <value>Creation date</value>
-  </data>
-  <data name="Department" xml:space="preserve">
-    <value>Department</value>
-  </data>
-  <data name="DocumentName" xml:space="preserve">
-    <value>Document Name</value>
-  </data>
-  <data name="Documents" xml:space="preserve">
-    <value>Documents</value>
-  </data>
-  <data name="DocsAPIundefined" xml:space="preserve">
-    <value>Document Service is not available. Please contact support</value>
   </data>
   <data name="DocuSignStatusDeclined" xml:space="preserve">
     <value>Declined</value>
@@ -282,17 +148,11 @@
   <data name="EditorMentions" xml:space="preserve">
     <value>Notify when mentioned in document</value>
   </data>
-  <data name="Employees" xml:space="preserve">
-    <value>Employees</value>
-  </data>
-  <data name="EnterComment" xml:space="preserve">
-    <value>Enter a comment</value>
-  </data>
-  <data name="ErrorEntry" xml:space="preserve">
-    <value>Error</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Bad request.</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>You can not select this user</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>Conversion takes too much time.</value>
@@ -304,7 +164,7 @@
     <value>Error occurred in the Documents Service</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>The file is open for editing by {0}. Currently, the co-editing feature is not supported for this file format.</value>
+    <value>The file is opened for editing by {0}. Currently, the co-editing feature is not supported for this file format.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
     <value>The file is open for editing in a mobile application by {0}</value>
@@ -353,6 +213,9 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Sorry, this file format isn't supported</value>
+  </data>
+  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
+    <value>The operation was canceled</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Author of the save is unknown</value>
@@ -424,70 +287,34 @@
     <value>You cannot update a file which is opened for editing</value>
   </data>
   <data name="ErrorMassage_UserNotFound" xml:space="preserve">
-    <value>User not found</value>
+    <value>User could not be found</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
     <value>You are not allowed to preview the elements in the Recycle Bin</value>
   </data>
-  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
-    <value>You can not select this user</value>
-  </data>
   <data name="Everyone" xml:space="preserve">
     <value>Everyone</value>
-  </data>
-  <data name="Favorites" xml:space="preserve">
-    <value>Favorites</value>
-  </data>
-  <data name="File" xml:space="preserve">
-    <value>File</value>
-  </data>
-  <data name="FileSizePostfix" xml:space="preserve">
-    <value>b,KB,MB,GB</value>
-  </data>
-  <data name="Folder" xml:space="preserve">
-    <value>Folder</value>
-  </data>
-  <data name="FolderName" xml:space="preserve">
-    <value>Folder Name</value>
-  </data>
-  <data name="Group" xml:space="preserve">
-    <value>Group</value>
   </data>
   <data name="Guest" xml:space="preserve">
     <value>Anonymous</value>
   </data>
-  <data name="ImportFromGoogle" xml:space="preserve">
-    <value>Import from Google Drive</value>
-  </data>
-  <data name="IsNew" xml:space="preserve">
-    <value>new</value>
-  </data>
-  <data name="Login" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="MakeCurrent" xml:space="preserve">
-    <value>Restore</value>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Search by contents of documents</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
     <value>File created in folder "{0}"</value>
-  </data>
-  <data name="ModuleName" xml:space="preserve">
-    <value>Documents</value>
-  </data>
-  <data name="OpenFile" xml:space="preserve">
-    <value>Preview</value>
-  </data>
-  <data name="Password" xml:space="preserve">
-    <value>Password</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
     <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common Documents' section|Set up access rights to the documents and folders in the 'Common Documents' section</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit, save and share documents. Connect your Google Drive, Dropbox and Box accounts and have all documents in one place.</value>
+    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Create, edit, save and share documents. Connect your Google Drive, Dropbox and Box accounts and have all documents in one place.</value>
+    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>View and download shared documents. Upload files to shared folders. 100% compatibility with docx, xlsx, pptx guaranteed.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documents</value>
@@ -498,35 +325,11 @@
   <data name="ProfileRemoved" xml:space="preserve">
     <value>{!User} removed</value>
   </data>
-  <data name="RemoveIsNew" xml:space="preserve">
-    <value>Mark as Read</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
-  <data name="SearchNotFoundDescript" xml:space="preserve">
-    <value>Make sure all words are spelled correctly. Try using different keywords.</value>
-  </data>
-  <data name="SearchText" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="Share" xml:space="preserve">
-    <value>Share</value>
-  </data>
-  <data name="SharedForMe" xml:space="preserve">
-    <value>Shared with Me</value>
-  </data>
   <data name="ShareFolder" xml:space="preserve">
     <value>Notify when a folder is shared</value>
-  </data>
-  <data name="ShowVersions" xml:space="preserve">
-    <value>Show Versions</value>
-  </data>
-  <data name="Size" xml:space="preserve">
-    <value>Size</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Notify when a document is shared</value>
   </data>
   <data name="SubscriptDocuSignComplete" xml:space="preserve">
     <value>Notify when document signed via DocuSign</value>
@@ -534,71 +337,14 @@
   <data name="SubscriptDocuSignStatus" xml:space="preserve">
     <value>Notify when document in DocuSign changed status</value>
   </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Notify when a document is shared</value>
+  </data>
   <data name="SubscriptForMailMerge" xml:space="preserve">
     <value>Notify when mailing is complete</value>
   </data>
-  <data name="ThirdPartyCorrect" xml:space="preserve">
-    <value>Specify for change</value>
-  </data>
-  <data name="ThirdPartyFolderTitle" xml:space="preserve">
-    <value>Folder title</value>
-  </data>
-  <data name="ThirdPartyReconnectTitle" xml:space="preserve">
-    <value>Account</value>
-  </data>
-  <data name="ThirdPartyReconnect" xml:space="preserve">
-    <value>Reconnect</value>
-  </data>
-  <data name="ThirdPartySetCorporate" xml:space="preserve">
-    <value>Make shared and put into the 'Common Documents' folder</value>
-  </data>
-  <data name="TitleCreated" xml:space="preserve">
-    <value>Created</value>
-  </data>
   <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documents of the {!user} {0}</value>
-  </data>
-  <data name="TitleEditingFile" xml:space="preserve">
-    <value>It is currently being edited</value>
-  </data>
-  <data name="TitleFiles" xml:space="preserve">
-    <value>Documents</value>
-  </data>
-  <data name="TitleModified" xml:space="preserve">
-    <value>Updated</value>
-  </data>
-  <data name="TitlePage" xml:space="preserve">
-    <value>Documents</value>
-  </data>
-  <data name="TitleRemoved" xml:space="preserve">
-    <value>Deleted</value>
-  </data>
-  <data name="TitleSelectFile" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="TitleShareFile" xml:space="preserve">
-    <value>Permission Settings</value>
-  </data>
-  <data name="TitleShowActions" xml:space="preserve">
-    <value>Show File Actions</value>
-  </data>
-  <data name="TitleShowFolderActions" xml:space="preserve">
-    <value>Show Folder Actions</value>
-  </data>
-  <data name="TitleSubfolders" xml:space="preserve">
-    <value>Subfolders</value>
-  </data>
-  <data name="TitleUploaded" xml:space="preserve">
-    <value>Uploaded</value>
-  </data>
-  <data name="TitleVersionComplete" xml:space="preserve">
-    <value>Mark as version</value>
-  </data>
-  <data name="TitleVersionContinue" xml:space="preserve">
-    <value>Mark as revision</value>
-  </data>
-  <data name="TitleVersionHistory" xml:space="preserve">
-    <value>Version history:</value>
+    <value>Documents of {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>First Name</value>
@@ -608,20 +354,5 @@
   </data>
   <data name="UnlockComment" xml:space="preserve">
     <value>The file is unlocked</value>
-  </data>
-  <data name="User" xml:space="preserve">
-    <value>User</value>
-  </data>
-  <data name="Version" xml:space="preserve">
-    <value>ver.</value>
-  </data>
-  <data name="IndexTitle" xml:space="preserve">
-    <value>Search by contents of documents</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>The operation was canceled</value>
-  </data>
-  <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>Create, edit, save and share documents. Connect your Google Drive, Dropbox and Box accounts and have all documents in one place.</value>
   </data>
 </root>

@@ -32,6 +32,7 @@ using System.Threading;
 using ASC.Common.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
+using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -110,8 +111,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 ProgressStep();
             });
 
-            var newrootfolder = fileMarker
-                .GetRootFoldersIdMarkedAsNew<T>()
+            var globalFolder = scope.ServiceProvider.GetService<GlobalFolder>();
+            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+            var rootIds = new List<int>
+                {
+                    globalFolder.GetFolderMy(fileMarker, daoFactory),
+                    globalFolder.GetFolderCommon(fileMarker, daoFactory),
+                    globalFolder.GetFolderShare(daoFactory),
+                    globalFolder.GetFolderProjects(daoFactory),
+                };
+
+            var newrootfolder =
+                rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
             Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());

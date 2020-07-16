@@ -6,7 +6,8 @@ const commonInputStyle = css`
         (props.size === 'base' && '173px') ||
         (props.size === 'middle' && '300px') ||
         (props.size === 'big' && '350px') ||
-        (props.size === 'huge' && '500px')
+        (props.size === 'huge' && '500px') ||
+        (props.size === 'large' && '550px')
     };
     background-color: ${props => props.isDisabled ? '#F8F9F9' : '#fff'};
     color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};

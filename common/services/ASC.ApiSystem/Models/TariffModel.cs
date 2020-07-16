@@ -25,37 +25,29 @@
 
 
 using ASC.ApiSystem.Interfaces;
+
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace ASC.ApiSystem.Models
 {
-    [DataContract]
     public class TariffModel : IModel
     {
-        [DataMember(IsRequired = true)]
         [StringLength(255)]
         public string PortalName { get; set; }
 
-        [DataMember(IsRequired = false)]
         public int? TenantId { get; set; }
 
 
-        [DataMember]
         public int ActiveUsers { get; set; }
 
-        [DataMember]
         public DateTime DueDate { get; set; }
 
-        [DataMember]
         [StringLength(255)]
         public string Features { get; set; }
 
-        [DataMember]
         public long MaxFileSize { get; set; }
 
-        [DataMember]
         public long MaxTotalSize { get; set; }
     }
 }

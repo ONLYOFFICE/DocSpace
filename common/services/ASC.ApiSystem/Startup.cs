@@ -60,7 +60,11 @@ namespace ASC.ApiSystem
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                    .AddNewtonsoftJson();
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                });
 
             services.AddMemoryCache();
 

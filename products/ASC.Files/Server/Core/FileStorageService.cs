@@ -299,7 +299,7 @@ namespace ASC.Web.Files.Services.WCFService
                 parent.ParentFolderID = prevVisible.ID;
             }
 
-            parent.Shareable = FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE;
+            parent.Shareable =FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE;
 
             entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
 
@@ -309,7 +309,7 @@ namespace ASC.Web.Files.Services.WCFService
                 Entries = new ItemList<FileEntry>(entries.ToList()),
                 FolderPathParts = new ItemList<T>(breadCrumbs.Select(f => f.ID)),
                 FolderInfo = parent,
-                RootFoldersIdMarkedAsNew = FileMarker.GetRootFoldersIdMarkedAsNew<T>()
+                New = FileMarker.GetRootFoldersIdMarkedAsNew(parentId)
             };
 
             return result;
@@ -1030,7 +1030,7 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        public object GetNewItems(T folderId)
+        public List<FileEntry> GetNewItems(T folderId)
         {
             try
             {
@@ -1044,15 +1044,11 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (!result.Any())
                 {
-                    //MarkAsRead(new List<JsonElement>() { folderId }, new List<JsonElement>() { }); //TODO
+                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(folderId.ToString()).RootElement }, new List<JsonElement>() { }); //TODO
                 }
 
-                var response = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StreamContent(serializer.ToXml(new ItemList<FileEntry>(result)))
-                };
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-                return response;
+
+                return result;
             }
             catch (Exception e)
             {

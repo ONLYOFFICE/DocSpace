@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -39,52 +39,43 @@ namespace ASC.Api.Documents
 {
     /// <summary>
     /// </summary>
-    [DataContract(Name = "operation_result", Namespace = "")]
     public class FileOperationWraper
     {
         /// <summary>
         /// </summary>
-        [DataMember(Name = "id", IsRequired = false)]
         public string Id { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "operation", IsRequired = false)]
+        [JsonPropertyName("Operation")]
         public FileOperationType OperationType { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "progress", IsRequired = false)]
         public int Progress { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "error", IsRequired = false)]
         public string Error { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "processed", IsRequired = false)]
         public string Processed { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "finished", IsRequired = false)]
         public bool Finished { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "url", IsRequired = false)]
         public string Url { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "files", IsRequired = true, EmitDefaultValue = true)]
         public List<FileEntryWrapper> Files { get; set; }
 
         /// <summary>
         /// </summary>
-        [DataMember(Name = "folders", IsRequired = true, EmitDefaultValue = true)]
         public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>

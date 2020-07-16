@@ -25,66 +25,53 @@
 
 
 using System;
-using System.Runtime.Serialization;
-
+using System.Text.Json.Serialization;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Files.Resources;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    [DataContract(Name = "ace_collection", Namespace = "")]
     public class AceCollection
     {
-        [DataMember(Name = "entries", Order = 1)]
         public ItemList<string> Entries { get; set; }
 
-        [DataMember(Name = "aces", Order = 2)]
         public ItemList<AceWrapper> Aces { get; set; }
 
-        [DataMember(Name = "message", Order = 3, IsRequired = false)]
         public string Message { get; set; }
     }
 
-    [DataContract(Name = "ace_wrapper", Namespace = "")]
     public class AceWrapper
     {
-        [DataMember(Name = "id", Order = 1)]
         public Guid SubjectId { get; set; }
 
-        [DataMember(Name = "title", Order = 2, EmitDefaultValue = false)]
+        [JsonPropertyName("title")]
         public string SubjectName { get; set; }
 
-        [DataMember(Name = "link", Order = 3, EmitDefaultValue = false)]
         public string Link { get; set; }
 
-        [DataMember(Name = "is_group", Order = 4)]
+        [JsonPropertyName("is_group")]
         public bool SubjectGroup { get; set; }
 
-        [DataMember(Name = "owner", Order = 5)]
         public bool Owner { get; set; }
 
-        [DataMember(Name = "ace_status", Order = 6)]
+        [JsonPropertyName("ace_status")]
         public FileShare Share { get; set; }
 
-        [DataMember(Name = "locked", Order = 7)]
+        [JsonPropertyName("locked")]
         public bool LockedRights { get; set; }
 
-        [DataMember(Name = "disable_remove", Order = 8)]
+        [JsonPropertyName("disable_remove")]
         public bool DisableRemove { get; set; }
     }
 
-    [DataContract(Name = "sharingSettings", Namespace = "")]
     public class AceShortWrapper
     {
-        [DataMember(Name = "user")]
         public string User { get; set; }
 
-        [DataMember(Name = "permissions")]
         public string Permissions { get; set; }
 
-        [DataMember(Name = "isLink", EmitDefaultValue = false, IsRequired = false)]
-        public bool IsLink { get; set; }
+        public bool? IsLink { get; set; }
 
         public AceShortWrapper(AceWrapper aceWrapper)
         {

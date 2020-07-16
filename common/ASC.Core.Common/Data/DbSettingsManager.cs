@@ -25,11 +25,8 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -111,7 +108,6 @@ namespace ASC.Core.Data
     public class DbSettingsManager
     {
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
-        private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
 
         internal ILog Log { get; set; }
         internal ICache Cache { get; set; }
@@ -249,7 +245,7 @@ namespace ASC.Core.Data
 
                 if (result != null)
                 {
-                    settings = Deserialize<T>(result.ToString());
+                    settings = Deserialize<T>(result);
                 }
                 else
                 {
@@ -323,29 +319,14 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(string data)
         {
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
-            var settings = GetJsonSerializer(typeof(T)).ReadObject(stream);
-            return (T)settings;
+            return JsonSerializer.Deserialize<T>(data);
         }
 
         private string Serialize(ISettings settings)
         {
-            using var stream = new MemoryStream();
-            GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
-            return Encoding.UTF8.GetString(stream.ToArray());
+            return JsonSerializer.Serialize(settings);
         }
 
-        private DataContractJsonSerializer GetJsonSerializer(Type type)
-        {
-            lock (jsonSerializers)
-            {
-                if (!jsonSerializers.ContainsKey(type))
-                {
-                    jsonSerializers[type] = new DataContractJsonSerializer(type);
-                }
-                return jsonSerializers[type];
-            }
-        }
     }
 
     public static class DbSettingsManagerExtension

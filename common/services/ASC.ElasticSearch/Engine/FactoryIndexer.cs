@@ -35,7 +35,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch.Core;
@@ -79,7 +78,7 @@ namespace ASC.ElasticSearch
 
     public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
     {
-        private static readonly TaskScheduler Scheduler = new LimitedConcurrencyLevelTaskScheduler(10);
+        private static readonly TaskScheduler Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
 
         public ILog Logger { get; }
 
