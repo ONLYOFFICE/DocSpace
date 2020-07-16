@@ -28,6 +28,10 @@ const StyledInput = styled(SimpleInput)`
   @media ${tablet} {
     flex-wrap: wrap;
   } 
+
+  .append {
+    padding-right: 8px;
+  }
 `;
 
 const PasswordProgress = styled.div`
