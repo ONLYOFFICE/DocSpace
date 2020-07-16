@@ -132,14 +132,7 @@ namespace ASC.Common.DependencyInjection
 
                 if (!string.IsNullOrEmpty(path))
                 {
-                    AssemblyLoadContext.Default.Resolving += (c, n) =>
-                    {
-                        var path = GetFullPath(n.Name);
-
-                        return path != null ?
-                                c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll")) :
-                                null;
-                    };
+                    AssemblyLoadContext.Default.Resolving += new Resolver(path).Resolving;
                 }
             }
 
@@ -155,6 +148,25 @@ namespace ASC.Common.DependencyInjection
 
                 return Directory.GetFiles(dirPath, $"{dll}.dll", searchOption).FirstOrDefault();
             }
+        }
+    }
+
+    class Resolver
+    {
+        private string ResolvePath { get; set; }
+
+        public Resolver(string assemblyPath)
+        {
+            ResolvePath = assemblyPath;
+        }
+
+        public Assembly Resolving(AssemblyLoadContext context, AssemblyName assemblyName)
+        {
+            var path = Path.Combine(Path.GetDirectoryName(ResolvePath), $"{assemblyName.Name}.dll");
+
+            if (!File.Exists(path)) return null;
+
+            return context.LoadFromAssemblyPath(path);
         }
     }
 }

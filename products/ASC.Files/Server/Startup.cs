@@ -36,6 +36,7 @@ namespace ASC.Files
             var diHelper = new DIHelper(services);
 
             diHelper
+                .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
                 .AddEncryptionControllerService()
                 .AddFileHandlerService()

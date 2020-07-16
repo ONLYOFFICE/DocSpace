@@ -170,7 +170,6 @@ RUN cd /app/onlyoffice/src/ && \
     cd ../../../ && \
     yarn install --cwd common/ASC.Thumbnails --frozen-lockfile && \
     mkdir -p /var/www/services/thumb/client && cp -Rf common/ASC.Thumbnails/* /var/www/services/thumb/client && \
-    cd ../../../ && \
     cd common/services/ASC.UrlShortener.Svc && \
     dotnet -d publish -o /services/urlshortener/service && \
     cd ../../../ && \

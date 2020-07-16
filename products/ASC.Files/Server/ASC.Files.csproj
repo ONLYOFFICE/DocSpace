@@ -19,14 +19,6 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="proto\BoxCacheItem.proto" />
-    <None Remove="proto\DropboxCacheItem.proto" />
-    <None Remove="proto\GoogleDriveCacheItem.proto" />
-    <None Remove="proto\OneDriveCacheItem.proto" />
-    <None Remove="proto\ProviderAccountCacheItem.proto" />
-    <None Remove="proto\SharePointProviderCacheItem.proto" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Box.V2.Core" Version="3.23.0" />
     <PackageReference Include="DocuSign.eSign.dll" Version="4.4.1" />
     <PackageReference Include="DotNetZip" Version="1.13.8" />
@@ -51,93 +43,6 @@
     <ProjectReference Include="..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj" />
     <ProjectReference Include="..\..\..\thirdparty\onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Protobuf Include="proto\SharePointProviderCacheItem.proto" />
-    <Protobuf Include="proto\OneDriveCacheItem.proto" />
-    <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
-    <Protobuf Include="proto\BoxCacheItem.proto" />
-    <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
-    <Protobuf Include="proto\DropboxCacheItem.proto" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Resources\FilesCommonResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>FilesCommonResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\FilesJSResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>FilesJSResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\FilesUCResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>FilesUCResource.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\FilesJSResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FilesJSResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesJSResource.ru.resx">
-      <DependentUpon>FilesJSResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesJSResource.de.resx">
-      <DependentUpon>FilesJSResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesJSResource.es.resx">
-      <DependentUpon>FilesJSResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesJSResource.fr.resx">
-      <DependentUpon>FilesJSResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesJSResource.it.resx">
-      <DependentUpon>FilesJSResource.resx</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\FilesCommonResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FilesCommonResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesCommonResource.ru.resx">
-      <DependentUpon>FilesCommonResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesCommonResource.de.resx">
-      <DependentUpon>FilesCommonResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesCommonResource.es.resx">
-      <DependentUpon>FilesCommonResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesCommonResource.fr.resx">
-      <DependentUpon>FilesCommonResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesCommonResource.it.resx">
-      <DependentUpon>FilesCommonResource.resx</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\FilesUCResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FilesUCResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesUCResource.ru.resx">
-      <DependentUpon>FilesUCResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesUCResource.de.resx">
-      <DependentUpon>FilesUCResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesUCResource.es.resx">
-      <DependentUpon>FilesUCResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesUCResource.fr.resx">
-      <DependentUpon>FilesUCResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\FilesUCResource.it.resx">
-      <DependentUpon>FilesUCResource.resx</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Core\ASC.Files.Core\ASC.Files.Core.csproj" />
   </ItemGroup>
 </Project>
