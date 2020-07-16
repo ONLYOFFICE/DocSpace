@@ -35,7 +35,7 @@ const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'medium', 'big']),
+  size: PropTypes.oneOf(['base', 'medium', 'big', 'large']),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
@@ -201,7 +201,11 @@ const Icon = ({size, primary, icon}) => (
     { icon && React.cloneElement(icon, 
       { 
         isfill: true, 
-        size: (size === "big" || size === "large") ? "medium" : "small", 
+        size: size === "large" 
+          ? "large"
+          : size === "big"
+            ? "medium"
+            : "small",
         color: primary ? "#FFFFFF" : '#333333'
     })}
   </div>
@@ -224,7 +228,9 @@ const Button = React.forwardRef((props, ref) => {
     <StyledButton innerRef={ref} {...props} >
       {(isLoading || icon)
         ? (isLoading 
-            ? <Loader type="oval" size={( size === "big" || size === "large" ) ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+            ? <Loader type="oval" size={
+              size === "large" ? '18px' : size === 'big' ? '16px' : '14px'
+            } color={primary ? "#FFFFFF" : '#333333'} className="loader" />
             : <Icon {...iconProps} />)
         : ""
       }
