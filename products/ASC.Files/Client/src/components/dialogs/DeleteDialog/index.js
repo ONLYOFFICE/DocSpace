@@ -53,6 +53,7 @@ class DeleteDialogComponent extends React.Component {
         setTimeout(() => this.loopDeleteOperation(id), 1000);
       } else {
         setProgressBarData({ percent: 100, label: t("DeleteOperation"), visible: true });
+        setTimeout(() => clearProgressData(store.dispatch), 5000);
         fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
           if (!isRecycleBinFolder) {
             const path = data.selectedFolder.pathParts.slice(0);
@@ -70,7 +71,6 @@ class DeleteDialogComponent extends React.Component {
       toastr.error(err);
       clearProgressData(store.dispatch);
     })
-    .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000))
   }
 
   onDelete = () => {
