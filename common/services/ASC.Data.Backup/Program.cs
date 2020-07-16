@@ -12,7 +12,7 @@ namespace ASC.Data.Backup
     {
         public static async Task Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -35,7 +35,6 @@ namespace ASC.Data.Backup
                         )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("backup.json")
@@ -44,16 +43,8 @@ namespace ASC.Data.Backup
                         .AddEnvironmentVariables();
                 })
                 .UseConsoleLifetime()
-                .Build();
-
-            using (host)
-            {
-                // Start the host
-                await host.StartAsync();
-
-                // Wait for the host to shutdown
-                await host.WaitForShutdownAsync();
-            }
+                .Build()
+                .Run();
         }
     }
 }
