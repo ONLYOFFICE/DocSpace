@@ -390,6 +390,7 @@ class PasswordInput extends React.Component {
         type={type}
         iconColor={`${iconsColor} !important`}
         iconSize={16}
+        hoverColor={"#A3A9AE"}
         isIconFill={true}
         onBlur={this.onBlur}
         hasWarning={hasWarning}
