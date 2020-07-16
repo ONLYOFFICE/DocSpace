@@ -166,7 +166,7 @@ namespace ASC.Web.Files.Configuration
 
         public override string ApiURL
         {
-            get => "api/2.0/files/info.json";
+            get => "";
         }
     }
     public static class ProductEntryPointExtention
