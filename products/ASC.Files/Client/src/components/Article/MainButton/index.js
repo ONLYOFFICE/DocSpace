@@ -6,6 +6,7 @@ import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction } from "../../../store/files/actions";
 import { isCanCreate } from "../../../store/files/selectors";
+import { startUpload } from "../../pages/Home/FilesUploader";
 import i18n from "../i18n";
 import { utils as commonUtils, constants } from "asc-web-common";
 
@@ -15,6 +16,7 @@ const { FileAction } = constants;
 class PureArticleMainButtonContent extends React.Component {
 
   onCreate = (e) => {
+    this.goToHomePage();
     const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
@@ -26,7 +28,18 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFileClick = () => this.inputFilesElement.click();
   onUploadFolderClick = () => this.inputFolderElement.click();
 
-  onFileChange = (e) => this.props.startUpload(e.target.files);
+  goToHomePage = () => {
+    const { settings, history, filter } = this.props;
+    const urlFilter = filter.toUrlParams();
+    history.push(`${settings.homepage}/filter?${urlFilter}`);
+  }
+
+  onFileChange = (e) => {
+    const { selectedFolder, startUpload, t } = this.props;
+
+    this.goToHomePage();
+    startUpload(e.target.files, selectedFolder.id, t);
+  }
   onInputClick = e => e.target.value = null;
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -116,14 +129,17 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { selectedFolder } = state.files;
-  const { user } = state.auth;
+  const { selectedFolder, filter } = state.files;
+  const { user, settings } = state.auth;
 
   return {
-    isCanCreate: isCanCreate(selectedFolder, user)
+    isCanCreate: isCanCreate(selectedFolder, user),
+    settings,
+    filter,
+    selectedFolder
   };
 };
 
-export default connect(mapStateToProps, { setAction })(
+export default connect(mapStateToProps, { setAction, startUpload })(
   withRouter(ArticleMainButtonContent)
 );

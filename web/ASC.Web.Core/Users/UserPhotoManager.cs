@@ -1009,14 +1009,7 @@ namespace ASC.Web.Core.Users
             services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
             services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
 
-            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
-            {
-                r.workerCount = 2;
-                r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
-                r.errorCount = 1;
-                r.stopAfterFinsih = true;
-            });
-
+            services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
             return services;
         }
     }

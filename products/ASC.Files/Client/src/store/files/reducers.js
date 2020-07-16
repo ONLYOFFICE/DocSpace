@@ -16,7 +16,8 @@ import {
   SET_DRAGGING,
   SET_DRAG_ITEM,
   SET_MEDIA_VIEWER_VISIBLE,
-  SET_PROGRESS_BAR_DATA
+  SET_PROGRESS_BAR_DATA,
+  SET_CONVERT_DIALOG_VISIBLE
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -37,7 +38,8 @@ const initialState = {
   dragging: false,
   dragItem: null,
   mediaViewerData: { visible: false, id: null },
-  progressData: { percent: 0, label: "", visible: false }
+  progressData: { percent: 0, label: "", visible: false },
+  convertDialogVisible: false
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -122,6 +124,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_PROGRESS_BAR_DATA: 
       return Object.assign({}, state, {
         progressData: action.progressData
+      });
+    case SET_CONVERT_DIALOG_VISIBLE: 
+      return Object.assign({}, state, {
+        convertDialogVisible: action.convertDialogVisible
       });
     default:
       return state;

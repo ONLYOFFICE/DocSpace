@@ -36,6 +36,7 @@ export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
+export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 
 export function setFile(file) {
   return {
@@ -160,6 +161,13 @@ export function setProgressBarData(progressData) {
   return {
     type: SET_PROGRESS_BAR_DATA,
     progressData
+  };
+}
+
+export function setConvertDialogVisible(convertDialogVisible) {
+  return {
+    type: SET_CONVERT_DIALOG_VISIBLE,
+    convertDialogVisible
   };
 }
 
