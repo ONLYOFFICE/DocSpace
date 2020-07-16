@@ -16,6 +16,7 @@ storiesOf('Components|Input', module)
     const settingsUpperCase = boolean('settingsUpperCase', false);
     const settingsDigits = boolean('settingsDigits', false);
     const settingsSpecSymbols = boolean('settingsSpecSymbols', false);
+    const simpleView = boolean('simpleView', false);
 
     const fakeSettings = {
       minLength: 6,
@@ -28,7 +29,7 @@ storiesOf('Components|Input', module)
 
     return (
       <Section>
-        <div style={{height: '110px'}}></div> 
+        <div style={{ height: '110px' }}></div>
         <TextInput
           name='demoEmailInput'
           size='base'
@@ -41,6 +42,7 @@ storiesOf('Components|Input', module)
         <StringValue>
           {({ value, set }) => (
             <PasswordInput
+              simpleView={simpleView}
               inputName='demoPasswordInput'
               emailInputName='demoEmailInput'
               inputValue={value}
@@ -63,7 +65,7 @@ storiesOf('Components|Input', module)
               maxLength={30}
               onValidateInput={(a) => console.log(a)}
               onCopyToClipboard={(b) => console.log('Data ' + b + ' copied to clipboard')}
-              //tooltipOffsetLeft={150}
+            //tooltipOffsetLeft={150}
             />
           )}
         </StringValue>

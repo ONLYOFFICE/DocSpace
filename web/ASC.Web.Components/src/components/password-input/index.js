@@ -126,12 +126,12 @@ class PasswordInput extends React.Component {
   }
 
   changeInputType = () => {
-    this.refTooltip.current.hideTooltip();
-    const newType = this.state.type === 'text' ? 'password' : 'text';
+      this.refTooltip.current.hideTooltip();
+      const newType = this.state.type === 'text' ? 'password' : 'text';
 
-    this.setState({
-      type: newType
-    });
+      this.setState({
+        type: newType
+      });
   }
 
   testStrength = value => {
@@ -192,6 +192,16 @@ class PasswordInput extends React.Component {
 
   onChangeAction = (e) => {
     this.props.onChange && this.props.onChange(e);
+
+    if (this.props.simpleView) {
+      this.setState(
+        {
+          inputValue: e.target.value
+        }
+      );
+      return;
+    }
+
     this.checkPassword(e.target.value);
   }
 
@@ -317,7 +327,8 @@ class PasswordInput extends React.Component {
       autoComplete,
       className,
       tooltipOffsetLeft,
-      style
+      style,
+      simpleView
     } = this.props;
     const {
       type,
@@ -333,7 +344,7 @@ class PasswordInput extends React.Component {
     } = this.state;
 
     const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
-    const iconName = type === 'password' ? 'EyeOffIcon' : 'EyeIcon' ;
+    const iconName = type === 'password' ? 'EyeOffIcon' : 'EyeIcon';
 
     const tooltipContent = (
       <StyledTooltipContainer forwardedAs='div' title={tooltipPasswordTitle}>
@@ -359,71 +370,79 @@ class PasswordInput extends React.Component {
       </StyledTooltipContainer>
     );
 
+    const inputGroup = <>
+      <InputBlock
+        className="input-relative"
+        id={id}
+        name={inputName}
+        hasError={hasError}
+        isDisabled={isDisabled}
+        iconName={iconName}
+        value={inputValue}
+        onIconClick={this.changeInputType}
+        onChange={this.onChangeAction}
+        scale={scale}
+        size={size}
+        type={type}
+        iconColor={`${iconsColor} !important`}
+        isIconFill={true}
+        onBlur={this.onBlur}
+        hasWarning={hasWarning}
+        placeholder={placeholder}
+        tabIndex={tabIndex}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
+      >
+      </InputBlock>
+      <TooltipStyle>
+        <Tooltip
+          id="tooltipContent"
+          effect="solid"
+          place="top"
+          offsetLeft={tooltipOffsetLeft}
+          reference={this.refTooltip}
+        >
+          {tooltipContent}
+        </Tooltip>
+      </TooltipStyle>
+      <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
+    </>
+
     return (
       <StyledInput onValidateInput={onValidateInput} className={className} style={style}>
-        <PasswordProgress
-          inputWidth={inputWidth}
-          data-for="tooltipContent"
-          data-tip=""
-          data-event="click"
-          ref={this.ref}
-        >
-          <InputBlock
-            className="input-relative"
-            id={id}
-            name={inputName}
-            hasError={hasError}
-            isDisabled={isDisabled}
-            iconName={iconName}
-            value={inputValue}
-            onIconClick={this.changeInputType}
-            onChange={this.onChangeAction}
-            scale={scale}
-            size={size}
-            type={type}
-            iconColor={`${iconsColor} !important`}
-            isIconFill={true}
-            onBlur={this.onBlur}
-            hasWarning={hasWarning}
-            placeholder={placeholder}
-            tabIndex={tabIndex}
-            maxLength={maxLength}
-            autoComplete={autoComplete}
+        {simpleView
+          ? inputGroup
+          : <><PasswordProgress
+            inputWidth={inputWidth}
+            data-for="tooltipContent"
+            data-tip=""
+            data-event="click"
+            ref={this.ref}
           >
-          </InputBlock>
-          <TooltipStyle>
-            <Tooltip
-              id="tooltipContent"
-              effect="solid"
-              place="top"
-              offsetLeft={tooltipOffsetLeft}
-              reference={this.refTooltip}
-            >
-              {tooltipContent}
-            </Tooltip>
-          </TooltipStyle>
-          <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
-        </PasswordProgress>
-        <NewPasswordButton>
-          <Icons.RefreshIcon
-            size="medium"
-            color={iconsColor}
-            isfill={true}
-            onClick={this.onGeneratePassword}
-          />
-        </NewPasswordButton>
-        <CopyLink>
-          <Link
-            type="action"
-            isHovered={true}
-            fontSize='13px'
-            color={iconsColor}
-            isSemitransparent={disableCopyAction}
-            onClick={this.copyToClipboard.bind(this, emailInputName)}
-          >
-            {copyLabel}
-          </Link>
-        </CopyLink>
+            {inputGroup}
+          </PasswordProgress>
+            <NewPasswordButton>
+              <Icons.RefreshIcon
+                size="medium"
+                color={iconsColor}
+                isfill={true}
+                onClick={this.onGeneratePassword}
+              />
+            </NewPasswordButton>
+            <CopyLink>
+              <Link
+                type="action"
+                isHovered={true}
+                fontSize='13px'
+                color={iconsColor}
+                isSemitransparent={disableCopyAction}
+                onClick={this.copyToClipboard.bind(this, emailInputName)}
+              >
+                {copyLabel}
+              </Link>
+            </CopyLink>
+          </>
+        }
       </StyledInput>
     );
   }
@@ -467,7 +486,9 @@ PasswordInput.propTypes = {
   onValidateInput: PropTypes.func,
   onCopyToClipboard: PropTypes.func,
 
-  tooltipOffsetLeft: PropTypes.number
+  tooltipOffsetLeft: PropTypes.number,
+
+  simpleView: PropTypes.bool
 }
 
 PasswordInput.defaultProps = {
@@ -485,7 +506,9 @@ PasswordInput.defaultProps = {
 
   generatorSpecial: '!@#$%^&*',
   className: '',
-  tooltipOffsetLeft: 110
+  tooltipOffsetLeft: 110,
+
+  simpleView: false
 }
 
 export default PasswordInput;
