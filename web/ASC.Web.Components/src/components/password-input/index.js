@@ -385,6 +385,7 @@ class PasswordInput extends React.Component {
         size={size}
         type={type}
         iconColor={`${iconsColor} !important`}
+        iconSize={16}
         isIconFill={true}
         onBlur={this.onBlur}
         hasWarning={hasWarning}
