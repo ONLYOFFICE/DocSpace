@@ -185,13 +185,17 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   .btnIcon,
   .loader {
     display: inline-block;
+    vertical-align: text-top;
+  }
 
+  .loader {
     vertical-align: ${props => ( props.size === 'large' || props.size === 'base' )
       ? 'middle' 
       : props.size === 'medium' 
         ? 'text-bottom'
         : 'text-top'};
   }
+}
 
   ${props => props.label && css`
     .btnIcon,
