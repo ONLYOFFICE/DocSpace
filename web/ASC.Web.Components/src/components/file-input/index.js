@@ -30,7 +30,7 @@ class FileInput extends Component {
 
   render() {
     const { fileName } = this.state;
-    const { placeholder, size } = this.props;
+    const { placeholder, size, scale } = this.props;
 
     return(
       <InputBlock
@@ -41,6 +41,7 @@ class FileInput extends Component {
         onChange={this.onChangeFile}
         oFocus={this.onIconFileClick}
         size={size}
+        scale={scale}
       >
         <input
           type="file"

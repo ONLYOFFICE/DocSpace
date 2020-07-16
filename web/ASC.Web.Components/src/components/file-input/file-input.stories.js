@@ -12,9 +12,9 @@ const sizeInput = ['base', 'middle', 'big', 'huge'];
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('email input', () => {
+  .add('file input', () => {
 
-    const placeholder = text('placeholder', 'Input email');
+    const placeholder = text('placeholder', 'Input file');
     const size = select('size', sizeInput, 'base');
     const scale = boolean('scale', false);
     const isDisabled = boolean('isDisabled', false);
