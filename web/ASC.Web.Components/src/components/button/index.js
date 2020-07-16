@@ -35,7 +35,7 @@ const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'medium', 'big']),
+  size: PropTypes.oneOf(['base', 'medium', 'big', 'large']),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
@@ -53,19 +53,26 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
+  min-width: ${props => 
+    props.size === 'base' ? '60px' : '100px' 
+  };
+
   height: ${props =>
+    (props.size === 'large' && '44px') ||
     (props.size === 'big' && '36px') ||
     (props.size === 'medium' && '32px') ||
-    (props.size === 'base' && '24px')
+    (props.size === 'base' && '24px') 
   };
 
   line-height: ${props =>
-    (props.size === 'big' && '19px') ||
-    (props.size === 'medium' && '18px') ||
+    (props.size === 'large' && '20px') ||
+    (props.size === 'big' && '18px') ||
+    (props.size === 'medium' && '15px') ||
     (props.size === 'base' && '16px')
   };
 
   font-size: ${props =>
+    (props.size === 'large' && '16px') ||
     (props.size === 'big' && '14px') ||
     (props.size === 'medium' && '13px') ||
     (props.size === 'base' && '12px')
@@ -82,41 +89,51 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   ${props => props.scale && `width: 100%;`}
 
   padding: ${props =>
-    (props.size === 'big' && (props.primary 
+    (props.size === 'large' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 28px 9px 28px' : '8px 10px 9px 10px')
+          ? (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
+          : (props.label ? '12px 20px 12px 20px' : '12px 20px 12px 20px')
         ) 
       : (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 27px 9px 28px' : '8px 10px 9px 10px')
+          ? (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
+          : (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
+        ))
+    ) ||
+    (props.size === 'big' && (props.primary 
+      ? (props.icon 
+          ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
+          : (props.label ? '8px 16px 8px 16px' : '8px 10px 9px 16px')
+        ) 
+      : (props.icon 
+          ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
+          : (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
         ))
     ) ||
     (props.size === 'medium' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
-          : (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+          ? (props.label ? '6px 16px 9px 16px' : '6px 16px 8px 16px')
+          : (props.label ? '7px 16px 8px 16px' : '6px 16px 8px 16px')
         ) 
       : (props.icon 
-          ? (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
-          : (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+          ? (props.label ? '6px 16px 9px 16px' : '6px 16px 8px 16px')
+          : (props.label ? '7px 16px 8px 16px' : '6px 16px 8px 16px')
         ))
     ) ||
     (props.size === 'base' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
-          : (props.label ? '3px 24px 5px 24px' : '3px 5px 5px 5px')
+          ? (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px') 
+          : (props.label ? '4px 12px 5px 12px' : '4px 12px 5px 12px')
         )
       : (props.icon 
-          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
-          : (props.label ? '3px 24px 5px 24px' : '3px 5px 5px 5px')
+          ? (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px') 
+          : (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px')
         ))
     )
   };
 
   cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
 
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', normal;
   border: none;
   margin: 0;
   display: inline-block;
@@ -171,6 +188,15 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     vertical-align: text-top;
   }
 
+  .loader {
+    vertical-align: ${props => ( props.size === 'large' || props.size === 'base' )
+      ? 'middle' 
+      : props.size === 'medium' 
+        ? 'text-bottom'
+        : 'text-top'};
+  }
+}
+
   ${props => props.label && css`
     .btnIcon,
     .loader {
@@ -184,7 +210,11 @@ const Icon = ({size, primary, icon}) => (
     { icon && React.cloneElement(icon, 
       { 
         isfill: true, 
-        size: size === "big" ? "medium" : "small", 
+        size: size === "large" 
+          ? "large"
+          : size === "big"
+            ? "medium"
+            : "small",
         color: primary ? "#FFFFFF" : '#333333'
     })}
   </div>
@@ -207,7 +237,9 @@ const Button = React.forwardRef((props, ref) => {
     <StyledButton innerRef={ref} {...props} >
       {(isLoading || icon)
         ? (isLoading 
-            ? <Loader type="oval" size={size === "big" ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+            ? <Loader type="oval" size={
+              size === "large" ? '18px' : size === 'big' ? '16px' : '14px'
+            } color={primary ? "#FFFFFF" : '#333333'} className="loader" />
             : <Icon {...iconProps} />)
         : ""
       }
@@ -219,7 +251,7 @@ const Button = React.forwardRef((props, ref) => {
 Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'medium', 'big']),
+  size: PropTypes.oneOf(['base', 'medium', 'big', 'large']),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
