@@ -7,7 +7,7 @@ import FileInput from '.';
 import Section from '../../../.storybook/decorators/section';
 import { action } from '@storybook/addon-actions';
 
-const sizeInput = ['base', 'middle', 'big', 'huge'];
+const sizeInput = ['base', 'middle', 'big', 'huge', 'large'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
@@ -20,7 +20,7 @@ storiesOf('Components|Input', module)
     const isDisabled = boolean('isDisabled', false);
     const isReadOnly = boolean('isReadOnly', false);
     const maxLength = number('maxLength', 255);
-    const id = text('id', 'emailId');
+    const id = text('id', 'fileInputId');
     const name = text('name', 'demoEmailInput');
 
     const allowDomainPunycode = boolean('allowDomainPunycode', false);
@@ -38,6 +38,7 @@ storiesOf('Components|Input', module)
           placeholder={placeholder}
           size={size}
           scale={scale}
+          isDisabled={isDisabled}
         />
       </Section>
     );
