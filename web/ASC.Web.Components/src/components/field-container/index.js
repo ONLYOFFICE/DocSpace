@@ -91,6 +91,7 @@ class FieldContainer extends React.Component {
       style,
       isRequired,
       hasError,
+      labelVisible,
       labelText,
       children,
       tooltipContent,
@@ -111,22 +112,24 @@ class FieldContainer extends React.Component {
         style={style}
         maxwidth={errorMessageWidth}
       >
-        <div className="field-label-icon">
-          <Label
-            isRequired={isRequired}
-            error={hasError}
-            text={labelText}
-            truncate={true}
-            className="field-label"
-          />
-          {tooltipContent && (
-            <HelpButton
-              tooltipContent={tooltipContent}
-              place={place}
-              helpButtonHeaderContent={helpButtonHeaderContent}
+        {labelVisible &&
+          <div className="field-label-icon">
+            <Label
+              isRequired={isRequired}
+              error={hasError}
+              text={labelText}
+              truncate={true}
+              className="field-label"
             />
-          )}
-        </div>
+            {tooltipContent && (
+              <HelpButton
+                tooltipContent={tooltipContent}
+                place={place}
+                helpButtonHeaderContent={helpButtonHeaderContent}
+              />
+            )}
+          </div>
+        }
         <div className="field-body">
           {children}
           {hasError ? (
@@ -147,6 +150,7 @@ FieldContainer.propTypes = {
   className: PropTypes.string,
   isRequired: PropTypes.bool,
   hasError: PropTypes.bool,
+  labelVisible: PropTypes.bool,
   labelText: PropTypes.string,
   icon: PropTypes.string,
   children: PropTypes.oneOfType([
@@ -166,6 +170,7 @@ FieldContainer.propTypes = {
 
 FieldContainer.defaultProps = {
   place: "bottom",
+  labelVisible: true,
   maxLabelWidth: "110px",
   errorColor: "#C96C27",
   errorMessageWidth: "293px"
