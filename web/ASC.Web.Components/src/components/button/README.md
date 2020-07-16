@@ -32,6 +32,6 @@ import { Button } from "asc-web-components";
 | `onClick`    |     `func`     |    -     |            -            |    -    | What the button will trigger when clicked             |
 | `primary`    |     `bool`     |    -     |            -            | `false` | Tells when the button should be primary               |
 | `scale`      |     `bool`     |    -     |            -            | `false` | Scale width of button to 100%                         |
-| `size`       |    `oneOf`     |    -     | `base`, `middle`, `big` | `base`  | Size of button                                        |
+| `size`       |    `oneOf`     |    -     | `base`, `middle`, `big`, `large` | `base`  | Size of button                                        |
 | `style`      | `obj`, `array` |    -     |            -            |    -    | Accepts css style                                     |
 | `tabIndex`   |    `number`    |    -     |            -            |  `-1`   | Button tab index                                      |
