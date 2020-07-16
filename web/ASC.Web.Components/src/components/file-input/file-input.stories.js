@@ -18,27 +18,22 @@ storiesOf('Components|Input', module)
     const size = select('size', sizeInput, 'base');
     const scale = boolean('scale', false);
     const isDisabled = boolean('isDisabled', false);
-    const isReadOnly = boolean('isReadOnly', false);
-    const maxLength = number('maxLength', 255);
     const id = text('id', 'fileInputId');
     const name = text('name', 'demoEmailInput');
-
-    const allowDomainPunycode = boolean('allowDomainPunycode', false);
-    const allowLocalPartPunycode = boolean('allowLocalPartPunycode', false);
-    const allowDomainIp = boolean('allowDomainIp', false);
-    const allowStrictLocalPart = boolean('allowStrictLocalPart', true);
-    const allowSpaces = boolean('allowSpaces', false);
-    const allowName = boolean('allowName', false);
-    const allowLocalDomainName = boolean('allowLocalDomainName', false);
-
+    const hasError = boolean('hasError', false);
+    const hasWarning = boolean('hasWarning', false);
 
     return (
       <Section>
         <FileInput
+          id={id}
+          name={name}
           placeholder={placeholder}
           size={size}
           scale={scale}
           isDisabled={isDisabled}
+          hasError={hasError}
+          hasWarning={hasWarning}
         />
       </Section>
     );
