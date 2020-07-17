@@ -182,12 +182,15 @@ namespace ASC.Core
     {
         public static DIHelper AddPaymentManagerService(this DIHelper services)
         {
-            services.TryAddScoped<PaymentManager>();
+            if (services.TryAddScoped<PaymentManager>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddQuotaService()
+                    .AddTariffService();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddQuotaService()
-                .AddTariffService();
+            return services;
         }
     }
 }

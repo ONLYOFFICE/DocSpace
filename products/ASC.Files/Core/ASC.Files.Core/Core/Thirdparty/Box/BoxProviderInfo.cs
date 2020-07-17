@@ -320,9 +320,13 @@ namespace ASC.Files.Thirdparty.Box
     {
         public static DIHelper AddBoxProviderInfoService(this DIHelper services)
         {
-            services.TryAddScoped<BoxProviderInfo>();
-            services.TryAddScoped<BoxStorageDisposableWrapper>();
-            services.TryAddSingleton<BoxProviderInfoHelper>();
+            if (services.TryAddScoped<BoxProviderInfo>())
+            {
+                services.TryAddScoped<BoxStorageDisposableWrapper>();
+                services.TryAddSingleton<BoxProviderInfoHelper>();
+
+                return services;
+            }
 
             return services;
         }

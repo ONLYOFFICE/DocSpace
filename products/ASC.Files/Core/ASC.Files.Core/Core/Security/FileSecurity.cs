@@ -745,26 +745,33 @@ namespace ASC.Files.Core.Security
     {
         public static DIHelper AddFileSecurityCommonService(this DIHelper services)
         {
-            services.TryAddScoped<FileSecurityCommon>();
+            if (services.TryAddScoped<FileSecurityCommon>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddWebItemSecurity();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddWebItemSecurity();
+            return services;
         }
 
         public static DIHelper AddFileSecurityService(this DIHelper services)
         {
-            services.TryAddScoped<FileSecurity>();
-            services.TryAddScoped<IFileSecurity, FileSecurity>();
+            if (services.TryAddScoped<FileSecurity>())
+            {
+                services.TryAddScoped<IFileSecurity, FileSecurity>();
 
-            return services
-                .AddDaoFactoryService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddAuthContextService()
-                .AddAuthManager()
-                .AddGlobalFolderService()
-                .AddFileSecurityCommonService();
+                return services
+                    .AddDaoFactoryService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddAuthContextService()
+                    .AddAuthManager()
+                    .AddGlobalFolderService()
+                    .AddFileSecurityCommonService();
+            }
+
+            return services;
         }
     }
 }

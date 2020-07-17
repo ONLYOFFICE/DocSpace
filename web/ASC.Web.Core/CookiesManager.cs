@@ -240,13 +240,16 @@ namespace ASC.Web.Core
     {
         public static DIHelper AddCookiesManagerService(this DIHelper services)
         {
-            services.TryAddScoped<CookiesManager>();
+            if (services.TryAddScoped<CookiesManager>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddSecurityContextService()
+                    .AddTenantCookieSettingsService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddTenantCookieSettingsService()
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

@@ -73,13 +73,15 @@ namespace ASC.Core.Common.EF
     {
         public static DIHelper AddDbContextManagerService<T>(this DIHelper services) where T : BaseDbContext, new()
         {
-            services.TryAddScoped<DbContextManager<T>>();
-            services.TryAddScoped<MultiRegionalDbContextManager<T>>();
-            services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
-            services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
-            //services.TryAddScoped<T>();
+            if (services.TryAddScoped<DbContextManager<T>>())
+            {
+                services.TryAddScoped<MultiRegionalDbContextManager<T>>();
+                services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
+                services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
 
-            return services.AddLoggerService();
+                return services.AddLoggerService();
+            }
+            return services;
         }
     }
 }

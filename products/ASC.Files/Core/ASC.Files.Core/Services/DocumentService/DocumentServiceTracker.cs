@@ -651,26 +651,30 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         public static DIHelper AddDocumentServiceTrackerHelperService(this DIHelper services)
         {
-            services.TryAddScoped<DocumentServiceTrackerHelper>();
-            return services
-                .AddSecurityContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddFilesLinkUtilityService()
-                .AddEmailValidationKeyProviderService()
-                .AddBaseCommonLinkUtilityService()
-                .AddGlobalStoreService()
-                .AddDisplayUserSettingsService()
-                .AddDaoFactoryService()
-                .AddDocumentServiceHelperService()
-                .AddEntryManagerService()
-                .AddFileShareLinkService()
-                .AddFilesMessageService()
-                .AddDocumentServiceConnectorService()
-                .AddNotifyClientService()
-                .AddEncryptionAddressHelperService()
-                .AddSocketManagerService()
-                .AddMailMergeTaskRunnerService();
+            if (services.TryAddScoped<DocumentServiceTrackerHelper>())
+            {
+                return services
+                    .AddSecurityContextService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddFilesLinkUtilityService()
+                    .AddEmailValidationKeyProviderService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddGlobalStoreService()
+                    .AddDisplayUserSettingsService()
+                    .AddDaoFactoryService()
+                    .AddDocumentServiceHelperService()
+                    .AddEntryManagerService()
+                    .AddFileShareLinkService()
+                    .AddFilesMessageService()
+                    .AddDocumentServiceConnectorService()
+                    .AddNotifyClientService()
+                    .AddEncryptionAddressHelperService()
+                    .AddSocketManagerService()
+                    .AddMailMergeTaskRunnerService();
+            }
+
+            return services;
         }
     }
 }

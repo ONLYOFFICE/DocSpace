@@ -66,13 +66,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     {
         public static DIHelper AddGoogleDriveSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<GoogleDriveDaoSelector>();
+            if (services.TryAddScoped<GoogleDriveDaoSelector>())
+            {
+                return services
+                    .AddGoogleDriveSecurityDaoService()
+                    .AddGoogleDriveTagDaoService()
+                    .AddGoogleDriveFolderDaoService()
+                    .AddGoogleDriveFileDaoService();
+            }
 
-            return services
-                .AddGoogleDriveSecurityDaoService()
-                .AddGoogleDriveTagDaoService()
-                .AddGoogleDriveFolderDaoService()
-                .AddGoogleDriveFileDaoService();
+            return services;
         }
     }
 }

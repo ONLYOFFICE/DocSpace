@@ -141,14 +141,17 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFolderWrapperHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FolderWrapperHelper>();
+            if (services.TryAddScoped<FolderWrapperHelper>())
+            {
+                return services
+                    .AddFileEntryWrapperHelperService()
+                    .AddAuthContextService()
+                    .AddDaoFactoryService()
+                    .AddFileSecurityService()
+                    .AddGlobalFolderHelperService();
+            }
 
-            return services
-                .AddFileEntryWrapperHelperService()
-                .AddAuthContextService()
-                .AddDaoFactoryService()
-                .AddFileSecurityService()
-                .AddGlobalFolderHelperService();
+            return services;
         }
     }
 }

@@ -134,11 +134,15 @@ namespace ASC.Web.Files.HttpHandlers
     {
         public static DIHelper AddThirdPartyAppHandlerService(this DIHelper services)
         {
-            services.TryAddScoped<ThirdPartyAppHandlerService>();
-            return services
-                .AddCommonLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddAuthContextService();
+            if (services.TryAddScoped<ThirdPartyAppHandlerService>())
+            {
+                return services
+                    .AddCommonLinkUtilityService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddAuthContextService();
+            }
+
+            return services;
         }
 
         public static IApplicationBuilder UseThirdPartyAppHandler(this IApplicationBuilder builder)

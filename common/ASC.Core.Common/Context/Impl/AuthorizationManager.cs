@@ -133,10 +133,14 @@ namespace ASC.Core
     {
         public static DIHelper AddAuthorizationManagerService(this DIHelper services)
         {
-            services.TryAddScoped<AuthorizationManager>();
-            return services
-                .AddAzService()
-                .AddTenantManagerService();
+            if (services.TryAddScoped<AuthorizationManager>())
+            {
+                return services
+                    .AddAzService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

@@ -293,14 +293,17 @@ namespace ASC.Web.Api.Models
     {
         public static DIHelper AddEmployeeWraperFull(this DIHelper services)
         {
-            services.TryAddScoped<EmployeeWraperFullHelper>();
+            if (services.TryAddScoped<EmployeeWraperFullHelper>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddWebItemSecurity()
+                    .AddUserManagerService()
+                    .AddEmployeeWraper()
+                    .AddApiDateTimeHelper();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddWebItemSecurity()
-                .AddUserManagerService()
-                .AddEmployeeWraper()
-                .AddApiDateTimeHelper();
+            return services;
         }
     }
 }

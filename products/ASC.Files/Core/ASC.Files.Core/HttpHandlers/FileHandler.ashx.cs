@@ -40,8 +40,8 @@ using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
@@ -1256,30 +1256,34 @@ namespace ASC.Web.Files
     {
         public static DIHelper AddFileHandlerService(this DIHelper services)
         {
-            services.TryAddScoped<FileHandlerService>();
-            return services
-                .AddFilesLinkUtilityService()
-                .AddTenantExtraService()
-                .AddCookiesManagerService()
-                .AddAuthContextService()
-                .AddSecurityContextService()
-                .AddGlobalStoreService()
-                .AddDaoFactoryService()
-                .AddFileSecurityService()
-                .AddFileMarkerService()
-                .AddSetupInfo()
-                .AddFileUtilityService()
-                .AddGlobalService()
-                .AddEmailValidationKeyProviderService()
-                .AddCoreBaseSettingsService()
-                .AddGlobalFolderHelperService()
-                .AddPathProviderService()
-                .AddUserManagerService()
-                .AddDocumentServiceTrackerHelperService()
-                .AddFilesMessageService()
-                .AddFileConverterService()
-                .AddFileShareLinkService()
-                .AddFFmpegServiceService();
+            if (services.TryAddScoped<FileHandlerService>())
+            {
+                return services
+                    .AddFilesLinkUtilityService()
+                    .AddTenantExtraService()
+                    .AddCookiesManagerService()
+                    .AddAuthContextService()
+                    .AddSecurityContextService()
+                    .AddGlobalStoreService()
+                    .AddDaoFactoryService()
+                    .AddFileSecurityService()
+                    .AddFileMarkerService()
+                    .AddSetupInfo()
+                    .AddFileUtilityService()
+                    .AddGlobalService()
+                    .AddEmailValidationKeyProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddGlobalFolderHelperService()
+                    .AddPathProviderService()
+                    .AddUserManagerService()
+                    .AddDocumentServiceTrackerHelperService()
+                    .AddFilesMessageService()
+                    .AddFileConverterService()
+                    .AddFileShareLinkService()
+                    .AddFFmpegServiceService();
+            }
+
+            return services;
         }
 
         public static IApplicationBuilder UseFileHandler(this IApplicationBuilder builder)

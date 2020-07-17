@@ -67,13 +67,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public static DIHelper AddSharpBoxDaoSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<SharpBoxDaoSelector>();
+            if (services.TryAddScoped<SharpBoxDaoSelector>())
+            {
+                return services
+                    .AddSharpBoxSecurityDaoService()
+                    .AddSharpBoxTagDaoService()
+                    .AddSharpBoxFolderDaoService()
+                    .AddSharpBoxFileDaoService();
+            }
 
-            return services
-                .AddSharpBoxSecurityDaoService()
-                .AddSharpBoxTagDaoService()
-                .AddSharpBoxFolderDaoService()
-                .AddSharpBoxFileDaoService();
+            return services;
         }
     }
 }

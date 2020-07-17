@@ -382,17 +382,21 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         public static DIHelper AddDocumentServiceConnectorService(this DIHelper services)
         {
-            services.TryAddScoped<DocumentServiceConnector>();
+            if (services.TryAddScoped<DocumentServiceConnector>())
+            {
 
-            return services
-                .AddFilesLinkUtilityService()
-                .AddFileUtilityService()
-                .AddPathProviderService()
-                .AddGlobalStoreService()
-                .AddBaseCommonLinkUtilityService()
-                .AddTenantManagerService()
-                .AddTenantExtraService()
-                .AddCoreSettingsService();
+                return services
+                    .AddFilesLinkUtilityService()
+                    .AddFileUtilityService()
+                    .AddPathProviderService()
+                    .AddGlobalStoreService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddTenantManagerService()
+                    .AddTenantExtraService()
+                    .AddCoreSettingsService();
+            }
+
+            return services;
         }
     }
 }

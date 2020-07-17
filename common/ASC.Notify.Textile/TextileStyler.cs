@@ -330,8 +330,12 @@ namespace ASC.Notify.Textile
     {
         public static DIHelper AddTextileStylerService(this DIHelper services)
         {
-            services.TryAddScoped<TextileStyler>();
-            return services.AddStylerService();
+            if (services.TryAddScoped<TextileStyler>())
+            {
+                return services.AddStylerService();
+            }
+
+            return services;
         }
     }
 }

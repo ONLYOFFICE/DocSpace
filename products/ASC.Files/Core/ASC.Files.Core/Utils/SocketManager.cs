@@ -53,10 +53,14 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddSocketManagerService(this DIHelper services)
         {
-            services.TryAddScoped<SocketManager>();
-            return services
-                .AddTenantManagerService()
-                .AddSignalrServiceClient();
+            if (services.TryAddScoped<SocketManager>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddSignalrServiceClient();
+            }
+
+            return services;
         }
     }
 }

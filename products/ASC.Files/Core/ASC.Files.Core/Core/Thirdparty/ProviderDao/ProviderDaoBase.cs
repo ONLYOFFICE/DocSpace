@@ -171,14 +171,18 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public static DIHelper AddProviderDaoBaseService(this DIHelper services)
         {
-            services.TryAddScoped<CrossDao>();
-            return services
-                .AddSharpBoxDaoSelectorService()
-                .AddSharePointSelectorService()
-                .AddOneDriveSelectorService()
-                .AddGoogleDriveSelectorService()
-                .AddDropboxDaoSelectorService()
-                .AddBoxDaoSelectorService();
+            if (services.TryAddScoped<CrossDao>())
+            {
+                return services
+                    .AddSharpBoxDaoSelectorService()
+                    .AddSharePointSelectorService()
+                    .AddOneDriveSelectorService()
+                    .AddGoogleDriveSelectorService()
+                    .AddDropboxDaoSelectorService()
+                    .AddBoxDaoSelectorService();
+            }
+
+            return services;
         }
     }
 }

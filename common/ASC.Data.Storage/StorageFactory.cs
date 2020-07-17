@@ -320,17 +320,21 @@ namespace ASC.Data.Storage
 
         public static DIHelper AddStorageFactoryService(this DIHelper services)
         {
-            services.TryAddScoped<StorageFactory>();
-            services.TryAddSingleton<StorageFactoryListener>();
+            if (services.TryAddScoped<StorageFactory>())
+            {
+                services.TryAddSingleton<StorageFactoryListener>();
 
-            return services
-                .AddConsumerFactoryService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddPathUtilsService()
-                .AddEmailValidationKeyProviderService()
-                .AddStorageSettingsService()
-                .AddStorage();
+                return services
+                    .AddConsumerFactoryService()
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddPathUtilsService()
+                    .AddEmailValidationKeyProviderService()
+                    .AddStorageSettingsService()
+                    .AddStorage();
+            }
+
+            return services;
         }
     }
 }

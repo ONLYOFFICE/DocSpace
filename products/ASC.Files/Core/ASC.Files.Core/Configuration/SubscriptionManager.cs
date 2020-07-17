@@ -142,11 +142,14 @@ namespace ASC.Web.Files.Classes
     {
         public static DIHelper AddFilesSubscriptionManagerService(this DIHelper services)
         {
-            services.TryAddScoped<SubscriptionManager>();
+            if (services.TryAddScoped<SubscriptionManager>())
+            {
+                return services
+                    .AddFilesNotifySourceService()
+                    .AddCoreBaseSettingsService();
+            }
 
-            return services
-                .AddFilesNotifySourceService()
-                .AddCoreBaseSettingsService();
+            return services;
         }
     }
 }

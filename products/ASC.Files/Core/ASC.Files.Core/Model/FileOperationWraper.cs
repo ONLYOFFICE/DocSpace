@@ -216,12 +216,16 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFileOperationWraperHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FileOperationWraperHelper>();
-            return services
-                .AddFolderWrapperHelperService()
-                .AddFileWrapperHelperService()
-                .AddDaoFactoryService()
-                .AddCommonLinkUtilityService();
+            if (services.TryAddScoped<FileOperationWraperHelper>())
+            {
+                return services
+                    .AddFolderWrapperHelperService()
+                    .AddFileWrapperHelperService()
+                    .AddDaoFactoryService()
+                    .AddCommonLinkUtilityService();
+            }
+
+            return services;
         }
     }
 }

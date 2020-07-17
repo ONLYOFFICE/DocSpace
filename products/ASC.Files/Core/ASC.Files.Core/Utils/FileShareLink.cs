@@ -118,13 +118,17 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileShareLinkService(this DIHelper services)
         {
-            services.TryAddScoped<FileShareLink>();
-            return services
-                .AddFilesLinkUtilityService()
-                .AddFileUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddGlobalService()
-                .AddFileSecurityService();
+            if (services.TryAddScoped<FileShareLink>())
+            {
+                return services
+                    .AddFilesLinkUtilityService()
+                    .AddFileUtilityService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddGlobalService()
+                    .AddFileSecurityService();
+            }
+
+            return services;
         }
     }
 }

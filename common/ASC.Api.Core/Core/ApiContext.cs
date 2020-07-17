@@ -273,11 +273,14 @@ namespace ASC.Api.Core
     {
         public static DIHelper AddApiContextService(this DIHelper services)
         {
-            services.TryAddScoped<ApiContext>();
+            if (services.TryAddScoped<ApiContext>())
+            {
+                services
+                    .AddTenantManagerService()
+                    .AddSecurityContextService();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddSecurityContextService();
+            return services;
         }
     }
 }

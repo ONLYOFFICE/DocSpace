@@ -124,10 +124,14 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddChunkedUploadSessionHolderService(this DIHelper services)
         {
-            services.TryAddScoped<ChunkedUploadSessionHolder>();
-            return services
-                .AddGlobalStoreService()
-                .AddSetupInfo();
+            if (services.TryAddScoped<ChunkedUploadSessionHolder>())
+            {
+                return services
+                    .AddGlobalStoreService()
+                    .AddSetupInfo();
+            }
+
+            return services;
         }
     }
 }

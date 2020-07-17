@@ -161,13 +161,17 @@ namespace ASC.Web.Files.Helpers
     {
         public static DIHelper AddEasyBibHelperService(this DIHelper services)
         {
-            services.TryAddScoped<EasyBibHelper>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
+            if (services.TryAddScoped<EasyBibHelper>())
+            {
+                return services
+                    .AddConsumerFactoryService()
+                    .AddKafkaService()
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreSettingsService();
+            }
+
+            return services;
         }
     }
 }
