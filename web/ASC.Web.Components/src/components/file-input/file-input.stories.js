@@ -38,9 +38,7 @@ storiesOf('Components|Input', module)
           accept={accept}
           onInput={(file) => {
             action('onInput')(file);
-            console.log(
-              `name: ${file.name}`, `lastModified: ${file.lastModifiedDate}`, `size: ${file.size}`
-            );
+            console.log(`name: ${file.name}`, `lastModified: ${file.lastModifiedDate}`, `size: ${file.size}`); 
           }}
         />
       </Section>

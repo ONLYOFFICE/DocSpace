@@ -83,8 +83,7 @@ class FileInput extends Component {
     this.inputRef = React.createRef();
 
     this.state = {
-      fileName: '',
-      path: ''
+      fileName: ''
     }
   }
 
@@ -95,19 +94,17 @@ class FileInput extends Component {
 
   onChangeHandler = e => {
     this.setState({
-      pathName: e.target.value
+      fileName: e.target.value
     })
   }
 
   onInputFile = () => {
     const { onInput } = this.props;
-
-    if ( this.inputRef.current.files.length > 0 ) {
+    if ( this.inputRef.current.files ) {
       this.setState({
-        fileName: this.inputRef.current.files[0].name,
-        data: this.inputRef.current.files[0]
+        fileName: this.inputRef.current.files[0].name
       });
-      onInput(this.inputRef.current.files[0]);
+      onInput(this.inputRef.current.files[0])
     } else {
       this.setState({
         fileName: 'file not choose'
@@ -116,7 +113,6 @@ class FileInput extends Component {
   }
 
   render() {
-    console.log('render input file')
     const { fileName } = this.state;
     const { 
       size, 
@@ -126,6 +122,7 @@ class FileInput extends Component {
       hasError,
       hasWarning,
       accept,
+      onInput,
       ...rest 
     } = this.props;
 
@@ -156,6 +153,7 @@ class FileInput extends Component {
         hasError={hasError}
         hasWarning={hasWarning}
         isDisabled={isDisabled}
+        {...rest}
       >
         <TextInput
           className="text-input"
