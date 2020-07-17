@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from 'styled-components';
+import isEqual from "lodash/isEqual";
 
 import IconButton from '../icon-button';
 import TextInput from '../text-input';
@@ -87,6 +88,10 @@ class FileInput extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
+
   onIconFileClick = e => {
     e.target.blur();
     this.inputRef.current.click();
@@ -113,6 +118,7 @@ class FileInput extends Component {
   }
 
   render() {
+    //console.log('render FileInput');
     const { fileName } = this.state;
     const { 
       size, 
