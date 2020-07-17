@@ -21,6 +21,14 @@ const StyledFileInput = styled.div`
 
   .text-input { 
     border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
+    text-overflow: ellipsis;
+    padding-right: 40px;
+    padding-right: ${ props => props.size === 'large' ? '64px' 
+      : props.size === 'huge' ? '58px'
+        : props.size === 'big' ? '53px'
+          : props.size === 'middle' ? '48px'
+            : '37px'
+    }
   }
 
   :hover{
@@ -64,6 +72,8 @@ const StyledFileInput = styled.div`
     border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')}
   }
+
+
 `;
 
 class FileInput extends Component { 
