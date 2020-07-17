@@ -36,8 +36,11 @@ storiesOf('Components|Input', module)
           hasError={hasError}
           hasWarning={hasWarning}
           accept={accept}
-          onInput={(e) => {
-            console.log(e)
+          onInput={(file) => {
+            action('onInput')(file);
+            console.log(
+              `name: ${file.name}`, `lastModified: ${file.lastModifiedDate}`, `size: ${file.size}`
+            );
           }}
         />
       </Section>

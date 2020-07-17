@@ -92,11 +92,12 @@ class FileInput extends Component {
   onInputFile = () => {
     const { onInput } = this.props;
 
-    if ( this.inputRef.current.files[0] ) {
+    if ( this.inputRef.current.files.length > 0 ) {
       this.setState({
         fileName: this.inputRef.current.files[0].name,
         data: this.inputRef.current.files[0]
-      }, () => onInput(this.state.data));
+      });
+      onInput(this.inputRef.current.files[0]);
     } else {
       this.setState({
         fileName: 'file not choose'
