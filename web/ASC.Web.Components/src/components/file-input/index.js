@@ -93,6 +93,11 @@ class FileInput extends Component {
   }
 
   onIconFileClick = e => {
+    const { isDisabled } = this.props;
+    
+    if(isDisabled) {  
+      return false;
+    }
     e.target.blur();
     this.inputRef.current.click();
   }
@@ -104,12 +109,15 @@ class FileInput extends Component {
   }
 
   onInputFile = () => {
-    const { onInput } = this.props;
+    const { onInput, isDisabled } = this.props;
+
     if ( this.inputRef.current.files ) {
       this.setState({
         fileName: this.inputRef.current.files[0].name
       });
-      onInput(this.inputRef.current.files[0])
+
+      if(onInput) onInput(this.inputRef.current.files[0]);
+
     } else {
       this.setState({
         fileName: 'file not choose'
