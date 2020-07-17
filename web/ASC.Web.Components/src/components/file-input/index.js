@@ -83,15 +83,29 @@ class FileInput extends Component {
     this.inputRef.current.click();
   }
 
-  onChangeFile = e => this.setState({ 
-    path: e.target.value 
-  });
+  onChangeHandler = e => {
+    this.setState({
+      pathName: e.target.value
+    })
+  }
 
-  onInputFile = () => this.setState({
-    fileName: this.inputRef.current.files[0].name
-  });
+  onInputFile = () => {
+    const { onInput } = this.props;
+
+    if ( this.inputRef.current.files[0] ) {
+      this.setState({
+        fileName: this.inputRef.current.files[0].name,
+        data: this.inputRef.current.files[0]
+      }, () => onInput(this.state.data));
+    } else {
+      this.setState({
+        fileName: 'file not choose'
+      })
+    }
+  }
 
   render() {
+    console.log('render input file')
     const { fileName } = this.state;
     const { 
       size, 
@@ -140,13 +154,14 @@ class FileInput extends Component {
           hasError={hasError}
           hasWarning={hasWarning}
           scale={scale}
-          onChange={this.onChangeFile}
           onFocus={this.onIconFileClick}
+          onChange={this.onChangeHandler}
         />
         <input
           type="file"
           ref={this.inputRef}
           style={{ display: 'none' }}
+          accept=".torrent"
           onInput={this.onInputFile}
         />
         <div 

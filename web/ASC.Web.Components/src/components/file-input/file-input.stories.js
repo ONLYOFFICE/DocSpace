@@ -34,6 +34,9 @@ storiesOf('Components|Input', module)
           isDisabled={isDisabled}
           hasError={hasError}
           hasWarning={hasWarning}
+          onInput={(e) => {
+            console.log(e)
+          }}
         />
       </Section>
     );
