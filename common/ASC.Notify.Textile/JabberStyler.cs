@@ -127,8 +127,12 @@ namespace ASC.Notify.Textile
         }
         public static DIHelper AddJabberStylerService(this DIHelper services)
         {
-            services.TryAddScoped<JabberStyler>();
-            return services.AddStylerService();
+            if (services.TryAddScoped<JabberStyler>())
+            {
+                return services.AddStylerService();
+            }
+
+            return services;
         }
     }
 }

@@ -62,12 +62,16 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddScheduleService(this DIHelper services)
         {
-            services.TryAddScoped<Schedule>();
+            if (services.TryAddScoped<Schedule>())
+            {
 
-            return services
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddBackupHelperService();
+                return services
+                    .AddTenantManagerService()
+                    .AddTenantUtilService()
+                    .AddBackupHelperService();
+            }
+
+            return services;
         }
     }
 }

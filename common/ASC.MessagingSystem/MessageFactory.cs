@@ -142,10 +142,14 @@ namespace ASC.MessagingSystem
     {
         public static DIHelper AddMessageFactoryService(this DIHelper services)
         {
-            services.TryAddScoped<MessageFactory>();
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService();
+            if (services.TryAddScoped<MessageFactory>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

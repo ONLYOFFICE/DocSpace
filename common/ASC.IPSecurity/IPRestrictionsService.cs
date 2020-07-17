@@ -91,10 +91,14 @@ namespace ASC.IPSecurity
     {
         public static DIHelper AddIPRestrictionsService(this DIHelper services)
         {
-            services.TryAddScoped<IPRestrictionsService>();
-            services.TryAddSingleton<IPRestrictionsServiceCache>();
+            if (services.TryAddScoped<IPRestrictionsService>())
+            {
+                services.TryAddSingleton<IPRestrictionsServiceCache>();
 
-            return services.AddIPRestrictionsRepositoryService();
+                return services.AddIPRestrictionsRepositoryService();
+            }
+
+            return services;
         }
     }
 }

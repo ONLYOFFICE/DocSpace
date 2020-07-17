@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -595,14 +596,18 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static DIHelper AddTenantWhiteLabelSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<TenantWhiteLabelSettingsHelper>();
-            return services
-                .AddUserPhotoManagerService()
-                .AddWebImageSupplierService()
-                .AddStorageFactoryService()
-                .AddWhiteLabelHelperService()
-                .AddSettingsManagerService()
-                .AddCoreBaseSettingsService();
+            if (services.TryAddScoped<TenantWhiteLabelSettingsHelper>())
+            {
+                return services
+                    .AddUserPhotoManagerService()
+                    .AddWebImageSupplierService()
+                    .AddStorageFactoryService()
+                    .AddWhiteLabelHelperService()
+                    .AddSettingsManagerService()
+                    .AddCoreBaseSettingsService();
+            }
+
+            return services;
         }
     }
 }

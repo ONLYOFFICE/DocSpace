@@ -110,15 +110,18 @@ namespace ASC.Web.Studio.Core
     {
         public static DIHelper AddEncryptionLoginProviderService(this DIHelper services)
         {
-            services.TryAddScoped<EncryptionLoginProvider>();
+            if (services.TryAddScoped<EncryptionLoginProvider>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddSecurityContextService()
+                    .AddSignatureService()
+                    .AddInstanceCryptoService()
+                    .AddAccountLinker();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddSignatureService()
-                .AddInstanceCryptoService()
-                .AddAccountLinker();
+            return services;
         }
     }
 }

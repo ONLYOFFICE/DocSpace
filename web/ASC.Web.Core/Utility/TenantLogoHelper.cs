@@ -87,13 +87,17 @@ namespace ASC.Web.Studio.Utility
     {
         public static DIHelper AddTenantLogoHelperService(this DIHelper services)
         {
-            services.TryAddScoped<TenantLogoHelper>();
+            if (services.TryAddScoped<TenantLogoHelper>())
+            {
 
-            return services
-                .AddTenantLogoManagerService()
-                .AddSettingsManagerService()
-                .AddTenantWhiteLabelSettingsService()
-                .AddTenantInfoSettingsService();
+                return services
+                    .AddTenantLogoManagerService()
+                    .AddSettingsManagerService()
+                    .AddTenantWhiteLabelSettingsService()
+                    .AddTenantInfoSettingsService();
+            }
+
+            return services;
         }
     }
 }

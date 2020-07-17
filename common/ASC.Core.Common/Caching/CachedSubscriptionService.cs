@@ -290,13 +290,13 @@ namespace ASC.Core.Caching
     {
         public static DIHelper AddSubscriptionService(this DIHelper services)
         {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            services.AddUserDbContextService();
-
-            services.TryAddScoped<DbSubscriptionService>();
-            services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
-            services.TryAddSingleton<SubscriptionServiceCache>();
+            if (services.TryAddScoped<DbSubscriptionService>())
+            {
+                services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
+                services.TryAddSingleton<SubscriptionServiceCache>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.AddUserDbContextService();
+            }
 
             return services;
         }

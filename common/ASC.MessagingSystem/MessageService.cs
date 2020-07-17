@@ -302,12 +302,16 @@ namespace ASC.MessagingSystem
     {
         public static DIHelper AddMessageServiceService(this DIHelper services)
         {
-            services.TryAddScoped<MessageService>();
+            if (services.TryAddScoped<MessageService>())
+            {
 
-            return services
-                .AddMessagePolicyService()
-                .AddDbMessageSenderService()
-                .AddMessageFactoryService();
+                return services
+                    .AddMessagePolicyService()
+                    .AddDbMessageSenderService()
+                    .AddMessageFactoryService();
+            }
+
+            return services;
         }
     }
 }

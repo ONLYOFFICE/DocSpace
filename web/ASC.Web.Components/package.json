@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.363",
+  "version": "1.0.366",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -32,7 +32,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-values": "^0.3.3",
     "styled-components": "^5.0.0"
   },
   "devDependencies": {
@@ -101,7 +100,7 @@
   "dependencies": {
     "email-addresses": "^3.1.0",
     "html-to-react": "^1.4.2",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",

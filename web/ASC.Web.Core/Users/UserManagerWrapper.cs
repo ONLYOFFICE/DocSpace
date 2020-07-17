@@ -367,21 +367,25 @@ namespace ASC.Web.Core.Users
     {
         public static DIHelper AddUserManagerWrapperService(this DIHelper services)
         {
-            services.TryAddScoped<UserManagerWrapper>();
+            if (services.TryAddScoped<UserManagerWrapper>())
+            {
 
-            return services
-                .AddIPSecurityService()
-                .AddTenantUtilService()
-                .AddCustomNamingPeopleService()
-                .AddSettingsManagerService()
-                .AddStudioNotifyServiceService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthContextService()
-                .AddMessageServiceService()
-                .AddDisplayUserSettingsService()
-                .AddCoreBaseSettingsService()
-                .AddUserFormatter();
+                return services
+                    .AddIPSecurityService()
+                    .AddTenantUtilService()
+                    .AddCustomNamingPeopleService()
+                    .AddSettingsManagerService()
+                    .AddStudioNotifyServiceService()
+                    .AddUserManagerService()
+                    .AddSecurityContextService()
+                    .AddAuthContextService()
+                    .AddMessageServiceService()
+                    .AddDisplayUserSettingsService()
+                    .AddCoreBaseSettingsService()
+                    .AddUserFormatter();
+            }
+
+            return services;
         }
     }
 }

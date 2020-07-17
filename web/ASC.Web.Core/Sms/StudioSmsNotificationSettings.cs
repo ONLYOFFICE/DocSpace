@@ -26,6 +26,7 @@
 
 using System;
 using System.Text.Json.Serialization;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -99,12 +100,15 @@ namespace ASC.Web.Studio.Core.SMS
     {
         public static DIHelper AddStudioSmsNotificationSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<StudioSmsNotificationSettingsHelper>();
+            if (services.TryAddScoped<StudioSmsNotificationSettingsHelper>())
+            {
+                return services
+                    .AddTenantExtraService()
+                    .AddCoreBaseSettingsService()
+                    .AddSetupInfo();
+            }
 
-            return services
-                .AddTenantExtraService()
-                .AddCoreBaseSettingsService()
-                .AddSetupInfo();
+            return services;
         }
     }
 }

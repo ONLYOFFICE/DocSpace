@@ -129,13 +129,16 @@ namespace ASC.Web.Api.Models
     {
         public static DIHelper AddEmployeeWraper(this DIHelper services)
         {
-            services.TryAddScoped<EmployeeWraperHelper>();
+            if (services.TryAddScoped<EmployeeWraperHelper>())
+            {
+                return services
+                    .AddApiContextService()
+                    .AddDisplayUserSettingsService()
+                    .AddUserPhotoManagerService()
+                    .AddCommonLinkUtilityService();
+            }
 
-            return services
-                .AddApiContextService()
-                .AddDisplayUserSettingsService()
-                .AddUserPhotoManagerService()
-                .AddCommonLinkUtilityService();
+            return services;
         }
     }
 }

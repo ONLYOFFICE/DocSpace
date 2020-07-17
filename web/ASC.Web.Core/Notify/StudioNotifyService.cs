@@ -888,24 +888,28 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
         {
-            services.TryAddScoped<StudioNotifyService>();
+            if (services.TryAddScoped<StudioNotifyService>())
+            {
 
-            return services
-                .AddDisplayUserSettingsService()
-                .AddMailWhiteLabelSettingsService()
-                .AddAdditionalWhiteLabelSettingsService()
-                .AddStudioNotifyServiceHelper()
-                .AddUserManagerService()
-                .AddStudioNotifyHelperService()
-                .AddTenantExtraService()
-                .AddAuthManager()
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddSetupInfo()
-                .AddWebItemSecurity()
-                .AddWebItemManager();
+                return services
+                    .AddDisplayUserSettingsService()
+                    .AddMailWhiteLabelSettingsService()
+                    .AddAdditionalWhiteLabelSettingsService()
+                    .AddStudioNotifyServiceHelper()
+                    .AddUserManagerService()
+                    .AddStudioNotifyHelperService()
+                    .AddTenantExtraService()
+                    .AddAuthManager()
+                    .AddAuthContextService()
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddCommonLinkUtilityService()
+                    .AddSetupInfo()
+                    .AddWebItemSecurity()
+                    .AddWebItemManager();
+            }
+
+            return services;
         }
     }
 }

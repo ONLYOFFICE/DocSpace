@@ -9,7 +9,7 @@ import TextInput from '.';
 
 import Section from '../../../.storybook/decorators/section';
 
-const sizeOptions = ['base', 'middle', 'big', 'huge'];
+const sizeOptions = ['base', 'middle', 'big', 'huge', 'large'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
