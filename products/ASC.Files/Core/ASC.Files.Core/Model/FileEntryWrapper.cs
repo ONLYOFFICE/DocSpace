@@ -185,10 +185,14 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFileEntryWrapperHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FileEntryWrapperHelper>();
-            return services
-                .AddApiDateTimeHelper()
-                .AddEmployeeWraper();
+            if (services.TryAddScoped<FileEntryWrapperHelper>())
+            {
+                return services
+                    .AddApiDateTimeHelper()
+                    .AddEmployeeWraper();
+            }
+
+            return services;
         }
     }
 }

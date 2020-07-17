@@ -371,22 +371,26 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddSecurityDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
-            services.TryAddScoped<SecurityDao<int>>();
-            services.TryAddScoped<SecurityDao<string>>();
+            if (services.TryAddScoped<SecurityDao<int>>())
+            {
+                services.TryAddScoped<SecurityDao<string>>();
+                services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
 
-            return services
-                .AddUserManagerService()
-                .AddFilesDbContextService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService();
+                return services
+                    .AddUserManagerService()
+                    .AddFilesDbContextService()
+                    .AddTenantManagerService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService();
+            }
+
+            return services;
         }
     }
 }

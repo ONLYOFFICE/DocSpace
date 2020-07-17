@@ -167,12 +167,16 @@ namespace ASC.Web.Files.ThirdPartyApp
     {
         public static DIHelper AddTokenHelperService(this DIHelper services)
         {
-            services.TryAddScoped<TokenHelper>();
-            return services
-                .AddFilesDbContextService()
-                .AddInstanceCryptoService()
-                .AddAuthContextService()
-                .AddTenantManagerService();
+            if (services.TryAddScoped<TokenHelper>())
+            {
+                return services
+                    .AddFilesDbContextService()
+                    .AddInstanceCryptoService()
+                    .AddAuthContextService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

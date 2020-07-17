@@ -248,14 +248,19 @@ namespace ASC.Data.Storage
     {
         public static DIHelper AddWebPathService(this DIHelper services)
         {
-            services.TryAddScoped<WebPath>();
+            if (services.TryAddScoped<WebPath>())
+            {
 
-            return services
-                .AddStaticUploaderService()
-                .AddCdnStorageSettingsService()
-                .AddWebPathSettingsService()
-                .AddCoreBaseSettingsService();
+                return services
+                    .AddStaticUploaderService()
+                    .AddCdnStorageSettingsService()
+                    .AddWebPathSettingsService()
+                    .AddCoreBaseSettingsService();
+            }
+
+            return services;
         }
+
         public static DIHelper AddWebPathSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<WebPathSettings>();

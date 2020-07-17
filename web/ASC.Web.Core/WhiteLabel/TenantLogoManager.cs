@@ -210,12 +210,16 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static DIHelper AddTenantLogoManagerService(this DIHelper services)
         {
-            services.TryAddScoped<TenantLogoManager>();
+            if (services.TryAddScoped<TenantLogoManager>())
+            {
 
-            return services
-                .AddTenantWhiteLabelSettingsService()
-                .AddTenantInfoSettingsService()
-                .AddTenantManagerService();
+                return services
+                    .AddTenantWhiteLabelSettingsService()
+                    .AddTenantInfoSettingsService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

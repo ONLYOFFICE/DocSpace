@@ -150,11 +150,14 @@ namespace ASC.Core.Security.Authentication
     {
         public static DIHelper AddCookieStorageService(this DIHelper services)
         {
-            services.TryAddScoped<CookieStorage>();
+            if (services.TryAddScoped<CookieStorage>())
+            {
+                return services
+                    .AddTenantCookieSettingsService()
+                    .AddInstanceCryptoService();
+            }
 
-            return services
-                .AddTenantCookieSettingsService()
-                .AddInstanceCryptoService();
+            return services;
         }
     }
 }

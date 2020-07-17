@@ -40,8 +40,8 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Api;
 using ASC.Web.Files.Classes;
@@ -1057,28 +1057,32 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddEntryManagerService(this DIHelper services)
         {
-            services.TryAddScoped<EntryManager>();
-            return services
-                .AddDaoFactoryService()
-                .AddFileSecurityService()
-                .AddGlobalFolderHelperService()
-                .AddPathProviderService()
-                .AddAuthContextService()
-                .AddFileMarkerService()
-                .AddFileUtilityService()
-                .AddGlobalService()
-                .AddGlobalStoreService()
-                .AddCoreBaseSettingsService()
-                .AddFilesSettingsHelperService()
-                .AddUserManagerService()
-                .AddFileShareLinkService()
-                .AddDocumentServiceConnectorService()
-                .AddDocumentServiceHelperService()
-                .AddFilesIntegrationService()
-                .AddThirdpartyConfigurationService()
-                .AddLockerManagerService()
-                .AddBreadCrumbsManagerService()
-                ;
+            if (services.TryAddScoped<EntryManager>())
+            {
+                return services
+                    .AddDaoFactoryService()
+                    .AddFileSecurityService()
+                    .AddGlobalFolderHelperService()
+                    .AddPathProviderService()
+                    .AddAuthContextService()
+                    .AddFileMarkerService()
+                    .AddFileUtilityService()
+                    .AddGlobalService()
+                    .AddGlobalStoreService()
+                    .AddCoreBaseSettingsService()
+                    .AddFilesSettingsHelperService()
+                    .AddUserManagerService()
+                    .AddFileShareLinkService()
+                    .AddDocumentServiceConnectorService()
+                    .AddDocumentServiceHelperService()
+                    .AddFilesIntegrationService()
+                    .AddThirdpartyConfigurationService()
+                    .AddLockerManagerService()
+                    .AddBreadCrumbsManagerService()
+                    ;
+            }
+
+            return services;
         }
     }
 
@@ -1086,10 +1090,14 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddLockerManagerService(this DIHelper services)
         {
-            services.TryAddScoped<LockerManager>();
-            return services
-                .AddAuthContextService()
-                .AddDaoFactoryService();
+            if (services.TryAddScoped<LockerManager>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddDaoFactoryService();
+            }
+
+            return services;
         }
     }
 
@@ -1097,12 +1105,16 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddBreadCrumbsManagerService(this DIHelper services)
         {
-            services.TryAddScoped<BreadCrumbsManager>();
-            return services
-                .AddDaoFactoryService()
-                .AddFileSecurityService()
-                .AddGlobalFolderHelperService()
-                .AddAuthContextService();
+            if (services.TryAddScoped<BreadCrumbsManager>())
+            {
+                return services
+                    .AddDaoFactoryService()
+                    .AddFileSecurityService()
+                    .AddGlobalFolderHelperService()
+                    .AddAuthContextService();
+            }
+
+            return services;
         }
     }
 }

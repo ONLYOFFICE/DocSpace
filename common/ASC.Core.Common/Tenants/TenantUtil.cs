@@ -28,6 +28,7 @@ using System;
 
 using ASC.Common;
 using ASC.Common.Utils;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Tenants
@@ -150,10 +151,13 @@ namespace ASC.Core.Tenants
     {
         public static DIHelper AddTenantUtilService(this DIHelper services)
         {
-            services.TryAddScoped<TenantUtil>();
-            services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();
+            if (services.TryAddScoped<TenantUtil>())
+            {
+                services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();
+                return services.AddTenantManagerService();
+            }
 
-            return services.AddTenantManagerService();
+            return services;
         }
     }
 }

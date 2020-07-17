@@ -682,14 +682,18 @@ namespace ASC.Data.Backup.Tasks
     {
         public static DIHelper AddBackupPortalTaskService(this DIHelper services)
         {
-            services.TryAddScoped<BackupPortalTask>();
-            return services
-                .AddCoreConfigurationService()
-                .AddStorageFactoryService()
-                .AddModuleProvider()
-                .AddBackupsContext()
-                .AddTenantManagerService()
-                .AddDbFactoryService();
+            if (services.TryAddScoped<BackupPortalTask>())
+            {
+                return services
+                    .AddCoreConfigurationService()
+                    .AddStorageFactoryService()
+                    .AddModuleProvider()
+                    .AddBackupsContext()
+                    .AddTenantManagerService()
+                    .AddDbFactoryService();
+            }
+
+            return services;
         }
     }
 }

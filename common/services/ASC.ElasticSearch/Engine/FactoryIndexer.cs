@@ -592,11 +592,15 @@ namespace ASC.ElasticSearch
     {
         public static DIHelper AddFactoryIndexerService(this DIHelper services)
         {
-            services.TryAddSingleton<FactoryIndexerHelper>();
-            services.TryAddScoped<FactoryIndexer>();
-            return services
-                .AddClientService()
-                .AddCoreBaseSettingsService();
+            if (services.TryAddScoped<FactoryIndexer>())
+            {
+                services.TryAddSingleton<FactoryIndexerHelper>();
+                return services
+                    .AddClientService()
+                    .AddCoreBaseSettingsService();
+            }
+
+            return services;
         }
 
         public static DIHelper AddFactoryIndexerService<T>(this DIHelper services, bool addBase = true) where T : class, ISearchItem
@@ -606,14 +610,17 @@ namespace ASC.ElasticSearch
                 services.TryAddScoped<FactoryIndexer<T>>();
             }
 
-            services.TryAddScoped<Selector<T>>();
+            if (services.TryAddScoped<Selector<T>>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddFactoryIndexerService()
+                    .AddClientService()
+                    .AddSearchSettingsHelperService()
+                    .AddBaseIndexerService<T>();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddFactoryIndexerService()
-                .AddClientService()
-                .AddSearchSettingsHelperService()
-                .AddBaseIndexerService<T>();
+            return services;
         }
     }
 }

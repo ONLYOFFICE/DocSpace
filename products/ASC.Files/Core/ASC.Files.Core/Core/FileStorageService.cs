@@ -50,8 +50,8 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
@@ -2046,7 +2046,8 @@ namespace ASC.Web.Files.Services.WCFService
     {
         public static DIHelper AddFileStorageService(this DIHelper services)
         {
-            services.TryAddScoped<FileStorageService<string>>();
+            if (services.TryAddScoped<FileStorageService<string>>())
+            {
             services.TryAddScoped<FileStorageService<int>>();
             //services.TryAddScoped<IFileStorageService, FileStorageService>();
             return services
@@ -2085,8 +2086,10 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddSocketManagerService()
                 .AddFileOperationsManagerHelperService()
                 .AddFileSharingAceHelperService();
-            ;
         }
+
+            return services;
+    }
     }
 
     public class FileModel<T>

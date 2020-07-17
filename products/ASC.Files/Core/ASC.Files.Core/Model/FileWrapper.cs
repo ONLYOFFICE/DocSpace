@@ -207,16 +207,20 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFileWrapperHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FileWrapperHelper>();
+            if (services.TryAddScoped<FileWrapperHelper>())
+            {
 
-            return services
-                .AddFileEntryWrapperHelperService()
-                .AddAuthContextService()
-                .AddDaoFactoryService()
-                .AddFileSecurityService()
-                .AddGlobalFolderHelperService()
-                .AddFilesLinkUtilityService()
-                .AddFileUtilityService();
+                return services
+                    .AddFileEntryWrapperHelperService()
+                    .AddAuthContextService()
+                    .AddDaoFactoryService()
+                    .AddFileSecurityService()
+                    .AddGlobalFolderHelperService()
+                    .AddFilesLinkUtilityService()
+                    .AddFileUtilityService();
+            }
+
+            return services;
         }
     }
 }

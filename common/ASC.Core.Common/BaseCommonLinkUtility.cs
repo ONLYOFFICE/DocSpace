@@ -244,12 +244,15 @@ namespace ASC.Core.Common
     {
         public static DIHelper AddBaseCommonLinkUtilityService(this DIHelper services)
         {
-            services.TryAddScoped<BaseCommonLinkUtility>();
+            if (services.TryAddScoped<BaseCommonLinkUtility>())
+            {
+                return services
+                    .AddCoreBaseSettingsService()
+                    .AddCoreSettingsService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

@@ -39,8 +39,8 @@ using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
@@ -551,59 +551,74 @@ namespace ASC.Web.Files.Classes
 
         public static DIHelper AddGlobalService(this DIHelper services)
         {
-            services.TryAddScoped<Global>();
+            if (services.TryAddScoped<Global>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddCoreSettingsService()
+                    .AddTenantManagerService()
+                    .AddDisplayUserSettingsService()
+                    .AddCustomNamingPeopleService()
+                    .AddFileSecurityCommonService();
+            }
 
-            return services
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddCoreSettingsService()
-                .AddTenantManagerService()
-                .AddDisplayUserSettingsService()
-                .AddCustomNamingPeopleService()
-                .AddFileSecurityCommonService();
+            return services;
         }
 
         public static DIHelper AddGlobalStoreService(this DIHelper services)
         {
-            services.TryAddScoped<GlobalStore>();
+            if (services.TryAddScoped<GlobalStore>())
+            {
+                return services
+                    .AddStorageFactoryService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddStorageFactoryService()
-                .AddTenantManagerService();
+            return services;
         }
 
         public static DIHelper AddGlobalSpaceService(this DIHelper services)
         {
-            services.TryAddScoped<GlobalSpace>();
+            if (services.TryAddScoped<GlobalSpace>())
+            {
+                return services
+                    .AddFilesUserSpaceUsageService()
+                    .AddAuthContextService();
+            }
 
-            return services
-                .AddFilesUserSpaceUsageService()
-                .AddAuthContextService();
+            return services;
         }
         public static DIHelper AddGlobalFolderService(this DIHelper services)
         {
-            services.TryAddScoped<GlobalFolder>();
+            if (services.TryAddScoped<GlobalFolder>())
+            {
+                return services
+                    .AddCoreBaseSettingsService()
+                    .AddWebItemManager()
+                    .AddWebItemSecurity()
+                    .AddAuthContextService()
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
+                    .AddSettingsManagerService()
+                    .AddGlobalStoreService();
+            }
 
-            return services
-                .AddCoreBaseSettingsService()
-                .AddWebItemManager()
-                .AddWebItemSecurity()
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddSettingsManagerService()
-                .AddGlobalStoreService();
+            return services;
         }
 
         public static DIHelper AddGlobalFolderHelperService(this DIHelper services)
         {
-            services.TryAddScoped<GlobalFolderHelper>();
+            if (services.TryAddScoped<GlobalFolderHelper>())
+            {
+                return services
+                    .AddGlobalFolderService()
+                    .AddDaoFactoryService()
+                    .AddFileMarkerService()
+                    ;
+            }
 
-            return services
-                .AddGlobalFolderService()
-                .AddDaoFactoryService()
-                .AddFileMarkerService()
-                ;
+            return services;
         }
     }
 }

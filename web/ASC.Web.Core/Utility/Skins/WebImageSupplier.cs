@@ -121,11 +121,14 @@ namespace ASC.Web.Core.Utility.Skins
     {
         public static DIHelper AddWebImageSupplierService(this DIHelper services)
         {
-            services.TryAddScoped<WebImageSupplier>();
+            if (services.TryAddScoped<WebImageSupplier>())
+            {
+                return services
+                    .AddWebPathService()
+                    .AddWebItemManager();
+            }
 
-            return services
-                .AddWebPathService()
-                .AddWebItemManager();
+            return services;
         }
     }
 }

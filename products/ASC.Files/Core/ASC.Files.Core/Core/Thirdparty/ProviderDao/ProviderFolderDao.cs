@@ -429,12 +429,16 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
     {
         public static DIHelper AddProviderFolderDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
-            services.TryAddScoped<ProviderFolderDao>();
-            services.TryAddScoped<Folder<string>>();
+            if (services.TryAddScoped<ProviderFolderDao>())
+            {
+                services.TryAddScoped<Folder<string>>();
+                services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
 
-            return services
-                .AddProviderDaoBaseService();
+                return services
+                    .AddProviderDaoBaseService();
+            }
+
+            return services;
         }
     }
 }

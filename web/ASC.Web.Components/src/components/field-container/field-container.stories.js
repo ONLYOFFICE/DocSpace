@@ -25,6 +25,7 @@ storiesOf("Components|FieldContainer", module)
               isVertical={boolean("isVertical", false)}
               isRequired={boolean("isRequired", false)}
               hasError={boolean("hasError", false)}
+              labelVisible={boolean("labelVisible", true)}
               labelText={text("labelText", "Name:")}
               maxLabelWidth={text("maxLabelWidth", "110px")}
               tooltipContent={text("tooltipContent", "Paste you tooltip content here")}

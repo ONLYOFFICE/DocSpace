@@ -368,10 +368,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     {
         public static DIHelper AddGoogleDriveProviderInfoService(this DIHelper services)
         {
-            services.TryAddScoped<GoogleDriveProviderInfo>();
-            services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
-            services.TryAddScoped<GoogleDriveStorage>();
-            services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
+            if (services.TryAddScoped<GoogleDriveProviderInfo>())
+            {
+                services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
+                services.TryAddScoped<GoogleDriveStorage>();
+                services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
+            }
 
             return services;
         }

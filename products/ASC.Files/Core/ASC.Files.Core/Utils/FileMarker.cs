@@ -37,8 +37,8 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -723,15 +723,15 @@ namespace ASC.Web.Files.Utils
 
         public static DIHelper AddFileMarkerService<T>(this DIHelper services)
         {
-            _ = services
-                .TryAddTransient<AsyncTaskData<T>>()
-                .TryAddScoped<FileMarker>()
-                .TryAddSingleton<FileMarkerHelper<T>>()
-                .TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>()
-                .TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>()
-                .AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
+            services.TryAddTransient<AsyncTaskData<T>>();
+            services.TryAddScoped<FileMarker>();
+            services.TryAddSingleton<FileMarkerHelper<T>>();
+            services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>();
+            services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
+            services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
 
-            _ = services.AddWorkerQueue <AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
+            _ = services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
+
             return services
                 .AddTenantManagerService()
                 .AddUserManagerService()

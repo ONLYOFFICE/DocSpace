@@ -33,8 +33,8 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -214,19 +214,23 @@ namespace ASC.Web.Files.Services.NotifyService
     {
         public static DIHelper AddNotifyClientService(this DIHelper services)
         {
-            services.TryAddScoped<NotifyClient>();
+            if (services.TryAddScoped<NotifyClient>())
+            {
 
-            return services
-                .AddFilesNotifySourceService()
-                .AddBaseCommonLinkUtilityService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddFilesLinkUtilityService()
-                .AddFileUtilityService()
-                .AddPathProviderService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                ;
+                return services
+                    .AddFilesNotifySourceService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddUserManagerService()
+                    .AddSecurityContextService()
+                    .AddFilesLinkUtilityService()
+                    .AddFileUtilityService()
+                    .AddPathProviderService()
+                    .AddTenantManagerService()
+                    .AddDaoFactoryService()
+                    ;
+            }
+
+            return services;
         }
     }
 }

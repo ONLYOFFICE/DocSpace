@@ -80,13 +80,16 @@ namespace ASC.Files.Thirdparty.SharePoint
     {
         public static DIHelper AddSharePointSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<SharePointDaoSelector>();
+            if (services.TryAddScoped<SharePointDaoSelector>())
+            {
+                return services
+                    .AddSharePointSecurityDaoService()
+                    .AddSharePointTagDaoService()
+                    .AddSharePointFolderDaoService()
+                    .AddSharePointFileDaoService();
+            }
 
-            return services
-                .AddSharePointSecurityDaoService()
-                .AddSharePointTagDaoService()
-                .AddSharePointFolderDaoService()
-                .AddSharePointFileDaoService();
+            return services;
         }
     }
 }

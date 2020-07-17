@@ -36,8 +36,8 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -334,27 +334,31 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileUploaderService(this DIHelper services)
         {
-            services.TryAddScoped<FileUploader>();
+            if (services.TryAddScoped<FileUploader>())
+            {
 
-            return services
-                .AddChunkedUploadSessionHolderService()
-                .AddEntryManagerService()
-                .AddFileSecurityService()
-                .AddFilesLinkUtilityService()
-                .AddFilesMessageService()
-                .AddGlobalService()
-                .AddDaoFactoryService()
-                .AddFileConverterService()
-                .AddFileMarkerService()
-                .AddTenantStatisticsProviderService()
-                .AddTenantExtraService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddAuthContextService()
-                .AddSetupInfo()
-                .AddFileUtilityService()
-                .AddFilesSettingsHelperService()
-                ;
+                return services
+                    .AddChunkedUploadSessionHolderService()
+                    .AddEntryManagerService()
+                    .AddFileSecurityService()
+                    .AddFilesLinkUtilityService()
+                    .AddFilesMessageService()
+                    .AddGlobalService()
+                    .AddDaoFactoryService()
+                    .AddFileConverterService()
+                    .AddFileMarkerService()
+                    .AddTenantStatisticsProviderService()
+                    .AddTenantExtraService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddAuthContextService()
+                    .AddSetupInfo()
+                    .AddFileUtilityService()
+                    .AddFilesSettingsHelperService()
+                    ;
+            }
+
+            return services;
         }
     }
 }

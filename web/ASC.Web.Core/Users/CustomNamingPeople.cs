@@ -377,9 +377,12 @@ namespace ASC.Web.Core.Users
     {
         public static DIHelper AddCustomNamingPeopleService(this DIHelper services)
         {
-            services.TryAddScoped<CustomNamingPeople>();
+            if (services.TryAddScoped<CustomNamingPeople>())
+            {
+                return services.AddSettingsManagerService();
+            }
 
-            return services.AddSettingsManagerService();
+            return services;
         }
     }
 }

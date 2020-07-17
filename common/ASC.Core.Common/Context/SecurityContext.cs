@@ -372,16 +372,19 @@ namespace ASC.Core
     {
         public static DIHelper AddSecurityContextService(this DIHelper services)
         {
-            services.TryAddScoped<SecurityContext>();
+            if (services.TryAddScoped<SecurityContext>())
+            {
+                return services
+                    .AddCookieStorageService()
+                    .AddTenantCookieSettingsService()
+                    .AddAuthManager()
+                    .AddUserFormatter()
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddCookieStorageService()
-                .AddTenantCookieSettingsService()
-                .AddAuthManager()
-                .AddUserFormatter()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService();
+            return services;
         }
         public static DIHelper AddAuthContextService(this DIHelper services)
         {
@@ -391,11 +394,14 @@ namespace ASC.Core
 
         public static DIHelper AddPermissionContextService(this DIHelper services)
         {
-            services.TryAddScoped<PermissionContext>();
+            if (services.TryAddScoped<PermissionContext>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddPermissionResolverService();
+            }
 
-            return services
-                .AddAuthContextService()
-                .AddPermissionResolverService();
+            return services;
         }
     }
 }

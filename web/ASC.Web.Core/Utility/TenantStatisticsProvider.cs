@@ -77,11 +77,14 @@ namespace ASC.Web.Studio.UserControls.Statistics
     {
         public static DIHelper AddTenantStatisticsProviderService(this DIHelper services)
         {
-            services.TryAddScoped<TenantStatisticsProvider>();
+            if (services.TryAddScoped<TenantStatisticsProvider>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

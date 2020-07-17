@@ -155,27 +155,31 @@ namespace ASC.Web.Files
     {
         public static DIHelper AddFilesSpaceUsageStatManagerService(this DIHelper services)
         {
-            services.TryAddScoped<FilesSpaceUsageStatManager>();
-            /*
-            GlobalFolderHelper globalFolderHelper,
-             */
-            return services
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddUserPhotoManagerService()
-                .AddDisplayUserSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddFilesDbContextService()
-                .AddPathProviderService();
+            if (services.TryAddScoped<FilesSpaceUsageStatManager>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
+                    .AddUserPhotoManagerService()
+                    .AddDisplayUserSettingsService()
+                    .AddCommonLinkUtilityService()
+                    .AddFilesDbContextService()
+                    .AddPathProviderService();
+            }
+
+            return services;
         }
 
         public static DIHelper AddFilesUserSpaceUsageService(this DIHelper services)
         {
-            services.TryAddScoped<FilesUserSpaceUsage>();
+            if (services.TryAddScoped<FilesUserSpaceUsage>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddFilesDbContextService();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddFilesDbContextService();
+            return services;
         }
     }
 }

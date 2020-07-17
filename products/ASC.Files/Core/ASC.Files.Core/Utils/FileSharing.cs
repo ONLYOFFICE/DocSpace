@@ -35,8 +35,8 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
@@ -546,44 +546,55 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileSharingService(this DIHelper services)
         {
-            services.TryAddScoped<FileSharing>();
+            if (services.TryAddScoped<FileSharing>())
+            {
+                return services
+                    .AddGlobalService()
+                    .AddFileSecurityService()
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddDisplayUserSettingsService()
+                    .AddFileShareLinkService()
+                    .AddDaoFactoryService()
+                    .AddFileSharingHelperService();
+            }
 
-            return services
-                .AddGlobalService()
-                .AddFileSecurityService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddDisplayUserSettingsService()
-                .AddFileShareLinkService()
-                .AddDaoFactoryService()
-                .AddFileSharingHelperService();
+            return services;
         }
+
         public static DIHelper AddFileSharingHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FileSharingHelper>();
-            return services
-                .AddGlobalService()
-                .AddGlobalFolderHelperService()
-                .AddFileSecurityService()
-                .AddAuthContextService()
-                .AddUserManagerService();
+            if (services.TryAddScoped<FileSharingHelper>())
+            {
+                return services
+                    .AddGlobalService()
+                    .AddGlobalFolderHelperService()
+                    .AddFileSecurityService()
+                    .AddAuthContextService()
+                    .AddUserManagerService();
+            }
+            return services;
         }
         public static DIHelper AddFileSharingAceHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FileSharingAceHelper<string>>();
-            services.TryAddScoped<FileSharingAceHelper<int>>();
+            if (services.TryAddScoped<FileSharingAceHelper<string>>())
+            {
+                services.TryAddScoped<FileSharingAceHelper<int>>();
 
-            return services
-                .AddFileSecurityService()
-                .AddCoreBaseSettingsService()
-                .AddFileUtilityService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddDocumentServiceHelperService()
-                .AddFileMarkerService()
-                .AddNotifyClientService()
-                .AddGlobalFolderHelperService()
-                .AddFileSharingHelperService();
+                return services
+                    .AddFileSecurityService()
+                    .AddCoreBaseSettingsService()
+                    .AddFileUtilityService()
+                    .AddUserManagerService()
+                    .AddAuthContextService()
+                    .AddDocumentServiceHelperService()
+                    .AddFileMarkerService()
+                    .AddNotifyClientService()
+                    .AddGlobalFolderHelperService()
+                    .AddFileSharingHelperService();
+            }
+
+            return services;
         }
     }
 }

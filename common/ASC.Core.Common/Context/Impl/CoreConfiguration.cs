@@ -378,13 +378,17 @@ namespace ASC.Core
 
         public static DIHelper AddCoreSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<CoreSettings>();
-            services.TryAddScoped<CoreConfiguration>();
-            services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
+            if (services.TryAddScoped<CoreSettings>())
+            {
+                services.TryAddScoped<CoreConfiguration>();
+                services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
 
-            return services
-                .AddCoreBaseSettingsService()
-                .AddTenantService();
+                return services
+                    .AddCoreBaseSettingsService()
+                    .AddTenantService();
+            }
+
+            return services;
         }
         public static DIHelper AddCoreConfigurationService(this DIHelper services)
         {

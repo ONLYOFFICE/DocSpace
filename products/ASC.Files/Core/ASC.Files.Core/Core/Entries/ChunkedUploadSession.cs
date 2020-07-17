@@ -105,8 +105,12 @@ namespace ASC.Files.Core
     {
         public static DIHelper AddChunkedUploadSessionHelperService(this DIHelper services)
         {
-            services.TryAddScoped<ChunkedUploadSessionHelper>();
-            return services.AddEntryManagerService();
+            if (services.TryAddScoped<ChunkedUploadSessionHelper>())
+            {
+                return services.AddEntryManagerService();
+            }
+
+            return services;
         }
     }
 }
