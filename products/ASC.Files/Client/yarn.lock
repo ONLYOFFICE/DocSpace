@@ -1774,9 +1774,9 @@
     "@xtuc/long" "4.2.2"
 
 "@welldone-software/why-did-you-render@^4.2.5":
-  version "4.2.5"
-  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-4.2.5.tgz#005d06958d0c8a1ab3b92a3f4cfe3507b1806976"
-  integrity sha512-Uq4Gmi14bHDfWPGu1EuZKkdxlihXIyyfhAoP0nkA3qHTu8yit0iL1KO6Ldyno55otnjL3GHUY/MswMVvB5Ro8g==
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-4.2.6.tgz#2b956235dfacf1f51e57924adc5e261675af3e47"
+  integrity sha512-BJrqc1gKdE+sLyrICgjcwItuwT5nZorPgpTafpIHSpB1o4K0xY7P6wQfndt/mcXtTPwTQOuSpoyuoASl4b2mxQ==
   dependencies:
     lodash "^4"
 
@@ -2098,7 +2098,7 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../../packages/asc-web-common":
-  version "1.0.178"
+  version "1.0.179"
   dependencies:
     axios "^0.19.1"
     history "4.10.1"
@@ -2109,7 +2109,7 @@ asap@~2.0.6:
     screenfull "^5.0.2"
 
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.396"
+  version "1.0.397"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
