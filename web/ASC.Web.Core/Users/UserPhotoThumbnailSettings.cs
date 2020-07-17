@@ -26,13 +26,12 @@
 
 using System;
 using System.Drawing;
-using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
 {
     [Serializable]
-    [DataContract]
     public class UserPhotoThumbnailSettings : ISettings
     {
         public Guid ID
@@ -56,13 +55,10 @@ namespace ASC.Web.Core.Users
             Size = new Size(width, height);
         }
 
-        [DataMember(Name = "Point")]
         public Point Point { get; set; }
 
-        [DataMember(Name = "Size")]
         public Size Size { get; set; }
 
-        [DataMember(Name = "IsDefault")]
         public bool IsDefault { get; private set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

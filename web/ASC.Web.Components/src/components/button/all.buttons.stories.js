@@ -12,7 +12,7 @@ function onClick(e) {
 
 const getButtons = (primary) => {
 
-  const sizes = ['big', 'medium', 'base'];
+  const sizes = ['large', 'big', 'medium', 'base'];
   const states = ['isActivated', 'isHovered', 'isClicked', 'isDisabled'];
 
   const baseButton = {

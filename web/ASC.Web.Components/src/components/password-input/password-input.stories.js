@@ -16,7 +16,7 @@ storiesOf('Components|Input', module)
     const settingsUpperCase = boolean('settingsUpperCase', false);
     const settingsDigits = boolean('settingsDigits', false);
     const settingsSpecSymbols = boolean('settingsSpecSymbols', false);
-    const NewPasswordButtonVisible = boolean('NewPasswordButtonVisible', true);
+    const simpleView = boolean('simpleView', false);
 
     const fakeSettings = {
       minLength: 6,
@@ -42,7 +42,7 @@ storiesOf('Components|Input', module)
         <StringValue>
           {({ value, set }) => (
             <PasswordInput
-              NewPasswordButtonVisible={NewPasswordButtonVisible}
+              simpleView={simpleView}
               inputName='demoPasswordInput'
               emailInputName='demoEmailInput'
               inputValue={value}

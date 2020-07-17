@@ -152,12 +152,20 @@ RUN cd /app/onlyoffice/src/ && \
     cd web/ASC.Web.Studio && \
     dotnet -d publish -o /var/www/studio/server && \
     cd ../../ && \
+    cd common/services/ASC.Data.Backup && \
+    dotnet -d publish -o /var/www/services/backup && \
+    cd ../../../ && \
     cd common/services/ASC.Notify && \
     dotnet -d publish -o /var/www/services/notify && \
     cd ../../../ && \
     cd common/services/ASC.ApiSystem && \
     dotnet -d publish -o /var/www/services/apisystem && \
     cd ../../../ && \
+    cd common/services/ASC.Thumbnails.Svc && \
+    dotnet -d publish -o /services/thumb/service && \
+    cd ../../../ && \
+    yarn install --cwd common/ASC.Thumbnails --frozen-lockfile && \
+    mkdir -p /var/www/services/thumb/client && cp -Rf common/ASC.Thumbnails/* /var/www/services/thumb/client && \
     cd common/services/ASC.UrlShortener.Svc && \
     dotnet -d publish -o /services/urlshortener/service && \
     cd ../../../ && \

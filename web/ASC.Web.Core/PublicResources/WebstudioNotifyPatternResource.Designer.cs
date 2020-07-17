@@ -106,15 +106,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CRM task was created at.
-        /// </summary>
-        internal static string ActionCreateCrmTask {
-            get {
-                return ResourceManager.GetString("ActionCreateCrmTask", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to CRM opportunity was created at.
         /// </summary>
         internal static string ActionCreateDeal {
@@ -412,15 +403,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move Right Now.
-        /// </summary>
-        internal static string ButtonMoveRightNow {
-            get {
-                return ResourceManager.GetString("ButtonMoveRightNow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Remove profile.
         /// </summary>
         internal static string ButtonRemoveProfile {
@@ -493,87 +475,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add your email account to ${LetterLogoText} Mail and manage all correspondence in one place.
-        /// </summary>
-        internal static string ItemAddEmailAccount {
-            get {
-                return ResourceManager.GetString("ItemAddEmailAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect cloud storages you use to ONLYOFFICE to create a single workspace for all your docs..
-        /// </summary>
-        internal static string ItemAddFilesCreatWorkspace {
-            get {
-                return ResourceManager.GetString("ItemAddFilesCreatWorkspace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add your email account and manage all correspondence in one place.
-        /// </summary>
-        internal static string ItemAddTeamlabMail {
-            get {
-                return ResourceManager.GetString("ItemAddTeamlabMail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Explore different ways of co-authoring documents - real-time co-editing, chat, comments, review..
-        /// </summary>
-        internal static string ItemCoAuthoringDocuments {
-            get {
-                return ResourceManager.GetString("ItemCoAuthoringDocuments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create a single workspace for all your docs.
-        /// </summary>
-        internal static string ItemCreateWorkspaceDocs {
-            get {
-                return ResourceManager.GetString("ItemCreateWorkspaceDocs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import projects.
-        /// </summary>
-        internal static string ItemImportProjects {
-            get {
-                return ResourceManager.GetString("ItemImportProjects", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import projects from Basecamp.
-        /// </summary>
-        internal static string ItemImportProjectsBasecamp {
-            get {
-                return ResourceManager.GetString("ItemImportProjectsBasecamp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Integrate documents.
-        /// </summary>
-        internal static string ItemIntegrateDocs {
-            get {
-                return ResourceManager.GetString("ItemIntegrateDocs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Integrate your IM client with ONLYOFFICE talk and stay tuned.
-        /// </summary>
-        internal static string ItemIntegrateIM {
-            get {
-                return ResourceManager.GetString("ItemIntegrateIM", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;b&gt;Tip #1.&lt;/b&gt; Use the &lt;b&gt;Real-time Co-editing&lt;/b&gt; feature to  speed up the interaction process when specifying details or proofreading a document. Choose between two co-editing modes - &lt;b&gt;Fast&lt;/b&gt; when you see changes as your co-author is typing or &lt;b&gt;Strict&lt;/b&gt; when the changes are shown only after saving the document..
         /// </summary>
         internal static string ItemOpensourceDocsTips1 {
@@ -637,51 +538,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share documents with your teammates..
-        /// </summary>
-        internal static string ItemShareDocuments {
-            get {
-                return ResourceManager.GetString("ItemShareDocuments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Try full-featured online document editing in your browser.
-        /// </summary>
-        internal static string ItemTryOnlineDocEditor {
-            get {
-                return ResourceManager.GetString("ItemTryOnlineDocEditor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upload CRM contacts.
-        /// </summary>
-        internal static string ItemUploadCrm {
-            get {
-                return ResourceManager.GetString("ItemUploadCrm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upload CRM contacts to ONLYOFFICE to access them everywhere.
-        /// </summary>
-        internal static string ItemUploadCrmContacts {
-            get {
-                return ResourceManager.GetString("ItemUploadCrmContacts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upload CRM contacts from a csv. file.
-        /// </summary>
-        internal static string ItemUploadCrmContactsCsv {
-            get {
-                return ResourceManager.GetString("ItemUploadCrmContactsCsv", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Learn More &gt;&gt;.
         /// </summary>
         internal static string LinkLearnMore {
@@ -693,7 +549,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to h1.Activate your email for &quot;${__VirtualRootPath}&quot;:&quot;$InviteLink&quot; portal.
         ///
-        ///Hello $UserDisplayName,
+        ///Hello!
         ///
         ///To start participating in the &quot;${__VirtualRootPath}&quot;:&quot;$InviteLink&quot; portal life you need to activate your email address. This is done for security reasons.
         ///
@@ -708,38 +564,18 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Message from the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; VoIP disabled.
-        /// </summary>
-        internal static string pattern_admin_voip_blocked {
-            get {
-                return ResourceManager.GetString("pattern_admin_voip_blocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to h1.Message from the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
-        ///
-        ///VoIP Balance: $Body.
-        /// </summary>
-        internal static string pattern_admin_voip_warning {
-            get {
-                return ResourceManager.GetString("pattern_admin_voip_warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to h1.&quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal backup created
         ///
         ///Dear $OwnerName,
         ///
         ///A backup file containing data from your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal has been created.
         ///
-        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;${__HelpLink}/tipstricks/data-backup-restore.aspx&quot; user guide.
+        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx&quot; user guide.
+        ///
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support.onlyoffice.com&quot;
         ///
-        ///Best regards,
-        ///ONLYOFFICE™ [rest of string was truncated]&quot;;.
+        ///Best  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_backup_created {
             get {
@@ -760,7 +596,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You might need your old email address to access the portal when you follow the link. If you do not remember the old email address, please contact your portal administrator.
         ///
-        ///If you do not want  [rest of string was truncated]&quot;;.
+        ///If you do not want to change yo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_change_email {
             get {
@@ -779,7 +615,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
         ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it or contact your &quot;$ [rest of string was truncated]&quot;;.
+        ///If you do not want to change your password or received this email by mistake, please ignore it or contact your &quot;${__Virtual [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_change_password {
             get {
@@ -831,9 +667,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the portal owner change process within that period.
-        ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:s [rest of string was truncated]&quot;;.
+        ///*Note*: this link is valid for 7 days only. Please complete the portal owner change process within that period..
         /// </summary>
         internal static string pattern_confirm_owner_change {
             get {
@@ -852,9 +686,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the portal address change process within that period.
-        ///
-        ///If you have any questions or need assistance please feel free to contact u [rest of string was truncated]&quot;;.
+        ///*Note*: this link is valid for 7 days only. Please complete the portal address change process within that period..
         /// </summary>
         internal static string pattern_dns_change {
             get {
@@ -1117,7 +949,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We hope you enjoy using ONLYOFFICE. How everything is going with your trial? We would really appreciate you feedback!
+        ///We hope you enjoy using ONLYOFFICE. How everything is going with your trial? We would really appreciate your feedback!
         ///
         ///Please, don’t hesitate to contact us at &quot;support.onlyoffice.com&quot;:&quot;https://support.onlyoffice.com&quot; whenever you have questions or ideas..
         /// </summary>
@@ -1438,7 +1270,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Best regards,
         ///ONLYOFFICE™ Support Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
+        ///
+        ///^You receive this email because you are a registered user of the &quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_migration_error {
             get {
@@ -1456,7 +1290,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Best regards,
         ///ONLYOFFICE™ Support Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
+        ///
+        ///^You receive this email because you are a registered user of the &quot;${__Virt [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_migration_server_failure {
             get {
@@ -1511,7 +1347,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please, complete your email activation within a week as the link is valid for 7 days only.
         ///
-        ///Note: we do not send out confidential information (like your password) in emails for safety reasons. You may change your email or password in your &quot;Profile page&quot;:&quot;$MyStaffLink&quot; [rest of string was truncated]&quot;;.
+        ///Note: we do not send out confidential information (like your password) in emails for safety reasons. You may change your email or password in your &quot;Profile page&quot;:&quot;$MyStaffLink&quot;.
+        ///
+        ///To se [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_opensource_admin_activation {
             get {
@@ -1581,7 +1419,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///ONLYOFFICE is compatible with Microsoft Office™ document formats and guarantees no loss of formatting or quality of created objects. We promise to relieve you from formatting fidelity headache and give full professional editing toolset in your hands.
         ///
-        ///h3.For a quic [rest of string was truncated]&quot;;.
+        ///h3.For a quick start, [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_personal_after_registration1 {
             get {
@@ -1657,7 +1495,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some beneficial features you might have missed.
         ///
-        ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents [rest of string was truncated]&quot;;.
+        ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents in. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_personal_after_registration7 {
             get {
@@ -1708,7 +1546,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello,
         ///
-        ///you&apos;ve just registered an account at the ONLYOFFICE solution for personal use. Click &quot;here&quot;:&quot;$InviteLink&quot; to confirm the registration and create a password.
+        ///You&apos;ve just registered an account at the ONLYOFFICE solution for personal use. Click &quot;here&quot;:&quot;$InviteLink&quot; to confirm the registration and create a password.
         ///
         ///If you can&apos;t open the link, please copy the following &quot;$InviteLink&quot;:&quot;$InviteLink&quot; and paste it into your browser address bar.
         ///
@@ -1728,7 +1566,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our &quot;Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
         ///
-        ///Ignore this email if you do not wa [rest of string was truncated]&quot;;.
+        ///Ignore this email if you do not want to  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_personal_profile_delete {
             get {
@@ -1748,7 +1586,7 @@ namespace ASC.Web.Core.PublicResources {
         ///*Note*: this link is valid for 7 days only. Please complete the portal deactivation process within that period.
         ///
         ///You can reactivate your portal any time by clicking the following link:
-        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this  [rest of string was truncated]&quot;;.
+        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this link has no [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_portal_deactivate {
             get {
@@ -1766,7 +1604,7 @@ namespace ASC.Web.Core.PublicResources {
         ///*Important! All the data stored on your portal, as well as your registration details will be lost and cannot be recovered.*
         ///
         ///#if($AutoRenew == &quot;True&quot;)
-        ///Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;h [rest of string was truncated]&quot;;.
+        ///Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;https://se [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_portal_delete {
             get {
@@ -1800,7 +1638,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your $PortalUrl portal address was changed to the new &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; address.
         ///
-        ///*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third party iCal links added to your calendar will also stop updating until you reload them..
+        ///*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them..
         /// </summary>
         internal static string pattern_portal_rename {
             get {
@@ -1817,13 +1655,24 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the profile deletion process within that period.
-        ///
-        ///If you have any questions or need assistance please feel free to contact u [rest of string was truncated]&quot;;.
+        ///*Note*: this link is valid for 7 days only. Please complete the profile deletion process within that period..
         /// </summary>
         internal static string pattern_profile_delete {
             get {
                 return ResourceManager.GetString("pattern_profile_delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; has deleted his/her profile, and this profile is now blocked. All user’s files are still assigned to him/her and occupy disk space. 
+        ///
+        ///You can reassign the user’s documents shared with others to another active user or remove them to free up the portal disk space.
+        ///
+        ///Please go to the user profile using &quot;this link&quot;:&quot;$FromUserLink&quot; to reassign documents to another user or remove the data..
+        /// </summary>
+        internal static string pattern_profile_has_deleted_itself {
+            get {
+                return ResourceManager.GetString("pattern_profile_has_deleted_itself", resourceCulture);
             }
         }
         
@@ -1837,8 +1686,8 @@ namespace ASC.Web.Core.PublicResources {
         ///To view your profile follow the link below:
         ///&quot;$UserName&quot;:&quot;$MyStaffLink&quot;
         ///
-        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^
-        ///.
+        ///
+        ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
         internal static string pattern_profile_updated {
             get {
@@ -1849,7 +1698,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dear $UserName,
         ///
-        ///The process of reassign data from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; has been successfully completed.
+        ///The process of data reassignment from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; has been successfully completed.
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
@@ -1862,7 +1711,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dear $UserName,
         ///
-        ///The process of reassign data from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; has been failed.
+        ///The process of data reassignment from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; to user &quot;$ToUserName&quot;:&quot;$ToUserLink&quot; failed.
         ///
         ///Exception message: $Message
         ///
@@ -1877,7 +1726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dear $UserName,
         ///
-        ///The process of removing data from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; has been successfully completed.
+        ///The process of data removal from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; has been successfully completed.
         ///
         ///The deletion of personal data allowed to free:
         ///
@@ -1897,7 +1746,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dear $UserName,
         ///
-        ///The process of removing data from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; has been failed.
+        ///The process of data removal for user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; failed.
         ///
         ///Exception message: $Message
         ///
@@ -1986,7 +1835,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Best regards,
         ///ONLYOFFICE™ Support Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
+        ///
+        ///^You receive this email because you are a registered user of the &quot;${__VirtualRoot [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_restore_started {
             get {
@@ -2104,7 +1955,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You haven’t added any teammates, so maybe ONLYOFFICE Personal suits you more? It free and you will be able to:
+        ///You haven’t added any teammates, so maybe ONLYOFFICE Personal suits you more? It is free and you will be able to:
         ///
         ///# Work with text documents, spreadsheets, and presentations.
         ///# Share docs with your friends and collaborate on them in real-time.
@@ -2115,7 +1966,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///You can also install this [rest of string was truncated]&quot;;.
+        ///You can also install this &quot;Chrome e [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_saas_admin_trial_warning_after30_v10 {
             get {
@@ -2450,7 +2301,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We hope you enjoy using ONLYOFFICE. How everything is going with your trial? We would really appreciate you feedback!
+        ///We hope you enjoy using ONLYOFFICE. How everything is going with your trial? We would really appreciate your feedback!
         ///
         ///Please, don’t hesitate to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot; whenever you have questions or ideas.
         ///
@@ -2467,7 +2318,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///$__AuthorName has invited you as a guest user to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; as a guest user. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -2484,14 +2335,14 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello $UserName!
+        ///   Looks up a localized string similar to Hello!
         ///
         ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.  Now you can:
         ///
         ///# Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
         ///# View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/products/community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/products/projects/&quot;.
         ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/products/files/&quot;.
-        ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath [rest of string was truncated]&quot;;.
+        ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath}/addons/calendar [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_saas_guest_welcome_v10 {
             get {
@@ -2502,7 +2353,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///$__AuthorName has invited you to join ONLYOFFICE at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -2519,13 +2370,13 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to Hello!
         ///
         ///Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
         ///# Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/products/files/&quot;, share them with teammates, and collaborate in real time.
         ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
-        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/products/projects/&quot; and your custo [rest of string was truncated]&quot;;.
+        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/products/projects/&quot; and your customer relationships [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_saas_user_welcome_v10 {
             get {
@@ -2536,7 +2387,10 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to h1.&quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal profile change notification
         ///
-        ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has changed his/her profile details at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal..
+        ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has changed his/her profile details at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
+        ///
+        ///
+        ///^You receive this email because you are an administrator of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. If you do not want to receive the notifications about profile updates, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         internal static string pattern_self_profile_updated {
             get {
@@ -2559,7 +2413,10 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///#end
         ///
-        ///#end.
+        ///#end
+        ///
+        ///
+        ///^You receive this email because you are a regi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string pattern_send_whats_new {
             get {
@@ -2585,7 +2442,10 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to h1.New user added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
         ///
-        ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has joined your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;..
+        ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has joined your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///
+        ///
+        ///^You receive this email because you are an administrator user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. If you do not want to receive the notifications about new users, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         internal static string pattern_user_has_join {
             get {
@@ -2616,24 +2476,6 @@ namespace ASC.Web.Core.PublicResources {
         internal static string subject_activate_email {
             get {
                 return ResourceManager.GetString("subject_activate_email", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to VoIP disabled.
-        /// </summary>
-        internal static string subject_admin_voip_blocked {
-            get {
-                return ResourceManager.GetString("subject_admin_voip_blocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notification to administrators about VoIP balance.
-        /// </summary>
-        internal static string subject_admin_voip_warning {
-            get {
-                return ResourceManager.GetString("subject_admin_voip_warning", resourceCulture);
             }
         }
         
@@ -3142,6 +2984,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User has deleted his/her profile.
+        /// </summary>
+        internal static string subject_profile_has_deleted_itself {
+            get {
+                return ResourceManager.GetString("subject_profile_has_deleted_itself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your profile at ${__VirtualRootPath} has been changed.
         /// </summary>
         internal static string subject_profile_updated {
@@ -3151,7 +3002,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText}. Reassigns user data is completed.
+        ///   Looks up a localized string similar to ${LetterLogoText}. User data reassignment is completed.
         /// </summary>
         internal static string subject_reassigns_completed {
             get {
@@ -3160,7 +3011,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText}. Reassigns user data is failed.
+        ///   Looks up a localized string similar to ${LetterLogoText}. User data reassignment failed.
         /// </summary>
         internal static string subject_reassigns_failed {
             get {
@@ -3169,7 +3020,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText}. Remove user data is completed.
+        ///   Looks up a localized string similar to ${LetterLogoText}. User data removal completed.
         /// </summary>
         internal static string subject_remove_user_data_completed {
             get {
@@ -3178,7 +3029,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText}. Remove user data is failed.
+        ///   Looks up a localized string similar to ${LetterLogoText}. User data removal failed.
         /// </summary>
         internal static string subject_remove_user_data_failed {
             get {

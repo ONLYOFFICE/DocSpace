@@ -50,12 +50,12 @@ namespace ASC.ApiSystem.Controllers
         private ILog Log { get; }
         public TariffController(
             CommonMethods commonMethods,
-            HostedSolution hostedSolution,
+            IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
             IOptionsMonitor<ILog> option
             )
         {
             CommonMethods = commonMethods;
-            HostedSolution = hostedSolution;
+            HostedSolution = hostedSolutionOptions.Value;
             Log = option.Get("ASC.ApiSystem");
         }
 

@@ -25,14 +25,12 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Core;
 using ASC.Core.Users;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperSummary
     {
         public GroupWrapperSummary(GroupInfo group, UserManager userManager)

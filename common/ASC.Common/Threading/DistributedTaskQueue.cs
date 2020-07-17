@@ -120,7 +120,7 @@ namespace ASC.Common.Threading
             key = name + GetType().Name;
             scheduler = maxThreadsCount <= 0
                 ? TaskScheduler.Default
-                : new LimitedConcurrencyLevelTaskScheduler(maxThreadsCount);
+                : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
             DistributedTaskCacheNotify = distributedTaskCacheNotify;
             cancelations = DistributedTaskCacheNotify.Cancelations;
             cache = DistributedTaskCacheNotify.Cache;

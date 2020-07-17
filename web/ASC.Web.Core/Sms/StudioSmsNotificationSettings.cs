@@ -25,8 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
-
+using System.Text.Json.Serialization;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -36,7 +35,6 @@ using ASC.Web.Studio.Utility;
 namespace ASC.Web.Studio.Core.SMS
 {
     [Serializable]
-    [DataContract]
     public class StudioSmsNotificationSettings : ISettings
     {
         public Guid ID
@@ -49,7 +47,7 @@ namespace ASC.Web.Studio.Core.SMS
             return new StudioSmsNotificationSettings { EnableSetting = false, };
         }
 
-        [DataMember(Name = "Enable")]
+        [JsonPropertyName("Enable")]
         public bool EnableSetting { get; set; }
     }
 
