@@ -114,6 +114,7 @@ class FileInput extends Component {
       scale, 
       hasError,
       hasWarning,
+      accept,
       ...rest 
     } = this.props;
 
@@ -161,7 +162,7 @@ class FileInput extends Component {
           type="file"
           ref={this.inputRef}
           style={{ display: 'none' }}
-          accept=".torrent"
+          accept={accept}
           onInput={this.onInputFile}
         />
         <div 

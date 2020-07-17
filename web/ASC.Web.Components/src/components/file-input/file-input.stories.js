@@ -22,6 +22,7 @@ storiesOf('Components|Input', module)
     const name = text('name', 'demoFileInputName');
     const hasError = boolean('hasError', false);
     const hasWarning = boolean('hasWarning', false);
+    const accept = text('accept', '.doc, .docx');
 
     return (
       <Section>
@@ -34,6 +35,7 @@ storiesOf('Components|Input', module)
           isDisabled={isDisabled}
           hasError={hasError}
           hasWarning={hasWarning}
+          accept={accept}
           onInput={(e) => {
             console.log(e)
           }}
