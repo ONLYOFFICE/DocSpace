@@ -19,7 +19,7 @@ storiesOf('Components|Input', module)
     const scale = boolean('scale', false);
     const isDisabled = boolean('isDisabled', false);
     const id = text('id', 'fileInputId');
-    const name = text('name', 'demoEmailInput');
+    const name = text('name', 'demoFileInputName');
     const hasError = boolean('hasError', false);
     const hasWarning = boolean('hasWarning', false);
 

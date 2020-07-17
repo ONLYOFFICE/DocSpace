@@ -23,6 +23,18 @@ const StyledFileInput = styled.div`
     border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
   }
 
+  :hover{
+    .icon {
+      border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#A3A9AE'};
+    }
+  }
+
+  :active {
+    .icon {
+      border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#2DA7DB'};
+    }
+  }
+    
   .icon {
     display: flex;
     align-items: center;
@@ -50,15 +62,6 @@ const StyledFileInput = styled.div`
     border-radius: 0 3px 3px 0;
 
     border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
-    
-    :hover{
-      border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#A3A9AE'};
-    }
-
-    :active{
-      border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#2DA7DB'};
-    }
-    
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')}
   }
 `;
@@ -73,7 +76,6 @@ class FileInput extends Component {
       fileName: '',
       path: ''
     }
-
   }
 
   onIconFileClick = e => {
@@ -93,6 +95,7 @@ class FileInput extends Component {
     const { fileName } = this.state;
     const { 
       size, 
+      placeholder,
       isDisabled, 
       scale, 
       hasError,
@@ -130,22 +133,26 @@ class FileInput extends Component {
       >
         <TextInput
           className="text-input"
+          placeholder={placeholder}
           value={fileName}
-          onChange={this.onChangeFile}
-          onFocus={this.onIconFileClick}
           size={size}
           isDisabled={isDisabled}
           hasError={hasError}
           hasWarning={hasWarning}
           scale={scale}
+          onChange={this.onChangeFile}
+          onFocus={this.onIconFileClick}
         />
         <input
           type="file"
-          onInput={this.onInputFile}
           ref={this.inputRef}
           style={{ display: 'none' }}
+          onInput={this.onInputFile}
         />
-        <div className="icon" onClick={this.onIconFileClick}>
+        <div 
+          className="icon" 
+          onClick={this.onIconFileClick}
+        >
           <IconButton 
             iconName={"CatalogFolderIcon"}
             size={iconSize}
