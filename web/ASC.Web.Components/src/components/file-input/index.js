@@ -192,8 +192,25 @@ class FileInput extends Component {
 FileInput.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   placeholder: PropTypes.string,
-  size: PropTypes.string,
-  scale: PropTypes.bool
+  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'large']),
+  scale: PropTypes.bool,
+  className: PropTypes.string,
+  hasError: PropTypes.bool,
+  hasWarning: PropTypes.bool,
+  id: PropTypes.string,
+  isDisabled: PropTypes.bool,
+  name: PropTypes.string,
+  onInput: PropTypes.func,
+  accept: PropTypes.string
+};
+
+FileInput.defaultProps = {
+  size: 'base',
+  scale: false,
+  hasWarning: false,
+  hasError: false,
+  isDisabled: false,
+  accept: ''
 }
 
 export default FileInput;
