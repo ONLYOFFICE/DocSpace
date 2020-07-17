@@ -64,11 +64,15 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddBackupHelperService(this DIHelper services)
         {
-            services.TryAddScoped<BackupHelper>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddTenantStatisticsProviderService();
+            if (services.TryAddScoped<BackupHelper>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddTenantStatisticsProviderService();
+            }
+
+            return services;
         }
     }
 }

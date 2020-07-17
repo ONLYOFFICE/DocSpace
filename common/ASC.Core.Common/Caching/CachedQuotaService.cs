@@ -242,16 +242,18 @@ namespace ASC.Core.Caching
     {
         public static DIHelper AddQuotaService(this DIHelper services)
         {
-            services.AddCoreDbContextService();
+            if (services.TryAddScoped<DbQuotaService>())
+            {
+                services.TryAddScoped<IQuotaService, CachedQuotaService>();
 
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            services.TryAddSingleton<QuotaServiceCache>();
+                services.TryAddScoped<IConfigureOptions<DbQuotaService>, ConfigureDbQuotaService>();
+                services.TryAddScoped<IConfigureOptions<CachedQuotaService>, ConfigureCachedQuotaService>();
 
-            services.TryAddScoped<DbQuotaService>();
-            services.TryAddScoped<IQuotaService, CachedQuotaService>();
+                services.AddCoreDbContextService();
 
-            services.TryAddScoped<IConfigureOptions<DbQuotaService>, ConfigureDbQuotaService>();
-            services.TryAddScoped<IConfigureOptions<CachedQuotaService>, ConfigureCachedQuotaService>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.TryAddSingleton<QuotaServiceCache>();
+            }
 
             return services;
         }

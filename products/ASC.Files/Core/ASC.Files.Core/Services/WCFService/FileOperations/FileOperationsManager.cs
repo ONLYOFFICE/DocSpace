@@ -235,14 +235,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     {
         public static DIHelper AddFileOperationsManagerHelperService(this DIHelper services)
         {
-            services.TryAddSingleton<DistributedTaskCacheNotify>();
-            services.TryAddSingleton<FileOperationsManager>();
-            services.TryAddScoped<FileOperationsManagerHelper>();
+            if (services.TryAddScoped<FileOperationsManagerHelper>())
+            {
+                services.TryAddSingleton<DistributedTaskCacheNotify>();
+                services.TryAddSingleton<FileOperationsManager>();
 
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                ;
+                return services
+                    .AddAuthContextService()
+                    .AddTenantManagerService()
+                    ;
+            }
+
+            return services;
         }
     }
 }

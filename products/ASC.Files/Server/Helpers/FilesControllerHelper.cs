@@ -1000,44 +1000,48 @@ namespace ASC.Files.Helpers
     {
         public static DIHelper AddFilesControllerHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FilesControllerHelper<string>>();
-            services.TryAddScoped<FilesControllerHelper<int>>();
+            if (services.TryAddScoped<FilesControllerHelper<string>>())
+            {
+                services.TryAddScoped<FilesControllerHelper<int>>();
 
-            return services
-                .AddEasyBibHelperService()
-                .AddWordpressTokenService()
-                .AddWordpressHelperService()
-                .AddFolderContentWrapperHelperService()
-                .AddFileUploaderService()
-                .AddFileShareParamsService()
-                .AddFileShareWrapperService()
-                .AddFileOperationWraperHelperService()
-                .AddFileWrapperHelperService()
-                .AddFolderWrapperHelperService()
-                .AddConsumerFactoryService()
-                .AddDocumentServiceConnectorService()
-                .AddCommonLinkUtilityService()
-                .AddMessageServiceService()
-                .AddThirdpartyConfigurationService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemSecurity()
-                .AddUserManagerService()
-                .AddEntryManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDocumentServiceHelperService()
-                .AddFilesLinkUtilityService()
-                .AddApiContextService()
-                .AddFileStorageService()
-                .AddGlobalFolderHelperService()
-                .AddFilesSettingsHelperService()
-                .AddBoxLoginProviderService()
-                .AddDropboxLoginProviderService()
-                .AddOneDriveLoginProviderService()
-                .AddGoogleLoginProviderService()
-                .AddChunkedUploadSessionHelperService()
-                .AddProductEntryPointService()
-                ;
+                return services
+                    .AddEasyBibHelperService()
+                    .AddWordpressTokenService()
+                    .AddWordpressHelperService()
+                    .AddFolderContentWrapperHelperService()
+                    .AddFileUploaderService()
+                    .AddFileShareParamsService()
+                    .AddFileShareWrapperService()
+                    .AddFileOperationWraperHelperService()
+                    .AddFileWrapperHelperService()
+                    .AddFolderWrapperHelperService()
+                    .AddConsumerFactoryService()
+                    .AddDocumentServiceConnectorService()
+                    .AddCommonLinkUtilityService()
+                    .AddMessageServiceService()
+                    .AddThirdpartyConfigurationService()
+                    .AddCoreBaseSettingsService()
+                    .AddWebItemSecurity()
+                    .AddUserManagerService()
+                    .AddEntryManagerService()
+                    .AddTenantManagerService()
+                    .AddSecurityContextService()
+                    .AddDocumentServiceHelperService()
+                    .AddFilesLinkUtilityService()
+                    .AddApiContextService()
+                    .AddFileStorageService()
+                    .AddGlobalFolderHelperService()
+                    .AddFilesSettingsHelperService()
+                    .AddBoxLoginProviderService()
+                    .AddDropboxLoginProviderService()
+                    .AddOneDriveLoginProviderService()
+                    .AddGoogleLoginProviderService()
+                    .AddChunkedUploadSessionHelperService()
+                    .AddProductEntryPointService()
+                    ;
+            }
+
+            return services;
         }
     }
 }

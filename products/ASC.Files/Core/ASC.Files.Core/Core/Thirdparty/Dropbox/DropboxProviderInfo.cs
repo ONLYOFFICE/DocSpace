@@ -283,9 +283,11 @@ namespace ASC.Files.Thirdparty.Dropbox
     {
         public static DIHelper AddDropboxProviderInfoService(this DIHelper services)
         {
-            services.TryAddScoped<DropboxProviderInfo>();
-            services.TryAddScoped<DropboxStorageDisposableWrapper>();
-            services.TryAddSingleton<DropboxProviderInfoHelper>();
+            if (services.TryAddScoped<DropboxProviderInfo>())
+            {
+                services.TryAddScoped<DropboxStorageDisposableWrapper>();
+                services.TryAddSingleton<DropboxProviderInfoHelper>();
+            }
 
             return services;
         }

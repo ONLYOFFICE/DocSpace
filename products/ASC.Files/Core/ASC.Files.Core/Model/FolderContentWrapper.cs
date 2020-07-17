@@ -153,10 +153,14 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFolderContentWrapperHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FolderContentWrapperHelper>();
-            return services
-                .AddFileWrapperHelperService()
-                .AddFolderWrapperHelperService();
+            if (services.TryAddScoped<FolderContentWrapperHelper>())
+            {
+                return services
+                    .AddFileWrapperHelperService()
+                    .AddFolderWrapperHelperService();
+            }
+
+            return services;
         }
     }
 

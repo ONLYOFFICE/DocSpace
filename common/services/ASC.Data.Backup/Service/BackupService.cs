@@ -292,10 +292,14 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupService(this DIHelper services)
         {
-            services.TryAddScoped<BackupService>();
-            services.TryAddSingleton<BackupServiceNotifier>();
-            return services
-                .AddBackupWorkerService();
+            if (services.TryAddScoped<BackupService>())
+            {
+                services.TryAddSingleton<BackupServiceNotifier>();
+                return services
+                    .AddBackupWorkerService();
+            }
+
+            return services;
         }
     }
 }

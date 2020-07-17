@@ -212,11 +212,15 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddMailMergeTaskRunnerService(this DIHelper services)
         {
-            services.TryAddScoped<MailMergeTaskRunner>();
-            return services
-                .AddSetupInfo()
-                .AddSecurityContextService()
-                .AddBaseCommonLinkUtilityService();
+            if (services.TryAddScoped<MailMergeTaskRunner>())
+            {
+                return services
+                    .AddSetupInfo()
+                    .AddSecurityContextService()
+                    .AddBaseCommonLinkUtilityService();
+            }
+
+            return services;
         }
     }
 }

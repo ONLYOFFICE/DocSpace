@@ -331,19 +331,22 @@ namespace ASC.ApiSystem.Controllers
     {
         public static DIHelper AddCommonMethods(this DIHelper services)
         {
-            services.TryAddScoped<CommonMethods>();
+            if (services.TryAddScoped<CommonMethods>())
+            {
+                return services
+                    .AddCoreSettingsService()
+                    .AddCommonLinkUtilityService()
+                    .AddEmailValidationKeyProviderService()
+                    .AddApiSystemHelper()
+                    .AddTenantManagerService()
+                    .AddUserFormatter()
+                    .AddUserManagerWrapperService()
+                    .AddSettingsManagerService()
+                    .AddSecurityContextService()
+                    .AddHostedSolutionService();
+            }
 
-            return services
-                .AddCoreSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddEmailValidationKeyProviderService()
-                .AddApiSystemHelper()
-                .AddTenantManagerService()
-                .AddUserFormatter()
-                .AddUserManagerWrapperService()
-                .AddSettingsManagerService()
-                .AddSecurityContextService()
-                .AddHostedSolutionService();
+            return services;
         }
     }
 }

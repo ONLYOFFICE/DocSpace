@@ -173,11 +173,15 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupCleanerService(this DIHelper services)
         {
-            services.TryAddScoped<BackupCleanerHelperService>();
-            services.TryAddSingleton<BackupCleanerService>();
-            return services
-                .AddBackupStorageFactory()
-                .AddBackupRepositoryService();
+            if (services.TryAddScoped<BackupCleanerHelperService>())
+            {
+                services.TryAddSingleton<BackupCleanerService>();
+                return services
+                    .AddBackupStorageFactory()
+                    .AddBackupRepositoryService();
+            }
+
+            return services;
         }
     }
 }

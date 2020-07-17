@@ -225,10 +225,14 @@ namespace ASC.Web.Files.Classes
     {
         public static DIHelper AddFilesSettingsHelperService(this DIHelper services)
         {
-            services.TryAddScoped<FilesSettingsHelper>();
-            return services
-                .AddSettingsManagerService()
-                .AddCoreBaseSettingsService();
+            if (services.TryAddScoped<FilesSettingsHelper>())
+            {
+                return services
+                    .AddSettingsManagerService()
+                    .AddCoreBaseSettingsService();
+            }
+
+            return services;
         }
     }
 }

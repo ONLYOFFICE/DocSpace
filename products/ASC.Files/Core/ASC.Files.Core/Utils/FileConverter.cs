@@ -42,8 +42,8 @@ using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -788,26 +788,30 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileConverterService(this DIHelper services)
         {
-            services.TryAddScoped<FileConverter>();
-            services.TryAddSingleton<FileConverterQueue<string>>();
-            services.TryAddSingleton<FileConverterQueue<int>>();
-            return services
-                .AddFilesLinkUtilityService()
-                .AddFileUtilityService()
-                .AddDaoFactoryService()
-                .AddSetupInfo()
-                .AddPathProviderService()
-                .AddFileSecurityService()
-                .AddFileMarkerService()
-                .AddTenantManagerService()
-                .AddAuthContextService()
-                .AddEntryManagerService()
-                .AddFilesSettingsHelperService()
-                .AddGlobalFolderHelperService()
-                .AddFilesMessageService()
-                .AddFileShareLinkService()
-                .AddDocumentServiceHelperService()
-                .AddDocumentServiceConnectorService();
+            if (services.TryAddScoped<FileConverter>())
+            {
+                services.TryAddSingleton<FileConverterQueue<string>>();
+                services.TryAddSingleton<FileConverterQueue<int>>();
+                return services
+                    .AddFilesLinkUtilityService()
+                    .AddFileUtilityService()
+                    .AddDaoFactoryService()
+                    .AddSetupInfo()
+                    .AddPathProviderService()
+                    .AddFileSecurityService()
+                    .AddFileMarkerService()
+                    .AddTenantManagerService()
+                    .AddAuthContextService()
+                    .AddEntryManagerService()
+                    .AddFilesSettingsHelperService()
+                    .AddGlobalFolderHelperService()
+                    .AddFilesMessageService()
+                    .AddFileShareLinkService()
+                    .AddDocumentServiceHelperService()
+                    .AddDocumentServiceConnectorService();
+            }
+
+            return services;
         }
     }
 }

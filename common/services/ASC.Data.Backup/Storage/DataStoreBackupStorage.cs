@@ -35,8 +35,8 @@ namespace ASC.Data.Backup.Storage
     public class DataStoreBackupStorage : IBackupStorage
     {
         private string WebConfigPath { get; set; }
-        private  int Tenant { get; set; }
-        private  StorageFactory StorageFactory { get; set; }
+        private int Tenant { get; set; }
+        private StorageFactory StorageFactory { get; set; }
         public DataStoreBackupStorage(StorageFactory storageFactory)
         {
 
@@ -71,7 +71,7 @@ namespace ASC.Data.Backup.Storage
             var dataStore = GetDataStore();
             if (dataStore.IsFile("", storagePath))
             {
-                dataStore.Delete("", storagePath);   
+                dataStore.Delete("", storagePath);
             }
         }
 
@@ -97,8 +97,11 @@ namespace ASC.Data.Backup.Storage
     {
         public static DIHelper AddDataStoreBackupStorage(this DIHelper services)
         {
-            services.TryAddScoped<DataStoreBackupStorage>();
-            return services.AddStorageFactoryService();
+            if (services.TryAddScoped<DataStoreBackupStorage>())
+            {
+                return services.AddStorageFactoryService();
+            }
+            return services;
         }
     }
 }

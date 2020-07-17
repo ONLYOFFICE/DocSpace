@@ -141,11 +141,15 @@ namespace ASC.Web.Files.Api
     {
         public static DIHelper AddFilesIntegrationService(this DIHelper services)
         {
-            services.TryAddScoped<FilesIntegration>();
-            return services
-                .AddDaoFactoryService()
-                .AddFileSecurityService()
-                .AddGlobalStoreService();
+            if (services.TryAddScoped<FilesIntegration>())
+            {
+                return services
+                    .AddDaoFactoryService()
+                    .AddFileSecurityService()
+                    .AddGlobalStoreService();
+            }
+
+            return services;
         }
     }
 }

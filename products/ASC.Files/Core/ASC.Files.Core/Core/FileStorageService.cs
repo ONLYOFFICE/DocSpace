@@ -50,8 +50,8 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
@@ -299,7 +299,7 @@ namespace ASC.Web.Files.Services.WCFService
                 parent.ParentFolderID = prevVisible.ID;
             }
 
-            parent.Shareable =FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE;
+            parent.Shareable = FileSharing.CanSetAccess(parent) || parent.FolderType == FolderType.SHARE;
 
             entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
 
@@ -2048,46 +2048,49 @@ namespace ASC.Web.Files.Services.WCFService
     {
         public static DIHelper AddFileStorageService(this DIHelper services)
         {
-            services.TryAddScoped<FileStorageService<string>>();
-            services.TryAddScoped<FileStorageService<int>>();
-            //services.TryAddScoped<IFileStorageService, FileStorageService>();
-            return services
-                .AddGlobalService()
-                .AddGlobalStoreService()
-                .AddGlobalFolderHelperService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddFactoryIndexerFolderService()
-                .AddFactoryIndexerFileService()
-                .AddFilesLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddCustomNamingPeopleService()
-                .AddDisplayUserSettingsService()
-                .AddPathProviderService()
-                .AddDaoFactoryService()
-                .AddFileMarkerService()
-                .AddFilesSettingsHelperService()
-                .AddFileUtilityService()
-                .AddFileSecurityService()
-                .AddFilesMessageService()
-                .AddFileShareLinkService()
-                .AddDocumentServiceConnectorService()
-                .AddDocuSignLoginProviderService()
-                .AddEntryManagerService()
-                .AddDocumentServiceHelperService()
-                .AddThirdpartyConfigurationService()
-                .AddUrlShortener()
-                .AddDocuSignHelperService()
-                .AddDocuSignTokenService()
-                .AddFileConverterService()
-                .AddNotifyClientService()
-                .AddFileSharingService()
-                .AddDocumentServiceTrackerHelperService()
-                .AddSocketManagerService()
-                .AddFileOperationsManagerHelperService()
-                .AddFileSharingAceHelperService();
-            ;
+            if (services.TryAddScoped<FileStorageService<string>>())
+            {
+                services.TryAddScoped<FileStorageService<int>>();
+                //services.TryAddScoped<IFileStorageService, FileStorageService>();
+                return services
+                    .AddGlobalService()
+                    .AddGlobalStoreService()
+                    .AddGlobalFolderHelperService()
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddFactoryIndexerFolderService()
+                    .AddFactoryIndexerFileService()
+                    .AddFilesLinkUtilityService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddCoreBaseSettingsService()
+                    .AddCustomNamingPeopleService()
+                    .AddDisplayUserSettingsService()
+                    .AddPathProviderService()
+                    .AddDaoFactoryService()
+                    .AddFileMarkerService()
+                    .AddFilesSettingsHelperService()
+                    .AddFileUtilityService()
+                    .AddFileSecurityService()
+                    .AddFilesMessageService()
+                    .AddFileShareLinkService()
+                    .AddDocumentServiceConnectorService()
+                    .AddDocuSignLoginProviderService()
+                    .AddEntryManagerService()
+                    .AddDocumentServiceHelperService()
+                    .AddThirdpartyConfigurationService()
+                    .AddUrlShortener()
+                    .AddDocuSignHelperService()
+                    .AddDocuSignTokenService()
+                    .AddFileConverterService()
+                    .AddNotifyClientService()
+                    .AddFileSharingService()
+                    .AddDocumentServiceTrackerHelperService()
+                    .AddSocketManagerService()
+                    .AddFileOperationsManagerHelperService()
+                    .AddFileSharingAceHelperService();
+            }
+
+            return services;
         }
     }
 

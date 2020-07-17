@@ -219,16 +219,19 @@ namespace ASC.Web.Files.Classes
     {
         public static DIHelper AddPathProviderService(this DIHelper services)
         {
-            services.TryAddScoped<PathProvider>();
+            if (services.TryAddScoped<PathProvider>())
+            {
+                return services
+                    .AddWebImageSupplierService()
+                    .AddCommonLinkUtilityService()
+                    .AddEmailValidationKeyProviderService()
+                    .AddGlobalStoreService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddFilesLinkUtilityService()
+                    .AddDaoFactoryService();
+            }
 
-            return services
-                .AddWebImageSupplierService()
-                .AddCommonLinkUtilityService()
-                .AddEmailValidationKeyProviderService()
-                .AddGlobalStoreService()
-                .AddBaseCommonLinkUtilityService()
-                .AddFilesLinkUtilityService()
-                .AddDaoFactoryService();
+            return services;
         }
     }
 }

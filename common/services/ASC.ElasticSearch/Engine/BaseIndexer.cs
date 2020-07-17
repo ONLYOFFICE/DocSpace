@@ -638,16 +638,19 @@ namespace ASC.ElasticSearch
 
         public static DIHelper AddBaseIndexerService<T>(this DIHelper services) where T : class, ISearchItem
         {
-            services.TryAddScoped<BaseIndexer<T>>();
+            if (services.TryAddScoped<BaseIndexer<T>>())
+            {
+                return services
+                    .AddFactoryIndexerService()
+                    .AddClientService()
+                    .AddWebstudioDbContextService()
+                    .AddTenantManagerService()
+                    .AddSearchSettingsHelperService()
+                    .AddBaseIndexerHelperService()
+                    ;
+            }
 
-            return services
-                .AddFactoryIndexerService()
-                .AddClientService()
-                .AddWebstudioDbContextService()
-                .AddTenantManagerService()
-                .AddSearchSettingsHelperService()
-                .AddBaseIndexerHelperService()
-                ;
+            return services;
         }
     }
 }

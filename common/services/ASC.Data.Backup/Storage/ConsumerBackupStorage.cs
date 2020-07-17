@@ -90,9 +90,13 @@ namespace ASC.Data.Backup.Storage
     {
         public static DIHelper AddConsumerBackupStorage(this DIHelper services)
         {
-            services.TryAddScoped<ConsumerBackupStorage>();
-            return services
-                .AddStorageSettingsService();
+            if (services.TryAddScoped<ConsumerBackupStorage>())
+            {
+                return services
+                    .AddStorageSettingsService();
+            }
+
+            return services;
         }
     }
 }

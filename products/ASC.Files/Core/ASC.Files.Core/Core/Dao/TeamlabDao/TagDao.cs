@@ -634,20 +634,25 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ITagDao<int>, TagDao<int>>();
-            services.TryAddScoped<TagDao<string>>();
-            return services
-                .AddUserManagerService()
-                .AddFilesDbContextService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService();
+            if (services.TryAddScoped<TagDao<string>>())
+            {
+                services.TryAddScoped<ITagDao<int>, TagDao<int>>();
+
+                return services
+                    .AddUserManagerService()
+                    .AddFilesDbContextService()
+                    .AddTenantManagerService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService();
+            }
+
+            return services;
         }
     }
 }

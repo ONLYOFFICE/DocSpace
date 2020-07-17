@@ -66,10 +66,14 @@ namespace ASC.Web.Files.Core.Entries
     {
         public static DIHelper AddEncryptionAddressHelperService(this DIHelper services)
         {
-            services.TryAddScoped<EncryptionAddressHelper>();
-            return services
-                .AddEncryptionLoginProviderService()
-                .AddFileSharingService();
+            if (services.TryAddScoped<EncryptionAddressHelper>())
+            {
+                return services
+                    .AddEncryptionLoginProviderService()
+                    .AddFileSharingService();
+            }
+
+            return services;
         }
     }
 }

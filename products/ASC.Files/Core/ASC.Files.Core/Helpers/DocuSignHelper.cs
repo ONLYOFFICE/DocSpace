@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Text.Json.Serialization;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -41,8 +42,8 @@ using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
@@ -469,11 +470,15 @@ namespace ASC.Web.Files.Helpers
     {
         public static DIHelper AddDocuSignTokenService(this DIHelper services)
         {
-            services.TryAddScoped<DocuSignToken>();
-            return services
-                .AddAuthContextService()
-                .AddDocuSignLoginProviderService()
-                .AddTokenHelperService();
+            if (services.TryAddScoped<DocuSignToken>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddDocuSignLoginProviderService()
+                    .AddTokenHelperService();
+            }
+
+            return services;
         }
 
         public static DIHelper AddDocuSignHelperService(this DIHelper services)

@@ -35,8 +35,8 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -375,20 +375,24 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         public static DIHelper AddDocumentServiceHelperService(this DIHelper services)
         {
-            services.TryAddScoped<DocumentServiceHelper>();
-            return services
-                .AddDaoFactoryService()
-                .AddFileShareLinkService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddFileSecurityService()
-                .AddSetupInfo()
-                .AddLockerManagerService()
-                .AddFileUtilityService()
-                .AddMachinePseudoKeysService()
-                .AddGlobalService()
-                .AddDocumentServiceConnectorService()
-                .AddConfigurationService();
+            if (services.TryAddScoped<DocumentServiceHelper>())
+            {
+                return services
+                    .AddDaoFactoryService()
+                    .AddFileShareLinkService()
+                    .AddUserManagerService()
+                    .AddAuthContextService()
+                    .AddFileSecurityService()
+                    .AddSetupInfo()
+                    .AddLockerManagerService()
+                    .AddFileUtilityService()
+                    .AddMachinePseudoKeysService()
+                    .AddGlobalService()
+                    .AddDocumentServiceConnectorService()
+                    .AddConfigurationService();
+            }
+
+            return services;
         }
     }
 }

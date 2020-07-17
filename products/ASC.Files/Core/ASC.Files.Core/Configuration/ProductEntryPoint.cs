@@ -173,16 +173,19 @@ namespace ASC.Web.Files.Configuration
     {
         public static DIHelper AddProductEntryPointService(this DIHelper services)
         {
-            services.TryAddScoped<ProductEntryPoint>();
+            if (services.TryAddScoped<ProductEntryPoint>())
+            {
+                return services
+                    .AddFilesSpaceUsageStatManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddGlobalService()
+                    .AddFilesSubscriptionManagerService()
+                    .AddFactoryIndexerFileService();
+            }
 
-            return services
-                .AddFilesSpaceUsageStatManagerService()
-                .AddCoreBaseSettingsService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddGlobalService()
-                .AddFilesSubscriptionManagerService()
-                .AddFactoryIndexerFileService();
+            return services;
         }
     }
 }

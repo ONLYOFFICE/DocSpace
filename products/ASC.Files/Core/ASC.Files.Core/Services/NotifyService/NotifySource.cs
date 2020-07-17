@@ -61,12 +61,15 @@ namespace ASC.Web.Files.Services.NotifyService
     {
         public static DIHelper AddFilesNotifySourceService(this DIHelper services)
         {
-            services.TryAddScoped<NotifySource>();
+            if (services.TryAddScoped<NotifySource>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddRecipientProviderImplService()
+                    .AddSubscriptionManagerService();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddRecipientProviderImplService()
-                .AddSubscriptionManagerService();
+            return services;
         }
     }
 }

@@ -261,10 +261,12 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         public static DIHelper AddOneDriveProviderInfoService(this DIHelper services)
         {
-            services.TryAddScoped<OneDriveProviderInfo>();
-            services.TryAddScoped<OneDriveStorageDisposableWrapper>();
-            services.TryAddScoped<OneDriveStorage>();
-            services.TryAddSingleton<OneDriveProviderInfoHelper>();
+            if (services.TryAddScoped<OneDriveProviderInfo>())
+            {
+                services.TryAddScoped<OneDriveStorageDisposableWrapper>();
+                services.TryAddScoped<OneDriveStorage>();
+                services.TryAddSingleton<OneDriveProviderInfoHelper>();
+            }
 
             return services;
         }

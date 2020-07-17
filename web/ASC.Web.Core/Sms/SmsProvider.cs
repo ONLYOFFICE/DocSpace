@@ -120,8 +120,12 @@ namespace ASC.Web.Core.Sms
     {
         public static DIHelper AddSmsProviderManagerService(this DIHelper services)
         {
-            services.TryAddScoped<SmsProviderManager>();
-            return services.AddConsumerFactoryService();
+            if (services.TryAddScoped<SmsProviderManager>())
+            {
+                return services.AddConsumerFactoryService();
+            }
+
+            return services;
         }
     }
 
@@ -493,12 +497,16 @@ namespace ASC.Web.Core.Sms
     {
         public static DIHelper AddTwilioProviderService(this DIHelper services)
         {
-            services.TryAddScoped<TwilioProvider>();
-            services.TryAddScoped<TwilioSaaSProvider>();
-            return services.AddVoipDaoService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
+            if (services.TryAddScoped<TwilioProvider>())
+            {
+                services.TryAddScoped<TwilioSaaSProvider>();
+                return services.AddVoipDaoService()
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreSettingsService();
+            }
+
+            return services;
         }
     }
 }

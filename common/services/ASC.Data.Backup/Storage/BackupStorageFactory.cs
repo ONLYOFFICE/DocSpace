@@ -52,7 +52,7 @@ namespace ASC.Data.Backup.Storage
         public ConsumerBackupStorage ConsumerBackupStorage { get; }
         public TenantManager TenantManager { get; }
 
-        public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage ,LocalBackupStorage localBackupStorage, IServiceProvider serviceProvider, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
+        public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage, LocalBackupStorage localBackupStorage, IServiceProvider serviceProvider, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
         {
             ServiceProvider = serviceProvider;
             Configuration = configuration;
@@ -105,14 +105,18 @@ namespace ASC.Data.Backup.Storage
     {
         public static DIHelper AddBackupStorageFactory(this DIHelper services)
         {
-            services.TryAddScoped<BackupStorageFactory>();
-            return services
-                .AddTenantManagerService()
-                .AddDocumentsBackupStorage()
-                .AddDataStoreBackupStorage()
-                .AddLocalBackupStorage()
-                .AddConsumerBackupStorage()
-                .AddFileConverterService();
+            if (services.TryAddScoped<BackupStorageFactory>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddDocumentsBackupStorage()
+                    .AddDataStoreBackupStorage()
+                    .AddLocalBackupStorage()
+                    .AddConsumerBackupStorage()
+                    .AddFileConverterService();
+            }
+
+            return services;
         }
     }
 }

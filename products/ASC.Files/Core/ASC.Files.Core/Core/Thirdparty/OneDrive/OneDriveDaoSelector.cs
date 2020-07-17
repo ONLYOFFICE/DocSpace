@@ -67,13 +67,16 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         public static DIHelper AddOneDriveSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<OneDriveDaoSelector>();
+            if (services.TryAddScoped<OneDriveDaoSelector>())
+            {
+                return services
+                    .AddOneDriveSecurityDaoService()
+                    .AddOneDriveTagDaoService()
+                    .AddOneDriveFolderDaoService()
+                    .AddOneDriveFileDaoService();
+            }
 
-            return services
-                .AddOneDriveSecurityDaoService()
-                .AddOneDriveTagDaoService()
-                .AddOneDriveFolderDaoService()
-                .AddOneDriveFileDaoService();
+            return services;
         }
     }
 }
