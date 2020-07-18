@@ -67,7 +67,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           <FieldContainer
             key="e-mail"
             isVertical={true}
-            hasError={descErr}
+            hasError={emailErr}
             errorMessage={t("RecoverErrorMessage")}>
             <TextInput
               hasError={emailErr}
