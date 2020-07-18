@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, TextInput, Text, ModalDialog } from "asc-web-components";
-import { FieldContainerWrapper } from "../index";
+import { Button, TextInput, Text, ModalDialog, FieldContainer } from "asc-web-components";
 import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`
@@ -47,7 +46,12 @@ class SubModalDialog extends React.Component {
             >
               {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
             </Text>,
-            <FieldContainerWrapper key="e-mail" isVertical={true} hasError={emailError} errorMessage={t("RequiredFieldMessage")}>
+            <FieldContainer
+              key="e-mail"
+              isVertical={true}
+              hasError={emailError}
+              labelVisible={false}
+              errorMessage={t("RequiredFieldMessage")}>
               <TextInput
                 hasError={emailError}
                 placeholder={t("PasswordRecoveryPlaceholder")}
@@ -62,7 +66,7 @@ class SubModalDialog extends React.Component {
                 value={email}
                 onChange={onChangeEmail}
               />
-            </FieldContainerWrapper>
+            </FieldContainer>
           ]}
           footerContent={[
             <Button

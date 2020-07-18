@@ -15,12 +15,6 @@ const ModalDialogContainer = styled.div`
     }
 }`;
 
-const FieldContainerWrapper = styled(FieldContainer)`
-  .field-label-icon {
-    height: 0;
-    margin: 16px 0 0 0;
-  }
-`;
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
@@ -70,7 +64,11 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           >
             {t("RecoverTextBody")}
           </Text>,
-          <FieldContainerWrapper key="e-mail" isVertical={true} hasError={descErr} errorMessage={t("RecoverErrorMessage")}>
+          <FieldContainer
+            key="e-mail"
+            isVertical={true}
+            hasError={descErr}
+            errorMessage={t("RecoverErrorMessage")}>
             <TextInput
               hasError={emailErr}
               id="e-mail"
@@ -84,8 +82,13 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
               value={email}
               onChange={onChangeEmail}
             />
-          </FieldContainerWrapper>,
-          <FieldContainerWrapper key="text-description" isVertical={true} hasError={descErr} errorMessage={t("RecoverErrorMessage")}>
+          </FieldContainer>,
+          <FieldContainer
+            key="text-description"
+            isVertical={true}
+            hasError={descErr}
+            labelVisible={false}
+            errorMessage={t("RecoverErrorMessage")}>
             <Textarea
               heightScale={width > 1024 ? false : true}
               hasError={descErr}
@@ -93,7 +96,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
               value={description}
               onChange={onChangeDescription}
             />
-          </FieldContainerWrapper>
+          </FieldContainer>
         ]}
         footerContent={[
           <Button
