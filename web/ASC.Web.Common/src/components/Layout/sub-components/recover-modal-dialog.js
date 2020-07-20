@@ -130,7 +130,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 SubModalDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   // isLoading: PropTypes.bool.isRequired,
-  onSendRecoverInstructions: PropTypes.func.isRequired,
+  onSendRecoverInstructions: PropTypes.func,
   onRecoverModalClose: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onChangeDescription: PropTypes.func.isRequired,
