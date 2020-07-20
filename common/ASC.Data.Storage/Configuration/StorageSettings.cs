@@ -226,22 +226,28 @@ namespace ASC.Data.Storage.Configuration
 
         public static DIHelper AddCdnStorageSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<StorageSettingsHelper>();
+            if (services.TryAddScoped<StorageSettingsHelper>())
+            {
+                return services
+                    .AddSettingsManagerService()
+                    .AddBaseStorageSettingsService()
+                    .AddConsumerFactoryService();
+            }
 
-            return services
-                .AddSettingsManagerService()
-                .AddBaseStorageSettingsService()
-                .AddConsumerFactoryService();
+            return services;
         }
 
         public static DIHelper AddStorageSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<StorageSettingsHelper>();
+            if (services.TryAddScoped<StorageSettingsHelper>())
+            {
+                return services
+                    .AddSettingsManagerService()
+                    .AddBaseStorageSettingsService()
+                    .AddConsumerFactoryService();
+            }
 
-            return services
-                .AddSettingsManagerService()
-                .AddBaseStorageSettingsService()
-                .AddConsumerFactoryService();
+            return services;
         }
     }
 }

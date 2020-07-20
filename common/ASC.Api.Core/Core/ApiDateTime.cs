@@ -366,10 +366,13 @@ namespace ASC.Api.Core
     {
         public static DIHelper AddApiDateTimeHelper(this DIHelper services)
         {
-            services.TryAddScoped<ApiDateTimeHelper>();
+            if (services.TryAddScoped<ApiDateTimeHelper>())
+            {
+                return services
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

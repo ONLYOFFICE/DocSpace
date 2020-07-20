@@ -78,8 +78,12 @@ namespace ASC.Notify.Textile
     {
         public static DIHelper AddPushStylerService(this DIHelper services)
         {
-            services.TryAddScoped<PushStyler>();
-            return services.AddStylerService();
+            if (services.TryAddScoped<PushStyler>())
+            {
+                return services.AddStylerService();
+            }
+
+            return services;
         }
     }
 }

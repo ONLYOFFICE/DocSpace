@@ -146,13 +146,16 @@ namespace ASC.IPSecurity
     {
         public static DIHelper AddIPSecurityService(this DIHelper services)
         {
-            services.TryAddScoped<IPSecurity>();
+            if (services.TryAddScoped<IPSecurity>())
+            {
+                return services
+                    .AddIPRestrictionsService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddIPRestrictionsService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

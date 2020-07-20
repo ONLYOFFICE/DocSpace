@@ -67,13 +67,16 @@ namespace ASC.Files.Thirdparty.Dropbox
     {
         public static DIHelper AddDropboxDaoSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<DropboxDaoSelector>();
+            if (services.TryAddScoped<DropboxDaoSelector>())
+            {
+                return services
+                    .AddDropboxSecurityDaoService()
+                    .AddDropboxTagDaoService()
+                    .AddDropboxFolderDaoService()
+                    .AddDropboxFileDaoService();
+            }
 
-            return services
-                .AddDropboxSecurityDaoService()
-                .AddDropboxTagDaoService()
-                .AddDropboxFolderDaoService()
-                .AddDropboxFileDaoService();
+            return services;
         }
     }
 }

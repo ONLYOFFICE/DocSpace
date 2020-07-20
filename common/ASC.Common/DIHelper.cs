@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -24,15 +26,16 @@ namespace ASC.Common
             ServiceCollection = serviceCollection;
         }
 
-        public DIHelper TryAddScoped<TService>() where TService : class
+        public bool TryAddScoped<TService>() where TService : class
         {
             var serviceName = $"{typeof(TService)}";
             if (!Scoped.Contains(serviceName))
             {
                 Scoped.Add(serviceName);
                 ServiceCollection.TryAddScoped<TService>();
+                return true;
             }
-            return this;
+            return false;
         }
 
         public DIHelper TryAddScoped<TService, TImplementation>() where TService : class where TImplementation : class, TService
@@ -165,8 +168,8 @@ namespace ASC.Common
             }
         }
 
-        public DIHelper AddWorkerQueue<T1>(int workerCount, int waitInterval, bool stopAfterFinsih, int errorCount) 
-        { 
+        public DIHelper AddWorkerQueue<T1>(int workerCount, int waitInterval, bool stopAfterFinsih, int errorCount)
+        {
             Action<WorkerQueue<T1>> action = (a) =>
             {
                 a.workerCount = workerCount;

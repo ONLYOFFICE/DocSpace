@@ -67,13 +67,16 @@ namespace ASC.Files.Thirdparty.Box
     {
         public static DIHelper AddBoxDaoSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<BoxDaoSelector>();
+            if (services.TryAddScoped<BoxDaoSelector>())
+            {
+                return services
+                    .AddBoxSecurityDaoService()
+                    .AddBoxTagDaoService()
+                    .AddBoxFolderDaoService()
+                    .AddBoxFileDaoService();
+            }
 
-            return services
-                .AddBoxSecurityDaoService()
-                .AddBoxTagDaoService()
-                .AddBoxFolderDaoService()
-                .AddBoxFileDaoService();
+            return services;
         }
     }
 }

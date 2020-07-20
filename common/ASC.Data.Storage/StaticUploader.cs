@@ -291,11 +291,14 @@ namespace ASC.Data.Storage
     {
         public static DIHelper AddStaticUploaderService(this DIHelper services)
         {
-            services.TryAddScoped<StaticUploader>();
+            if (services.TryAddScoped<StaticUploader>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddCdnStorageSettingsService();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddCdnStorageSettingsService();
+            return services;
         }
     }
 }

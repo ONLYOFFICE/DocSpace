@@ -81,9 +81,12 @@ namespace ASC.IPSecurity
     {
         public static DIHelper AddIPRestrictionsRepositoryService(this DIHelper services)
         {
-            services.TryAddScoped<IPRestrictionsRepository>();
+            if (services.TryAddScoped<IPRestrictionsRepository>())
+            {
+                return services.AddTenantDbContextService();
+            }
 
-            return services.AddTenantDbContextService();
+            return services;
         }
     }
 }

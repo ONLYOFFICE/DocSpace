@@ -41,9 +41,12 @@ namespace ASC.Files
     {
         public static DIHelper AddApiProductEntryPointService(this DIHelper services)
         {
-            services.TryAddScoped<ApiProductEntryPoint>();
+            if (services.TryAddScoped<ApiProductEntryPoint>())
+            {
+                return services.AddProductEntryPointService();
+            }
 
-            return services.AddProductEntryPointService();
+            return services;
         }
     }
 }

@@ -398,18 +398,22 @@ namespace ASC.Web.Files.HttpHandlers
     {
         public static DIHelper AddChunkedUploaderHandlerService(this DIHelper services)
         {
-            services.TryAddScoped<ChunkedUploaderHandlerService>();
-            return services
-                .AddTenantManagerService()
-                .AddFileUploaderService()
-                .AddFilesMessageService()
-                .AddAuthManager()
-                .AddSecurityContextService()
-                .AddSetupInfo()
-                .AddEntryManagerService()
-                .AddInstanceCryptoService()
-                .AddChunkedUploadSessionHolderService()
-                .AddChunkedUploadSessionHelperService();
+            if (services.TryAddScoped<ChunkedUploaderHandlerService>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddFileUploaderService()
+                    .AddFilesMessageService()
+                    .AddAuthManager()
+                    .AddSecurityContextService()
+                    .AddSetupInfo()
+                    .AddEntryManagerService()
+                    .AddInstanceCryptoService()
+                    .AddChunkedUploadSessionHolderService()
+                    .AddChunkedUploadSessionHelperService();
+            }
+
+            return services;
         }
 
         public static IApplicationBuilder UseChunkedUploaderHandler(this IApplicationBuilder builder)

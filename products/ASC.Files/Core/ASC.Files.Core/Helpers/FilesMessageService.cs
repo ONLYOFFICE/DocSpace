@@ -125,10 +125,14 @@ namespace ASC.Web.Files.Helpers
     {
         public static DIHelper AddFilesMessageService(this DIHelper services)
         {
-            services.TryAddScoped<FilesMessageService>();
-            return services
-                .AddMessageTargetService()
-                .AddMessageServiceService();
+            if (services.TryAddScoped<FilesMessageService>())
+            {
+                return services
+                    .AddMessageTargetService()
+                    .AddMessageServiceService();
+            }
+
+            return services;
         }
     }
 }

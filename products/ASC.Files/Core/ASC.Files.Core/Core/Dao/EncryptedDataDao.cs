@@ -126,19 +126,23 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddEncryptedDataDaoService(this DIHelper services)
         {
-            services.TryAddScoped<EncryptedDataDao>();
-            return services
-                .AddFilesDbContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService();
+            if (services.TryAddScoped<EncryptedDataDao>())
+            {
+                return services
+                    .AddFilesDbContextService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService();
+            }
+
+            return services;
         }
     }
 }

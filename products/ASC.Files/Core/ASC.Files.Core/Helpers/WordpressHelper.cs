@@ -121,9 +121,13 @@ namespace ASC.Web.Files.Helpers
 
         public static DIHelper AddWordpressTokenService(this DIHelper services)
         {
-            services.TryAddScoped<WordpressToken>();
-            return services
-                .AddTokenHelperService();
+            if (services.TryAddScoped<WordpressToken>())
+            {
+                return services
+                    .AddTokenHelperService();
+            }
+
+            return services;
         }
     }
 }

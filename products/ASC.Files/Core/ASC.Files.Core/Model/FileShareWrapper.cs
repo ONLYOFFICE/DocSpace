@@ -141,10 +141,13 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFileShareWrapperService(this DIHelper services)
         {
-            services.TryAddScoped<FileShareWrapperHelper>();
-            return services
-                .AddUserManagerService()
-                .AddEmployeeWraperFull();
+            if (services.TryAddScoped<FileShareWrapperHelper>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddEmployeeWraperFull();
+            }
+            return services;
         }
     }
 }

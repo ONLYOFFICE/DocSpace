@@ -157,15 +157,19 @@ namespace ASC.Web.Files.Helpers
     {
         public static DIHelper AddThirdpartyConfigurationService(this DIHelper services)
         {
-            services.TryAddScoped<ThirdpartyConfiguration>();
-            return services
-                .AddDaoFactoryService()
-                .AddDocuSignLoginProviderService()
-                .AddBoxLoginProviderService()
-                .AddDropboxLoginProviderService()
-                .AddOneDriveLoginProviderService()
-                .AddGoogleLoginProviderService()
-                ;
+            if (services.TryAddScoped<ThirdpartyConfiguration>())
+            {
+                return services
+                    .AddDaoFactoryService()
+                    .AddDocuSignLoginProviderService()
+                    .AddBoxLoginProviderService()
+                    .AddDropboxLoginProviderService()
+                    .AddOneDriveLoginProviderService()
+                    .AddGoogleLoginProviderService()
+                    ;
+            }
+
+            return services;
         }
     }
 }

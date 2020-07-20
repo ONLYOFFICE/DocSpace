@@ -527,12 +527,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public static DIHelper AddProviderFileDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
-            services.TryAddScoped<ProviderFileDao>();
-            services.TryAddScoped<File<string>>();
+            if (services.TryAddScoped<ProviderFileDao>())
+            {
+                services.TryAddScoped<File<string>>();
+                services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
 
-            return services
-                .AddProviderDaoBaseService();
+                return services
+                    .AddProviderDaoBaseService();
+            }
+
+            return services;
         }
     }
 }

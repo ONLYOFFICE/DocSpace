@@ -256,13 +256,17 @@ namespace ASC.Web.Files.HttpHandlers
     {
         public static DIHelper AddDocuSignHandlerService(this DIHelper services)
         {
-            services.TryAddScoped<DocuSignHandlerService>();
-            return services
-                .AddFilesLinkUtilityService()
-                .AddTenantExtraService()
-                .AddDocuSignHelperService()
-                .AddSecurityContextService()
-                .AddNotifyClientService();
+            if (services.TryAddScoped<DocuSignHandlerService>())
+            {
+                return services
+                    .AddFilesLinkUtilityService()
+                    .AddTenantExtraService()
+                    .AddDocuSignHelperService()
+                    .AddSecurityContextService()
+                    .AddNotifyClientService();
+            }
+
+            return services;
         }
 
         public static IApplicationBuilder UseDocuSignHandler(this IApplicationBuilder builder)

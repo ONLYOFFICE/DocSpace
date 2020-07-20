@@ -24,12 +24,14 @@
 */
 
 
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
@@ -72,7 +74,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
                 case "forum":
                     return AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Community);
-                
+
                 case "mailaggregator":
                     return AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail);
 
@@ -85,10 +87,14 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
         public static DIHelper AddModuleProvider(this DIHelper services)
         {
-            services.TryAddScoped<ModuleProvider>();
-            return services
-                .AddCoreSettingsService()
-                .AddHelpers();
+            if (services.TryAddScoped<ModuleProvider>())
+            {
+                return services
+                    .AddCoreSettingsService()
+                    .AddHelpers();
+            }
+
+            return services;
         }
     }
 }

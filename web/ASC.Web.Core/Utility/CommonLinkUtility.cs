@@ -552,14 +552,17 @@ namespace ASC.Web.Studio.Utility
     {
         public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
         {
-            services.TryAddScoped<CommonLinkUtility>();
+            if (services.TryAddScoped<CommonLinkUtility>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddWebItemManagerSecurity()
+                    .AddWebItemManager()
+                    .AddEmailValidationKeyProviderService();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddBaseCommonLinkUtilityService()
-                .AddWebItemManagerSecurity()
-                .AddWebItemManager()
-                .AddEmailValidationKeyProviderService();
+            return services;
         }
     }
 }
