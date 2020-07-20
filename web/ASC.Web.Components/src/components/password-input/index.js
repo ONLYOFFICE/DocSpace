@@ -459,7 +459,7 @@ PasswordInput.propTypes = {
   autoComplete: PropTypes.string,
   inputType: PropTypes.oneOf(['text', 'password']),
   inputName: PropTypes.string,
-  emailInputName: PropTypes.string.isRequired,
+  emailInputName: PropTypes.string,
   inputValue: PropTypes.string,
   onChange: PropTypes.func,
   inputWidth: PropTypes.string,
@@ -472,7 +472,7 @@ PasswordInput.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   isDisabled: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
+  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'large']),
   scale: PropTypes.bool,
 
   clipActionResource: PropTypes.string,

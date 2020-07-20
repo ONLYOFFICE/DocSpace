@@ -182,7 +182,7 @@ InputBlock.propTypes = {
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
   keepCharPositions: PropTypes.bool,
 
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
+  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'large']),
   scale: PropTypes.bool,
 
   onChange: PropTypes.func,
