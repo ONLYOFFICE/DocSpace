@@ -33,7 +33,7 @@ const Header = styled.header`
 const HeaderComponent = React.memo(props => {
   //console.log("Header render");
   const currentModule = props.currentModule && props.currentModule.title;
-  const isAuthKey = localStorage.getItem("asc_auth_key");
+  const isAuthKey = localStorage.getItem("asc_auth_key") ? true : false;
   
   return (
     <Header module={currentModule}>
