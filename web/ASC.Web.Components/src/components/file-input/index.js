@@ -29,7 +29,8 @@ const StyledFileInput = styled.div`
         : props.size === 'big' ? '53px'
           : props.size === 'middle' ? '48px'
             : '37px'
-    }
+    };
+    cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
   }
 
   :hover{
@@ -74,6 +75,9 @@ const StyledFileInput = styled.div`
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')}
   }
 
+  .icon-button {
+    cursor: ${props => props.isDisabled ? 'default' : 'pointer'}
+  }
 
 `;
 
@@ -162,6 +166,7 @@ class FileInput extends Component {
     
     return( 
       <StyledFileInput 
+        className='input-file-group'
         size={size} 
         scale={scale ? 1 : 0}
         hasError={hasError}
@@ -193,7 +198,9 @@ class FileInput extends Component {
           onClick={this.onIconFileClick}
         >
           <IconButton 
+            className='icon-button'
             iconName={"CatalogFolderIcon"}
+            color={"#A3A9AE"}
             size={iconSize}
             isDisabled={isDisabled}
           />
