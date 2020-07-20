@@ -88,8 +88,8 @@ class FileInput extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+  shouldComponentUpdate(nextProps, nextState) {
+    return (!isEqual(this.props, nextProps) || !isEqual(this.state, nextState));
   }
 
   onIconFileClick = e => {
