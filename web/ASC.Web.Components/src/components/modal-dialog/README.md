@@ -36,3 +36,4 @@ import { ModalDialog } from "asc-web-components";
 | `footerContent` | `string`,`element` |    -     |            -             |    -    | Footer content                                   |
 | `onClose`       |       `func`       |    -     |            -             |    -    | Will be triggered when a close button is clicked |
 | `zIndex`        |      `number`      |    -     |            -             |  `310`  | CSS z-index                                      |
+| `bodyPadding`        |      `string`      |    -     |            -             |  `16px 0`  | CSS padding props for body section                                      |
