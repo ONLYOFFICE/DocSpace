@@ -14,6 +14,9 @@ const ModalDialogContainer = styled.div`
       width: 100%;
     }
   }
+  .field-body {
+    margin-top: 16px;
+  }
 `;
 
 class SubModalDialog extends React.Component {
@@ -32,6 +35,7 @@ class SubModalDialog extends React.Component {
       <ModalDialogContainer>
         <ModalDialog
           visible={openDialog}
+          bodyPadding="16px 0 0 0"
           headerContent={
             <Text isBold={true} fontSize='21px'>
               {t("PasswordRecoveryTitle")}
@@ -61,7 +65,6 @@ class SubModalDialog extends React.Component {
                 size="base"
                 scale={true}
                 tabIndex={1}
-                style={{ marginTop: "16px" }}
                 isDisabled={isLoading}
                 value={email}
                 onChange={onChangeEmail}

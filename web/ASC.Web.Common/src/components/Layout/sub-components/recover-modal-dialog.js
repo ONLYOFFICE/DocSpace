@@ -5,15 +5,23 @@ import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`
   .modal-dialog-aside-footer {
+
     @media(max-width: 1024px) {
       width: 90%;
     }
   }
+
   .recover-button-dialog {
+
     @media(max-width: 1024px) {
       width: 100%;
     }
-}`;
+  }
+  
+  .text-body {
+    margin-bottom: 16px;
+  }
+`;
 
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
@@ -50,6 +58,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
     <ModalDialogContainer>
       <ModalDialog
         visible={visible}
+        bodyPadding="16px 0 0 0"
         headerContent={
           <Text isBold={true} fontSize='21px'>
             {t("RecoverTitle")}
@@ -67,6 +76,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
           <FieldContainer
             key="e-mail"
             isVertical={true}
+            labelVisible={false}
             hasError={emailErr}
             errorMessage={t("RecoverErrorMessage")}>
             <TextInput
