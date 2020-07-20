@@ -61,7 +61,7 @@ const HeaderLogo = ({ logged }) => {
 }
 
 HeaderLogo.propTypes = {
-  logged: PropTypes.bool.isRequired
+  logged: PropTypes.bool
 };
 
 export default HeaderLogo;
