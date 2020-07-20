@@ -59,6 +59,7 @@ class SubModalDialog extends React.Component {
               <TextInput
                 hasError={emailError}
                 placeholder={t("PasswordRecoveryPlaceholder")}
+                isAutoFocussed={true}
                 id="e-mail"
                 name="e-mail"
                 type="text"
