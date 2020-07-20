@@ -166,7 +166,6 @@ class FileInput extends Component {
     
     return( 
       <StyledFileInput 
-        className='input-file-group'
         size={size} 
         scale={scale ? 1 : 0}
         hasError={hasError}
