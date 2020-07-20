@@ -44,7 +44,6 @@ const RecoverAccess = ({ t }) => {
             <RecoverWrapper widthProp="100%"
                 heightProp="100%"
                 displayProp="flex"
-                //paddingProp="0 240px 0 0"
                 justifyContent="flex-end"
                 alignItems="center">
                 <RecoverContainer

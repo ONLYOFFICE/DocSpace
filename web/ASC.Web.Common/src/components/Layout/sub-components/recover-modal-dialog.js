@@ -17,12 +17,11 @@ const ModalDialogContainer = styled.div`
       width: 100%;
     }
   }
-  
+
   .text-body {
     margin-bottom: 16px;
   }
 `;
-
 
 const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
@@ -105,6 +104,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
               placeholder={t("RecoverDescribeYourProblemPlaceholder")}
               value={description}
               onChange={onChangeDescription}
+              //isDisabled={isLoading}
             />
           </FieldContainer>
         ]}
@@ -130,14 +130,11 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
 SubModalDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   // isLoading: PropTypes.bool.isRequired,
-  // email: PropTypes.string.isRequired,
-  // onChangeEmail: PropTypes.func.isRequired,
-  // onSendPasswordInstructions: PropTypes.func.isRequired,
+  onSendRecoverInstructions: PropTypes.func.isRequired,
   onRecoverModalClose: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onChangeDescription: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired
-  // t: PropTypes.func.isRequired
 };
 
 export default SubModalDialog;
