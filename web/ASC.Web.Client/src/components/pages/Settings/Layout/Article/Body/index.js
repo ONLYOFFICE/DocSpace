@@ -15,6 +15,12 @@ const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
       font-size: inherit;
       font-weight: inherit;
+      color: #657077;
+
+      &.header{
+        font-weight: bold;
+        text-transform: uppercase;
+      }
   }
 `;
 
@@ -24,13 +30,14 @@ const getTreeItems = (data, path, t) => {
       const link = path + getSelectedLinkByKey(item.key, settingsTree);
       return (
         <TreeNode
-          title={<Link className='inherit-title-link' href={link}>{t(item.tKey)}</Link>}
+          title={<Link className='inherit-title-link header' href={link}>{t(item.tKey)}</Link>}
           key={item.key}
           icon={item.icon && React.createElement(Icons[item.icon], {
             size: 'scale',
             isfill: true,
             color: 'dimgray',
           })}
+          disableSwitch={true}
         >
           {getTreeItems(item.children, path, t)}
         </TreeNode>
@@ -46,6 +53,7 @@ const getTreeItems = (data, path, t) => {
           isfill: true,
           color: 'dimgray',
         })}
+        disableSwitch={true}
       />
     );
   });
@@ -153,6 +161,7 @@ class ArticleBodyContent extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
+        disableSwitch={true}
       >
         {getTreeItems(settingsTree, match.path, t)}
       </StyledTreeMenu>

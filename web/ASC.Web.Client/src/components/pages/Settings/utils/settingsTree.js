@@ -24,7 +24,7 @@ export const settingsTree = [
     },
     {
         key: '1',
-        icon: 'SettingsIcon',
+        icon: 'SecurityIcon',
         link: 'security',
         tKey: 'ManagementCategorySecurity',
         children: [

@@ -135,6 +135,7 @@ import OrigCheckboxCheckedIcon from './checkbox.checked.react.svg';
 import OrigCheckboxIndeterminateIcon from './checkbox.indeterminate.react.svg';
 import OrigFilterViewSelectorRowIcon from './filter.view.selector.row.react.svg';
 import OrigFilterViewSelectorTileIcon from './filter.view.selector.tile.react.svg';
+import OrigSecurityIcon from './security.react.svg'
 
 import OrigEyeIcon from './eye.react.svg';
 import OrigEyeOffIcon from './eye.off.react.svg';
@@ -810,4 +811,8 @@ export const FilterViewSelectorRowIcon = createStyledIcon(
 export const FilterViewSelectorTileIcon = createStyledIcon(
   OrigFilterViewSelectorTileIcon,
   'FilterViewSelectorTileIcon'
+);
+export const SecurityIcon = createStyledIcon(
+  OrigSecurityIcon,
+  'SecurityIcon'
 );

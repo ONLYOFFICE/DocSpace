@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Icons } from '../../icons';
 import { getCssFromSvg } from '../../icons/get-css-from-svg';
 import {TreeNode} from 'rc-tree';
@@ -81,10 +81,10 @@ const TreeNodeMenu = styled(TreeNode)`
         padding: 0;
     }
     .rc-tree-node-content-wrapper {
-        width: 108%;
+        width: ${props => props.disableSwitch ? "90%" : "108%"};
         display: inline-block;
         padding: 1px 8px 0 8px;
-        min-width: 190px;
+        min-width: ${props => props.disableSwitch ? "160px" : "190px"};
         
         cursor: pointer;
         height: 24px;
@@ -126,6 +126,8 @@ const TreeNodeMenu = styled(TreeNode)`
     }
     span.rc-tree-iconEle{
         margin: 3px 7px 3px 12px;
+        ${props => props.disableSwitch && "margin-left: 0;"}
+        ${props => props.disableSwitch && "margin-right: 10px;"}
         height: 17px;
         width: 17px;
     }
@@ -211,12 +213,14 @@ const TreeNodeMenu = styled(TreeNode)`
     }
     span.rc-tree-title{
         display: inline-block;
-        width: ${props => props.icon ? 'calc(100% - 36px)' : 'calc(100% - 20px)'};
+        width: ${props => !props.disableSwitch 
+            ? props.icon ? 'calc(100% - 36px)' : 'calc(100% - 20px)'
+            : '100%'};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         color: #333;
-        padding-left: ${props => props.icon ? '0' : '20px'};
+        padding-left: ${props => (props.icon || props.disableSwitch) ? '0' : '20px'};
     }
     span.rc-tree-title:first-child{
         max-width: 100%;
@@ -226,7 +230,12 @@ const TreeNodeMenu = styled(TreeNode)`
         mix-blend-mode: normal;
         border-radius: 3px;
         z-index: 0;
-
+        ${props => props.disableSwitch &&
+            css`
+                min-width: 0;
+                width: auto;
+            `
+        }
         :hover {
             background: #DFE2E3;
         }
