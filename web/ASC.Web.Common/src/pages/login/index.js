@@ -301,7 +301,7 @@ class Form extends Component {
               inputValue={password}
               size="large"
               scale={true}
-              tabIndex={2}
+              tabIndex={1}
               isDisabled={isLoading}
               autoComplete="current-password"
               onChange={this.onChangePassword}
@@ -357,7 +357,7 @@ class Form extends Component {
             size="large"
             scale={true}
             label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-            tabIndex={3}
+            tabIndex={1}
             isDisabled={isLoading}
             isLoading={isLoading}
             onClick={this.onSubmit}

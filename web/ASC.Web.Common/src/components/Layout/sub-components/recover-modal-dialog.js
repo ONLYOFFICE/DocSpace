@@ -85,7 +85,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
               type="text"
               size="base"
               scale={true}
-              tabIndex={1}
+              tabIndex={3}
               placeholder={t("RecoverContactEmailPlaceholder")}
               isAutoFocussed={true}
               //isDisabled={isLoading}
@@ -103,7 +103,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
               heightScale={width > 1024 ? false : true}
               hasError={descErr}
               placeholder={t("RecoverDescribeYourProblemPlaceholder")}
-              tabIndex={1}
+              tabIndex={3}
               value={description}
               onChange={onChangeDescription}
               //isDisabled={isLoading}
@@ -120,7 +120,7 @@ const SubModalDialog = ({ visible, onRecoverModalClose, t }) => {
             onClick={onSendRecoverInstructions}
             //isLoading={isLoading}
             //isDisabled={isLoading}
-            tabIndex={2}
+            tabIndex={3}
           />
         ]}
         onClose={onRecoverModalClose}

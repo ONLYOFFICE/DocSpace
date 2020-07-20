@@ -65,7 +65,7 @@ class SubModalDialog extends React.Component {
                 type="text"
                 size="base"
                 scale={true}
-                tabIndex={1}
+                tabIndex={2}
                 isDisabled={isLoading}
                 value={email}
                 onChange={onChangeEmail}
