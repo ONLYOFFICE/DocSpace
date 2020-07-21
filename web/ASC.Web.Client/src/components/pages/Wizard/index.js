@@ -177,15 +177,13 @@ const WizardContainer = styled.div`
     flex-direction: row;
 
     .settings-title {
-      width: 66px;
       font-size: 13px;
       line-height: 20px;
-      margin: 16px 0px;
+      margin: 0 0 12px 0px;
     }
 
     .values {
       margin-left: 16px;
-      width: 100%;
     }
 
     .text, .value {
@@ -200,7 +198,7 @@ const WizardContainer = styled.div`
     }
 
     .text {
-      margin: 16px 0;
+      margin: 0 0 12px 0;
     }
 
     .drop-down {
@@ -218,8 +216,9 @@ const WizardContainer = styled.div`
       margin: 0;
     }
 
-    .timezone-value {
-      margin-top: 16px; 
+    .timezone-value,
+    .timezone-title {
+      margin: 12px 0 0 0; 
     }
 
     @media ${tablet} {
@@ -624,7 +623,7 @@ class Body extends Component {
           <Text className="settings-title">{t('domain')}</Text>
           {titleEmail}
           <Text className="settings-title">{t('language')}</Text>
-          <Text className="settings-title">{t('timezone')}</Text>
+          <Text className="settings-title timezone-title">{t('timezone')}</Text>
         </Box>
         <Box className="values">
           <Text className="text value">{machineName}</Text>
