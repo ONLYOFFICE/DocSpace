@@ -233,9 +233,7 @@ const WizardContainer = styled.div`
   }
 
   .wizard-button {
-    display: block;
     width: 311px;
-    height: 44px;
     margin: 32px auto 0 auto;
 
     @media ${tablet} {
@@ -674,14 +672,17 @@ class Body extends Component {
     const labelButton = sendingComplete ? t('buttonLoading') : t('buttonContinue')
 
     return (
-      <Button
-        className="wizard-button"
-        primary
-        label={labelButton}           
-        size="big"
-        onClick={this.onContinueHandler}
-        isDisabled={sendingComplete}
-      />
+      <Box className="wizard-button">
+        <Button
+          size="large"
+          scale={true}
+          primary
+          label={labelButton}           
+          size="big"
+          onClick={this.onContinueHandler}
+          isDisabled={sendingComplete}
+        />
+      </Box>
     );
   }
 
