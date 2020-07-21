@@ -537,8 +537,12 @@ class Body extends Component {
     const { t, isOwner, settingsPassword } = this.props;
     const { isRequiredLicense } = this.state;
 
-    console.log(settingsPassword)
-    
+    const tooltipPassTitle = t('tooltipPasswordTitle');
+    const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
+    const tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : null;
+    const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
+    const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
+
     const inputEmail = !isOwner 
       ? <EmailInput
           name="wizard-email"
@@ -578,16 +582,18 @@ class Body extends Component {
           emailInputName="wizard-email"
           tabIndex={2}
           inputName="firstPass"
-          simpleView={true}
+          inputWidth="100%"
           size="large"
           scale={true}
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
-          settingsDigits={settingsPassword.digits}
-          settingsSpecSymbols={settingsPassword.specSymbols}
-          settingsUpperCase={settingsPassword.upperCase}
           isDisabled={false}
           placeholder={t('placeholderPass')}
+          tooltipPasswordTitle={tooltipPassTitle}
+          tooltipPasswordLength={tooltipPassLength}
+          tooltipPasswordDigits={tooltipPassDigits}
+          tooltipPasswordCapital={tooltipPassCapital}
+          tooltipPasswordSpecial={tooltipPassSpecial}
           onChange={this.onChangePassword}
           onValidateInput={this.isValidPassHandler}
         />
