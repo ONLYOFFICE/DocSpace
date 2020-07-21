@@ -17,11 +17,6 @@
   "errorLicenseBody": "The license is not valid. Make sure you select the correct file",
   "changeEmailTitle": "Change e-mail",
   "changeEmailBtn": "Save",
-  "tooltipPasswordTitle": "Password must contain:",
-  "tooltipPasswordLength": "characters",
-  "tooltipPasswordDigits": "digits",
-  "tooltipPasswordCapital": "capital letters",
-  "tooltipPasswordSpecial": "special characters (!@#$%^&*)",
 
   "Culture_en": "English (United Kingdom)",
   "Culture_en-US": "English (United States)",
