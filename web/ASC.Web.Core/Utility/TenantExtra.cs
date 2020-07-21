@@ -249,18 +249,22 @@ namespace ASC.Web.Studio.Utility
     {
         public static DIHelper AddTenantExtraService(this DIHelper services)
         {
-            services.TryAddScoped<TenantExtra>();
+            if (services.TryAddScoped<TenantExtra>())
+            {
 
-            return services
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddSetupInfo()
-                .AddPaymentManagerService()
-                .AddLicenseReaderService()
-                .AddTenantStatisticsProviderService()
-                .AddSettingsManagerService();
+                return services
+                    .AddUserManagerService()
+                    .AddAuthContextService()
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddSetupInfo()
+                    .AddPaymentManagerService()
+                    .AddLicenseReaderService()
+                    .AddTenantStatisticsProviderService()
+                    .AddSettingsManagerService();
+            }
+
+            return services;
         }
     }
 }

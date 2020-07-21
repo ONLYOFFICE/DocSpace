@@ -24,11 +24,13 @@
 */
 
 
+using System;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
-using System;
-using System.Linq;
+
 using ConfigurationConstants = ASC.Core.Configuration.Constants;
 using UserConstants = ASC.Core.Users.Constants;
 
@@ -45,7 +47,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 UserConstants.LostUser.ID
             };
 
-        
+
         private readonly Guid[] SystemGroups = new[]
             {
                 Guid.Empty,
@@ -96,9 +98,13 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
         public static DIHelper AddHelpers(this DIHelper services)
         {
-            services.TryAddScoped<Helpers>();
-            return services
-                .AddInstanceCryptoService();
+            if (services.TryAddScoped<Helpers>())
+            {
+                return services
+                    .AddInstanceCryptoService();
+            }
+
+            return services;
         }
     }
 }

@@ -144,22 +144,28 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddQueueWorkerRemoveService(this DIHelper services)
         {
-            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
-            services.TryAddScoped<QueueWorkerRemove>();
+            if (services.TryAddScoped<QueueWorkerRemove>())
+            {
+                services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
+                services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+                services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            }
 
             return services;
         }
         public static DIHelper AddQueueWorkerReassignService(this DIHelper services)
         {
-            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
-            services.TryAddScoped<QueueWorkerReassign>();
+            if (services.TryAddScoped<QueueWorkerReassign>())
+            {
+                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
 
-            return services
-                .AddQueueWorkerRemoveService();
+                return services
+                    .AddQueueWorkerRemoveService();
+            }
+
+            return services;
         }
     }
 }

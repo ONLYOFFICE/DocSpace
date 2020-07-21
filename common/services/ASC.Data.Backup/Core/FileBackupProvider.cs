@@ -264,10 +264,14 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddFileBackupProviderService(this DIHelper services)
         {
-            services.TryAddScoped<FileBackupProvider>();
-            return services
-                .AddStorageFactoryService()
-                .AddStorageFactoryConfigService();
+            if (services.TryAddScoped<FileBackupProvider>())
+            {
+                return services
+                    .AddStorageFactoryService()
+                    .AddStorageFactoryConfigService();
+            }
+
+            return services;
         }
     }
 }

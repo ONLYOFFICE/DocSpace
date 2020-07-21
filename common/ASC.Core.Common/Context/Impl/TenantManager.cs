@@ -385,15 +385,19 @@ namespace ASC.Core
     {
         public static DIHelper AddTenantManagerService(this DIHelper services)
         {
-            services.TryAddScoped<TenantManager>();
-            services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
+            if (services.TryAddScoped<TenantManager>())
+            {
+                services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
 
-            return services
-                .AddTenantService()
-                .AddQuotaService()
-                .AddTariffService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
+                return services
+                    .AddTenantService()
+                    .AddQuotaService()
+                    .AddTariffService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreSettingsService();
+            }
+
+            return services;
         }
     }
 }

@@ -252,18 +252,21 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioNotifyHelperService(this DIHelper services)
         {
-            services.TryAddScoped<StudioNotifyHelper>();
+            if (services.TryAddScoped<StudioNotifyHelper>())
+            {
+                return services
+                    .AddStudioNotifySourceService()
+                    .AddUserManagerService()
+                    .AddAdditionalWhiteLabelSettingsService()
+                    .AddCommonLinkUtilityService()
+                    .AddTenantManagerService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddCoreBaseSettingsService()
+                    .AddWebImageSupplierService();
+            }
 
-            return services
-                .AddStudioNotifySourceService()
-                .AddUserManagerService()
-                .AddAdditionalWhiteLabelSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddTenantManagerService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddCoreBaseSettingsService()
-                .AddWebImageSupplierService();
+            return services;
         }
     }
 }

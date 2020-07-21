@@ -55,11 +55,14 @@ namespace ASC.Core.Common.Settings
     {
         public static DIHelper AddSettingsManagerService(this DIHelper services)
         {
-            services.TryAddScoped<SettingsManager>();
+            if (services.TryAddScoped<SettingsManager>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddDbSettingsManagerService();
+            }
 
-            return services
-                .AddAuthContextService()
-                .AddDbSettingsManagerService();
+            return services;
         }
     }
 }

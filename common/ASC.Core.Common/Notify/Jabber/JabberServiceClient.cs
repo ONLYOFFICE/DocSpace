@@ -244,11 +244,15 @@ namespace ASC.Core.Notify.Jabber
     {
         public static DIHelper AddJabberServiceClient(this DIHelper services)
         {
-            services.TryAddScoped<JabberServiceClient>();
-            return services
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddTenantManagerService();
+            if (services.TryAddScoped<JabberServiceClient>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddAuthContextService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

@@ -24,12 +24,11 @@ namespace ASC.Resource.Manager
         {
             var diHelper = new DIHelper(services);
             services.AddLogging();
-            diHelper
-                .TryAddScoped<ResourceData>()
-                .AddDbContextManagerService<ResourceDbContext>()
-                .AddLoggerService()
-                .AddNLogManager()
-                .TryAddSingleton(Configuration);
-        }
+            diHelper.TryAddScoped<ResourceData>();
+
+            diHelper.AddDbContextManagerService<ResourceDbContext>();
+            diHelper.AddLoggerService();
+            diHelper.AddNLogManager();
+            diHelper.TryAddSingleton(Configuration);        }
     }
 }

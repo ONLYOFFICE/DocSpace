@@ -435,14 +435,17 @@ namespace ASC.Web.Core.Files
     {
         public static DIHelper AddFilesLinkUtilityService(this DIHelper services)
         {
-            services.TryAddScoped<FilesLinkUtility>();
+            if (services.TryAddScoped<FilesLinkUtility>())
+            {
+                return services
+                    .AddCommonLinkUtilityService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreSettingsService()
+                    .AddInstanceCryptoService();
+            }
 
-            return services
-                .AddCommonLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddInstanceCryptoService();
+            return services;
         }
     }
 }

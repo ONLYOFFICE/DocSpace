@@ -43,6 +43,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
@@ -1009,14 +1010,7 @@ namespace ASC.Web.Core.Users
             services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
             services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
 
-            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
-            {
-                r.workerCount = 2;
-                r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
-                r.errorCount = 1;
-                r.stopAfterFinsih = true;
-            });
-
+            services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
             return services;
         }
     }
@@ -1025,16 +1019,20 @@ namespace ASC.Web.Core.Users
     {
         public static DIHelper AddUserPhotoManagerService(this DIHelper services)
         {
-            services.TryAddScoped<UserPhotoManager>();
-            services.TryAddSingleton<UserPhotoManagerCache>();
+            if (services.TryAddScoped<UserPhotoManager>())
+            {
+                services.TryAddSingleton<UserPhotoManagerCache>();
 
-            return services
-                .AddStorageFactoryService()
-                .AddSettingsManagerService()
-                .AddWebImageSupplierService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddResizeWorkerItemService();
+                return services
+                    .AddStorageFactoryService()
+                    .AddSettingsManagerService()
+                    .AddWebImageSupplierService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddResizeWorkerItemService();
+            }
+
+            return services;
         }
     }
 }

@@ -190,11 +190,15 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
     {
         public static DIHelper AddStorageHelperService(this DIHelper services)
         {
-            services.TryAddScoped<StorageHelper>();
-            return services
-                .AddUserPhotoManagerService()
-                .AddStorageFactoryService()
-                .AddTenantManagerService();
+            if (services.TryAddScoped<StorageHelper>())
+            {
+                return services
+                    .AddUserPhotoManagerService()
+                    .AddStorageFactoryService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

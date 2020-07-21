@@ -29,6 +29,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text.Json.Serialization;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -172,13 +173,17 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static DIHelper AddTenantInfoSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<TenantInfoSettingsHelper>();
+            if (services.TryAddScoped<TenantInfoSettingsHelper>())
+            {
 
-            return services
-                .AddWebImageSupplierService()
-                .AddStorageFactoryService()
-                .AddTenantManagerService()
-                .AddSettingsManagerService();
+                return services
+                    .AddWebImageSupplierService()
+                    .AddStorageFactoryService()
+                    .AddTenantManagerService()
+                    .AddSettingsManagerService();
+            }
+
+            return services;
         }
     }
 }

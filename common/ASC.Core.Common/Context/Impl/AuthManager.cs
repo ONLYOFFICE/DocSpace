@@ -85,11 +85,15 @@ namespace ASC.Core
     {
         public static DIHelper AddAuthManager(this DIHelper services)
         {
-            services.TryAddScoped<AuthManager>();
-            return services
-                .AddUserService()
-                .AddUserFormatter()
-                .AddUserManagerService();
+            if (services.TryAddScoped<AuthManager>())
+            {
+                return services
+                    .AddUserService()
+                    .AddUserFormatter()
+                    .AddUserManagerService();
+            }
+
+            return services;
         }
     }
 }

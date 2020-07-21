@@ -395,12 +395,16 @@ namespace ASC.Core.Notify.Signalr
     {
         public static DIHelper AddSignalrServiceClient(this DIHelper services)
         {
-            services.TryAddScoped<SignalrServiceClient>();
-            services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
+            if (services.TryAddScoped<SignalrServiceClient>())
+            {
+                services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
 
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+                return services
+                    .AddTenantManagerService()
+                    .AddCoreSettingsService();
+            }
+
+            return services;
         }
     }
 }

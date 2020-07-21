@@ -123,12 +123,13 @@ namespace ASC.Core.Caching
     {
         public static DIHelper AddAzService(this DIHelper services)
         {
-            services.AddCoreDbContextService();
-
-            services.TryAddScoped<DbAzService>();
-            services.TryAddScoped<IAzService, CachedAzService>();
-            services.TryAddSingleton<AzServiceCache>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            if (services.TryAddScoped<DbAzService>())
+            {
+                services.TryAddScoped<IAzService, CachedAzService>();
+                services.TryAddSingleton<AzServiceCache>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.AddCoreDbContextService();
+            }
 
             return services;
         }

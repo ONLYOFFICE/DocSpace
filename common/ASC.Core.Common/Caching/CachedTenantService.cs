@@ -33,6 +33,7 @@ using ASC.Common.Utils;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
@@ -306,20 +307,24 @@ namespace ASC.Core.Caching
     {
         public static DIHelper AddTenantService(this DIHelper services)
         {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            services.TryAddSingleton<TenantDomainValidator>();
-            services.TryAddSingleton<TimeZoneConverter>();
-            services.TryAddSingleton<TenantServiceCache>();
+            if (services.TryAddScoped<DbTenantService>())
+            {
+                services.TryAddScoped<ITenantService, CachedTenantService>();
 
-            services.TryAddScoped<DbTenantService>();
-            services.TryAddScoped<ITenantService, CachedTenantService>();
+                services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
+                services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();
 
-            services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
-            services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.TryAddSingleton<TenantDomainValidator>();
+                services.TryAddSingleton<TimeZoneConverter>();
+                services.TryAddSingleton<TenantServiceCache>();
 
-            return services
-                .AddCoreBaseSettingsService()
-                .AddTenantDbContextService();
+                return services
+                    .AddCoreBaseSettingsService()
+                    .AddTenantDbContextService();
+            }
+
+            return services;
         }
     }
 }

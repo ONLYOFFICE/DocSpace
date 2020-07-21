@@ -657,14 +657,18 @@ namespace ASC.Core
     {
         public static DIHelper AddUserManagerService(this DIHelper services)
         {
-            services.TryAddSingleton<UserManagerConstants>();
-            services.TryAddScoped<UserManager>();
+            if (services.TryAddScoped<UserManager>())
+            {
+                services.TryAddSingleton<UserManagerConstants>();
 
-            return services
-                .AddUserService()
-                .AddTenantManagerService()
-                .AddConstantsService()
-                .AddPermissionContextService();
+                return services
+                    .AddUserService()
+                    .AddTenantManagerService()
+                    .AddConstantsService()
+                    .AddPermissionContextService();
+            }
+
+            return services;
         }
     }
 }

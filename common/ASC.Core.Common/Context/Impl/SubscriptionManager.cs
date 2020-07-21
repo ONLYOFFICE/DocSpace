@@ -153,10 +153,14 @@ namespace ASC.Core
     {
         public static DIHelper AddSubscriptionManagerService(this DIHelper services)
         {
-            services.TryAddScoped<SubscriptionManager>();
-            return services
-                    .AddSubscriptionService()
-                    .AddTenantManagerService();
+            if (services.TryAddScoped<SubscriptionManager>())
+            {
+                return services
+                        .AddSubscriptionService()
+                        .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

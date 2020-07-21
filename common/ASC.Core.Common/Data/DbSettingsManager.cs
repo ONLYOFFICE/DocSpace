@@ -333,11 +333,15 @@ namespace ASC.Core.Data
     {
         public static DIHelper AddDbSettingsManagerService(this DIHelper services)
         {
-            services.TryAddSingleton<DbSettingsManagerCache>();
-            services.TryAddScoped<DbSettingsManager>();
-            services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
+            if (services.TryAddScoped<DbSettingsManager>())
+            {
+                services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
+                services.TryAddSingleton<DbSettingsManagerCache>();
 
-            return services.AddWebstudioDbContextService();
+                return services.AddWebstudioDbContextService();
+            }
+
+            return services;
         }
     }
 }

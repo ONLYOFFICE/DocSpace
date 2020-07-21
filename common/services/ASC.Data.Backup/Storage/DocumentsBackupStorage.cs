@@ -204,12 +204,15 @@ namespace ASC.Data.Backup.Storage
     {
         public static DIHelper AddDocumentsBackupStorage(this DIHelper services)
         {
-            services.TryAddScoped<DocumentsBackupStorage>();
-            return services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddStorageFactoryService()
-                .AddDaoFactoryService();
+            if (services.TryAddScoped<DocumentsBackupStorage>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddSecurityContextService()
+                    .AddStorageFactoryService()
+                    .AddDaoFactoryService();
+            }
+            return services;
         }
     }
 }

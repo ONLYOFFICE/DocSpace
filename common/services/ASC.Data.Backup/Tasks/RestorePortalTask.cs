@@ -331,23 +331,19 @@ namespace ASC.Data.Backup.Tasks
     {
         public static DIHelper AddRestorePortalTaskService(this DIHelper services)
         {
-            services.TryAddScoped<RestorePortalTask>();
-            services.TryAddScoped<AscCacheNotify>();
-            return services
-                .AddCoreConfigurationService()
-                .AddStorageFactoryService()
-                .AddStorageFactoryConfigService()
-                .AddModuleProvider()
-                .AddCoreBaseSettingsService()
-                .AddLicenseReaderService();
-            /*
-             private CoreBaseSettings CoreBaseSettings { get; set; }
-        private LicenseReader LicenseReader { get; set; }
-        private AscCacheNotify AscCacheNotify { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        private ModuleProvider ModuleProvider { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
-        private DbFactory DbFactory { get; set; }*/
+            if (services.TryAddScoped<RestorePortalTask>())
+            {
+                services.TryAddScoped<AscCacheNotify>();
+                return services
+                    .AddCoreConfigurationService()
+                    .AddStorageFactoryService()
+                    .AddStorageFactoryConfigService()
+                    .AddModuleProvider()
+                    .AddCoreBaseSettingsService()
+                    .AddLicenseReaderService();
+            }
+
+            return services;
         }
     }
 }

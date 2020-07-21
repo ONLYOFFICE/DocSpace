@@ -273,11 +273,15 @@ namespace ASC.Web.Core
         }
         public static DIHelper AddWebItemManagerSecurity(this DIHelper services)
         {
-            services.TryAddScoped<WebItemManagerSecurity>();
-            return services
-                .AddAuthContextService()
-                .AddWebItemSecurity()
-                .AddWebItemManager();
+            if (services.TryAddScoped<WebItemManagerSecurity>())
+            {
+                return services
+                    .AddAuthContextService()
+                    .AddWebItemSecurity()
+                    .AddWebItemManager();
+            }
+
+            return services;
         }
     }
 }

@@ -87,6 +87,7 @@ If emailInputName parameter value is empty, copy action will be disabled.
 | `onCopyToClipboard`      | `func`         |    -     |         -          |        -        | Will be triggered if you press copy button, return formatted value    |
 | `onValidateInput`        | `func`         |    -     |         -          |        -        | Will be triggered whenever an PasswordInput typing, return bool value |
 | `passwordSettings`       | `object`       |    ✅    |         -          |        -        | Set of settings for password generator and validator                  |
+| `simpleView`   | `bool`       |    -     |         -          |        `false`        | Set simple view of password input (without tooltips, password progress bar and several additional buttons (copy and generate password)                                              |
 | `style`                  | `obj`, `array` |    -     |         -          |        -        | Accepts css style                                                     |
 | `tooltipPasswordCapital` | `string`       |    -     |         -          |        -        | Capital text translation tooltip                                      |
 | `tooltipPasswordDigits`  | `string`       |    -     |         -          |        -        | Digit text translation tooltip                                        |

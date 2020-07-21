@@ -440,10 +440,14 @@ namespace ASC.Web.Core.Files
     {
         public static DIHelper AddFileUtilityService(this DIHelper services)
         {
-            services.TryAddScoped<FileUtility>();
-            return services
-                .AddFilesLinkUtilityService()
-                .AddFilesDbContextService();
+            if (services.TryAddScoped<FileUtility>())
+            {
+                return services
+                    .AddFilesLinkUtilityService()
+                    .AddFilesDbContextService();
+            }
+
+            return services;
         }
     }
 }

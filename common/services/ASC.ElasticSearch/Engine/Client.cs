@@ -132,10 +132,14 @@ namespace ASC.ElasticSearch
     {
         public static DIHelper AddClientService(this DIHelper services)
         {
-            services.TryAddScoped<Client>();
-            return services
-                .AddSettingsService()
-                .AddCoreConfigurationService();
+            if (services.TryAddScoped<Client>())
+            {
+                return services
+                    .AddSettingsService()
+                    .AddCoreConfigurationService();
+            }
+
+            return services;
         }
     }
 }
