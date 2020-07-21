@@ -119,13 +119,6 @@ const WizardContainer = styled.div`
       padding-left: 15px;
     }
 
-    .wizard-input-email {
-      width: 100%;
-      height: 44px;
-      font-size: 16px;
-      line-height: 22px;
-      padding-left: 16px;
-    }
 
     .wizard-pass { 
       margin-top: 16px;
@@ -546,10 +539,9 @@ class Body extends Component {
     
     const inputEmail = !isOwner 
       ? <EmailInput
-          className="wizard-input-email"
           tabIndex={1}
-          id="input-email"
-          name="email-wizard"
+          size="large"
+          scale={true}
           placeholder={t('email')}
           emailSettings={settings}
           onValidateInput={this.onEmailHandler}
