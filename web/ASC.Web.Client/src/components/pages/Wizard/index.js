@@ -128,14 +128,9 @@ const WizardContainer = styled.div`
     }
 
     .wizard-pass { 
-      width: 100%;
       margin-top: 16px;
     }
-
-    .wizard-pass input {
-      height: 44px;
-    }
-
+    
     .password-tooltip {
       height: 14px;
       text-align: left;
@@ -548,12 +543,6 @@ class Body extends Component {
   renderInputBox = () => {
     const { t, isOwner, settingsPassword } = this.props;
     const { isRequiredLicense } = this.state;
-
-    const tooltipPassTitle = t('tooltipPasswordTitle');
-    const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
-    const tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : null;
-    const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
-    const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
     
     const inputEmail = !isOwner 
       ? <EmailInput
@@ -592,16 +581,10 @@ class Body extends Component {
         <PasswordInput
           className="wizard-pass"
           tabIndex={2}
-          id="first"
           inputName="firstPass"
-          emailInputName="email-wizard"
-          inputWidth="100%"
-          NewPasswordButtonVisible={false}
-          tooltipPasswordTitle={tooltipPassTitle}
-          tooltipPasswordLength={tooltipPassLength}
-          tooltipPasswordDigits={tooltipPassDigits}
-          tooltipPasswordCapital={tooltipPassCapital}
-          tooltipPasswordSpecial={tooltipPassSpecial}
+          simpleView={true}
+          size="large"
+          scale={true}
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
           isDisabled={false}
