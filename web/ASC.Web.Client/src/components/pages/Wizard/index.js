@@ -72,7 +72,8 @@ const WizardContainer = styled.div`
     }
 
     @media(max-width: 415px) {
-      margin-top: 32px;
+      width: 311px;
+      margin: 32px auto 0 auto;
     }
   }
 
@@ -119,9 +120,14 @@ const WizardContainer = styled.div`
       padding-left: 15px;
     }
 
-
-    .wizard-pass { 
+    .wizard-pass-box { 
+      width: 360px;
       margin-top: 16px;
+
+      @media ${tablet} {
+        width: 100%;
+        
+      }
     }
     
     .password-tooltip {
@@ -577,13 +583,14 @@ class Body extends Component {
     return (
       <Box className="input-box">
         {inputEmail}
+        <Box className="wizard-pass-box" >
         <PasswordInput
-          className="wizard-pass"
+          className="wizard-pass" 
           emailInputName="wizard-email"
           tabIndex={2}
           inputName="firstPass"
-          inputWidth="100%"
           size="large"
+          
           scale={true}
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
@@ -597,6 +604,7 @@ class Body extends Component {
           onChange={this.onChangePassword}
           onValidateInput={this.isValidPassHandler}
         />
+        </Box>
         { inputLicenseFile }
         <Box className="checkbox-container">
           <Checkbox
