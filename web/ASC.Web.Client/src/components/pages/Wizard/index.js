@@ -376,7 +376,10 @@ class Body extends Component {
     if (e.key === "Enter") this.onContinueHandler();
   }
 
-  isValidPassHandler = val => this.setState({ isValidPass: val });
+  isValidPassHandler = val =>{ 
+    console.log(val)
+    this.setState({ isValidPass: val })
+  };
   
   onChangePassword = e => this.setState({ password: e.target.value });
   
@@ -533,9 +536,12 @@ class Body extends Component {
   renderInputBox = () => {
     const { t, isOwner, settingsPassword } = this.props;
     const { isRequiredLicense } = this.state;
+
+    console.log(settingsPassword)
     
     const inputEmail = !isOwner 
       ? <EmailInput
+          name="wizard-email"
           tabIndex={1}
           size="large"
           scale={true}
@@ -562,13 +568,14 @@ class Body extends Component {
             onInput={this.onInputFile}
             ref={this.inputRef}/>
         </InputBlock>
-      : null;
+      : null; 
 
     return (
       <Box className="input-box">
         {inputEmail}
         <PasswordInput
           className="wizard-pass"
+          emailInputName="wizard-email"
           tabIndex={2}
           inputName="firstPass"
           simpleView={true}
@@ -576,6 +583,9 @@ class Body extends Component {
           scale={true}
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
+          settingsDigits={settingsPassword.digits}
+          settingsSpecSymbols={settingsPassword.specSymbols}
+          settingsUpperCase={settingsPassword.upperCase}
           isDisabled={false}
           placeholder={t('placeholderPass')}
           onChange={this.onChangePassword}
