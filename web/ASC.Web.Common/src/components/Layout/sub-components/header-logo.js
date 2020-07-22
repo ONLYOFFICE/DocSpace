@@ -36,7 +36,7 @@ const HeaderLogoContainer = styled.div`
       margin: 0px 20px 0 ${props => (props.logged ? "6px" : "144px")};
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       margin: 4px 20px 0 ${props => (props.logged ? "6px" : "32px")};
     }
   }

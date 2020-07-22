@@ -22,47 +22,76 @@ import SubModalDialog from "./sub-components/modal-dialog";
 import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 
-const FormContainer = styled.form`
-  margin: 32px auto 0 auto;
-  max-width: 311px;
+const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 120px auto 0 auto;
+  max-width: 960px;
 
   @media (max-width: 768px) {
-       max-width: 475px;
+    max-width: 475px;
     }
   @media (max-width: 375px) {
-       max-width: 311px;
+    margin: 72px auto 0 auto;
+    max-width: 311px;
     }
 
-  .login-forgot-wrapper {
-    height: 36px;
-    padding-bottom: 14px;
+  .greeting-title {
+    width: 100%;
 
-    .login-checkbox-wrapper {
-      position: absolute;
-      display: inline-flex;
+    @media (max-width: 768px) {
+      text-align: left;
+    }
+    @media (max-width: 375px) {
+      font-size: 23px;
+    }
+  }
 
-      .login-checkbox {
-        float: left;
-        span {
-          font-size: 12px;
-        }
-      }
-      .login-tooltip {
+  .auth-form-container {
+    margin: 32px 22.5% 0 22.5%;
+    width: 32.4%;
+
+    @media (max-width: 768px) {
+      margin: 32px 0 0 0;
+      width: 100%
+    }
+    @media (max-width: 375px) {
+
+    }
+
+    .login-forgot-wrapper {
+      height: 36px;
+      padding: 14px 0;
+
+      .login-checkbox-wrapper {
+        position: absolute;
         display: inline-flex;
-        
-        @media(min-width: 1025px) {
-          margin-left: 8px;
-          margin-top: 4px;
-        }
-        @media(max-width: 1024px) {
-          padding: 4px 8px 8px 8px;
-        }        
+
+        .login-checkbox {
+          float: left;
+           span {
+            font-size: 12px;
+           }
+         }
+
+          .login-tooltip {
+            display: inline-flex;
+
+             @media(min-width: 1025px) {
+               margin-left: 8px;
+               margin-top: 4px;
+             }
+             @media(max-width: 1024px) {
+               padding: 4px 8px 8px 8px;
+             }
       }
     }
-    .login-link {
-      float: right;
-      line-height: 16px;
-    }
+
+      .login-link {
+        float: right;
+        line-height: 16px;
+      }
   }
 
   .login-button {
@@ -82,6 +111,7 @@ const FormContainer = styled.form`
   .login-bottom-text {
     margin: 0 8px;
   }
+}
 `;
 
 const RegisterContainer = styled(Box)`
@@ -254,132 +284,135 @@ class Form extends Component {
 
     return (
       <>
-        <Box marginProp="120px 0 0 0" displayProp="flex" justifyContent="center" widthProp="100%">
-          <Box>
-            <Text fontSize="32px" fontWeight={600} textAlign="center">
-              {greetingTitle}
-            </Text>
-          </Box>
-        </Box>
-        <FormContainer>
-          <FieldContainer
-            isVertical={true}
-            labelVisible={false}
-            hasError={!identifierValid}
-            errorMessage={t("RequiredFieldMessage")}
-            >
-            <TextInput
-              id="login"
-              name="login"
-              hasError={!identifierValid}
-              value={identifier}
-              placeholder={t("RegistrationEmailWatermark")}
-              size="large"
-              scale={true}
-              isAutoFocussed={true}
-              tabIndex={1}
-              isDisabled={isLoading}
-              autoComplete="username"
-              onChange={this.onChangeLogin}
-              onKeyDown={this.onKeyPress}
-            />
-          </FieldContainer>
-          <FieldContainer
-          isVertical={true} 
-          labelVisible={false} 
-          hasError={!passwordValid} 
-          errorMessage={t("RequiredFieldMessage")}
-          >
-            <PasswordInput
-              simpleView={true}
-              passwordSettings={this.settings}
-              id="password"
-              inputName="password"
-              placeholder={t("Password")}
-              type="password"
-              hasError={!passwordValid}
-              inputValue={password}
-              size="large"
-              scale={true}
-              tabIndex={1}
-              isDisabled={isLoading}
-              autoComplete="current-password"
-              onChange={this.onChangePassword}
-              onKeyDown={this.onKeyPress}
-            />
-          </FieldContainer>
-          <div className="login-forgot-wrapper">
-            <div className="login-checkbox-wrapper">
-              <Checkbox
-                className="login-checkbox"
-                isChecked={isChecked}
-                onChange={this.onChangeCheckbox}
-                label={<Text fontSize='13px'>{t("Remember")}</Text>}
-              />
-              <HelpButton
-                className="login-tooltip"
-                helpButtonHeaderContent={t("CookieSettingsTitle")}
-                tooltipContent={
-                  <Text fontSize='12px'>{t("RememberHelper")}</Text>
-                }
-              />
-            </div>
+        <LoginContainer>
 
-            <Link
-              fontSize='13px'
-              color="#316DAA"
-              className="login-link"
-              type="page"
-              isHovered={false}
-              onClick={this.onClick}
-            >
-              {t("ForgotPassword")}
-            </Link>
-          </div>
-
-          {openDialog ? (
-            <SubModalDialog
-              openDialog={openDialog}
-              isLoading={isLoading}
-              email={email}
-              emailError={emailError}
-              onChangeEmail={this.onChangeEmail}
-              onSendPasswordInstructions={this.onSendPasswordInstructions}
-              onDialogClose={this.onDialogClose}
-              t={t}
-            />
-          ) : null}
-
-          <Button
-            id="button"
-            className="login-button"
-            primary
-            size="large"
-            scale={true}
-            label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-            tabIndex={1}
-            isDisabled={isLoading}
-            isLoading={isLoading}
-            onClick={this.onSubmit}
-          />
-
-          {params.confirmedEmail && (
-            <Text isBold={true} fontSize='16px'>
-              {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-            </Text>
-          )}
-          <Text fontSize='14px' color="#c30">
-            {errorText}
+          <Text fontSize="32px" fontWeight={600} textAlign="center" className="greeting-title">
+            {greetingTitle}
           </Text>
 
-          {socialButtons.length ? (<Box displayProp="flex" alignItems="center">
-            <div className="login-bottom-border"></div>
-            <Text className="login-bottom-text" color="#A3A9AE">{t("Or")}</Text>
-            <div className="login-bottom-border"></div>
-          </Box>
-          ) : null}
+          <form className="auth-form-container">
 
-        </FormContainer>
+            <FieldContainer
+              isVertical={true}
+              labelVisible={false}
+              hasError={!identifierValid}
+              errorMessage={t("RequiredFieldMessage")}
+            >
+              <TextInput
+                id="login"
+                name="login"
+                hasError={!identifierValid}
+                value={identifier}
+                placeholder={t("RegistrationEmailWatermark")}
+                size="large"
+                scale={true}
+                isAutoFocussed={true}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="username"
+                onChange={this.onChangeLogin}
+                onKeyDown={this.onKeyPress}
+              />
+            </FieldContainer>
+            <FieldContainer
+              isVertical={true}
+              labelVisible={false}
+              hasError={!passwordValid}
+              errorMessage={t("RequiredFieldMessage")}
+            >
+              <PasswordInput
+                simpleView={true}
+                passwordSettings={this.settings}
+                id="password"
+                inputName="password"
+                placeholder={t("Password")}
+                type="password"
+                hasError={!passwordValid}
+                inputValue={password}
+                size="large"
+                scale={true}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="current-password"
+                onChange={this.onChangePassword}
+                onKeyDown={this.onKeyPress}
+              />
+            </FieldContainer>
+            <div className="login-forgot-wrapper">
+              <div className="login-checkbox-wrapper">
+                <Checkbox
+                  className="login-checkbox"
+                  isChecked={isChecked}
+                  onChange={this.onChangeCheckbox}
+                  label={<Text fontSize='13px'>{t("Remember")}</Text>}
+                />
+                <HelpButton
+                  className="login-tooltip"
+                  helpButtonHeaderContent={t("CookieSettingsTitle")}
+                  tooltipContent={
+                    <Text fontSize='12px'>{t("RememberHelper")}</Text>
+                  }
+                />
+              </div>
+
+              <Link
+                fontSize='13px'
+                color="#316DAA"
+                className="login-link"
+                type="page"
+                isHovered={false}
+                onClick={this.onClick}
+              >
+                {t("ForgotPassword")}
+              </Link>
+            </div>
+
+            {openDialog ? (
+              <SubModalDialog
+                openDialog={openDialog}
+                isLoading={isLoading}
+                email={email}
+                emailError={emailError}
+                onChangeEmail={this.onChangeEmail}
+                onSendPasswordInstructions={this.onSendPasswordInstructions}
+                onDialogClose={this.onDialogClose}
+                t={t}
+              />
+            ) : null}
+
+            <Button
+              id="button"
+              className="login-button"
+              primary
+              size="large"
+              scale={true}
+              label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+              tabIndex={1}
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={this.onSubmit}
+            />
+
+            {params.confirmedEmail && (
+              <Text isBold={true} fontSize='16px'>
+                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+              </Text>
+            )}
+            <Text fontSize='14px' color="#c30">
+              {errorText}
+            </Text>
+
+            {socialButtons.length ? (<Box displayProp="flex" alignItems="center">
+              <div className="login-bottom-border"></div>
+              <Text className="login-bottom-text" color="#A3A9AE">{t("Or")}</Text>
+              <div className="login-bottom-border"></div>
+            </Box>
+            ) : null}
+
+          </form>
+
+        </LoginContainer>
+
       </>
     );
   }

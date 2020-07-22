@@ -5,24 +5,25 @@ import styled from "styled-components";
 import PropTypes from 'prop-types';
 
 const RecoverWrapper = styled(Box)`
- padding: 0 240px 0 0;
+    margin: 0 16.7% 0 0;
+
   @media(max-width: 768px) {
-    padding: 0 144px 0 0;
+    margin: 0 18.8% 0 0;
 }
-  @media(max-width: 375px) {
-    padding: 0 32px 0 0;
+  @media(max-width: 450px) {
+    margin: 0 8.5% 0 0;
 }
 `;
 
 const RecoverContainer = styled(Box)`
  cursor: pointer;
   .recover-icon {
-   @media(max-width: 375px) {
+   @media(max-width: 620px) {
     padding: 16px;
    }
 }
   .recover-text {
-   @media(max-width: 375px) {
+   @media(max-width: 620px) {
     display: none;
    }
 }
@@ -41,7 +42,8 @@ const RecoverAccess = ({ t }) => {
 
     return (
         <>
-            <RecoverWrapper widthProp="100%"
+            <RecoverWrapper
+                widthProp="100%"
                 heightProp="100%"
                 displayProp="flex"
                 justifyContent="flex-end"
