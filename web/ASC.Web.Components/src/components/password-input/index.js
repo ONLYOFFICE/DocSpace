@@ -343,7 +343,8 @@ class PasswordInput extends React.Component {
       className,
       tooltipOffsetLeft,
       style,
-      simpleView
+      simpleView,
+      hideNewPasswordButton
     } = this.props;
     const {
       type,
@@ -465,14 +466,18 @@ class PasswordInput extends React.Component {
             >
               {inputGroup}
             </PasswordProgress>
-            <NewPasswordButton>
-              <Icons.RefreshIcon
-                size="medium"
-                color={iconsColor}
-                isfill={true}
-                onClick={this.onGeneratePassword}
-              />
-            </NewPasswordButton>
+            {!hideNewPasswordButton 
+              ? <NewPasswordButton>
+                  <Icons.RefreshIcon
+                    size="medium"
+                    color={iconsColor}
+                    isfill={true}
+                    onClick={this.onGeneratePassword}
+                  />
+                </NewPasswordButton>
+              : null
+            }
+            
             <CopyLink>
               <Link
                 type="action"
@@ -512,6 +517,7 @@ PasswordInput.propTypes = {
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
+  hideNewPasswordButton: PropTypes.bool,
 
   clipActionResource: PropTypes.string,
   clipEmailResource: PropTypes.string,
@@ -543,6 +549,7 @@ PasswordInput.defaultProps = {
   isDisabled: false,
   size: "base",
   scale: true,
+  hideNewPasswordButton: false,
 
   clipEmailResource: "E-mail ",
   clipPasswordResource: "Password ",
