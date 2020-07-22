@@ -30,5 +30,7 @@
 
   "errorPassword": "Password does not meet the requirements",
   "errorEmail": "Invalid Email Address",
-  "errorLicenseRead": "You must accept the terms of the license agreement"
+  "errorLicenseRead": "You must accept the terms of the license agreement",
+
+  "generatePassword": "Generate password"
 }

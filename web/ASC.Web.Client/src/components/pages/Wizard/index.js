@@ -139,6 +139,11 @@ const WizardContainer = styled.div`
       display: none;
     }
 
+    .generate-pass-link {
+      display: block;
+      margin: 16px 0 33px 0;
+    }
+
     .checkbox-container {
       width: 100%;
       margin: 17px auto 0 auto;
@@ -286,9 +291,14 @@ class Body extends Component {
       selectLanguage: null,
       selectTimezone: null,
       isRequiredLicense: false,
+
+      emailNotNeeded: false,
+      noLicense: true,
+      baseView: true
     }
 
     this.inputRef = React.createRef();
+    this.refPassInput = React.createRef();
     document.title = t('wizardTitle');
   }
 
@@ -533,7 +543,7 @@ class Body extends Component {
 
   renderInputBox = () => {
     const { t, isOwner, settingsPassword } = this.props;
-    const { isRequiredLicense } = this.state;
+    const { isRequiredLicense, noLicense } = this.state;
 
     const tooltipPassTitle = t('tooltipPasswordTitle');
     const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
@@ -577,6 +587,7 @@ class Body extends Component {
         {inputEmail}
         <Box className="wizard-pass-box" >
         <PasswordInput
+          ref={this.refPassInput}
           className="wizard-pass" 
           emailInputName="wizard-email"
           tabIndex={2}
@@ -598,6 +609,17 @@ class Body extends Component {
         />
         </Box>
         { inputLicenseFile }
+        {noLicense 
+          ? <Link 
+              className='generate-pass-link'
+              type="action"
+              fontWeight="normal"
+              isHovered={true}
+              onClick={() => this.refPassInput.current.onGeneratePassword()}>
+                {t('generatePassword')}
+            </Link>
+          : null
+        }
         <Box className="checkbox-container">
           <Checkbox
             className="wizard-checkbox"
@@ -622,14 +644,14 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages, timezones } = this.state;
+    const { selectLanguage, selectTimezone, languages, timezones, baseView } = this.state;
     const { isOwner, t, ownerEmail, machineName } = this.props;
     
-    const titleEmail = isOwner 
+    const titleEmail = !baseView 
       ? <Text className="settings-title">{t('email')}</Text>
       : null
     
-    const contentEmail = isOwner 
+    const contentEmail = !baseView 
       ? <Link className="settings-value email-link" type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
       : null
 
