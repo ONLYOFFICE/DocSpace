@@ -126,18 +126,7 @@ const WizardContainer = styled.div`
 
       @media ${tablet} {
         width: 100%;
-        
       }
-    }
-    
-    .password-tooltip {
-      height: 14px;
-      text-align: left;
-      padding: 0;
-      margin: 0 auto;
-      font-size: 10px;
-      line-height: 14px;
-      color: #A3A9AE;
     }
 
     .input-block {
@@ -188,11 +177,11 @@ const WizardContainer = styled.div`
       margin: 0 0 12px 0px;
     }
 
-    .values {
+    .settings-values {
       margin-left: 16px;
     }
 
-    .text, .value {
+    .settings-value {
       font-weight: 600;
       font-size: 13px;
       line-height: 20px;
@@ -382,10 +371,7 @@ class Body extends Component {
     if (e.key === "Enter") this.onContinueHandler();
   }
 
-  isValidPassHandler = val =>{ 
-    console.log(val)
-    this.setState({ isValidPass: val })
-  };
+  isValidPassHandler = val => this.setState({ isValidPass: val });
   
   onChangePassword = e => this.setState({ password: e.target.value });
   
@@ -459,12 +445,14 @@ class Body extends Component {
   onSaveEmailHandler = () => this.setState({ visibleModal: false });
 
   onCloseModal = () => {
-    this.setState({ visibleModal: false, errorLoading: false, errorMessage: null });
+    this.setState({ 
+      visibleModal: false, 
+      errorLoading: false, 
+      errorMessage: null 
+    });
   }
 
-  onSelectTimezoneHandler = el => {
-    this.setState({ selectTimezone: el });
-  }
+  onSelectTimezoneHandler = el => this.setState({ selectTimezone: el });
 
   onSelectLanguageHandler = lang => {
     this.setState({ 
@@ -649,11 +637,11 @@ class Body extends Component {
           <Text className="settings-title">{t('language')}</Text>
           <Text className="settings-title timezone-title">{t('timezone')}</Text>
         </Box>
-        <Box className="values">
-          <Text className="text value">{machineName}</Text>
+        <Box className="settings-values">
+          <Text className="text settings-value">{machineName}</Text>
           {contentEmail}
           <GroupButton 
-            className="drop-down value language-value" 
+            className="drop-down settings-value language-value" 
             label={selectLanguage.label} 
             isDropdown={true}
             dropDownMaxHeight={300}>
@@ -669,7 +657,7 @@ class Body extends Component {
           </GroupButton>
           
           <GroupButton 
-            className="drop-down value timezone-value" 
+            className="drop-down settings-value timezone-value" 
             label={selectTimezone.label} 
             isDropdown={true}
             dropDownMaxHeight={300} >
