@@ -334,9 +334,13 @@ class PasswordInput extends React.Component {
     special
   ) => {
     return (
+      <>
+      <div className="break"></div>
       <Text className="text-tooltip" fontSize="10px" color="#A3A9AE">
         {length}, {digits}, {capital}, {special}
       </Text>
+      <div className="break"></div>
+      </>
     );
   }
 
@@ -513,7 +517,6 @@ class PasswordInput extends React.Component {
                 </NewPasswordButton>
               : null
             }
-            <div class="break"></div>
             {textTooltip}
             <CopyLink>
               <Link
