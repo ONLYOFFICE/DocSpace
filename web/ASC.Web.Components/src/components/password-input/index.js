@@ -42,6 +42,7 @@ const StyledInput = styled(SimpleInput)`
 
   .text-tooltip {
     margin-top: -11px;
+    margin-bottom: -10px;
   }
 `;
 
