@@ -34,6 +34,15 @@ const StyledInput = styled(SimpleInput)`
   .append {
     padding-right: 8px;
   }
+
+  .break {
+    flex-basis: 100%;
+    height: 0;
+  }
+
+  .text-tooltip {
+    margin-top: -11px;
+  }
 `;
 
 const PasswordProgress = styled.div`
@@ -317,6 +326,19 @@ class PasswordInput extends React.Component {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
+  renderTextTooltip = (
+    length,
+    digits,
+    capital,
+    special
+  ) => {
+    return (
+      <Text className="text-tooltip" fontSize="10px" color="#A3A9AE">
+        {length}, {digits}, {capital}, {special}
+      </Text>
+    );
+  }
+
   render() {
     //console.log('PasswordInput render()');
     const {
@@ -345,7 +367,8 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       hideNewPasswordButton,
-      isDisableTooltip
+      isDisableTooltip,
+      isTextTooltipVisible
     } = this.props;
     const {
       type,
@@ -362,6 +385,15 @@ class PasswordInput extends React.Component {
 
     const iconsColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
     const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
+
+    const textTooltip = isTextTooltipVisible 
+      ? this.renderTextTooltip(
+        tooltipPasswordLength,
+        tooltipPasswordDigits,
+        tooltipPasswordCapital,
+        tooltipPasswordSpecial
+      ) 
+      : null;
 
     const tooltipContent = !isDisableTooltip 
       ? (
@@ -480,7 +512,8 @@ class PasswordInput extends React.Component {
                 </NewPasswordButton>
               : null
             }
-            
+            <div class="break"></div>
+            {textTooltip}
             <CopyLink>
               <Link
                 type="action"
@@ -520,8 +553,10 @@ PasswordInput.propTypes = {
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
+
   hideNewPasswordButton: PropTypes.bool,
   isDisableTooltip: PropTypes.bool,
+  isTextTooltipVisible: PropTypes.bool,
 
   clipActionResource: PropTypes.string,
   clipEmailResource: PropTypes.string,
@@ -553,8 +588,10 @@ PasswordInput.defaultProps = {
   isDisabled: false,
   size: "base",
   scale: true,
+
   hideNewPasswordButton: false,
   isDisableTooltip: false,
+  isTextTooltipVisible: false,
 
   clipEmailResource: "E-mail ",
   clipPasswordResource: "Password ",
