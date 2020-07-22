@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import TextInput from '../text-input';
-import { Icons } from '../icons';
-import IconButton from '../icon-button';
-import commonInputStyle from '../text-input/common-input-styles';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import TextInput from "../text-input";
+import { Icons } from "../icons";
+import IconButton from "../icon-button";
+import commonInputStyle from "../text-input/common-input-styles";
 
 const iconNames = Object.keys(Icons);
 
@@ -17,7 +17,7 @@ const StyledIconBlock = styled.div`
   height: 100%;
   padding-right: 8px;
   padding-left: 1px;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 const StyledChildrenBlock = styled.div`
@@ -27,9 +27,14 @@ const StyledChildrenBlock = styled.div`
 `;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
-  <div {...props}></div>
-);
+const CustomInputGroup = ({
+  isIconFill,
+  hasError,
+  hasWarning,
+  isDisabled,
+  scale,
+  ...props
+}) => <div {...props}></div>;
 const StyledInputGroup = styled(CustomInputGroup)`
   display: flex;
 
@@ -50,12 +55,13 @@ class InputBlock extends React.Component {
   constructor(props) {
     super(props);
   }
-  onIconClick = (e) => {
-    if (typeof this.props.onIconClick === "function" && !this.props.isDisabled) this.props.onIconClick(e);
-  }
-  onChange = (e) => {
+  onIconClick = e => {
+    if (typeof this.props.onIconClick === "function" && !this.props.isDisabled)
+      this.props.onIconClick(e);
+  };
+  onChange = e => {
     if (typeof this.props.onChange === "function") this.props.onChange(e);
-  }
+  };
 
   render() {
     let iconButtonSize = 0;
@@ -94,16 +100,16 @@ class InputBlock extends React.Component {
       iconButtonSize = iconSize;
     } else {
       switch (size) {
-        case 'base':
+        case "base":
           iconButtonSize = 15;
           break;
-        case 'middle':
+        case "middle":
           iconButtonSize = 18;
           break;
-        case 'big':
+        case "big":
           iconButtonSize = 21;
           break;
-        case 'huge':
+        case "huge":
           iconButtonSize = 24;
           break;
       }
@@ -120,9 +126,7 @@ class InputBlock extends React.Component {
         style={style}
       >
         <div className="prepend">
-          <StyledChildrenBlock>
-            {children}
-          </StyledChildrenBlock>
+          <StyledChildrenBlock>{children}</StyledChildrenBlock>
         </div>
         <TextInput
           id={id}
@@ -147,42 +151,41 @@ class InputBlock extends React.Component {
           mask={mask}
           keepCharPositions={keepCharPositions}
         />
-        {
-          iconNames.includes(iconName) && (
-            <div className="append">
-              <StyledIconBlock 
+        {iconNames.includes(iconName) && (
+          <div className="append">
+            <StyledIconBlock
+              isDisabled={isDisabled}
+              onClick={this.onIconClick}
+              isClickable={typeof onIconClick === "function"}
+            >
+              <IconButton
+                size={iconButtonSize}
+                color={iconColor}
+                hoverColor={hoverColor}
+                iconName={iconName}
+                isFill={isIconFill}
                 isDisabled={isDisabled}
-                onClick={this.onIconClick}
-                isClickable={typeof onIconClick === 'function'}>
-                <IconButton
-                  size={iconButtonSize}
-                  color={iconColor}
-                  hoverColor={hoverColor}
-                  iconName={iconName}
-                  isFill={isIconFill}
-                  isDisabled={isDisabled}
-                  isClickable={typeof onIconClick === 'function'}
-                />
-              </StyledIconBlock>
-            </div>
-          )}
+                isClickable={typeof onIconClick === "function"}
+              />
+            </StyledIconBlock>
+          </div>
+        )}
       </StyledInputGroup>
     );
   }
 }
 
 InputBlock.propTypes = {
-
   id: PropTypes.string,
   name: PropTypes.string,
-  type: PropTypes.oneOf(['text', 'password']),
+  type: PropTypes.oneOf(["text", "password"]),
   maxLength: PropTypes.number,
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
   keepCharPositions: PropTypes.bool,
 
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'large']),
+  size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
 
   onChange: PropTypes.func,
@@ -210,26 +213,25 @@ InputBlock.propTypes = {
 
   className: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
-}
+};
 
 InputBlock.defaultProps = {
-
-  type: 'text',
+  type: "text",
   maxLength: 255,
-  size: 'base',
+  size: "base",
   scale: false,
   tabIndex: -1,
   hasError: false,
   hasWarning: false,
-  autoComplete: 'off',
+  autoComplete: "off",
 
-  value: '',
+  value: "",
   iconName: "",
   iconColor: "#ffffff",
   hoverColor: "#ffffff",
   isIconFill: false,
   isDisabled: false,
   keepCharPositions: false
-}
+};
 
-export default InputBlock
+export default InputBlock;
