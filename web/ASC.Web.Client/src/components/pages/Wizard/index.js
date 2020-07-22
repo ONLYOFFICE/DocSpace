@@ -187,7 +187,7 @@ const WizardContainer = styled.div`
       line-height: 20px;
     } 
 
-    .link {
+    .link, .email-link {
       display: inline-block;
       margin-bottom: 16px;
     }
@@ -223,6 +223,10 @@ const WizardContainer = styled.div`
 
     @media(max-width: 415px) {
       width: 311px;
+    }
+
+    .email-link {
+      margin-bottom: 12px;
     }
   }
 
@@ -281,7 +285,7 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
-      isRequiredLicense: false
+      isRequiredLicense: false,
     }
 
     this.inputRef = React.createRef();
@@ -626,7 +630,7 @@ class Body extends Component {
       : null
     
     const contentEmail = isOwner 
-      ? <Link type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
+      ? <Link className="settings-value email-link" type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
       : null
 
     return (
