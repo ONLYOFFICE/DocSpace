@@ -18,6 +18,7 @@ storiesOf('Components|Input', module)
     const settingsSpecSymbols = boolean('settingsSpecSymbols', false);
     const simpleView = boolean('simpleView', false);
     const hideNewPasswordButton = boolean('hideNewPasswordButton', false);
+    const isDisableTooltip = boolean('isDisableTooltip', false)
 
     const fakeSettings = {
       minLength: 6,
@@ -55,6 +56,7 @@ storiesOf('Components|Input', module)
               clipPasswordResource='Password: '
               clipCopiedResource='Copied'
               hideNewPasswordButton={hideNewPasswordButton}
+              isDisableTooltip={isDisableTooltip}
               tooltipPasswordTitle='Password must contain:'
               tooltipPasswordLength={tooltipPasswordLength}
               tooltipPasswordDigits='digits'

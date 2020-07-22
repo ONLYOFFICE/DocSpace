@@ -344,7 +344,8 @@ class PasswordInput extends React.Component {
       tooltipOffsetLeft,
       style,
       simpleView,
-      hideNewPasswordButton
+      hideNewPasswordButton,
+      isDisableTooltip
     } = this.props;
     const {
       type,
@@ -362,7 +363,8 @@ class PasswordInput extends React.Component {
     const iconsColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
     const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
 
-    const tooltipContent = (
+    const tooltipContent = !isDisableTooltip 
+      ? (
       <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
         {tooltipPasswordTitle}
         <StyledTooltipItem
@@ -400,7 +402,8 @@ class PasswordInput extends React.Component {
           </StyledTooltipItem>
         )}
       </StyledTooltipContainer>
-    );
+    )
+    : null;
 
     const inputGroup = (
       <>
@@ -518,6 +521,7 @@ PasswordInput.propTypes = {
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
   hideNewPasswordButton: PropTypes.bool,
+  isDisableTooltip: PropTypes.bool,
 
   clipActionResource: PropTypes.string,
   clipEmailResource: PropTypes.string,
@@ -550,6 +554,7 @@ PasswordInput.defaultProps = {
   size: "base",
   scale: true,
   hideNewPasswordButton: false,
+  isDisableTooltip: false,
 
   clipEmailResource: "E-mail ",
   clipPasswordResource: "Password ",
