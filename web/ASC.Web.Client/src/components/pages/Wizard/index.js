@@ -84,20 +84,17 @@ const WizardContainer = styled.div`
       text-align: center;
       font-weight: 600;
       font-size: 32px;
-      line-height: 36px;
-      margin: 0px 12px;
+      margin: 0 12px;
     }
 
     .wizard-desc {
       text-align: center;
-      font-size: 13px;
-      line-height: 20px;
       margin: 10px 12px;
     }
 
     @media ${tablet} {
       .wizard-title, .wizard-desc  {
-        margin: 10px 0px;
+        margin: 10px 0;
         text-align: left;
       }
     }
@@ -113,12 +110,6 @@ const WizardContainer = styled.div`
   .input-box {
     width: 311px;
     margin: 32px auto 0 auto;
-
-    input {
-      font-size: 16px;
-      line-height: 22px;
-      padding-left: 15px;
-    }
 
     .wizard-pass-box { 
       width: 360px;
@@ -160,13 +151,11 @@ const WizardContainer = styled.div`
 
     .link {
       vertical-align: middle;
-      font-size: 13px;
-      line-height: 18px;
     }
 
     @media ${tablet} {
       width: 100%;
-      margin: 32px 0 0 0;
+      margin-top: 32px;
     }
   }
 
@@ -176,34 +165,32 @@ const WizardContainer = styled.div`
     display: flex;
     flex-direction: row;
 
-    .settings-title {
-      font-size: 13px;
-      line-height: 20px;
-      margin: 0 0 12px 0px;
+    .settings-title{
+      margin-bottom: 12px;
     }
 
     .settings-values {
+      padding: 0;
+      margin: 0;
       margin-left: 16px;
     }
 
     .settings-value {
-      font-weight: 600;
       font-size: 13px;
-      line-height: 20px;
     } 
 
-    .link, .email-link {
+    .text-value,
+    .email-value  {
+      margin-bottom: 12px;
+    }
+
+    .link, .email-value {
       display: inline-block;
       margin-bottom: 16px;
     }
 
-    .text {
-      margin: 0 0 12px 0;
-    }
-
     .drop-down {
       display: block;
-      margin: 0 0 16px 0;
     }
 
     .drop-down .value {
@@ -218,20 +205,20 @@ const WizardContainer = styled.div`
 
     .timezone-value,
     .timezone-title {
-      margin: 12px 0 0 0; 
+      margin-top: 12px; 
+    }
+
+    .timezone-value {
+      margin-left: 0;
     }
 
     @media ${tablet} {
       width: 480px;
-      margin: 32px 0 0 0;
+      margin-top: 32px;
     }
 
     @media(max-width: 415px) {
       width: 311px;
-    }
-
-    .email-link {
-      margin-bottom: 12px;
     }
   }
 
@@ -315,7 +302,6 @@ class Body extends Component {
     if(!wizardToken) { 
       history.push('/');
     } else {
-
       try {
         await Promise.all([
           getPortalPasswordSettings(wizardToken),
@@ -534,7 +520,7 @@ class Body extends Component {
         <Heading level={1} title="Wizard" className="wizard-title">
           {t('welcomeTitle')}
         </Heading>
-        <Text className="wizard-desc">
+        <Text className="wizard-desc" fontSize="13px">
           {t('desc')}
         </Text>
       </Box>
@@ -593,7 +579,6 @@ class Body extends Component {
           tabIndex={2}
           inputName="firstPass"
           size="large"
-          
           scale={true}
           inputValue={this.state.password}
           passwordSettings={settingsPassword}
@@ -614,7 +599,6 @@ class Body extends Component {
               className='generate-pass-link'
               type="action"
               fontWeight="normal"
-              isHovered={true}
               onClick={() => this.refPassInput.current.onGeneratePassword()}>
                 {t('generatePassword')}
             </Link>
@@ -635,6 +619,7 @@ class Body extends Component {
             className="link"
             type="page" 
             color="#116d9d" 
+            fontSize="13px"
             href="https://gnu.org/licenses/gpl-3.0.html" 
             isBold={false}
           >{t('licenseLink')}</Link>
@@ -652,19 +637,27 @@ class Body extends Component {
       : null
     
     const contentEmail = !baseView 
-      ? <Link className="settings-value email-link" type="action" onClick={this.onClickChangeEmail}>{ownerEmail}</Link>
+      ? <Link 
+          className="settings-value email-value" 
+          type="action" 
+          fontSize="13px" 
+          fontWeight="600" 
+          onClick={this.onClickChangeEmail}
+        >
+          {ownerEmail}
+        </Link>
       : null
 
     return (
       <Box className="settings-box">
         <Box>
-          <Text className="settings-title">{t('domain')}</Text>
+          <Text className="settings-title" fontSize="13px">{t('domain')}</Text>
           {titleEmail}
-          <Text className="settings-title">{t('language')}</Text>
-          <Text className="settings-title timezone-title">{t('timezone')}</Text>
+          <Text className="settings-title" fontSize="13px">{t('language')}</Text>
+          <Text className="settings-title timezone-title" fontSize="13px">{t('timezone')}</Text>
         </Box>
         <Box className="settings-values">
-          <Text className="text settings-value">{machineName}</Text>
+          <Text className="settings-value text-value" fontSize="13px" fontWeight="600">{machineName}</Text>
           {contentEmail}
           <GroupButton 
             className="drop-down settings-value language-value" 
@@ -715,7 +708,6 @@ class Body extends Component {
           scale={true}
           primary
           label={labelButton}           
-          size="big"
           onClick={this.onContinueHandler}
           isDisabled={sendingComplete}
         />
