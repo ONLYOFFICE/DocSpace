@@ -31,6 +31,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Security;
+using System.Text.RegularExpressions;
 using System.Web;
 
 using ASC.Api.Collections;
@@ -247,8 +248,62 @@ namespace ASC.Api.Settings
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
             }
+            else
+            {
+                settings.EnabledJoin =
+                    (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
+                    Tenant.TrustedDomains.Count > 0) ||
+                    Tenant.TrustedDomainsType == TenantTrustedDomainsType.All;
+
+                var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+
+                settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
+            }
 
             return settings;
+        }
+
+        [Create("messagesettings")]
+        public string EnableAdminMessageSettings(AdminMessageSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
+
+            MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+
+            return Resource.SuccessfullySaveSettingsMessage;
+        }
+
+        [Create("maildomainsettings")]
+        public string SaveMailDomainSettings(MailDomainSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (model.Type == TenantTrustedDomainsType.Custom)
+            {
+                Tenant.TrustedDomains.Clear();
+                foreach (var d in model.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
+                {
+                    if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
+                        return Resource.ErrorNotCorrectTrustedDomain;
+
+                    Tenant.TrustedDomains.Add(d);
+                }
+
+                if (Tenant.TrustedDomains.Count == 0)
+                    model.Type = TenantTrustedDomainsType.None;
+            }
+
+            Tenant.TrustedDomainsType = model.Type;
+
+            SettingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = model.InviteUsersAsVisitors });
+
+            TenantManager.SaveTenant(Tenant);
+
+            MessageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
+
+            return Resource.SuccessfullySaveSettingsMessage;
         }
 
         [Read("customschemas")]
