@@ -384,6 +384,8 @@ class Body extends Component {
   onContinueHandler = () => {
     const valid = this.checkingValid();
 
+    console.log(this.state.file)
+
     if (valid) { 
       const { setPortalOwner, wizardToken } = this.props;
       const { password, email,
@@ -451,6 +453,12 @@ class Body extends Component {
         key: lang.key,
         label: lang.label 
       }});
+  }
+
+  onInputFileHandler = file => {
+    this.setState({
+      file: file
+    })
   }
 
   renderModalDialog = () => {
@@ -547,9 +555,7 @@ class Body extends Component {
             placeholder={t('placeholderLicense')}
             size="large"
             scale={true}
-            onInput={(file) => {
-              console.log(`name: ${file.name}`, `lastModified: ${file.lastModifiedDate}`, `size: ${file.size}`); 
-            }}
+            onInput={this.onInputFileHandler}
           />
         </Box>
       : null; 

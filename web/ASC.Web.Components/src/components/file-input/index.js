@@ -87,7 +87,8 @@ class FileInput extends Component {
     this.inputRef = React.createRef();
 
     this.state = {
-      fileName: ''
+      fileName: '',
+      file: null
     }
   }
 
@@ -116,13 +117,13 @@ class FileInput extends Component {
 
     if ( this.inputRef.current.files.length > 0 ) {
       this.setState({
-        fileName: this.inputRef.current.files[0].name
+        fileName: this.inputRef.current.files[0].name,
+        file: this.inputRef.current.files[0]
+      }, () => {
+        if(onInput) onInput(this.state.file);
       });
 
-      if(onInput) onInput(this.inputRef.current.files[0]);
-    } else {
-      this.setState({ fileName: '' })
-    }
+    } 
   }
 
   render() {
