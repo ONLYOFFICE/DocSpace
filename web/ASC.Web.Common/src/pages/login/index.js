@@ -356,7 +356,7 @@ class Form extends Component {
               </Link>
             </div>
 
-            {openDialog ? (
+            {openDialog &&
               <ForgotPasswordModalDialog
                 openDialog={openDialog}
                 isLoading={isLoading}
@@ -367,7 +367,7 @@ class Form extends Component {
                 onDialogClose={this.onDialogClose}
                 t={t}
               />
-            ) : null}
+            }
 
             <Button
               id="button"
