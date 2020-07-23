@@ -167,13 +167,13 @@ class Customization extends React.Component {
 
    onClickLink = (e) => {
       e.preventDefault();
-      const { match, history } = this.props;
+      const { history } = this.props;
       history.push("/settings/common/customization/language-and-time-zone");
    }
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, basePath } = this.state;
+      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
          <Text fontSize='13px'>

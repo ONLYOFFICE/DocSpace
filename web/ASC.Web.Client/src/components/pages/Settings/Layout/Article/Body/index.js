@@ -33,7 +33,6 @@ const StyledTreeMenu = styled(TreeMenu)`
 const getTreeItems = (data, path, t) => {
   return data.map(item => {
     if (item.children && item.children.length && !item.isCategory) {
-      const link = path + getSelectedLinkByKey(item.key, settingsTree);
       return (
         <TreeNode
           title={<Text className='inherit-title-link header'>{t(item.tKey)}</Text>}
@@ -113,7 +112,7 @@ class ArticleBodyContent extends React.Component {
     if (utils.array.isArrayEqual(value, selectedKeys)) {
       return;
     }
-    
+
     this.setState({ selectedKeys: value });
   };
 

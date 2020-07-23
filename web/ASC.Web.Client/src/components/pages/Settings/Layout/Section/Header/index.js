@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { Headline } from 'asc-web-common';
 import { IconButton, utils } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink, settingsTree, getTKeyByKey } from '../../../utils';
+import { getKeyByLink, settingsTree, getTKeyByKey, checkPropertyByLink } from '../../../utils';
 
 const { tablet } = utils.device;
 
@@ -40,13 +40,36 @@ class SectionHeaderContent extends React.Component {
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
     const header = getTKeyByKey(key, settingsTree);
+    const isCategory = checkPropertyByLink(arrayOfParams, settingsTree, "isCategory");
+    const isHeader = checkPropertyByLink(arrayOfParams, settingsTree, "isHeader");
     this.state = {
-      header
+      header,
+      isCategoryOrHeader: isCategory || isHeader,
     };
-
   }
 
   componentDidUpdate() {
+    
+    const arrayOfParams = this.getArrayOfParams()
+
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const header = getTKeyByKey(key, settingsTree);
+    const isCategory = checkPropertyByLink(arrayOfParams,settingsTree, "isCategory");
+    const isHeader = checkPropertyByLink(arrayOfParams, settingsTree, "isHeader");
+    const isCategoryOrHeader = isCategory || isHeader;
+
+    header !== this.state.header && this.setState({ header });
+    isCategoryOrHeader !== this.state.isCategoryOrHeader && this.setState({ isCategoryOrHeader });
+  }
+
+  onBackToParent = () => {
+    let newArrayOfParams = this.getArrayOfParams();
+    newArrayOfParams.splice(-1, 1);
+    const newPath = "/settings/" + newArrayOfParams.join("/");
+    this.props.history.push(newPath);
+  }
+
+  getArrayOfParams = () => {
     const { match, location } = this.props;
     const fullSettingsUrl = match.url;
     const locationPathname = location.pathname;
@@ -55,24 +78,17 @@ class SectionHeaderContent extends React.Component {
     const fullSettingsUrlLength = fullSettingsUrl.length;
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
-
-    const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
-    header !== this.state.header && this.setState({ header });
-
-  }
-
-  onBackToParent = () => {
-    console.log("clickToParent")
+    return arrayOfParams;
   }
 
   render() {
     const { t } = this.props;
-    const { header } = this.state;
+    const { header, isCategoryOrHeader } = this.state;
+    const arrayOfParams = this.getArrayOfParams();
 
     return (
       <HeaderContainer>
-        {true && (
+        {!isCategoryOrHeader && arrayOfParams[0] &&(
           <IconButton
             iconName="ArrowPathIcon"
             size="17"

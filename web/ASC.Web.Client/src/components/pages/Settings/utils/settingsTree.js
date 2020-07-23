@@ -7,6 +7,7 @@ export const settingsTree = [
         icon: 'SettingsIcon',
         link: 'common',
         tKey: 'ManagementCategoryCommon',
+        isHeader: true,
         children: [
             {
                 key: '0-0',
@@ -37,12 +38,14 @@ export const settingsTree = [
         icon: 'SecurityIcon',
         link: 'security',
         tKey: 'ManagementCategorySecurity',
+        isHeader: true,
         children: [
             {
                 key: '1-0',
                 icon: '',
                 link: 'accessrights',
                 tKey: 'AccessRights',
+                isCategory: true,
             },
         ]
     },
