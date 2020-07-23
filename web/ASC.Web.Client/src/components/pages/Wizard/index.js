@@ -270,6 +270,7 @@ class Body extends Component {
       path: '',
       emailValid: false,
       email: '',
+      changeEmail: '',
       license: false,
       languages: null,
       timezones: null,
@@ -439,7 +440,13 @@ class Body extends Component {
     return false; 
   }
 
-  onSaveEmailHandler = () => this.setState({ visibleModal: false });
+  onSaveEmailHandler = () => { 
+    const { email, changeEmail, emailValid } = this.state;
+    if( emailValid && changeEmail ) {
+      this.setState({ email: changeEmail})
+    }
+    this.setState({ visibleModal: false })
+  }
 
   onCloseModal = () => {
     this.setState({ 
@@ -626,7 +633,7 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages, timezones, emailNotNeeded } = this.state;
+    const { selectLanguage, selectTimezone, languages, timezones, emailNotNeeded, email } = this.state;
     const { t, machineName } = this.props;
     const fakeEmail = 'fake@mail.com';
     
@@ -642,7 +649,7 @@ class Body extends Component {
           fontWeight="600" 
           onClick={this.onClickChangeEmail}
         >
-          {fakeEmail}
+          {email ? email : fakeEmail}
         </Link>
       : null
 
