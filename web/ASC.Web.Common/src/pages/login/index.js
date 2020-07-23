@@ -439,7 +439,7 @@ Form.defaultProps = {
 const FormWrapper = withTranslation()(Form);
 
 const LoginForm = props => {
-  const { language, isLoaded } = props;
+  const { language, isLoaded, enabledJoin } = props;
 
   i18n.changeLanguage(language);
 
@@ -451,11 +451,12 @@ const LoginForm = props => {
     <>
       {isLoaded && <>
         <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
-        <RegisterContainer onClick={onRegisterClick}>
+        {enabledJoin && <RegisterContainer onClick={onRegisterClick}>
           <Text color="#316DAA" textAlign="center">
             Register
           </Text>
         </RegisterContainer>
+        }
       </>
       }
     </>
@@ -464,14 +465,16 @@ const LoginForm = props => {
 
 LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
+  enabledJoin: PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
     isLoaded: state.auth.isLoaded,
     language: state.auth.user.cultureName || state.auth.settings.culture,
-    greetingTitle: state.auth.settings.greetingSettings
+    greetingTitle: state.auth.settings.greetingSettings,
+    enabledJoin: state.auth.settings.enabledJoin
   };
 }
 
