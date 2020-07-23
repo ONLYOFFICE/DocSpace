@@ -10,7 +10,7 @@ import TextInput from '../text-input';
 const StyledFileInput = styled.div`
   display: flex;
   position: relative;
-
+  outline: none;
   width: ${props =>
         (props.scale && '100%') ||
         (props.size === 'base' && '173px') ||
@@ -78,7 +78,6 @@ const StyledFileInput = styled.div`
   .icon-button {
     cursor: ${props => props.isDisabled ? 'default' : 'pointer'}
   }
-
 `;
 
 class FileInput extends Component { 
@@ -88,7 +87,8 @@ class FileInput extends Component {
     this.inputRef = React.createRef();
 
     this.state = {
-      fileName: ''
+      fileName: '',
+      file: null
     }
   }
 
@@ -115,18 +115,15 @@ class FileInput extends Component {
   onInputFile = () => {
     const { onInput, isDisabled } = this.props;
 
-    if ( this.inputRef.current.files ) {
+    if ( this.inputRef.current.files.length > 0 ) {
       this.setState({
-        fileName: this.inputRef.current.files[0].name
+        fileName: this.inputRef.current.files[0].name,
+        file: this.inputRef.current.files[0]
+      }, () => {
+        if(onInput) onInput(this.state.file);
       });
 
-      if(onInput) onInput(this.inputRef.current.files[0]);
-
-    } else {
-      this.setState({
-        fileName: 'file not choose'
-      })
-    }
+    } 
   }
 
   render() {
