@@ -438,7 +438,7 @@ const LoginForm = props => {
     <>
       {isLoaded && <>
         <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
-        {!enabledJoin &&
+        {enabledJoin &&
           <RegisterWrapper i18n={i18n} {...props} />
         }
       </>
