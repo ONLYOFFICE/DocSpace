@@ -16,7 +16,7 @@ describe('<FileInput />', () => {
 
     const wrapper = shallow(<FileInput onInput={onInput} />).instance();
 
-    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props);
+    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, wrapper.state);
 
     expect(shouldUpdate).toBe(false);
   });
