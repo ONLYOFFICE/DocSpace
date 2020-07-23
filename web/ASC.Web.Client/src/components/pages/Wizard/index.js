@@ -277,9 +277,8 @@ class Body extends Component {
       selectLanguage: null,
       selectTimezone: null,
 
-      isRequiredLicense: true,
-      emailNotNeeded: false,
-      noLicense: false
+      isRequiredLicense: false,
+      emailNeeded: true
     }
 
     this.inputRef = React.createRef();
@@ -533,7 +532,7 @@ class Body extends Component {
 
   renderInputBox = () => {
     const { t, settingsPassword } = this.props;
-    const { isRequiredLicense, noLicense, emailNotNeeded } = this.state;
+    const { isRequiredLicense, emailNeeded } = this.state;
 
     const tooltipPassTitle = t('tooltipPasswordTitle');
     const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
@@ -541,7 +540,7 @@ class Body extends Component {
     const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
     const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
 
-    const inputEmail = emailNotNeeded 
+    const inputEmail = emailNeeded 
       ? <EmailInput
           name="wizard-email"
           tabIndex={1}
@@ -598,7 +597,7 @@ class Body extends Component {
         />
         </Box>
         { inputLicenseFile }
-        {noLicense 
+        {!isRequiredLicense 
           ? <Link 
               className='generate-pass-link'
               type="action"
@@ -633,15 +632,15 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages, timezones, emailNotNeeded, email } = this.state;
+    const { selectLanguage, selectTimezone, languages, timezones, emailNeeded, email } = this.state;
     const { t, machineName } = this.props;
     const fakeEmail = 'fake@mail.com';
     
-    const titleEmail = !emailNotNeeded 
+    const titleEmail = !emailNeeded 
       ? <Text className="settings-title">{t('email')}</Text>
       : null
     
-    const contentEmail = !emailNotNeeded 
+    const contentEmail = !emailNeeded 
       ? <Link 
           className="settings-value email-value" 
           type="action" 
