@@ -10,7 +10,7 @@ import { PageLayout, history } from "asc-web-common";
 import { 
   Heading, Text, 
   EmailInput, PasswordInput, 
-  InputBlock, Checkbox, Link,
+  FileInput, Checkbox, Link,
   GroupButton, DropDownItem, 
   Button, Box, Loader, Toast, toastr, 
   ModalDialog, utils 
@@ -120,14 +120,9 @@ const WizardContainer = styled.div`
       }
     }
 
-    .input-block {
-      width: 100%;
-      height: 44px;
-      margin: 16px auto;
-    }
-
     .input-file {
-      display: none;
+      width: 100%;
+      margin: 16px auto;
     }
 
     .generate-pass-link {
@@ -277,11 +272,11 @@ class Body extends Component {
       selectLanguage: null,
       selectTimezone: null,
 
-      isRequiredLicense: false,
+      isRequiredLicense: true,
       emailNeeded: true
     }
 
-    this.inputRef = React.createRef();
+   // this.inputRef = React.createRef();
     this.refPassInput = React.createRef();
     document.title = t('wizardTitle');
   }
@@ -371,11 +366,6 @@ class Body extends Component {
   isValidPassHandler = val => this.setState({ isValidPass: val });
   
   onChangePassword = e => this.setState({ password: e.target.value });
-  
-  onIconFileClick = (e) => {
-    e.target.blur();
-    this.inputRef.current.click();
-  }
 
   onClickChangeEmail = () => this.setState({ visibleModal: true });
 
@@ -388,8 +378,6 @@ class Body extends Component {
   }
 
   onChangeFile = e => this.setState({ path: e.target.value});
-
-  onInputFile = () => this.setState({path: this.inputRef.current.files[0].name});
 
   onChangeLicense = () => this.setState({ license: !this.state.license });
 
@@ -407,7 +395,7 @@ class Body extends Component {
 
       this.setState({ sendingComplete: true })
 
-      if(isRequiredLicense) licenseFile = this.inputRef.current.files[0];
+      //if(isRequiredLicense) licenseFile = this.inputRef.current.files[0];
 
       const emailTrim = email.trim();
       const analytics = true;
@@ -553,22 +541,17 @@ class Body extends Component {
       : null;
 
     const inputLicenseFile = isRequiredLicense 
-      ? <InputBlock
-          tabIndex={3}
-          value={this.state.path}
-          className="input-block"
-          iconName={"CatalogFolderIcon"}
-          placeholder={t('placeholderLicense')}
-          onIconClick={this.onIconFileClick}
-          onChange={this.onChangeFile}
-          onFocus={this.onIconFileClick}
-        >
-          <input 
-            type="file" 
-            className="input-file" 
-            onInput={this.onInputFile}
-            ref={this.inputRef}/>
-        </InputBlock>
+      ? <Box className="input-file">
+          <FileInput
+            tabIndex={3}
+            placeholder={t('placeholderLicense')}
+            size="large"
+            scale={true}
+            onInput={(file) => {
+              console.log(`name: ${file.name}`, `lastModified: ${file.lastModifiedDate}`, `size: ${file.size}`); 
+            }}
+          />
+        </Box>
       : null; 
 
     return (
