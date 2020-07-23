@@ -1,25 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, TextInput, Text, ModalDialog, FieldContainer } from "asc-web-components";
-import styled from "styled-components";
-
-const ModalDialogContainer = styled.div`
-  .modal-dialog-aside-footer {
-    @media(max-width: 1024px) {
-      width: 90%;
-    }
-  }
-  .modal-dialog-button {
-    @media(max-width: 1024px) {
-      width: 100%;
-    }
-  }
-  .field-body {
-    margin-top: 16px;
-  }
-`;
+import ModalDialogContainer from "./modal-dialog-container";
 
 const domains = ['mail.ru', 'gmail.com', 'yandex.ru'];
+
 const domainList = domains
   .map((domain, i) =>
     <span key={i}>
