@@ -7,7 +7,7 @@ import EmailInput from '.';
 import Section from '../../../.storybook/decorators/section';
 import { action } from '@storybook/addon-actions';
 
-const sizeInput = ['base', 'middle', 'big', 'huge'];
+const sizeInput = ['base', 'middle', 'big', 'huge', 'large'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
