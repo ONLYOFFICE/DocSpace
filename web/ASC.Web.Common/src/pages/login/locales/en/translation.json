@@ -6,9 +6,17 @@
   "MessageEmailConfirmed": "Your email was activated successfully.",
   "MessageAuthorize": "Please authorize yourself.",
   "ForgotPassword": "Forgot your password?",
+
   "PasswordRecoveryTitle": "Password recovery",
   "PasswordRecoveryPlaceholder": "Your registration e-mail",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Please enter the email you used while registering on the portal. The password recovery instructions will be send to that email address.",
+
+  "RegisterTitle": "Registration request",
+  "RegisterTextBodyBeforeDomainsList": "Registration is available to users with an email account at",
+  "RegisterTextBodyAfterDomainsList": "To register, enter your email and click on Send request. An email message with a link to activate your account will be sent to the specified email. Please enter the email address where the invitation will be sent:",
+  "RegisterPlaceholder": "Your registration e-mail",
+  "RegisterSendButton": "Send request",
+
   "SendButton": "Send",
   "RequiredFieldMessage": "Required field",
   "CancelButton": "Cancel",
