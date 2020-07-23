@@ -9,7 +9,7 @@ const ModalDialogContainer = styled.div`
       width: 90%;
     }
   }
-  .login-button-dialog {
+  .modal-dialog-button {
     @media(max-width: 1024px) {
       width: 100%;
     }
@@ -90,7 +90,7 @@ const RegisterModalDialog = ({ t, visible, onRegisterModalClose }) => {
         ]}
         footerContent={[
           <Button
-            className="login-button-dialog"
+            className="modal-dialog-button"
             key="SendBtn"
             label={t("RegisterSendButton")}
             size="big"

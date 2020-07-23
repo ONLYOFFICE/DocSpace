@@ -9,7 +9,7 @@ const ModalDialogContainer = styled.div`
       width: 90%;
     }
   }
-  .login-button-dialog {
+  .modal-dialog-button {
     @media(max-width: 1024px) {
       width: 100%;
     }
@@ -19,7 +19,7 @@ const ModalDialogContainer = styled.div`
   }
 `;
 
-class SubModalDialog extends React.Component {
+class ForgotPasswordModalDialog extends React.Component {
   render() {
     const {
       openDialog,
@@ -74,7 +74,7 @@ class SubModalDialog extends React.Component {
           ]}
           footerContent={[
             <Button
-              className="login-button-dialog"
+              className="modal-dialog-button"
               key="SendBtn"
               label={isLoading ? t("LoadingProcessing") : t("SendButton")}
               size="big"
@@ -93,7 +93,7 @@ class SubModalDialog extends React.Component {
   }
 }
 
-SubModalDialog.propTypes = {
+ForgotPasswordModalDialog.propTypes = {
   openDialog: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   email: PropTypes.string.isRequired,
@@ -104,4 +104,4 @@ SubModalDialog.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default SubModalDialog;
+export default ForgotPasswordModalDialog;

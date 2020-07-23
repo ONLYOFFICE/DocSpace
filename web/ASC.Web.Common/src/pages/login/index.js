@@ -148,7 +148,7 @@ class Form extends Component {
   };
 
   onChangeEmail = event => {
-    this.setState({ email: event.target.value });
+    this.setState({ email: event.target.value, emailError: false });
   };
 
   onChangeCheckbox = () => this.setState({ isChecked: !this.state.isChecked });
