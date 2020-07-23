@@ -58,7 +58,8 @@ const LoginContainer = styled.div`
       width: 100%
     }
     @media (max-width: 375px) {
-
+      margin: 32px 0 0 0;
+      width: 100%
     }
 
     .login-forgot-wrapper {
