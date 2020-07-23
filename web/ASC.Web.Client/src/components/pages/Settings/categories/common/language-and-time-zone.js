@@ -48,12 +48,12 @@ const StyledComponent = styled.div`
       max-width: 100%;
    }
 `;
-class Customization extends React.Component {
+class LanguageAndTimeZone extends React.Component {
 
    constructor(props) {
       super(props);
 
-      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t, greetingSettings } = props;
+      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t } = props;
       const languages = mapCulturesToArray(rawCultures, t);
       const timezones = mapTimezonesToArray(rawTimezones);
 
@@ -66,7 +66,6 @@ class Customization extends React.Component {
          timezone: findSelectedItemByKey(timezones, portalTimeZoneId || timezones[0]),
          languages,
          language: findSelectedItemByKey(languages, portalLanguage || languages[0]),
-         greetingTitle: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
       }
@@ -136,40 +135,11 @@ class Customization extends React.Component {
       })
    }
 
-   onChangeGreetingTitle = (e) => {
-      this.setState({ greetingTitle: e.target.value })
-   };
-
-   onSaveGreetingSettings = () => {
-      const { setGreetingTitle, t } = this.props;
-      this.setState({ isLoadingGreetingSave: true }, function () {
-         setGreetingTitle(this.state.greetingTitle)
-            .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
-            .catch((error) => toastr.error(error))
-            .finally(() => this.setState({ isLoadingGreetingSave: false }));
-      })
-   }
-
-   onRestoreGreetingSettings = () => {
-      const { restoreGreetingTitle, t } = this.props;
-      this.setState({ isLoadingGreetingRestore: true }, function () {
-         restoreGreetingTitle()
-            .then(() => {
-               this.setState({
-                  greetingTitle: this.props.greetingSettings
-               })
-               toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
-            })
-            .catch((error) => toastr.error(error))
-            .finally(() => this.setState({ isLoadingGreetingRestore: false }));
-      })
-   }
-
    onClickLink = (e) => {
       e.preventDefault();
-      const { match, history } = this.props;
-      history.push("/settings/common/customization/language-and-time-zone");
-   }
+      const { history } = this.props;
+      history.push("/settings/common/customization");
+   };
 
    render() {
       const { t, i18n } = this.props;
@@ -189,6 +159,7 @@ class Customization extends React.Component {
             <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
          </Text>
 
+      console.log("CustomizationSettings render");
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
@@ -246,44 +217,7 @@ class Customization extends React.Component {
                      />
                   </div>
 
-                  <div className='settings-block'>
-                     <Text fontSize='16px'>{t('GreetingSettingsTitle')}</Text>
-                     <FieldContainer
-                        id='fieldContainerWelcomePage'
-                        className='margin-top field-container-width'
-                        labelText={`${t("GreetingTitle")}:`}
-                        isVertical={true}>
-                        <TextInput
-                           scale={true}
-                           value={greetingTitle}
-                           onChange={this.onChangeGreetingTitle}
-                           isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
-                        />
-
-                     </FieldContainer>
-
-                     <Button
-                        id='btnSaveGreetingSetting'
-                        className='margin-top'
-                        primary={true}
-                        size='medium'
-                        label={t('SaveButton')}
-                        isLoading={isLoadingGreetingSave}
-                        isDisabled={isLoadingGreetingRestore}
-                        onClick={this.onSaveGreetingSettings}
-                     />
-
-                     <Button
-                        id='btnRestoreToDefault'
-                        className='margin-top margin-left'
-                        size='medium'
-                        label={t('RestoreDefaultButton')}
-                        isLoading={isLoadingGreetingRestore}
-                        isDisabled={isLoadingGreetingSave}
-                        onClick={this.onRestoreGreetingSettings}
-                     />
-                  </div>
-                  <Link className='inherit-title-link header' onClick={this.onClickLink} href="/settings/common/customization/language-and-time-zone">Language and time zone settings</Link>
+                  <Link className='inherit-title-link header' onClick={this.onClickLink} href={`/settings/common/customization`}>New page</Link>
 
                </StyledComponent>
 
@@ -307,4 +241,4 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
    getPortalCultures, setLanguageAndTime, getPortalTimezones,
    setGreetingTitle, restoreGreetingTitle
-})(withTranslation()(Customization));
+})(withTranslation()(LanguageAndTimeZone));

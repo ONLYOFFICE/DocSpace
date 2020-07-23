@@ -1,8 +1,28 @@
 import React from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
 import { Headline } from 'asc-web-common';
+import { IconButton, utils } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import { getKeyByLink, settingsTree, getTKeyByKey } from '../../../utils';
+
+const { tablet } = utils.device;
+
+const HeaderContainer = styled.div`
+  position: relative;
+    display: flex;
+    align-items: center;
+    max-width: calc(100vw - 32px);
+
+    .arrow-button {
+      margin-right: 16px;
+
+      @media ${tablet} {
+        padding: 8px 0 8px 8px;
+        margin-left: -8px;
+      }
+    }
+`;
 
 class SectionHeaderContent extends React.Component {
 
@@ -42,14 +62,31 @@ class SectionHeaderContent extends React.Component {
 
   }
 
+  onBackToParent = () => {
+    console.log("clickToParent")
+  }
+
   render() {
     const { t } = this.props;
     const { header } = this.state;
 
     return (
-      <Headline type='content' truncate={true}>
-        {t(header)}
-      </Headline>
+      <HeaderContainer>
+        {true && (
+          <IconButton
+            iconName="ArrowPathIcon"
+            size="17"
+            color="#A3A9AE"
+            hoverColor="#657077"
+            isFill={true}
+            onClick={this.onBackToParent}
+            className="arrow-button"
+          />
+        )}
+        <Headline type='content' truncate={true}>
+          {t(header)}
+        </Headline>
+      </HeaderContainer>
     );
   }
 };

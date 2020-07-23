@@ -13,6 +13,16 @@ export const settingsTree = [
                 icon: '',
                 link: 'customization',
                 tKey: 'Customization',
+                isCategory: true,
+                children: [
+                    {
+                        key: '0-0-0',
+                        icon: '',
+                        link: 'language-and-time-zone',
+                        tKey: 'Language and time zone settings',
+
+                    },
+                ],
             },
             // {
             //     key: '0-2',
