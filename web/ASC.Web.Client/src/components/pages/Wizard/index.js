@@ -132,12 +132,12 @@ const WizardContainer = styled.div`
 
     .generate-pass-link {
       display: block;
-      margin: 16px 0 33px 0;
+      margin: 30px 0 32px 0;
     }
 
     .checkbox-container {
       width: 100%;
-      margin: 17px auto 0 auto;
+      margin: 16px auto 0 auto;
     }
 
     .wizard-checkbox {
@@ -165,6 +165,7 @@ const WizardContainer = styled.div`
     display: flex;
     flex-direction: row;
 
+
     .settings-title{
       margin-bottom: 12px;
     }
@@ -181,12 +182,8 @@ const WizardContainer = styled.div`
 
     .text-value,
     .email-value  {
-      margin-bottom: 12px;
-    }
-
-    .link, .email-value {
-      display: inline-block;
-      margin-bottom: 16px;
+      display: block;
+      margin-bottom: 11px;
     }
 
     .drop-down {
@@ -206,6 +203,7 @@ const WizardContainer = styled.div`
     .timezone-value,
     .timezone-title {
       margin-top: 12px; 
+      margin-bottom: 0;
     }
 
     .timezone-value {
@@ -277,11 +275,10 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
-      isRequiredLicense: false,
 
+      isRequiredLicense: true,
       emailNotNeeded: false,
-      noLicense: true,
-      baseView: true
+      noLicense: false
     }
 
     this.inputRef = React.createRef();
@@ -477,7 +474,7 @@ class Body extends Component {
           {errorMessage ? errorMessage: t('errorLicenseBody')}
       </span>;
 
-    } else if( visibleModal && isOwner ) {
+    } else if( visibleModal ) { //( visibleModal && isOwner )
       header = t('changeEmailTitle');
 
       content = <EmailInput
@@ -528,8 +525,8 @@ class Body extends Component {
   }
 
   renderInputBox = () => {
-    const { t, isOwner, settingsPassword } = this.props;
-    const { isRequiredLicense, noLicense } = this.state;
+    const { t, settingsPassword } = this.props;
+    const { isRequiredLicense, noLicense, emailNotNeeded } = this.state;
 
     const tooltipPassTitle = t('tooltipPasswordTitle');
     const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
@@ -537,7 +534,7 @@ class Body extends Component {
     const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
     const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
 
-    const inputEmail = !isOwner 
+    const inputEmail = emailNotNeeded 
       ? <EmailInput
           name="wizard-email"
           tabIndex={1}
@@ -629,14 +626,15 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages, timezones, baseView } = this.state;
-    const { isOwner, t, ownerEmail, machineName } = this.props;
+    const { selectLanguage, selectTimezone, languages, timezones, emailNotNeeded } = this.state;
+    const { t, machineName } = this.props;
+    const fakeEmail = 'fake@mail.com';
     
-    const titleEmail = !baseView 
+    const titleEmail = !emailNotNeeded 
       ? <Text className="settings-title">{t('email')}</Text>
       : null
     
-    const contentEmail = !baseView 
+    const contentEmail = !emailNotNeeded 
       ? <Link 
           className="settings-value email-value" 
           type="action" 
@@ -644,7 +642,7 @@ class Body extends Component {
           fontWeight="600" 
           onClick={this.onClickChangeEmail}
         >
-          {ownerEmail}
+          {fakeEmail}
         </Link>
       : null
 
