@@ -18,9 +18,10 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import SubModalDialog from "./sub-components/modal-dialog";
+import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
+import Register from "./sub-components/register-container";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -112,18 +113,6 @@ const LoginContainer = styled.div`
     margin: 0 8px;
   }
 }
-`;
-
-const RegisterContainer = styled(Box)`
-  position: absolute;
-  z-index: 184;
-  width: 100%;
-  height: 66px;
-  padding: 1.5em;
-  bottom: 0;
-  right: 0;
-  background-color: #F8F9F9;
-  cursor: pointer;
 `;
 
 class Form extends Component {
@@ -368,7 +357,7 @@ class Form extends Component {
             </div>
 
             {openDialog ? (
-              <SubModalDialog
+              <ForgotPasswordModalDialog
                 openDialog={openDialog}
                 isLoading={isLoading}
                 email={email}
@@ -437,25 +426,19 @@ Form.defaultProps = {
 };
 
 const FormWrapper = withTranslation()(Form);
+const RegisterWrapper = withTranslation()(Register);
 
 const LoginForm = props => {
   const { language, isLoaded, enabledJoin } = props;
 
   i18n.changeLanguage(language);
 
-  const onRegisterClick = () => {
-    alert("Register clicked");
-  }
-
   return (
     <>
       {isLoaded && <>
         <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
-        {enabledJoin && <RegisterContainer onClick={onRegisterClick}>
-          <Text color="#316DAA" textAlign="center">
-            Register
-          </Text>
-        </RegisterContainer>
+        {!enabledJoin &&
+          <RegisterWrapper i18n={i18n} {...props} />
         }
       </>
       }
