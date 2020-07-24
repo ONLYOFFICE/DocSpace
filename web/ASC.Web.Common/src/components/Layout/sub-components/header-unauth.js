@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Box } from "asc-web-components";
 import styled from "styled-components";
+import RecoverAccess from "./recover-access-container";
 
 const backgroundColor = "#0F4071";
 
@@ -46,13 +47,13 @@ const Header = styled.header`
   }
 `;
 
-const HeaderUnauth = () => {
+const HeaderUnauth = ({ t }) => {
 
   //console.log("Header render");
 
   return (
     <Header>
-      <Box displayProp="flex" justifyContent="space-between" className="header-items-wrapper">
+      <Box displayProp="flex" justifyContent="space-between" alignItems="center" className="header-items-wrapper">
         <div>
           <a className="header-logo-wrapper" href="/">
             <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
@@ -64,7 +65,7 @@ const HeaderUnauth = () => {
         </div>
 
         <div>
-          Recover
+          <RecoverAccess t={t} />
         </div>
       </Box>
     </Header>

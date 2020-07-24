@@ -188,7 +188,7 @@ class Layout extends React.Component {
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
           />
-          : <HeaderUnauth>{this.props.children}</HeaderUnauth>
+          : <HeaderUnauth t={this.props.t}>{this.props.children}</HeaderUnauth>
         }
         {this.state.isNavAvailable && (
           <Nav
