@@ -183,13 +183,16 @@ namespace ASC.ElasticSearch.Core
     {
         public static DIHelper AddSearchSettingsHelperService(this DIHelper services)
         {
-            services.TryAddScoped<SearchSettingsHelper>();
+            if (services.TryAddScoped<SearchSettingsHelper>())
+            {
+                return services
+                    .AddSettingsManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddFactoryIndexerService()
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddSettingsManagerService()
-                .AddCoreBaseSettingsService()
-                .AddFactoryIndexerService()
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

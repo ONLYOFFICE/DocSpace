@@ -112,7 +112,7 @@ class TileContainer extends React.PureComponent {
   }, areEqual);
 
   render() {
-    const { itemHeight, children, useReactWindow, id, className, style } = this.props;
+    const { itemHeight, children, useReactWindow, id, className, style, headingFolders, headingFiles } = this.props;
 
     const Folders = [];
     const Files = [];
@@ -151,7 +151,7 @@ class TileContainer extends React.PureComponent {
       <StyledTileContainer id={id} className={className} style={style} useReactWindow={useReactWindow}>
         {Folders.length > 0 && 
           <>
-            <Heading size="xsmall" className="tileItemsHeading">Folders</Heading>
+            <Heading size="xsmall" className="tileItemsHeading">{headingFolders}</Heading>
             {useReactWindow 
               ? <AutoSizer>{renderList}</AutoSizer>
               : <StyledGridWrapper>
@@ -162,7 +162,7 @@ class TileContainer extends React.PureComponent {
 
         {Files.length > 0 && 
           <>
-            <Heading size="xsmall" className="tileItemsHeading">Files</Heading>
+            <Heading size="xsmall" className="tileItemsHeading">{headingFiles}</Heading>
             {useReactWindow 
               ? <AutoSizer>{renderList}</AutoSizer> 
               :

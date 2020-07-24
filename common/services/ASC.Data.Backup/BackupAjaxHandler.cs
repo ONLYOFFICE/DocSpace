@@ -403,18 +403,22 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddBackupAjaxHandler(this DIHelper services)
         {
-            services.TryAddScoped<BackupAjaxHandler>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddMessageServiceService()
-                .AddCoreSettingsService()
-                .AddPermissionContextService()
-                .AddSecurityContextService()
-                .AddUserManagerService()
-                .AddTenantExtraService()
-                .AddConsumerFactoryService()
-                .AddBackupHelperService();
+            if (services.TryAddScoped<BackupAjaxHandler>())
+            {
+                return services
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddMessageServiceService()
+                    .AddCoreSettingsService()
+                    .AddPermissionContextService()
+                    .AddSecurityContextService()
+                    .AddUserManagerService()
+                    .AddTenantExtraService()
+                    .AddConsumerFactoryService()
+                    .AddBackupHelperService();
+            }
+
+            return services;
         }
     }
 }

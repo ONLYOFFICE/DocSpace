@@ -164,11 +164,14 @@ namespace ASC.Web.Studio.Core
     {
         public static DIHelper AddFileSizeCommentService(this DIHelper services)
         {
-            services.TryAddScoped<FileSizeComment>();
+            if (services.TryAddScoped<FileSizeComment>())
+            {
+                return services
+                    .AddTenantExtraService()
+                    .AddSetupInfo();
+            }
 
-            return services
-                .AddTenantExtraService()
-                .AddSetupInfo();
+            return services;
         }
     }
 }

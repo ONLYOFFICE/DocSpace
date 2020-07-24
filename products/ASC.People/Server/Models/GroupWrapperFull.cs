@@ -100,11 +100,15 @@ namespace ASC.Web.Api.Models
     {
         public static DIHelper AddGroupWraperFull(this DIHelper services)
         {
-            services.TryAddScoped<GroupWraperFullHelper>();
+            if (services.TryAddScoped<GroupWraperFullHelper>())
+            {
 
-            return services
-                .AddUserManagerService()
-                .AddEmployeeWraper();
+                return services
+                    .AddUserManagerService()
+                    .AddEmployeeWraper();
+            }
+
+            return services;
         }
     }
 }

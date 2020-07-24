@@ -437,19 +437,23 @@ namespace ASC.Web.Core
     {
         public static DIHelper AddWebItemSecurity(this DIHelper services)
         {
-            services.TryAddScoped<WebItemSecurity>();
+            if (services.TryAddScoped<WebItemSecurity>())
+            {
 
-            return services
-                .AddPermissionContextService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddWebItemManager()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddAuthorizationManagerService()
-                .AddWebItemSecurityCache()
-                .AddAuthManager()
-                .AddSettingsManagerService();
+                return services
+                    .AddPermissionContextService()
+                    .AddUserManagerService()
+                    .AddAuthContextService()
+                    .AddWebItemManager()
+                    .AddTenantManagerService()
+                    .AddCoreBaseSettingsService()
+                    .AddAuthorizationManagerService()
+                    .AddWebItemSecurityCache()
+                    .AddAuthManager()
+                    .AddSettingsManagerService();
+            }
+
+            return services;
         }
         public static DIHelper AddWebItemSecurityCache(this DIHelper services)
         {

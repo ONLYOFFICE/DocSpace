@@ -252,10 +252,13 @@ namespace ASC.Security.Cryptography
     {
         public static DIHelper AddEmailValidationKeyProviderService(this DIHelper services)
         {
-            services.TryAddScoped<EmailValidationKeyProvider>();
+            if (services.TryAddScoped<EmailValidationKeyProvider>())
+            {
+                return services
+                    .AddTenantManagerService();
+            }
 
-            return services
-                .AddTenantManagerService();
+            return services;
         }
     }
 }

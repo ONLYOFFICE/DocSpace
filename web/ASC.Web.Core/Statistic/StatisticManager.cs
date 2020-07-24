@@ -167,9 +167,12 @@ namespace ASC.Web.Studio.Core.Statistic
     {
         public static DIHelper AddStatisticManagerService(this DIHelper services)
         {
-            services.TryAddScoped<StatisticManager>();
+            if (services.TryAddScoped<StatisticManager>())
+            {
+                return services.AddWebstudioDbContextService();
+            }
 
-            return services.AddWebstudioDbContextService();
+            return services;
         }
     }
 }

@@ -37,6 +37,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
@@ -521,20 +522,22 @@ namespace ASC.Core.Caching
     {
         public static DIHelper AddUserService(this DIHelper services)
         {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            if (services.TryAddScoped<EFUserService>())
+            {
+                services.TryAddScoped<IUserService, CachedUserService>();
 
-            services
-                .AddCoreSettingsService()
-                .AddLoggerService()
-                .AddUserDbContextService();
+                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
+                services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
 
-            services.TryAddScoped<EFUserService>();
-            services.TryAddScoped<IUserService, CachedUserService>();
+                services.TryAddSingleton<UserServiceCache>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-            services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
-            services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
+                services
+                    .AddCoreSettingsService()
+                    .AddLoggerService()
+                    .AddUserDbContextService();
+            }
 
-            services.TryAddSingleton<UserServiceCache>();
             return services;
         }
     }

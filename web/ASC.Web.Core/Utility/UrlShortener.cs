@@ -121,10 +121,14 @@ namespace ASC.Web.Core.Utility
     {
         public static DIHelper AddUrlShortener(this DIHelper services)
         {
-            services.TryAddScoped<UrlShortener>();
-            return services
-                .AddConsumerFactoryService()
-                .AddCommonLinkUtilityService();
+            if (services.TryAddScoped<UrlShortener>())
+            {
+                return services
+                    .AddConsumerFactoryService()
+                    .AddCommonLinkUtilityService();
+            }
+
+            return services;
         }
     }
 }

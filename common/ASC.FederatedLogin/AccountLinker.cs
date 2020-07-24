@@ -230,14 +230,18 @@ namespace ASC.FederatedLogin
     {
         public static DIHelper AddAccountLinker(this DIHelper services)
         {
-            services.TryAddScoped<AccountLinker>();
-            services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
+            if (services.TryAddScoped<AccountLinker>())
+            {
+                services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
 
-            return services
-                .AddAccountLinkContextService()
-                .AddSignatureService()
-                .AddInstanceCryptoService()
-                .AddAccountLinkerStorageService();
+                return services
+                    .AddAccountLinkContextService()
+                    .AddSignatureService()
+                    .AddInstanceCryptoService()
+                    .AddAccountLinkerStorageService();
+            }
+
+            return services;
         }
     }
 }

@@ -125,8 +125,12 @@ namespace ASC.Core.Tenants
     {
         public static DIHelper AddTenantCookieSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<TenantCookieSettingsHelper>();
-            return services.AddSettingsManagerService();
+            if (services.TryAddScoped<TenantCookieSettingsHelper>())
+            {
+                return services.AddSettingsManagerService();
+            }
+
+            return services;
         }
     }
 }

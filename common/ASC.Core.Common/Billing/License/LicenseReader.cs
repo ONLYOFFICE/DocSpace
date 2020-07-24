@@ -341,13 +341,16 @@ namespace ASC.Core.Billing
     {
         public static DIHelper AddLicenseReaderService(this DIHelper services)
         {
-            services.TryAddScoped<LicenseReader>();
+            if (services.TryAddScoped<LicenseReader>())
+            {
+                return services
+                    .AddUserManagerService()
+                    .AddPaymentManagerService()
+                    .AddTenantManagerService()
+                    .AddCoreSettingsService();
+            }
 
-            return services
-                .AddUserManagerService()
-                .AddPaymentManagerService()
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            return services;
         }
     }
 }

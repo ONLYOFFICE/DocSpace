@@ -113,13 +113,17 @@ namespace ASC.Web.Core.Notify
     {
         public static DIHelper AddStudioNotifyServiceHelper(this DIHelper services)
         {
-            services.TryAddScoped<StudioNotifyServiceHelper>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            if (services.TryAddScoped<StudioNotifyServiceHelper>())
+            {
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-            return services
-                .AddAuthContextService()
-                .AddStudioNotifyHelperService()
-                .AddTenantManagerService();
+                return services
+                    .AddAuthContextService()
+                    .AddStudioNotifyHelperService()
+                    .AddTenantManagerService();
+            }
+
+            return services;
         }
     }
 }

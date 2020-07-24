@@ -166,15 +166,19 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupSchedulerService(this DIHelper services)
         {
-            services.TryAddSingleton<BackupSchedulerService>();
-            services.TryAddScoped<BackupSchedulerServiceHelper>();
+            if (services.TryAddScoped<BackupSchedulerServiceHelper>())
+            {
+                services.TryAddSingleton<BackupSchedulerService>();
 
-            return services
-                .AddPaymentManagerService()
-                .AddScheduleService()
-                .AddBackupStorageFactory()
-                .AddBackupWorkerService()
-                .AddBackupRepositoryService();
+                return services
+                    .AddPaymentManagerService()
+                    .AddScheduleService()
+                    .AddBackupStorageFactory()
+                    .AddBackupWorkerService()
+                    .AddBackupRepositoryService();
+            }
+
+            return services;
         }
     }
 }

@@ -120,9 +120,13 @@ namespace ASC.Data.Backup.Storage
     {
         public static DIHelper AddBackupRepositoryService(this DIHelper services)
         {
-            services.TryAddScoped<BackupRepository>();
-            return services
-                .AddBackupsContext();
+            if (services.TryAddScoped<BackupRepository>())
+            {
+                return services
+                    .AddBackupsContext();
+            }
+
+            return services;
         }
     }
 }

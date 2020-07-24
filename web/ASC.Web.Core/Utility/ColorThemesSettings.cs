@@ -144,8 +144,12 @@ namespace ASC.Web.Core.Utility
     {
         public static DIHelper AddColorThemesSettingsHelperService(this DIHelper services)
         {
-            services.TryAddScoped<ColorThemesSettingsHelper>();
-            return services.AddSettingsManagerService();
+            if (services.TryAddScoped<ColorThemesSettingsHelper>())
+            {
+                return services.AddSettingsManagerService();
+            }
+
+            return services;
         }
     }
 }

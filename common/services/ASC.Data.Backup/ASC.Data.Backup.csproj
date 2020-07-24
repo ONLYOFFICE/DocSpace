@@ -25,7 +25,7 @@
 	  <PackageReference Include="SharpCompress" Version="0.25.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\products\ASC.Files\Server\ASC.Files.csproj" />
+	  <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core\ASC.Files.Core.csproj" />
 	  <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
 	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />

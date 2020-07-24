@@ -262,12 +262,16 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioNotifySourceService(this DIHelper services)
         {
-            services.TryAddScoped<StudioNotifySource>();
+            if (services.TryAddScoped<StudioNotifySource>())
+            {
 
-            return services
-                .AddUserManagerService()
-                .AddRecipientProviderImplService()
-                .AddSubscriptionManagerService();
+                return services
+                    .AddUserManagerService()
+                    .AddRecipientProviderImplService()
+                    .AddSubscriptionManagerService();
+            }
+
+            return services;
         }
     }
 }

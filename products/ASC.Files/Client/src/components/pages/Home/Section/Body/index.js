@@ -724,10 +724,6 @@ class SectionBodyContent extends React.Component {
     )
   }
 
-  onViewSelectorClick = () => {
-    this.props.setViewAs("tile")
-  }
-
   onMediaViewerClose = () => {
     const item = { visible: false, id: null };
     this.props.setMediaViewerData(item);
@@ -1017,7 +1013,8 @@ class SectionBodyContent extends React.Component {
       dragging,
       mediaViewerVisible,
       currentMediaFileId,
-      viewAs
+      viewAs,
+      t
     } = this.props;
 
     const { editingId, showSharingPanel, currentItem } = this.state;
@@ -1066,7 +1063,13 @@ class SectionBodyContent extends React.Component {
 
               {viewAs === "tile" 
                 ? 
-                  <TileContainer className="tileContainer" draggable useReactWindow={false}>
+                  <TileContainer 
+                    className="tileContainer" 
+                    draggable 
+                    useReactWindow={false}
+                    headingFolders={t("Folders")}
+                    headingFiles={t("Files")}
+                  >
                   {items.map((item) => {
                     const isEdit =
                     !!fileAction.type &&

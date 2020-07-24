@@ -191,14 +191,18 @@ namespace ASC.Web.Studio.Core.TFA
     {
         public static DIHelper AddTfaManagerService(this DIHelper services)
         {
-            services.TryAddScoped<TfaManager>();
+            if (services.TryAddScoped<TfaManager>())
+            {
 
-            return services
-                .AddSettingsManagerService()
-                .AddSetupInfo()
-                .AddSignatureService()
-                .AddCookiesManagerService()
-                .AddSecurityContextService();
+                return services
+                    .AddSettingsManagerService()
+                    .AddSetupInfo()
+                    .AddSignatureService()
+                    .AddCookiesManagerService()
+                    .AddSecurityContextService();
+            }
+
+            return services;
         }
     }
 }
