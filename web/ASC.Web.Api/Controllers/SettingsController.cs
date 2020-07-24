@@ -30,6 +30,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.ServiceModel.Security;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -75,6 +76,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -100,6 +102,8 @@ namespace ASC.Api.Settings
         public SmsProviderManager SmsProviderManager { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
+        public IPSecurity.IPSecurity IpSecurity { get; }
+        public IMemoryCache MemoryCache { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
@@ -179,7 +183,9 @@ namespace ASC.Api.Settings
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter,
-            CustomNamingPeople customNamingPeople)
+            CustomNamingPeople customNamingPeople,
+            IPSecurity.IPSecurity ipSecurity,
+            IMemoryCache memoryCache)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -189,6 +195,8 @@ namespace ASC.Api.Settings
             SmsProviderManager = smsProviderManager;
             TimeZoneConverter = timeZoneConverter;
             CustomNamingPeople = customNamingPeople;
+            IpSecurity = ipSecurity;
+            MemoryCache = memoryCache;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -264,7 +272,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("messagesettings")]
-        public string EnableAdminMessageSettings(AdminMessageSettingsModel model)
+        public ContentResult EnableAdminMessageSettings(AdminMessageSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -272,11 +280,35 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
-            return Resource.SuccessfullySaveSettingsMessage;
+            return new ContentResult() { Content = Resource.SuccessfullySaveSettingsMessage };
+        }
+
+        [AllowAnonymous]
+        [Create("sendadmmail")]
+        public ContentResult SendAdmMail(AdminMessageSettingsModel model)
+        {
+            var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+            var enableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
+
+            if (!enableAdmMess)
+                throw new MethodAccessException("Method not available");
+
+            if (!model.Email.TestEmailRegex())
+                throw new Exception(Resource.ErrorNotCorrectEmail);
+
+            if (string.IsNullOrEmpty(model.Message))
+                throw new Exception(Resource.ErrorEmptyMessage);
+
+            CheckCache("sendadmmail");
+
+            StudioNotifyService.SendMsgToAdminFromNotAuthUser(model.Email, model.Message);
+            MessageService.Send(MessageAction.ContactAdminMailSent);
+
+            return new ContentResult() { Content = Resource.AdminMessageSent };
         }
 
         [Create("maildomainsettings")]
-        public string SaveMailDomainSettings(MailDomainSettingsModel model)
+        public ContentResult SaveMailDomainSettings(MailDomainSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -286,7 +318,7 @@ namespace ASC.Api.Settings
                 foreach (var d in model.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
                 {
                     if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
-                        return Resource.ErrorNotCorrectTrustedDomain;
+                        return new ContentResult() { Content = Resource.ErrorNotCorrectTrustedDomain };
 
                     Tenant.TrustedDomains.Add(d);
                 }
@@ -303,7 +335,75 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
 
-            return Resource.SuccessfullySaveSettingsMessage;
+            return new ContentResult { Content = Resource.SuccessfullySaveSettingsMessage };
+        }
+
+        [AllowAnonymous]
+        [Create("sendjoininvite")]
+        public ContentResult SendJoinInviteMail(AdminMessageSettingsModel model)
+        {
+            try
+            {
+                var email = model.Email;
+                if (!(
+                    (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
+                    Tenant.TrustedDomains.Count > 0) ||
+                    Tenant.TrustedDomainsType == TenantTrustedDomainsType.All))
+                    throw new MethodAccessException("Method not available");
+
+                if (!email.TestEmailRegex())
+                    throw new Exception(Resource.ErrorNotCorrectEmail);
+
+                CheckCache("sendjoininvite");
+
+                var user = UserManager.GetUserByEmail(email);
+                if (!user.ID.Equals(Constants.LostUser.ID))
+                    throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+
+                var settings = SettingsManager.Load<IPRestrictionsSettings>();
+
+                if (settings.Enable && !IpSecurity.Verify())
+                    throw new Exception(Resource.ErrorAccessRestricted);
+
+                var trustedDomainSettings = SettingsManager.Load<StudioTrustedDomainSettings>();
+                var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
+                var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
+
+                if (!enableInviteUsers)
+                    emplType = EmployeeType.Visitor;
+
+                switch (Tenant.TrustedDomainsType)
+                {
+                    case TenantTrustedDomainsType.Custom:
+                        {
+                            var address = new MailAddress(email);
+                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                StudioNotifyService.SendJoinMsg(email, emplType);
+                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                                return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                            }
+
+                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                        }
+                    case TenantTrustedDomainsType.All:
+                        {
+                            StudioNotifyService.SendJoinMsg(email, emplType);
+                            MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                            return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                        }
+                    default:
+                        throw new Exception(Resource.ErrorNotCorrectEmail);
+                }
+            }
+            catch (FormatException)
+            {
+                return new ContentResult() { Content = Resource.ErrorNotCorrectEmail };
+            }
+            catch (Exception e)
+            {
+                return new ContentResult() { Content = e.Message.HtmlEncode() };
+            }
         }
 
         [Read("customschemas")]
@@ -1542,6 +1642,21 @@ namespace ASC.Api.Settings
             }
 
             return new { Url = hubUrl };
+        }
+
+
+        private readonly int maxCount = 10;
+        private readonly int expirationMinutes = 2;
+        private void CheckCache(string basekey)
+        {
+            var key = ApiContext.HttpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+            if (MemoryCache.TryGetValue<int>(key, out var count))
+            {
+                if (count > maxCount)
+                    throw new Exception(Resource.ErrorRequestLimitExceeded);
+            }
+
+            MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
         }
     }
 

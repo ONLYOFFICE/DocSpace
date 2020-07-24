@@ -13,6 +13,8 @@ namespace ASC.Web.Api.Models
 
     public class AdminMessageSettingsModel
     {
+        public string Email { get; set; }
+        public string Message { get; set; }
         public bool TurnOn { get; set; }
     }
 }
