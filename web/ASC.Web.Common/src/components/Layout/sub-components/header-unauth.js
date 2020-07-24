@@ -9,19 +9,25 @@ const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: flex;
+  justify-content: center;
   z-index: 185;
   position: absolute;
   width: 100vw;
   height: 56px;
 
-  .header-logo-wrapper {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  .header-items-wrapper {
+    width: 960px;
+
+    @media (max-width: 768px) {
+      width: 475px;
+    }
+    @media (max-width: 768px) {
+      width: 311px;
+    }
   }
 
-  .header-module-title {
-    display: block;
-    font-size: 21px;
-    line-height: 0;
+  .header-logo-wrapper {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   .header-logo-min_icon {
@@ -41,14 +47,13 @@ const Header = styled.header`
 `;
 
 const HeaderUnauth = () => {
+
   //console.log("Header render");
-  //const currentModule = props.currentModule && props.currentModule.title;
+
   return (
     <Header>
-
-      <Box>
-
-        <Box>
+      <Box displayProp="flex" justifyContent="space-between" className="header-items-wrapper">
+        <div>
           <a className="header-logo-wrapper" href="/">
             <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
             <img
@@ -56,14 +61,12 @@ const HeaderUnauth = () => {
               src="images/nav.logo.opened.react.svg"
             />
           </a>
-        </Box>
+        </div>
 
-        <Box>
+        <div>
           Recover
-        </Box>
-
+        </div>
       </Box>
-
     </Header>
   );
 };
