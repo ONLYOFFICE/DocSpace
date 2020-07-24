@@ -9,6 +9,9 @@ import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
 import HeaderUnauth from "./sub-components/header-unauth";
 
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
+
 class Layout extends React.Component {
   constructor(props) {
     super(props);
@@ -156,11 +159,11 @@ class Layout extends React.Component {
       isNavHoverEnabled: false
     });
   };
-  
+
   isAuthKey = localStorage.getItem("asc_auth_key") ? true : false;
 
   render() {
-    
+
     //console.log("Layout render");
 
     return (
@@ -178,7 +181,7 @@ class Layout extends React.Component {
             userActions={this.state.currentUserActions}
           />
         )}
-        { this.isAuthKey ?
+        {this.isAuthKey ?
           <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
@@ -267,4 +270,21 @@ Layout.defaultProps = {
   availableModules: []
 };
 
-export default Layout;
+const LayoutTranslationWrapper = withTranslation()(Layout);
+
+const LayoutWrapper = props => {
+  const { language } = props;
+  i18n.changeLanguage(language);
+
+  return (
+    <>
+      <LayoutTranslationWrapper i18n={i18n} {...props} />
+    </>
+  );
+};
+
+LayoutWrapper.propTypes = {
+  language: PropTypes.string.isRequired
+};
+
+export default LayoutWrapper;
