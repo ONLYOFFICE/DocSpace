@@ -244,7 +244,6 @@ class Body extends Component {
       errorMessage: null,
       sendingComplete: false,
       visibleModal: false,
-      path: '',
       emailValid: false,
       email: '',
       changeEmail: '',
@@ -255,10 +254,10 @@ class Body extends Component {
       selectTimezone: null,
 
       isRequiredLicense: true,
-      emailNeeded: false
+      emailNeeded: false,
+      emailOwner: 'fake@mail.com'
     }
 
-   // this.inputRef = React.createRef();
     this.refPassInput = React.createRef();
     document.title = t('wizardTitle');
   }
@@ -359,31 +358,28 @@ class Body extends Component {
     }
   }
 
-  onChangeFile = e => this.setState({ path: e.target.value});
-
   onChangeLicense = () => this.setState({ license: !this.state.license });
 
   onContinueHandler = () => {
     const valid = this.checkingValid();
 
-    console.log(this.state.file)
-
     if (valid) { 
       const { setPortalOwner, wizardToken } = this.props;
       const { password, email,
         selectLanguage, selectTimezone,
-        isRequiredLicense
+        isRequiredLicense, file, emailOwner
       } = this.state;
 
       let licenseFile;
 
       this.setState({ sendingComplete: true })
 
-      //if(isRequiredLicense) licenseFile = this.inputRef.current.files[0];
+      if (isRequiredLicense) licenseFile = file;
 
-      const emailTrim = email.trim();
+      const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
-   
+      
+      //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
       setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
         .then(() => history.push(`/`))
         .catch((e) => {
@@ -392,27 +388,38 @@ class Body extends Component {
             sendingComplete: false,
             errorMessage: e 
           })
-        }) 
+        })
     }
   }
 
   checkingValid = () => {
     const { t } = this.props;
-    const { isValidPass, emailValid, path, license } = this.state;
+    const { isValidPass, emailValid, license, isRequiredLicense, emailNeeded, file } = this.state;
 
     if(!isValidPass) toastr.error(t('errorPassword'));
-  
-    if(!emailValid) toastr.error(t('errorEmail'));
-
     if(!license) toastr.error(t('errorLicenseRead'));
-    
-    if( isValidPass && emailValid && license ) return true;
+
+    if ( emailNeeded && !isRequiredLicense) {
+      if(!emailValid) toastr.error(t('errorEmail'));
+      if( isValidPass && emailValid && license ) return true;
+    }
+
+    if (emailNeeded && isRequiredLicense) {
+      if(!emailValid) toastr.error(t('errorEmail'));
+      if(!file) toastr.error(t('errorUploadLicenseFile'));
+      if( isValidPass && emailValid && license && file) return true;
+    }
+
+    if (!emailNeeded && isRequiredLicense) {
+      if(!file) toastr.error(t('errorUploadLicenseFile'));
+      if( isValidPass && license && file) return true;
+    }
 
     return false; 
   }
 
   onSaveEmailHandler = () => { 
-    const { email, changeEmail, emailValid } = this.state;
+    const { changeEmail, emailValid } = this.state;
     if( emailValid && changeEmail ) {
       this.setState({ email: changeEmail})
     }
@@ -444,8 +451,8 @@ class Body extends Component {
   }
 
   renderModalDialog = () => {
-    const { errorLoading, visibleModal, errorMessage } = this.state;
-    const { t, isOwner, ownerEmail } = this.props;
+    const { errorLoading, visibleModal, errorMessage, ownerEmail } = this.state;
+    const { t } = this.props;
 
     let header, content, footer;
 
@@ -603,9 +610,9 @@ class Body extends Component {
   }
 
   renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages, timezones, emailNeeded, email } = this.state;
+    const { selectLanguage, selectTimezone, languages, timezones, emailNeeded, email, emailOwner } = this.state;
     const { t, machineName } = this.props;
-    const fakeEmail = 'fake@mail.com';
+    
     
     const titleEmail = !emailNeeded 
       ? <Text className="settings-title">{t('email')}</Text>
@@ -619,7 +626,7 @@ class Body extends Component {
           fontWeight="600" 
           onClick={this.onClickChangeEmail}
         >
-          {email ? email : fakeEmail}
+          {email ? email : emailOwner}
         </Link>
       : null
 
@@ -674,7 +681,6 @@ class Body extends Component {
   renderButtonBox = () => {
     const { t } = this.props;
     const { sendingComplete } = this.state;
-    const labelButton = sendingComplete ? t('buttonLoading') : t('buttonContinue')
 
     return (
       <Box className="wizard-button">
@@ -682,7 +688,8 @@ class Body extends Component {
           size="large"
           scale={true}
           primary
-          label={labelButton}           
+          isLoading={sendingComplete ? true : false}
+          label={t('buttonContinue')}           
           onClick={this.onContinueHandler}
           isDisabled={sendingComplete}
         />
@@ -720,8 +727,6 @@ class Body extends Component {
 Body.propTypes = {
   language: PropTypes.string,
   i18n: PropTypes.object,
-  isOwner: PropTypes.bool,
-  ownerEmail: PropTypes.string,
   isWizardLoaded: PropTypes.bool.isRequired,
   machineName: PropTypes.string.isRequired,
   isComplete: PropTypes.bool.isRequired,
@@ -757,9 +762,6 @@ WizardPage.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isOwner: state.wizard.isOwner,
-    ownerEmail: state.wizard.ownerEmail,
-
     isWizardLoaded: state.wizard.isWizardLoaded, 
     machineName: state.wizard.machineName,
     isComplete: state.wizard.isComplete,

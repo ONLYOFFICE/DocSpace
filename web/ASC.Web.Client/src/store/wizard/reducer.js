@@ -2,8 +2,6 @@ import { SET_IS_WIZARD_LOADED, SET_IS_MACHINE_NAME, SET_COMPLETE } from "./actio
 
 const initState = { 
   isWizardLoaded: false,
-  isOwner: false,
-  ownerEmail: '',
   machineName: '',
   isComplete: false
 };

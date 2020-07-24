@@ -12,7 +12,6 @@
   "language": "Язык:",
   "timezone": "Часовой пояс:",
   "buttonContinue": "Продолжить",
-  "buttonLoading": "Загрузка. Пожалуйста, подождите...",
   "errorLicenseTitle": "Ошибка загрузки",
   "errorLicenseBody": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
   "changeEmailTitle": "Измененить адрес электронной почты",
@@ -31,6 +30,7 @@
   "errorPassword": "Пароль не соответсвует требованиям",
   "errorEmail": "Некорректный адрес электронной почты",
   "errorLicenseRead": "Необходимо приянть условия лицензионного соглашения",
+  "errorUploadLicenseFile": "Небходим файл лицензии",
 
   "generatePassword": "Generate password"
 }

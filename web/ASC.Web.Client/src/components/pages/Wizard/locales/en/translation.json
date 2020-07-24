@@ -12,7 +12,6 @@
   "language": "Language:",
   "timezone": "Time zone:",
   "buttonContinue": "Continue",
-  "buttonLoading": "Loading... Please wait...",
   "errorLicenseTitle": "Loading error", 
   "errorLicenseBody": "The license is not valid. Make sure you select the correct file",
   "changeEmailTitle": "Change e-mail",
@@ -29,8 +28,9 @@
   "Culture_ru-RU": "Russian (Russia)",
 
   "errorPassword": "Password does not meet the requirements",
-  "errorEmail": "Invalid Email Address",
+  "errorEmail": "Invalid e-mail Address",
   "errorLicenseRead": "You must accept the terms of the license agreement",
+  "errorUploadLicenseFile": "You must select a license file",
 
   "generatePassword": "Generate password"
 }
