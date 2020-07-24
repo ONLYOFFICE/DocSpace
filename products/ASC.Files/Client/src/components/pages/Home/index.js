@@ -413,7 +413,7 @@ class PureHome extends React.Component {
           onMouseMove={this.onMouseMove}
           showProgressBar={progressData.visible}
           progressBarValue={progressData.percent}
-          progressBarDropDownContent={progressBarContent}
+          //progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressData.label}
           viewAs={viewAs}
           articleHeaderContent={<ArticleHeaderContent />}
