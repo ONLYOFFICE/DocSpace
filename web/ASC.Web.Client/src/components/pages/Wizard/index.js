@@ -160,7 +160,6 @@ const WizardContainer = styled.div`
     display: flex;
     flex-direction: row;
 
-
     .settings-title{
       margin-bottom: 12px;
     }
@@ -169,40 +168,23 @@ const WizardContainer = styled.div`
       padding: 0;
       margin: 0;
       margin-left: 16px;
-    }
-
-    .settings-value {
-      font-size: 13px;
     } 
-
-    .text-value,
-    .email-value  {
+    .settings-value {
       display: block;
       margin-bottom: 11px;
     }
 
     .drop-down {
-      display: block;
+      font-size: 13px;
     }
 
-    .drop-down .value {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-
-    .language-value{
+    .language-value {
       margin: 0;
-    }
-
-    .timezone-value,
-    .timezone-title {
-      margin-top: 12px; 
-      margin-bottom: 0;
     }
 
     .timezone-value {
       margin-left: 0;
+      margin-top: 11px; 
     }
 
     @media ${tablet} {
@@ -273,7 +255,7 @@ class Body extends Component {
       selectTimezone: null,
 
       isRequiredLicense: true,
-      emailNeeded: true
+      emailNeeded: false
     }
 
    // this.inputRef = React.createRef();
@@ -631,7 +613,7 @@ class Body extends Component {
     
     const contentEmail = !emailNeeded 
       ? <Link 
-          className="settings-value email-value" 
+          className="settings-value" 
           type="action" 
           fontSize="13px" 
           fontWeight="600" 
@@ -647,10 +629,10 @@ class Body extends Component {
           <Text className="settings-title" fontSize="13px">{t('domain')}</Text>
           {titleEmail}
           <Text className="settings-title" fontSize="13px">{t('language')}</Text>
-          <Text className="settings-title timezone-title" fontSize="13px">{t('timezone')}</Text>
+          <Text className="settings-title" fontSize="13px">{t('timezone')}</Text>
         </Box>
         <Box className="settings-values">
-          <Text className="settings-value text-value" fontSize="13px" fontWeight="600">{machineName}</Text>
+          <Text className="settings-value" fontSize="13px" fontWeight="600">{machineName}</Text>
           {contentEmail}
           <GroupButton 
             className="drop-down settings-value language-value" 
