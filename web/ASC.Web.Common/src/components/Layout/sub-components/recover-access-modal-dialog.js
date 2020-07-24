@@ -39,15 +39,21 @@ const RecoverAccessModalDialog = ({ visible, onRecoverModalClose, t }) => {
       setDescErr(true);
     }
     else {
-      console.log(`Access recovery sent. 
+      alert(`Access recovery sent. 
       E-mail: ${email}, 
       Description: ${description}`);
     }
   };
 
-  const onChangeEmail = (e) => setEmail(e.currentTarget.value);
+  const onChangeEmail = (e) => {
+      setEmail(e.currentTarget.value);
+      setEmailErr(false);
+    }
 
-  const onChangeDescription = (e) => setDescription(e.currentTarget.value);
+  const onChangeDescription = (e) => {
+      setDescription(e.currentTarget.value);
+      setDescErr(false);
+    }
 
   useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
