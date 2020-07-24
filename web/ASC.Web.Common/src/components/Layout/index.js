@@ -7,6 +7,7 @@ import Main from "./sub-components/main";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
+import HeaderUnauth from "./sub-components/header-unauth";
 
 class Layout extends React.Component {
   constructor(props) {
@@ -45,7 +46,7 @@ class Layout extends React.Component {
       }
     }
     if (props.availableModules && this.state.availableModules) {
-        hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
+      hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
     }
     return hash;
   };
@@ -74,7 +75,7 @@ class Layout extends React.Component {
     const newState = {
       isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
       isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
-      isHeaderAvailable: mainModules.length > 0,
+      //isHeaderAvailable: mainModules.length > 0,
       isNavAvailable: mainModules.length > 0,
       isAsideAvailable: !!props.asideContent,
 
@@ -156,9 +157,12 @@ class Layout extends React.Component {
       isNavHoverEnabled: false
     });
   };
+  
+  isAuthKey = localStorage.getItem("asc_auth_key") ? true : false;
 
   render() {
     //console.log("Layout render");
+    //const isAuthKey = localStorage.getItem("asc_auth_key") ? true : false;
 
     return (
       <>
@@ -175,14 +179,15 @@ class Layout extends React.Component {
             userActions={this.state.currentUserActions}
           />
         )}
-        {this.state.isHeaderAvailable && (
+        { this.isAuthKey ?
           <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
           />
-        )}
+          : <HeaderUnauth>{this.props.children}</HeaderUnauth>
+        }
         {this.state.isNavAvailable && (
           <Nav
             opened={this.state.isNavOpened}
