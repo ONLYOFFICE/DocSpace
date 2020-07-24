@@ -46,25 +46,15 @@ const StyledLink = styled.a`
 `;
 
 class Link extends React.Component {
-  shouldComponentUpdate(nextState) {
-    const { isOpen, children } = this.props;
-    if (isOpen !== nextState.isOpen) {
-      return true;
-    }
-    if (children !== nextState.children) {
-      return true;
-    }
-    return false;
-  }
   render() {
-    const { color, children, isOpen, ...rest } = this.props;
+    const { color, children, isOpen, showIcon,  ...rest } = this.props;
 
     //console.log("ProgressBar link render");
     return (
       <StyledLinkWrapper {...rest}>
         <StyledLink color={color} isOpen={isOpen}>
           <Text color={color}>{children}</Text>
-          <Icons.ExpanderDownIcon className="progress-bar_icon" />
+          {showIcon && <Icons.ExpanderDownIcon className="progress-bar_icon" />}
         </StyledLink>
       </StyledLinkWrapper>
     );
