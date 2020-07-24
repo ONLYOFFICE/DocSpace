@@ -77,10 +77,8 @@ const HeaderUnauth = ({ t, enableAdmMess }) => {
 HeaderUnauth.displayName = "Header";
 
 HeaderUnauth.propTypes = {
-  badgeNumber: PropTypes.number,
-  onClick: PropTypes.func,
-  onLogoClick: PropTypes.func,
-  currentModule: PropTypes.object
+  t: PropTypes.func.isRequired,
+  enableAdmMess: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {
