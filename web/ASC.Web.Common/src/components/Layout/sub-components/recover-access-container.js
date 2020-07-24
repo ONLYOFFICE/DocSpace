@@ -4,26 +4,16 @@ import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import styled from "styled-components";
 import PropTypes from 'prop-types';
 
-const RecoverWrapper = styled(Box)`
-    margin: 0 16.7% 0 0;
-
-  @media(max-width: 768px) {
-    margin: 0 18.8% 0 0;
-}
-  @media(max-width: 450px) {
-    margin: 0 8.5% 0 0;
-}
-`;
-
 const RecoverContainer = styled(Box)`
  cursor: pointer;
+ 
   .recover-icon {
-   @media(max-width: 620px) {
+   @media(max-width: 375px) {
     padding: 16px;
    }
 }
   .recover-text {
-   @media(max-width: 620px) {
+   @media(max-width: 375px) {
     display: none;
    }
 }
@@ -42,7 +32,7 @@ const RecoverAccess = ({ t }) => {
 
     return (
         <>
-            <RecoverWrapper
+            <Box
                 widthProp="100%"
                 heightProp="100%"
                 displayProp="flex"
@@ -62,7 +52,7 @@ const RecoverAccess = ({ t }) => {
                         </Text>
                     </Box>
                 </RecoverContainer>
-            </RecoverWrapper>
+            </Box>
             {visible && <RecoverAccessModalDialog
                 visible={visible}
                 onRecoverModalClose={onRecoverModalClose}

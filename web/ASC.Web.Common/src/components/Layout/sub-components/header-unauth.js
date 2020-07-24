@@ -22,7 +22,7 @@ const Header = styled.header`
     @media (max-width: 768px) {
       width: 475px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 375px) {
       width: 311px;
     }
   }
