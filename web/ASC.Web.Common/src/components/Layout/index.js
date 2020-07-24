@@ -78,6 +78,7 @@ class Layout extends React.Component {
     const newState = {
       isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
       isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
+      authHeader: localStorage.getItem("asc_auth_key") ? true : false,
       isNavAvailable: mainModules.length > 0,
       isAsideAvailable: !!props.asideContent,
 
@@ -160,8 +161,6 @@ class Layout extends React.Component {
     });
   };
 
-  isAuthKey = localStorage.getItem("asc_auth_key") ? true : false;
-
   render() {
 
     //console.log("Layout render");
@@ -181,7 +180,7 @@ class Layout extends React.Component {
             userActions={this.state.currentUserActions}
           />
         )}
-        {this.isAuthKey ?
+        {this.state.authHeader ?
           <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
