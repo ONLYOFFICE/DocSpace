@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Box } from "asc-web-components";
 import styled from "styled-components";
 import RecoverAccess from "./recover-access-container";
+import { connect } from "react-redux";
 
 const backgroundColor = "#0F4071";
 
@@ -47,9 +48,10 @@ const Header = styled.header`
   }
 `;
 
-const HeaderUnauth = ({ t }) => {
+const HeaderUnauth = ({ t, enableAdmMess }) => {
 
   //console.log("Header render");
+
 
   return (
     <Header>
@@ -65,7 +67,7 @@ const HeaderUnauth = ({ t }) => {
         </div>
 
         <div>
-          <RecoverAccess t={t} />
+          {enableAdmMess && <RecoverAccess t={t} />}
         </div>
       </Box>
     </Header>
@@ -81,4 +83,10 @@ HeaderUnauth.propTypes = {
   currentModule: PropTypes.object
 };
 
-export default HeaderUnauth;
+function mapStateToProps(state) {
+  return {
+    enableAdmMess: state.auth.settings.enableAdmMess
+  };
+}
+
+export default connect(mapStateToProps, null)(HeaderUnauth);
