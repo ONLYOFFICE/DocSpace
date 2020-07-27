@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, TextInput, Text, ModalDialog, Textarea, FieldContainer } from "asc-web-components";
 import styled from "styled-components";
@@ -23,39 +23,23 @@ const ModalDialogContainer = styled.div`
   }
 `;
 
-const RecoverAccessModalDialog = ({ visible, onRecoverModalClose, t }) => {
+const RecoverAccessModalDialog = ({
+  visible,
+  loading,
+  email,
+  emailErr,
+  description,
+  descErr,
+  t,
+  onChangeEmail,
+  onChangeDescription,
+  onRecoverModalClose,
+  onSendRecoverRequest
+}) => {
 
-  const [email, setEmail] = useState("");
-  const [emailErr, setEmailErr] = useState(false);
-  const [description, setDescription] = useState("");
-  const [descErr, setDescErr] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
 
-  const onSendRecoverInstructions = () => {
-    if (!email.trim()) {
-      setEmailErr(true);
-    }
-    if (!description.trim()) {
-      setDescErr(true);
-    }
-    else {
-      alert(`Access recovery sent. 
-      E-mail: ${email}, 
-      Description: ${description}`);
-    }
-  };
-
-  const onChangeEmail = (e) => {
-      setEmail(e.currentTarget.value);
-      setEmailErr(false);
-    }
-
-  const onChangeDescription = (e) => {
-      setDescription(e.currentTarget.value);
-      setDescErr(false);
-    }
-
-  useEffect(() => {
+  React.useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   }, []);
 
@@ -94,7 +78,7 @@ const RecoverAccessModalDialog = ({ visible, onRecoverModalClose, t }) => {
               tabIndex={3}
               placeholder={t("RecoverContactEmailPlaceholder")}
               isAutoFocussed={true}
-              //isDisabled={isLoading}
+              isDisabled={loading}
               value={email}
               onChange={onChangeEmail}
             />
@@ -112,7 +96,7 @@ const RecoverAccessModalDialog = ({ visible, onRecoverModalClose, t }) => {
               tabIndex={3}
               value={description}
               onChange={onChangeDescription}
-              //isDisabled={isLoading}
+              isDisabled={loading}
             />
           </FieldContainer>
         ]}
@@ -123,9 +107,9 @@ const RecoverAccessModalDialog = ({ visible, onRecoverModalClose, t }) => {
             label={t("RecoverSendButton")}
             size="big"
             primary={true}
-            onClick={onSendRecoverInstructions}
-            //isLoading={isLoading}
-            //isDisabled={isLoading}
+            onClick={onSendRecoverRequest}
+            isLoading={loading}
+            isDisabled={loading}
             tabIndex={3}
           />
         ]}
@@ -137,12 +121,16 @@ const RecoverAccessModalDialog = ({ visible, onRecoverModalClose, t }) => {
 
 RecoverAccessModalDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
-  // isLoading: PropTypes.bool.isRequired,
-  onSendRecoverInstructions: PropTypes.func,
-  onRecoverModalClose: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  email: PropTypes.string,
+  emailErr: PropTypes.bool.isRequired,
+  description: PropTypes.string,
+  descErr: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onChangeDescription: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  onRecoverModalClose: PropTypes.func.isRequired,
+  onSendRecoverRequest: PropTypes.func.isRequired
 };
 
 export default RecoverAccessModalDialog;
