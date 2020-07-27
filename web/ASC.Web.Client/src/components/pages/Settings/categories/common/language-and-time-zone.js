@@ -153,7 +153,6 @@ class LanguageAndTimeZone extends React.Component {
             <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
          </Text>
 
-      console.log("CustomizationSettings render");
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
