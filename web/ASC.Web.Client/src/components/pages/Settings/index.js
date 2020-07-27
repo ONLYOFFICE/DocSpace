@@ -4,10 +4,10 @@ import { withRouter } from "react-router";
 import Layout from './Layout';
 import { Loader } from "asc-web-components";
 
-const CommonSettings = lazy(() => import("./categories/common"));
 const SecuritySettings = lazy(() => import("./categories/security"));
 const CustomizationSettings = lazy(() => import("./categories/common/customization"));
 const LanguageAndTimeZoneSettings = lazy(() => import("./categories/common/language-and-time-zone"));
+const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
 
 const Settings = () => {
   const basePath = '/settings';
@@ -26,6 +26,11 @@ const Settings = () => {
             exact
             path={[`${basePath}/common/customization/language-and-time-zone`]}
             component={LanguageAndTimeZoneSettings}
+          />
+          <Route
+            exact
+            path={[`${basePath}/common/customization/custom-titles`]}
+            component={CustomTitles}
           />
           <Route
             path={`${basePath}/security`}

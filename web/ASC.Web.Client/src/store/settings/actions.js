@@ -184,3 +184,9 @@ export function restoreGreetingTitle() {
     });
   };
 }
+
+export function getDefaultGreetingTitle() {
+  return api.settings.restoreGreetingSettings().then(res => {
+    return res.companyName
+  });
+}

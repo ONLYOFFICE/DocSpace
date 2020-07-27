@@ -135,15 +135,9 @@ class LanguageAndTimeZone extends React.Component {
       })
    }
 
-   onClickLink = (e) => {
-      e.preventDefault();
-      const { history } = this.props;
-      history.push("/settings/common/customization");
-   };
-
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, basePath } = this.state;
+      const { isLoadedData, languages, language, isLoading, timezones, timezone } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
          <Text fontSize='13px'>
@@ -166,7 +160,6 @@ class LanguageAndTimeZone extends React.Component {
             : <>
                <StyledComponent>
                   <div className='settings-block'>
-                     <Text fontSize='16px'>{t('StudioTimeLanguageSettings')}</Text>
                      <FieldContainer
                         id='fieldContainerLanguage'
                         className='margin-top field-container-width'
@@ -216,8 +209,6 @@ class LanguageAndTimeZone extends React.Component {
                         onClick={this.onSaveLngTZSettings}
                      />
                   </div>
-
-                  <Link className='inherit-title-link header' onClick={this.onClickLink} href={`/settings/common/customization`}>New page</Link>
 
                </StyledComponent>
 

@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
+import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store, utils } from 'asc-web-common';
-import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle, getDefaultGreetingTitle } from '../../../../../store/settings/actions';
+import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
 import { default as clientStore } from '../../../../../store/store';
 
 const { changeLanguage } = utils;
@@ -25,14 +25,6 @@ const mapTimezonesToArray = (timezones) => {
 
 const findSelectedItemByKey = (items, selectedItemKey) => {
    return items.find(item => item.key === selectedItemKey);
-}
-
-const GreetingTitleIsDefault = (greetingSettings) => {
-   getDefaultGreetingTitle().then((DefaultGreetingTitle) => {
-      if(DefaultGreetingTitle){
-         return DefaultGreetingTitle === greetingSettings
-      } 
-   })
 }
 
 const StyledComponent = styled.div`
@@ -55,40 +47,8 @@ const StyledComponent = styled.div`
    .combo-button-label {
       max-width: 100%;
    }
-
-   .category-item-wrapper{
-      margin-bottom:40px;
-
-      .category-item-heading{
-         display:flex;
-         align-items: center;
-         margin-bottom: 5px;
-      }
-
-      .category-item-subheader{
-         font-size: 13px;
-         font-weight: 600;
-         margin-bottom: 5px;
-      }
-
-      .category-item-description{
-         color: #555F65;
-         font-size: 12px;
-         max-width: 1024px;
-      }
-
-      .inherit-title-link{
-         margin-right: 7px;
-         font-size:19px;
-         font-weight: 600;
-      }
-
-      .link-text{
-         margin:0;
-      }
-   }
 `;
-class Customization extends React.Component {
+class CustomTitles extends React.Component {
 
    constructor(props) {
       super(props);
@@ -109,21 +69,13 @@ class Customization extends React.Component {
          greetingTitle: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
-         GreetingTitleIsDefault: GreetingTitleIsDefault(greetingSettings),
       }
    }
 
-   componentDidMount() {
-      const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones, greetingSettings } = this.props;
-      const { timezones, languages } = this.state;
 
-      getDefaultGreetingTitle().then((DefaultGreetingTitle) => {
-         if(DefaultGreetingTitle){
-            this.setState({
-               GreetingTitleIsDefault: DefaultGreetingTitle === greetingSettings
-            })
-         } 
-      })
+   componentDidMount() {
+      const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
+      const { timezones, languages } = this.state;
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -173,6 +125,10 @@ class Customization extends React.Component {
       this.setState({ timezone })
    };
 
+   onChangeGreetingTitle = (e) => {
+      this.setState({ greetingTitle: e.target.value })
+   };
+
    onSaveLngTZSettings = () => {
       const { setLanguageAndTime, i18n } = this.props;
       this.setState({ isLoading: true }, function () {
@@ -184,58 +140,99 @@ class Customization extends React.Component {
       })
    }
 
+   onSaveGreetingSettings = () => {
+      const { setGreetingTitle, t } = this.props;
+      this.setState({ isLoadingGreetingSave: true }, function () {
+         setGreetingTitle(this.state.greetingTitle)
+            .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoadingGreetingSave: false }));
+      })
+   }
+
+   onRestoreGreetingSettings = () => {
+      const { restoreGreetingTitle, t } = this.props;
+      this.setState({ isLoadingGreetingRestore: true }, function () {
+         restoreGreetingTitle()
+            .then(() => {
+               this.setState({
+                  greetingTitle: this.props.greetingSettings
+               })
+               toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
+            })
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoadingGreetingRestore: false }));
+      })
+   }
+
    onClickLink = (e) => {
       e.preventDefault();
       const { history } = this.props;
-      history.push(e.target.pathname);
-   }
+      history.push("/settings/common/customization");
+   };
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, language, timezone, greetingTitle, GreetingTitleIsDefault } = this.state;
+      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, basePath } = this.state;
+      const supportEmail = "documentation@onlyoffice.com";
+      const tooltipLanguage =
+         <Text fontSize='13px'>
+            <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+               "In case you cannot find your language in the list of the
+               available ones, feel free to write to us at
+               <Link href={`mailto:${supportEmail}`} isHovered={true}>
+                  {{ supportEmail }}
+               </Link> to take part in the translation and get up to 1 year free of
+               charge."
+            </Trans>
+            {" "}
+            <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
+         </Text>
 
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
             : <>
                <StyledComponent>
-                  <div className="category-item-wrapper">
-                     <div className="category-item-heading">
-                        <Link 
-                           className='inherit-title-link header' 
-                           onClick={this.onClickLink} 
-                           href="/settings/common/customization/language-and-time-zone">
-                              Language and time zone settings
-                        </Link>
-                        <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
-                     </div>
-                     <Text className="category-item-subheader"> {language.label} / {timezone.label} </Text>
-                     <Text className="category-item-description">
-                        Language and time zone settings is a way to change the language 
-                        of the whole portal for all portal users and to configure the time zone 
-                        so that all the events of the portal will be shown with the correct date and time.
-                     </Text>
+                  <div className='settings-block'>
+                     <FieldContainer
+                        id='fieldContainerWelcomePage'
+                        className='field-container-width'
+                        labelText={`${t("Welcome page title")}:`}
+                        isVertical={true}>
+                        <TextInput
+                           scale={true}
+                           value={greetingTitle}
+                           onChange={this.onChangeGreetingTitle}
+                           isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
+                        />
+
+                     </FieldContainer>
+
+                     <Button
+                        id='btnSaveGreetingSetting'
+                        className='margin-top'
+                        primary={true}
+                        size='medium'
+                        label={t('SaveButton')}
+                        isLoading={isLoadingGreetingSave}
+                        isDisabled={isLoadingGreetingRestore}
+                        onClick={this.onSaveGreetingSettings}
+                     />
+
+                     <Button
+                        id='btnRestoreToDefault'
+                        className='margin-top margin-left'
+                        size='medium'
+                        label={t('RestoreDefaultButton')}
+                        isLoading={isLoadingGreetingRestore}
+                        isDisabled={isLoadingGreetingSave}
+                        onClick={this.onRestoreGreetingSettings}
+                     />
                   </div>
-                  <div className="category-item-wrapper">
-                     <div className="category-item-heading">
-                        <Link 
-                           className='inherit-title-link header'
-                           onClick={this.onClickLink} 
-                           href="/settings/common/customization/custom-titles">
-                              Custom titles
-                        </Link>
-                        <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
-                     </div>
-                     {GreetingTitleIsDefault 
-                        ? <Text className="category-item-subheader">{t("Default")}</Text>
-                        : <Text className="category-item-subheader">{t("Custom") + ":" + greetingTitle}</Text>
-                     }
-                     <Text className="category-item-description">
-                        Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. 
-                        Custom domain name is a way to set an alternative URL for your portal. Custom portal name will appear next to the onlyoffice.com/onlyoffice.eu portal address.
-                     </Text>
-                  </div>
+
                </StyledComponent>
+
             </>
       );
    }
@@ -256,4 +253,4 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
    getPortalCultures, setLanguageAndTime, getPortalTimezones,
    setGreetingTitle, restoreGreetingTitle
-})(withTranslation()(Customization));
+})(withTranslation()(CustomTitles));

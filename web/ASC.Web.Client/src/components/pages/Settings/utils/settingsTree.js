@@ -23,6 +23,13 @@ export const settingsTree = [
                         tKey: 'Language and time zone settings',
 
                     },
+                    {
+                        key: '0-0-1',
+                        icon: '',
+                        link: 'custom-titles',
+                        tKey: 'Custom titles',
+
+                    },
                 ],
             },
             // {
