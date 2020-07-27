@@ -104,7 +104,7 @@ const RecoverAccessModalDialog = ({
           <Button
             className="recover-button-dialog"
             key="SendBtn"
-            label={t("RecoverSendButton")}
+            label={loading ? t("RecoverProcessSending") : t("RecoverSendButton")}
             size="big"
             primary={true}
             onClick={onSendRecoverRequest}
