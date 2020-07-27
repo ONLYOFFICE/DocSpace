@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
-import { store, utils } from 'asc-web-common';
+import { store, utils, api } from 'asc-web-common';
 import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle, getDefaultGreetingTitle } from '../../../../../store/settings/actions';
 import { default as clientStore } from '../../../../../store/store';
 
@@ -27,11 +27,12 @@ const findSelectedItemByKey = (items, selectedItemKey) => {
    return items.find(item => item.key === selectedItemKey);
 }
 
-const GreetingTitleIsDefault = (greetingSettings) => {
-   getDefaultGreetingTitle().then((DefaultGreetingTitle) => {
-      if(DefaultGreetingTitle){
+const GreetingTitleIsDefault = () => {
+   api.settings.getSettings().then((settings) => {
+      return true  // TODO Add a check for the standard title
+    /*  if(settings.defaultGreetingTitle){
          return DefaultGreetingTitle === greetingSettings
-      } 
+      }*/
    })
 }
 
@@ -114,16 +115,8 @@ class Customization extends React.Component {
    }
 
    componentDidMount() {
-      const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones, greetingSettings } = this.props;
+      const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
       const { timezones, languages } = this.state;
-
-      getDefaultGreetingTitle().then((DefaultGreetingTitle) => {
-         if(DefaultGreetingTitle){
-            this.setState({
-               GreetingTitleIsDefault: DefaultGreetingTitle === greetingSettings
-            })
-         } 
-      })
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -193,7 +186,6 @@ class Customization extends React.Component {
    render() {
       const { t, i18n } = this.props;
       const { isLoadedData, language, timezone, greetingTitle, GreetingTitleIsDefault } = this.state;
-
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
