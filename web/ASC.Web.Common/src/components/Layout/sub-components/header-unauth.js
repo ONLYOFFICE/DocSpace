@@ -14,17 +14,18 @@ const Header = styled.header`
   justify-content: center;
   z-index: 185;
   position: absolute;
-  width: 100vw;
+  width: calc(100vw - 64px);
   height: 56px;
+  padding: 0 32px;
 
   .header-items-wrapper {
-    width: 960px;
+    width: 896px;
 
     @media (max-width: 768px) {
-      width: 475px;
+      width: 411px;
     }
     @media (max-width: 375px) {
-      width: 311px;
+      width: 247px;
     }
   }
 
@@ -67,7 +68,7 @@ const HeaderUnauth = ({ t, enableAdmMess }) => {
         </div>
 
         <div>
-          {enableAdmMess && <RecoverAccess t={t} />}
+          {!enableAdmMess && <RecoverAccess t={t} />}
         </div>
       </Box>
     </Header>

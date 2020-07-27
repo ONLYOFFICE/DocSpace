@@ -9,12 +9,12 @@ const RecoverContainer = styled(Box)`
   cursor: pointer;
 
   .recover-icon {
-   @media(max-width: 375px) {
+   @media(max-width: 450px) {
     padding: 16px;
    }
 }
   .recover-text {
-   @media(max-width: 375px) {
+   @media(max-width: 450px) {
     display: none;
    }
 }
