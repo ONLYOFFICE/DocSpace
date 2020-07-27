@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
+import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store, utils } from 'asc-web-common';
-import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
+import { setLanguageAndTime, getPortalTimezones } from '../../../../../store/settings/actions';
 import { default as clientStore } from '../../../../../store/store';
 
 const { changeLanguage } = utils;
@@ -74,7 +74,7 @@ class LanguageAndTimeZone extends React.Component {
 
    componentDidMount() {
       const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
-      const { timezones, languages } = this.state;
+      const { timezones, languages, isLoadedData } = this.state;
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -90,6 +90,9 @@ class LanguageAndTimeZone extends React.Component {
 
                this.setState({ languages, language, timezones, timezone });
             });
+      }
+      if (timezones.length && languages.length && !isLoadedData) {
+         this.setState({ isLoadedData: true });
       }
    }
 
@@ -161,7 +164,7 @@ class LanguageAndTimeZone extends React.Component {
                   <div className='settings-block'>
                      <FieldContainer
                         id='fieldContainerLanguage'
-                        className='margin-top field-container-width'
+                        className='field-container-width'
                         labelText={`${t("Language")}:`}
                         tooltipContent={tooltipLanguage}
                         helpButtonHeaderContent={t("Language")}
@@ -228,7 +231,4 @@ function mapStateToProps(state) {
    };
 }
 
-export default connect(mapStateToProps, {
-   getPortalCultures, setLanguageAndTime, getPortalTimezones,
-   setGreetingTitle, restoreGreetingTitle
-})(withTranslation()(LanguageAndTimeZone));
+export default connect(mapStateToProps, { getPortalCultures, setLanguageAndTime, getPortalTimezones})(withTranslation()(LanguageAndTimeZone));

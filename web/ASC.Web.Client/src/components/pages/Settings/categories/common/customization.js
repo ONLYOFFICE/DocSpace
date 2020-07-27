@@ -116,7 +116,7 @@ class Customization extends React.Component {
 
    componentDidMount() {
       const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
-      const { timezones, languages } = this.state;
+      const { timezones, languages, isLoadedData } = this.state;
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -132,6 +132,10 @@ class Customization extends React.Component {
 
                this.setState({ languages, language, timezones, timezone });
             });
+      }
+
+      if (timezones.length && languages.length && !isLoadedData) {
+         this.setState({ isLoadedData: true });
       }
    }
 
