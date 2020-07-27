@@ -68,7 +68,7 @@ const HeaderUnauth = ({ t, enableAdmMess }) => {
         </div>
 
         <div>
-          {!enableAdmMess && <RecoverAccess t={t} />}
+          {enableAdmMess && <RecoverAccess t={t} />}
         </div>
       </Box>
     </Header>
