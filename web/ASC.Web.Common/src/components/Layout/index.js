@@ -7,6 +7,8 @@ import Main from "./sub-components/main";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
+import HeaderUnauth from "./sub-components/header-unauth";
+
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 
@@ -76,7 +78,7 @@ class Layout extends React.Component {
     const newState = {
       isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
       isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
-      isHeaderAvailable: mainModules.length > 0 || !props.currentUser,
+      authHeader: localStorage.getItem("asc_auth_key") ? true : false,
       isNavAvailable: mainModules.length > 0,
       isAsideAvailable: !!props.asideContent,
 
@@ -160,6 +162,7 @@ class Layout extends React.Component {
   };
 
   render() {
+
     //console.log("Layout render");
 
     return (
@@ -177,16 +180,15 @@ class Layout extends React.Component {
             userActions={this.state.currentUserActions}
           />
         )}
-        {this.state.isHeaderAvailable && (
+        {this.state.authHeader ?
           <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
-            currentUser={this.props.currentUser}
-            t={this.props.t}
           />
-        )}
+          : <HeaderUnauth t={this.props.t}>{this.props.children}</HeaderUnauth>
+        }
         {this.state.isNavAvailable && (
           <Nav
             opened={this.state.isNavOpened}
@@ -229,7 +231,6 @@ class Layout extends React.Component {
         <Main fullscreen={!this.state.isNavAvailable}>
           {this.props.children}
         </Main>
-
       </>
     );
   }
@@ -270,8 +271,7 @@ Layout.defaultProps = {
 
 const LayoutTranslationWrapper = withTranslation()(Layout);
 
-const LayoutWithI18n = props => {
-
+const LayoutWrapper = props => {
   const { language } = props;
   i18n.changeLanguage(language);
 
@@ -282,8 +282,8 @@ const LayoutWithI18n = props => {
   );
 };
 
-LayoutWithI18n.propTypes = {
+LayoutWrapper.propTypes = {
   language: PropTypes.string.isRequired
 };
 
-export default LayoutWithI18n;
+export default LayoutWrapper;

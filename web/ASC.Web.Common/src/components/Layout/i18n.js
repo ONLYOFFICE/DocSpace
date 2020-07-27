@@ -6,30 +6,30 @@ import { LANGUAGE } from '../../constants';
 const newInstance = i18n.createInstance();
 
 const resources = {
-  en: {
-    translation: en//require("./locales/en/translation.json")
-  },
-  ru: {
-    translation: ru//require("./locales/ru/translation.json")
-  }
+    en: {
+        translation: en//require("./locales/en/translation.json")
+    },
+    ru: {
+        translation: ru//require("./locales/ru/translation.json")
+    }
 };
 
 newInstance.init({
-  resources: resources,
-  lng: localStorage.getItem(LANGUAGE) || 'en',
-  fallbackLng: "en",
+    resources: resources,
+    lng: localStorage.getItem(LANGUAGE) || 'en',
+    fallbackLng: "en",
 
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-    format: function (value, format) {
-      if (format === 'lowercase') return value.toLowerCase();
-      return value;
+    interpolation: {
+        escapeValue: false, // not needed for react as it escapes by default
+        format: function (value, format) {
+            if (format === 'lowercase') return value.toLowerCase();
+            return value;
+        }
+    },
+
+    react: {
+        useSuspense: false
     }
-  },
-
-  react: {
-    useSuspense: false
-  }
 });
 
 export default newInstance;
