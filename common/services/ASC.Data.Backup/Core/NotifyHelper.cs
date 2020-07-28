@@ -69,33 +69,27 @@ namespace ASC.Data.Backup
         public void SendAboutBackupCompleted(Guid userId)
         {
             using var scope = ServiceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
-            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
             client.SendNoticeToAsync(
                 Actions.BackupCreated,
-                new[] { studioNotifyHelper.ToRecipient(userId) },
+                new[] { scopeClass.StudioNotifyHelper.ToRecipient(userId) },
                 new[] { StudioNotifyService.EMailSenderName },
-                new TagValue(Tags.OwnerName, userManager.GetUsers(userId).DisplayUserName(displayUserSettingsHelper)));
+                new TagValue(Tags.OwnerName, scopeClass.UserManager.GetUsers(userId).DisplayUserName(scopeClass.DisplayUserSettingsHelper)));
         }
 
         public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
         {
             using var scope = ServiceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
-            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
-            var owner = userManager.GetUsers(tenant.OwnerId);
+            var owner = scopeClass.UserManager.GetUsers(tenant.OwnerId);
             var users =
                 notifyAllUsers
-                    ? studioNotifyHelper.RecipientFromEmail(userManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
-                    : owner.ActivationStatus == EmployeeActivationStatus.Activated ? studioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
+                    ? scopeClass.StudioNotifyHelper.RecipientFromEmail(scopeClass.UserManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
+                    : owner.ActivationStatus == EmployeeActivationStatus.Activated ? scopeClass.StudioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
 
             client.SendNoticeToAsync(
                 Actions.RestoreStarted,
@@ -106,24 +100,21 @@ namespace ASC.Data.Backup
         public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
         {
             using var scope = ServiceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
-            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
-            var owner = userManager.GetUsers(tenant.OwnerId);
+            var owner = scopeClass.UserManager.GetUsers(tenant.OwnerId);
 
             var users =
                 notifyAllUsers
-                    ? userManager.GetUsers(EmployeeStatus.Active).Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray()
-                    : new[] { studioNotifyHelper.ToRecipient(owner.ID) };
+                    ? scopeClass.UserManager.GetUsers(EmployeeStatus.Active).Select(u => scopeClass.StudioNotifyHelper.ToRecipient(u.ID)).ToArray()
+                    : new[] { scopeClass.StudioNotifyHelper.ToRecipient(owner.ID) };
 
             client.SendNoticeToAsync(
                 Actions.RestoreCompleted,
                 users,
                 new[] { StudioNotifyService.EMailSenderName },
-                new TagValue(Tags.OwnerName, owner.DisplayUserName(displayUserSettingsHelper)));
+                new TagValue(Tags.OwnerName, owner.DisplayUserName(scopeClass.DisplayUserSettingsHelper)));
         }
 
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
@@ -147,6 +138,22 @@ namespace ASC.Data.Backup
                     new[] { StudioNotifyService.EMailSenderName },
                     new TagValue(Tags.RegionName, TransferResourceHelper.GetRegionDescription(region)),
                     new TagValue(Tags.PortalUrl, url));
+            }
+        }
+
+        class Scope
+        {
+            internal UserManager UserManager { get; }
+            internal StudioNotifyHelper StudioNotifyHelper { get; }
+            internal StudioNotifySource StudioNotifySource { get; }
+            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+
+            public Scope(UserManager userManager, StudioNotifyHelper studioNotifyHelper, StudioNotifySource studioNotifySource, DisplayUserSettingsHelper displayUserSettingsHelper)
+            {
+                UserManager = userManager;
+                StudioNotifyHelper = studioNotifyHelper;
+                StudioNotifySource = studioNotifySource;
+                DisplayUserSettingsHelper = displayUserSettingsHelper;
             }
         }
     }
