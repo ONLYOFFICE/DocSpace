@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Button, TextInput, Text, ModalDialog, FieldContainer } from "asc-web-components";
 import ModalDialogContainer from "./modal-dialog-container";
 
 const domains = ['mail.ru', 'gmail.com', 'yandex.ru'];
-
 const domainList = domains
   .map((domain, i) =>
     <span key={i}>
@@ -14,24 +13,16 @@ const domainList = domains
     </span>
   );
 
-const RegisterModalDialog = ({ t, visible, onRegisterModalClose }) => {
-
-  const [email, setEmail] = useState("");
-  const [emailErr, setEmailErr] = useState(false);
-
-  const onSendRegisterRequest = () => {
-    if (!email.trim()) {
-      setEmailErr(true);
-    }
-    else {
-      alert(`Registration request sent. E-mail: ${email}`);
-    }
-  }
-
-  const onChangeEmail = (e) => {
-    setEmail(e.currentTarget.value);
-    setEmailErr(false);
-  }
+const RegisterModalDialog = ({
+  visible,
+  loading,
+  email,
+  emailErr,
+  t,
+  onChangeEmail,
+  onRegisterModalClose,
+  onSendRegisterRequest
+}) => {
 
   return (
     <ModalDialogContainer>
@@ -67,7 +58,7 @@ const RegisterModalDialog = ({ t, visible, onRegisterModalClose }) => {
               size="base"
               scale={true}
               tabIndex={3}
-              //isDisabled={isLoading}
+              isDisabled={loading}
               value={email}
               onChange={onChangeEmail}
             />
@@ -77,13 +68,13 @@ const RegisterModalDialog = ({ t, visible, onRegisterModalClose }) => {
           <Button
             className="modal-dialog-button"
             key="SendBtn"
-            label={t("RegisterSendButton")}
+            label={loading ? t("RegisterProcessSending") : t("RegisterSendButton")}
             size="big"
             scale={false}
             primary={true}
             onClick={onSendRegisterRequest}
-            //isLoading={isLoading}
-            //isDisabled={isLoading}
+            isLoading={loading}
+            isDisabled={loading}
             tabIndex={3}
           />
         ]}
@@ -91,15 +82,17 @@ const RegisterModalDialog = ({ t, visible, onRegisterModalClose }) => {
       />
     </ModalDialogContainer>
   );
-}
-
+};
 
 RegisterModalDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  email: PropTypes.string,
+  emailErr: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
-  onRegisterModalClose: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  onRegisterModalClose: PropTypes.func.isRequired
 };
 
 export default RegisterModalDialog;

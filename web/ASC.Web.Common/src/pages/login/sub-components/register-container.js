@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Box, Text } from "asc-web-components";
+import { Box, Text, toastr } from "asc-web-components";
 import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
 import PropTypes from 'prop-types';
+import { sendRegisterRequest } from "../../../api/settings/index";
 
 const StyledRegister = styled(Box)`
   position: absolute;
@@ -19,12 +20,42 @@ const StyledRegister = styled(Box)`
 const Register = ({ t }) => {
 
     const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [email, setEmail] = useState("");
+    const [emailErr, setEmailErr] = useState(false);
 
     const onRegisterClick = () => {
         setVisible(true);
     };
     const onRegisterModalClose = () => {
         setVisible(false);
+        setEmail("");
+        setEmailErr(false);
+    };
+    const onChangeEmail = (e) => {
+        setEmail(e.currentTarget.value);
+        setEmailErr(false);
+    };
+    const onSendRegisterRequest = () => {
+        if (!email.trim()) {
+            setEmailErr(true);
+        }
+        else {
+            setLoading(true);
+            sendRegisterRequest(email)
+                .then(
+                    res => {
+                        setLoading(false);
+                        toastr.success(res);
+                    },
+                    message => {
+                        setLoading(false);
+                        toastr.error(message);
+                    }
+                )
+                .finally(onRegisterModalClose)
+        }
     };
 
     return (
@@ -34,12 +65,18 @@ const Register = ({ t }) => {
                     {t("Register")}
                 </Text>
             </StyledRegister>
-            
+
             {visible &&
                 <RegisterModalDialog
-                    t={t}
                     visible={visible}
-                    onRegisterModalClose={onRegisterModalClose} />}
+                    loading={loading}
+                    email={email}
+                    emailErr={emailErr}
+                    t={t}
+                    onChangeEmail={onChangeEmail}
+                    onRegisterModalClose={onRegisterModalClose}
+                    onSendRegisterRequest={onSendRegisterRequest}
+                />}
         </>
     )
 }
