@@ -16,6 +16,7 @@
   "RegisterTextBodyAfterDomainsList": "To register, enter your email and click on Send request. An email message with a link to activate your account will be sent to the specified email. Please enter the email address where the invitation will be sent:",
   "RegisterPlaceholder": "Your registration e-mail",
   "RegisterSendButton": "Send request",
+  "RegisterProcessSending": "Sending...",
 
   "SendButton": "Send",
   "RequiredFieldMessage": "Required field",

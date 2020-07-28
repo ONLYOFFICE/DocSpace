@@ -16,6 +16,7 @@
   "RegisterTextBodyAfterDomainsList": "Чтобы зарегистрироваться, введите свой email и нажмите кнопку Отправить запрос. Сообщение со ссылкой для активации вашей учётной записи будет отправлено на указанный адрес.",
   "RegisterPlaceholder": "Ваш регистрационный email",
   "RegisterSendButton": "Отправить запрос",
+  "RegisterProcessSending": "Отправка...",
 
   "SendButton": "Отправить",
   "RequiredFieldMessage": "Обязательное поле",
