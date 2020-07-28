@@ -200,12 +200,13 @@ class Customization extends React.Component {
                         <Link 
                            className='inherit-title-link header' 
                            onClick={this.onClickLink} 
+                           truncate={true}
                            href="/settings/common/customization/language-and-time-zone">
                               Language and time zone settings
                         </Link>
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>
-                     <Text className="category-item-subheader"> {language.label} / {timezone.label} </Text>
+                     <Text className="category-item-subheader" truncate={true}> {language.label} / {timezone.label} </Text>
                      <Text className="category-item-description">
                         Language and time zone settings is a way to change the language 
                         of the whole portal for all portal users and to configure the time zone 
@@ -215,6 +216,7 @@ class Customization extends React.Component {
                   <div className="category-item-wrapper">
                      <div className="category-item-heading">
                         <Link 
+                           truncate={true}
                            className='inherit-title-link header'
                            onClick={this.onClickLink} 
                            href="/settings/common/customization/custom-titles">
@@ -223,8 +225,8 @@ class Customization extends React.Component {
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>
                      {GreetingTitleIsDefault 
-                        ? <Text className="category-item-subheader">{t("Default")}</Text>
-                        : <Text className="category-item-subheader">{t("Custom") + ":" + greetingTitle}</Text>
+                        ? <Text truncate={true} className="category-item-subheader">{t("Default")}</Text>
+                        : <Text truncate={true} className="category-item-subheader">{t("Custom") + ":" + greetingTitle}</Text>
                      }
                      <Text className="category-item-description">
                         Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. 
