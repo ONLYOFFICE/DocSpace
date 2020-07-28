@@ -102,10 +102,11 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -114,7 +115,12 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             try
             {
-                var token = Auth(context, Scopes);
+                var token = Auth(context, Scopes, out var redirect);
+
+                if (redirect)
+                {
+                    return null;
+                }
 
                 if (token == null)
                 {
@@ -133,7 +139,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        protected override OAuth20Token Auth(HttpContext context, string scopes, Dictionary<string, string> additionalArgs = null)
+        protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, Dictionary<string, string> additionalArgs = null)
         {
             var error = context.Request.Query["error"];
             if (!string.IsNullOrEmpty(error))
@@ -149,8 +155,11 @@ namespace ASC.FederatedLogin.LoginProviders
             if (string.IsNullOrEmpty(code))
             {
                 RequestCode(context, scopes);
+                redirect = true;
                 return null;
             }
+
+            redirect = false;
             var state = context.Request.Query["state"];
             return GetAccessToken(state, code);
         }

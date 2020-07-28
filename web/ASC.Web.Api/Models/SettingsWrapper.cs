@@ -55,6 +55,8 @@ namespace ASC.Api.Settings
 
         public bool? EnableAdmMess { get; set; }
 
+        public bool? ThirdpartyEnable { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper
