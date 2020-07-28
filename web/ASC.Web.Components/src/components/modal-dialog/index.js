@@ -59,7 +59,7 @@ top: 19px;
 
 const Body = styled.div`
   position: relative;
-  padding: 16px 0;
+  padding: ${props => props.bodyPadding};
 `;
 
 const Footer = styled.div``;
@@ -130,7 +130,8 @@ class ModalDialog extends React.Component {
       bodyContent,
       footerContent,
       onClose,
-      zIndex
+      zIndex,
+      bodyPadding
     } = this.props;
 
     return this.state.displayType === "modal" ? (
@@ -147,7 +148,7 @@ class ModalDialog extends React.Component {
               </Heading>
               <CloseButton onClick={onClose}></CloseButton>
             </StyledHeader>
-            <Body>{bodyContent}</Body>
+            <Body bodyPadding={bodyPadding}>{bodyContent}</Body>
             <Footer>{footerContent}</Footer>
           </Content>
         </Dialog>
@@ -171,7 +172,7 @@ class ModalDialog extends React.Component {
                 </Heading>
                 {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
               </StyledHeader>
-              <Body>{bodyContent}</Body>
+              <Body bodyPadding={bodyPadding}>{bodyContent}</Body>
               <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
             </Content>
           </Aside>
@@ -198,6 +199,7 @@ ModalDialog.propTypes = {
   ]),
   onClose: PropTypes.func,
   zIndex: PropTypes.number,
+  bodyPadding: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
@@ -205,7 +207,8 @@ ModalDialog.propTypes = {
 
 ModalDialog.defaultProps = {
   displayType: "auto",
-  zIndex: 310
+  zIndex: 310,
+  bodyPadding: "16px 0"
 };
 
 export default ModalDialog;

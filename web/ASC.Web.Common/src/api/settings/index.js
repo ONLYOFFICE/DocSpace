@@ -82,3 +82,12 @@ export function getSettings() {
       url: `settings/customschemas/${id}.json`
     });
   }
+
+  export function sendRecoverRequest(email, message) {
+    const data = { email, message };
+    return request({
+      method: "post",
+      url: `/settings/sendadmmail`,
+      data
+    });
+  }
