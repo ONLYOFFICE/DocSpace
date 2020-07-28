@@ -141,8 +141,10 @@ RUN cd /app/onlyoffice/src/ && \
     cd ../../../ && \
     cd products/ASC.Files/Server && \
     dotnet -d publish -o /var/www/products/ASC.Files/server && \
+	cd ../../../ && \
+    cd products/ASC.Files/Core/ASC.Files.Core && \
     cp -avrf DocStore /var/www/products/ASC.Files/server/ && \
-    cd ../../../ && \
+    cd ../../../../ && \
     cd products/ASC.Files/Service && \
     dotnet -d publish -o /var/www/products/ASC.Files/service && \
     cd ../../../ && \
