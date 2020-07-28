@@ -80,7 +80,6 @@ namespace ASC.Core.Notify
             }
         }
 
-
         private NotifyMessage CreateNotifyMessage(INoticeMessage message)
         {
             var m = new NotifyMessage
@@ -93,15 +92,14 @@ namespace ASC.Core.Notify
             };
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-            var tenant = tenantManager.GetCurrentTenant(false);
+            var tenant = scopeClass.TenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-            var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
+            var from = MailAddressUtils.Create(scopeClass.CoreConfiguration.SmtpSettings.SenderAddress, scopeClass.CoreConfiguration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
+            if ((scopeClass.CoreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(scopeClass.CoreConfiguration.SmtpSettings.SenderDisplayName)) &&
                 fromTag != null && fromTag.Value != null)
             {
                 try
@@ -128,7 +126,7 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                    scopeClass.Options.Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
                 }
             }
 
@@ -145,6 +143,20 @@ namespace ASC.Core.Notify
             }
 
             return m;
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal CoreConfiguration CoreConfiguration { get; }
+            internal IOptionsMonitor<ILog> Options { get; }
+
+            public Scope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+            {
+                TenantManager = tenantManager;
+                CoreConfiguration = coreConfiguration;
+                Options = options;
+            }
         }
     }
 }

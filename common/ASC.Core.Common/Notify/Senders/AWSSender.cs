@@ -71,7 +71,6 @@ namespace ASC.Core.Notify.Senders
             lastRefresh = DateTime.UtcNow - refreshTimeout; //set to refresh on first send
         }
 
-
         public override NoticeSendResult Send(NotifyMessage m)
         {
             NoticeSendResult result;
@@ -81,15 +80,14 @@ namespace ASC.Core.Notify.Senders
                 {
                     Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    tenantManager.SetCurrentTenant(m.Tenant);
-                    var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    scopeClass.TenantManager.SetCurrentTenant(m.Tenant);
 
-                    if (!configuration.SmtpSettings.IsDefaultSettings)
+                    if (!scopeClass.CoreConfiguration.SmtpSettings.IsDefaultSettings)
                     {
-                        _useCoreSettings = true;
+                        UseCoreSettings = true;
                         result = base.Send(m);
-                        _useCoreSettings = false;
+                        UseCoreSettings = false;
                     }
                     else
                     {
@@ -228,6 +226,18 @@ namespace ASC.Core.Notify.Senders
         private bool IsRefreshNeeded()
         {
             return quota == null || (DateTime.UtcNow - lastRefresh) > refreshTimeout;
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal CoreConfiguration CoreConfiguration { get; }
+
+            public Scope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
+            {
+                TenantManager = tenantManager;
+                CoreConfiguration = coreConfiguration;
+            }
         }
     }
 

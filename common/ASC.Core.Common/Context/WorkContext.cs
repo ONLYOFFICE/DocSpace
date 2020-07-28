@@ -88,7 +88,6 @@ namespace ASC.Core
             }
         }
 
-
         public static void NotifyStartUp(IServiceProvider serviceProvider)
         {
             if (notifyStarted) return;
@@ -96,16 +95,14 @@ namespace ASC.Core
             {
                 if (notifyStarted) return;
 
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
-                var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+                var scope = serviceProvider.GetService<Scope>();
 
                 NotifyContext = new NotifyContext(serviceProvider);
 
-                INotifySender jabberSender = new NotifyServiceSender(cacheNotify);
-                INotifySender emailSender = new NotifyServiceSender(cacheNotify);
+                INotifySender jabberSender = new NotifyServiceSender(scope.CacheNotify);
+                INotifySender emailSender = new NotifyServiceSender(scope.CacheNotify);
 
-                var postman = configuration["core:notify:postman"];
+                var postman = scope.Configuration["core:notify:postman"];
 
                 if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -117,14 +114,14 @@ namespace ASC.Core
                     };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        emailSender = new AWSSender(serviceProvider, options);
-                        properties["accessKey"] = configuration["ses:accessKey"];
-                        properties["secretKey"] = configuration["ses:secretKey"];
-                        properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
+                        emailSender = new AWSSender(serviceProvider, scope.Options);
+                        properties["accessKey"] = scope.Configuration["ses:accessKey"];
+                        properties["secretKey"] = scope.Configuration["ses:secretKey"];
+                        properties["refreshTimeout"] = scope.Configuration["ses:refreshTimeout"];
                     }
                     else
                     {
-                        emailSender = new SmtpSender(serviceProvider, options);
+                        emailSender = new SmtpSender(serviceProvider, scope.Options);
                     }
                     emailSender.Init(properties);
                 }
@@ -159,6 +156,19 @@ namespace ASC.Core
             {
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(tenant);
+            }
+        }
+        class Scope
+        {
+            internal IConfiguration Configuration { get; }
+            internal ICacheNotify<NotifyMessage> CacheNotify { get; }
+            internal IOptionsMonitor<ILog> Options { get; }
+            
+            public Scope(IConfiguration configuration, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<ILog> options)
+            {
+                Configuration = configuration;
+                CacheNotify = cacheNotify;
+                Options = options;
             }
         }
     }

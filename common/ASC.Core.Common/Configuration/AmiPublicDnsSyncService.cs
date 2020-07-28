@@ -46,22 +46,21 @@ namespace ASC.Core.Configuration
         {
 
         }
-
+        
         public static void Synchronize()
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            if (coreBaseSettings.Standalone)
+            var ScopeClass = scope.ServiceProvider.GetService<Scope>();
+            if (ScopeClass.CoreBaseSettings.Standalone)
             {
-                var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
+                var tenants = ScopeClass.TenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
                 if (tenants.Any())
                 {
                     var dnsname = GetAmiPublicDnsName();
                     foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                     {
                         tenant.MappedDomain = dnsname;
-                        tenantManager.SaveTenant(tenant);
+                        ScopeClass.TenantManager.SaveTenant(tenant);
                     }
                 }
             }
@@ -91,6 +90,18 @@ namespace ASC.Core.Configuration
                 }
             }
             return null;
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal CoreBaseSettings CoreBaseSettings { get; }
+             
+            public Scope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
+            {
+                TenantManager = tenantManager;
+                CoreBaseSettings = coreBaseSettings;
+            }
         }
     }
 }

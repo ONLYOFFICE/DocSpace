@@ -52,10 +52,9 @@ namespace ASC.Core.Notify
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var userManager = scope.ServiceProvider.GetService<UserManager>();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
                 var result = SendResult.OK;
-                var username = userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
+                var username = scopeClass.UserManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
                 if (string.IsNullOrEmpty(username))
                 {
                     result = SendResult.IncorrectRecipient;
@@ -72,7 +71,7 @@ namespace ASC.Core.Notify
                         CreationDate = DateTime.UtcNow.Ticks,
                     };
 
-                    var tenant = tenantManager.GetCurrentTenant(false);
+                    var tenant = scopeClass.TenantManager.GetCurrentTenant(false);
                     m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                     sender.Send(m);
@@ -82,6 +81,18 @@ namespace ASC.Core.Notify
             catch (Exception ex)
             {
                 return new SendResponse(message, senderName, ex);
+            }
+        }
+
+        class Scope
+        {
+            internal UserManager UserManager { get; }
+            internal TenantManager TenantManager { get; }
+
+            public Scope(UserManager userManager, TenantManager tenantManager)
+            {
+                TenantManager = tenantManager;
+                UserManager = userManager;
             }
         }
     }
