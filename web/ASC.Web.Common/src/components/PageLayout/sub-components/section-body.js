@@ -80,10 +80,46 @@ class SectionBody extends React.Component {
       tabIndex: 1
     } : {};
 
-    const renderBody = () => {
-      const scrollProp = uploadFiles ? { ref: this.scrollRef } : {}
-      return(
-        withScroll ? (
+    const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
+
+    return uploadFiles ? (
+      <StyledDropZoneBody
+        isDropZone
+        onDrop={onDrop}
+        withScroll={withScroll}
+        viewAs={viewAs}
+      >
+        {withScroll ? (
+          <Scrollbar {...scrollProp} stype="mediumBlack">
+            <SelectedFrame
+              viewAs={viewAs}
+              scrollRef={this.scrollRef}
+              setSelections={setSelections}
+            >
+              <div className="section-wrapper">
+                <div className="section-wrapper-content" {...focusProps}>
+                  {children}
+                  <StyledSpacer pinned={pinned} />
+                </div>
+              </div>
+            </SelectedFrame>
+          </Scrollbar>
+        ) : (
+          <SelectedFrame
+            viewAs={viewAs}
+            scrollRef={this.scrollRef}
+            setSelections={setSelections}
+          >
+            <div className="section-wrapper">
+              {children}
+              <StyledSpacer pinned={pinned} />
+            </div>
+          </SelectedFrame>
+        )}
+      </StyledDropZoneBody>
+    ) : (
+      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
+        {withScroll ? (
           <Scrollbar {...scrollProp} stype="mediumBlack">
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
@@ -97,23 +133,7 @@ class SectionBody extends React.Component {
             {children}
             <StyledSpacer pinned={pinned} />
           </div>
-        ))
-    };
-
-    return uploadFiles ? (
-      <SelectedFrame scrollRef={this.scrollRef} setSelections={setSelections}>
-        <StyledDropZoneBody
-          isDropZone
-          onDrop={onDrop}
-          withScroll={withScroll}
-          viewAs={viewAs}
-        >
-          {renderBody()}
-        </StyledDropZoneBody>
-      </SelectedFrame>
-    ) : (
-      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
-        {renderBody()}
+        )}
       </StyledSectionBody>
     );
   }

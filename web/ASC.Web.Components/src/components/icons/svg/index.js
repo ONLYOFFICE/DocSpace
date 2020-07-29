@@ -166,7 +166,7 @@ import OrigAddEmployeeIcon from './add.employee.react.svg';
 import OrigAddGuestIcon from './add.guest.react.svg';
 
 import OrigSpreadsheetIcon from './spreadsheet.react.svg';
-
+import OrigUnionIcon from './union.react.svg';
 import OrigKeyIcon from './key.react.svg';
 
 export const AZSortingIcon = createStyledIcon(
@@ -730,6 +730,10 @@ export const StarIcon = createStyledIcon(
 export const TimeTrackingNotBilledIcon = createStyledIcon(
   OrigTimeTrackingNotBilledIcon,
   'TimeTrackingNotBilledIcon'
+);
+export const UnionIcon = createStyledIcon(
+  OrigUnionIcon,
+  'UnionIcon'
 );
 export const UploadIcon = createStyledIcon(
   OrigUploadIcon,

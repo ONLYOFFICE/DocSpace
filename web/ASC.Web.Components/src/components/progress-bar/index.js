@@ -80,6 +80,7 @@ const ProgressBar = props => {
         color="#333"
         onClick={onLinkClick}
         isOpen={isOpen}
+        showIcon={dropDownContent}
       >
         {label}
       </Link>
@@ -90,17 +91,18 @@ const ProgressBar = props => {
             color="#fff"
             onClick={onLinkClick}
             isOpen={isOpen}
+            showIcon={dropDownContent}
           >
             {label}
           </Link>
         </div>
       </div>
       <div className="progress-bar_field" />
-      <DropDown open={isOpen} clickOutsideAction={onClose}>
-        <div className="progress-bar_drop-down">
-          {dropDownContent}
-        </div>
-      </DropDown>
+      {dropDownContent && (
+        <DropDown open={isOpen} clickOutsideAction={onClose}>
+          <div className="progress-bar_drop-down">{dropDownContent}</div>
+        </DropDown>
+      )}
     </StyledProgressBar>
   );
 };

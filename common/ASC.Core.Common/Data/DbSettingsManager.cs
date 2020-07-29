@@ -322,7 +322,7 @@ namespace ASC.Core.Data
             return JsonSerializer.Deserialize<T>(data);
         }
 
-        private string Serialize(ISettings settings)
+        private string Serialize<T>(T settings)
         {
             return JsonSerializer.Serialize(settings);
         }
