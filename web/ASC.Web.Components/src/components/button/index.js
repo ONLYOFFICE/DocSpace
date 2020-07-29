@@ -131,9 +131,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     ? `min-width: ${props.minWidth};`
     : null
   }
-
-  vertical-align: center;
-  text-overflow: ellipsis;
   
   cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
 
