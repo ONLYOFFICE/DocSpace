@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { PageLayout, history } from "asc-web-common";
+import { PageLayout, Layout, history } from "asc-web-common";
 import { 
   Heading, Text, 
   EmailInput, PasswordInput, 
@@ -502,6 +502,8 @@ class Body extends Component {
   }
 
   renderHeaderBox = () => {
+    return <Layout/>
+    /*
     const { t } = this.props;
     return (
       <Box className="header-box">
@@ -512,7 +514,7 @@ class Body extends Component {
           {t('desc')}
         </Text>
       </Box>
-    )
+    )*/
   }
 
   renderInputBox = () => {
@@ -713,13 +715,13 @@ class Body extends Component {
         <Toast/>
         <form className="form-container">
           { modalDialog }
-          { headerBox }
+         
           { inputBox }
           { settingsBox }
           { buttonBox }
         </form>
       </WizardContainer>
-    }
+    } // { headerBox }
     return <Loader className="pageLoader" type="rombs" size='40px' />;
   }
 }
@@ -747,14 +749,19 @@ const WizardPage = props => {
 
   return (
     <>
-      { isLoaded && <PageLayout 
-          sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />} 
-          sectionHeaderContent={sectionHeaderContent}/>
-      }
+     <Layout i18n={i18n}>
+     <WizardWrapper i18n={i18n} {...props} />
+     </Layout>
     </>
   );
 }
-
+/*
+{ isLoaded && <PageLayout 
+          
+  sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />} 
+  sectionHeaderContent={ <Layout  />} />
+}
+*/
 WizardPage.propTypes = {
   language: PropTypes.string,
   isLoaded: PropTypes.bool
