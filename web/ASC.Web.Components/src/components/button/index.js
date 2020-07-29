@@ -53,8 +53,9 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
-  min-width: ${props => 
-    props.size === 'base' ? '60px' : '100px' 
+  min-width: ${ props => 
+    props.minWidth ? props.minWidth
+      : props.size === 'base' ? '60px' : '100px' 
   };
 
   height: ${props =>
@@ -66,9 +67,9 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   line-height: ${props =>
     (props.size === 'large' && '20px') ||
-    (props.size === 'big' && '18px') ||
-    (props.size === 'medium' && '15px') ||
-    (props.size === 'base' && '16px')
+    (props.size === 'big' && '20px') ||
+    (props.size === 'medium' && '18px') ||
+    (props.size === 'base' && '15px')
   };
 
   font-size: ${props =>
@@ -91,42 +92,42 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   padding: ${props =>
     (props.size === 'large' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
-          : (props.label ? '12px 20px 12px 20px' : '12px 20px 12px 20px')
+          ? (props.label ? '11px 20px 13px 20px' : '11px 11px 13px 11px')
+          : (props.label ? '12px 20px 12px 20px' : '0px')
         ) 
       : (props.icon 
-          ? (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
-          : (props.label ? '11px 20px 13px 20px' : '11px 20px 13px 20px')
+          ? (props.label ? '11px 20px 13px 20px' : '11px 11px 13px 11px')
+          : (props.label ? '11px 20px 13px 20px' : '0px')
         ))
     ) ||
     (props.size === 'big' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
-          : (props.label ? '8px 16px 8px 16px' : '8px 10px 9px 16px')
+          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
+          : (props.label ? '8px 26px 9px 25px' : '0px')
         ) 
       : (props.icon 
-          ? (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
-          : (props.label ? '8px 16px 9px 16px' : '8px 16px 9px 16px')
+          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
+          : (props.label ? '8px 27px 9px 28px' : '0px')
         ))
     ) ||
     (props.size === 'medium' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '6px 16px 9px 16px' : '6px 16px 8px 16px')
-          : (props.label ? '7px 16px 8px 16px' : '6px 16px 8px 16px')
+          ? (props.label ? '6px 24px 7px 24px' : '6px 10px 7px 10px')
+          : (props.label ? '7px 24px 7px 24px' : '0px')
         ) 
       : (props.icon 
-          ? (props.label ? '6px 16px 9px 16px' : '6px 16px 8px 16px')
-          : (props.label ? '7px 16px 8px 16px' : '6px 16px 8px 16px')
+          ? (props.label ? '6px 24px 7px 24px' : '6px 10px 7px 10px')
+          : (props.label ? '7px 24px 7px 24px' : '0px')
         ))
     ) ||
     (props.size === 'base' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px') 
-          : (props.label ? '4px 12px 5px 12px' : '4px 12px 5px 12px')
+          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
+          : (props.label ? '3px 24px 5px 24px' : '0px')
         )
       : (props.icon 
-          ? (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px') 
-          : (props.label ? '3px 12px 5px 12px' : '3px 12px 5px 12px')
+          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
+          : (props.label ? '3px 24px 5px 24px' : '0px')
         ))
     )
   };
@@ -265,6 +266,8 @@ Button.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
+  minWidth: PropTypes.string,
+
   onClick: PropTypes.func
 };
 
@@ -276,6 +279,8 @@ Button.defaultProps = {
   icon: null,
 
   tabIndex: -1,
+  
+  minWidth: null,
 
   isHovered: false,
   isClicked: false,
