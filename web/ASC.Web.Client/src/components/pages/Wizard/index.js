@@ -8,28 +8,32 @@ import PropTypes from 'prop-types';
 
 import { PageLayout, history } from "asc-web-common";
 import { 
-  Text, 
-  EmailInput, PasswordInput, 
-  FileInput, Checkbox, Link,
-  GroupButton, DropDownItem, 
-  Button, Box, Loader, Toast, toastr, 
-  ModalDialog, utils 
+  Loader, 
+  Toast, 
+  toastr, 
+  utils 
 } from 'asc-web-components';
 
 import HeaderContainer from './sub-components/header-container';
 import ButtonContainer from './sub-components/button-container';
+import SettingsContainer from './sub-components/settings-container';
+import InputContainer from './sub-components/input-container';
+import ModalContainer from './sub-components/modal-dialog-container';
 
 import { 
-  getPortalPasswordSettings, getPortalTimezones, 
-  getPortalCultures, setIsWizardLoaded, 
-  getMachineName, setPortalOwner 
+  getPortalPasswordSettings, 
+  getPortalTimezones, 
+  getPortalCultures, 
+  setIsWizardLoaded, 
+  getMachineName, 
+  setPortalOwner 
 } from '../../../store/wizard/actions';
 
-const { EmailSettings } = utils.email;
-const settings = new EmailSettings();
-settings.allowDomainPunycode = true;
-
 const { tablet } = utils.device;
+
+const { EmailSettings } = utils.email;
+const emailSettings = new EmailSettings();
+emailSettings.allowDomainPunycode = true;
 
 const WizardContainer = styled.div`
     width: 960px;
@@ -45,123 +49,6 @@ const WizardContainer = styled.div`
       width: 311px;
       margin: 72px auto 0 auto;
     }
-
-  .input-box {
-    width: 311px;
-    margin: 32px auto 0 auto;
-    
-    .wizard-pass-box { 
-      width: 360px;
-      margin-top: 16px;
-
-      @media ${tablet} {
-        width: 100%;
-      }
-    }
-
-    .input-file {
-      width: 100%;
-      margin: 16px auto;
-    }
-
-    .generate-pass-link {
-      display: block;
-      margin: 16px 0 32px 0;
-    }
-
-    .checkbox-container {
-      width: 100%;
-      margin: 16px auto 0 auto;
-    }
-
-    .wizard-checkbox {
-      display: inline-block;
-    }
-
-    .wizard-checkbox span {
-      margin-right: 0.3em;
-      vertical-align: middle;
-    }
-
-    .link {
-      vertical-align: middle;
-    }
-
-    @media ${tablet} {
-      width: 100%;
-    }
-  }
-
-  .settings-box {
-    width: 311px;
-    margin: 32px auto 0 auto;
-    display: flex;
-    flex-direction: row;
-
-    .settings-title{
-      margin-bottom: 12px;
-    }
-
-    .timezone-title {
-      margin-bottom: 0;
-    }
-
-    .settings-values {
-      padding: 0;
-      margin: 0;
-      margin-left: 16px;
-    } 
-
-    .settings-value {
-      display: block;
-      margin-bottom: 11px;
-    }
-
-    .drop-down {
-      font-size: 13px;
-    }
-
-    .language-value {
-      margin: 0;
-    }
-
-    .timezone-value {
-      margin: 0;
-      margin-top: 11px; 
-    }
-
-    @media ${tablet} {
-      width: 480px;
-      margin-top: 32px;
-    }
-
-    @media(max-width: 415px) {
-      width: 311px;
-    }
-  }
-
-  .modal-change-email {
-    height: 32px;
-    width: 528px;
-
-    @media ${tablet} {
-      width: 293px;
-    }
-  }
-  
-  .modal-button-save {
-    height: 36px;
-    width: 100px;
-    @media ${tablet} {
-      width: 293px;
-      height: 32px;
-    }
-  }
-  s
-  .modal-error-content {
-    font-size: 13px;
-    line-height: 20px;
-  }
 `;
 
 class Body extends Component {
@@ -191,7 +78,6 @@ class Body extends Component {
       emailOwner: 'fake@mail.com'
     }
 
-    this.refPassInput = React.createRef();
     document.title = t('wizardTitle');
   }
 
@@ -383,238 +269,80 @@ class Body extends Component {
     })
   }
 
-  renderModalDialog = () => {
-    const { errorLoading, visibleModal, errorMessage, ownerEmail } = this.state;
-    const { t } = this.props;
-
-    let header, content, footer;
-
-    const visible = errorLoading ? errorLoading : visibleModal;
-
-    if(errorLoading) {
-      header = t('errorLicenseTitle');
-      content = <span 
-        className="modal-error-content">
-          {errorMessage ? errorMessage: t('errorLicenseBody')}
-      </span>;
-
-    } else if( visibleModal ) { //( visibleModal && isOwner )
-      header = t('changeEmailTitle');
-
-      content = <EmailInput
-        className="modal-change-email"
-        tabIndex={1}
-        id="change-email"
-        name="email-wizard"
-        placeholder={t('placeholderEmail')}
-        emailSettings={settings}
-        value={ownerEmail}
-        onValidateInput={this.onEmailHandler}
-      />;
-
-      footer = <Button
-        className="modal-button-save"
-        key="saveBtn"
-        label={t('changeEmailBtn')}
-        primary={true}
-        size="medium"
-        onClick={this.onSaveEmailHandler}
-      />;
-    }
-
-    return <ModalDialog
-        visible={visible}
-        scale={false}
-        displayType="auto"
-        zIndex={310}
-        headerContent={header}
-        bodyContent={content}
-        footerContent={footer}
-        onClose={this.onCloseModal}
-      />
-  }
-
-  renderInputBox = () => {
-    const { t, settingsPassword } = this.props;
-    const { isRequiredLicense, emailNeeded } = this.state;
-
-    const tooltipPassTitle = t('tooltipPasswordTitle');
-    const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
-    const tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : null;
-    const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
-    const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
-
-    const inputEmail = emailNeeded 
-      ? <EmailInput
-          name="wizard-email"
-          tabIndex={1}
-          size="large"
-          scale={true}
-          placeholder={t('email')}
-          emailSettings={settings}
-          onValidateInput={this.onEmailHandler}
-        />
-      : null;
-
-    const inputLicenseFile = isRequiredLicense 
-      ? <Box className="input-file">
-          <FileInput
-            tabIndex={3}
-            placeholder={t('placeholderLicense')}
-            size="large"
-            scale={true}
-            onInput={this.onInputFileHandler}
-          />
-        </Box>
-      : null; 
-
-    return (
-      <Box className="input-box">
-        {inputEmail}
-        <Box className="wizard-pass-box" >
-        <PasswordInput
-          ref={this.refPassInput}
-          className="wizard-pass" 
-          emailInputName="wizard-email"
-          tabIndex={2}
-          inputName="firstPass"
-          size="large"
-          scale={true}
-          inputValue={this.state.password}
-          passwordSettings={settingsPassword}
-          isDisabled={false}
-          placeholder={t('placeholderPass')}
-          tooltipPasswordTitle={tooltipPassTitle}
-          tooltipPasswordLength={tooltipPassLength}
-          tooltipPasswordDigits={tooltipPassDigits}
-          tooltipPasswordCapital={tooltipPassCapital}
-          tooltipPasswordSpecial={tooltipPassSpecial}
-          onChange={this.onChangePassword}
-          onValidateInput={this.isValidPassHandler}
-        />
-        </Box>
-        { inputLicenseFile }
-        {!isRequiredLicense 
-          ? <Link 
-              className='generate-pass-link'
-              type="action"
-              fontWeight="normal"
-              onClick={() => this.refPassInput.current.onGeneratePassword()}>
-                {t('generatePassword')}
-            </Link>
-          : null
-        }
-        <Box className="checkbox-container">
-          <Checkbox
-            className="wizard-checkbox"
-            id="license"
-            name="confirm"
-            label={t('license')}
-            isChecked={this.state.license}
-            isIndeterminate={false}
-            isDisabled={false}
-            onChange={this.onChangeLicense}
-          />
-          <Link 
-            className="link"
-            type="page" 
-            color="#116d9d" 
-            fontSize="13px"
-            href="https://gnu.org/licenses/gpl-3.0.html" 
-            isBold={false}
-          >{t('licenseLink')}</Link>
-        </Box>
-      </Box>
-    );
-  }
-
-  renderSettingsBox = () => {
-    const { selectLanguage, selectTimezone, languages, timezones, emailNeeded, email, emailOwner } = this.state;
-    const { t, machineName } = this.props;
-    
-    
-    const titleEmail = !emailNeeded 
-      ? <Text className="settings-title">{t('email')}</Text>
-      : null
-    
-    const contentEmail = !emailNeeded 
-      ? <Link 
-          className="settings-value" 
-          type="action" 
-          fontSize="13px" 
-          fontWeight="600" 
-          onClick={this.onClickChangeEmail}
-        >
-          {email ? email : emailOwner}
-        </Link>
-      : null
-
-    return (
-      <Box className="settings-box">
-        <Box>
-          <Text className="settings-title" fontSize="13px">{t('domain')}</Text>
-          {titleEmail}
-          <Text className="settings-title" fontSize="13px">{t('language')}</Text>
-          <Text className="settings-title timezone-title" fontSize="13px">{t('timezone')}</Text>
-        </Box>
-        <Box className="settings-values">
-          <Text className="settings-value" fontSize="13px" fontWeight="600">{machineName}</Text>
-          {contentEmail}
-          <GroupButton 
-            className="drop-down settings-value language-value" 
-            label={selectLanguage.label} 
-            isDropdown={true}
-            dropDownMaxHeight={300}>
-            {
-              languages.map(el => (
-                <DropDownItem 
-                  key={el.key} 
-                  label={el.label}
-                  onClick={() => this.onSelectLanguageHandler(el)}
-                />
-              )) 
-            }
-          </GroupButton>
-          
-          <GroupButton 
-            className="drop-down settings-value timezone-value" 
-            label={selectTimezone.label} 
-            isDropdown={true}
-            dropDownMaxHeight={300} >
-            {
-              timezones.map(el => (
-                <DropDownItem 
-                  key={el.key} 
-                  label={el.label}
-                  onClick={() => this.onSelectTimezoneHandler(el)}
-                />
-              ))
-            }
-          </GroupButton>
-          
-        </Box>
-      </Box>
-    );
-  }
-
   render() {
-    const { isWizardLoaded, t } = this.props;
-    const { sendingComplete } = this.state;
+    const { 
+      t,
+      isWizardLoaded,  
+      machineName, 
+      settingsPassword 
+    } = this.props;
+
+    const { 
+      sendingComplete, 
+      selectLanguage, 
+      license,
+      selectTimezone, 
+      languages, 
+      timezones, 
+      emailNeeded, 
+      email, 
+      emailOwner, 
+      password,
+      isRequiredLicense,
+      errorLoading,
+      visibleModal,
+      errorMessage
+    } = this.state;
   
     console.log('wizard render');
 
     if (isWizardLoaded) {
-      const inputBox = this.renderInputBox();
-      const settingsBox = this.renderSettingsBox();
-      const modalDialog = this.renderModalDialog();
 
       return <WizardContainer>
         <Toast/>
-          { modalDialog }
+          <ModalContainer t={t}
+            errorLoading={errorLoading}
+            visibleModal={visibleModal}
+            errorMessage={errorMessage}
+            emailOwner={emailOwner}
+            settings={emailSettings}
+            onEmailHandler={this.onEmailHandler}
+            onSaveEmailHandler={this.onSaveEmailHandler}
+            onCloseModal={this.onCloseModal}
+            />
+
           <HeaderContainer t={t} />
-          { inputBox }
-          { settingsBox }
-          <ButtonContainer t={t} sendingComplete={sendingComplete} onContinueHandler={this.onContinueHandler} />
+          
+          <InputContainer t={t}
+            settingsPassword={settingsPassword}
+            emailNeeded={emailNeeded}
+            password={password}
+            license={license}
+            settings={emailSettings}
+            isRequiredLicense={isRequiredLicense}
+            onChangeLicense={this.onChangeLicense}
+            isValidPassHandler={this.isValidPassHandler}
+            onChangePassword={this.onChangePassword}
+            onInputFileHandler={this.onInputFileHandler}
+            onEmailHandler={this.onEmailHandler}
+          />
+
+          <SettingsContainer t={t} 
+            selectLanguage={selectLanguage}
+            selectTimezone={selectTimezone}
+            languages={languages}
+            timezones={timezones}
+            emailNeeded={emailNeeded}
+            emailOwner={emailOwner} 
+            email={email}
+            machineName={machineName}
+            onClickChangeEmail={this.onClickChangeEmail}
+            onSelectLanguageHandler={this.onSelectLanguageHandler}
+            onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
+
+          <ButtonContainer t={t} 
+            sendingComplete={sendingComplete} 
+            onContinueHandler={this.onContinueHandler} />
       </WizardContainer>
     }
     return <Loader className="pageLoader" type="rombs" size='40px' />;
@@ -677,7 +405,10 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {  
-  getPortalPasswordSettings, getPortalCultures, 
-  getPortalTimezones, setIsWizardLoaded, 
-  getMachineName, setPortalOwner 
+  getPortalPasswordSettings, 
+  getPortalCultures, 
+  getPortalTimezones, 
+  setIsWizardLoaded, 
+  getMachineName, 
+  setPortalOwner 
 })(withRouter(WizardPage)); 

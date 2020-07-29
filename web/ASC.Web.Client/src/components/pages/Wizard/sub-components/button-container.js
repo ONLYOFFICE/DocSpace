@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from "prop-types";
 import styled from 'styled-components';
 
-import { Box, Button, utils } from 'asc-web-components';
+import { 
+  Box, 
+  Button, 
+  utils 
+} from 'asc-web-components';
 
 const { tablet } = utils.device;
 
@@ -15,7 +19,11 @@ const StyledContainer = styled(Box)`
   }
 `;
 
-const ButtonContainer = ({ t, sendingComplete, onContinueHandler }) => {
+const ButtonContainer = ({ 
+  t, 
+  sendingComplete, 
+  onContinueHandler 
+}) => {
   return (
     <StyledContainer className="wizard-button">
       <Button
