@@ -88,6 +88,15 @@ export function getSettings() {
     });
   }
 
+  export function sendRecoverRequest(email, message) {
+    const data = { email, message };
+    return request({
+      method: "post",
+      url: `/settings/sendadmmail`,
+      data
+    });
+  }
+
   export function getMachineName(confirmKey = null) {
     const options = {
       method: "get",

@@ -10,7 +10,7 @@
     <ProjectReference Include="..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
     <ProjectReference Include="..\..\..\common\services\ASC.Feed.Aggregator\ASC.Feed.Aggregator.csproj" />
-    <ProjectReference Include="..\Core\ASC.Files.Core\ASC.Files.Core.csproj" />
+    <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />
   </ItemGroup>
 
 </Project>

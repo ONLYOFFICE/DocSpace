@@ -29,7 +29,8 @@ const initialState = {
           dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
           timePattern: "h:mm tt"
       },
-      greetingSettings: 'Web Office Applications'
+      greetingSettings: 'Web Office Applications',
+      enableAdmMess: false
   }
 }
 
