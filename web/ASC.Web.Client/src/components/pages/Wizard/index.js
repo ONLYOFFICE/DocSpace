@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { PageLayout, Layout, history } from "asc-web-common";
+import { PageLayout, history } from "asc-web-common";
 import { 
   Heading, Text, 
   EmailInput, PasswordInput, 
@@ -28,43 +28,10 @@ settings.allowDomainPunycode = true;
 
 const { tablet } = utils.device;
 
-const HeaderContent = styled.div`
-  position: absolute;
-  height: 56px;
-  background: #0F4071;
-  width: 100%;
-  left: 0px;
-
-  .header-logo {
-    position: absolute;
-    left: 240px;
-    top: 14.5px;
-
-    @media ${tablet} {
-      left: 144px;
-    }
-
-    @media(max-width: 415px) {
-      left: 32px;
-    }
-  }
-`;
-
-const sectionHeaderContent = <HeaderContent>
-  <a className="header-wizard" href="/wizard">
-    <img
-      className="header-logo"
-      src="images/onlyoffice_logo/light_small_general.svg"
-      alt="Logo"
-    />
-  </a>
-</HeaderContent>;
-
 const WizardContainer = styled.div`
-  .form-container {
     width: 960px;
     margin: 0 auto;
-    margin-top: 80px; 
+    margin-top: 120px; 
 
     @media ${tablet} {
       width: 100%;
@@ -73,9 +40,8 @@ const WizardContainer = styled.div`
 
     @media(max-width: 415px) {
       width: 311px;
-      margin: 32px auto 0 auto;
+      margin: 72px auto 0 auto;
     }
-  }
 
   .header-box {
     width: 100%;
@@ -84,17 +50,17 @@ const WizardContainer = styled.div`
       text-align: center;
       font-weight: 600;
       font-size: 32px;
-      margin: 0 12px;
+      line-height: 36px;
+      margin: 0;
     }
 
     .wizard-desc {
       text-align: center;
-      margin: 10px 12px;
+      margin-top: 8px;
     }
 
     @media ${tablet} {
       .wizard-title, .wizard-desc  {
-        margin: 10px 0;
         text-align: left;
       }
     }
@@ -110,7 +76,7 @@ const WizardContainer = styled.div`
   .input-box {
     width: 311px;
     margin: 32px auto 0 auto;
-
+    
     .wizard-pass-box { 
       width: 360px;
       margin-top: 16px;
@@ -127,7 +93,7 @@ const WizardContainer = styled.div`
 
     .generate-pass-link {
       display: block;
-      margin: 30px 0 32px 0;
+      margin: 16px 0 32px 0;
     }
 
     .checkbox-container {
@@ -150,7 +116,6 @@ const WizardContainer = styled.div`
 
     @media ${tablet} {
       width: 100%;
-      margin-top: 32px;
     }
   }
 
@@ -164,11 +129,16 @@ const WizardContainer = styled.div`
       margin-bottom: 12px;
     }
 
+    .timezone-title {
+      margin-bottom: 0;
+    }
+
     .settings-values {
       padding: 0;
       margin: 0;
       margin-left: 16px;
     } 
+
     .settings-value {
       display: block;
       margin-bottom: 11px;
@@ -183,7 +153,7 @@ const WizardContainer = styled.div`
     }
 
     .timezone-value {
-      margin-left: 0;
+      margin: 0;
       margin-top: 11px; 
     }
 
@@ -218,13 +188,12 @@ const WizardContainer = styled.div`
   .modal-button-save {
     height: 36px;
     width: 100px;
-
     @media ${tablet} {
       width: 293px;
       height: 32px;
     }
   }
-
+  s
   .modal-error-content {
     font-size: 13px;
     line-height: 20px;
@@ -254,7 +223,7 @@ class Body extends Component {
       selectTimezone: null,
 
       isRequiredLicense: true,
-      emailNeeded: false,
+      emailNeeded: true,
       emailOwner: 'fake@mail.com'
     }
 
@@ -502,8 +471,6 @@ class Body extends Component {
   }
 
   renderHeaderBox = () => {
-    return <Layout/>
-    /*
     const { t } = this.props;
     return (
       <Box className="header-box">
@@ -514,7 +481,7 @@ class Body extends Component {
           {t('desc')}
         </Text>
       </Box>
-    )*/
+    )
   }
 
   renderInputBox = () => {
@@ -638,7 +605,7 @@ class Body extends Component {
           <Text className="settings-title" fontSize="13px">{t('domain')}</Text>
           {titleEmail}
           <Text className="settings-title" fontSize="13px">{t('language')}</Text>
-          <Text className="settings-title" fontSize="13px">{t('timezone')}</Text>
+          <Text className="settings-title timezone-title" fontSize="13px">{t('timezone')}</Text>
         </Box>
         <Box className="settings-values">
           <Text className="settings-value" fontSize="13px" fontWeight="600">{machineName}</Text>
@@ -713,15 +680,13 @@ class Body extends Component {
 
       return <WizardContainer>
         <Toast/>
-        <form className="form-container">
           { modalDialog }
-         
+          { headerBox }
           { inputBox }
           { settingsBox }
           { buttonBox }
-        </form>
       </WizardContainer>
-    } // { headerBox }
+    }
     return <Loader className="pageLoader" type="rombs" size='40px' />;
   }
 }
@@ -749,21 +714,16 @@ const WizardPage = props => {
 
   return (
     <>
-     <Layout i18n={i18n}>
-     <WizardWrapper i18n={i18n} {...props} />
-     </Layout>
+      { isLoaded && <PageLayout 
+          sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />} 
+        />
+      }
     </>
   );
 }
-/*
-{ isLoaded && <PageLayout 
-          
-  sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />} 
-  sectionHeaderContent={ <Layout  />} />
-}
-*/
+
 WizardPage.propTypes = {
-  language: PropTypes.string,
+  language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool
 }
 
@@ -772,6 +732,8 @@ function mapStateToProps(state) {
     isWizardLoaded: state.wizard.isWizardLoaded, 
     machineName: state.wizard.machineName,
     isComplete: state.wizard.isComplete,
+
+    language: state.auth.settings.culture,
 
     wizardToken: state.auth.settings.wizardToken,
     settingsPassword: state.auth.settings.passwordSettings,
