@@ -53,10 +53,9 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
-  min-width: ${ props => 
-    props.minWidth ? props.minWidth
-      : props.size === 'base' ? '60px' : '100px' 
-  };
+  
+  ${ props => 
+    props.width ? `width: ${props.width};` : null}
 
   height: ${props =>
     (props.size === 'large' && '44px') ||
@@ -92,12 +91,12 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   padding: ${props =>
     (props.size === 'large' && (props.primary 
       ? (props.icon 
-          ? (props.label ? '11px 20px 13px 20px' : '11px 11px 13px 11px')
-          : (props.label ? '12px 20px 12px 20px' : '0px')
+          ? (props.label ? '11px 24px 13px 24px' : '11px 11px 13px 11px')
+          : (props.label ? '12px 28px 12px 28px' : '0px')
         ) 
       : (props.icon 
-          ? (props.label ? '11px 20px 13px 20px' : '11px 11px 13px 11px')
-          : (props.label ? '11px 20px 13px 20px' : '0px')
+          ? (props.label ? '11px 24px 13px 24px' : '11px 11px 13px 11px')
+          : (props.label ? '11px 28px 13px 28px' : '0px')
         ))
     ) ||
     (props.size === 'big' && (props.primary 
@@ -107,7 +106,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         ) 
       : (props.icon 
           ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 27px 9px 28px' : '0px')
+          : (props.label ? '8px 26px 9px 25px' : '0px')
         ))
     ) ||
     (props.size === 'medium' && (props.primary 
@@ -132,6 +131,10 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     )
   };
 
+  text-align: center;
+  vertical-align: center;
+  text-overflow: ellipsis;
+  
   cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
 
   font-family: 'Open Sans', normal;
@@ -196,7 +199,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         ? 'text-bottom'
         : 'text-top'};
   }
-}
 
   ${props => props.label && css`
     .btnIcon,

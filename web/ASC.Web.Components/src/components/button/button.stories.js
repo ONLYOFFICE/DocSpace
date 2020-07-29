@@ -32,7 +32,7 @@ storiesOf('Components|Buttons', module)
           isClicked={boolean('isClicked', false)}
           isDisabled={boolean('isDisabled', false)}
 
-          minWidth={text('minWidth', '')}
+          width={text('width', '')}
 
           onClick={action('clicked')}
 

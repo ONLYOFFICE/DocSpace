@@ -153,7 +153,7 @@ describe('<Button />', () => {
       <Button {...baseProps}/>
     );
 
-    wrapper.setProps({minWidth: '40px'});
-    expect(wrapper.prop('minWidth')).toEqual('40px');
+    wrapper.setProps({width: '40px'});
+    expect(wrapper.prop('width')).toEqual('40px');
   });
 });
