@@ -120,11 +120,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DeleteFiles(Files, scope);
             DeleteFolders(Folders, scope);
         }
-
+        
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             foreach (var folderId in folderIds)
             {
@@ -150,13 +149,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
-                    fileMarker.RemoveMarkAsNewForAll(folder);
+                    scopeClass.FileMarker.RemoveMarkAsNewForAll(folder);
                     if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
                     {
                         if (ProviderDao != null)
                         {
                             ProviderDao.RemoveProviderInfo(folder.ProviderId);
-                            filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
+                            scopeClass.FilesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
                         }
 
                         ProcessedFolder(folderId);
@@ -172,7 +171,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             if (FolderDao.IsEmpty(folder.ID))
                             {
                                 FolderDao.DeleteFolder(folder.ID);
-                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                scopeClass.FilesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
                                 ProcessedFolder(folderId);
                             }
@@ -189,12 +188,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 if (immediately)
                                 {
                                     FolderDao.DeleteFolder(folder.ID);
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                    scopeClass.FilesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
                                 }
                                 else
                                 {
                                     FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
+                                    scopeClass.FilesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
 
                                 ProcessedFolder(folderId);
@@ -208,8 +207,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
         {
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             foreach (var fileId in fileIds)
             {
@@ -226,18 +224,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
                 else
                 {
-                    fileMarker.RemoveMarkAsNewForAll(file);
+                    scopeClass.FileMarker.RemoveMarkAsNewForAll(file);
                     if (!_immediately && FileDao.UseTrashForRemove(file))
                     {
                         FileDao.MoveFile(file.ID, _trashId);
-                        filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
+                        scopeClass.FilesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
                     }
                     else
                     {
                         try
                         {
                             FileDao.DeleteFile(file.ID);
-                            filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
+                            scopeClass.FilesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
                         }
                         catch (Exception ex)
                         {
@@ -275,6 +273,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
             }
             return false;
+        }
+
+        class Scope
+        {
+            internal FileMarker FileMarker { get; }
+            internal FilesMessageService FilesMessageService { get; }
+
+            public Scope(FileMarker fileMarker, FilesMessageService filesMessageService)
+            {
+                FileMarker = fileMarker;
+                FilesMessageService = filesMessageService;
+            }
         }
     }
 }

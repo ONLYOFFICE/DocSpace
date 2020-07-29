@@ -120,14 +120,12 @@ namespace ASC.Data.Backup
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
         {
             using var scope = ServiceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var notifySource = scope.ServiceProvider.GetService<StudioNotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
-            var users = userManager.GetUsers()
+            var users = scopeClass.UserManager.GetUsers()
                 .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
-                .Select(u => studioNotifyHelper.ToRecipient(u.ID))
+                .Select(u => scopeClass.StudioNotifyHelper.ToRecipient(u.ID))
                 .ToArray();
 
             if (users.Any())

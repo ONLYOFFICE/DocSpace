@@ -148,25 +148,19 @@ namespace ASC.Data.Storage
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var tenant = tenantManager.GetTenant(tenantId);
-                tenantManager.SetCurrentTenant(tenant);
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var tenant = scopeClass.TenantManager.GetTenant(tenantId);
+                scopeClass.TenantManager.SetCurrentTenant(tenant);
 
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-                var options = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>();
-                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-
-                securityContext.AuthenticateMe(tenant.OwnerId);
+                scopeClass.SecurityContext.AuthenticateMe(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
-                    var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
+                    var oldStore = scopeClass.StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
+                    var store = scopeClass.StorageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, scopeClass.StorageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(scopeClass.Options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)
@@ -197,14 +191,35 @@ namespace ASC.Data.Storage
                     StepDone();
                 }
 
-                settingsManager.Save(settings);
+                scopeClass.SettingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
-                tenantManager.SaveTenant(tenant);
+                scopeClass.TenantManager.SaveTenant(tenant);
             }
             catch (Exception e)
             {
                 Error = e;
                 Log.Error(e);
+            }
+        }
+
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal StorageFactory StorageFactory { get; }
+            internal IOptionsMonitor<ILog> Options { get; }
+            internal StorageSettingsHelper StorageSettingsHelper { get; }
+            internal SettingsManager SettingsManager { get; }
+
+            public Scope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, IOptionsMonitor<ILog> options, StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager)
+            {
+                TenantManager = tenantManager;
+                SecurityContext = securityContext;
+                StorageFactory = storageFactory;
+                Options = options;
+                StorageSettingsHelper = storageSettingsHelper;
+                SettingsManager = settingsManager;
             }
         }
     }

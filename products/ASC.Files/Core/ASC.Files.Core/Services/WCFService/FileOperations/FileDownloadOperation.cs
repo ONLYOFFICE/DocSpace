@@ -81,8 +81,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             base.RunJob(_, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
-            var globalStore = scope.ServiceProvider.GetService<GlobalStore>();
-            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             using var stream = TempStream.Create();
             using (var zip = new ZipOutputStream(stream, true)
@@ -100,14 +99,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 stream.Position = 0;
                 const string fileName = FileConstant.DownloadTitle + ".zip";
-                var store = globalStore.GetStore();
+                var store = scopeClass.GlobalStore.GetStore();
                 store.Save(
                     FileConstant.StorageDomainTmp,
                     string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                     stream,
                     "application/zip",
                     "attachment; filename=\"" + fileName + "\"");
-                Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+                Status = string.Format("{0}?{1}=bulk", scopeClass.FilesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
             }
 
             FillDistributedTask();
@@ -135,7 +134,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Compress = compress;
         }
 
-
         protected override void Do(IServiceScope scope)
         {
             if (!Compress && !Files.Any() && !Folders.Any()) return;
@@ -151,8 +149,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            var globalStore = scope.ServiceProvider.GetService<GlobalStore>();
-            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             ReplaceLongPath(entriesPathId);
 
@@ -172,14 +169,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     stream.Position = 0;
                     const string fileName = FileConstant.DownloadTitle + ".zip";
-                    var store = globalStore.GetStore();
+                    var store = scopeClass.GlobalStore.GetStore();
                     store.Save(
                         FileConstant.StorageDomainTmp,
                         string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                         stream,
                         "application/zip",
                         "attachment; filename=\"" + fileName + "\"");
-                    Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+                    Status = string.Format("{0}?{1}=bulk", scopeClass.FilesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
                 }
             }
         }
@@ -265,9 +262,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         internal void CompressToZip(ZipOutputStream zip, Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;
-            var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-            var fileConverter = scope.ServiceProvider.GetService<FileConverter>();
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)
@@ -298,9 +293,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             continue;
                         }
 
-                        if (file.ContentLength > setupInfo.AvailableFileSize)
+                        if (file.ContentLength > scopeClass.SetupInfo.AvailableFileSize)
                         {
-                            Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize));
+                            Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(scopeClass.SetupInfo.AvailableFileSize));
                             continue;
                         }
 
@@ -334,25 +329,25 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         try
                         {
-                            if (fileConverter.EnableConvert(file, convertToExt))
+                            if (scopeClass.FileConverter.EnableConvert(file, convertToExt))
                             {
                                 //Take from converter
-                                using var readStream = fileConverter.Exec(file, convertToExt);
+                                using var readStream = scopeClass.FileConverter.Exec(file, convertToExt);
                                 readStream.CopyTo(zip);
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
-                                    filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
+                                    scopeClass.FilesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
                                 }
                                 else
                                 {
-                                    filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                    scopeClass.FilesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                                 }
                             }
                             else
                             {
                                 using var readStream = FileDao.GetFileStream(file);
                                 readStream.CopyTo(zip);
-                                filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                scopeClass.FilesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                             }
                         }
                         catch (Exception ex)
@@ -437,6 +432,24 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public void Remove(string name)
         {
             dic.Remove(name);
+        }
+    }
+
+    internal class Scope
+    {
+        internal GlobalStore GlobalStore { get; }
+        internal FilesLinkUtility FilesLinkUtility { get; }
+        internal SetupInfo SetupInfo { get; }
+        internal FileConverter FileConverter { get; }
+        internal FilesMessageService FilesMessageService { get; }
+
+        public Scope(GlobalStore globalStore, FilesLinkUtility filesLinkUtility, SetupInfo setupInfo, FileConverter fileConverter, FilesMessageService filesMessageService)
+        {
+            GlobalStore = globalStore;
+            FilesLinkUtility = filesLinkUtility;
+            SetupInfo = setupInfo;
+            FileConverter = fileConverter;
+            FilesMessageService = filesMessageService;
         }
     }
 }

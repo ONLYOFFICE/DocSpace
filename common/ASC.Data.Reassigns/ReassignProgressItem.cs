@@ -100,27 +100,17 @@ namespace ASC.Data.Reassigns
 
         public void RunJob()
         {
-            var logger = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Web");
-
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var tenant = tenantManager.SetCurrentTenant(_tenantId);
-
-            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var messageService = scope.ServiceProvider.GetService<MessageService>();
-            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
-            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var logger = scopeClass.Options.Get("ASC.Web");
+            var tenant = scopeClass.TenantManager.SetCurrentTenant(_tenantId);
 
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                securityContext.AuthenticateMe(_currentUserId);
+                scopeClass.SecurityContext.AuthenticateMe(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
@@ -134,7 +124,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
 
-                if (!coreSettings.CustomMode)
+                if (!scopeClass.CoreBaseSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 
@@ -149,14 +139,14 @@ namespace ASC.Data.Reassigns
                     //}
                 }
 
-                SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
+                SendSuccessNotify(scopeClass.UserManager, scopeClass.StudioNotifyService, scopeClass.MessageService, scopeClass.MessageTarget, scopeClass.DisplayUserSettingsHelper);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
+                    DeleteUserProfile(scopeClass.UserManager, scopeClass.UserPhotoManager, scopeClass.MessageService, scopeClass.MessageTarget, scopeClass.DisplayUserSettingsHelper);
                 }
             }
             catch (Exception ex)
@@ -164,7 +154,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(userManager, studioNotifyService, ex.Message);
+                SendErrorNotify(scopeClass.UserManager, scopeClass.StudioNotifyService, ex.Message);
             }
             finally
             {
@@ -215,6 +205,43 @@ namespace ASC.Data.Reassigns
                 messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
             else
                 messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal CoreBaseSettings CoreBaseSettings { get; }
+            internal MessageService MessageService { get; }
+            internal StudioNotifyService StudioNotifyService { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal UserManager UserManager { get; }
+            internal UserPhotoManager UserPhotoManager { get; }
+            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+            internal MessageTarget MessageTarget { get; }
+            internal IOptionsMonitor<ILog> Options { get; }
+
+            public Scope(TenantManager tenantManager,
+                CoreBaseSettings coreBaseSettings,
+                MessageService messageService,
+                StudioNotifyService studioNotifyService,
+                SecurityContext securityContext,
+                UserManager userManager,
+                UserPhotoManager userPhotoManager,
+                DisplayUserSettingsHelper displayUserSettingsHelper,
+                MessageTarget messageTarget,
+                IOptionsMonitor<ILog> options)
+            {
+                TenantManager = tenantManager;
+                CoreBaseSettings = coreBaseSettings;
+                MessageService = messageService;
+                StudioNotifyService = studioNotifyService;
+                SecurityContext = securityContext;
+                UserManager = userManager;
+                UserPhotoManager = userPhotoManager;
+                DisplayUserSettingsHelper = displayUserSettingsHelper;
+                MessageTarget = messageTarget;
+                Options = options;
+            }
         }
     }
 

@@ -66,18 +66,15 @@ namespace ASC.Data.Storage.DiscStorage
         public async Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-            var emailValidationKeyProvider = scope.ServiceProvider.GetService<EmailValidationKeyProvider>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-            if (_checkAuth && !securityContext.IsAuthenticated)
+            if (_checkAuth && !scopeClass.SecurityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
 
-            var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
+            var storage = scopeClass.StorageFactory.GetStorage(scopeClass.TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
             var path = Path.Combine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
@@ -89,7 +86,7 @@ namespace ASC.Data.Storage.DiscStorage
                 var expire = context.Request.Query[Constants.QUERY_EXPIRE];
                 if (string.IsNullOrEmpty(expire)) expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
-                var validateResult = emailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
+                var validateResult = scopeClass.EmailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -145,6 +142,23 @@ namespace ASC.Data.Storage.DiscStorage
             {
                 return (context.GetRouteValue(name) ?? "").ToString();
             }
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal StorageFactory StorageFactory { get; }
+            internal EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+
+            public Scope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
+            {
+                TenantManager = tenantManager;
+                SecurityContext = securityContext;
+                StorageFactory = storageFactory;
+                EmailValidationKeyProvider = emailValidationKeyProvider;
+            }
+
         }
     }
 

@@ -150,19 +150,15 @@ namespace ASC.Web.Files.Services.DocumentService
             };
 
         }
-
+        
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
-            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var logger = scopeClass.Options.CurrentValue;
             try
             {
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(TenantId);
-                var authContext = scope.ServiceProvider.GetService<AuthContext>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
+                scopeClass.TenantManager.SetCurrentTenant(TenantId);
 
                 Status = ReportStatus.Started;
                 PublishTaskInfo(logger);
@@ -174,10 +170,10 @@ namespace ASC.Web.Files.Services.DocumentService
                 //        new HttpResponse(new System.IO.StringWriter()));
                 //}
 
-                tenantManager.SetCurrentTenant(TenantId);
-                securityContext.AuthenticateMe(UserId);
+                scopeClass.TenantManager.SetCurrentTenant(TenantId);
+                scopeClass.SecurityContext.AuthenticateMe(UserId);
 
-                BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
+                BuilderKey = scopeClass.DocumentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
 
                 while (true)
                 {
@@ -187,7 +183,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
 
                     Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    var builderKey = documentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
+                    var builderKey = scopeClass.DocumentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
                     if (builderKey == null)
                         throw new NullReferenceException();
 
@@ -251,6 +247,25 @@ namespace ASC.Web.Files.Services.DocumentService
             TaskInfo.SetProperty("status", Status);
             TaskInfo.SetProperty("reportOrigin", Origin);
             TaskInfo.SetProperty("exception", Exception);
+        }
+
+        class Scope
+        {
+            internal IOptionsMonitor<ILog> Options { get; }
+            internal TenantManager TenantManager { get; }
+            internal AuthContext AuthContext { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal DocumentServiceConnector DocumentServiceConnector { get; }
+
+            public Scope(IOptionsMonitor<ILog> options, TenantManager tenantManager, AuthContext authContext, SecurityContext securityContext, DocumentServiceConnector documentServiceConnector)
+            {
+                Options = options;
+                TenantManager = tenantManager;
+                AuthContext = authContext;
+                SecurityContext = securityContext;
+                DocumentServiceConnector = documentServiceConnector;
+            }
+
         }
     }
 

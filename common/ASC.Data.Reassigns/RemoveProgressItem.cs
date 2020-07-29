@@ -96,30 +96,21 @@ namespace ASC.Data.Reassigns
 
         public void RunJob()
         {
-            using var scope = ServiceProvider.CreateScope();
-            var logger = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Web");
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var tenant = tenantManager.SetCurrentTenant(_tenantId);
-
-            var messageService = scope.ServiceProvider.GetService<MessageService>();
-            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
-            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var userFormatter = scope.ServiceProvider.GetService<UserFormatter>();
-            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
-            var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
+            using var scope = ServiceProvider.CreateScope();   
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var logger = scopeClass.Options.Get("ASC.Web");
+            var tenant = scopeClass.TenantManager.SetCurrentTenant(_tenantId);
+            var userName = scopeClass.UserFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                securityContext.AuthenticateMe(_currentUserId);
+                scopeClass.SecurityContext.AuthenticateMe(_currentUserId);
 
                 long crmSpace;
-                GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
+                GetUsageSpace(scopeClass.WebItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", FromUser);
 
@@ -128,7 +119,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 25;
                 //_docService.DeleteStorage(_userId);
 
-                if (!coreSettings.CustomMode)
+                if (!scopeClass.CoreBaseSettings.CustomMode)
                 {
                     logger.Info("deleting of data from crm");
 
@@ -153,9 +144,9 @@ namespace ASC.Data.Reassigns
                 logger.Info("deleting of data from talk");
 
                 Percentage = 99;
-                DeleteTalkStorage(storageFactory);
+                DeleteTalkStorage(scopeClass.StorageFactory);
 
-                SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
+                SendSuccessNotify(scopeClass.StudioNotifyService, scopeClass.MessageService, scopeClass.MessageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
@@ -165,7 +156,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(studioNotifyService, ex.Message, userName);
+                SendErrorNotify(scopeClass.StudioNotifyService, ex.Message, userName);
             }
             finally
             {
@@ -251,6 +242,46 @@ namespace ASC.Data.Reassigns
             if (!_notify) return;
 
             studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal CoreBaseSettings CoreBaseSettings { get; }
+            internal MessageService MessageService { get; }
+            internal StudioNotifyService StudioNotifyService { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal UserManager UserManager { get; }
+            internal MessageTarget MessageTarget { get; }
+            internal WebItemManagerSecurity WebItemManagerSecurity { get; }
+            internal StorageFactory StorageFactory { get; }
+            internal UserFormatter UserFormatter { get; }
+            internal IOptionsMonitor<ILog> Options { get; }
+
+            public Scope(TenantManager tenantManager,
+                CoreBaseSettings coreBaseSettings,
+                MessageService messageService,
+                StudioNotifyService studioNotifyService,
+                SecurityContext securityContext,
+                UserManager userManager,
+                MessageTarget messageTarget,
+                WebItemManagerSecurity webItemManagerSecurity,
+                StorageFactory storageFactory,
+                UserFormatter userFormatter,
+                IOptionsMonitor<ILog> options)
+            {
+                TenantManager = tenantManager;
+                CoreBaseSettings = coreBaseSettings;
+                MessageService = messageService;
+                StudioNotifyService = studioNotifyService;
+                SecurityContext = securityContext;
+                UserManager = userManager;
+                MessageTarget = messageTarget;
+                WebItemManagerSecurity = webItemManagerSecurity;
+                StorageFactory = storageFactory;
+                UserFormatter = userFormatter;
+                Options = options;
+            }
         }
     }
 

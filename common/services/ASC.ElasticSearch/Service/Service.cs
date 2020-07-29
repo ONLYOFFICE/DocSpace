@@ -87,14 +87,23 @@ namespace ASC.ElasticSearch.Service
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(tenant);
-
-                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-                settingsManager.ClearCache<SearchSettings>();
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                scopeClass.TenantManager.SetCurrentTenant(tenant);
+                scopeClass.SettingsManager.ClearCache<SearchSettings>();
             });
         }
 
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal SettingsManager SettingsManager { get; }
+
+            public Scope(TenantManager tenantManager, SettingsManager settingsManager)
+            {
+                TenantManager = tenantManager;
+                SettingsManager = settingsManager;
+            }
+        }
         //public State GetState()
         //{
         //    return new State

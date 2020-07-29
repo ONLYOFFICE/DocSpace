@@ -79,6 +79,7 @@ namespace ASC.Notify
                 log.Error(e);
             }
         }
+        
 
         public void InvokeSendMethod(string service, string method, int tenant, params object[] parameters)
         {
@@ -98,11 +99,9 @@ namespace ASC.Notify
             }
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var tenantWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<TenantWhiteLabelSettingsHelper>();
-            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-            tenantManager.SetCurrentTenant(tenant);
-            tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            scopeClass.TenantManager.SetCurrentTenant(tenant);
+            scopeClass.TenantWhiteLabelSettingsHelper.Apply(scopeClass.SettingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);
         }
 
@@ -121,6 +120,20 @@ namespace ASC.Notify
 
             return services
                 .AddDbWorker();
+        }
+    }
+
+    class Scope
+    {
+        internal TenantManager TenantManager { get; }
+        internal TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        internal SettingsManager SettingsManager { get; }
+
+        public Scope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
+        {
+            TenantManager = tenantManager;
+            TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+            SettingsManager = settingsManager;
         }
     }
 }

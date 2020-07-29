@@ -112,9 +112,9 @@ namespace ASC.Data.Storage
             var task = new Task<string>(() =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(tenantId);
-                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                scopeClass.TenantManager.SetCurrentTenant(tenantId);
+                var staticUploader = scopeClass.StaticUploader;
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
@@ -208,16 +208,12 @@ namespace ASC.Data.Storage
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var tenant = tenantManager.GetTenant(tenantId);
-                tenantManager.SetCurrentTenant(tenant);
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var tenant = scopeClass.TenantManager.GetTenant(tenantId);
+                scopeClass.TenantManager.SetCurrentTenant(tenant);
+                scopeClass.SecurityContext.AuthenticateMe(tenant.OwnerId);
 
-                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var SettingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-                var StorageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
-
-                var dataStore = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>());
+                var dataStore = scopeClass.StorageSettingsHelper.DataStore(scopeClass.SettingsManager.Load<CdnStorageSettings>());
 
                 if (File.Exists(mappedPath))
                 {
@@ -284,6 +280,24 @@ namespace ASC.Data.Storage
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
                 StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
             }
+        }
+    }
+
+    internal class Scope
+    {
+        internal TenantManager TenantManager { get; }
+        internal StaticUploader StaticUploader { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal SettingsManager SettingsManager { get; }
+        internal StorageSettingsHelper StorageSettingsHelper { get; }
+
+        public Scope(TenantManager tenantManager, StaticUploader staticUploader, SecurityContext securityContext, SettingsManager settingsManager, StorageSettingsHelper storageSettingsHelper)
+        {
+            TenantManager = tenantManager;
+            StaticUploader = staticUploader;
+            SecurityContext = securityContext;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
         }
     }
 

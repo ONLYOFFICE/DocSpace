@@ -92,10 +92,9 @@ namespace ASC.ElasticSearch
             var task = new Task(async () =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer>();
-                var service = scope.ServiceProvider.GetService<Service.Service>();
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-                while (!factoryIndexer.CheckState(false))
+                while (!scopeClass.FactoryIndexer.CheckState(false))
                 {
                     if (CancellationTokenSource.IsCancellationRequested)
                     {
@@ -105,7 +104,7 @@ namespace ASC.ElasticSearch
                     await Task.Delay(10000);
                 }
 
-                service.Subscribe();
+                scopeClass.Service.Subscribe();
                 Timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
 
             }, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
@@ -179,6 +178,19 @@ namespace ASC.ElasticSearch
                 Log.ErrorFormat("Product {0}", product.IndexName);
             }
         }
+
+        class Scope
+        {
+            internal FactoryIndexer FactoryIndexer { get; }
+            internal Service.Service Service { get; }
+
+            public Scope(FactoryIndexer factoryIndexer, Service.Service service)
+            {
+                FactoryIndexer = factoryIndexer;
+                Service = service;
+            }
+        }
+
     }
 
     public static class ServiceLauncherExtension

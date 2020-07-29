@@ -116,11 +116,8 @@ namespace ASC.Feed.Aggregator
             {
                 var cfg = FeedSettings.GetInstance(Configuration);
                 using var scope = ServiceProvider.CreateScope();
-                var commonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
-                commonLinkUtility.Initialize(cfg.ServerRoot);
-
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                scopeClass.BaseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
                 var start = DateTime.UtcNow;
                 Log.DebugFormat("Start of collecting feeds...");
@@ -132,7 +129,7 @@ namespace ASC.Feed.Aggregator
                 foreach (var module in modules)
                 {
                     var result = new List<FeedRow>();
-                    var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
+                    var fromTime = scopeClass.FeedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
                     if (fromTime == default) fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
                     var toTime = DateTime.UtcNow;
 
@@ -150,16 +147,13 @@ namespace ASC.Feed.Aggregator
 
                         try
                         {
-                            if (tenantManager.GetTenant(tenant) == null)
+                            if (scopeClass.TenantManager.GetTenant(tenant) == null)
                             {
                                 continue;
                             }
 
-                            tenantManager.SetCurrentTenant(tenant);
-                            var userManager = scope.ServiceProvider.GetService<UserManager>();
-                            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                            var authManager = scope.ServiceProvider.GetService<AuthManager>();
-                            var users = userManager.GetUsers();
+                            scopeClass.TenantManager.SetCurrentTenant(tenant);
+                            var users = scopeClass.UserManager.GetUsers();
 
                             var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
                             Log.DebugFormat("{0} feeds in {1} tenant.", feeds.Count, tenant);
@@ -180,7 +174,7 @@ namespace ASC.Feed.Aggregator
                                 {
                                     return;
                                 }
-                                if (!TryAuthenticate(securityContext, authManager, tenant1, u.ID))
+                                if (!TryAuthenticate(scopeClass.SecurityContext, scopeClass.AuthManager, tenant1, u.ID))
                                 {
                                     continue;
                                 }
@@ -196,7 +190,7 @@ namespace ASC.Feed.Aggregator
                         }
                     }
 
-                    feedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime);
+                    scopeClass.FeedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime);
 
                     foreach (var res in result)
                     {
@@ -284,6 +278,31 @@ namespace ASC.Feed.Aggregator
             catch
             {
                 return false;
+            }
+        }
+
+        class Scope
+        {
+            internal BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+            internal TenantManager TenantManager { get; }
+            internal FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+            internal UserManager UserManager { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal AuthManager AuthManager { get; }
+
+            public Scope(BaseCommonLinkUtility baseCommonLinkUtility,
+                TenantManager tenantManager,
+                FeedAggregateDataProvider feedAggregateDataProvider,
+                UserManager userManager,
+                SecurityContext securityContext,
+                AuthManager authManager)
+            {
+                BaseCommonLinkUtility = baseCommonLinkUtility;
+                TenantManager = tenantManager;
+                FeedAggregateDataProvider = feedAggregateDataProvider;
+                UserManager = userManager;
+                SecurityContext = securityContext;
+                AuthManager = authManager;
             }
         }
     }

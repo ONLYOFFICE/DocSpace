@@ -22,7 +22,17 @@ namespace ASC.Resource.Manager
         {
             Parser.Default.ParseArguments<Options>(args).WithParsed(Export);
         }
+        class Scope
+        {
+            internal ResourceData ResourceData { get; }
+            internal IConfiguration Configuration { get; }
 
+            public Scope(ResourceData resourceData, IConfiguration configuration )
+            {
+                ResourceData = resourceData;
+                Configuration = configuration;
+            }
+        }
         public static void Export(Options options)
         {
             var services = new ServiceCollection();
@@ -30,7 +40,7 @@ namespace ASC.Resource.Manager
             startup.ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.CreateScope();
-            var ResourceData = scope.ServiceProvider.GetService<ResourceData>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             var cultures = new List<string>();
             var projects = new List<ResFile>();
@@ -71,9 +81,9 @@ namespace ASC.Resource.Manager
                     return;
                 }
 
-                enabledSettings = serviceProvider.GetService<IConfiguration>().GetSetting<EnabledSettings>("enabled");
-                cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
-                projects = ResourceData.GetAllFiles();
+                enabledSettings = scopeClass.Configuration.GetSetting<EnabledSettings>("enabled");
+                cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
+                projects = scopeClass.ResourceData.GetAllFiles();
                 //key = CheckExist("FilesJSResource", "ASC.Files.Resources.FilesJSResource,ASC.Files");
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);

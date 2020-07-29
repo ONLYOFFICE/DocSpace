@@ -51,25 +51,21 @@ namespace ASC.Web.Files.Services.NotifyService
         {
             ServiceProvider = serviceProvider;
         }
-
+ 
         public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
         {
             using var scope = ServiceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
-            var fileUtility = scope.ServiceProvider.GetService<FileUtility>();
-            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
+            var recipient = scopeClass.NotifySource.GetRecipientsProvider().GetRecipient(scopeClass.SecurityContext.CurrentAccount.ID.ToString());
 
             client.SendNoticeAsync(
                 NotifyConstants.Event_DocuSignComplete,
                 file.UniqID,
                 recipient,
                 true,
-                new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(filesLinkUtility.GetFileWebPreviewUrl(fileUtility, file.Title, file.ID))),
+                new TagValue(NotifyConstants.Tag_DocumentUrl, scopeClass.BaseCommonLinkUtility.GetFullAbsolutePath(scopeClass.FilesLinkUtility.GetFileWebPreviewUrl(scopeClass.FileUtility, file.Title, file.ID))),
                 new TagValue(NotifyConstants.Tag_DocumentTitle, file.Title),
                 new TagValue(NotifyConstants.Tag_Message, sourceTitle)
                 );
@@ -78,11 +74,10 @@ namespace ASC.Web.Files.Services.NotifyService
         public void SendDocuSignStatus(string subject, string status)
         {
             using var scope = ServiceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
+            var recipient = scopeClass.NotifySource.GetRecipientsProvider().GetRecipient(scopeClass.SecurityContext.CurrentAccount.ID.ToString());
 
             client.SendNoticeAsync(
                 NotifyConstants.Event_DocuSignStatus,
@@ -117,30 +112,23 @@ namespace ASC.Web.Files.Services.NotifyService
             if (fileEntry == null || recipients.Count == 0) return;
 
             using var scope = ServiceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
-            var fileUtility = scope.ServiceProvider.GetService<FileUtility>();
-            var pathProvider = scope.ServiceProvider.GetService<PathProvider>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
-            var folderDao = daoFactory.GetFolderDao<T>();
+            var folderDao = scopeClass.DaoFactory.GetFolderDao<T>();
             if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
 
             var url = fileEntry.FileEntryType == FileEntryType.File
-                          ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl(((Folder<T>)fileEntry));
+                          ? scopeClass.FilesLinkUtility.GetFileWebPreviewUrl(scopeClass.FileUtility, fileEntry.Title, fileEntry.ID)
+                          : scopeClass.PathProvider.GetFolderUrl(((Folder<T>)fileEntry));
 
-            var recipientsProvider = notifySource.GetRecipientsProvider();
+            var recipientsProvider = scopeClass.NotifySource.GetRecipientsProvider();
 
             foreach (var recipientPair in recipients)
             {
-                var u = userManager.GetUsers(recipientPair.Key);
+                var u = scopeClass.UserManager.GetUsers(recipientPair.Key);
                 var culture = string.IsNullOrEmpty(u.CultureName)
-                                  ? tenantManager.GetCurrentTenant().GetCulture()
+                                  ? scopeClass.TenantManager.GetCurrentTenant().GetCulture()
                                   : CultureInfo.GetCultureInfo(u.CultureName);
 
                 var aceString = GetAccessString(recipientPair.Value, culture);
@@ -153,7 +141,7 @@ namespace ASC.Web.Files.Services.NotifyService
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
                     new TagValue(NotifyConstants.Tag_FolderID, fileEntry.ID),
-                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
+                    new TagValue(NotifyConstants.Tag_DocumentUrl, scopeClass.BaseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
                     );
@@ -165,16 +153,14 @@ namespace ASC.Web.Files.Services.NotifyService
             if (file == null || recipientIds.Count == 0) return;
 
             using var scope = ServiceProvider.CreateScope();
-            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
-            var recipientsProvider = notifySource.GetRecipientsProvider();
+            var recipientsProvider = scopeClass.NotifySource.GetRecipientsProvider();
 
             foreach (var recipientId in recipientIds)
             {
-                var u = userManager.GetUsers(recipientId);
+                var u = scopeClass.UserManager.GetUsers(recipientId);
 
                 var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
 
@@ -184,7 +170,7 @@ namespace ASC.Web.Files.Services.NotifyService
                     recipient,
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, file.Title),
-                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
+                    new TagValue(NotifyConstants.Tag_DocumentUrl, scopeClass.BaseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
                     );
             }
@@ -206,6 +192,40 @@ namespace ASC.Web.Files.Services.NotifyService
                     return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo);
                 default:
                     return string.Empty;
+            }
+        }
+
+        class Scope
+        {
+            internal NotifySource NotifySource { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal FilesLinkUtility FilesLinkUtility { get; }
+            internal FileUtility FileUtility { get; }
+            internal BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+            internal IDaoFactory DaoFactory { get; }
+            internal PathProvider PathProvider { get; }
+            internal UserManager UserManager { get; }
+            internal TenantManager TenantManager { get; }
+
+            public Scope(NotifySource notifySource,
+                SecurityContext securityContext,
+                FilesLinkUtility filesLinkUtility,
+                FileUtility fileUtility,
+                BaseCommonLinkUtility baseCommonLinkUtility,
+                IDaoFactory daoFactory,
+                PathProvider pathProvider,
+                UserManager userManager,
+                TenantManager tenantManager)
+            {
+                NotifySource = notifySource;
+                SecurityContext = securityContext;
+                FilesLinkUtility = filesLinkUtility;
+                FileUtility = fileUtility;
+                BaseCommonLinkUtility = baseCommonLinkUtility;
+                DaoFactory = daoFactory;
+                PathProvider = pathProvider;
+                UserManager = userManager;
+                TenantManager = tenantManager;
             }
         }
     }

@@ -138,25 +138,14 @@ namespace ASC.Web.Files.Utils
             var result = cache.Get<ConvertFileOperationResult>(GetKey(file));
             return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
         }
-
+        
         private void CheckConvertFilesStatus(object _)
         {
             if (Monitor.TryEnter(singleThread))
             {
                 using var scope = ServiceProvider.CreateScope();
-                var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                UserManager userManager;
-                SecurityContext securityContext;
-                IDaoFactory daoFactory;
-                FileSecurity fileSecurity;
-                PathProvider pathProvider;
-                SetupInfo setupInfo;
-                FileUtility fileUtility;
-                DocumentServiceHelper documentServiceHelper;
-                DocumentServiceConnector documentServiceConnector;
-                EntryManager entryManager;
-                FileConverter fileConverter;
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var logger = scopeClass.Options.CurrentValue;
 
                 try
                 {
@@ -222,45 +211,33 @@ namespace ASC.Web.Files.Utils
                                 cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
                             }
 
-                            tenantManager.SetCurrentTenant(tenantId);
+                            scopeClass.TenantManager.SetCurrentTenant(tenantId);
 
-                            userManager = scope.ServiceProvider.GetService<UserManager>();
-                            securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                            daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-                            fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
-                            pathProvider = scope.ServiceProvider.GetService<PathProvider>();
-                            setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-                            fileUtility = scope.ServiceProvider.GetService<FileUtility>();
-                            documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
-                            documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
-                            entryManager = scope.ServiceProvider.GetService<EntryManager>();
-                            fileConverter = scope.ServiceProvider.GetService<FileConverter>();
+                            scopeClass.SecurityContext.AuthenticateMe(account);
 
-                            securityContext.AuthenticateMe(account);
-
-                            var user = userManager.GetUsers(account.ID);
-                            var culture = string.IsNullOrEmpty(user.CultureName) ? tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+                            var user = scopeClass.UserManager.GetUsers(account.ID);
+                            var culture = string.IsNullOrEmpty(user.CultureName) ? scopeClass.TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
                             Thread.CurrentThread.CurrentCulture = culture;
                             Thread.CurrentThread.CurrentUICulture = culture;
 
-                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
+                            if (!scopeClass.FileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
                             {
                                 //No rights in CRM after upload before attach
                                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
                             }
-                            if (file.ContentLength > setupInfo.AvailableFileSize)
+                            if (file.ContentLength > scopeClass.SetupInfo.AvailableFileSize)
                             {
-                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize)));
+                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(scopeClass.SetupInfo.AvailableFileSize)));
                             }
 
-                            fileUri = pathProvider.GetFileStreamUrl(file);
+                            fileUri = scopeClass.PathProvider.GetFileStreamUrl(file);
 
-                            var toExtension = fileUtility.GetInternalExtension(file.Title);
+                            var toExtension = scopeClass.FileUtility.GetInternalExtension(file.Title);
                             var fileExtension = file.ConvertedExtension;
-                            var docKey = documentServiceHelper.GetDocKey(file);
+                            var docKey = scopeClass.DocumentServiceHelper.GetDocKey(file);
 
-                            fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                            fileUri = scopeClass.DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
+                            operationResultProgress = scopeClass.DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
                         }
                         catch (Exception exception)
                         {
@@ -325,7 +302,7 @@ namespace ASC.Web.Files.Utils
 
                         try
                         {
-                            newFile = fileConverter.SaveConvertedFile(file, convertedFileUrl);
+                            newFile = scopeClass.FileConverter.SaveConvertedFile(file, convertedFileUrl);
                         }
                         catch (Exception e)
                         {
@@ -350,10 +327,10 @@ namespace ASC.Web.Files.Utils
                                     {
                                         if (newFile != null)
                                         {
-                                            var folderDao = daoFactory.GetFolderDao<T>();
+                                            var folderDao = scopeClass.DaoFactory.GetFolderDao<T>();
                                             var folder = folderDao.GetFolder(newFile.FolderID);
-                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
-                                            operationResult.Result = FileJsonSerializer(entryManager, newFile, folderTitle);
+                                            var folderTitle = scopeClass.FileSecurity.CanRead(folder) ? folder.Title : null;
+                                            operationResult.Result = FileJsonSerializer(scopeClass.EntryManager, newFile, folderTitle);
                                         }
 
                                         operationResult.Progress = 100;
@@ -420,6 +397,52 @@ namespace ASC.Web.Files.Utils
                                       FolderTitle = folderTitle ?? "",
                                       FileJson = JsonSerializer.Serialize(file, options)
                                   }, options);
+        }
+
+        class Scope
+        {
+            internal IOptionsMonitor<ILog> Options { get; }
+            internal TenantManager TenantManager { get; }
+            internal UserManager UserManager { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal IDaoFactory DaoFactory { get; }
+            internal FileSecurity FileSecurity { get; }
+            internal PathProvider PathProvider { get; }
+            internal SetupInfo SetupInfo { get; }
+            internal FileUtility FileUtility { get; }
+            internal DocumentServiceHelper DocumentServiceHelper { get; }
+            internal DocumentServiceConnector DocumentServiceConnector { get; }
+            internal EntryManager EntryManager { get; }
+            internal FileConverter FileConverter { get; }
+
+            public Scope(IOptionsMonitor<ILog> options,
+                TenantManager tenantManager,
+                UserManager userManager,
+                SecurityContext securityContext,
+                IDaoFactory daoFactory,
+                FileSecurity fileSecurity,
+                PathProvider pathProvider,
+                SetupInfo setupInfo,
+                FileUtility fileUtility,
+                DocumentServiceHelper documentServiceHelper,
+                DocumentServiceConnector documentServiceConnector,
+                EntryManager entryManager,
+                FileConverter fileConverter)
+            {
+                Options = options;
+                TenantManager = tenantManager;
+                UserManager = userManager;
+                SecurityContext = securityContext;
+                DaoFactory = daoFactory;
+                FileSecurity = fileSecurity;
+                PathProvider = pathProvider;
+                SetupInfo = setupInfo;
+                FileUtility = fileUtility;
+                DocumentServiceHelper = documentServiceHelper;
+                DocumentServiceConnector = documentServiceConnector;
+                EntryManager = entryManager;
+                FileConverter = fileConverter;
+            }
         }
     }
 
@@ -758,6 +781,7 @@ namespace ASC.Web.Files.Utils
         }
 
         private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
+
     }
 
     internal class FileComparer<T> : IEqualityComparer<File<T>>

@@ -84,7 +84,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
@@ -98,7 +98,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                fileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+                scopeClass.FileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
@@ -111,21 +111,33 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 ProgressStep();
             });
 
-            var globalFolder = scope.ServiceProvider.GetService<GlobalFolder>();
-            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
             var rootIds = new List<int>
                 {
-                    globalFolder.GetFolderMy(fileMarker, daoFactory),
-                    globalFolder.GetFolderCommon(fileMarker, daoFactory),
-                    globalFolder.GetFolderShare(daoFactory),
-                    globalFolder.GetFolderProjects(daoFactory),
+                    scopeClass.GlobalFolder.GetFolderMy(scopeClass.FileMarker, scopeClass.DaoFactory),
+                    scopeClass.GlobalFolder.GetFolderCommon(scopeClass.FileMarker, scopeClass.DaoFactory),
+                    scopeClass.GlobalFolder.GetFolderShare(scopeClass.DaoFactory),
+                    scopeClass.GlobalFolder.GetFolderProjects(scopeClass.DaoFactory),
                 };
 
             var newrootfolder =
-                rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
+                rootIds.Select(r => new KeyValuePair<int, int>(r, scopeClass.FileMarker.GetRootFoldersIdMarkedAsNew(r)))
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
             Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+        }
+
+        class Scope
+        {
+            internal FileMarker FileMarker { get; }
+            internal GlobalFolder GlobalFolder { get; }
+            internal IDaoFactory DaoFactory { get; }
+
+            public Scope(FileMarker fileMarker, GlobalFolder globalFolder, IDaoFactory daoFactory)
+            {
+                FileMarker = fileMarker;
+                GlobalFolder = globalFolder;
+                DaoFactory = daoFactory;
+            }
         }
     }
 }

@@ -125,17 +125,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 deleteSourceFile);
         }
-
+        
         protected File<int> PerformCrossDaoFileCopy(string fromFileId, int toFolderId, bool deleteSourceFile)
         {
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(TenantID);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            scopeClass.TenantManager.SetCurrentTenant(TenantID);
 
             return CrossDao.PerformCrossDaoFileCopy(
                 fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
-                toFolderId, scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
+                toFolderId, scopeClass.FileDao, r => r,
                 deleteSourceFile);
         }
 
@@ -154,16 +154,31 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fromSelector = GetSelector(fromFolderId);
             using var scope = ServiceProvider.CreateScope();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             return CrossDao.PerformCrossDaoFolderCopy(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
-                toRootFolderId, scope.ServiceProvider.GetService<FolderDao>(), scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
+                toRootFolderId, scopeClass.FolderDao, scopeClass.FileDao, r => r,
                 deleteSourceFolder, cancellationToken);
         }
 
         public void Dispose()
         {
             Selectors.ForEach(r => r.Dispose());
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal FolderDao FolderDao { get; }
+            internal IFileDao<int> FileDao { get; }
+
+            public Scope(TenantManager tenantManager, FolderDao folderDao, IFileDao<int> fileDao)
+            {
+                TenantManager = tenantManager;
+                FolderDao = folderDao;
+                FileDao = fileDao;
+            }
         }
     }
 

@@ -52,14 +52,13 @@ namespace ASC.Core.Common.Tests
         private IRecipient testRec2;
         private NotifyAction nAction;
         private IServiceProvider serviceProvider;
-
+        
         [OneTimeSetUp]
         public void CreateProviders()
         {
             using var scope = serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var subscriptionManager = scope.ServiceProvider.GetService<SubscriptionManager>();
-            tenantManager.SetCurrentTenant(tenant);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            scopeClass.TenantManager.SetCurrentTenant(tenant);
 
             tenant = new Tenants.Tenant(0, "teamlab");
             sourceId = "6045b68c-2c2e-42db-9e53-c272e814c4ad";
@@ -69,8 +68,8 @@ namespace ASC.Core.Common.Tests
             testRec = new DirectRecipient("ff0c4e13-1831-43c2-91ce-7b7beb56179b", null); //Oliver Khan
             testRec2 = new DirectRecipient("0017794f-aeb7-49a5-8817-9e870e02bd3f", null); //Якутова Юлия
 
-            recProvider = scope.ServiceProvider.GetService<RecipientProviderImpl>();
-            var directSubProvider = new DirectSubscriptionProvider(sourceId, subscriptionManager, recProvider);
+            recProvider = scopeClass.RecipientProviderImpl;
+            var directSubProvider = new DirectSubscriptionProvider(sourceId, scopeClass.SubscriptionManager, recProvider);
             subProvider = new TopSubscriptionProvider(recProvider, directSubProvider);
         }
 
@@ -140,6 +139,20 @@ namespace ASC.Core.Common.Tests
                 subProvider.UnSubscribe(nAction, objectId, testRec);
                 subProvider.UnSubscribe(nAction, rndObj, otdel);
                 subProvider.UnSubscribe(nAction, rndObj2, everyone);
+            }
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal SubscriptionManager SubscriptionManager { get; }
+            internal RecipientProviderImpl RecipientProviderImpl { get; }
+
+            public Scope(TenantManager tenantManager, SubscriptionManager subscriptionManager, RecipientProviderImpl recipientProviderImpl)
+            {
+                TenantManager = tenantManager;
+                SubscriptionManager = subscriptionManager;
+                RecipientProviderImpl = recipientProviderImpl;
             }
         }
     }

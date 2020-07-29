@@ -72,10 +72,10 @@ namespace ASC.Notify
 
         public Context(IServiceProvider serviceProvider)
         {
-            var scope = serviceProvider.GetService<Scope>();
-            Log = scope.Options.CurrentValue;
+            var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+            Log = options.CurrentValue;
             NotifyEngine = new NotifyEngine(this, serviceProvider);
-            DispatchEngine = new DispatchEngine(this, scope.Configuration, scope.Options);
+            DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
         }
 
 
@@ -112,6 +112,7 @@ namespace ASC.Notify
             return client;
         }
 
+
         private void ValidateNotifySource(INotifySource source)
         {
             foreach (var a in source.GetActionProvider().GetActions())
@@ -136,18 +137,6 @@ namespace ASC.Notify
                         Log.ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
                     }
                 }
-            }
-        }
-
-        class Scope
-        {
-            internal IOptionsMonitor<ILog> Options { get; }
-            internal IConfiguration Configuration { get; }
-
-            public Scope(IOptionsMonitor<ILog> options, IConfiguration configuration)
-            {
-                Options = options;
-                Configuration = configuration;
             }
         }
     }

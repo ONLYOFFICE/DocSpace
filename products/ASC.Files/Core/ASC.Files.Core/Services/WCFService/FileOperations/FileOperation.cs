@@ -274,7 +274,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Total = InitTotalProgressSteps();
             Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
-
+        
         public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             try
@@ -283,24 +283,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken = cancellationToken;
 
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(CurrentTenant);
-                var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-                var fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
-                var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                scopeClass.TenantManager.SetCurrentTenant(CurrentTenant);
 
 
                 Thread.CurrentPrincipal = principal;
                 Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
-                FolderDao = daoFactory.GetFolderDao<TId>();
-                FileDao = daoFactory.GetFileDao<TId>();
-                TagDao = daoFactory.GetTagDao<TId>();
-                ProviderDao = daoFactory.ProviderDao;
-                FilesSecurity = fileSecurity;
+                FolderDao = scopeClass.DaoFactory.GetFolderDao<TId>();
+                FileDao = scopeClass.DaoFactory.GetFileDao<TId>();
+                TagDao = scopeClass.DaoFactory.GetTagDao<TId>();
+                ProviderDao = scopeClass.DaoFactory.ProviderDao;
+                FilesSecurity = scopeClass.FileSecurity;
 
-                Logger = logger;
+                Logger = scopeClass.Options.CurrentValue;
 
                 Do(scope);
             }
@@ -391,5 +388,22 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FillDistributedTask();
             TaskInfo.PublishChanges();
         }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal IDaoFactory DaoFactory { get; }
+            internal FileSecurity FileSecurity { get; }
+            internal IOptionsMonitor<ILog> Options { get; }
+
+            public Scope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
+            {
+                TenantManager = tenantManager;
+                DaoFactory = daoFactory;
+                FileSecurity = fileSecurity;
+                Options = options;
+            }
+        }
     }
+
 }
