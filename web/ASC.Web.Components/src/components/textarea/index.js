@@ -6,7 +6,7 @@ import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
+const ClearScrollbar = ({ isDisabled, heightScale, hasError, ...props }) => <Scrollbar {...props} />
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
     :focus-within {
@@ -22,7 +22,7 @@ const StyledScrollbar = styled(ClearScrollbar)`
 `;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {...props} />
+const ClearTextareaAutosize = ({ isDisabled, heightScale, hasError, ...props }) => <TextareaAutosize {...props} />
 const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
   width: 100%;
