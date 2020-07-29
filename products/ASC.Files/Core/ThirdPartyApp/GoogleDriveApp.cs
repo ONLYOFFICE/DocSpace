@@ -154,8 +154,9 @@ namespace ASC.Web.Files.ThirdPartyApp
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
             Logger = option.CurrentValue;
             PathProvider = pathProvider;
