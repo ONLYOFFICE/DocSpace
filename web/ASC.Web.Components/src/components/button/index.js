@@ -53,10 +53,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
-  
-  ${ props => 
-    props.width ? `width: ${props.width};` : null}
-
   height: ${props =>
     (props.size === 'large' && '44px') ||
     (props.size === 'big' && '36px') ||
@@ -131,7 +127,11 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     )
   };
 
-  text-align: center;
+  ${ props => props.minWidth 
+    ? `min-width: ${props.minWidth};`
+    : null
+  }
+
   vertical-align: center;
   text-overflow: ellipsis;
   

@@ -35,4 +35,4 @@ import { Button } from "asc-web-components";
 | `size`       |    `oneOf`     |    -     | `base`, `middle`, `big`, `large` | `base`  | Size of button                                        |
 | `style`      | `obj`, `array` |    -     |            -            |    -    | Accepts css style                                     |
 | `tabIndex`   |    `number`    |    -     |            -            |  `-1`   | Button tab index                                      |
-| `width`   |    `string`    |    -     |            -            |  `null` | Sets the width of the button                  |
+| `minWidth`   |    `string`    |    -     |            -            |  `null` | Sets the min width of the button                  |
