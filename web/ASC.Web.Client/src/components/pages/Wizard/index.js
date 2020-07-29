@@ -8,13 +8,16 @@ import PropTypes from 'prop-types';
 
 import { PageLayout, history } from "asc-web-common";
 import { 
-  Heading, Text, 
+  Text, 
   EmailInput, PasswordInput, 
   FileInput, Checkbox, Link,
   GroupButton, DropDownItem, 
   Button, Box, Loader, Toast, toastr, 
   ModalDialog, utils 
 } from 'asc-web-components';
+
+import HeaderContainer from './sub-components/header-container';
+import ButtonContainer from './sub-components/button-container';
 
 import { 
   getPortalPasswordSettings, getPortalTimezones, 
@@ -42,36 +45,6 @@ const WizardContainer = styled.div`
       width: 311px;
       margin: 72px auto 0 auto;
     }
-
-  .header-box {
-    width: 100%;
-
-    .wizard-title {
-      text-align: center;
-      font-weight: 600;
-      font-size: 32px;
-      line-height: 36px;
-      margin: 0;
-    }
-
-    .wizard-desc {
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    @media ${tablet} {
-      .wizard-title, .wizard-desc  {
-        text-align: left;
-      }
-    }
-
-    @media(max-width: 415px) {
-      .wizard-title {
-        font-size: 23px;
-        line-height: 28px;
-      }
-    }
-  }
 
   .input-box {
     width: 311px;
@@ -167,15 +140,6 @@ const WizardContainer = styled.div`
     }
   }
 
-  .wizard-button {
-    width: 311px;
-    margin: 32px auto 0 auto;
-
-    @media ${tablet} {
-      width: 100%;
-    }
-  }
-
   .modal-change-email {
     height: 32px;
     width: 528px;
@@ -223,7 +187,7 @@ class Body extends Component {
       selectTimezone: null,
 
       isRequiredLicense: true,
-      emailNeeded: true,
+      emailNeeded: false,
       emailOwner: 'fake@mail.com'
     }
 
@@ -349,7 +313,7 @@ class Body extends Component {
       const analytics = true;
       
       //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
-      setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
+      setPortalOwner(emailTrim, password, selectLanguage.key, analytics)
         .then(() => history.push(`/`))
         .catch((e) => {
           this.setState({
@@ -468,20 +432,6 @@ class Body extends Component {
         footerContent={footer}
         onClose={this.onCloseModal}
       />
-  }
-
-  renderHeaderBox = () => {
-    const { t } = this.props;
-    return (
-      <Box className="header-box">
-        <Heading level={1} title="Wizard" className="wizard-title">
-          {t('welcomeTitle')}
-        </Heading>
-        <Text className="wizard-desc" fontSize="13px">
-          {t('desc')}
-        </Text>
-      </Box>
-    )
   }
 
   renderInputBox = () => {
@@ -647,44 +597,24 @@ class Body extends Component {
     );
   }
 
-  renderButtonBox = () => {
-    const { t } = this.props;
-    const { sendingComplete } = this.state;
-
-    return (
-      <Box className="wizard-button">
-        <Button
-          size="large"
-          scale={true}
-          primary
-          isLoading={sendingComplete ? true : false}
-          label={t('buttonContinue')}           
-          onClick={this.onContinueHandler}
-          isDisabled={sendingComplete}
-        />
-      </Box>
-    );
-  }
-
   render() {
-    const { isWizardLoaded } = this.props;
+    const { isWizardLoaded, t } = this.props;
+    const { sendingComplete } = this.state;
   
     console.log('wizard render');
 
     if (isWizardLoaded) {
-      const headerBox = this.renderHeaderBox();
       const inputBox = this.renderInputBox();
       const settingsBox = this.renderSettingsBox();
-      const buttonBox = this.renderButtonBox();
       const modalDialog = this.renderModalDialog();
 
       return <WizardContainer>
         <Toast/>
           { modalDialog }
-          { headerBox }
+          <HeaderContainer t={t} />
           { inputBox }
           { settingsBox }
-          { buttonBox }
+          <ButtonContainer t={t} sendingComplete={sendingComplete} onContinueHandler={this.onContinueHandler} />
       </WizardContainer>
     }
     return <Loader className="pageLoader" type="rombs" size='40px' />;
