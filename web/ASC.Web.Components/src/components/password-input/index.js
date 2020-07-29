@@ -41,8 +41,8 @@ const StyledInput = styled(SimpleInput)`
   }
 
   .text-tooltip {
-    margin-top: -10px;
-    margin-bottom: -10px;
+    line-height: 14px;
+    margin-top: -2px;
   }
 `;
 
@@ -336,7 +336,7 @@ class PasswordInput extends React.Component {
     return (
       <>
       <div className="break"></div>
-      <Text className="text-tooltip" fontSize="10px" color="#A3A9AE">
+      <Text className="text-tooltip" fontSize="10px" color="#A3A9AE" as="span">
         {length}, {digits}, {capital}, {special}
       </Text>
       <div className="break"></div>
@@ -494,7 +494,10 @@ class PasswordInput extends React.Component {
         style={style}
       >
         {simpleView ? (
-          inputGroup
+          <>
+            {inputGroup}
+            {textTooltip}
+          </>
         ) : (
           <>
             <PasswordProgress
