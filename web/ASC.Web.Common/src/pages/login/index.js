@@ -31,6 +31,7 @@ const LoginContainer = styled.div`
   max-width: 960px;
 
   @media (max-width: 768px) {
+    padding: 0 16px;
     max-width: 475px;
     }
   @media (max-width: 375px) {
