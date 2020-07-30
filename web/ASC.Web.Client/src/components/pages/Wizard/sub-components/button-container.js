@@ -21,7 +21,7 @@ const StyledContainer = styled(Box)`
 
 const ButtonContainer = ({ 
   t, 
-  sendingComplete, 
+  sending, 
   onContinueHandler 
 }) => {
   return (
@@ -30,10 +30,10 @@ const ButtonContainer = ({
         size="large"
         scale={true}
         primary
-        isLoading={sendingComplete ? true : false}
+        isLoading={sending ? true : false}
         label={t('buttonContinue')}           
         onClick={onContinueHandler}
-        isDisabled={sendingComplete}
+        isDisabled={sending}
       />
     </StyledContainer>
   );
@@ -41,7 +41,7 @@ const ButtonContainer = ({
 
 ButtonContainer.propTypes = {
   t: PropTypes.func.isRequired,
-  sendingComplete: PropTypes.bool.isRequired,
+  sending: PropTypes.bool.isRequired,
   onContinueHandler: PropTypes.func.isRequired
 }
 

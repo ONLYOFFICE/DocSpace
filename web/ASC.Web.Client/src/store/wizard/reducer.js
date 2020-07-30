@@ -1,9 +1,14 @@
-import { SET_IS_WIZARD_LOADED, SET_IS_MACHINE_NAME, SET_COMPLETE } from "./actions";
+import { 
+  SET_IS_WIZARD_LOADED, 
+  SET_IS_MACHINE_NAME, 
+  SET_COMPLETE
+} from "./actions";
 
 const initState = { 
   isWizardLoaded: false,
   machineName: '',
-  isComplete: false
+  isComplete: false,
+  error: false
 };
 
 const ownerReducer = ( state = initState, action) => {
@@ -22,7 +27,7 @@ const ownerReducer = ( state = initState, action) => {
     case SET_COMPLETE:
       return Object.assign({}, state, {
         isComplete: action.isComplete
-      })
+      });
     
     default:
       return state;

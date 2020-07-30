@@ -62,7 +62,7 @@ class Body extends Component {
       isValidPass: false,
       errorLoading: false,
       errorMessage: null,
-      sendingComplete: false,
+      sending: false,
       visibleModal: false,
       emailValid: false,
       email: '',
@@ -73,8 +73,8 @@ class Body extends Component {
       selectLanguage: null,
       selectTimezone: null,
 
-      isRequiredLicense: true,
-      emailNeeded: false,
+      isRequiredLicense: false,
+      emailNeeded: true,
       emailOwner: 'fake@mail.com'
     }
 
@@ -130,7 +130,7 @@ class Body extends Component {
         this.setState({
           errorLoading: true,
           errorMessage: e 
-        })
+        }) 
       }
     }
   }
@@ -183,7 +183,7 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) { 
-      const { setPortalOwner, wizardToken } = this.props;
+      const { setPortalOwner, wizardToken, error } = this.props;
       const { password, email,
         selectLanguage, selectTimezone,
         isRequiredLicense, file, emailOwner
@@ -191,23 +191,23 @@ class Body extends Component {
 
       let licenseFile;
 
-      this.setState({ sendingComplete: true })
+      this.setState({ sending: true })
 
       if (isRequiredLicense) licenseFile = file;
 
       const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
       
-      //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
+      console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
+      
       setPortalOwner(emailTrim, password, selectLanguage.key, analytics)
         .then(() => history.push(`/`))
-        .catch((e) => {
-          this.setState({
+        .catch( e => this.setState({
             errorLoading: true,
-            sendingComplete: false,
-            errorMessage: e 
-          })
-        })
+            sending: false,
+            errorMessage: error
+        }))
+      
     }
   }
 
@@ -255,19 +255,13 @@ class Body extends Component {
 
   onSelectTimezoneHandler = el => this.setState({ selectTimezone: el });
 
-  onSelectLanguageHandler = lang => {
-    this.setState({ 
+  onSelectLanguageHandler = lang => this.setState({ 
       selectLanguage: {
         key: lang.key,
         label: lang.label 
       }});
-  }
 
-  onInputFileHandler = file => {
-    this.setState({
-      file: file
-    })
-  }
+  onInputFileHandler = file => this.setState({ file: file });
 
   render() {
     const { 
@@ -278,7 +272,7 @@ class Body extends Component {
     } = this.props;
 
     const { 
-      sendingComplete, 
+      sending, 
       selectLanguage, 
       license,
       selectTimezone, 
@@ -341,7 +335,7 @@ class Body extends Component {
             onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
 
           <ButtonContainer t={t} 
-            sendingComplete={sendingComplete} 
+            sending={sending} 
             onContinueHandler={this.onContinueHandler} />
       </WizardContainer>
     }
@@ -382,7 +376,7 @@ const WizardPage = props => {
 
 WizardPage.propTypes = {
   language: PropTypes.string.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {
@@ -400,7 +394,9 @@ function mapStateToProps(state) {
     cultures: state.auth.settings.cultures,
     portalCulture: state.auth.settings.culture,
     timezones: state.auth.settings.timezones,
-    portalTimezone: state.auth.settings.timezone
+    portalTimezone: state.auth.settings.timezone,
+
+    error: state.wizard.error
   };
 }
 

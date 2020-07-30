@@ -67,10 +67,10 @@ export function getMachineName(token) {
 export function setPortalOwner(email, pwd, lng, confirmKey, analytics) {
   return dispatch => {
     return api.settings.setPortalOwner(email, pwd, lng, confirmKey, analytics)
-    .then((res) => { 
-      console.log(res)
-      dispatch(setCompleteWizard()); 
-    })
-    .then(() => getPortalSettings(dispatch))
+      .then((res) => { 
+        console.log(res)
+        dispatch(setCompleteWizard()); 
+      })
+      .then(() => getPortalSettings(dispatch))
   }
 }
