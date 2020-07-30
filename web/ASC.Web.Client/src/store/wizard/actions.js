@@ -3,7 +3,6 @@ const {
   setPasswordSettings, 
   setTimezones, 
   setPortalCultures,
-  setCompleteWizard,
   getPortalSettings 
 } = store.auth.actions;
 
@@ -25,10 +24,10 @@ export function setMachineName(machineName) {
   };
 }
 
-export function setComplete(isComplete) {
+export function setComplete(res) {
   return {
     type: SET_COMPLETE,
-    isComplete
+    res
   }
 }
 
@@ -69,8 +68,9 @@ export function setPortalOwner(email, pwd, lng, confirmKey, analytics) {
     return api.settings.setPortalOwner(email, pwd, lng, confirmKey, analytics)
       .then((res) => { 
         console.log(res)
-        dispatch(setCompleteWizard()); 
+        dispatch(setComplete(res)); 
       })
-      .then(() => getPortalSettings(dispatch))
+      //.then(() => getPortalSettings(dispatch))
+      .catch((e) => console.log(e))
   }
 }

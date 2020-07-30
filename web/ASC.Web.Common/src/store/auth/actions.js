@@ -15,7 +15,6 @@ export const SET_CURRENT_PRODUCT_ID = "SET_CURRENT_PRODUCT_ID";
 export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
-export const SET_WIZARD_COMPLETE = "SET_WIZARD_COMPLETE";
 
 export function setCurrentUser(user) {
   return {
@@ -113,12 +112,6 @@ export function setCustomNames(customNames) {
     type: SET_CUSTOM_NAMES,
     customNames
   };
-}
-
-export function setCompleteWizard() {
-  return {
-    type: SET_WIZARD_COMPLETE,
-  }
 }
 
 export function getUser(dispatch) {

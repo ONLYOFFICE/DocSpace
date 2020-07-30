@@ -200,7 +200,7 @@ class Body extends Component {
       
       console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
       
-      setPortalOwner(emailTrim, password, selectLanguage.key, analytics)
+      setPortalOwner(password, selectLanguage.key, wizardToken, analytics)
         .then(() => history.push(`/`))
         .catch( e => this.setState({
             errorLoading: true,
