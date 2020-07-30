@@ -2,9 +2,11 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { Headline } from 'asc-web-common';
-import { IconButton } from "asc-web-components";
+import { IconButton, utils } from "asc-web-components";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
+
+const { tablet, desktop } = utils.device;
 
 const StyledContainer = styled.div`
 
@@ -20,7 +22,7 @@ const StyledContainer = styled.div`
     }
   }
 
-  @media (min-width: 1024px) {
+  @media ${desktop} {
     ${props => props.isHeaderVisible && css`width: calc(100% + 76px);`}
   }
 
@@ -28,7 +30,7 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
-    @media (max-width: 1024px) {
+    @media ${tablet} {
       & > div:first-child {
       position: absolute;
       top: 56px;
@@ -36,7 +38,7 @@ const StyledContainer = styled.div`
       }
     }
 
-    @media (min-width: 1024px) {
+    @media ${desktop} {
       margin: 0 -24px;
     }
   }
@@ -51,7 +53,7 @@ const StyledContainer = styled.div`
     .action-button {
       margin-left: 16px;
 
-      @media (max-width: 1024px) {
+      @media ${tablet} {
         margin-left: auto;
 
         & > div:first-child {
