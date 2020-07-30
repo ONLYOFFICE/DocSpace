@@ -17,6 +17,9 @@ storiesOf('Components|Input', module)
     const settingsDigits = boolean('settingsDigits', false);
     const settingsSpecSymbols = boolean('settingsSpecSymbols', false);
     const simpleView = boolean('simpleView', false);
+    const hideNewPasswordButton = boolean('hideNewPasswordButton', false);
+    const isDisableTooltip = boolean('isDisableTooltip', false)
+    const isTextTooltipVisible = boolean('isTextTooltipVisible', false);
 
     const fakeSettings = {
       minLength: 6,
@@ -53,6 +56,9 @@ storiesOf('Components|Input', module)
               clipEmailResource='E-mail: '
               clipPasswordResource='Password: '
               clipCopiedResource='Copied'
+              hideNewPasswordButton={hideNewPasswordButton}
+              isDisableTooltip={isDisableTooltip}
+              isTextTooltipVisible={isTextTooltipVisible}
               tooltipPasswordTitle='Password must contain:'
               tooltipPasswordLength={tooltipPasswordLength}
               tooltipPasswordDigits='digits'
