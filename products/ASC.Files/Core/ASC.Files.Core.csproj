@@ -31,16 +31,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
-    <ProjectReference Include="..\..\..\..\common\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
-    <ProjectReference Include="..\..\..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
-    <ProjectReference Include="..\..\..\..\common\ASC.FederatedLogin\ASC.FederatedLogin.csproj" />
-    <ProjectReference Include="..\..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
-    <ProjectReference Include="..\..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
-    <ProjectReference Include="..\..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj" />
-    <ProjectReference Include="..\..\..\..\thirdparty\onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj" />
-    <ProjectReference Include="..\..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.FederatedLogin\ASC.FederatedLogin.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
+    <ProjectReference Include="..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
+    <ProjectReference Include="..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj" />
+    <ProjectReference Include="..\..\..\thirdparty\onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj" />
+    <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
