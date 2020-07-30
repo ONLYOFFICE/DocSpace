@@ -107,8 +107,8 @@ class Row extends React.Component {
           </StyledCheckbox>
         )}
         {renderElement && <StyledElement>{element}</StyledElement>}
-        <StyledContent>{children}</StyledContent>
-        <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
+        <StyledContent className="row_content">{children}</StyledContent>
+        <StyledOptionButton className="row_context-menu-wrapper" spacerWidth={contextButtonSpacerWidth}>
           {renderContext
             ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
             : (<div className="expandButton">{' '}</div>)}
