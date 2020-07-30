@@ -328,6 +328,7 @@ class PasswordInput extends React.Component {
   }
 
   renderTextTooltip = (
+    settings,
     length,
     digits,
     capital,
@@ -337,7 +338,7 @@ class PasswordInput extends React.Component {
       <>
       <div className="break"></div>
       <Text className="text-tooltip" fontSize="10px" color="#A3A9AE" as="span">
-        {length}, {digits}, {capital}, {special}
+        {settings.minLength ? length : null} {settings.digits ? `, ${digits}` : null } {settings.upperCase ? `, ${capital}` : null} {settings.specSymbols ? `, ${special}` : null}
       </Text>
       <div className="break"></div>
       </>
@@ -393,6 +394,7 @@ class PasswordInput extends React.Component {
 
     const textTooltip = isTextTooltipVisible 
       ? this.renderTextTooltip(
+        passwordSettings,
         tooltipPasswordLength,
         tooltipPasswordDigits,
         tooltipPasswordCapital,
