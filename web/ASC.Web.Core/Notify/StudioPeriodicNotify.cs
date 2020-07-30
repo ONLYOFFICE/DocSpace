@@ -88,30 +88,18 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-
             foreach (var tenant in activeTenants)
             {
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
+                    scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
 
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
-                    var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
-                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-                    var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
-                    var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-                    var context = scope.ServiceProvider.GetService<DbContextManager<FeedDbContext>>();
-                    var couponManager = scope.ServiceProvider.GetService<CouponManager>();
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
-
-                    var tariff = paymentManager.GetTariff(tenant.TenantId);
-                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var tariff = scopeClass.PaymentManager.GetTariff(tenant.TenantId);
+                    var quota = scopeClass.TenantManager.GetTenantQuota(tenant.TenantId);
                     var createdDate = tenant.CreatedDateTime.Date;
 
                     var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
@@ -188,14 +176,14 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 3 days after registration to admins SAAS TRIAL + only 1 user
 
-                        if (createdDate.AddDays(3) == nowDate && userManager.GetUsers().Count() == 1)
+                        if (createdDate.AddDays(3) == nowDate && scopeClass.UserManager.GetUsers().Count() == 1)
                         {
                             action = Actions.SaasAdminInviteTeammatesV10;
                             paymentMessage = false;
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = string.Format("{0}/products/people/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/people/", scopeClass.CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -207,8 +195,8 @@ namespace ASC.Web.Studio.Core.Notify
                             List<DateTime> datesWithActivity;
 
                             datesWithActivity =
-                                context.Get(dbid).FeedAggregates
-                                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+                                scopeClass.DbContextManager.Get(dbid).FeedAggregates
+                                .Where(r => r.Tenant == scopeClass.TenantManager.GetCurrentTenant().TenantId)
                                 .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
                                 .Select(r => r.Key)
@@ -233,38 +221,38 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
                             tousers = true;
 
-                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
+                            tableItemImg1 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreUrl1 = scopeClass.StudioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
                             tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
+                            tableItemImg2 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share;
 
-                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
+                            tableItemImg3 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting;
 
-                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
+                            tableItemImg4 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review;
 
-                            tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
+                            tableItemImg5 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty;
 
-                            tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
+                            tableItemImg6 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
                             tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach_hdr;
                             tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach;
 
-                            tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
+                            tableItemImg7 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
                             tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps_hdr;
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/files/", scopeClass.CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -311,9 +299,9 @@ namespace ASC.Web.Studio.Core.Notify
                                 {
                                     Log.InfoFormat("start CreateCoupon to {0}", tenant.TenantAlias);
 
-                                    coupon = SetupInfo.IsSecretEmail(userManager.GetUsers(tenant.OwnerId).Email)
+                                    coupon = SetupInfo.IsSecretEmail(scopeClass.UserManager.GetUsers(tenant.OwnerId).Email)
                                                 ? tenant.TenantAlias
-                                                : couponManager.CreateCoupon(tenantManager);
+                                                : scopeClass.CouponManager.CreateCoupon(scopeClass.TenantManager);
 
                                     Log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.TenantAlias, coupon);
                                 }
@@ -329,7 +317,7 @@ namespace ASC.Web.Studio.Core.Notify
                             }
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -358,7 +346,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 30 days after SAAS TRIAL expired + only 1 user
 
-                        else if (dueDateIsNotMax && dueDate.AddDays(30) == nowDate && userManager.GetUsers().Count() == 1)
+                        else if (dueDateIsNotMax && dueDate.AddDays(30) == nowDate && scopeClass.UserManager.GetUsers().Count() == 1)
                         {
                             action = Actions.SaasAdminTrialWarningAfter30V10;
                             toadmins = true;
@@ -377,8 +365,8 @@ namespace ASC.Web.Studio.Core.Notify
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                            var owner = userManager.GetUsers(tenant.OwnerId);
-                            greenButtonUrl = setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
+                            var owner = scopeClass.UserManager.GetUsers(tenant.OwnerId);
+                            greenButtonUrl = scopeClass.SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
@@ -387,11 +375,11 @@ namespace ASC.Web.Studio.Core.Notify
                         }
                         else if (dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                         {
-                            tenantManager.RemoveTenant(tenant.TenantId, true);
+                            scopeClass.TenantManager.RemoveTenant(tenant.TenantId, true);
 
-                            if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
+                            if (!string.IsNullOrEmpty(scopeClass.ApiSystemHelper.ApiCacheUrl))
                             {
-                                apiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                scopeClass.ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, scopeClass.AuthContext.CurrentAccount.ID);
                             }
                         }
 
@@ -411,7 +399,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -424,7 +412,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -437,7 +425,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonBuyNow;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -451,8 +439,8 @@ namespace ASC.Web.Studio.Core.Notify
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                            var owner = userManager.GetUsers(tenant.OwnerId);
-                            greenButtonUrl = setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
+                            var owner = scopeClass.UserManager.GetUsers(tenant.OwnerId);
+                            greenButtonUrl = scopeClass.SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
@@ -461,11 +449,11 @@ namespace ASC.Web.Studio.Core.Notify
                         }
                         else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                         {
-                            tenantManager.RemoveTenant(tenant.TenantId, true);
+                            scopeClass.TenantManager.RemoveTenant(tenant.TenantId, true);
 
-                            if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
+                            if (!string.IsNullOrEmpty(scopeClass.ApiSystemHelper.ApiCacheUrl))
                             {
-                                apiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                scopeClass.ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, scopeClass.AuthContext.CurrentAccount.ID);
                             }
                         }
 
@@ -478,26 +466,26 @@ namespace ASC.Web.Studio.Core.Notify
                     if (action == null) continue;
 
                     var users = toowner
-                                    ? new List<UserInfo> { userManager.GetUsers(tenant.OwnerId) }
-                                    : studioNotifyHelper.GetRecipients(toadmins, tousers, false);
+                                    ? new List<UserInfo> { scopeClass.UserManager.GetUsers(tenant.OwnerId) }
+                                    : scopeClass.StudioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
 
-                    var analytics = studioNotifyHelper.GetNotifyAnalytics(action, toowner, toadmins, tousers, false);
+                    var analytics = scopeClass.StudioNotifyHelper.GetNotifyAnalytics(action, toowner, toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => paymentMessage || scopeClass.StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
-                        var rquota = tenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                        var rquota = scopeClass.TenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { scopeClass.StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
+                            new TagValue(Tags.PricingPage, scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
+                            new TagValue(Tags.ActiveUsers, scopeClass.UserManager.GetUsers().Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
@@ -513,7 +501,7 @@ namespace ASC.Web.Studio.Core.Notify
                             TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
                             TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                             TagValues.TableBottom(),
-                            new TagValue(CommonTags.Footer, u.IsAdmin(userManager) ? "common" : "social"),
+                            new TagValue(CommonTags.Footer, u.IsAdmin(scopeClass.UserManager) ? "common" : "social"),
                             new TagValue(CommonTags.Analytics, analytics),
                             new TagValue(Tags.Coupon, coupon));
                     }
@@ -526,7 +514,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("End SendSaasTariffLetters");
         }
-
+        
         public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
         {
             var nowDate = scheduleDate.Date;
@@ -554,23 +542,14 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-                    var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
+                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
-                    var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-                    var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-                    var context = scope.ServiceProvider.GetService<DbContextManager<FeedDbContext>>();
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(scopeClass.SettingsManager, scopeClass.Configuration);
+                    scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
 
-                    var tariff = paymentManager.GetTariff(tenant.TenantId);
-                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var tariff = scopeClass.PaymentManager.GetTariff(tenant.TenantId);
+                    var quota = scopeClass.TenantManager.GetTenantQuota(tenant.TenantId);
                     var createdDate = tenant.CreatedDateTime.Date;
 
                     var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
@@ -650,42 +629,42 @@ namespace ASC.Web.Studio.Core.Notify
                             paymentMessage = false;
                             toadmins = true;
 
-                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
+                            tableItemImg1 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
 
-                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
+                            tableItemImg2 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
 
-                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
+                            tableItemImg3 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
 
-                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
+                            tableItemImg4 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
 
-                            tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
+                            tableItemImg5 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetAdministration(ManagementType.General));
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath(scopeClass.CommonLinkUtility.GetAdministration(ManagementType.General));
                         }
 
                         #endregion
 
                         #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                        else if (createdDate.AddDays(4) == nowDate && userManager.GetUsers().Count() == 1)
+                        else if (createdDate.AddDays(4) == nowDate && scopeClass.UserManager.GetUsers().Count() == 1)
                         {
                             action = Actions.EnterpriseAdminInviteTeammatesV10;
                             paymentMessage = false;
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = string.Format("{0}/products/people/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/people/", scopeClass.CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -697,8 +676,8 @@ namespace ASC.Web.Studio.Core.Notify
                             List<DateTime> datesWithActivity;
 
                             datesWithActivity =
-                                context.Get(dbid).FeedAggregates
-                                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+                                scopeClass.DbContextManager.Get(dbid).FeedAggregates
+                                .Where(r => r.Tenant == scopeClass.TenantManager.GetCurrentTenant().TenantId)
                                 .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
                                 .Select(r => r.Key)
@@ -723,38 +702,38 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
                             tousers = true;
 
-                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
+                            tableItemImg1 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreUrl1 = scopeClass.StudioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
                             tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
+                            tableItemImg2 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share;
 
-                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
+                            tableItemImg3 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting;
 
-                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
+                            tableItemImg4 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review;
 
-                            tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
+                            tableItemImg5 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty;
 
-                            tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
+                            tableItemImg6 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
                             tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach_hdr;
                             tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach;
 
-                            tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
+                            tableItemImg7 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
                             tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps_hdr;
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/files/", scopeClass.CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -812,31 +791,31 @@ namespace ASC.Web.Studio.Core.Notify
                             paymentMessage = false;
                             toadmins = true;
 
-                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
+                            tableItemImg1 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
 
-                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
+                            tableItemImg2 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
 
-                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
+                            tableItemImg3 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
 
-                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
+                            tableItemImg4 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
 
-                            if (!coreBaseSettings.CustomMode)
+                            if (!scopeClass.CoreBaseSettings.CustomMode)
                             {
-                                tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
+                                tableItemImg5 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
                                 tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
                                 tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
                             }
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetAdministration(ManagementType.General));
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath(scopeClass.CommonLinkUtility.GetAdministration(ManagementType.General));
                         }
 
                         #endregion
@@ -856,7 +835,7 @@ namespace ASC.Web.Studio.Core.Notify
                                          : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10;
                             toadmins = true;
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -870,7 +849,7 @@ namespace ASC.Web.Studio.Core.Notify
                                          : Actions.EnterpriseWhitelabelAdminPaymentWarningV10;
                             toadmins = true;
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -881,23 +860,23 @@ namespace ASC.Web.Studio.Core.Notify
 
                     if (action == null) continue;
 
-                    var users = studioNotifyHelper.GetRecipients(toadmins, tousers, false);
+                    var users = scopeClass.StudioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => paymentMessage || scopeClass.StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var rquota = tenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                        var rquota = scopeClass.TenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { scopeClass.StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
+                            new TagValue(Tags.PricingPage, scopeClass.CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
+                            new TagValue(Tags.ActiveUsers, scopeClass.UserManager.GetUsers().Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
@@ -950,14 +929,10 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
-
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
 
                     var createdDate = tenant.CreatedDateTime.Date;
 
@@ -1035,37 +1010,37 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         action = Actions.OpensourceAdminDocsTips;
 
-                        tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
+                        tableItemImg1 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
                         tableItemComment1 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips1;
-                        tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/CollaborativeEditing.aspx";
+                        tableItemLearnMoreUrl1 = scopeClass.StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/CollaborativeEditing.aspx";
                         tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-docinfo-100.png");
+                        tableItemImg2 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-docinfo-100.png");
                         tableItemComment2 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips2;
-                        tableItemLearnMoreUrl2 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/ViewDocInfo.aspx";
+                        tableItemLearnMoreUrl2 = scopeClass.StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/ViewDocInfo.aspx";
                         tableItemLearnMoreText2 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
+                        tableItemImg3 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
                         tableItemComment3 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips3;
-                        tableItemLearnMoreUrl3 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/Review.aspx";
+                        tableItemLearnMoreUrl3 = scopeClass.StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/Review.aspx";
                         tableItemLearnMoreText3 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
+                        tableItemImg4 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                         tableItemComment4 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips4;
-                        tableItemLearnMoreUrl4 = studioNotifyHelper.Helplink + "/gettingstarted/documents.aspx#SharingDocuments_block";
+                        tableItemLearnMoreUrl4 = scopeClass.StudioNotifyHelper.Helplink + "/gettingstarted/documents.aspx#SharingDocuments_block";
                         tableItemLearnMoreText4 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-mailmerge-100.png");
+                        tableItemImg5 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-mailmerge-100.png");
                         tableItemComment5 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips5;
-                        tableItemLearnMoreUrl5 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/UseMailMerge.aspx";
+                        tableItemLearnMoreUrl5 = scopeClass.StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/UseMailMerge.aspx";
                         tableItemLearnMoreText5 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-desktop-100.png");
+                        tableItemImg6 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-desktop-100.png");
                         tableItemComment6 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips6;
                         tableItemLearnMoreUrl6 = "http://www.onlyoffice.com/desktop.aspx";
                         tableItemLearnMoreText6 = () => WebstudioNotifyPatternResource.ButtonDownloadNow;
 
-                        tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
+                        tableItemImg7 = scopeClass.StudioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
                         tableItemComment7 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips7;
                         tableItemLearnMoreUrl7 = "https://itunes.apple.com/us/app/onlyoffice-documents/id944896972";
                         tableItemLearnMoreText7 = () => WebstudioNotifyPatternResource.ButtonGoToAppStore;
@@ -1078,9 +1053,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                     if (action == null) continue;
 
-                    var users = studioNotifyHelper.GetRecipients(true, false, false);
+                    var users = scopeClass.StudioNotifyHelper.GetRecipients(true, false, false);
 
-                    foreach (var u in users.Where(u => studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => scopeClass.StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
@@ -1088,9 +1063,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { scopeClass.StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
-                            new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettingsHelper)),
+                            new TagValue(Tags.UserName, u.DisplayUserName(scopeClass.DisplayUserSettingsHelper)),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
                             TagValues.TableTop(),
                             TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
@@ -1137,26 +1112,20 @@ namespace ASC.Web.Studio.Core.Notify
                     var sendCount = 0;
 
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
-
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
-                    var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
 
                     Log.InfoFormat("Current tenant: {0}", tenant.TenantId);
 
-                    var users = userManager.GetUsers(EmployeeStatus.Active);
+                    var users = scopeClass.UserManager.GetUsers(EmployeeStatus.Active);
 
-                    foreach (var user in users.Where(u => studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var user in users.Where(u => scopeClass.StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         INotifyAction action;
 
-                        securityContext.AuthenticateMe(authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        scopeClass.SecurityContext.AuthenticateMe(scopeClass.AuthManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))
@@ -1177,7 +1146,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
 
-                        if (coreBaseSettings.CustomMode)
+                        if (scopeClass.CoreBaseSettings.CustomMode)
                         {
                             switch (dayAfterRegister)
                             {
@@ -1222,12 +1191,12 @@ namespace ASC.Web.Studio.Core.Notify
                         client.SendNoticeToAsync(
                           action,
                           null,
-                          studioNotifyHelper.RecipientFromEmail(user.Email, true),
+                          scopeClass.StudioNotifyHelper.RecipientFromEmail(user.Email, true),
                           new[] { senderName },
                           TagValues.PersonalHeaderStart(),
                           TagValues.PersonalHeaderEnd(),
                           TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                          new TagValue(CommonTags.Footer, coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
+                          new TagValue(CommonTags.Footer, scopeClass.CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                     }
 
                     Log.InfoFormat("Total send count: {0}", sendCount);
@@ -1250,6 +1219,64 @@ namespace ASC.Web.Studio.Core.Notify
             studioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
 
             return !isSubscribe;
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal UserManager UserManager { get; }
+            internal StudioNotifyHelper StudioNotifyHelper { get; }
+            internal PaymentManager PaymentManager { get; }
+            internal TenantExtra TenantExtra { get; }
+            internal AuthContext AuthContext { get; }
+            internal CommonLinkUtility CommonLinkUtility { get; }
+            internal ApiSystemHelper ApiSystemHelper { get; }
+            internal SetupInfo SetupInfo { get; }
+            internal DbContextManager<FeedDbContext> DbContextManager { get; }
+            internal CouponManager CouponManager { get; }
+            internal IConfiguration Configuration { get; }
+            internal SettingsManager SettingsManager { get; }
+            internal CoreBaseSettings CoreBaseSettings { get; }
+            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+            internal AuthManager AuthManager { get; }
+            internal SecurityContext SecurityContext { get; }
+
+            public Scope(TenantManager tenantManager,
+                UserManager userManager,
+                StudioNotifyHelper studioNotifyHelper,
+                PaymentManager paymentManager,
+                TenantExtra tenantExtra,
+                AuthContext authContext,
+                CommonLinkUtility commonLinkUtility,
+                ApiSystemHelper apiSystemHelper,
+                SetupInfo setupInfo,
+                DbContextManager<FeedDbContext> dbContextManager,
+                CouponManager couponManager,
+                IConfiguration configuration,
+                SettingsManager settingsManager,
+                CoreBaseSettings coreBaseSettings,
+                DisplayUserSettingsHelper displayUserSettingsHelper,
+                AuthManager authManager,
+                SecurityContext securityContext)
+            {
+                TenantManager = tenantManager;
+                UserManager = userManager;
+                StudioNotifyHelper = studioNotifyHelper;
+                PaymentManager = paymentManager;
+                TenantExtra = tenantExtra;
+                AuthContext = authContext;
+                CommonLinkUtility = commonLinkUtility;
+                ApiSystemHelper = apiSystemHelper;
+                SetupInfo = setupInfo;
+                DbContextManager = dbContextManager;
+                CouponManager = couponManager;
+                Configuration = configuration;
+                SettingsManager = settingsManager;
+                CoreBaseSettings = coreBaseSettings;
+                DisplayUserSettingsHelper = displayUserSettingsHelper;
+                AuthManager = authManager;
+                SecurityContext = securityContext;
+            }
         }
     }
     public static class StudioPeriodicNotifyExtension

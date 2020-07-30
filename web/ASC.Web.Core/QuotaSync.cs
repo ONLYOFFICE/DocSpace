@@ -47,24 +47,21 @@ namespace ASC.Web.Studio.Core.Quota
             TaskInfo = new DistributedTask();
             ServiceProvider = serviceProvider;
         }
-
+        
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(TenantId);
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            scopeClass.TenantManager.SetCurrentTenant(TenantId);
 
-            var storageFactoryConfig = scope.ServiceProvider.GetService<StorageFactoryConfig>();
-            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-
-            var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();
+            var storageModules = scopeClass.StorageFactoryConfig.GetModuleList(string.Empty).ToList();
 
             foreach (var module in storageModules)
             {
-                var storage = storageFactory.GetStorage(TenantId.ToString(), module);
+                var storage = scopeClass.StorageFactory.GetStorage(TenantId.ToString(), module);
                 storage.ResetQuota("");
 
-                var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
+                var domains = scopeClass.StorageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
                     storage.ResetQuota(domain);
@@ -73,11 +70,24 @@ namespace ASC.Web.Studio.Core.Quota
             }
         }
 
-
         public virtual DistributedTask GetDistributedTask()
         {
             TaskInfo.SetProperty(TenantIdKey, TenantId);
             return TaskInfo;
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal StorageFactoryConfig StorageFactoryConfig { get; }
+            internal StorageFactory StorageFactory { get; }
+
+            public Scope(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
+            {
+                TenantManager = tenantManager;
+                StorageFactoryConfig = storageFactoryConfig;
+                StorageFactory = storageFactory;
+            }
         }
     }
 }

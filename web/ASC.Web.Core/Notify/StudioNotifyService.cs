@@ -828,10 +828,8 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    TenantManager.SetCurrentTenant(tenant);
-
-                    var client = scope.ServiceProvider.GetService<StudioNotifyServiceHelper>();
+                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    scopeClass.TenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {
@@ -839,7 +837,7 @@ namespace ASC.Web.Studio.Core.Notify
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        client.SendNoticeToAsync(
+                        scopeClass.StudioNotifyServiceHelper.SendNoticeToAsync(
                             Actions.PortalRename,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
@@ -879,6 +877,18 @@ namespace ASC.Web.Studio.Core.Notify
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.ID, user.ID);
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
+
+            public Scope(TenantManager tenantManager, StudioNotifyServiceHelper studioNotifyServiceHelper)
+            {
+                TenantManager = tenantManager;
+                StudioNotifyServiceHelper = studioNotifyServiceHelper;
+            }
         }
 
         #endregion

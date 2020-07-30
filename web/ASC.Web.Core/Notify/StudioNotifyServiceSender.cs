@@ -57,23 +57,18 @@ namespace ASC.Web.Studio.Core.Notify
             ServiceProvider = serviceProvider;
             Configuration = configuration;
         }
-
+       
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var authContext = scope.ServiceProvider.GetService<AuthContext>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
-            tenantManager.SetCurrentTenant(item.TenantId);
+            scopeClass.TenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
 
-            var tenant = tenantManager.GetCurrentTenant(false);
+            var tenant = scopeClass.TenantManager.GetCurrentTenant(false);
 
             if (tenant != null)
             {
@@ -82,8 +77,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                securityContext.AuthenticateMe(Guid.Parse(item.UserId));
-                var user = userManager.GetUsers(userId);
+                scopeClass.SecurityContext.AuthenticateMe(Guid.Parse(item.UserId));
+                var user = scopeClass.UserManager.GetUsers(userId);
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {
                     culture = CultureInfo.GetCultureInfo(user.CultureName);
@@ -113,22 +108,21 @@ namespace ASC.Web.Studio.Core.Notify
             var cron = Configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+            var scopeClass = scope.ServiceProvider.GetService<Scope>();
 
             if (Configuration["core:notify:tariff"] != "false")
             {
-                if (tenantExtra.Enterprise)
+                if (scopeClass.TenantExtra.Enterprise)
                 {
                     WorkContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
                 }
-                else if (tenantExtra.Opensource)
+                else if (scopeClass.TenantExtra.Opensource)
                 {
                     WorkContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
                 }
-                else if (tenantExtra.Saas)
+                else if (scopeClass.TenantExtra.Saas)
                 {
-                    if (coreBaseSettings.Personal)
+                    if (scopeClass.CoreBaseSettings.Personal)
                     {
                         WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
                     }
@@ -139,7 +133,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-            if (!coreBaseSettings.Personal)
+            if (!scopeClass.CoreBaseSettings.Personal)
             {
                 WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
@@ -174,6 +168,37 @@ namespace ASC.Web.Studio.Core.Notify
         {
             using var scope = ServiceProvider.CreateScope();
             scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+        }
+
+        class Scope
+        {
+            internal TenantManager TenantManager { get; }
+            internal UserManager UserManager { get; }
+            internal SecurityContext SecurityContext { get; }
+            internal AuthContext AuthContext { get; }
+            internal StudioNotifyHelper StudioNotifyHelper { get; }
+            internal DisplayUserSettings DisplayUserSettings { get; }
+            internal TenantExtra TenantExtra { get; }
+            internal CoreBaseSettings CoreBaseSettings { get; }
+
+            public Scope(TenantManager tenantManager,
+                UserManager userManager,
+                SecurityContext securityContext,
+                AuthContext authContext,
+                StudioNotifyHelper studioNotifyHelper,
+                DisplayUserSettings displayUserSettings,
+                TenantExtra tenantExtra,
+                CoreBaseSettings coreBaseSettings)
+            {
+                TenantManager = tenantManager;
+                UserManager = userManager;
+                SecurityContext = securityContext;
+                AuthContext = authContext;
+                StudioNotifyHelper = studioNotifyHelper;
+                DisplayUserSettings = displayUserSettings;
+                TenantExtra = tenantExtra;
+                CoreBaseSettings = coreBaseSettings;
+            }
         }
     }
 
