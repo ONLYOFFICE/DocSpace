@@ -33,6 +33,16 @@ const StyledInput = styled(SimpleInput)`
   .append {
     padding-right: 8px;
   }
+
+  .break {
+    flex-basis: 100%;
+    height: 0;
+  }
+
+  .text-tooltip {
+    line-height: 14px;
+    margin-top: -2px;
+  }
 `;
 
 const PasswordProgress = styled.div`
@@ -310,6 +320,24 @@ class PasswordInput extends React.Component {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
+  renderTextTooltip = (
+    settings,
+    length,
+    digits,
+    capital,
+    special
+  ) => {
+    return (
+      <>
+      <div className="break"></div>
+      <Text className="text-tooltip" fontSize="10px" color="#A3A9AE" as="span">
+        {settings.minLength ? length : null} {settings.digits ? `, ${digits}` : null } {settings.upperCase ? `, ${capital}` : null} {settings.specSymbols ? `, ${special}` : null}
+      </Text>
+      <div className="break"></div>
+      </>
+    );
+  }
+
   render() {
     //console.log('PasswordInput render()');
     const {
@@ -336,7 +364,10 @@ class PasswordInput extends React.Component {
       className,
       tooltipOffsetLeft,
       style,
-      simpleView
+      simpleView,
+      hideNewPasswordButton,
+      isDisableTooltip,
+      isTextTooltipVisible
     } = this.props;
     const {
       type,
@@ -354,7 +385,18 @@ class PasswordInput extends React.Component {
     const iconsColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
     const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
 
-    const tooltipContent = (
+    const textTooltip = isTextTooltipVisible 
+      ? this.renderTextTooltip(
+        passwordSettings,
+        tooltipPasswordLength,
+        tooltipPasswordDigits,
+        tooltipPasswordCapital,
+        tooltipPasswordSpecial
+      ) 
+      : null;
+
+    const tooltipContent = !isDisableTooltip 
+      ? (
       <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
         {tooltipPasswordTitle}
         <StyledTooltipItem
@@ -392,7 +434,8 @@ class PasswordInput extends React.Component {
           </StyledTooltipItem>
         )}
       </StyledTooltipContainer>
-    );
+    )
+    : null;
 
     const inputGroup = (
       <>
@@ -446,7 +489,10 @@ class PasswordInput extends React.Component {
         style={style}
       >
         {simpleView ? (
-          inputGroup
+          <>
+            {inputGroup}
+            {textTooltip}
+          </>
         ) : (
           <>
             <PasswordProgress
@@ -458,14 +504,18 @@ class PasswordInput extends React.Component {
             >
               {inputGroup}
             </PasswordProgress>
-            <NewPasswordButton>
-              <Icons.RefreshIcon
-                size="medium"
-                color={iconsColor}
-                isfill={true}
-                onClick={this.onGeneratePassword}
-              />
-            </NewPasswordButton>
+            {!hideNewPasswordButton 
+              ? <NewPasswordButton>
+                  <Icons.RefreshIcon
+                    size="medium"
+                    color={iconsColor}
+                    isfill={true}
+                    onClick={this.onGeneratePassword}
+                  />
+                </NewPasswordButton>
+              : null
+            }
+            {textTooltip}
             <CopyLink>
               <Link
                 type="action"
@@ -506,6 +556,10 @@ PasswordInput.propTypes = {
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
 
+  hideNewPasswordButton: PropTypes.bool,
+  isDisableTooltip: PropTypes.bool,
+  isTextTooltipVisible: PropTypes.bool,
+
   clipActionResource: PropTypes.string,
   clipEmailResource: PropTypes.string,
   clipPasswordResource: PropTypes.string,
@@ -537,6 +591,10 @@ PasswordInput.defaultProps = {
   isDisabled: false,
   size: "base",
   scale: true,
+
+  hideNewPasswordButton: false,
+  isDisableTooltip: false,
+  isTextTooltipVisible: false,
 
   clipEmailResource: "E-mail ",
   clipPasswordResource: "Password ",
