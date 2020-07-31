@@ -3,7 +3,7 @@ const {
   setPasswordSettings, 
   setTimezones, 
   setPortalCultures,
-  getPortalSettings 
+  getPortalSettings
 } = store.auth.actions;
 
 export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
@@ -66,11 +66,7 @@ export function getMachineName(token) {
 export function setPortalOwner(email, pwd, lng, confirmKey, analytics) {
   return dispatch => {
     return api.settings.setPortalOwner(email, pwd, lng, confirmKey, analytics)
-      .then((res) => { 
-        console.log(res)
-        dispatch(setComplete(res)); 
-      })
-      //.then(() => getPortalSettings(dispatch))
-      .catch((e) => console.log(e))
+      .then((res) => dispatch(setComplete(res)))
+      .then(() => dispatch(getPortalSettings()))
   }
 }

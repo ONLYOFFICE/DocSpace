@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { PageLayout, history } from "asc-web-common";
+import { PageLayout, history, constants } from "asc-web-common";
 import { 
   Loader, 
   Toast, 
@@ -46,7 +46,7 @@ const WizardContainer = styled.div`
     }
 
     @media(max-width: 415px) {
-      width: 311px;
+      width: 100%;
       margin: 72px auto 0 auto;
     }
 `;
@@ -94,44 +94,41 @@ class Body extends Component {
     if(!wizardToken) { 
       history.push('/');
     } else {
-      try {
-        await Promise.all([
-          getPortalPasswordSettings(wizardToken),
-          getMachineName(wizardToken),
-          getPortalTimezones(wizardToken)
-            .then(() => {
-              const { timezones, portalTimezone } = this.props;
-              const zones = this.mapTimezonesToArray(timezones);
-              const select = zones.filter(zone => zone.key === portalTimezone);
-              this.setState({
-                timezones: zones,
-                selectTimezone: {
-                  key: select[0].key,
-                  label: select[0].label
-                }
-              });
-            }),
-          getPortalCultures()
-            .then(() => {
-              const { cultures, portalCulture } = this.props;
-              const languages = this.mapCulturesToArray(cultures, t);
-              const select = languages.filter(lang => lang.key === portalCulture);
-              this.setState({ 
-                languages: languages, 
-                selectLanguage: { 
-                  key: select[0].key, 
-                  label: select[0].label 
-                }
-              })
+      
+      await Promise.all([
+        localStorage.setItem(constants.WIZARD_KEY, true),
+        getPortalPasswordSettings(),
+        getMachineName(wizardToken),
+        getPortalTimezones(wizardToken)
+          .then(() => {
+            const { timezones, portalTimezone } = this.props;
+            const zones = this.mapTimezonesToArray(timezones);
+            const select = zones.filter(zone => zone.key === portalTimezone);
+            this.setState({
+              timezones: zones,
+              selectTimezone: {
+                key: select[0].key,
+                label: select[0].label
+              }
+            });
+          }),
+        getPortalCultures()
+          .then(() => {
+            const { cultures, portalCulture } = this.props;
+            const languages = this.mapCulturesToArray(cultures, t);
+            const select = languages.filter(lang => lang.key === portalCulture);
+            this.setState({ 
+              languages: languages, 
+              selectLanguage: { 
+                key: select[0].key, 
+                label: select[0].label 
+              }
             })
-        ])
-        .then(() => setIsWizardLoaded(true)); 
-      } catch(e) {
-        this.setState({
-          errorLoading: true,
-          errorMessage: e 
-        }) 
-      }
+          })
+      ])
+      .then(() => setIsWizardLoaded(true))
+      //.then(() => localStorage.setItem(constants.WIZARD_KEY, true))
+      .catch((e) => {throw new Error(e)}); 
     }
   }
 
@@ -145,6 +142,7 @@ class Body extends Component {
 
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPressHandler);
+    localStorage.removeItem(constants.WIZARD_KEY);
   }
 
   mapTimezonesToArray = (timezones) => {
@@ -183,7 +181,7 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) { 
-      const { setPortalOwner, wizardToken, error } = this.props;
+      const { setPortalOwner, wizardToken } = this.props;
       const { password, email,
         selectLanguage, selectTimezone,
         isRequiredLicense, file, emailOwner
@@ -198,16 +196,15 @@ class Body extends Component {
       const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
       
-      console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
+      //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
       
-      setPortalOwner(password, selectLanguage.key, wizardToken, analytics)
-        .then(() => history.push(`/`))
+      setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
+        .then(() => history.push('/'))
         .catch( e => this.setState({
             errorLoading: true,
             sending: false,
-            errorMessage: error
+            errorMessage: e
         }))
-      
     }
   }
 
@@ -307,36 +304,38 @@ class Body extends Component {
 
           <HeaderContainer t={t} />
           
-          <InputContainer t={t}
-            settingsPassword={settingsPassword}
-            emailNeeded={emailNeeded}
-            password={password}
-            license={license}
-            settings={emailSettings}
-            isRequiredLicense={isRequiredLicense}
-            onChangeLicense={this.onChangeLicense}
-            isValidPassHandler={this.isValidPassHandler}
-            onChangePassword={this.onChangePassword}
-            onInputFileHandler={this.onInputFileHandler}
-            onEmailHandler={this.onEmailHandler}
-          />
+          <form>
+            <InputContainer t={t}
+              settingsPassword={settingsPassword}
+              emailNeeded={emailNeeded}
+              password={password}
+              license={license}
+              settings={emailSettings}
+              isRequiredLicense={isRequiredLicense}
+              onChangeLicense={this.onChangeLicense}
+              isValidPassHandler={this.isValidPassHandler}
+              onChangePassword={this.onChangePassword}
+              onInputFileHandler={this.onInputFileHandler}
+              onEmailHandler={this.onEmailHandler}
+            />
 
-          <SettingsContainer t={t} 
-            selectLanguage={selectLanguage}
-            selectTimezone={selectTimezone}
-            languages={languages}
-            timezones={timezones}
-            emailNeeded={emailNeeded}
-            emailOwner={emailOwner} 
-            email={email}
-            machineName={machineName}
-            onClickChangeEmail={this.onClickChangeEmail}
-            onSelectLanguageHandler={this.onSelectLanguageHandler}
-            onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
+            <SettingsContainer t={t} 
+              selectLanguage={selectLanguage}
+              selectTimezone={selectTimezone}
+              languages={languages}
+              timezones={timezones}
+              emailNeeded={emailNeeded}
+              emailOwner={emailOwner} 
+              email={email}
+              machineName={machineName}
+              onClickChangeEmail={this.onClickChangeEmail}
+              onSelectLanguageHandler={this.onSelectLanguageHandler}
+              onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
 
-          <ButtonContainer t={t} 
-            sending={sending} 
-            onContinueHandler={this.onContinueHandler} />
+            <ButtonContainer t={t} 
+              sending={sending} 
+              onContinueHandler={this.onContinueHandler} />
+          </form>
       </WizardContainer>
     }
     return <Loader className="pageLoader" type="rombs" size='40px' />;
@@ -348,7 +347,7 @@ Body.propTypes = {
   i18n: PropTypes.object,
   isWizardLoaded: PropTypes.bool.isRequired,
   machineName: PropTypes.string.isRequired,
-  isComplete: PropTypes.bool.isRequired,
+  //isComplete: PropTypes.bool.isRequired,
   wizardToken: PropTypes.string,
   settingsPassword: PropTypes.object,
   cultures: PropTypes.array.isRequired,
@@ -361,9 +360,7 @@ const WizardWrapper = withTranslation()(Body);
 
 const WizardPage = props => {
   const { language, isLoaded } = props;
-
-  i18n.changeLanguage(language);
-
+  //i18n.changeLanguage(language);
   return (
     <>
       { isLoaded && <PageLayout 
@@ -376,7 +373,7 @@ const WizardPage = props => {
 
 WizardPage.propTypes = {
   language: PropTypes.string.isRequired,
-  isLoaded: PropTypes.bool.isRequired
+  isLoaded: PropTypes.bool
 }
 
 function mapStateToProps(state) {
@@ -394,9 +391,7 @@ function mapStateToProps(state) {
     cultures: state.auth.settings.cultures,
     portalCulture: state.auth.settings.culture,
     timezones: state.auth.settings.timezones,
-    portalTimezone: state.auth.settings.timezone,
-
-    error: state.wizard.error
+    portalTimezone: state.auth.settings.timezone
   };
 }
 

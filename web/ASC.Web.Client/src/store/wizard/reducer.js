@@ -7,7 +7,6 @@ import {
 const initState = { 
   isWizardLoaded: false,
   machineName: '',
-  error: false,
   res: null
 };
 

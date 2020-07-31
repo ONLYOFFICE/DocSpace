@@ -19,7 +19,7 @@ const StyledContainer = styled(Box)`
   margin: 32px auto 0 auto;
     
   .wizard-pass-box { 
-    width: 360px;
+    width: 100%;
     margin-top: 16px;
 
     @media ${tablet} {
@@ -122,6 +122,9 @@ const InputContainer = ({
         passwordSettings={settingsPassword}
         isDisabled={false}
         placeholder={t('placeholderPass')}
+        hideNewPasswordButton={true}
+        isDisableTooltip={true}
+        isTextTooltipVisible={true}
         tooltipPasswordTitle={tooltipPassTitle}
         tooltipPasswordLength={tooltipPassLength}
         tooltipPasswordDigits={tooltipPassDigits}

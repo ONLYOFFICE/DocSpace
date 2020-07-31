@@ -30,10 +30,10 @@ const ButtonContainer = ({
         size="large"
         scale={true}
         primary
+        isDisabled={sending}
         isLoading={sending ? true : false}
         label={t('buttonContinue')}           
         onClick={onContinueHandler}
-        isDisabled={sending}
       />
     </StyledContainer>
   );
