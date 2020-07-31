@@ -24,6 +24,7 @@ import { Textarea } from "asc-web-components";
 | `id`          |    `string`    |    -     |   -    |    -    | Used as HTML `id` property                               |
 | `isDisabled`  |     `bool`     |    -     |   -    | `false` | Indicates that the field cannot be used                  |
 | `isReadOnly`  |     `bool`     |    -     |   -    | `false` | Indicates that the field is displaying read-only content |
+| `hasError`    |     `bool`     |    -     |   -    |    -    | Indicates the input field has an error                   |
 | `name`        |    `string`    |    -     |   -    |    -    | Used as HTML `name` property                             |
 | `onChange`    |     `func`     |    -     |   -    |    -    | Allow you to handle changing events of component         |
 | `placeholder` |    `string`    |    -     |   -    |    -    | Placeholder for Textarea                                 |

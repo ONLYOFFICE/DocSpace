@@ -74,11 +74,12 @@ namespace ASC.Web.Files.Helpers
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory factory,
             string name,
             int order,
             Dictionary<string, string> props,
             Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, factory, name, order, props, additional)
         {
             Log = option.CurrentValue;
         }

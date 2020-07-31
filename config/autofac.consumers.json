@@ -41,11 +41,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Box",
+		  "key": "box",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Box",
+		  "key": "box",
 		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -191,11 +191,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Facebook",
+		  "key": "facebook",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Facebook",
+		  "key": "facebook",
 		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -252,11 +252,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Google",
+		  "key": "google",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Google",
+		  "key": "google",
 		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -283,11 +283,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "LinkedIn",
+		  "key": "linkedin",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "LinkedIn",
+		  "key": "linkedin",
 		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -406,11 +406,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Twitter",
+		  "key": "twitter",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Twitter",
+		  "key": "twitter",
 		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
 		}
       ],
