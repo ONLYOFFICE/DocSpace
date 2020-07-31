@@ -69,17 +69,17 @@ class Row extends React.Component {
   }
 
   componentDidMount() {
-    if(this.props.onClick) {
+    if(this.props.selectItem) {
       this.container = this.rowRef.current;
       this.container.addEventListener('contextmenu', this.onSelectItem);
     }
   }
 
   componentWillUnmount() {
-    this.props.onClick && this.container.removeEventListener('contextmenu', this.onSelectItem);
+    this.props.selectItem && this.container.removeEventListener('contextmenu', this.onSelectItem);
   }
 
-  onSelectItem = () => this.props.onClick();
+  onSelectItem = () => this.props.selectItem && this.props.selectItem();
 
   render() {
     //console.log("Row render");
@@ -92,7 +92,7 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      onClick
+      selectItem
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -126,7 +126,7 @@ class Row extends React.Component {
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton className="row_context-menu-wrapper" spacerWidth={contextButtonSpacerWidth}>
           {renderContext
-            ? (<ContextMenuButton onClick={onClick} className="expandButton" directionX="right" getData={getOptions} />)
+            ? (<ContextMenuButton onClick={selectItem} className="expandButton" directionX="right" getData={getOptions} />)
             : (<div className="expandButton">{' '}</div>)}
         </StyledOptionButton>
       </StyledRow>

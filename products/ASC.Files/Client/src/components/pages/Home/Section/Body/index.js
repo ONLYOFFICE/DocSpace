@@ -1230,7 +1230,7 @@ class SectionBodyContent extends React.Component {
                           {...checkedProps}
                           {...contextOptionsProps}
                           needForUpdate={this.needForUpdate}
-                          onClick={this.onSelectItem.bind(this, item)}
+                          selectItem={this.onSelectItem.bind(this, item)}
                         >
                           <FilesRowContent
                             item={item}
