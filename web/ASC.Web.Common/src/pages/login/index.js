@@ -277,7 +277,10 @@ class Form extends Component {
       <>
         <LoginContainer>
 
-          <Text fontSize="32px" fontWeight={600} textAlign="center" className="greeting-title">
+          <Text fontSize="32px"
+            fontWeight={600}
+            textAlign="center"
+            className="greeting-title">
             {greetingTitle}
           </Text>
 
