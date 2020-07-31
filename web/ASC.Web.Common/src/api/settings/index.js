@@ -97,6 +97,15 @@ export function getSettings() {
     });
   }
 
+  export function sendRegisterRequest(email) {
+    const data = { email };
+    return request({
+      method: "post",
+      url: `/settings/sendjoininvite`,
+      data
+    });
+  }
+
   export function getMachineName(confirmKey = null) {
     const options = {
       method: "get",

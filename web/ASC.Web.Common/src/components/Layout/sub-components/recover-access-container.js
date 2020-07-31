@@ -59,16 +59,14 @@ const RecoverAccess = ({ t }) => {
         else {
             setLoading(true);
             sendRecoverRequest(email, description)
-                .then(
-                    res => {
-                        setLoading(false);
-                        toastr.success(res);
-                    },
-                    message => {
-                        setLoading(false);
-                        toastr.error(message);
-                    }
-                )
+                .then(() => {
+                    setLoading(false);
+                    toastr.success("Successfully sent")
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    toastr.error(error)
+                })
                 .finally(onRecoverModalClose)
         }
     };

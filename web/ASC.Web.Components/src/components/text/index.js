@@ -22,13 +22,14 @@ const StyledText = styled.p`
   ${commonTextStyles};
 `;
 
-const Text = ({ title, tag, as, fontSize, fontWeight, color, ...rest }) => {
+const Text = ({ title, tag, as, fontSize, fontWeight, color, textAlign, ...rest }) => {
   //console.log("Text render", rest)
   return (
     <StyledText
       fontSizeProp={fontSize}
       fontWeightProp={fontWeight}
       colorProp={color}
+      textAlign={textAlign}
       as={!as && tag ? tag : as}
       title={title}
       {...rest}
@@ -41,6 +42,7 @@ Text.propTypes = {
   tag: PropTypes.string,
   title: PropTypes.string,
   color: PropTypes.string,
+  textAlign: PropTypes.string,
   fontSize: PropTypes.string,
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   backgroundColor: PropTypes.string,
@@ -54,6 +56,7 @@ Text.propTypes = {
 Text.defaultProps = {
   title: null,
   color: '#333333',
+  textAlign: 'left',
   fontSize: '13px',
   truncate: false,
   isBold: false,

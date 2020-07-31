@@ -19,13 +19,13 @@ const Header = styled.header`
   padding: 0 32px;
 
   .header-items-wrapper {
-    width: 896px;
+    width: 960px;
 
     @media (max-width: 768px) {
-      width: 411px;
+      width: 475px;
     }
     @media (max-width: 375px) {
-      width: 247px;
+      width: 311px;
     }
   }
 

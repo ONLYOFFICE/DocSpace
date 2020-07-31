@@ -51,6 +51,12 @@ namespace ASC.Api.Settings
 
         public string NameSchemaId { get; set; }
 
+        public bool? EnabledJoin { get; set; }
+
+        public bool? EnableAdmMess { get; set; }
+
+        public bool? ThirdpartyEnable { get; set; }
+
         public string WizardToken { get; set; }
 
         public static SettingsWrapper GetSample()

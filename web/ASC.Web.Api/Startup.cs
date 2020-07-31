@@ -25,6 +25,8 @@ namespace ASC.Web.Api
 
         public override void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             var diHelper = new DIHelper(services);
 
             diHelper
