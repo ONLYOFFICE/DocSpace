@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Row, Link, Text, Box, Textarea, Button, toastr, utils } from "asc-web-components";
+import { Row, Link, Text, Box, Textarea, Button, ModalDialog, toastr, utils } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
@@ -21,6 +21,22 @@ const StyledRow = styled(Row)`
     }
   }
 
+  .version_modal-dialog {
+    display: none;
+
+    @media ${tablet} {
+      display: block;
+    }
+  }
+
+  .version_edit-comment {
+    display: block;
+
+    @media ${tablet} {
+      display: none;
+    }
+  }
+
   .version_content-length {
     display: block;
     margin-left: auto;
@@ -31,10 +47,12 @@ const StyledRow = styled(Row)`
   }
 
   .version_link {
+    display: ${props => props.showEditPanel ? "none" : "block"};
     text-decoration: underline dashed;
     white-space: break-spaces;
 
     @media ${tablet} {
+      display: block;
       text-decoration: none;
     }
   }
@@ -62,6 +80,14 @@ const StyledRow = styled(Row)`
 
   .row_content {
     display: block;
+  }
+
+  .modal-dialog-aside-footer {
+    width: 90%;
+
+    .version_save-button {
+      width: 100%;
+    }
   }
 `;
 
@@ -110,6 +136,7 @@ const VersionRow = props => {
   const restore = "Restore";
   const save = "Save";
   const cancel = "Cancel";
+  const editComment = "Edit comment";
 
   const onDownloadAction = () => window.open(info.viewUrl);
   const onEditComment = () => setShowEditPanel(!showEditPanel);
@@ -165,7 +192,7 @@ const VersionRow = props => {
   ];
 
   return (
-    <StyledRow contextOptions={contextOptions}>
+    <StyledRow showEditPanel={showEditPanel} contextOptions={contextOptions}>
       <>
         <Box displayProp="flex">
           <VersionBadge className="version_badge" onClick={onVersionClick} />
@@ -181,18 +208,48 @@ const VersionRow = props => {
           </Text>
         </Box>
         <Box marginProp="0 0 0 70px" displayProp="flex">
-          {showEditPanel ? (
-            <Textarea
-              style={{margin: '8px 24px 8px 0'}}
-              //placeholder="Add comment"
-              onChange={onChange}
-              value={commentValue}
-            />
-          ) : (
+          <>
+          {showEditPanel && (
+            <>
+              <Textarea
+                className="version_edit-comment"
+                style={{margin: '8px 24px 8px 0'}}
+                //placeholder="Add comment"
+                onChange={onChange}
+                value={commentValue}
+              />
+              <Box className="version_modal-dialog">
+                <ModalDialog
+                  displayType="aside"
+                  visible={showEditPanel}
+                  onClose={onEditComment}
+                  headerContent={editComment}
+                  bodyContent={
+                    <Textarea
+                      //className="version_edit-comment"
+                      style={{margin: '8px 24px 8px 0'}}
+                      //placeholder="Add comment"
+                      onChange={onChange}
+                      value={commentValue}
+                    />
+                  }
+                  footerContent={
+                    <Button
+                      className="version_save-button"
+                      label={save}
+                      size="medium"
+                      primary
+                      onClick={onSaveClick}
+                    />
+                  }
+                />
+              </Box>
+            </>
+          )}
             <Link onClick={onEditComment} className="version_link">
               {info.comment}
             </Link>
-          )}
+          </>
 
           <Link
             onClick={onRestoreClick}
@@ -210,7 +267,7 @@ const VersionRow = props => {
           </Link>
         </Box>
         {showEditPanel && (
-            <Box marginProp='8px 0 16px 70px'>
+            <Box className="version_edit-comment" marginProp='8px 0 16px 70px'>
               <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={save}/>
               <Button size='medium' onClick={onCancelClick} label={cancel} />
             </Box>
