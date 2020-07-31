@@ -102,7 +102,7 @@ class Body extends Component {
     } else {
       
       await Promise.all([
-        getPortalPasswordSettings(),
+        getPortalPasswordSettings(wizardToken),
         getMachineName(wizardToken),
         getPortalTimezones(wizardToken)
           .then(() => {

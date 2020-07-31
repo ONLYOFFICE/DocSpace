@@ -34,7 +34,16 @@ const Modal = ({
         {errorMessage ? errorMessage: t('errorLicenseBody')}
     </span>;
 
-  } else if( visibleModal ) { //( visibleModal && isOwner )
+    footer = <Button
+    className="modal-button-save"
+    key="saveBtn"
+    label={t('closeModalButton')}
+    primary={true}
+    size="medium"
+    onClick={onCloseModal}
+    />;
+
+  } else if( visibleModal ) {
     header = t('changeEmailTitle');
 
     content = <EmailInput

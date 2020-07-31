@@ -17,6 +17,8 @@
   "changeEmailTitle": "Change e-mail",
   "changeEmailBtn": "Save",
 
+  "closeModalButton": "Close",
+
   "tooltipPasswordTitle": "Password must contain:",
   "tooltipPasswordLength": "characters",
   "tooltipPasswordDigits": "digits",

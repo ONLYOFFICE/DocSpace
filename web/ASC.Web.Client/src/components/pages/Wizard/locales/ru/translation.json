@@ -17,6 +17,8 @@
   "changeEmailTitle": "Измененить адрес электронной почты",
   "changeEmailBtn": "Сохранить",
 
+  "closeModalButton": "Закрыть",
+
   "tooltipPasswordTitle": "Пароль должен содержать:",
   "tooltipPasswordLength": "символов",
   "tooltipPasswordDigits": "цыфры",

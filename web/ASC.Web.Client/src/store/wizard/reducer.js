@@ -6,7 +6,7 @@ import {
 
 const initState = { 
   isWizardLoaded: false,
-  machineName: '',
+  machineName: 'unknown',
   res: null
 };
 
