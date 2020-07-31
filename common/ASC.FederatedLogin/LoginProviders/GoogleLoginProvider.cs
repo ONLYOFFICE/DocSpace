@@ -74,10 +74,11 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -89,7 +90,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token Auth(HttpContext context)
         {
-            return Auth(context, GoogleScopeContacts, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
+            return Auth(context, GoogleScopeContacts, out var _, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
                                                           ? new Dictionary<string, string>
                                                               {
                                                                   { "access_type", "offline" },

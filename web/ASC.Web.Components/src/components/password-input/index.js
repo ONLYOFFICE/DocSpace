@@ -547,7 +547,7 @@ PasswordInput.propTypes = {
   autoComplete: PropTypes.string,
   inputType: PropTypes.oneOf(["text", "password"]),
   inputName: PropTypes.string,
-  emailInputName: PropTypes.string.isRequired,
+  emailInputName: PropTypes.string,
   inputValue: PropTypes.string,
   onChange: PropTypes.func,
   inputWidth: PropTypes.string,

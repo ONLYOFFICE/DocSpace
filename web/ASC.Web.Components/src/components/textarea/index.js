@@ -6,23 +6,23 @@ import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
+const ClearScrollbar = ({ isDisabled, heightScale, hasError, ...props }) => <Scrollbar {...props} />
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
     :focus-within {
-      border-color: #2DA7DB;
+      border-color: ${props => props.hasError ? '#c30' : '#2DA7DB'};
     }
     :focus{
     outline: none;
     }
   width: 100% !important;
-  height: 91px !important;
+  height: ${props => props.heightScale ? '67vh' : '91px'} !important;
   background-color: ${props => props.isDisabled && '#F8F9F9'};
 
 `;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {...props} />
+const ClearTextareaAutosize = ({ isDisabled, heightScale, hasError, ...props }) => <TextareaAutosize {...props} />
 const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
   width: 100%;
@@ -44,6 +44,29 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
     outline: none;
     }
 
+    ::-webkit-input-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
+
+    :-moz-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
+
+    ::-moz-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
+
+    :-ms-input-placeholder {
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
+    }
 `;
 
 class Textarea extends React.PureComponent {
@@ -54,6 +77,8 @@ class Textarea extends React.PureComponent {
       id,
       isDisabled,
       isReadOnly,
+      hasError,
+      heightScale,
       maxLength,
       name,
       onChange,
@@ -68,6 +93,8 @@ class Textarea extends React.PureComponent {
         style={style}
         stype='preMediumBlack'
         isDisabled={isDisabled}
+        hasError={hasError}
+        heightScale={heightScale}
       >
         <StyledTextarea
           id={id}
@@ -91,6 +118,8 @@ Textarea.propTypes = {
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   isReadOnly: PropTypes.bool,
+  hasError: PropTypes.bool,
+  heightScale: PropTypes.bool,
   maxLength: PropTypes.number,
   name: PropTypes.string,
   onChange: PropTypes.func,
@@ -104,6 +133,8 @@ Textarea.defaultProps = {
   className: '',
   isDisabled: false,
   isReadOnly: false,
+  hasError: false,
+  heightScale: false,
   placeholder: '',
   tabIndex: -1,
   value: '',
