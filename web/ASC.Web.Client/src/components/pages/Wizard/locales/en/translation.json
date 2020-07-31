@@ -31,6 +31,8 @@
   "errorEmail": "Invalid e-mail Address",
   "errorLicenseRead": "You must accept the terms of the license agreement",
   "errorUploadLicenseFile": "You must select a license file",
+  "errorInitWizard": "The service is currently unavailable, please try again later.",
+  "errorInitWizardButton": "Try again",
 
   "generatePassword": "Generate password"
 }

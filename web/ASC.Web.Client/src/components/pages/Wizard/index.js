@@ -6,7 +6,12 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { PageLayout, history, constants } from "asc-web-common";
+import { 
+  PageLayout, 
+  ErrorContainer, 
+  history, 
+  constants 
+} from "asc-web-common";
 import { 
   Loader, 
   Toast, 
@@ -62,6 +67,7 @@ class Body extends Component {
       isValidPass: false,
       errorLoading: false,
       errorMessage: null,
+      errorInitWizard: null,
       sending: false,
       visibleModal: false,
       emailValid: false,
@@ -72,7 +78,6 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
-
       isRequiredLicense: false,
       emailNeeded: true,
       emailOwner: 'fake@mail.com'
@@ -90,13 +95,13 @@ class Body extends Component {
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
+    localStorage.setItem(constants.WIZARD_KEY, true);
 
     if(!wizardToken) { 
       history.push('/');
     } else {
       
       await Promise.all([
-        localStorage.setItem(constants.WIZARD_KEY, true),
         getPortalPasswordSettings(),
         getMachineName(wizardToken),
         getPortalTimezones(wizardToken)
@@ -127,13 +132,14 @@ class Body extends Component {
           })
       ])
       .then(() => setIsWizardLoaded(true))
-      //.then(() => localStorage.setItem(constants.WIZARD_KEY, true))
-      .catch((e) => {throw new Error(e)}); 
+      .catch((e) => this.setState({
+        errorInitWizard: e
+      })); 
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    if(nextProps.isWizardLoaded === true) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps.isWizardLoaded === true || nextState.errorInitWizard !== null) {
       return true;
     } else {
       return false;
@@ -282,13 +288,19 @@ class Body extends Component {
       isRequiredLicense,
       errorLoading,
       visibleModal,
-      errorMessage
+      errorMessage,
+      errorInitWizard
     } = this.state;
   
     console.log('wizard render');
 
-    if (isWizardLoaded) {
-
+    if (errorInitWizard) {
+      return <ErrorContainer 
+              headerText={errorInitWizard}
+              bodyText={t('errorInitWizard')}
+              buttonText={t('errorInitWizardButton')}
+              buttonUrl="/" /> 
+    } else if (isWizardLoaded) {
       return <WizardContainer>
         <Toast/>
           <ModalContainer t={t}
