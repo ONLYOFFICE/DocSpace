@@ -33,7 +33,7 @@ const StyledHeaderContainer = styled(Box)`
       }
     }
 
-    @media(max-width: 415px) {
+    @media(max-width: 520px) {
       .wizard-title {
         font-size: 23px;
         line-height: 28px;

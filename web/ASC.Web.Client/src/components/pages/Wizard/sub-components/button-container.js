@@ -16,6 +16,7 @@ const StyledContainer = styled(Box)`
 
   @media ${tablet} {
     width: 100%;
+    margin: 32px 0 0 0;
   }
 `;
 

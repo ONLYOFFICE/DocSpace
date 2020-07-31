@@ -44,15 +44,16 @@ const WizardContainer = styled.div`
     width: 960px;
     margin: 0 auto;
     margin-top: 120px; 
+  
 
     @media ${tablet} {
       width: 100%;
       max-width: 480px;
     }
 
-    @media(max-width: 415px) {
-      width: 100%;
-      margin: 72px auto 0 auto;
+    @media(max-width: 520px) {
+      width: calc(100% - 32px);
+      margin-top: 72px
     }
 `;
 

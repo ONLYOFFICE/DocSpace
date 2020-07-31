@@ -56,8 +56,9 @@ const StyledContainer = styled(Box)`
     margin-top: 32px;
   }
 
-  @media(max-width: 415px) {
+  @media(max-width: 520px) {
     width: 311px;
+    margin: 32px 0px 0px 0px;
   }
 `;
 
