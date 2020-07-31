@@ -94,6 +94,9 @@ If emailInputName parameter value is empty, copy action will be disabled.
 | `tooltipPasswordLength`  | `string`       |    -     |         -          |        -        | Password text translation is long tooltip                             |
 | `tooltipPasswordSpecial` | `string`       |    -     |         -          |        -        | Special text translation tooltip                                      |
 | `tooltipPasswordTitle`   | `string`       |    -     |         -          |        -        | Text translation tooltip                                              |
+| `hideNewPasswordButton`  | `bool`         |    -     |         -          |     `false`     | Allows to hide NewPasswordButton                                      |
+| `isDisableTooltip`       | `bool`         |    -     |         -          |     `false`     | Allows to hide Tooltip                                                |
+| `isTextTooltipVisible`   | `bool`         |    -     |         -          |     `false`     | Allows to show text Tooltip                                           |
 
 #### passwordSettings properties
 

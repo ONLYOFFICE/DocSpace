@@ -220,4 +220,22 @@ describe('<PasswordInput />', () => {
 
     expect(wrapper.prop('className')).toEqual('test');
   });
+
+  it('NewPasswordButton hidden when hideNewPasswordButton is true', () => {
+    const wrapper = mount(<PasswordInput {...baseProps} hideNewPasswordButton={true} />);
+
+    expect(wrapper.prop('hideNewPasswordButton')).toEqual(true);
+  });
+
+  it('Tooltip disabled when isDisableTooltip is true', () => {
+    const wrapper = mount(<PasswordInput {...baseProps} isDisableTooltip={true} />);
+
+    expect(wrapper.prop('isDisableTooltip')).toEqual(true);
+  });
+
+  it('TextTooltip shown when isTextTooltipVisible is true', () => {
+    const wrapper = mount(<PasswordInput {...baseProps} isTextTooltipVisible={true} />);
+
+    expect(wrapper.prop('isTextTooltipVisible')).toEqual(true);
+  });
 });
