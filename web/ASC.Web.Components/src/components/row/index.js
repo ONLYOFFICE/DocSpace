@@ -59,12 +59,27 @@ const StyledOptionButton = styled.div`
 `;
 
 class Row extends React.Component {
+
+  rowRef = React.createRef();
   shouldComponentUpdate(nextProps) {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
     }
     return !isEqual(this.props, nextProps);
   }
+
+  componentDidMount() {
+    if(this.props.onSelectItem) {
+      this.container = this.rowRef.current;
+      this.container.addEventListener('contextmenu', this.onSelectItem);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.onSelectItem && this.container.removeEventListener('contextmenu', this.onSelectItem);
+  }
+
+  onSelectItem = () => this.props.onSelectItem && this.props.onSelectItem();
 
   render() {
     //console.log("Row render");
@@ -77,6 +92,7 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
+      onSelectItem
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -100,7 +116,7 @@ class Row extends React.Component {
     const getOptions = () => contextOptions;
 
     return (
-      <StyledRow {...this.props}>
+      <StyledRow ref={this.rowRef} {...this.props}>
         {renderCheckbox && (
           <StyledCheckbox>
             <Checkbox isChecked={checked} isIndeterminate={indeterminate} onChange={changeCheckbox} />
@@ -110,7 +126,7 @@ class Row extends React.Component {
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton className="row_context-menu-wrapper" spacerWidth={contextButtonSpacerWidth}>
           {renderContext
-            ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
+            ? (<ContextMenuButton onClick={onSelectItem} className="expandButton" directionX="right" getData={getOptions} />)
             : (<div className="expandButton">{' '}</div>)}
         </StyledOptionButton>
       </StyledRow>

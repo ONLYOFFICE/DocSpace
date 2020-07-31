@@ -43,7 +43,7 @@ class ContextMenuButton extends React.Component {
     this.setState({
       data: this.props.getData(),
       isOpen: !this.state.isOpen
-    });
+    }, () => !this.props.isDisabled && this.state.isOpen && this.props.onClick && this.props.onClick());
   }
 
   clickOutsideAction = (e) => {
