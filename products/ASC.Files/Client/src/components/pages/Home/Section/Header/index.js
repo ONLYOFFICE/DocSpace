@@ -524,7 +524,6 @@ class SectionHeaderContent extends React.Component {
         {showSharingPanel && (
           <SharingPanel
             onLoading={onLoading}
-            selectedItems={selection}
             onClose={this.onOpenSharingPanel}
             visible={showSharingPanel}
           />

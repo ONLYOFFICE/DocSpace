@@ -29,9 +29,7 @@ const SharingRow = (props) => {
     onShowEmbeddingPanel,
   } = props;
 
-  const linkVisible =
-    (selection && selection.length === 1 && item.shareLink) ||
-    (!selection.length && item.shareLink);
+  const linkVisible = selection && selection.length === 1 && item.shareLink;
 
   const onCopyInternalLink = () => {
     const internalLink = selection.webUrl ? selection.webUrl : selection[0].webUrl;

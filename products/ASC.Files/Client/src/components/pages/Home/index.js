@@ -257,7 +257,7 @@ class PureHome extends React.Component {
           let foldersCount = data.current.foldersCount;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
           
-              if (!isCopy) {
+              if (!isCopy || destFolderId === currentFolderId) {
                 fetchFiles(currentFolderId, filter, store.dispatch)
                   .then((data) => {
                     if (!isRecycleBinFolder) {

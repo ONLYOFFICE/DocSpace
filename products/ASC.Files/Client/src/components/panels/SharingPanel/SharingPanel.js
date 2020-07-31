@@ -103,19 +103,11 @@ class SharingPanelComponent extends React.Component {
       }
     }
     
-    if (!selectedItems.length) {
-      if (selectedItems.fileExst) {
-        fileIds.push(selectedItems.id);
+    for (let item of selectedItems) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
       } else {
-        folderIds.push(selectedItems.id);
-      }
-    } else {
-      for (let item of selectedItems) {
-        if (item.fileExst) {
-          fileIds.push(item.id);
-        } else {
-          folderIds.push(item.id);
-        }
+        folderIds.push(item.id);
       }
     }
 
@@ -387,7 +379,7 @@ class SharingPanelComponent extends React.Component {
     arrayItems = this.removeDuplicateShareData(arrayItems);
     const baseShareData = JSON.parse(JSON.stringify(arrayItems));
 
-    const accessOptions = !this.props.selectedItems.length ? getAccessOption([this.props.selectedItems]) : getAccessOption(this.props.selectedItems);
+    const accessOptions = getAccessOption(this.props.selectedItems);
 
     this.setState(
       { baseShareData, shareDataItems: arrayItems, accessOptions },
@@ -409,20 +401,12 @@ class SharingPanelComponent extends React.Component {
     const folderId = [];
     const fileId = [];
 
-    if (!selectedItems.length) {
-      if (selectedItems.fileExst) {
-        fileId.push(selectedItems.id);
-      } else {
-        folderId.push(selectedItems.id);
-      }
-    } else {
-      for (let item of selectedItems) {
-        if (item.access === 1 || item.access === 0) {
-          if (item.fileExst) {
-            fileId.push(item.id);
-          } else {
-            folderId.push(item.id);
-          }
+    for (let item of selectedItems) {
+      if (item.access === 1 || item.access === 0) {
+        if (item.fileExst) {
+          fileId.push(item.id);
+        } else {
+          folderId.push(item.id);
         }
       }
     }
@@ -705,7 +689,10 @@ const SharingPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  return { isMyId: state.auth.user.id };
+  return { 
+    isMyId: state.auth.user.id,
+    selectedItems: state.files.selection
+  };
 };
 
 export default connect(mapStateToProps)(withRouter(SharingPanel));
