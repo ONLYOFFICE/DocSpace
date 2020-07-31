@@ -43,8 +43,14 @@ emailSettings.allowDomainPunycode = true;
 const WizardContainer = styled.div`
     width: 960px;
     margin: 0 auto;
-    margin-top: 120px; 
-  
+    margin-top: 120px;   
+
+    .wizard-form {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-row-gap: 32px;
+    }
 
     @media ${tablet} {
       width: 100%;
@@ -79,8 +85,9 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
-      isRequiredLicense: false,
-      emailNeeded: true,
+
+      isRequiredLicense: true,
+      emailNeeded: false,
       emailOwner: 'fake@mail.com'
     }
 
@@ -154,7 +161,7 @@ class Body extends Component {
 
   mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
-      return { key: timezone.id, label: timezone.displayName.substring(0, 11) };
+      return { key: timezone.id, label: timezone.displayName };
     });
   };
   
@@ -205,7 +212,7 @@ class Body extends Component {
       
       //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
       
-      setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
+      setPortalOwner( password, selectLanguage.key, wizardToken, analytics)
         .then(() => history.push('/'))
         .catch( e => this.setState({
             errorLoading: true,
@@ -272,7 +279,9 @@ class Body extends Component {
       t,
       isWizardLoaded,  
       machineName, 
-      settingsPassword 
+      settingsPassword,
+      portalTimezone,
+      language, 
     } = this.props;
 
     const { 
@@ -317,7 +326,7 @@ class Body extends Component {
 
           <HeaderContainer t={t} />
           
-          <form>
+          <form className='wizard-form'>
             <InputContainer t={t}
               settingsPassword={settingsPassword}
               emailNeeded={emailNeeded}
@@ -341,6 +350,7 @@ class Body extends Component {
               emailOwner={emailOwner} 
               email={email}
               machineName={machineName}
+              portalCulture={language}
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
               onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
@@ -401,10 +411,12 @@ function mapStateToProps(state) {
     settingsPassword: state.auth.settings.passwordSettings,
     
     isLoaded: state.auth.isLoaded,
+
     cultures: state.auth.settings.cultures,
-    portalCulture: state.auth.settings.culture,
     timezones: state.auth.settings.timezones,
-    portalTimezone: state.auth.settings.timezone
+
+    portalTimezone: state.auth.settings.timezone,
+    portalCulture: state.auth.settings.culture
   };
 }
 

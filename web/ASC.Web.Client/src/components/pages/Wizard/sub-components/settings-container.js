@@ -4,8 +4,7 @@ import styled from 'styled-components';
 
 import { 
   Box, 
-  GroupButton, 
-  DropDownItem, 
+  ComboBox,
   Text, 
   Link, 
   utils 
@@ -15,50 +14,23 @@ const { tablet } = utils.device;
 
 const StyledContainer = styled(Box)`
   width: 311px;
-  margin: 32px auto 0 auto;
-  display: flex;
-  flex-direction: row;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 66px auto;
+  grid-auto-columns: min-content;
+  grid-row-gap: 12px;
 
-  .settings-title{
-    margin-bottom: 12px;
-  }
-
-  .timezone-title {
-    margin-bottom: 0;
-  }
-
-  .settings-values {
-    padding: 0;
-    margin: 0;
+  .machine-name-value,
+  .email-value {
     margin-left: 16px;
-  } 
-
-  .settings-value {
-    display: block;
-    margin-bottom: 12px;
   }
 
   .drop-down {
-    font-size: 13px;
-  }
-
-  .language-value {
-    margin: 0;
-  }
-
-  .timezone-value {
-    margin: 0;
-    margin-top: 11px; 
+    margin-left: 8px;
   }
 
   @media ${tablet} {
-    width: 480px;
-    margin-top: 32px;
-  }
-
-  @media(max-width: 520px) {
-    width: 311px;
-    margin: 32px 0px 0px 0px;
+    width: 100%;
   }
 `;
 
@@ -78,12 +50,12 @@ const SettingsContainer = ({
 }) => {
   
   const titleEmail = !emailNeeded 
-    ? <Text className="settings-title">{t('email')}</Text>
+    ? <Text>{t('email')}</Text>
     : null
   
   const contentEmail = !emailNeeded 
     ? <Link 
-        className="settings-value" 
+        className="email-value" 
         type="action" 
         fontSize="13px" 
         fontWeight="600" 
@@ -92,51 +64,45 @@ const SettingsContainer = ({
         {email ? email : emailOwner}
       </Link>
     : null
-
+  
   return (
     <StyledContainer>
-      <Box>
-        <Text className="settings-title" fontSize="13px">{t('domain')}</Text>
-        {titleEmail}
-        <Text className="settings-title" fontSize="13px">{t('language')}</Text>
-        <Text className="settings-title timezone-title" fontSize="13px">{t('timezone')}</Text>
-      </Box>
-      <Box className="settings-values">
-        <Text className="settings-value" fontSize="13px" fontWeight="600">{machineName}</Text>
-        {contentEmail}
-        <GroupButton 
-          className="drop-down settings-value language-value" 
-          label={selectLanguage.label} 
-          isDropdown={true}
-          dropDownMaxHeight={300}>
-          {
-            languages.map(el => (
-              <DropDownItem 
-                key={el.key} 
-                label={el.label}
-                onClick={() => onSelectLanguageHandler(el)}
-              />
-            )) 
-          }
-        </GroupButton>
-        
-        <GroupButton 
-          className="drop-down settings-value timezone-value" 
-          label={selectTimezone.label} 
-          isDropdown={true}
-          dropDownMaxHeight={300} >
-          {
-            timezones.map(el => (
-              <DropDownItem 
-                key={el.key} 
-                label={el.label}
-                onClick={() => onSelectTimezoneHandler(el)}
-              />
-            ))
-          }
-        </GroupButton>
-        
-      </Box>
+      <Text fontSize="13px">{t('domain')}</Text>
+      <Text className="machine-name-value" fontSize="13px" fontWeight="600">{machineName}</Text>
+
+      {titleEmail}
+      {contentEmail}
+
+      <Text fontSize="13px">{t('language')}</Text>
+      <ComboBox 
+          className="drop-down" 
+          options={languages}
+          selectedOption={{
+            key: selectLanguage.key,
+            label: selectLanguage.label
+          }} 
+          noBorder={true}
+          scaled={false}
+          size='content'
+          dropDownMaxHeight={300} 
+          onSelect={onSelectLanguageHandler}
+        />
+
+      <Text fontSize="13px">{t('timezone')}</Text>
+      <ComboBox 
+          className="drop-down"
+          options={timezones}
+          selectedOption={{
+            key: selectTimezone.key,
+            label: selectTimezone.label 
+          }}
+          noBorder={true}
+          dropDownMaxHeight={300}
+          scaled={false}
+          size='content'
+          onSelect={onSelectTimezoneHandler}
+        />
+  
     </StyledContainer>
   );
 }

@@ -6,6 +6,7 @@ import {
   ModalDialog, 
   EmailInput, 
   Button,
+  Box,
   utils 
 } from 'asc-web-components';
 
@@ -20,7 +21,7 @@ const Modal = ({
   settings,
   onEmailHandler,
   onSaveEmailHandler,
-  onCloseModal 
+  onCloseModal
 }) => {
 
   let header, content, footer;
@@ -34,21 +35,13 @@ const Modal = ({
         {errorMessage ? errorMessage: t('errorLicenseBody')}
     </span>;
 
-    footer = <Button
-    className="modal-button-save"
-    key="saveBtn"
-    label={t('closeModalButton')}
-    primary={true}
-    size="medium"
-    onClick={onCloseModal}
-    />;
-
   } else if( visibleModal ) {
     header = t('changeEmailTitle');
 
     content = <EmailInput
-      className="modal-change-email"
       tabIndex={1}
+      scale={true}
+      size='base'
       id="change-email"
       name="email-wizard"
       placeholder={t('placeholderEmail')}
@@ -57,14 +50,16 @@ const Modal = ({
       onValidateInput={onEmailHandler}
     />;
 
-    footer = <Button
-      className="modal-button-save"
-      key="saveBtn"
-      label={t('changeEmailBtn')}
-      primary={true}
-      size="medium"
-      onClick={onSaveEmailHandler}
-    />;
+    footer = <Box className="modal-button-save">
+      <Button
+        key="saveBtn"
+        label={t('changeEmailBtn')}
+        primary={true}
+        scale={true}
+        size="big"
+        onClick={onSaveEmailHandler}
+      />
+    </Box>;
   }
 
   return <ModalDialog
@@ -80,21 +75,11 @@ const Modal = ({
 }
 
 const ModalContainer = styled(Modal)`
-  .modal-change-email {
-    height: 32px;
-    width: 528px;
-
-    @media ${tablet} {
-      width: 293px;
-    }
-  }
-  
   .modal-button-save {
-    height: 36px;
     width: 100px;
+    
     @media ${tablet} {
-      width: 293px;
-      height: 32px;
+      
     }
   }
   
