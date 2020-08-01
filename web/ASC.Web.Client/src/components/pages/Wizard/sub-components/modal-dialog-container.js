@@ -12,7 +12,20 @@ import {
 
 const { tablet } = utils.device;
 
-const Modal = ({ 
+const BtnContainer = styled(Box)`
+  width: 100px;
+  
+  @media ${tablet} {
+    width: 293px;
+  }
+`;
+
+const BodyContainer = styled(Box)`
+  font: 13px 'Open Sans', normal;
+  line-height: 20px;
+`;
+
+const ModalContainer = ({ 
   t, 
   errorLoading, 
   visibleModal, 
@@ -30,10 +43,9 @@ const Modal = ({
 
   if(errorLoading) {
     header = t('errorLicenseTitle');
-    content = <span 
-      className="modal-error-content">
+    content = <BodyContainer> 
         {errorMessage ? errorMessage: t('errorLicenseBody')}
-    </span>;
+    </BodyContainer>;
 
   } else if( visibleModal ) {
     header = t('changeEmailTitle');
@@ -50,7 +62,7 @@ const Modal = ({
       onValidateInput={onEmailHandler}
     />;
 
-    footer = <Box className="modal-button-save">
+    footer = <BtnContainer>
       <Button
         key="saveBtn"
         label={t('changeEmailBtn')}
@@ -59,12 +71,12 @@ const Modal = ({
         size="big"
         onClick={onSaveEmailHandler}
       />
-    </Box>;
+    </BtnContainer>;
   }
 
-  return <ModalDialog
+  return (
+    <ModalDialog
       visible={visible}
-      scale={false}
       displayType="auto"
       zIndex={310}
       headerContent={header}
@@ -72,22 +84,8 @@ const Modal = ({
       footerContent={footer}
       onClose={onCloseModal}
     />
+  );
 }
-
-const ModalContainer = styled(Modal)`
-  .modal-button-save {
-    width: 100px;
-    
-    @media ${tablet} {
-      
-    }
-  }
-  
-  .modal-error-content {
-    font-size: 13px;
-    line-height: 20px;
-  }
-`;
 
 ModalContainer.propTypes = {
   t: PropTypes.func.isRequired,

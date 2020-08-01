@@ -127,9 +127,9 @@ class Body extends Component {
           }),
         getPortalCultures()
           .then(() => {
-            const { cultures, portalCulture } = this.props;
+            const { cultures, language } = this.props;
             const languages = this.mapCulturesToArray(cultures, t);
-            const select = languages.filter(lang => lang.key === portalCulture);
+            const select = languages.filter(lang => lang.key === language);
             this.setState({ 
               languages: languages, 
               selectLanguage: { 
@@ -212,7 +212,7 @@ class Body extends Component {
       
       //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
       
-      setPortalOwner( password, selectLanguage.key, wizardToken, analytics)
+      setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
         .then(() => history.push('/'))
         .catch( e => this.setState({
             errorLoading: true,
@@ -280,7 +280,6 @@ class Body extends Component {
       isWizardLoaded,  
       machineName, 
       settingsPassword,
-      portalTimezone,
       language, 
     } = this.props;
 
@@ -370,11 +369,9 @@ Body.propTypes = {
   i18n: PropTypes.object,
   isWizardLoaded: PropTypes.bool.isRequired,
   machineName: PropTypes.string.isRequired,
-  //isComplete: PropTypes.bool.isRequired,
   wizardToken: PropTypes.string,
   settingsPassword: PropTypes.object,
   cultures: PropTypes.array.isRequired,
-  portalCulture: PropTypes.string.isRequired,
   timezones: PropTypes.array.isRequired,
   portalTimezone: PropTypes.string.isRequired
 }
@@ -403,7 +400,6 @@ function mapStateToProps(state) {
   return {
     isWizardLoaded: state.wizard.isWizardLoaded, 
     machineName: state.wizard.machineName,
-    isComplete: state.wizard.isComplete,
 
     language: state.auth.settings.culture,
 
@@ -415,8 +411,7 @@ function mapStateToProps(state) {
     cultures: state.auth.settings.cultures,
     timezones: state.auth.settings.timezones,
 
-    portalTimezone: state.auth.settings.timezone,
-    portalCulture: state.auth.settings.culture
+    portalTimezone: state.auth.settings.timezone
   };
 }
 
