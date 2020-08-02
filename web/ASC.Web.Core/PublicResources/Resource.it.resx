@@ -70,6 +70,9 @@
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
     <value>Notifiche di amministratore</value>
   </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Il tuo messaggio è stato inviato con successo. Sarai contattato dall'amministratore del portale.</value>
+  </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Un collegamento per confermare l'operazione è stato inviato all'indirizzo :email (l'indirizzo email del proprietario del portale).</value>
   </data>
@@ -103,11 +106,17 @@
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>Un {!user} con questo indirizzo email è già registrato</value>
   </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Impossibile usare gli indirizzi email da questo dominio per iscrizione</value>
+  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Il campo Email è vuoto</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>L'indirizzo email corrente coincide con quello nuovo.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Il testo del messaggio è vuoto</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>E' impossibile trovare il file caricato</value>
@@ -123,6 +132,9 @@
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
     <value>Indirizzo email non valido</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nome dominio non valido</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
     <value>Il campo Password è vuoto.</value>
@@ -145,6 +157,9 @@
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>lettere maiuscole</value>
   </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Il limite di richieste è stato superato</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>L'utente non è stato trovato</value>
   </data>
@@ -162,6 +177,9 @@
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>byte,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Il collegamento per confermare il tuo account è stato inviato all'indirizzo email specificato</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Il server non è riuscito a salvare le impostazioni.</value>

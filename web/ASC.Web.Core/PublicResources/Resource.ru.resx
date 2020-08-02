@@ -70,6 +70,9 @@
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
     <value>Извещения администраторов</value>
   </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Ваше сообщение успешно отправлено. Администратор портала с Вами свяжется.</value>
+  </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Ссылка для подтверждения операции была отправлена на :email (адрес электронной почты владельца портала).</value>
   </data>
@@ -103,11 +106,17 @@
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>{!User} с таким адресом email уже зарегистрирован</value>
   </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Адреса с этого домена не разрешены для регистрации</value>
+  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Не заполнено поле адреса электронной почты</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>Текущий адрес электронной почты совпадает с новым адресом</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Отсутствует текст сообщения</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Загружаемый файл не найден</value>
@@ -123,6 +132,9 @@
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
     <value>Неправильный email</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Неправильное имя домена</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
     <value>Поле Пароль не заполнено.</value>
@@ -145,6 +157,9 @@
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>заглавные буквы</value>
   </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Превышен лимит запросов</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Пользователь не найден</value>
   </data>
@@ -162,6 +177,9 @@
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>байт,Кб,Мб,Гб,Тб</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>На указанный email была выслана ссылка для подтверждения новой учетной записи</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Серверу не удалось сохранить настройки.</value>

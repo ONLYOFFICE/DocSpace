@@ -97,6 +97,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your message was successfully sent. You will be contacted by the portal administrator..
+        /// </summary>
+        public static string AdminMessageSent {
+            get {
+                return ResourceManager.GetString("AdminMessageSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A link to confirm the operation has been sent to :email (the email address of the portal owner)..
         /// </summary>
         public static string ChangePortalOwnerMsg {
@@ -196,6 +205,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Emails from this domain are not allowed for registration.
+        /// </summary>
+        public static string ErrorEmailDomainNotAllowed {
+            get {
+                return ResourceManager.GetString("ErrorEmailDomainNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email field is empty.
         /// </summary>
         public static string ErrorEmailEmpty {
@@ -210,6 +228,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorEmailsAreTheSame {
             get {
                 return ResourceManager.GetString("ErrorEmailsAreTheSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message text is empty.
+        /// </summary>
+        public static string ErrorEmptyMessage {
+            get {
+                return ResourceManager.GetString("ErrorEmptyMessage", resourceCulture);
             }
         }
         
@@ -255,6 +282,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorNotCorrectEmail {
             get {
                 return ResourceManager.GetString("ErrorNotCorrectEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid domain name.
+        /// </summary>
+        public static string ErrorNotCorrectTrustedDomain {
+            get {
+                return ResourceManager.GetString("ErrorNotCorrectTrustedDomain", resourceCulture);
             }
         }
         
@@ -322,6 +358,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request limit is exceeded.
+        /// </summary>
+        public static string ErrorRequestLimitExceeded {
+            get {
+                return ResourceManager.GetString("ErrorRequestLimitExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user could not be found.
         /// </summary>
         public static string ErrorUserNotFound {
@@ -372,6 +417,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string FileSizePostfix {
             get {
                 return ResourceManager.GetString("FileSizePostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The link to confirm your account has been sent to the specified email.
+        /// </summary>
+        public static string FinishInviteJoinEmailMessage {
+            get {
+                return ResourceManager.GetString("FinishInviteJoinEmailMessage", resourceCulture);
             }
         }
         

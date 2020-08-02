@@ -70,6 +70,9 @@
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
     <value>Administrator Notifications</value>
   </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Your message was successfully sent. You will be contacted by the portal administrator.</value>
+  </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>A link to confirm the operation has been sent to :email (the email address of the portal owner).</value>
   </data>
@@ -103,11 +106,17 @@
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>{!User} with this email is already registered</value>
   </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Emails from this domain are not allowed for registration</value>
+  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Email field is empty</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>The current email and the new email are the same</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Message text is empty</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>The uploaded file could not be found</value>
@@ -123,6 +132,9 @@
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
     <value>Incorrect email</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Invalid domain name</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
     <value>The password is empty.</value>
@@ -145,6 +157,9 @@
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>capital letters</value>
   </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Request limit is exceeded</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>The user could not be found</value>
   </data>
@@ -162,6 +177,9 @@
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>bytes,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>The link to confirm your account has been sent to the specified email</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>The server could not save settings.</value>
