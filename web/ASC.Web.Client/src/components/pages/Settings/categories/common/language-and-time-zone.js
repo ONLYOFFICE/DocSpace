@@ -197,6 +197,12 @@ class LanguageAndTimeZone extends React.Component {
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoading: false }));
       })
+
+      this.setState({
+         showReminder: false,
+         timezoneDefault: this.state.timezone, 
+         languageDefault: this.state.language,
+      })
    }
 
    onCancelClick = () => {
