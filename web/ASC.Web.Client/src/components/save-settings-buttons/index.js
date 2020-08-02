@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Text } from "asc-web-components";
+import { Button, Text, utils } from "asc-web-components";
+
+const { tablet } = utils.device;
 
 const StyledSaveSettingsButtons = styled.div`
     position:absolute;
@@ -19,6 +21,14 @@ const StyledSaveSettingsButtons = styled.div`
 
     .unsaved-changes{
         color:#A3A9AE;
+    }
+
+    @media ${tablet} {
+        justify-content:flex-end;
+
+        .unsaved-changes{
+            display:none;
+        }
     }
 `;
 
