@@ -42,6 +42,7 @@ using ASC.Core.Users;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
@@ -679,13 +680,13 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> CreateFolder(string folderId, FolderModel folderModel)
+        public FolderWrapper<string> CreateFolder(string folderId, CreateFolderModel folderModel)
         {
             return FilesControllerHelperString.CreateFolder(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId:int}")]
-        public FolderWrapper<int> CreateFolder(int folderId, FolderModel folderModel)
+        public FolderWrapper<int> CreateFolder(int folderId, CreateFolderModel folderModel)
         {
             return FilesControllerHelperInt.CreateFolder(folderId, folderModel.Title);
         }
@@ -700,7 +701,7 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<int> CreateFile([FromBody]FileModelFull model)
+        public FileWrapper<int> CreateFile(CreateFileModel model)
         {
             return CreateFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -715,13 +716,13 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file", DisableFormat = true)]
-        public FileWrapper<string> CreateFile(string folderId, [FromBody]FileModelFull model)
+        public FileWrapper<string> CreateFile(string folderId, CreateFileModel model)
         {
             return FilesControllerHelperString.CreateFile(folderId, model.Title);
         }
 
         [Create("{folderId:int}/file")]
-        public FileWrapper<int> CreateFile(int folderId, [FromBody]FileModelFull model)
+        public FileWrapper<int> CreateFile(int folderId, CreateFileModel model)
         {
             return FilesControllerHelperInt.CreateFile(folderId, model.Title);
         }
@@ -737,13 +738,13 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
         [Update("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> RenameFolder(string folderId, FolderModel folderModel)
+        public FolderWrapper<string> RenameFolder(string folderId, CreateFolderModel folderModel)
         {
             return FilesControllerHelperString.RenameFolder(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId:int}")]
-        public FolderWrapper<int> RenameFolder(int folderId, FolderModel folderModel)
+        public FolderWrapper<int> RenameFolder(int folderId, CreateFolderModel folderModel)
         {
             return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
         }
@@ -812,15 +813,15 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("file/{fileId}", DisableFormat = true)]
-        public FileWrapper<string> UpdateFile(string fileId, int lastVersion, [FromBody]FileModelFull model)
+        public FileWrapper<string> UpdateFile(string fileId, UpdateFileModel model)
         {
-            return FilesControllerHelperString.UpdateFile(fileId, model.Title, lastVersion);
+            return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
         [Update("file/{fileId:int}")]
-        public FileWrapper<int> UpdateFile(int fileId, int lastVersion, [FromBody]FileModelFull model)
+        public FileWrapper<int> UpdateFile(int fileId, UpdateFileModel model)
         {
-            return FilesControllerHelperInt.UpdateFile(fileId, model.Title, lastVersion);
+            return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
         /// <summary>
@@ -1061,14 +1062,27 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/history", DisableFormat = true)]
-        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, ChangeHistoryModel model)
         {
-            return FilesControllerHelperString.ChangeHistory(fileId, version, continueVersion);
+            return FilesControllerHelperString.ChangeHistory(fileId, model.Version, model.ContinueVersion);
         }
+
         [Update("file/{fileId:int}/history")]
-        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, ChangeHistoryModel model)
         {
-            return FilesControllerHelperInt.ChangeHistory(fileId, version, continueVersion);
+            return FilesControllerHelperInt.ChangeHistory(fileId, model.Version, model.ContinueVersion);
+        }
+
+        [Update("file/{fileId}/comment", DisableFormat = true)]
+        public object UpdateComment(string fileId, UpdateCommentModel model)
+        {
+            return FilesControllerHelperString.UpdateComment(fileId, model.Version, model.Comment);
+        }
+
+        [Update("file/{fileId:int}/comment")]
+        public object UpdateComment(int fileId, UpdateCommentModel model)
+        {
+            return FilesControllerHelperInt.UpdateComment(fileId, model.Version, model.Comment);
         }
 
         /// <summary>
