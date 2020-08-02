@@ -43,8 +43,14 @@ emailSettings.allowDomainPunycode = true;
 const WizardContainer = styled.div`
     width: 960px;
     margin: 0 auto;
-    margin-top: 120px; 
-  
+    margin-top: 120px;   
+
+    .wizard-form {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-row-gap: 32px;
+    }
 
     @media ${tablet} {
       width: 100%;
@@ -79,8 +85,9 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
-      isRequiredLicense: false,
-      emailNeeded: true,
+
+      isRequiredLicense: true,
+      emailNeeded: false,
       emailOwner: 'fake@mail.com'
     }
 
@@ -120,9 +127,9 @@ class Body extends Component {
           }),
         getPortalCultures()
           .then(() => {
-            const { cultures, portalCulture } = this.props;
+            const { cultures, language } = this.props;
             const languages = this.mapCulturesToArray(cultures, t);
-            const select = languages.filter(lang => lang.key === portalCulture);
+            const select = languages.filter(lang => lang.key === language);
             this.setState({ 
               languages: languages, 
               selectLanguage: { 
@@ -154,7 +161,7 @@ class Body extends Component {
 
   mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
-      return { key: timezone.id, label: timezone.displayName.substring(0, 11) };
+      return { key: timezone.id, label: timezone.displayName };
     });
   };
   
@@ -272,7 +279,8 @@ class Body extends Component {
       t,
       isWizardLoaded,  
       machineName, 
-      settingsPassword 
+      settingsPassword,
+      language, 
     } = this.props;
 
     const { 
@@ -317,7 +325,7 @@ class Body extends Component {
 
           <HeaderContainer t={t} />
           
-          <form>
+          <form className='wizard-form'>
             <InputContainer t={t}
               settingsPassword={settingsPassword}
               emailNeeded={emailNeeded}
@@ -341,6 +349,7 @@ class Body extends Component {
               emailOwner={emailOwner} 
               email={email}
               machineName={machineName}
+              portalCulture={language}
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
               onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
@@ -360,11 +369,9 @@ Body.propTypes = {
   i18n: PropTypes.object,
   isWizardLoaded: PropTypes.bool.isRequired,
   machineName: PropTypes.string.isRequired,
-  //isComplete: PropTypes.bool.isRequired,
   wizardToken: PropTypes.string,
   settingsPassword: PropTypes.object,
   cultures: PropTypes.array.isRequired,
-  portalCulture: PropTypes.string.isRequired,
   timezones: PropTypes.array.isRequired,
   portalTimezone: PropTypes.string.isRequired
 }
@@ -393,7 +400,6 @@ function mapStateToProps(state) {
   return {
     isWizardLoaded: state.wizard.isWizardLoaded, 
     machineName: state.wizard.machineName,
-    isComplete: state.wizard.isComplete,
 
     language: state.auth.settings.culture,
 
@@ -401,9 +407,10 @@ function mapStateToProps(state) {
     settingsPassword: state.auth.settings.passwordSettings,
     
     isLoaded: state.auth.isLoaded,
+
     cultures: state.auth.settings.cultures,
-    portalCulture: state.auth.settings.culture,
     timezones: state.auth.settings.timezones,
+
     portalTimezone: state.auth.settings.timezone
   };
 }

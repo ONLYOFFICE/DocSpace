@@ -16,30 +16,13 @@ const { tablet } = utils.device;
 
 const StyledContainer = styled(Box)`
   width: 311px;
-  margin: 32px auto 0 auto;
-    
-  .wizard-pass-box { 
-    width: 100%;
-    margin-top: 16px;
-
-    @media ${tablet} {
-      width: 100%;
-    }
-  }
-
-  .input-file {
-    width: 100%;
-    margin: 16px auto;
-  }
+  margin: 0 auto;
+  display: grid; 
+  grid-template-columns: 1fr;
+  grid-row-gap: 16px; 
 
   .generate-pass-link {
-    display: block;
-    margin: 16px 0 32px 0;
-  }
-
-  .checkbox-container {
-    width: 100%;
-    margin: 16px auto 0 auto;
+    margin-bottom: 16px;
   }
 
   .wizard-checkbox {
@@ -95,7 +78,7 @@ const InputContainer = ({
     : null;
 
   const inputLicenseFile = isRequiredLicense 
-    ? <Box className="input-file">
+    ? <Box>
         <FileInput
           tabIndex={3}
           placeholder={t('placeholderLicense')}
@@ -109,13 +92,10 @@ const InputContainer = ({
   return (
     <StyledContainer>
       {inputEmail}
-      <Box className="wizard-pass-box" >
+      
       <PasswordInput
         ref={refPassInput}
-        className="wizard-pass" 
-        emailInputName="wizard-email"
         tabIndex={2}
-        inputName="firstPass"
         size="large"
         scale={true}
         inputValue={password}
@@ -133,7 +113,6 @@ const InputContainer = ({
         onChange={onChangePassword}
         onValidateInput={isValidPassHandler}
       />
-      </Box>
       { inputLicenseFile }
       {!isRequiredLicense 
         ? <Link 
@@ -145,7 +124,7 @@ const InputContainer = ({
           </Link>
         : null
       }
-      <Box className="checkbox-container">
+      <Box>
         <Checkbox
           className="wizard-checkbox"
           id="license"

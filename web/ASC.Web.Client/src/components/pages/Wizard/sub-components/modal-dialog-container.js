@@ -6,12 +6,26 @@ import {
   ModalDialog, 
   EmailInput, 
   Button,
+  Box,
   utils 
 } from 'asc-web-components';
 
 const { tablet } = utils.device;
 
-const Modal = ({ 
+const BtnContainer = styled(Box)`
+  width: 100px;
+  
+  @media ${tablet} {
+    width: 293px;
+  }
+`;
+
+const BodyContainer = styled(Box)`
+  font: 13px 'Open Sans', normal;
+  line-height: 20px;
+`;
+
+const ModalContainer = ({ 
   t, 
   errorLoading, 
   visibleModal, 
@@ -20,7 +34,7 @@ const Modal = ({
   settings,
   onEmailHandler,
   onSaveEmailHandler,
-  onCloseModal 
+  onCloseModal
 }) => {
 
   let header, content, footer;
@@ -29,26 +43,17 @@ const Modal = ({
 
   if(errorLoading) {
     header = t('errorLicenseTitle');
-    content = <span 
-      className="modal-error-content">
+    content = <BodyContainer> 
         {errorMessage ? errorMessage: t('errorLicenseBody')}
-    </span>;
-
-    footer = <Button
-    className="modal-button-save"
-    key="saveBtn"
-    label={t('closeModalButton')}
-    primary={true}
-    size="medium"
-    onClick={onCloseModal}
-    />;
+    </BodyContainer>;
 
   } else if( visibleModal ) {
     header = t('changeEmailTitle');
 
     content = <EmailInput
-      className="modal-change-email"
       tabIndex={1}
+      scale={true}
+      size='base'
       id="change-email"
       name="email-wizard"
       placeholder={t('placeholderEmail')}
@@ -57,19 +62,21 @@ const Modal = ({
       onValidateInput={onEmailHandler}
     />;
 
-    footer = <Button
-      className="modal-button-save"
-      key="saveBtn"
-      label={t('changeEmailBtn')}
-      primary={true}
-      size="medium"
-      onClick={onSaveEmailHandler}
-    />;
+    footer = <BtnContainer>
+      <Button
+        key="saveBtn"
+        label={t('changeEmailBtn')}
+        primary={true}
+        scale={true}
+        size="big"
+        onClick={onSaveEmailHandler}
+      />
+    </BtnContainer>;
   }
 
-  return <ModalDialog
+  return (
+    <ModalDialog
       visible={visible}
-      scale={false}
       displayType="auto"
       zIndex={310}
       headerContent={header}
@@ -77,32 +84,8 @@ const Modal = ({
       footerContent={footer}
       onClose={onCloseModal}
     />
+  );
 }
-
-const ModalContainer = styled(Modal)`
-  .modal-change-email {
-    height: 32px;
-    width: 528px;
-
-    @media ${tablet} {
-      width: 293px;
-    }
-  }
-  
-  .modal-button-save {
-    height: 36px;
-    width: 100px;
-    @media ${tablet} {
-      width: 293px;
-      height: 32px;
-    }
-  }
-  
-  .modal-error-content {
-    font-size: 13px;
-    line-height: 20px;
-  }
-`;
 
 ModalContainer.propTypes = {
   t: PropTypes.func.isRequired,

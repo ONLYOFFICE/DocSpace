@@ -12,11 +12,10 @@ const { tablet } = utils.device;
 
 const StyledContainer = styled(Box)`
   width: 311px;
-  margin: 32px auto 0 auto;
+  margin: 0 auto;
 
   @media ${tablet} {
     width: 100%;
-    margin: 32px 0 0 0;
   }
 `;
 
@@ -26,7 +25,7 @@ const ButtonContainer = ({
   onContinueHandler 
 }) => {
   return (
-    <StyledContainer className="wizard-button">
+    <StyledContainer>
       <Button
         size="large"
         scale={true}
