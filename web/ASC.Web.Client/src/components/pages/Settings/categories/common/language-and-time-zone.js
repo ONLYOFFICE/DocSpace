@@ -92,13 +92,20 @@ class LanguageAndTimeZone extends React.Component {
          languageDefault: language,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
-         hasChanged: false
+         hasChanged: false,
+         showReminder: false
       }
    }
 
    componentDidMount() {
       const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
-      const { timezones, languages, isLoadedData, timezoneDefault, languageDefault } = this.state;
+      const { timezones, languages, isLoadedData, timezoneDefault, languageDefault, showReminder } = this.state;
+
+      if((languageFromStorage || timezoneFromStorage) && !showReminder){
+         this.setState({
+            showReminder: true
+         })
+      }
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -162,13 +169,22 @@ class LanguageAndTimeZone extends React.Component {
 
    onLanguageSelect = (language) => {
       this.setState({ language })
-      saveToSessionStorage("language", language)
+      if(this.isEqualDefault("language", language)){
+         saveToSessionStorage("language", "")
+      } else {
+         saveToSessionStorage("language", language)
+      }
       this.checkChanges()
    };
 
    onTimezoneSelect = (timezone) => {
       this.setState({ timezone })
-      saveToSessionStorage("timezone", timezone)
+      if(this.isEqualDefault("timezone", timezone)){
+         saveToSessionStorage("timezone", "")
+      } else {
+         saveToSessionStorage("timezone", timezone)
+      }
+      
       this.checkChanges()
    };
 
@@ -195,6 +211,9 @@ class LanguageAndTimeZone extends React.Component {
             saveToSessionStorage(settingsOptions[i], "")
          }
       }
+      this.setState({
+         showReminder: false
+      })
       this.checkChanges()
    }
 
@@ -215,14 +234,14 @@ class LanguageAndTimeZone extends React.Component {
 
       if(hasChanged !== this.state.hasChanged){
          this.setState({
-            hasChanged: hasChanged
+            hasChanged: hasChanged,
          })
       }
    }
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, languages, language, isLoading, timezones, timezone, hasChanged } = this.state;
+      const { isLoadedData, languages, language, isLoading, timezones, timezone, hasChanged, showReminder } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
          <Text fontSize='13px'>
@@ -288,6 +307,7 @@ class LanguageAndTimeZone extends React.Component {
                      <SaveSettingsButtons
                         onSaveClick={this.onSaveLngTZSettings}
                         onCancelClick={this.onCancelClick}
+                        showReminder={showReminder}
                      />
                   }
                   

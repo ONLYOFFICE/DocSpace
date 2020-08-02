@@ -43,7 +43,7 @@ class SaveSettingsButtons extends React.Component{
 
     render(){
 
-        const { onSaveClick, onCancelClick } = this.props
+        const { onSaveClick, onCancelClick, showReminder } = this.props
         return(
             <StyledSaveSettingsButtons>
                 <div>
@@ -62,7 +62,7 @@ class SaveSettingsButtons extends React.Component{
                         label="Cancel"
                     />
                 </div>
-                <Text className="unsaved-changes"> You have unsaved changes </Text>
+                {showReminder && <Text className="unsaved-changes"> You have unsaved changes </Text>}
             </StyledSaveSettingsButtons>
         )
     }
