@@ -139,7 +139,6 @@ class LanguageAndTimeZone extends React.Component {
    componentDidUpdate(prevProps, prevState) {
       const { timezones, languages, timezoneDefault, languageDefault} = this.state;
       const { i18n, language, nameSchemaId } = this.props;
-      console.log("didUpdate")
       if (timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
@@ -182,6 +181,21 @@ class LanguageAndTimeZone extends React.Component {
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoading: false }));
       })
+   }
+
+   onCancelClick = () => {
+
+      for (let i = 0; i < settingsOptions.length; i++) {
+         const value = getFromSessionStorage(settingsOptions[i]);
+
+         if(value && !this.isEqualDefault(settingsOptions[i], value)) {
+            const defaultValue = this.state[settingsOptions[i] + "Default"];
+
+            this.setState({ [settingsOptions[i]]: defaultValue })
+            saveToSessionStorage(settingsOptions[i], "")
+         }
+      }
+      this.checkChanges()
    }
 
    isEqualDefault = (stateName, value) => {
@@ -273,6 +287,7 @@ class LanguageAndTimeZone extends React.Component {
                   {hasChanged && 
                      <SaveSettingsButtons
                         onSaveClick={this.onSaveLngTZSettings}
+                        onCancelClick={this.onCancelClick}
                      />
                   }
                   

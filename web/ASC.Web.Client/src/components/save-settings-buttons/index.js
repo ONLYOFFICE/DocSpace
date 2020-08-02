@@ -33,7 +33,7 @@ class SaveSettingsButtons extends React.Component{
 
     render(){
 
-        const { onSaveClick } = this.props
+        const { onSaveClick, onCancelClick } = this.props
         return(
             <StyledSaveSettingsButtons>
                 <div>
@@ -48,7 +48,7 @@ class SaveSettingsButtons extends React.Component{
                     <Button 
                         size="big"
                         isDisabled={false}
-                        onClick={() => alert("Button clicked")}
+                        onClick={onCancelClick}
                         label="Cancel"
                     />
                 </div>
