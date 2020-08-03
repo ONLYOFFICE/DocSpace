@@ -152,7 +152,7 @@ namespace ASC.Socket.IO.Svc
 
         private void StartPing()
         {
-          //  Thread.Sleep(PingInterval);
+            Thread.Sleep(PingInterval);
 
             var error = false;
             WebSocket = new WebSocket(string.Format("ws://127.0.0.1:{0}/socket.io/?EIO=3&transport=websocket", StartInfo.EnvironmentVariables["port"]));
