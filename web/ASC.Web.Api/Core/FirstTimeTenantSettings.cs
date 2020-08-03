@@ -72,6 +72,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         public MessageService MessageService { get; }
         public LicenseReader LicenseReader { get; }
         public StudioNotifyService StudioNotifyService { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
 
         public FirstTimeTenantSettings(
             IOptionsMonitor<ILog> options,
@@ -88,7 +89,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             PaymentManager paymentManager,
             MessageService messageService,
             LicenseReader licenseReader,
-            StudioNotifyService studioNotifyService)
+            StudioNotifyService studioNotifyService,
+            TimeZoneConverter timeZoneConverter)
         {
             Log = options.CurrentValue;
             Configuration = configuration;
@@ -105,13 +107,14 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             MessageService = messageService;
             LicenseReader = licenseReader;
             StudioNotifyService = studioNotifyService;
+            TimeZoneConverter = timeZoneConverter;
         }
 
         public WizardSettings SaveData(WizardModel wizardModel)
         {
             try
             {
-                var (email, pwd, lng, promocode, amiid, analytics) = wizardModel;
+                var (email, pwd, lng, timeZone, promocode, amiid, analytics) = wizardModel;
 
                 var tenant = TenantManager.GetCurrentTenant();
                 var settings = SettingsManager.Load<WizardSettings>();
@@ -182,6 +185,10 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 SettingsManager.Save(settings);
 
                 TrySetLanguage(tenant, lng);
+
+                tenant.TimeZone = TimeZoneConverter.GetTimeZone(timeZone).Id;
+
+                TenantManager.SaveTenant(tenant);
 
                 StudioNotifyService.SendCongratulations(currentUser);
                 SendInstallInfo(currentUser);

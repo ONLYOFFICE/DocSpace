@@ -575,16 +575,6 @@ namespace ASC.Api.Settings
             return listOfTimezones;
         }
 
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
-        [Create("timezones")]
-        public TimezonesModel SaveTimeZone(TimezonesModel model)
-        {
-            Tenant.TimeZone = TimeZoneConverter.GetTimeZone(model.Id).Id;
-            TenantManager.SaveTenant(Tenant);
-
-            return model;
-        }
-
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         [Read("machine")]
         public string GetMachineName()
