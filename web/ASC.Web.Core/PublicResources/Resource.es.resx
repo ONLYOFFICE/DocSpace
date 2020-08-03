@@ -70,6 +70,9 @@
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
     <value>Nofificaciones de administradores</value>
   </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Su mensaje fue enviado con éxito. El administrador del portal se pondrá en contacto con usted.</value>
+  </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Un enlace para confirmar la operación ha sido enviada al :correo electrónico (la dirección del correo electrónico del propietario del portal).</value>
   </data>
@@ -103,11 +106,17 @@
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>{!User} con este correo electrónico ya está registrado</value>
   </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>No se permite el registro para los correos electrónicos de este dominio </value>
+  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Campo de correo electrónico está vacío</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>El correo electrónico actual y el nuevo correo electrónico son iguales</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Texto del mensaje está vacío</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Imposible encontrar el archivo subido</value>
@@ -123,6 +132,9 @@
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
     <value>E-mail inválido</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nombre de dominio inválido</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
     <value>La contraseña está vacía.</value>
@@ -145,6 +157,9 @@
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>letras mayúsculas</value>
   </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Límite de solicitudes es excedido</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Usuario no ha sido encontrado</value>
   </data>
@@ -162,6 +177,9 @@
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>bytes,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>El enlace para confirmar su cuenta ha sido enviado al e-mail especificado. </value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>El servidor no pudo guardar ajustes.</value>
