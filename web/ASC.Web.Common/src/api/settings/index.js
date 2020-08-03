@@ -143,3 +143,11 @@ export function getSettings() {
       url: '/settings/license/required.json'
     })
   }
+
+  export function setLicense(license) {
+    return request({
+      method: "post",
+      url: `/settings/license.json`,
+      data: license
+    });
+  }

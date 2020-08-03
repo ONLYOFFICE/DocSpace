@@ -68,7 +68,7 @@ const HeaderUnauth = ({ t, enableAdmMess, wizardToken }) => {
         </div>
 
         <div>
-          {enableAdmMess && <RecoverAccess t={t} />}
+          {(enableAdmMess && !wizardToken) && <RecoverAccess t={t} />}
         </div>
       </Box>
     </Header>
@@ -79,7 +79,8 @@ HeaderUnauth.displayName = "Header";
 
 HeaderUnauth.propTypes = {
   t: PropTypes.func.isRequired,
-  enableAdmMess: PropTypes.bool
+  enableAdmMess: PropTypes.bool,
+  wizardToken: PropTypes.string
 };
 
 function mapStateToProps(state) {

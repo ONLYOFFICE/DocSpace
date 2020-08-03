@@ -32,7 +32,8 @@ import {
   setIsWizardLoaded, 
   getMachineName,
   getIsRequiredLicense, 
-  setPortalOwner 
+  setPortalOwner,
+  setLicense 
 } from '../../../store/wizard/actions';
 
 const { tablet } = utils.device;
@@ -86,6 +87,7 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
+      file: null,
 
       emailNeeded: true,
 
@@ -207,13 +209,10 @@ class Body extends Component {
 
       const { password, email,
         selectLanguage, selectTimezone,
-        file, emailOwner
+        emailOwner
       } = this.state;
 
       this.setState({ sending: true });
-
-      let licenseFile;
-      if (isLicenseRequired) licenseFile = file;
 
       const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
@@ -280,7 +279,16 @@ class Body extends Component {
         label: lang.label 
       }});
 
-  onInputFileHandler = file => this.setState({ file: file });
+  onInputFileHandler = file => { 
+    const { setLicense } = this.props;
+
+    setLicense(file)
+      .then(() => this.setState({ file: true }))
+      .catch( e => this.setState({
+        errorLoading: true,
+        errorMessage: e
+    }))
+  };
 
   render() {
     const { 
@@ -432,5 +440,6 @@ export default connect(mapStateToProps, {
   setIsWizardLoaded, 
   getMachineName, 
   getIsRequiredLicense,
-  setPortalOwner 
+  setPortalOwner,
+  setLicense 
 })(withRouter(WizardPage)); 

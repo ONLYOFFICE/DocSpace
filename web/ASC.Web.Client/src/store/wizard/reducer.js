@@ -2,7 +2,8 @@ import {
   SET_IS_WIZARD_LOADED, 
   SET_IS_MACHINE_NAME, 
   SET_COMPLETE,
-  SET_IS_LICENSE_REQUIRED
+  SET_IS_LICENSE_REQUIRED,
+  SET_LICENSE_UPLOAD
 } from "./actions";
 
 const initState = { 
@@ -35,6 +36,11 @@ const ownerReducer = ( state = initState, action) => {
     case SET_IS_LICENSE_REQUIRED:
       return Object.assign({}, state, {
         isLicenseRequired: action.isRequired
+      });
+
+    case SET_LICENSE_UPLOAD:
+      return Object.assign({}, state, {
+        licenseUpload: action.message
       })
 
     default:

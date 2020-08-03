@@ -9,7 +9,8 @@ const {
 export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
 export const SET_IS_MACHINE_NAME = 'SET_IS_MACHINE_NAME';
 export const SET_COMPLETE = 'SET_COMPLETE';
-export const SET_IS_LICENSE_REQUIRED = "SET_IS_LICENSE_REQUIRED"
+export const SET_IS_LICENSE_REQUIRED = "SET_IS_LICENSE_REQUIRED";
+export const SET_LICENSE_UPLOAD = "SET_LICENSE_UPLOAD";
 
 export function setIsWizardLoaded(isWizardLoaded) {
   return {
@@ -36,6 +37,13 @@ export function setIsRequiredLicense(isRequired) {
   return {
     type: SET_IS_LICENSE_REQUIRED,
     isRequired
+  }
+}
+
+export function setLicenseUpload(message) {
+  return {
+    type: SET_LICENSE_UPLOAD,
+    message
   }
 }
 
@@ -83,5 +91,12 @@ export function getIsRequiredLicense() {
   return dispatch => {
     return api.settings.getIsLicenseRequired()
       .then(isRequired => dispatch(setIsRequiredLicense(isRequired)))
+  }
+}
+
+export function setLicense(license) {
+  return dispatch => {
+    return api.settings.setLicense(license)
+      .then(res => dispatch(setLicenseUpload(res)))
   }
 }
