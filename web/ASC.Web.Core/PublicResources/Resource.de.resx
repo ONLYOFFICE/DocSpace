@@ -187,6 +187,24 @@
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Zu viele LDAP-Operationen.</value>
   </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Lizenz ist nicht korrekt</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Lizenz ist abgelaufen </value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Die Anzahl der Portale übersteigt die zugelassene Lizenz</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Die Anzahl der Benutzer übersteigt die zugelassene Lizenz</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Erfolgreich hochgeladen </value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Erfolgreich hochgeladen. {0}Support und Updates sind ab dieser Lizenz nicht mehr verfügbar {2}.{1}</value>
+  </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Die Hinweise für die Änderung der E-Mail-Adresse wurden erfolgreich gesendet</value>
   </data>
@@ -201,6 +219,9 @@
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Der verfügbare Speicherplatz ist überschritten</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Zugang zum Portal</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
     <value>Das Profil wurde gelöscht</value>

@@ -214,7 +214,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             }
         }
 
-        protected bool RequestLicense
+        public bool RequestLicense
         {
             get
             {

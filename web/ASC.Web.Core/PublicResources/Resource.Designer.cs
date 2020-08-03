@@ -448,6 +448,60 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to License is not correct.
+        /// </summary>
+        public static string LicenseError {
+            get {
+                return ResourceManager.GetString("LicenseError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License has expired.
+        /// </summary>
+        public static string LicenseErrorExpired {
+            get {
+                return ResourceManager.GetString("LicenseErrorExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of portals exceeds the one allowed by the license.
+        /// </summary>
+        public static string LicenseErrorPortal {
+            get {
+                return ResourceManager.GetString("LicenseErrorPortal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of users exceeds the one allowed by the license.
+        /// </summary>
+        public static string LicenseErrorQuota {
+            get {
+                return ResourceManager.GetString("LicenseErrorQuota", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded successfully.
+        /// </summary>
+        public static string LicenseUploaded {
+            get {
+                return ResourceManager.GetString("LicenseUploaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded successfully. {0}Support and updates are not available for this license since {2}.{1}.
+        /// </summary>
+        public static string LicenseUploadedOverdue {
+            get {
+                return ResourceManager.GetString("LicenseUploadedOverdue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The email change instructions have been successfuly sent.
         /// </summary>
         public static string MessageEmailChangeInstuctionsSentOnEmail {
@@ -489,6 +543,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string PersonalFreeSpaceException {
             get {
                 return ResourceManager.GetString("PersonalFreeSpaceException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Portal Access.
+        /// </summary>
+        public static string PortalSecurity {
+            get {
+                return ResourceManager.GetString("PortalSecurity", resourceCulture);
             }
         }
         

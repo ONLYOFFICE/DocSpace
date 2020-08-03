@@ -189,6 +189,24 @@
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Trop d'opérations LDAP.</value>
   </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>La licence n'est pas correcte</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>La licence a expiré</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Le nombre de portails a dépassé la limite autorisée par la licence</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Le nombre d'utilisateurs a dépassé la limite autorisée par la licence</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Téléchargé avec succès</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Téléchargé avec succès. {0}Support et mises à jour ne sont plus disponibles pour cette licence depuis {2}.{1}</value>
+  </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Les instructions de changement d'émail ont été envoyées avec succès</value>
   </data>
@@ -203,6 +221,9 @@
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota d'espace disque est dépassé</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Accès au portail</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
     <value>Le profil a été supprimé</value>

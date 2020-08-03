@@ -31,6 +31,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security;
 using System.ServiceModel.Security;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -280,6 +281,7 @@ namespace ASC.Api.Settings
                 {
                     settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
                 }
+
                 settings.EnabledJoin =
                     (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
                     Tenant.TrustedDomains.Count > 0) ||
@@ -1356,6 +1358,57 @@ namespace ASC.Api.Settings
             if (!CoreBaseSettings.Standalone) return false;
             LicenseReader.RefreshLicense();
             return true;
+        }
+
+        [AllowAnonymous]
+        [Read("license/required")]
+        public bool RequestLicense()
+        {
+            return FirstTimeTenantSettings.RequestLicense;
+        }
+
+
+        [Create("license")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        public object UploadLicense(UploadLicenseModel model)
+        {
+            try
+            {
+                if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
+                if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
+
+                ApiContext.AuthByClaim();
+
+                var licenseFile = model.Files.First();
+                var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
+
+                return dueDate >= DateTime.UtcNow.Date
+                                     ? Resource.LicenseUploaded
+                                     : string.Format(Resource.LicenseUploadedOverdue,
+                                                     "",
+                                                     "",
+                                                     dueDate.Date.ToLongDateString());
+            }
+            catch (LicenseExpiredException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorExpired);
+            }
+            catch (LicenseQuotaException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorQuota);
+            }
+            catch (LicensePortalException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorPortal);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseError);
+            }
         }
 
 

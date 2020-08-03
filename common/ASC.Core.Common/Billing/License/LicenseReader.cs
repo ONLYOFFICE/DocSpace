@@ -162,14 +162,8 @@ namespace ASC.Core.Billing
                 licenseStream.Seek(0, SeekOrigin.Begin);
             }
 
-            const int bufferSize = 4096;
             using var fs = File.Open(path, FileMode.Create);
-            var buffer = new byte[bufferSize];
-            int readed;
-            while ((readed = licenseStream.Read(buffer, 0, bufferSize)) != 0)
-            {
-                fs.Write(buffer, 0, readed);
-            }
+            licenseStream.CopyTo(fs);
         }
 
         private DateTime Validate(License license)
