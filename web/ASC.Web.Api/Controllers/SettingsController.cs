@@ -254,7 +254,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper = storageSettingsHelper;
         }
 
-        [Read("")]
+        [Read("", Check = false)]
         [AllowAnonymous]
         public SettingsWrapper GetSettings()
         {
