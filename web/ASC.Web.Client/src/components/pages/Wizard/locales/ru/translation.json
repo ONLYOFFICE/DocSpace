@@ -20,7 +20,7 @@
   "closeModalButton": "Закрыть",
 
   "tooltipPasswordTitle": "Пароль должен содержать:",
-  "tooltipPasswordLength": "символов",
+  "tooltipPasswordLength": "-30 символов",
   "tooltipPasswordDigits": "цыфры",
   "tooltipPasswordCapital": "Заглавные буквы",
   "tooltipPasswordSpecial": "Специальные символы (!@#$%^&*)",

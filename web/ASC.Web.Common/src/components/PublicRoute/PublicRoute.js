@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 export const PublicRoute = ({ component: Component, ...rest }) => {
     const token = localStorage.getItem(AUTH_KEY);
 
-    const {wizardToken} = rest;
+    const {wizardToken, wizardCompleted} = rest;
 
     const renderComponent = useCallback(
         props => { 
@@ -22,7 +22,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
                 );
             }
 
-            if(wizardToken) {
+            if(wizardToken && !wizardCompleted) {
                 return (
                     <Redirect
                         to={{
@@ -45,7 +45,8 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 
 function mapStateToProps(state) {
     return {
-      wizardToken: state.auth.settings.wizardToken
+      wizardToken: state.auth.settings.wizardToken,
+      wizardCompleted: state.wizard.wizardCompleted
     };
   }
 

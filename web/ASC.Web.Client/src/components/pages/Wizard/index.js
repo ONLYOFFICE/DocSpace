@@ -86,8 +86,9 @@ class Body extends Component {
       selectLanguage: null,
       selectTimezone: null,
 
-      isRequiredLicense: true,
-      emailNeeded: false,
+      isRequiredLicense: false,
+      emailNeeded: true,
+
       emailOwner: 'fake@mail.com'
     }
 
@@ -181,12 +182,18 @@ class Body extends Component {
 
   onClickChangeEmail = () => this.setState({ visibleModal: true });
 
-  onEmailHandler = result => {
-    this.setState({ emailValid: result.isValid});
+  onEmailChangeHandler = result => {
+    const { emailNeeded } = this.state;
 
-    if(result.isValid) {
-      this.setState({ email: result.value });
-    }
+    emailNeeded 
+      ? this.setState({ 
+          emailValid: result.isValid,
+          email: result.value
+        })
+      : this.setState({ 
+          emailValid: result.isValid,
+          changeEmail: result.value
+        })
   }
 
   onChangeLicense = () => this.setState({ license: !this.state.license });
@@ -196,24 +203,24 @@ class Body extends Component {
 
     if (valid) { 
       const { setPortalOwner, wizardToken } = this.props;
+
       const { password, email,
         selectLanguage, selectTimezone,
         isRequiredLicense, file, emailOwner
       } = this.state;
 
+      this.setState({ sending: true });
+
       let licenseFile;
-
-      this.setState({ sending: true })
-
       if (isRequiredLicense) licenseFile = file;
 
       const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
-      
+
       //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
       
       setPortalOwner(emailTrim, password, selectLanguage.key, wizardToken, analytics)
-        .then(() => history.push('/'))
+        .then(() => history.push('/login'))
         .catch( e => this.setState({
             errorLoading: true,
             sending: false,
@@ -298,7 +305,8 @@ class Body extends Component {
       errorLoading,
       visibleModal,
       errorMessage,
-      errorInitWizard
+      errorInitWizard,
+      changeEmail
     } = this.state;
   
     console.log('wizard render');
@@ -316,9 +324,9 @@ class Body extends Component {
             errorLoading={errorLoading}
             visibleModal={visibleModal}
             errorMessage={errorMessage}
-            emailOwner={emailOwner}
+            emailOwner={changeEmail ? changeEmail : emailOwner}
             settings={emailSettings}
-            onEmailHandler={this.onEmailHandler}
+            onEmailChangeHandler={this.onEmailChangeHandler}
             onSaveEmailHandler={this.onSaveEmailHandler}
             onCloseModal={this.onCloseModal}
             />
@@ -337,7 +345,7 @@ class Body extends Component {
               isValidPassHandler={this.isValidPassHandler}
               onChangePassword={this.onChangePassword}
               onInputFileHandler={this.onInputFileHandler}
-              onEmailHandler={this.onEmailHandler}
+              onEmailChangeHandler={this.onEmailChangeHandler}
             />
 
             <SettingsContainer t={t} 
@@ -411,7 +419,7 @@ function mapStateToProps(state) {
     cultures: state.auth.settings.cultures,
     timezones: state.auth.settings.timezones,
 
-    portalTimezone: state.auth.settings.timezone
+    portalTimezone: state.auth.settings.timezone,
   };
 }
 

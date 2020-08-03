@@ -47,7 +47,7 @@ const InputContainer = ({
   t, 
   settingsPassword,  
   emailNeeded, 
-  onEmailHandler, 
+  onEmailChangeHandler, 
   onInputFileHandler, 
   password, 
   onChangePassword, 
@@ -60,7 +60,7 @@ const InputContainer = ({
   const refPassInput = useRef(null);
 
   const tooltipPassTitle = t('tooltipPasswordTitle');
-  const tooltipPassLength = `${settingsPassword.minLength} ${t('tooltipPasswordLength')}`;
+  const tooltipPassLength = `${settingsPassword.minLength}${t('tooltipPasswordLength')}`;
   const tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : null;
   const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
   const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
@@ -73,7 +73,7 @@ const InputContainer = ({
         scale={true}
         placeholder={t('email')}
         emailSettings={settings}
-        onValidateInput={onEmailHandler}
+        onValidateInput={onEmailChangeHandler}
       />
     : null;
 
@@ -151,7 +151,7 @@ InputContainer.propTypes = {
   t: PropTypes.func.isRequired,
   settingsPassword: PropTypes.object.isRequired,
   emailNeeded: PropTypes.bool.isRequired,
-  onEmailHandler: PropTypes.func.isRequired,
+  onEmailChangeHandler: PropTypes.func.isRequired,
   onInputFileHandler: PropTypes.func.isRequired,
   password: PropTypes.string.isRequired,
   onChangePassword: PropTypes.func.isRequired,

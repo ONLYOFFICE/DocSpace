@@ -20,7 +20,7 @@
   "closeModalButton": "Close",
 
   "tooltipPasswordTitle": "Password must contain:",
-  "tooltipPasswordLength": "characters",
+  "tooltipPasswordLength": "-30 characters",
   "tooltipPasswordDigits": "digits",
   "tooltipPasswordCapital": "capital letters",
   "tooltipPasswordSpecial": "special characters (!@#$%^&*)",

@@ -7,7 +7,8 @@ import {
 const initState = { 
   isWizardLoaded: false,
   machineName: 'unknown',
-  res: null
+  response: null,
+  wizardCompleted: false
 };
 
 const ownerReducer = ( state = initState, action) => {
@@ -25,7 +26,8 @@ const ownerReducer = ( state = initState, action) => {
 
     case SET_COMPLETE:
       return Object.assign({}, state, {
-        res: action.res
+        response: action.res,
+        wizardCompleted: true
       });
 
     default:

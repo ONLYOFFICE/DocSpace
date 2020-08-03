@@ -32,7 +32,7 @@ const ModalContainer = ({
   errorMessage, 
   emailOwner,
   settings,
-  onEmailHandler,
+  onEmailChangeHandler,
   onSaveEmailHandler,
   onCloseModal
 }) => {
@@ -59,7 +59,7 @@ const ModalContainer = ({
       placeholder={t('placeholderEmail')}
       emailSettings={settings}
       value={emailOwner}
-      onValidateInput={onEmailHandler}
+      onValidateInput={onEmailChangeHandler}
     />;
 
     footer = <BtnContainer>
@@ -93,7 +93,7 @@ ModalContainer.propTypes = {
   visibleModal: PropTypes.bool.isRequired,
   emailOwner: PropTypes.string,
   settings: PropTypes.object.isRequired,
-  onEmailHandler: PropTypes.func.isRequired,
+  onEmailChangeHandler: PropTypes.func.isRequired,
   onSaveEmailHandler: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired
 };

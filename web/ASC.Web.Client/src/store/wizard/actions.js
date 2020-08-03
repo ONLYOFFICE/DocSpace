@@ -67,6 +67,6 @@ export function setPortalOwner(email, pwd, lng, confirmKey, analytics) {
   return dispatch => {
     return api.settings.setPortalOwner(email, pwd, lng, confirmKey, analytics)
       .then((res) => dispatch(setComplete(res)))
-      .then(() => dispatch(getPortalSettings()))
+      .then(() => getPortalSettings(dispatch))
   }
 }
