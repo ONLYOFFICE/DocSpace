@@ -535,14 +535,14 @@ namespace ASC.Api.Settings
         }
 
         [AllowAnonymous]
-        [Read("cultures")]
+        [Read("cultures", Check = false)]
         public IEnumerable<object> GetSupportedCultures()
         {
             return SetupInfo.EnabledCultures.Select(r => r.Name).ToArray();
         }
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
-        [Read("timezones")]
+        [Read("timezones", Check = false)]
         public List<TimezonesModel> GetTimeZones()
         {
             ApiContext.AuthByClaim();
@@ -578,7 +578,7 @@ namespace ASC.Api.Settings
         }
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        [Read("machine")]
+        [Read("machine", Check = false)]
         public string GetMachineName()
         {
             return Dns.GetHostName().ToLowerInvariant();
@@ -1063,7 +1063,7 @@ namespace ASC.Api.Settings
             return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
         }
 
-        [Update("wizard/complete")]
+        [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         public WizardSettings CompleteWizard(WizardModel wizardModel)
         {
@@ -1361,14 +1361,14 @@ namespace ASC.Api.Settings
         }
 
         [AllowAnonymous]
-        [Read("license/required")]
+        [Read("license/required", Check = false)]
         public bool RequestLicense()
         {
             return FirstTimeTenantSettings.RequestLicense;
         }
 
 
-        [Create("license")]
+        [Create("license", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         public object UploadLicense(UploadLicenseModel model)
         {
