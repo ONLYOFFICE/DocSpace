@@ -118,7 +118,7 @@ export function getSettings() {
       return request(options);
   }
 
-  export function setPortalOwner( email, pwd, lng, confirmKey = null, analytics ) {
+  export function setPortalOwner( email, pwd, lng, timeZone, confirmKey = null, analytics ) {
     const options = { 
       method: "put",
       url: "/settings/wizard/complete.json",
@@ -126,6 +126,7 @@ export function getSettings() {
         email: email,
       pwd: pwd,
       lng: lng,
+      timeZone: timeZone,
       analytics: analytics
       }
     }

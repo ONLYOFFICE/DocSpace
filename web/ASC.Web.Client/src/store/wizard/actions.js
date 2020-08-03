@@ -63,9 +63,9 @@ export function getMachineName(token) {
   };
 }
 
-export function setPortalOwner(email, pwd, lng, confirmKey, analytics) {
+export function setPortalOwner(email, pwd, lng, timeZone, confirmKey, analytics) {
   return dispatch => {
-    return api.settings.setPortalOwner(email, pwd, lng, confirmKey, analytics)
+    return api.settings.setPortalOwner(email, pwd, lng, timeZone, confirmKey, analytics)
       .then((res) => dispatch(setComplete(res)))
       .then(() => getPortalSettings(dispatch))
   }
