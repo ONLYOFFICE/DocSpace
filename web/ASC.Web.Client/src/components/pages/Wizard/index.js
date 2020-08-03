@@ -30,7 +30,8 @@ import {
   getPortalTimezones, 
   getPortalCultures, 
   setIsWizardLoaded, 
-  getMachineName, 
+  getMachineName,
+  getIsRequiredLicense, 
   setPortalOwner 
 } from '../../../store/wizard/actions';
 
@@ -86,7 +87,6 @@ class Body extends Component {
       selectLanguage: null,
       selectTimezone: null,
 
-      isRequiredLicense: false,
       emailNeeded: true,
 
       emailOwner: 'fake@mail.com'
@@ -100,7 +100,7 @@ class Body extends Component {
       t, wizardToken, 
       getPortalPasswordSettings, getPortalCultures, 
       getPortalTimezones, setIsWizardLoaded, 
-      getMachineName, history
+      getMachineName, getIsRequiredLicense, history
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
@@ -109,10 +109,11 @@ class Body extends Component {
     if(!wizardToken) { 
       history.push('/');
     } else {
-      
+      console.log(getPortalPasswordSettings(wizardToken))
       await Promise.all([
         getPortalPasswordSettings(wizardToken),
         getMachineName(wizardToken),
+        getIsRequiredLicense(),
         getPortalTimezones(wizardToken)
           .then(() => {
             const { timezones, portalTimezone } = this.props;
@@ -202,17 +203,17 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) { 
-      const { setPortalOwner, wizardToken } = this.props;
+      const { setPortalOwner, wizardToken, isLicenseRequired } = this.props;
 
       const { password, email,
         selectLanguage, selectTimezone,
-        isRequiredLicense, file, emailOwner
+        file, emailOwner
       } = this.state;
 
       this.setState({ sending: true });
 
       let licenseFile;
-      if (isRequiredLicense) licenseFile = file;
+      if (isLicenseRequired) licenseFile = file;
 
       const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
@@ -230,24 +231,24 @@ class Body extends Component {
   }
 
   checkingValid = () => {
-    const { t } = this.props;
-    const { isValidPass, emailValid, license, isRequiredLicense, emailNeeded, file } = this.state;
+    const { t, isLicenseRequired } = this.props;
+    const { isValidPass, emailValid, license, emailNeeded, file } = this.state;
 
     if(!isValidPass) toastr.error(t('errorPassword'));
     if(!license) toastr.error(t('errorLicenseRead'));
 
-    if ( emailNeeded && !isRequiredLicense) {
+    if ( emailNeeded && !isLicenseRequired) {
       if(!emailValid) toastr.error(t('errorEmail'));
       if( isValidPass && emailValid && license ) return true;
     }
 
-    if (emailNeeded && isRequiredLicense) {
+    if (emailNeeded && isLicenseRequired) {
       if(!emailValid) toastr.error(t('errorEmail'));
       if(!file) toastr.error(t('errorUploadLicenseFile'));
       if( isValidPass && emailValid && license && file) return true;
     }
 
-    if (!emailNeeded && isRequiredLicense) {
+    if (!emailNeeded && isLicenseRequired) {
       if(!file) toastr.error(t('errorUploadLicenseFile'));
       if( isValidPass && license && file) return true;
     }
@@ -288,6 +289,7 @@ class Body extends Component {
       machineName, 
       settingsPassword,
       language, 
+      isLicenseRequired
     } = this.props;
 
     const { 
@@ -301,7 +303,6 @@ class Body extends Component {
       email, 
       emailOwner, 
       password,
-      isRequiredLicense,
       errorLoading,
       visibleModal,
       errorMessage,
@@ -340,7 +341,7 @@ class Body extends Component {
               password={password}
               license={license}
               settings={emailSettings}
-              isRequiredLicense={isRequiredLicense}
+              isLicenseRequired={isLicenseRequired}
               onChangeLicense={this.onChangeLicense}
               isValidPassHandler={this.isValidPassHandler}
               onChangePassword={this.onChangePassword}
@@ -420,6 +421,7 @@ function mapStateToProps(state) {
     timezones: state.auth.settings.timezones,
 
     portalTimezone: state.auth.settings.timezone,
+    isLicenseRequired: state.wizard.isLicenseRequired
   };
 }
 
@@ -429,5 +431,6 @@ export default connect(mapStateToProps, {
   getPortalTimezones, 
   setIsWizardLoaded, 
   getMachineName, 
+  getIsRequiredLicense,
   setPortalOwner 
 })(withRouter(WizardPage)); 

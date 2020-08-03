@@ -136,3 +136,10 @@ export function getSettings() {
     }
     return request(options);
   }
+
+  export function getIsLicenseRequired() {
+    return request({
+      method: 'get',
+      url: '/settings/license/required.json'
+    })
+  }

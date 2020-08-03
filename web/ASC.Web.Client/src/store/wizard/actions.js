@@ -9,6 +9,7 @@ const {
 export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
 export const SET_IS_MACHINE_NAME = 'SET_IS_MACHINE_NAME';
 export const SET_COMPLETE = 'SET_COMPLETE';
+export const SET_IS_LICENSE_REQUIRED = "SET_IS_LICENSE_REQUIRED"
 
 export function setIsWizardLoaded(isWizardLoaded) {
   return {
@@ -28,6 +29,13 @@ export function setComplete(res) {
   return {
     type: SET_COMPLETE,
     res
+  }
+}
+
+export function setIsRequiredLicense(isRequired) {
+  return {
+    type: SET_IS_LICENSE_REQUIRED,
+    isRequired
   }
 }
 
@@ -68,5 +76,12 @@ export function setPortalOwner(email, pwd, lng, timeZone, confirmKey, analytics)
     return api.settings.setPortalOwner(email, pwd, lng, timeZone, confirmKey, analytics)
       .then((res) => dispatch(setComplete(res)))
       .then(() => getPortalSettings(dispatch))
+  }
+}
+
+export function getIsRequiredLicense() {
+  return dispatch => {
+    return api.settings.getIsLicenseRequired()
+      .then(isRequired => dispatch(setIsRequiredLicense(isRequired)))
   }
 }

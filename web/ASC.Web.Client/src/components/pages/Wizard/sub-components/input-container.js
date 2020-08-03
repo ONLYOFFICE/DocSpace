@@ -55,7 +55,7 @@ const InputContainer = ({
   license, 
   onChangeLicense, 
   settings, 
-  isRequiredLicense
+  isLicenseRequired
 }) => {
   const refPassInput = useRef(null);
 
@@ -77,7 +77,7 @@ const InputContainer = ({
       />
     : null;
 
-  const inputLicenseFile = isRequiredLicense 
+  const inputLicenseFile = isLicenseRequired 
     ? <Box>
         <FileInput
           tabIndex={3}
@@ -114,7 +114,7 @@ const InputContainer = ({
         onValidateInput={isValidPassHandler}
       />
       { inputLicenseFile }
-      {!isRequiredLicense 
+      {!isLicenseRequired 
         ? <Link 
             className='generate-pass-link'
             type="action"
