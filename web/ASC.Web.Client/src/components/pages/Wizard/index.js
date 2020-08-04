@@ -111,7 +111,6 @@ class Body extends Component {
     if(!wizardToken) { 
       history.push('/');
     } else {
-      console.log(getPortalPasswordSettings(wizardToken))
       await Promise.all([
         getPortalPasswordSettings(wizardToken),
         getMachineName(wizardToken),
@@ -205,7 +204,7 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) { 
-      const { setPortalOwner, wizardToken, isLicenseRequired } = this.props;
+      const { setPortalOwner, wizardToken } = this.props;
 
       const { password, email,
         selectLanguage, selectTimezone,
@@ -280,9 +279,9 @@ class Body extends Component {
       }});
 
   onInputFileHandler = file => { 
-    const { setLicense } = this.props;
+    const { setLicense, wizardToken } = this.props;
 
-    setLicense(file)
+    setLicense(wizardToken, file)
       .then(() => this.setState({ file: true }))
       .catch( e => this.setState({
         errorLoading: true,

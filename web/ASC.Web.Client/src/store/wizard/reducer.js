@@ -11,7 +11,8 @@ const initState = {
   isLicenseRequired: false,
   machineName: 'unknown',
   response: null,
-  wizardCompleted: false
+  wizardCompleted: false,
+  licenseUpload: null
 };
 
 const ownerReducer = ( state = initState, action) => {

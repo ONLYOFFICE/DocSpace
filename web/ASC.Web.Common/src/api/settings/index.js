@@ -112,7 +112,7 @@ export function getSettings() {
       url: "/settings/machine.json"
     };
 
-    if(confirmKey)
+    if ( confirmKey ) 
       options.headers = { confirm: confirmKey };
 
       return request(options);
@@ -131,7 +131,7 @@ export function getSettings() {
       }
     }
 
-    if( confirmKey ) {
+    if ( confirmKey ) {
       options.headers = { confirm: confirmKey};
     }
     return request(options);
@@ -144,10 +144,18 @@ export function getSettings() {
     })
   }
 
-  export function setLicense(license) {
-    return request({
+  export function setLicense(confirmKey = null, license) {
+    const options = { 
       method: "post",
       url: `/settings/license.json`,
-      data: license
-    });
+      data: { 
+        license
+      }
+    }
+
+    if ( confirmKey ) {
+      options.headers = { confirm: confirmKey}
+    }
+    console.log( options )
+    return request(options);
   }
