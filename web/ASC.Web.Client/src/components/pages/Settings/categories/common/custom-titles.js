@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Loader, Button, toastr, TextInput } from "asc-web-components";
+import { FieldContainer, Loader, Button, toastr, TextInput, Link } from "asc-web-components";
 import styled from 'styled-components';
 import { setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
 import SaveSettingsButtons from '../../../../save-settings-buttons';
@@ -25,6 +25,9 @@ const StyledComponent = styled.div`
 
    .combo-button-label {
       max-width: 100%;
+   }
+   .link-wrapper{
+      margin-top: 8px;
    }
 `;
 
@@ -127,7 +130,9 @@ class CustomTitles extends React.Component {
          restoreGreetingTitle()
             .then(() => {
                this.setState({
-                  greetingTitle: this.props.greetingSettings
+                  greetingTitle: this.props.greetingSettings,
+                  greetingTitleDefault: this.props.greetingSettings,
+                  showReminder: false,
                })
                toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
             })
@@ -184,9 +189,8 @@ class CustomTitles extends React.Component {
    
 
    render() {
-      const { t} = this.props;
+      const { t } = this.props;
       const { isLoadedData, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, hasChanged, showReminder } = this.state;
-      console.log(hasChanged)
 
       return (
          !isLoadedData ?
@@ -205,29 +209,17 @@ class CustomTitles extends React.Component {
                            onChange={this.onChangeGreetingTitle}
                            isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
                         />
+                        <div className="link-wrapper">
+                           <Link 
+                              onClick={this.onRestoreGreetingSettings}
+                              type="action"
+                              color="#A3A9AE"
+                           > 
+                              Set default title 
+                           </Link>
+                        </div>
 
                      </FieldContainer>
-
-                     <Button
-                        id='btnSaveGreetingSetting'
-                        className='margin-top'
-                        primary={true}
-                        size='medium'
-                        label={t('SaveButton')}
-                        isLoading={isLoadingGreetingSave}
-                        isDisabled={isLoadingGreetingRestore}
-                        onClick={this.onSaveGreetingSettings}
-                     />
-
-                     <Button
-                        id='btnRestoreToDefault'
-                        className='margin-top margin-left'
-                        size='medium'
-                        label={t('RestoreDefaultButton')}
-                        isLoading={isLoadingGreetingRestore}
-                        isDisabled={isLoadingGreetingSave}
-                        onClick={this.onRestoreGreetingSettings}
-                     />
                   </div>
                   {hasChanged && 
                      <SaveSettingsButtons

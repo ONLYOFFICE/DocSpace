@@ -180,7 +180,7 @@ export function setGreetingTitle(greetingTitle) {
 export function restoreGreetingTitle() {
   return dispatch => {
     return api.settings.restoreGreetingSettings().then(res => {
-      dispatch(setGreetingSettings(res.companyName));
+      if(res) dispatch(setGreetingSettings(res.Content));
     });
   };
 }

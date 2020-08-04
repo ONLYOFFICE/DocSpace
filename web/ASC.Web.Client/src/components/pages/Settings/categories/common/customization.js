@@ -5,7 +5,7 @@ import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store, utils, api } from 'asc-web-common';
-import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle, getDefaultGreetingTitle } from '../../../../../store/settings/actions';
+import { setLanguageAndTime, getPortalTimezones } from '../../../../../store/settings/actions';
 import { default as clientStore } from '../../../../../store/store';
 
 const { changeLanguage } = utils;
@@ -25,15 +25,6 @@ const mapTimezonesToArray = (timezones) => {
 
 const findSelectedItemByKey = (items, selectedItemKey) => {
    return items.find(item => item.key === selectedItemKey);
-}
-
-const GreetingTitleIsDefault = () => {
-   api.settings.getSettings().then((settings) => {
-      return true  // TODO Add a check for the standard title
-    /*  if(settings.defaultGreetingTitle){
-         return DefaultGreetingTitle === greetingSettings
-      }*/
-   })
 }
 
 const StyledComponent = styled.div`
@@ -94,7 +85,7 @@ class Customization extends React.Component {
    constructor(props) {
       super(props);
 
-      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t, greetingSettings } = props;
+      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t } = props;
       const languages = mapCulturesToArray(rawCultures, t);
       const timezones = mapTimezonesToArray(rawTimezones);
 
@@ -107,10 +98,8 @@ class Customization extends React.Component {
          timezone: findSelectedItemByKey(timezones, portalTimeZoneId || timezones[0]),
          languages,
          language: findSelectedItemByKey(languages, portalLanguage || languages[0]),
-         greetingTitle: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
-         GreetingTitleIsDefault: GreetingTitleIsDefault(greetingSettings),
       }
    }
 
@@ -189,7 +178,7 @@ class Customization extends React.Component {
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, language, timezone, greetingTitle, GreetingTitleIsDefault } = this.state;
+      const { isLoadedData, language, timezone} = this.state;
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
@@ -224,10 +213,6 @@ class Customization extends React.Component {
                         </Link>
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>
-                     {GreetingTitleIsDefault 
-                        ? <Text truncate={true} className="category-item-subheader">{t("Default")}</Text>
-                        : <Text truncate={true} className="category-item-subheader">{t("Custom") + ":" + greetingTitle}</Text>
-                     }
                      <Text className="category-item-description">
                         Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. 
                         Custom domain name is a way to set an alternative URL for your portal. Custom portal name will appear next to the onlyoffice.com/onlyoffice.eu portal address.
@@ -246,12 +231,10 @@ function mapStateToProps(state) {
       language: state.auth.user.cultureName || state.auth.settings.culture,
       rawTimezones: state.auth.settings.timezones,
       rawCultures: state.auth.settings.cultures,
-      greetingSettings: state.auth.settings.greetingSettings,
       nameSchemaId: state.auth.settings.nameSchemaId
    };
 }
 
 export default connect(mapStateToProps, {
-   getPortalCultures, setLanguageAndTime, getPortalTimezones,
-   setGreetingTitle, restoreGreetingTitle
+   getPortalCultures, setLanguageAndTime, getPortalTimezones
 })(withTranslation()(Customization));
