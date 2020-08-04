@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { FieldContainer, Loader, Button, toastr, TextInput } from "asc-web-components";
 import styled from 'styled-components';
 import { setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
+import SaveSettingsButtons from '../../../../save-settings-buttons';
 
 const StyledComponent = styled.div`
    .margin-top {
@@ -26,6 +27,21 @@ const StyledComponent = styled.div`
       max-width: 100%;
    }
 `;
+
+const saveToSessionStorage = (key, value) => {
+   sessionStorage.setItem(key, JSON.stringify(value))
+}
+
+const getFromSessionStorage = (key) => {
+   return JSON.parse(sessionStorage.getItem(key));
+}
+
+let greetingTitleFromStorage = "";
+
+const settingsOptions = [
+   "greetingTitle"
+];
+
 class CustomTitles extends React.Component {
 
    constructor(props) {
@@ -33,18 +49,30 @@ class CustomTitles extends React.Component {
 
       const { t, greetingSettings } = props;
 
+      greetingTitleFromStorage = getFromSessionStorage("greetingTitle");
+
       document.title = `${t("Customization")} – ${t("OrganizationName")}`;
 
       this.state = {
          isLoadedData: false,
          isLoading: false,
-         greetingTitle: greetingSettings,
+         greetingTitle: greetingTitleFromStorage || greetingSettings,
+         greetingTitleDefault: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
+         hasChanged: false,
+         showReminder: false
       }
    }
 
    componentDidMount(){
+      const { showReminder } = this.state
+
+      if((greetingTitleFromStorage) && !showReminder){
+         this.setState({
+            showReminder: true
+         })
+      }
       this.setState({
          isLoadedData: true
       })
@@ -56,19 +84,40 @@ class CustomTitles extends React.Component {
             isLoadedData: true
          })
       }
+
+      console.log(this.state.greetingTitleDefault)
+
+      if(this.state.greetingTitleDefault){
+
+         this.checkChanges()
+      }
    }
 
    onChangeGreetingTitle = (e) => {
       this.setState({ greetingTitle: e.target.value })
+
+      if(this.isEqualDefault("greetingTitle", e.target.value)){
+         saveToSessionStorage("greetingTitle", "")
+      } else {
+         saveToSessionStorage("greetingTitle", e.target.value)
+      }
+
+      this.checkChanges()
    };
 
    onSaveGreetingSettings = () => {
       const { setGreetingTitle, t } = this.props;
+      const { greetingTitle } = this.state
       this.setState({ isLoadingGreetingSave: true }, function () {
-         setGreetingTitle(this.state.greetingTitle)
+         setGreetingTitle(greetingTitle)
             .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoadingGreetingSave: false }));
+      })
+
+      this.setState({
+         showReminder: false,
+         greetingTitleDefault:greetingTitle, 
       })
    }
 
@@ -93,9 +142,51 @@ class CustomTitles extends React.Component {
       history.push("/settings/common/customization");
    };
 
+   onCancelClick = () => {
+
+      for (let i = 0; i < settingsOptions.length; i++) {
+         const value = getFromSessionStorage(settingsOptions[i]);
+
+         if(value && !this.isEqualDefault(settingsOptions[i], value)) {
+            const defaultValue = this.state[settingsOptions[i] + "Default"];
+
+            this.setState({ [settingsOptions[i]]: defaultValue })
+            saveToSessionStorage(settingsOptions[i], "")
+         }
+      }
+      this.setState({
+         showReminder: false
+      })
+      this.checkChanges()
+   }
+
+   isEqualDefault = (stateName, value) => {
+      const defaultValue = JSON.stringify(this.state[stateName + "Default"])
+      const currentValue = JSON.stringify(value)
+      return defaultValue === currentValue
+   }
+
+   checkChanges = () => {
+      let hasChanged = false;
+
+      for (let i = 0; i < settingsOptions.length; i++) {
+         const value = getFromSessionStorage(settingsOptions[i]);
+
+         if(value && !this.isEqualDefault(settingsOptions[i], value)) hasChanged = true
+      }
+
+      if(hasChanged !== this.state.hasChanged){
+         this.setState({
+            hasChanged: hasChanged,
+         })
+      }
+   }
+   
+
    render() {
       const { t} = this.props;
-      const { isLoadedData, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore } = this.state;
+      const { isLoadedData, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, hasChanged, showReminder } = this.state;
+      console.log(hasChanged)
 
       return (
          !isLoadedData ?
@@ -138,6 +229,13 @@ class CustomTitles extends React.Component {
                         onClick={this.onRestoreGreetingSettings}
                      />
                   </div>
+                  {hasChanged && 
+                     <SaveSettingsButtons
+                        onSaveClick={this.onSaveGreetingSettings}
+                        onCancelClick={this.onCancelClick}
+                        showReminder={showReminder}
+                     />
+                  }
                </StyledComponent>
             </>
       );
