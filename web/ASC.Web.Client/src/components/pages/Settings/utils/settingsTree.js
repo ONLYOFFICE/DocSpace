@@ -36,6 +36,20 @@ export const settingsTree = [
             },
         ]
     },
+    {
+        key: '3',
+        icon: 'SettingsIcon',
+        link: 'integration',
+        tKey: 'ManagementCategoryIntegration',
+        children: [
+            {
+                key: '3-0',
+                icon: '',
+                link: 'third-party-services',
+                tKey: 'ThirdPartyAuthorization',
+            },
+        ]
+    },
 
 ];
 
