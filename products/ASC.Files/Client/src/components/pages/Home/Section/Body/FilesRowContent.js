@@ -135,17 +135,6 @@ class FilesRowContent extends React.PureComponent {
       : this.updateItem();
   }
 
-  onKeyUpUpdateItem = e => {
-    if (e.keyCode === 13) {
-      (this.props.fileAction.type === FileAction.Create)
-        ? this.createItem()
-        : this.updateItem();
-    }
-
-    if (e.keyCode === 27)
-      return this.cancelUpdateItem()
-  }
-
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
     const { filter, parentFolder, onLoading, onMediaFileClick } = this.props;
@@ -321,7 +310,6 @@ class FilesRowContent extends React.PureComponent {
         okIcon={okIcon}
         cancelIcon={cancelIcon}
         renameTitle={this.renameTitle}
-        onKeyUpUpdateItem={this.onKeyUpUpdateItem}
         onClickUpdateItem={this.onClickUpdateItem}
         cancelUpdateItem={this.cancelUpdateItem}
         itemId={id}
