@@ -734,7 +734,7 @@ namespace ASC.Api.Settings
             return EnabledModules;
         }
 
-        [Read("security/password")]
+        [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
         public object GetPasswordSettings()
         {
