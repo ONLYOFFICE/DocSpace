@@ -144,18 +144,16 @@ export function getSettings() {
     })
   }
 
-  export function setLicense(confirmKey = null, license) {
+  export function setLicense(confirmKey = null, data) {
     const options = { 
       method: "post",
       url: `/settings/license.json`,
-      data: { 
-        license
-      }
+      data:  { data }       
     }
 
     if ( confirmKey ) {
       options.headers = { confirm: confirmKey}
     }
-    console.log( options )
+
     return request(options);
   }

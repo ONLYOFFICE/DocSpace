@@ -94,9 +94,9 @@ export function getIsRequiredLicense() {
   }
 }
 
-export function setLicense(confirmKey, license) {
+export function setLicense(confirmKey, data) {
   return dispatch => {
-    return api.settings.setLicense(confirmKey, license)
+    return api.settings.setLicense(confirmKey, data)
       .then(res => dispatch(setLicenseUpload(res)))
   }
 }

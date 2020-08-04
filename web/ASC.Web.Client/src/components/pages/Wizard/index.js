@@ -280,10 +280,9 @@ class Body extends Component {
 
   onInputFileHandler = file => { 
     const { setLicense, wizardToken } = this.props;
-
     setLicense(wizardToken, file)
       .then(() => this.setState({ file: true }))
-      .catch( e => this.setState({
+      .catch( e =>  this.setState({
         errorLoading: true,
         errorMessage: e
     }))
