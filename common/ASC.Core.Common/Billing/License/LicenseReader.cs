@@ -27,15 +27,12 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -276,51 +273,54 @@ namespace ASC.Core.Billing
         {
             get
             {
-                if (_date != DateTime.MinValue) return _date;
-
-                _date = DateTime.MaxValue;
-                try
-                {
-                    var versionDate = Configuration["version:release:date"];
-                    var sign = Configuration["version:release:sign"];
-
-                    if (!sign.StartsWith("ASC "))
-                    {
-                        throw new Exception("sign without ASC");
-                    }
-
-                    var splitted = sign.Substring(4).Split(':');
-                    var pkey = splitted[0];
-                    if (pkey != versionDate)
-                    {
-                        throw new Exception("sign with different date");
-                    }
-
-                    var date = splitted[1];
-                    var orighash = splitted[2];
-
-                    var skey = Configuration["core:machinekey"];
-
-                    using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
-                    {
-                        var data = string.Join("\n", date, pkey);
-                        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
-                        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
-                        {
-                            throw new Exception("incorrect hash");
-                        }
-                    }
-
-                    var year = int.Parse(versionDate.Substring(0, 4));
-                    var month = int.Parse(versionDate.Substring(4, 2));
-                    var day = int.Parse(versionDate.Substring(6, 2));
-                    _date = new DateTime(year, month, day);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("VersionReleaseDate", ex);
-                }
+                // release sign is not longer requered
                 return _date;
+
+                //if (_date != DateTime.MinValue) return _date;
+
+                //_date = DateTime.MaxValue;
+                //try
+                //{
+                //    var versionDate = Configuration["version:release:date"];
+                //    var sign = Configuration["version:release:sign"];
+
+                //    if (!sign.StartsWith("ASC "))
+                //    {
+                //        throw new Exception("sign without ASC");
+                //    }
+
+                //    var splitted = sign.Substring(4).Split(':');
+                //    var pkey = splitted[0];
+                //    if (pkey != versionDate)
+                //    {
+                //        throw new Exception("sign with different date");
+                //    }
+
+                //    var date = splitted[1];
+                //    var orighash = splitted[2];
+
+                //    var skey = Configuration["core:machinekey"];
+
+                //    using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
+                //    {
+                //        var data = string.Join("\n", date, pkey);
+                //        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
+                //        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
+                //        {
+                //            throw new Exception("incorrect hash");
+                //        }
+                //    }
+
+                //    var year = int.Parse(versionDate.Substring(0, 4));
+                //    var month = int.Parse(versionDate.Substring(4, 2));
+                //    var day = int.Parse(versionDate.Substring(6, 2));
+                //    _date = new DateTime(year, month, day);
+                //}
+                //catch (Exception ex)
+                //{
+                //    Log.Error("VersionReleaseDate", ex);
+                //}
+                //return _date;
             }
         }
 
