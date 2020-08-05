@@ -147,12 +147,12 @@ export function getSettings() {
   export function setLicense(confirmKey = null, data) {
     const options = { 
       method: "post",
-      url: `/settings/license.json`,
-      data:  { data }       
+      url: `/settings/license`,
+      data
     }
 
     if ( confirmKey ) {
-      options.headers = { confirm: confirmKey}
+      options.headers = { confirm: confirmKey }
     }
 
     return request(options);

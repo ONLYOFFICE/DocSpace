@@ -57,11 +57,13 @@ const checkResponseError = res => {
   if(!res) return;
 
   if (res.data && res.data.error) {
+    console.log('-----------------------')
     console.error(res.data.error);
     throw new Error(res.data.error.message);
   }
 
   if(res.isAxiosError && res.message) {
+    console.log('-----------------------')
     console.error(res.message);
     //toastr.error(res.message);
     throw new Error(res.message);

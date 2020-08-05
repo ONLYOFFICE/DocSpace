@@ -280,12 +280,21 @@ class Body extends Component {
 
   onInputFileHandler = file => { 
     const { setLicense, wizardToken } = this.props;
-    setLicense(wizardToken, file)
-      .then(() => this.setState({ file: true }))
-      .catch( e =>  this.setState({
-        errorLoading: true,
-        errorMessage: e
-    }))
+    console.log(file)
+
+    const fileName = file.name;
+    const fileSize = file.size;
+    const relativePath = "";
+
+    let fd = new FormData();
+    fd.append("file", file );
+
+    setLicense(wizardToken, fd)
+        .then(() => this.setState({ file: true }))
+        .catch( e => this.setState({
+          errorLoading: true,
+          errorMessage: e
+      })) 
   };
 
   render() {
@@ -341,7 +350,7 @@ class Body extends Component {
           <HeaderContainer t={t} />
           
           <form className='wizard-form'>
-            <InputContainer t={t}
+            <InputContainer t={t}s
               settingsPassword={settingsPassword}
               emailNeeded={emailNeeded}
               password={password}
