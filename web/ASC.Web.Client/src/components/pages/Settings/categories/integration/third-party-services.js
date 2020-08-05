@@ -2,11 +2,16 @@ import React from "react";
 import { consumers } from "./sub-components/consumers";
 import { Box, Text } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
+import { withTranslation } from 'react-i18next';
+import { connect } from "react-redux";
 
 class ThirdPartyServices extends React.Component {
 
     constructor(props) {
         super(props);
+        const { t } = props;
+        document.title = `${t("ManagementCategoryIntegration")} – ${t("OrganizationName")}`;
+
         this.state = {
             consumers: consumers,
             selectedConsumer: "",
@@ -68,7 +73,7 @@ class ThirdPartyServices extends React.Component {
 
                                         onModalClose={onModalClose}
                                         onToggleClick={() => {
-                                            this.setState({ selectedConsumer: consumer.name }) 
+                                            this.setState({ selectedConsumer: consumer.name })
                                             onToggleClick()
                                         }}
                                     />
@@ -81,4 +86,4 @@ class ThirdPartyServices extends React.Component {
     }
 }
 
-export default ThirdPartyServices;
+export default connect(null, null)(withTranslation()(ThirdPartyServices));
