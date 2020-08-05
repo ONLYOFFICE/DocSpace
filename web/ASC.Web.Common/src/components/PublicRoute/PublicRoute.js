@@ -46,7 +46,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 function mapStateToProps(state) {
     return {
       wizardToken: state.auth.settings.wizardToken,
-      wizardCompleted: state.wizard.wizardCompleted
+      wizardCompleted: state.auth.settings.wizardCompleted
     };
   }
 

@@ -3,12 +3,12 @@ const {
   setPasswordSettings, 
   setTimezones, 
   setPortalCultures,
-  getPortalSettings
+  getPortalSettings,
+  setWizardComplete
 } = store.auth.actions;
 
 export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
 export const SET_IS_MACHINE_NAME = 'SET_IS_MACHINE_NAME';
-export const SET_COMPLETE = 'SET_COMPLETE';
 export const SET_IS_LICENSE_REQUIRED = "SET_IS_LICENSE_REQUIRED";
 export const SET_LICENSE_UPLOAD = "SET_LICENSE_UPLOAD";
 
@@ -24,13 +24,6 @@ export function setMachineName(machineName) {
     type: SET_IS_MACHINE_NAME,
     machineName
   };
-}
-
-export function setComplete(res) {
-  return {
-    type: SET_COMPLETE,
-    res
-  }
 }
 
 export function setIsRequiredLicense(isRequired) {
@@ -82,8 +75,9 @@ export function getMachineName(token) {
 export function setPortalOwner(email, pwd, lng, timeZone, confirmKey, analytics) {
   return dispatch => {
     return api.settings.setPortalOwner(email, pwd, lng, timeZone, confirmKey, analytics)
-      .then((res) => dispatch(setComplete(res)))
+      .then(() => dispatch(setWizardComplete()))
       .then(() => getPortalSettings(dispatch))
+      
   }
 }
 

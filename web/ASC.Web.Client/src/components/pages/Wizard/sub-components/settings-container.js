@@ -16,9 +16,13 @@ const StyledContainer = styled(Box)`
   width: 311px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 66px auto;
+  grid-template-columns: min-content auto;
   grid-auto-columns: min-content;
   grid-row-gap: 12px;
+
+  .title {
+    white-space: nowrap;
+  }
 
   .machine-name-value,
   .email-value {
@@ -88,7 +92,7 @@ const SettingsContainer = ({
           onSelect={onSelectLanguageHandler}
         />
 
-      <Text fontSize="13px">{t('timezone')}</Text>
+      <Text className="title" fontSize="13px">{t('timezone')}</Text>
       <ComboBox 
           className="drop-down"
           options={timezones}

@@ -404,7 +404,7 @@ const WizardWrapper = withTranslation()(Body);
 
 const WizardPage = props => {
   const { language, isLoaded } = props;
-  //i18n.changeLanguage(language);
+  i18n.changeLanguage(language);
   return (
     <>
       { isLoaded && <PageLayout 
