@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link } from "asc-web-components";
+import { FieldContainer, Text, ComboBox, Loader, toastr, Link } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store, utils } from 'asc-web-common';
 import { setLanguageAndTime, getPortalTimezones } from '../../../../../store/settings/actions';
+import { saveToSessionStorage, getFromSessionStorage } from '../../utils';
 import { default as clientStore } from '../../../../../store/store';
 import SaveSettingsButtons from '../../../../save-settings-buttons';
 
@@ -50,17 +51,10 @@ const StyledComponent = styled.div`
    }
 `;
 
-const saveToSessionStorage = (key, value) => {
-   sessionStorage.setItem(key, JSON.stringify(value))
-}
+let languageFromSessionStorage = "";
+let timezoneFromSessionStorage = "";
 
-const getFromSessionStorage = (key) => {
-   return JSON.parse(sessionStorage.getItem(key));
-}
-let languageFromStorage = "";
-let timezoneFromStorage = "";
-
-const settingsOptions = [
+const settingNames = [
    "language",
    "timezone"
 ]
@@ -76,8 +70,8 @@ class LanguageAndTimeZone extends React.Component {
       const language = findSelectedItemByKey(languages, portalLanguage || languages[0]);
       const timezone = findSelectedItemByKey(timezones, portalTimeZoneId || timezones[0]);
 
-      languageFromStorage = getFromSessionStorage("language");
-      timezoneFromStorage = getFromSessionStorage("timezone");
+      languageFromSessionStorage = getFromSessionStorage("language");
+      timezoneFromSessionStorage = getFromSessionStorage("timezone");
 
       document.title = `${t("Customization")} – ${t("OrganizationName")}`;
 
@@ -85,10 +79,10 @@ class LanguageAndTimeZone extends React.Component {
          isLoadedData: false,
          isLoading: false,
          timezones,
-         timezone: timezoneFromStorage || timezone,
+         timezone: timezoneFromSessionStorage || timezone,
          timezoneDefault: timezone,
          languages,
-         language: languageFromStorage || language,
+         language: languageFromSessionStorage || language,
          languageDefault: language,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
@@ -99,9 +93,9 @@ class LanguageAndTimeZone extends React.Component {
 
    componentDidMount() {
       const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
-      const { timezones, languages, isLoadedData, timezoneDefault, languageDefault, showReminder } = this.state;
+      const { timezones, languages, isLoadedData, showReminder } = this.state;
 
-      if((languageFromStorage || timezoneFromStorage) && !showReminder){
+      if((languageFromSessionStorage || timezoneFromSessionStorage) && !showReminder){
          this.setState({
             showReminder: true
          })
@@ -118,8 +112,8 @@ class LanguageAndTimeZone extends React.Component {
 
                const timezones = mapTimezonesToArray(this.props.rawTimezones);
                
-               const language = languageFromStorage || findSelectedItemByKey(languages, portalLanguage) || languages[0];
-               const timezone = timezoneFromStorage || findSelectedItemByKey(timezones, portalTimeZoneId) || timezones[0];
+               const language = languageFromSessionStorage || findSelectedItemByKey(languages, portalLanguage) || languages[0];
+               const timezone = timezoneFromSessionStorage || findSelectedItemByKey(timezones, portalTimeZoneId) || timezones[0];
 
                const languageDefault = findSelectedItemByKey(languages, portalLanguage) || languages[0];
                const timezoneDefault = findSelectedItemByKey(timezones, portalTimeZoneId) || timezones[0]
@@ -156,7 +150,7 @@ class LanguageAndTimeZone extends React.Component {
                const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
                this.setState({
                   languages: newLocaleLanguages,
-                  language: languageFromStorage || newLocaleSelectedLanguage
+                  language: languageFromSessionStorage || newLocaleSelectedLanguage
                });
             })
             .then(() => getModules(clientStore.dispatch))
@@ -169,7 +163,7 @@ class LanguageAndTimeZone extends React.Component {
 
    onLanguageSelect = (language) => {
       this.setState({ language })
-      if(this.isEqualDefault("language", language)){
+      if(this.settingIsEqualInitialValue("language", language)){
          saveToSessionStorage("language", "")
       } else {
          saveToSessionStorage("language", language)
@@ -179,7 +173,7 @@ class LanguageAndTimeZone extends React.Component {
 
    onTimezoneSelect = (timezone) => {
       this.setState({ timezone })
-      if(this.isEqualDefault("timezone", timezone)){
+      if(this.settingIsEqualInitialValue("timezone", timezone)){
          saveToSessionStorage("timezone", "")
       } else {
          saveToSessionStorage("timezone", timezone)
@@ -206,25 +200,26 @@ class LanguageAndTimeZone extends React.Component {
    }
 
    onCancelClick = () => {
+      settingNames.forEach(settingName => {
+         const valueFromSessionStorage = getFromSessionStorage(settingName);
 
-      for (let i = 0; i < settingsOptions.length; i++) {
-         const value = getFromSessionStorage(settingsOptions[i]);
+         if(valueFromSessionStorage && !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)) {
+            const defaultValue = this.state[settingName + "Default"];
 
-         if(value && !this.isEqualDefault(settingsOptions[i], value)) {
-            const defaultValue = this.state[settingsOptions[i] + "Default"];
-
-            this.setState({ [settingsOptions[i]]: defaultValue })
-            saveToSessionStorage(settingsOptions[i], "")
+            this.setState({ [settingName]: defaultValue })
+            saveToSessionStorage(settingName, "")
          }
-      }
+      })
+
       this.setState({
          showReminder: false
       })
+
       this.checkChanges()
    }
 
-   isEqualDefault = (stateName, value) => {
-      const defaultValue = JSON.stringify(this.state[stateName + "Default"])
+   settingIsEqualInitialValue = (settingName, value) => {
+      const defaultValue = JSON.stringify(this.state[settingName + "Default"])
       const currentValue = JSON.stringify(value)
       return defaultValue === currentValue
    }
@@ -232,11 +227,10 @@ class LanguageAndTimeZone extends React.Component {
    checkChanges = () => {
       let hasChanged = false;
 
-      for (let i = 0; i < settingsOptions.length; i++) {
-         const value = getFromSessionStorage(settingsOptions[i]);
-
-         if(value && !this.isEqualDefault(settingsOptions[i], value)) hasChanged = true
-      }
+      settingNames.forEach(settingName => {
+         const valueFromSessionStorage = getFromSessionStorage(settingName);
+         if(valueFromSessionStorage && !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)) hasChanged = true
+      })
 
       if(hasChanged !== this.state.hasChanged){
          this.setState({

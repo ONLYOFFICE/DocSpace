@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Loader, Button, toastr, TextInput, Link } from "asc-web-components";
+import { FieldContainer, Loader, toastr, TextInput, Link } from "asc-web-components";
 import styled from 'styled-components';
 import { setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
 import SaveSettingsButtons from '../../../../save-settings-buttons';
+import { saveToSessionStorage, getFromSessionStorage } from '../../utils';
 
 const StyledComponent = styled.div`
    .margin-top {
@@ -31,17 +32,9 @@ const StyledComponent = styled.div`
    }
 `;
 
-const saveToSessionStorage = (key, value) => {
-   sessionStorage.setItem(key, JSON.stringify(value))
-}
+let greetingTitleFromSessionStorage = "";
 
-const getFromSessionStorage = (key) => {
-   return JSON.parse(sessionStorage.getItem(key));
-}
-
-let greetingTitleFromStorage = "";
-
-const settingsOptions = [
+const settingNames = [
    "greetingTitle"
 ];
 
@@ -52,14 +45,14 @@ class CustomTitles extends React.Component {
 
       const { t, greetingSettings } = props;
 
-      greetingTitleFromStorage = getFromSessionStorage("greetingTitle");
+      greetingTitleFromSessionStorage = getFromSessionStorage("greetingTitle");
 
       document.title = `${t("Customization")} – ${t("OrganizationName")}`;
 
       this.state = {
          isLoadedData: false,
          isLoading: false,
-         greetingTitle: greetingTitleFromStorage || greetingSettings,
+         greetingTitle: greetingTitleFromSessionStorage || greetingSettings,
          greetingTitleDefault: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
@@ -71,7 +64,7 @@ class CustomTitles extends React.Component {
    componentDidMount(){
       const { showReminder } = this.state
 
-      if((greetingTitleFromStorage) && !showReminder){
+      if((greetingTitleFromSessionStorage) && !showReminder){
          this.setState({
             showReminder: true
          })
@@ -96,7 +89,7 @@ class CustomTitles extends React.Component {
    onChangeGreetingTitle = (e) => {
       this.setState({ greetingTitle: e.target.value })
 
-      if(this.isEqualDefault("greetingTitle", e.target.value)){
+      if(this.settingIsEqualInitialValue("greetingTitle", e.target.value)){
          saveToSessionStorage("greetingTitle", "")
       } else {
          saveToSessionStorage("greetingTitle", e.target.value)
@@ -142,23 +135,25 @@ class CustomTitles extends React.Component {
 
    onCancelClick = () => {
 
-      for (let i = 0; i < settingsOptions.length; i++) {
-         const value = getFromSessionStorage(settingsOptions[i]);
+      settingNames.forEach(currentSetting => {
+         const valueFromSessionStorage = getFromSessionStorage(currentSetting);
 
-         if(value && !this.isEqualDefault(settingsOptions[i], value)) {
-            const defaultValue = this.state[settingsOptions[i] + "Default"];
+         if(valueFromSessionStorage && !this.settingIsEqualInitialValue(currentSetting, valueFromSessionStorage)) {
+            const defaultValue = this.state[currentSetting + "Default"];
 
-            this.setState({ [settingsOptions[i]]: defaultValue })
-            saveToSessionStorage(settingsOptions[i], "")
+            this.setState({ [currentSetting]: defaultValue })
+            saveToSessionStorage(currentSetting, "")
          }
-      }
+      })
+
       this.setState({
          showReminder: false
       })
+
       this.checkChanges()
    }
 
-   isEqualDefault = (stateName, value) => {
+   settingIsEqualInitialValue = (stateName, value) => {
       const defaultValue = JSON.stringify(this.state[stateName + "Default"])
       const currentValue = JSON.stringify(value)
       return defaultValue === currentValue
@@ -167,11 +162,10 @@ class CustomTitles extends React.Component {
    checkChanges = () => {
       let hasChanged = false;
 
-      for (let i = 0; i < settingsOptions.length; i++) {
-         const value = getFromSessionStorage(settingsOptions[i]);
-
-         if(value && !this.isEqualDefault(settingsOptions[i], value)) hasChanged = true
-      }
+      settingNames.forEach(settingName => {
+         const valueFromSessionStorage = getFromSessionStorage(settingName);
+         if(valueFromSessionStorage && !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)) hasChanged = true
+      })
 
       if(hasChanged !== this.state.hasChanged){
          this.setState({
@@ -180,7 +174,6 @@ class CustomTitles extends React.Component {
       }
    }
    
-
    render() {
       const { t } = this.props;
       const { isLoadedData, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, hasChanged, showReminder } = this.state;
