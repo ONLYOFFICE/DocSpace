@@ -9,22 +9,22 @@ const Scrollbar = React.forwardRef((props, ref) => {
     smallWhite: {
       thumbV: { backgroundColor: 'rgba(256, 256, 256, 0.2)', width: '2px', marginLeft: '2px', borderRadius: 'inherit' },
       thumbH: { backgroundColor: 'rgba(256, 256, 256, 0.2)', height: '2px', marginTop: '2px', borderRadius: 'inherit' },
-      view: {}
+      view: { outline: 'none' }
     },
     smallBlack: {
       thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '2px', marginLeft: '2px', borderRadius: 'inherit' },
       thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '2px', marginTop: '2px', borderRadius: 'inherit' },
-      view: {}
+      view: { outline: 'none' }
     },
     mediumBlack: {
       thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '8px', borderRadius: 'inherit' },
       thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '8px', borderRadius: 'inherit' },
-      view: { paddingRight: '16px' }
+      view: { paddingRight: '16px', outline: 'none' }
     },
     preMediumBlack: {
       thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '5px', borderRadius: 'inherit', cursor: 'default' },
       thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '5px', borderRadius: 'inherit', cursor: 'default' },
-      view: {}
+      view: { outline: 'none' }
     },
   };
 
@@ -43,7 +43,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
   );
 
   const renderView = ({ style, ...props }) => (
-    <div {...props} style={{ ...style, ...view }} className={"scroll-body"} />
+    <div {...props} style={{ ...style, ...view }} tabIndex={-1} className={"scroll-body"} />
   );
 
   return (
