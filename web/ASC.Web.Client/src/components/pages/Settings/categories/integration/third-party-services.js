@@ -28,7 +28,7 @@ class ThirdPartyServices extends React.Component {
     onModalClose = () => {
         this.setState({
             dialogVisible: false,
-            selectedConsumer: -1
+            selectedConsumer: ""
         })
     }
 
