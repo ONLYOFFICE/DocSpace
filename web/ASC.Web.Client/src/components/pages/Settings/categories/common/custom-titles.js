@@ -88,10 +88,7 @@ class CustomTitles extends React.Component {
          })
       }
 
-      console.log(this.state.greetingTitleDefault)
-
       if(this.state.greetingTitleDefault){
-
          this.checkChanges()
       }
    }
@@ -120,6 +117,7 @@ class CustomTitles extends React.Component {
 
       this.setState({
          showReminder: false,
+         greetingTitle: greetingTitle,
          greetingTitleDefault:greetingTitle, 
       })
    }
@@ -134,18 +132,13 @@ class CustomTitles extends React.Component {
                   greetingTitleDefault: this.props.greetingSettings,
                   showReminder: false,
                })
+               saveToSessionStorage("greetingTitle", "")
                toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
             })
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoadingGreetingRestore: false }));
       })
    }
-
-   onClickLink = (e) => {
-      e.preventDefault();
-      const { history } = this.props;
-      history.push("/settings/common/customization");
-   };
 
    onCancelClick = () => {
 
