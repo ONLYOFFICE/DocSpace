@@ -14,7 +14,7 @@ export const consumers = [
     {
         name: "Telegram",
         description: "Подключите аккаунт Telegram для получения оповещений портала через Telegram.",
-        innerDescription: "",
+        innerDescription: "Описание",
         tokens: ["Токен бота", "Имя бота"]
     }
 ]
