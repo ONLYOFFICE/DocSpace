@@ -16,6 +16,18 @@ const PanelStyles = css`
 `;
 
 const StyledAsidePanel = styled.div`
+  z-index: 310;
+  .modal-dialog-aside {
+    padding: 0;
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+    width: 500px;
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
+  }
+
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
@@ -76,10 +88,6 @@ const StyledContent = styled.div`
 
   .files-operations-panel {
     border-bottom: 1px solid #dee2e6;
-  }
-
-  .files-operations-body {
-    padding: 16px 0;
   }
 
   .header_aside-panel-header {

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Backdrop, Heading, Aside, toastr } from "asc-web-components";
+import { Backdrop, Heading, Aside, toastr, ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils } from "asc-web-common";
 import i18n from "./i18n";
@@ -88,27 +88,24 @@ class OperationsPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
-        <Aside className="header_aside-panel" visible={visible}>
-          <StyledContent>
-            <StyledHeaderContent className="files-operations-panel">
-              <Heading size="medium" truncate>
-                {isRecycleBinFolder ? t("Restore"): isCopy ? t("Copy") : t("Move")}
-              </Heading>
-            </StyledHeaderContent>
-            <StyledBody className="files-operations-body">
-              <TreeFolders
-                expandedKeys={expandedKeys}
-                data={data}
-                filter={filter}
-                onLoading={onLoading}
-                isLoading={isLoading}
-                onSelect={this.onSelect}
-                needUpdate={false}
-              />
-            </StyledBody>
-          </StyledContent>
-        </Aside>
+        <ModalDialog
+          visible={visible}
+          displayType='aside'
+          zIndex={zIndex}
+          headerContent={isRecycleBinFolder ? t("Restore"): isCopy ? t("Copy") : t("Move")}
+          onClose={onClose}
+          bodyContent={
+            <TreeFolders
+              expandedKeys={expandedKeys}
+              data={data}
+              filter={filter}
+              onLoading={onLoading}
+              isLoading={isLoading}
+              onSelect={this.onSelect}
+              needUpdate={false}
+            />
+          }
+        />
       </StyledAsidePanel>
     );
   }
