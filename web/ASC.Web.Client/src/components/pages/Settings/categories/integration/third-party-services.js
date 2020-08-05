@@ -9,21 +9,26 @@ class ThirdPartyServices extends React.Component {
         super(props);
         this.state = {
             consumers: consumers,
-            selectedConsumer: -1,
+            selectedConsumer: "",
             dialogVisible: false
         }
     }
 
-    onToggleClick = () => {
+    onModalOpen = () => {
         this.setState({
-            dialogVisible: true
+            dialogVisible: true,
         })
     }
 
     onModalClose = () => {
         this.setState({
-            dialogVisible: false
+            dialogVisible: false,
+            selectedConsumer: -1
         })
+    }
+
+    onToggleClick = () => {
+        this.onModalOpen();
     }
 
     titleDescription = "Ключи авторизации позволяют подключить портал ONLYOFFICE к сторонним сервисам, таким как Twitter, Facebook, Dropbox и т.д. Подключите портал к Facebook, Twitter или Linkedin, если Вы не хотите каждый раз при входе вводить свои учетные данные на портале. Привяжите портал к таким сервисам, как Dropbox, OneDrive и т.д. чтобы перенести документы из всех этих хранилищ в модуль Документы ONLYOFFICE."
@@ -32,6 +37,11 @@ class ThirdPartyServices extends React.Component {
 
         const { consumers, selectedConsumer, dialogVisible } = this.state;
         const { titleDescription, onModalClose, onToggleClick } = this;
+
+        const refs = consumers.reduce((acc, consumer) => {
+            acc[consumer.name] = React.createRef();
+            return acc;
+        }, []);
 
         return (
             <>
@@ -45,15 +55,22 @@ class ThirdPartyServices extends React.Component {
                                 .map((consumer, i) =>
                                     <ConsumerItem
                                         key={i}
+
+                                        ref={el => (refs[i] = el)}
+
                                         name={consumer.name}
                                         description={consumer.description}
 
                                         consumers={consumers}
+
                                         dialogVisible={dialogVisible}
                                         selectedConsumer={selectedConsumer}
 
                                         onModalClose={onModalClose}
-                                        onToggleClick={onToggleClick}
+                                        onToggleClick={() => {
+                                            this.setState({ selectedConsumer: consumer.name }) 
+                                            onToggleClick()
+                                        }}
                                     />
                                 )}
                         </Box>
@@ -63,6 +80,5 @@ class ThirdPartyServices extends React.Component {
         )
     }
 }
-
 
 export default ThirdPartyServices;

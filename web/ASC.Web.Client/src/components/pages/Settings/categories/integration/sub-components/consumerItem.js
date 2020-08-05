@@ -4,7 +4,7 @@ import ConsumerModalDialog from "./modal-dialog";
 
 const ConsumerItem = (props) => {
 
-    const { name, description, dialogVisible, consumers, onModalClose, onToggleClick } = props;
+    const { name, description, dialogVisible, consumers, onModalClose, onToggleClick, selectedConsumer } = props;
 
     return (
         <>
@@ -29,6 +29,7 @@ const ConsumerItem = (props) => {
                 dialogVisible={dialogVisible}
                 onModalClose={onModalClose}
                 consumers={consumers}
+                selectedConsumer={selectedConsumer}
             />}
         </>
     )
