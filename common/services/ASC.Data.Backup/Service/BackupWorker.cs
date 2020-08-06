@@ -130,11 +130,9 @@ namespace ASC.Data.Backup.Service
                     ProgressQueue.QueueTask((a, b) => item.RunJob(), item);
                 }
 
-                var progress = ToBackupProgress(item);
+                PublishProgress(item);
 
-                PublishProgress(progress);
-
-                return progress;
+                return ToBackupProgress(item);
             }
         }
 
@@ -161,6 +159,22 @@ namespace ASC.Data.Backup.Service
             lock (SynchRoot)
             {
                 return ToBackupProgress(ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+            }
+        }
+
+        public BackupProgress GetTransferProgress(int tenantId)
+        {
+            lock (SynchRoot)
+            {
+                return ToBackupProgress(ProgressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+            }
+        }
+
+        public BackupProgress GetRestoreProgress(int tenantId)
+        {
+            lock (SynchRoot)
+            {
+                return ToBackupProgress(ProgressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
@@ -228,6 +242,7 @@ namespace ASC.Data.Backup.Service
             }
         }
 
+
         private BackupProgress ToBackupProgress(BaseBackupProgressItem progressItem)
         {
             if (progressItem == null)
@@ -262,12 +277,6 @@ namespace ASC.Data.Backup.Service
         internal void PublishProgress(BaseBackupProgressItem progress)
         {
             progress.PublishChanges();
-            PublishProgress(ToBackupProgress(progress));
-        }
-
-        internal void PublishProgress(BackupProgress progress)
-        {
-            CacheBackupProgress.Publish(progress, CacheNotifyAction.InsertOrUpdate);
         }
     }
 

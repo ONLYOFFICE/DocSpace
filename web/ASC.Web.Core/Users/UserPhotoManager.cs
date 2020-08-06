@@ -675,7 +675,7 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                if (!ResizeQueue.GetTasks().OfType<ResizeWorkerItem>().Any(r => r.GetProperty<string>("key") == key))
+                if (!ResizeQueue.GetTasks<ResizeWorkerItem>().Any(r => r.GetProperty<string>("key") == key))
                 {
                     //Add
                     ResizeQueue.QueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
