@@ -35,7 +35,6 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Files.Core.Resources;
 
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
@@ -238,26 +237,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (services.TryAddScoped<FileOperationsManagerHelper>())
             {
-                services.TryAddSingleton<DistributedTaskCacheNotify>();
                 services.TryAddSingleton<FileOperationsManager>();
+                services.TryAddSingleton<DistributedTaskCacheNotify>();
+                services.AddDistributedTaskQueueService("fileOperations", 10);
 
-            services
-                .TryAddSingleton<DistributedTaskQueueOptionsManager>()
-                .TryAddSingleton<DistributedTaskQueue>()
-                .AddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
-
-            _ = services.Configure<DistributedTaskQueue>("fileOperations", r =>
-            {
-                r.MaxThreadsCount = 10;
-                //r.errorCount = 1;
-            });
-
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                ;
-             }
-             return services;
+                return services
+                    .AddAuthContextService()
+                    .AddTenantManagerService();
+            }
+            return services;
         }
     }
 }

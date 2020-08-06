@@ -32,7 +32,7 @@ using System.Security;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Workers;
+using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
@@ -51,33 +51,21 @@ namespace ASC.Web.Files.Utils
     {
         private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
-
-        public object Locker { get; set; }
-        public WorkerQueue<AsyncTaskData<T>> Tasks { get; set; }
+        public DistributedTaskQueue Tasks { get; set; }
 
         public FileMarkerHelper(
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> optionsMonitor,
-            WorkerQueueOptionsManager<AsyncTaskData<T>> workerQueueOptionsManager)
+            DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
         {
             ServiceProvider = serviceProvider;
             Log = optionsMonitor.CurrentValue;
-            Locker = new object();
-            Tasks = workerQueueOptionsManager.Value;
+            Tasks = distributedTaskQueueOptionsManager.Get("FileMarkerHelper");
         }
 
         internal void Add(AsyncTaskData<T> taskData)
         {
-
-            lock (Locker)
-            {
-                Tasks.Add(taskData);
-
-                if (!Tasks.IsStarted)
-                {
-                    Tasks.Start(ExecMarkFileAsNew);
-                }
-            }
+            Tasks.QueueTask((d, c) => ExecMarkFileAsNew(taskData), taskData);
         }
 
         private void ExecMarkFileAsNew(AsyncTaskData<T> obj)
@@ -694,9 +682,9 @@ namespace ASC.Web.Files.Utils
         }
     }
 
-    public class AsyncTaskData<T>
+    public class AsyncTaskData<T> : DistributedTask
     {
-        public AsyncTaskData(TenantManager tenantManager, AuthContext authContext)
+        public AsyncTaskData(TenantManager tenantManager, AuthContext authContext) : base()
         {
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             CurrentAccountId = authContext.CurrentAccount.ID;
@@ -724,22 +712,22 @@ namespace ASC.Web.Files.Utils
         public static DIHelper AddFileMarkerService<T>(this DIHelper services)
         {
             services.TryAddTransient<AsyncTaskData<T>>();
-            services.TryAddScoped<FileMarker>();
             services.TryAddSingleton<FileMarkerHelper<T>>();
-            services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>();
-            services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
-            services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
 
-            _ = services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
+            if (services.TryAddScoped<FileMarker>())
+            {
+                return services
+                    .AddDistributedTaskQueueService("FileMarkerHelper", 1)
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
+                    .AddDaoFactoryService()
+                    .AddGlobalFolderService()
+                    .AddFileSecurityService()
+                    .AddCoreBaseSettingsService()
+                    .AddAuthContextService();
+            }
 
-            return services
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddDaoFactoryService()
-                .AddGlobalFolderService()
-                .AddFileSecurityService()
-                .AddCoreBaseSettingsService()
-                .AddAuthContextService();
+            return services;
         }
     }
 }

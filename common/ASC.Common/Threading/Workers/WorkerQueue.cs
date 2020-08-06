@@ -28,7 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+
 using ASC.Common.Logging;
+using ASC.Common.Threading.Progress;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading.Workers
@@ -344,6 +347,36 @@ namespace ASC.Common.Threading.Workers
             {
                 log.Error(err);
             }
+        }
+    }
+
+    public static class WorkerQueueExtention
+    {
+        public static DIHelper AddWorkerQueue<T1>(this DIHelper services, int workerCount, int waitInterval, bool stopAfterFinsih, int errorCount)
+        {
+            void action(WorkerQueue<T1> a)
+            {
+                a.workerCount = workerCount;
+                a.waitInterval = waitInterval;
+                a.stopAfterFinsih = stopAfterFinsih;
+                a.errorCount = errorCount;
+            }
+
+            return services.Configure<WorkerQueue<T1>>(action);
+        }
+
+        public static DIHelper AddProgressQueue<T1>(this DIHelper services, int workerCount, int waitInterval, bool removeAfterCompleted, bool stopAfterFinsih, int errorCount) where T1 : class, IProgressItem
+        {
+            void action(ProgressQueue<T1> a)
+            {
+                a.workerCount = workerCount;
+                a.waitInterval = waitInterval;
+                a.stopAfterFinsih = stopAfterFinsih;
+                a.errorCount = errorCount;
+                a.removeAfterCompleted = removeAfterCompleted;
+            }
+
+            return services.Configure<ProgressQueue<T1>>(action);
         }
     }
 }

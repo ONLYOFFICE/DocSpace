@@ -249,4 +249,24 @@ namespace ASC.Common.Threading
             };
         }
     }
+
+    public static class DistributedTaskQueueExtention
+    {
+        public static DIHelper AddDistributedTaskQueueService(this DIHelper services, string name, int maxThreadsCount)
+        {
+            services.TryAddSingleton<DistributedTaskCacheNotify>();
+            services
+                .TryAddSingleton<DistributedTaskQueueOptionsManager>()
+                .TryAddSingleton<DistributedTaskQueue>()
+                .AddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
+
+            _ = services.Configure<DistributedTaskQueue>(name, r =>
+            {
+                r.MaxThreadsCount = maxThreadsCount;
+                //r.errorCount = 1;
+            });
+
+            return services;
+        }
+    }
 }
