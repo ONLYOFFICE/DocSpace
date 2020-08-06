@@ -43,6 +43,6 @@
     <ProjectReference Include="..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj" />
     <ProjectReference Include="..\..\..\thirdparty\onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
-    <ProjectReference Include="..\Core\ASC.Files.Core\ASC.Files.Core.csproj" />
+    <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />
   </ItemGroup>
 </Project>

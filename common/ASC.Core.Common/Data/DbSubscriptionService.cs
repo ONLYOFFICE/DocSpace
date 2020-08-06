@@ -47,8 +47,8 @@ namespace ASC.Core.Data
             {
                 ActionId = r.Action,
                 ObjectId = r.Object,
-                RecipientId = r.Recipient.ToString(),
-                SourceId = r.Source.ToString(),
+                RecipientId = r.Recipient,
+                SourceId = r.Source,
                 Subscribed = !r.Unsubscribed,
                 Tenant = r.Tenant
             };
@@ -56,10 +56,10 @@ namespace ASC.Core.Data
             FromDbSubscriptionMethodToSubscriptionMethod = r => new SubscriptionMethod
             {
                 ActionId = r.Action,
-                RecipientId = r.Recipient.ToString(),
-                SourceId = r.Source.ToString(),
+                RecipientId = r.Recipient,
+                SourceId = r.Source,
                 Tenant = r.Tenant,
-                Methods = r.Sender.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+                MethodsFromDb = r.Sender
             };
         }
 
@@ -164,8 +164,9 @@ namespace ASC.Core.Data
                 q = q.Where(r => r.Recipient == recipientId);
             }
 
-            var a = q.OrderBy(r => r.Tenant)
-            .GroupBy(r => new { r.Recipient, r.Action }, (x, y) => y.First());
+            var a = q
+                .OrderBy(r => r.Tenant)
+                .Distinct();
 
 
             var methods = a.Select(FromDbSubscriptionMethodToSubscriptionMethod).ToList();

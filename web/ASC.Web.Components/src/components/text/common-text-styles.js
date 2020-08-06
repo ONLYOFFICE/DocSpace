@@ -2,7 +2,7 @@ import {css} from 'styled-components';
 
 const commonTextStyles = css`
   font-family: 'Open Sans', sans-serif, Arial;
-  text-align: left;
+  text-align: ${props => props.textAlign};
   color: ${props => props.colorProp};
   ${props => props.truncate && css`
     white-space: nowrap; 

@@ -549,6 +549,11 @@ namespace ASC.Files.Helpers
             return history.Select(FileWrapperHelper.Get);
         }
 
+        public string UpdateComment(T fileId, int version, string comment)
+        {
+            return FileStorageService.UpdateComment(fileId, version, comment);
+        }
+
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(T fileId)
         {
             var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) });

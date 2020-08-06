@@ -7,6 +7,11 @@ import Main from "./sub-components/main";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
+import HeaderUnauth from "./sub-components/header-unauth";
+
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
+import { connect } from "react-redux";
 
 class Layout extends React.Component {
   constructor(props) {
@@ -45,7 +50,7 @@ class Layout extends React.Component {
       }
     }
     if (props.availableModules && this.state.availableModules) {
-        hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
+      hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
     }
     return hash;
   };
@@ -74,7 +79,7 @@ class Layout extends React.Component {
     const newState = {
       isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
       isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
-      isHeaderAvailable: mainModules.length > 0,
+      authHeader: localStorage.getItem("asc_auth_key") ? true : false,
       isNavAvailable: mainModules.length > 0,
       isAsideAvailable: !!props.asideContent,
 
@@ -158,6 +163,7 @@ class Layout extends React.Component {
   };
 
   render() {
+
     //console.log("Layout render");
 
     return (
@@ -175,14 +181,15 @@ class Layout extends React.Component {
             userActions={this.state.currentUserActions}
           />
         )}
-        {this.state.isHeaderAvailable && (
+        {this.state.authHeader ?
           <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
           />
-        )}
+          : <HeaderUnauth t={this.props.t}>{this.props.children}</HeaderUnauth>
+        }
         {this.state.isNavAvailable && (
           <Nav
             opened={this.state.isNavOpened}
@@ -263,4 +270,28 @@ Layout.defaultProps = {
   availableModules: []
 };
 
-export default Layout;
+const LayoutTranslationWrapper = withTranslation()(Layout);
+
+const LayoutWrapper = props => {
+  const { language } = props;
+  i18n.changeLanguage(language);
+
+  return (
+    <>
+      <LayoutTranslationWrapper i18n={i18n} {...props} />
+    </>
+  );
+};
+
+LayoutWrapper.propTypes = {
+  language: PropTypes.string.isRequired
+};
+
+function mapStateToProps(state) {
+  return {
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+  };
+}
+
+export default connect(mapStateToProps, null)(LayoutWrapper);
+
