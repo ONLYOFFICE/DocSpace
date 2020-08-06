@@ -866,11 +866,6 @@ namespace ASC.Data.Backup.Service
             services.TryAddTransient<TransferProgressItem>();
             services.TryAddTransient<RestoreProgressItem>();
 
-
-            services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
-
             return services
                 .AddTenantManagerService()
                 .AddCoreBaseSettingsService()
@@ -880,7 +875,8 @@ namespace ASC.Data.Backup.Service
                 .AddNotifyHelperService()
                 .AddBackupPortalTaskService()
                 .AddDbFactoryService()
-                .AddRestorePortalTaskService();
+                .AddRestorePortalTaskService()
+                .AddDistributedTaskQueueService("backup", 5);
         }
     }
 }
