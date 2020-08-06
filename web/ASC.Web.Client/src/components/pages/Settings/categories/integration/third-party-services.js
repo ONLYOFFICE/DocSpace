@@ -10,7 +10,7 @@ class ThirdPartyServices extends React.Component {
     constructor(props) {
         super(props);
         const { t } = props;
-        document.title = `${t("ManagementCategoryIntegration")} – ${t("OrganizationName")}`;
+        document.title = `${t("ThirdPartyAuthorization")} – ${t("OrganizationName")}`;
 
         this.state = {
             consumers: consumers,
