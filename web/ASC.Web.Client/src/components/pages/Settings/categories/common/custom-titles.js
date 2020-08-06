@@ -1,10 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Loader, toastr, TextInput, Link } from "asc-web-components";
+import { FieldContainer, Loader, toastr, TextInput, Link, SaveCancelButtons } from "asc-web-components";
 import styled from 'styled-components';
 import { setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
-import SaveSettingsButtons from '../../../../save-settings-buttons';
 import { saveToSessionStorage, getFromSessionStorage } from '../../utils';
 
 const StyledComponent = styled.div`
@@ -208,10 +207,11 @@ class CustomTitles extends React.Component {
                      </FieldContainer>
                   </div>
                   {hasChanged && 
-                     <SaveSettingsButtons
+                     <SaveCancelButtons
                         onSaveClick={this.onSaveGreetingSettings}
                         onCancelClick={this.onCancelClick}
                         showReminder={showReminder}
+                        reminderTest="You have unsaved changes"
                      />
                   }
                </StyledComponent>

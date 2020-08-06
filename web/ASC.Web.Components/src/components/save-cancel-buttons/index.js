@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Text, utils } from "asc-web-components";
+import PropTypes from "prop-types";
+import Button  from "../button";
+import Text  from "../text";
+import { tablet } from '../../utils/device'
 
-const { tablet } = utils.device;
-
-const StyledSaveSettingsButtons = styled.div`
+const StyledSaveCancelButtons = styled.div`
     position:absolute;
     bottom:0;
     width:100%;
@@ -32,20 +33,12 @@ const StyledSaveSettingsButtons = styled.div`
     }
 `;
 
-class SaveSettingsButtons extends React.Component{
-    constructor(props) {
-        super(props);
-
-        this.state = {
-
-        }
-    }
+class SaveCancelButtons extends React.Component{
 
     render(){
-
-        const { onSaveClick, onCancelClick, showReminder } = this.props
+        const { onSaveClick, onCancelClick, showReminder, reminderTest } = this.props
         return(
-            <StyledSaveSettingsButtons>
+            <StyledSaveCancelButtons>
                 <div>
                     <Button 
                         className="save-button"
@@ -62,10 +55,17 @@ class SaveSettingsButtons extends React.Component{
                         label="Cancel"
                     />
                 </div>
-                {showReminder && <Text className="unsaved-changes"> You have unsaved changes </Text>}
-            </StyledSaveSettingsButtons>
+                {showReminder && <Text className="unsaved-changes"> {reminderTest} </Text>}
+            </StyledSaveCancelButtons>
         )
     }
 }
 
-export default SaveSettingsButtons
+SaveCancelButtons.propTypes = {
+    reminderTest: PropTypes.string,
+    onSaveClick: PropTypes.func,
+    onCancelClick: PropTypes.func,
+    showReminder: PropTypes.bool
+};
+
+export default SaveCancelButtons

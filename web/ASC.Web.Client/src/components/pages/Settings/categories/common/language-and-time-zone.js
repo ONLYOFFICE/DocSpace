@@ -1,14 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Text, ComboBox, Loader, toastr, Link } from "asc-web-components";
+import { FieldContainer, Text, ComboBox, Loader, toastr, Link, SaveCancelButtons } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store, utils } from 'asc-web-common';
 import { setLanguageAndTime, getPortalTimezones } from '../../../../../store/settings/actions';
 import { saveToSessionStorage, getFromSessionStorage } from '../../utils';
 import { default as clientStore } from '../../../../../store/store';
-import SaveSettingsButtons from '../../../../save-settings-buttons';
 
 const { changeLanguage } = utils;
 const { getPortalCultures, getModules, getCurrentCustomSchema } = store.auth.actions;
@@ -304,13 +303,13 @@ class LanguageAndTimeZone extends React.Component {
                      </FieldContainer>
                   </div>
                   {hasChanged && 
-                     <SaveSettingsButtons
+                     <SaveCancelButtons
                         onSaveClick={this.onSaveLngTZSettings}
                         onCancelClick={this.onCancelClick}
                         showReminder={showReminder}
+                        reminderTest="You have unsaved changes"
                      />
                   }
-                  
                </StyledComponent>
             </>
       );
