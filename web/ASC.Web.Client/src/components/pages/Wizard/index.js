@@ -10,7 +10,8 @@ import {
   PageLayout, 
   ErrorContainer, 
   history, 
-  constants 
+  constants,
+  utils as commonUtils 
 } from "asc-web-common";
 import { 
   Loader, 
@@ -37,6 +38,7 @@ import {
 } from '../../../store/wizard/actions';
 
 const { tablet } = utils.device;
+const { changeLanguage } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -280,11 +282,6 @@ class Body extends Component {
 
   onInputFileHandler = file => { 
     const { setLicense, wizardToken } = this.props;
-    console.log(file)
-
-    const fileName = file.name;
-    const fileSize = file.size;
-    const relativePath = "";
 
     let fd = new FormData();
     fd.append("file", file );
@@ -329,7 +326,7 @@ class Body extends Component {
 
     if (errorInitWizard) {
       return <ErrorContainer 
-              headerText={errorInitWizard}
+              headerText={t('errorInitWizardHeader')}
               bodyText={t('errorInitWizard')}
               buttonText={t('errorInitWizardButton')}
               buttonUrl="/" /> 
@@ -403,8 +400,10 @@ Body.propTypes = {
 const WizardWrapper = withTranslation()(Body);
 
 const WizardPage = props => {
-  const { language, isLoaded } = props;
-  i18n.changeLanguage(language);
+  const { isLoaded } = props;
+
+  changeLanguage(i18n);
+
   return (
     <>
       { isLoaded && <PageLayout 

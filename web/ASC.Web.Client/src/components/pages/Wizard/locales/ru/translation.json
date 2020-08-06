@@ -33,6 +33,7 @@
   "errorEmail": "Некорректный адрес электронной почты",
   "errorLicenseRead": "Необходимо приянть условия лицензионного соглашения",
   "errorUploadLicenseFile": "Небходим файл лицензии",
+  "errorInitWizardHeader": "Что-то пошло не так.",
   "errorInitWizard": "В данный момент сервис недоступен, попробуйте позже.",
   "errorInitWizardButton": "Попробовать снова",
 
