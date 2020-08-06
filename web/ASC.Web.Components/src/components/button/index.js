@@ -127,8 +127,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     )
   };
 
-  ${ props => props.minWidth 
-    ? `min-width: ${props.minWidth};`
+  ${ props => props.minwidth 
+    ? `min-width: ${props.minwidth};`
     : null
   }
   
@@ -265,7 +265,7 @@ Button.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
-  minWidth: PropTypes.string,
+  minwidth: PropTypes.string,
 
   onClick: PropTypes.func
 };
@@ -279,7 +279,7 @@ Button.defaultProps = {
 
   tabIndex: -1,
   
-  minWidth: null,
+  minwidth: null,
 
   isHovered: false,
   isClicked: false,
