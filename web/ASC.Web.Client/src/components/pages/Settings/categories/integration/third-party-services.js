@@ -1,6 +1,6 @@
 import React from "react";
 import { consumers } from "./sub-components/consumers";
-import { Box, Text } from "asc-web-components";
+import { Box, Text, Link } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
 import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
@@ -42,6 +42,7 @@ class ThirdPartyServices extends React.Component {
 
         const { consumers, selectedConsumer, dialogVisible } = this.state;
         const { titleDescription, onModalClose, onToggleClick } = this;
+        const { t } = this.props;
 
         const refs = consumers.reduce((acc, consumer) => {
             acc[consumer.name] = React.createRef();
@@ -52,7 +53,16 @@ class ThirdPartyServices extends React.Component {
             <>
                 <Box displayProp="flex" flexDirection="column">
                     <Box marginProp="10px">
-                        <Text>{titleDescription}</Text>
+                        <Text>
+                            {titleDescription}
+                            {" "}
+                            <Link
+                                isHovered={true}
+                                target="_blank"
+                                href="https://helpcenter.onlyoffice.com/ru/server/windows/community/authorization-keys.aspx">
+                                {t("LearnMore")}
+                            </Link>
+                        </Text>
                     </Box>
                     <Box displayProp="flex">
                         <Box displayProp="flex" widthProp="100%">
