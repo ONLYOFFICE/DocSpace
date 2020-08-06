@@ -1032,7 +1032,11 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  onSelectItem = item => this.props.setSelection([item]);
+  onSelectItem = item => {
+    const { selected, setSelected, setSelection } = this.props;
+    selected === 'close' && setSelected('none');
+    setSelection([item]);
+  }
 
   render() {
     const {
