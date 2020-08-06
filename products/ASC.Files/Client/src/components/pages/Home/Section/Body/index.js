@@ -37,7 +37,8 @@ import {
   setMediaViewerData,
   setProgressBarData,
   clearProgressData,
-  setSelection
+  setSelection,
+  setSelected
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -486,11 +487,13 @@ class SectionBodyContent extends React.Component {
 
   onContentRowSelect = (checked, file) => {
     if (!file) return;
+    const { selected, setSelected, selectFile, deselectFile } = this.props;
 
+    selected === 'close' && setSelected('none');
     if (checked) {
-      this.props.selectFile(file);
+      selectFile(file);
     } else {
-      this.props.deselectFile(file);
+      deselectFile(file);
     }
   };
 
@@ -1316,7 +1319,7 @@ const mapStateToProps = state => {
     isAdmin: state.auth.user.isAdmin,
     mediaViewerVisible: mediaViewerData.visible,
     currentMediaFileId: mediaViewerData.id,
-    dragging
+    dragging,
   };
 };
 
@@ -1338,6 +1341,7 @@ export default connect(
     setDragItem,
     setMediaViewerData,
     setProgressBarData,
-    setSelection
+    setSelection,
+    setSelected
   }
 )(withRouter(withTranslation()(SectionBodyContent)));
