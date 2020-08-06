@@ -2,6 +2,7 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.Threading.Workers;
 using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
 

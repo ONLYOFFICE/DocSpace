@@ -35,13 +35,13 @@ namespace ASC.Common.Threading.Progress
 
         protected int StepCount { get; set; }
 
-        public object Id { get; set; }
-        
-        public object Status { get; set; }
-        
+        public string Id { get; set; }
+
+        public DistributedTaskStatus Status { get; set; }
+
         public object Error { get; set; }
 
-        
+
         public double Percentage
         {
             get { return Math.Min(100.0, Math.Max(0, _percentage)); }
@@ -89,7 +89,7 @@ namespace ASC.Common.Threading.Progress
 
         protected ProgressBase()
         {
-            Id = Guid.NewGuid(); // random id
+            Id = Guid.NewGuid().ToString(); // random id
         }
 
         protected void ProgressAdd(double value)

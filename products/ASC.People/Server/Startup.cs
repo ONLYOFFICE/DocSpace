@@ -3,9 +3,9 @@ using System;
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.Threading.Workers;
 using ASC.Data.Reassigns;
 using ASC.Employee.Core.Controllers;
-using ASC.Web.Core.Users;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,6 @@ namespace ASC.People
 
             diHelper.AddProgressQueue<RemoveProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
             diHelper.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
-            diHelper.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromMinutes(30).TotalMilliseconds, true, 1);
 
             diHelper
                 .AddPeopleController()

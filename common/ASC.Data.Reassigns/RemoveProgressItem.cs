@@ -32,6 +32,7 @@ using System.Text;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Users;
@@ -61,8 +62,8 @@ namespace ASC.Data.Reassigns
         //private readonly IFileStorageService _docService;
         //private readonly MailGarbageEngine _mailEraser;
 
-        public object Id { get; set; }
-        public object Status { get; set; }
+        public string Id { get; }
+        public DistributedTaskStatus Status { get; set; }
         public object Error { get; set; }
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
@@ -88,7 +89,7 @@ namespace ASC.Data.Reassigns
             //_mailEraser = new MailGarbageEngine();
 
             Id = queueWorkerRemove.GetProgressItemId(tenantId, FromUser);
-            Status = ProgressStatus.Queued;
+            Status = DistributedTaskStatus.Created;
             Error = null;
             Percentage = 0;
             IsCompleted = false;
@@ -114,7 +115,7 @@ namespace ASC.Data.Reassigns
             try
             {
                 Percentage = 0;
-                Status = ProgressStatus.Started;
+                Status = DistributedTaskStatus.Running;
 
                 securityContext.AuthenticateMe(_currentUserId);
 
@@ -158,12 +159,12 @@ namespace ASC.Data.Reassigns
                 SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
 
                 Percentage = 100;
-                Status = ProgressStatus.Done;
+                Status = DistributedTaskStatus.Completed;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                Status = ProgressStatus.Failed;
+                Status = DistributedTaskStatus.Failted;
                 Error = ex.Message;
                 SendErrorNotify(studioNotifyService, ex.Message, userName);
             }

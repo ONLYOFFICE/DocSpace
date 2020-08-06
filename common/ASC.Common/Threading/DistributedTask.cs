@@ -66,7 +66,7 @@ namespace ASC.Common.Threading
             {
                 return Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
             }
-            internal set
+            set
             {
                 DistributedTaskCache.Status = value.ToString();
             }

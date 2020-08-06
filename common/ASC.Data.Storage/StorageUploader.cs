@@ -171,7 +171,7 @@ namespace ASC.Data.Storage
                     string[] files;
                     foreach (var domain in domains)
                     {
-                        Status = module + domain;
+                        //Status = module + domain;
                         Log.DebugFormat("Domain: {0}", domain);
                         files = oldStore.ListFilesRelative(domain, "\\", "*.*", true);
 

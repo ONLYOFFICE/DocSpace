@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 
 using ASC.Common.Caching;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading
@@ -100,15 +101,18 @@ namespace ASC.Common.Threading
     public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedTaskQueue>
     {
         public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public ConfigureDistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify)
+        public ConfigureDistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)
         {
             DistributedTaskCacheNotify = distributedTaskCacheNotify;
+            ServiceProvider = serviceProvider;
         }
 
         public void Configure(DistributedTaskQueue queue)
         {
             queue.DistributedTaskCacheNotify = DistributedTaskCacheNotify;
+            queue.ServiceProvider = ServiceProvider;
         }
 
         public void Configure(string name, DistributedTaskQueue options)
@@ -125,6 +129,7 @@ namespace ASC.Common.Threading
         private string key;
         private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
+        public IServiceProvider ServiceProvider { get; set; }
         public string Name { set { key = value + GetType().Name; } }
         private ICache Cache { get => DistributedTaskCacheNotify.Cache; }
         private ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get => DistributedTaskCacheNotify.Cancelations; }
@@ -180,6 +185,25 @@ namespace ASC.Common.Threading
         public IEnumerable<DistributedTask> GetTasks()
         {
             var tasks = Cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
+            tasks.ForEach(t =>
+            {
+                if (t.Publication == null)
+                {
+                    t.Publication = GetPublication();
+                }
+            });
+            return tasks;
+        }
+
+        public IEnumerable<T> GetTasks<T>() where T : DistributedTask
+        {
+            var tasks = Cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r =>
+            {
+                var result = ServiceProvider.GetService<T>();
+                result.DistributedTaskCache = r;
+                return result;
+            }).ToList();
+
             tasks.ForEach(t =>
             {
                 if (t.Publication == null)
