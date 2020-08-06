@@ -167,6 +167,11 @@ import OrigSpreadsheetIcon from './spreadsheet.react.svg';
 import OrigUnionIcon from './union.react.svg';
 import OrigKeyIcon from './key.react.svg';
 
+import OrigAmazonIcon from './amazon.react.svg';
+import OrigMailRuIcon from './mail.ru.react.svg';
+import OrigTelegramIcon from './telegram.react.svg';
+
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   'AZSortingIcon'
@@ -814,4 +819,16 @@ export const FilterViewSelectorRowIcon = createStyledIcon(
 export const FilterViewSelectorTileIcon = createStyledIcon(
   OrigFilterViewSelectorTileIcon,
   'FilterViewSelectorTileIcon'
+);
+export const AmazonIcon = createStyledIcon(
+  OrigAmazonIcon,
+  'AmazonIcon'
+);
+export const MailRuIcon = createStyledIcon(
+  OrigMailRuIcon,
+  'MailRuIcon'
+);
+export const TelegramIcon = createStyledIcon(
+  OrigTelegramIcon,
+  'TelegramIcon'
 );
