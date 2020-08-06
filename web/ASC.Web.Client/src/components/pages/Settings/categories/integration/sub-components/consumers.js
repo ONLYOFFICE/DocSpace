@@ -6,7 +6,7 @@ export const consumers = [
         tokens: ["Ключ доступа S3", "Секретный ключ доступа S3"]
     },
     {
-        name: "Mail.ru",
+        name: "MailRu",
         description: "Подключите приложение для входа на портал по учетной записи Mail.ru.",
         innerDescription: "Добавив приложение сервиса Mail.ru Вы сможете на странице своего профиля подключить вход на портал используя аккаунт Mail.ru.",
         tokens: ["ID", "Секретный ключ"]
@@ -14,7 +14,7 @@ export const consumers = [
     {
         name: "Telegram",
         description: "Подключите аккаунт Telegram для получения оповещений портала через Telegram.",
-        innerDescription: "Описание",
+        innerDescription: "Добавив приложение сервиса Telegram Вы сможете на странице своего профиля подключить вход на портал используя аккаунт Telegram.",
         tokens: ["Токен бота", "Имя бота"]
     }
 ]
