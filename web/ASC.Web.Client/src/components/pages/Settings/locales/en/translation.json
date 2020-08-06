@@ -20,6 +20,7 @@
     "Language": "Language",
     "TimeZone": "Time Zone",
     "SaveButton": "Save",
+    "CancelButton": "Cancel",
     "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
     "NotFoundLanguage": "In case you cannot find your language in the list of the available ones, feel free to write to us at <1>{{supportEmail}}</1> to take part in the translation and get up to 1 year free of charge.",
     "Settings": "Settings",
@@ -45,7 +46,9 @@
 	"LoadingProcessing": "Loading...",
     "LoadingDescription": "Please wait...",    
     "GreetingSettingsTitle": "Welcome Page Settings",
+    "WelcomePageTitle": "Welcome page title",
     "GreetingTitle": "Title",
+    "SetDefaultTitle": "Set default title",
     "RestoreDefaultButton": "Restore to Default",
     "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
     "LogoSettings": "Portal Logo Settings",
@@ -96,5 +99,10 @@
     "DirectionAscLabel":"A-Z",
     "DirectionDescLabel":"Z-A",
     "MeLabel": "Me",
-    "OrganizationName": "ONLYOFFICE"
+    "OrganizationName": "ONLYOFFICE",
+    "YouHaveUnsavedChanges": "You have unsaved changes",
+    "CustomTitles": "Custom titles",
+    "LanguageAndTimeZoneSettingsDescription": "Language and time zone settings is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the portal will be shown with the correct date and time.",
+    "CustomTitlesSettingsDescription": "Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. Custom domain name is a way to set an alternative URL for your portal. Custom portal name will appear next to the onlyoffice.com/onlyoffice.eu portal address."
+
 }

@@ -20,14 +20,14 @@ export const settingsTree = [
                         key: '0-0-0',
                         icon: '',
                         link: 'language-and-time-zone',
-                        tKey: 'Language and time zone settings',
+                        tKey: 'StudioTimeLanguageSettings',
 
                     },
                     {
                         key: '0-0-1',
                         icon: '',
                         link: 'custom-titles',
-                        tKey: 'Custom titles',
+                        tKey: 'CustomTitles',
 
                     },
                 ],

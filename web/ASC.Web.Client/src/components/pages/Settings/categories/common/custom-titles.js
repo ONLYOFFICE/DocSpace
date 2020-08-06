@@ -186,7 +186,7 @@ class CustomTitles extends React.Component {
                      <FieldContainer
                         id='fieldContainerWelcomePage'
                         className='field-container-width'
-                        labelText={`${t("Welcome page title")}:`}
+                        labelText={`${t("WelcomePageTitle")}:`}
                         isVertical={true}>
                         <TextInput
                            scale={true}
@@ -200,7 +200,7 @@ class CustomTitles extends React.Component {
                               type="action"
                               color="#A3A9AE"
                            > 
-                              Set default title 
+                              {t('SetDefaultTitle')} 
                            </Link>
                         </div>
 
@@ -211,7 +211,9 @@ class CustomTitles extends React.Component {
                         onSaveClick={this.onSaveGreetingSettings}
                         onCancelClick={this.onCancelClick}
                         showReminder={showReminder}
-                        reminderTest="You have unsaved changes"
+                        reminderTest={t('YouHaveUnsavedChanges')}
+                        saveButtonLabel={t('SaveButton')}
+                        cancelButtonLabel={t('CancelButton')}
                      />
                   }
                </StyledComponent>

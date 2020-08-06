@@ -191,15 +191,13 @@ class Customization extends React.Component {
                            onClick={this.onClickLink} 
                            truncate={true}
                            href="/settings/common/customization/language-and-time-zone">
-                              Language and time zone settings
+                              {t('StudioTimeLanguageSettings')}
                         </Link>
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>
                      <Text className="category-item-subheader" truncate={true}> {language.label} / {timezone.label} </Text>
                      <Text className="category-item-description">
-                        Language and time zone settings is a way to change the language 
-                        of the whole portal for all portal users and to configure the time zone 
-                        so that all the events of the portal will be shown with the correct date and time.
+                        {t('LanguageAndTimeZoneSettingsDescription')}
                      </Text>
                   </div>
                   <div className="category-item-wrapper">
@@ -209,13 +207,12 @@ class Customization extends React.Component {
                            className='inherit-title-link header'
                            onClick={this.onClickLink} 
                            href="/settings/common/customization/custom-titles">
-                              Custom titles
+                              {t('CustomTitles')}
                         </Link>
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>
                      <Text className="category-item-description">
-                        Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. 
-                        Custom domain name is a way to set an alternative URL for your portal. Custom portal name will appear next to the onlyoffice.com/onlyoffice.eu portal address.
+                        {t('CustomTitlesSettingsDescription')}
                      </Text>
                   </div>
                </StyledComponent>

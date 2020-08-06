@@ -36,7 +36,7 @@ const StyledSaveCancelButtons = styled.div`
 class SaveCancelButtons extends React.Component{
 
     render(){
-        const { onSaveClick, onCancelClick, showReminder, reminderTest } = this.props
+        const { onSaveClick, onCancelClick, showReminder, reminderTest, saveButtonLabel, cancelButtonLabel } = this.props
         return(
             <StyledSaveCancelButtons>
                 <div>
@@ -46,13 +46,13 @@ class SaveCancelButtons extends React.Component{
                         isDisabled={false}
                         primary
                         onClick={onSaveClick}
-                        label="Save"
+                        label={saveButtonLabel}
                     />
                     <Button 
                         size="big"
                         isDisabled={false}
                         onClick={onCancelClick}
-                        label="Cancel"
+                        label={cancelButtonLabel}
                     />
                 </div>
                 {showReminder && <Text className="unsaved-changes"> {reminderTest} </Text>}
@@ -63,9 +63,17 @@ class SaveCancelButtons extends React.Component{
 
 SaveCancelButtons.propTypes = {
     reminderTest: PropTypes.string,
+    saveButtonLabel: PropTypes.string,
+    cancelButtonLabel: PropTypes.string,
     onSaveClick: PropTypes.func,
     onCancelClick: PropTypes.func,
     showReminder: PropTypes.bool
 };
+
+
+SaveCancelButtons.defaultProps = {
+    saveButtonLabel: "Save",
+    cancelButtonLabel: "Cancel"
+}
 
 export default SaveCancelButtons

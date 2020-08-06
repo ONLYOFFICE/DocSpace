@@ -307,7 +307,9 @@ class LanguageAndTimeZone extends React.Component {
                         onSaveClick={this.onSaveLngTZSettings}
                         onCancelClick={this.onCancelClick}
                         showReminder={showReminder}
-                        reminderTest="You have unsaved changes"
+                        reminderTest={t('YouHaveUnsavedChanges')}
+                        saveButtonLabel={t('SaveButton')}
+                        cancelButtonLabel={t('CancelButton')}
                      />
                   }
                </StyledComponent>
