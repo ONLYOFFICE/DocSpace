@@ -132,7 +132,8 @@ class Body extends Component {
           .then(() => {
             const { cultures, language } = this.props;
             const languages = this.mapCulturesToArray(cultures, t);
-            const select = languages.filter(lang => lang.key === language);
+            let select = languages.filter(lang => lang.key === language );
+            if (!select.length) select =  languages.filter(lang => lang.key === 'en-US' )
             this.setState({ 
               languages: languages, 
               selectLanguage: { 
@@ -143,9 +144,11 @@ class Body extends Component {
           })
       ])
       .then(() => setIsWizardLoaded(true))
-      .catch((e) => this.setState({
-        errorInitWizard: e
-      })); 
+      .catch((e) => { 
+        console.log(e)
+        this.setState({
+          errorInitWizard: e
+      })}); 
     }
   }
 
@@ -163,7 +166,7 @@ class Body extends Component {
   }
 
   mapTimezonesToArray = (timezones) => {
-    return timezones.map((timezone) => {
+    return timezones.map((timezone) => {  
       return { key: timezone.id, label: timezone.displayName };
     });
   };
@@ -285,10 +288,10 @@ class Body extends Component {
     fd.append("file", file );
 
     setLicense(wizardToken, fd)
-        .catch( e => this.setState({
+      .catch( e => this.setState({
           errorLoading: true,
-          errorMessage: e
-      })) 
+          errorMessage: e 
+      }))
   };
 
   render() {
