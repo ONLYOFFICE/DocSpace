@@ -18,7 +18,7 @@ class ConsumerItem extends React.Component {
 
     onModalButtonClick = () => {
         //TODO: input validate, api request, 
-        // refs?
+        // refs on toggle?
         this.props.onModalClose();
         this.setState({ toggleActive: true });
         console.log("Click");
