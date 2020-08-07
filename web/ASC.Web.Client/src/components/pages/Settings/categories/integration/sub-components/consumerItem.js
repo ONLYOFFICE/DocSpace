@@ -10,8 +10,8 @@ const ConsumerItem = (props) => {
         <>
             <Box displayProp="flex" flexDirection="column" marginProp="16px">
                 <Box displayProp="flex" justifyContent="space-between" widthProp="100%">
-                    <Box displayProp="flex" widthProp="100px">
-                        {React.createElement(Icons[`${name}Icon`], {})}
+                    <Box>
+                        {React.createElement(Icons[`${name}Icon`], { size: "scale" })}
                     </Box>
                     <Box onClick={onToggleClick}>
                         toggle
