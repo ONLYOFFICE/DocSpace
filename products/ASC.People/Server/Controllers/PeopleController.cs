@@ -186,7 +186,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read("email")]
-        public EmployeeWraperFull GetByEmail([FromQuery]string email)
+        public EmployeeWraperFull GetByEmail([FromQuery] string email)
         {
             if (CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
                 throw new MethodAccessException("Method not available");
@@ -246,13 +246,13 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read("search")]
-        public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery]string query)
+        public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery] string query)
         {
             return GetSearch(query);
         }
 
         [Read("status/{status}/search")]
-        public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery]string query)
+        public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             try

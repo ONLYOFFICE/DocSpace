@@ -51,48 +51,50 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
-    public class RemoveProgressItem : IProgressItem
+    public class RemoveProgressItem : DistributedTask, IProgressItem
     {
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
-        private readonly int _tenantId;
-        private readonly Guid _currentUserId;
-        private readonly bool _notify;
+        private int _tenantId;
+        private Guid _currentUserId;
+        private bool _notify;
 
         //private readonly IFileStorageService _docService;
         //private readonly MailGarbageEngine _mailEraser;
 
-        public string Id { get; }
-        public DistributedTaskStatus Status { get; set; }
         public object Error { get; set; }
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
-        public Guid FromUser { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserInfo User { get; }
+        public Guid FromUser { get; private set; }
+        private IServiceProvider ServiceProvider { get; }
+        private UserInfo User { get; set; }
 
         public RemoveProgressItem(
             IServiceProvider serviceProvider,
-            HttpContext context,
-            QueueWorkerRemove queueWorkerRemove,
-            int tenantId, UserInfo user, Guid currentUserId, bool notify)
+            IHttpContextAccessor httpContextAccessor)
         {
-            _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
+            _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
             ServiceProvider = serviceProvider;
+
+
+            //_docService = Web.Files.Classes.Global.FileStorageService;
+            //_mailEraser = new MailGarbageEngine();
+
+
+            Status = DistributedTaskStatus.Created;
+            Error = null;
+            Percentage = 0;
+            IsCompleted = false;
+        }
+
+        public void Init(int tenantId, UserInfo user, Guid currentUserId, bool notify)
+        {
             _tenantId = tenantId;
             User = user;
             FromUser = user.ID;
             _currentUserId = currentUserId;
             _notify = notify;
-
-            //_docService = Web.Files.Classes.Global.FileStorageService;
-            //_mailEraser = new MailGarbageEngine();
-
-            Id = queueWorkerRemove.GetProgressItemId(tenantId, FromUser);
-            Status = DistributedTaskStatus.Created;
-            Error = null;
-            Percentage = 0;
-            IsCompleted = false;
+            Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser, typeof(RemoveProgressItem));
         }
 
         public void RunJob()
@@ -259,10 +261,7 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddRemoveProgressItemService(this DIHelper services)
         {
-
-            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            services.TryAddScoped<RemoveProgressItem>();
             return services;
         }
     }

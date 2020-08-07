@@ -33,9 +33,9 @@ namespace ASC.Common.Threading
 {
     public class DistributedTask
     {
-        public Action<DistributedTask> Publication { get; set; }
+        protected internal Action<DistributedTask> Publication { get; set; }
 
-        public DistributedTaskCache DistributedTaskCache { get; internal set; }
+        protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
 
         public string InstanceId
         {
@@ -54,7 +54,7 @@ namespace ASC.Common.Threading
             {
                 return DistributedTaskCache.Id;
             }
-            private set
+            protected set
             {
                 DistributedTaskCache.Id = value?.ToString() ?? "";
             }

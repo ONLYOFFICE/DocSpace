@@ -214,14 +214,38 @@ namespace ASC.Common.Threading
             return tasks;
         }
 
+        public T GetTask<T>(string id) where T : DistributedTask
+        {
+            var cache = Cache.HashGet<DistributedTaskCache>(key, id);
+            if (cache != null)
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var task = scope.ServiceProvider.GetService<T>();
+                task.DistributedTaskCache = cache;
+                if (task != null && task.Publication == null)
+                {
+                    task.Publication = GetPublication();
+                }
+                return task;
+            }
+
+            return null;
+        }
+
         public DistributedTask GetTask(string id)
         {
-            var task = new DistributedTask(Cache.HashGet<DistributedTaskCache>(key, id));
-            if (task != null && task.Publication == null)
+            var cache = Cache.HashGet<DistributedTaskCache>(key, id);
+            if (cache != null)
             {
-                task.Publication = GetPublication();
+                var task = new DistributedTask();
+                if (task != null && task.Publication == null)
+                {
+                    task.Publication = GetPublication();
+                }
+                return task;
             }
-            return task;
+
+            return null;
         }
 
         public void SetTask(DistributedTask task)

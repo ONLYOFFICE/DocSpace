@@ -29,6 +29,7 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Threading;
 //using System.Web;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
@@ -48,40 +49,45 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
-    public class ReassignProgressItem : IProgressItem
+    public class ReassignProgressItem : DistributedTask, IProgressItem
     {
-        private readonly HttpContext _context;
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
-        private readonly int _tenantId;
-        private readonly Guid _currentUserId;
-        private readonly bool _deleteProfile;
+        private int _tenantId;
+        private Guid _currentUserId;
+        private bool _deleteProfile;
 
         //private readonly IFileStorageService _docService;
         //private readonly ProjectsReassign _projectsReassign;
 
-        public object Id { get; set; }
-        public object Status { get; set; }
         public object Error { get; set; }
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
-        public Guid FromUser { get; }
-        public Guid ToUser { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public QueueWorkerRemove QueueWorkerRemove { get; }
+        public Guid FromUser { get; private set; }
+        public Guid ToUser { get; private set; }
+        private IServiceProvider ServiceProvider { get; }
+        private QueueWorkerRemove QueueWorkerRemove { get; }
 
         public ReassignProgressItem(
             IServiceProvider serviceProvider,
-            HttpContext context,
-            QueueWorkerReassign queueWorkerReassign,
-            QueueWorkerRemove queueWorkerRemove,
-            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+            IHttpContextAccessor httpContextAccessor,
+            QueueWorkerRemove queueWorkerRemove)
         {
             ServiceProvider = serviceProvider;
-            _context = context;
             QueueWorkerRemove = queueWorkerRemove;
-            _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
+            _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
 
+            //_docService = Web.Files.Classes.Global.FileStorageService;
+            //_projectsReassign = new ProjectsReassign();
+
+            Status = DistributedTaskStatus.Created;
+            Error = null;
+            Percentage = 0;
+            IsCompleted = false;
+        }
+
+        public void Init(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        {
             _tenantId = tenantId;
             FromUser = fromUserId;
             ToUser = toUserId;
@@ -91,8 +97,8 @@ namespace ASC.Data.Reassigns
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_projectsReassign = new ProjectsReassign();
 
-            Id = queueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
-            Status = ProgressStatus.Queued;
+            Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId, typeof(ReassignProgressItem));
+            Status = DistributedTaskStatus.Created;
             Error = null;
             Percentage = 0;
             IsCompleted = false;
@@ -118,7 +124,7 @@ namespace ASC.Data.Reassigns
             try
             {
                 Percentage = 0;
-                Status = ProgressStatus.Started;
+                Status = DistributedTaskStatus.Running;
 
                 securityContext.AuthenticateMe(_currentUserId);
 
@@ -152,7 +158,7 @@ namespace ASC.Data.Reassigns
                 SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
                 Percentage = 100;
-                Status = ProgressStatus.Done;
+                Status = DistributedTaskStatus.Completed;
 
                 if (_deleteProfile)
                 {
@@ -162,7 +168,7 @@ namespace ASC.Data.Reassigns
             catch (Exception ex)
             {
                 logger.Error(ex);
-                Status = ProgressStatus.Failed;
+                Status = DistributedTaskStatus.Failted;
                 Error = ex.Message;
                 SendErrorNotify(userManager, studioNotifyService, ex.Message);
             }
@@ -222,9 +228,7 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddReassignProgressItemService(this DIHelper services)
         {
-            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            services.TryAddScoped<ReassignProgressItem>();
             return services;
         }
     }
