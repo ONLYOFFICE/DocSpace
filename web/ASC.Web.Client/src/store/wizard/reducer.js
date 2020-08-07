@@ -9,7 +9,6 @@ const initState = {
   isWizardLoaded: false,
   isLicenseRequired: false,
   machineName: 'unknown',
-  response: null,
   licenseUpload: null
 };
 

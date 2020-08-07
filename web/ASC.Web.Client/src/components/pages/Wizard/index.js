@@ -89,10 +89,8 @@ class Body extends Component {
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
-      file: null,
 
       emailNeeded: true,
-
       emailOwner: 'fake@mail.com'
     }
 
@@ -231,8 +229,8 @@ class Body extends Component {
   }
 
   checkingValid = () => {
-    const { t, isLicenseRequired } = this.props;
-    const { isValidPass, emailValid, license, emailNeeded, file } = this.state;
+    const { t, isLicenseRequired, licenseUpload } = this.props;
+    const { isValidPass, emailValid, license, emailNeeded } = this.state;
 
     if(!isValidPass) toastr.error(t('errorPassword'));
     if(!license) toastr.error(t('errorLicenseRead'));
@@ -244,13 +242,13 @@ class Body extends Component {
 
     if (emailNeeded && isLicenseRequired) {
       if(!emailValid) toastr.error(t('errorEmail'));
-      if(!file) toastr.error(t('errorUploadLicenseFile'));
-      if( isValidPass && emailValid && license && file) return true;
+      if(!licenseUpload) toastr.error(t('errorUploadLicenseFile'));
+      if( isValidPass && emailValid && license && licenseUpload) return true;
     }
 
     if (!emailNeeded && isLicenseRequired) {
-      if(!file) toastr.error(t('errorUploadLicenseFile'));
-      if( isValidPass && license && file) return true;
+      if(!licenseUpload) toastr.error(t('errorUploadLicenseFile'));
+      if( isValidPass && license && licenseUpload) return true;
     }
 
     return false; 
@@ -287,7 +285,6 @@ class Body extends Component {
     fd.append("file", file );
 
     setLicense(wizardToken, fd)
-        .then(() => this.setState({ file: true }))
         .catch( e => this.setState({
           errorLoading: true,
           errorMessage: e
@@ -394,7 +391,8 @@ Body.propTypes = {
   settingsPassword: PropTypes.object,
   cultures: PropTypes.array.isRequired,
   timezones: PropTypes.array.isRequired,
-  portalTimezone: PropTypes.string.isRequired
+  portalTimezone: PropTypes.string.isRequired,
+  licenseUpload: PropTypes.string
 }
 
 const WizardWrapper = withTranslation()(Body);
@@ -435,7 +433,9 @@ function mapStateToProps(state) {
     timezones: state.auth.settings.timezones,
 
     portalTimezone: state.auth.settings.timezone,
-    isLicenseRequired: state.wizard.isLicenseRequired
+    isLicenseRequired: state.wizard.isLicenseRequired,
+
+    licenseUpload: state.wizard.licenseUpload
   };
 }
 
