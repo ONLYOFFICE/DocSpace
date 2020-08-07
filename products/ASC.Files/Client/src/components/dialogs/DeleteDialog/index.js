@@ -13,7 +13,7 @@ import {
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
-import { fetchFiles, setTreeFolders, getProgress, setProgressBarData, clearProgressData } from "../../../store/files/actions";
+import { fetchFiles, setTreeFolders, getProgress, setProgressBarData, clearProgressData, setNewTreeFilesBadge } from "../../../store/files/actions";
 import { loopTreeFolders } from "../../../store/files/selectors";
 import store from "../../../store/store";
 
@@ -61,6 +61,7 @@ class DeleteDialogComponent extends React.Component {
             const folders = data.selectedFolder.folders;
             const foldersCount = data.selectedFolder.foldersCount;
             loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+            this.props.setNewTreeFilesBadge(true);
             setTreeFolders(newTreeFolders);
           }
           toastr.success(successMessage);
@@ -247,6 +248,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { setTreeFolders, getProgress, setProgressBarData })(
+export default connect(mapStateToProps, { setTreeFolders, getProgress, setProgressBarData, setNewTreeFilesBadge })(
   withRouter(DeleteDialog)
 );

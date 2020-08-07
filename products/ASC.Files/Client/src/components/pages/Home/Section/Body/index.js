@@ -38,7 +38,8 @@ import {
   setProgressBarData,
   clearProgressData,
   setSelection,
-  setSelected
+  setSelected,
+  setNewTreeFilesBadge
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -244,6 +245,7 @@ class SectionBodyContent extends React.Component {
             const folders = data.selectedFolder.folders;
             const foldersCount = data.selectedFolder.foldersCount;
             loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+            this.props.setNewTreeFilesBadge(true);
             setTreeFolders(newTreeFolders);
           }
           isFolder
@@ -1346,6 +1348,7 @@ export default connect(
     setMediaViewerData,
     setProgressBarData,
     setSelection,
-    setSelected
+    setSelected,
+    setNewTreeFilesBadge
   }
 )(withRouter(withTranslation()(SectionBodyContent)));
