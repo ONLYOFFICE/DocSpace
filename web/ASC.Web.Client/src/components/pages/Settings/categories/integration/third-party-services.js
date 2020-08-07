@@ -9,6 +9,7 @@ class ThirdPartyServices extends React.Component {
 
     constructor(props) {
         super(props);
+
         const { t } = props;
         document.title = `${t("ThirdPartyAuthorization")} – ${t("OrganizationName")}`;
 
@@ -40,9 +41,9 @@ class ThirdPartyServices extends React.Component {
 
     render() {
 
+        const { t } = this.props;
         const { consumers, selectedConsumer, dialogVisible } = this.state;
         const { titleDescription, onModalClose, onToggleClick } = this;
-        const { t } = this.props;
 
         const refs = consumers.reduce((acc, consumer) => {
             acc[consumer.name] = React.createRef();

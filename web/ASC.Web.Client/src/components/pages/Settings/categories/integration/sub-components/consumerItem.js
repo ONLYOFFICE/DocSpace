@@ -1,36 +1,63 @@
 import React from "react";
-import { Box, Text, Icons } from "asc-web-components";
+import { Box, Text, ToggleButton, Icons } from "asc-web-components";
 import ConsumerModalDialog from "./modal-dialog";
+import styled from "styled-components";
 
-const ConsumerItem = (props) => {
+const StyledToggle = styled(ToggleButton)`
+   position: relative;
+`;
 
-    const { name, description, dialogVisible, consumers, onModalClose, onToggleClick, selectedConsumer } = props;
+class ConsumerItem extends React.Component {
+    constructor(props) {
+        super(props);
 
-    return (
-        <>
-            <Box displayProp="flex" flexDirection="column" marginProp="16px">
-                <Box displayProp="flex" justifyContent="space-between" widthProp="100%">
-                    <Box>
-                        {React.createElement(Icons[`${name}Icon`], { size: "scale" })}
+        this.state = {
+            toggleActive: false
+        }
+    }
+
+    onModalButtonClick = () => {
+        //TODO: input validate, api request, 
+        // refs?
+        this.props.onModalClose();
+        this.setState({ toggleActive: true });
+        console.log("Click");
+    }
+
+    render() {
+        const { name, description, dialogVisible, consumers, onModalClose, onToggleClick, selectedConsumer } = this.props;
+        const { toggleActive } = this.state;
+        const { onModalButtonClick } = this;
+
+        return (
+            <>
+                <Box displayProp="flex" flexDirection="column" marginProp="16px">
+                    <Box displayProp="flex" justifyContent="space-between" widthProp="100%">
+                        <div>
+                            {React.createElement(Icons[`${name}Icon`], { size: "scale" })}
+                        </div>
+                        <div>
+                            <StyledToggle onChange={onToggleClick} isChecked={toggleActive} />
+                        </div>
                     </Box>
-                    <Box onClick={onToggleClick}>
-                        toggle
+                    <Box displayProp="flex" marginProp="10px 10px 10px auto">
+                        <Text>
+                            {description}
+                        </Text>
                     </Box>
                 </Box>
-                <Box displayProp="flex" marginProp="10px 10px 10px auto">
-                    <Text>
-                        {description}
-                    </Text>
-                </Box>
-            </Box>
-            {dialogVisible && <ConsumerModalDialog
-                dialogVisible={dialogVisible}
-                onModalClose={onModalClose}
-                consumers={consumers}
-                selectedConsumer={selectedConsumer}
-            />}
-        </>
-    )
+                {dialogVisible &&
+                    <ConsumerModalDialog
+                        dialogVisible={dialogVisible}
+                        onModalClose={onModalClose}
+                        consumers={consumers}
+                        selectedConsumer={selectedConsumer}
+                        onModalButtonClick={onModalButtonClick}
+                        toggleActive={toggleActive}
+                    />}
+            </>
+        );
+    }
 }
 
 export default ConsumerItem;

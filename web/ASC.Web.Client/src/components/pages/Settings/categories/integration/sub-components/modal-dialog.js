@@ -3,7 +3,7 @@ import { ModalDialog, Text, Button, TextInput, Box, Link } from "asc-web-compone
 
 const ConsumerModalDialog = (props) => {
 
-    const { consumers, selectedConsumer } = props;
+    const { consumers, selectedConsumer, onModalClose, dialogVisible, onModalButtonClick } = props;
 
     const bodyDescription = (
         <>
@@ -34,8 +34,8 @@ const ConsumerModalDialog = (props) => {
         return consumers
             .find((consumer) => consumer.name === selectedConsumer)
             .tokens
-            .map((token) =>
-                <>
+            .map((token, i) =>
+                <React.Fragment key={i}>
                     <Box displayProp="flex" flexDirection="column">
                         <Box>
                             <Text isBold={true}>{token}:</Text>
@@ -44,24 +44,24 @@ const ConsumerModalDialog = (props) => {
                             <TextInput placeholder={token} />
                         </Box>
                     </Box>
-                </>
+                </React.Fragment>
             )
     }
 
     return (
         <ModalDialog
-            visible={props.dialogVisible}
+            visible={dialogVisible}
             headerContent={`${getConsumerName()}`}
             bodyContent={[
                 <Text>{getInnerDescription()}</Text>,
                 <Text>{bodyDescription}</Text>,
-                getInputFields()
+                <React.Fragment>{getInputFields()}</React.Fragment>
             ]}
             footerContent={[
-                <Button primary size="medium" label="Включить" />,
+                <Button primary size="medium" label="Включить" onClick={onModalButtonClick} />,
                 <Text>{bottomDescription}</Text>
             ]}
-            onClose={props.onModalClose}
+            onClose={onModalClose}
         />
     )
 }
