@@ -37,6 +37,8 @@ export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
+export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
+export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 
 export function setFile(file) {
   return {
@@ -168,6 +170,20 @@ export function setConvertDialogVisible(convertDialogVisible) {
   return {
     type: SET_CONVERT_DIALOG_VISIBLE,
     convertDialogVisible
+  };
+}
+
+export function setNewTreeFilesBadge(updateTreeNew) {
+  return {
+    type: SET_NEW_TREE_FILES,
+    updateTreeNew
+  };
+}
+
+export function setNewRowItems(newRowItems) {
+  return {
+    type: SET_NEW_ROW_ITEMS,
+    newRowItems
   };
 }
 
