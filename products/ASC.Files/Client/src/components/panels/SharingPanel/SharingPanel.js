@@ -470,7 +470,10 @@ class SharingPanelComponent extends React.Component {
     if(this.state.showPanel !== prevState.showPanel && this.state.showPanel === false) {
       this.props.onClose();
     }
-    this.scrollRef.current.view.focus();
+
+    if(this.state.message === prevState.message) {
+      this.scrollRef.current.view.focus();
+    }
   }
 
   render() {
