@@ -2,16 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Backdrop, Heading, Aside, toastr, ModalDialog } from "asc-web-components";
+import { toastr, ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils } from "asc-web-common";
 import i18n from "./i18n";
-import {
-  StyledAsidePanel,
-  StyledContent,
-  StyledHeaderContent,
-  StyledBody
-} from "../StyledPanels";
+import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import { copyToFolder, moveToFolder, setProgressBarData, clearProgressData } from "../../../store/files/actions";
 import { checkFolderType } from "../../../store/files/selectors";
