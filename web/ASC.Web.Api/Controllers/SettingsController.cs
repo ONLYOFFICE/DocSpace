@@ -1370,7 +1370,7 @@ namespace ASC.Api.Settings
 
         [Create("license", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public object UploadLicense(UploadLicenseModel model)
+        public object UploadLicense([FromForm]UploadLicenseModel model)
         {
             try
             {
