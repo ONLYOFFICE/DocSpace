@@ -40,6 +40,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using WebSocketSharp;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Socket.IO.Svc
 {
@@ -75,7 +76,6 @@ namespace ASC.Socket.IO.Svc
             try
             {
                 var settings = Configuration.GetSetting<SocketSettings>("socket");
-                var appSettings = ConfigurationManager.AppSettings;
 
                 StartInfo = new ProcessStartInfo
                 {
@@ -86,8 +86,7 @@ namespace ASC.Socket.IO.Svc
                     Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))),
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
-
-                StartInfo.EnvironmentVariables.Add("core.machinekey", appSettings["core.machinekey"]);
+                StartInfo.EnvironmentVariables.Add("core.machinekey", Configuration["core:machinekey"]);
                 StartInfo.EnvironmentVariables.Add("port", settings.Port);
 
                 if (!string.IsNullOrEmpty(settings.RedisHost) && !string.IsNullOrEmpty(settings.RedisPort))
@@ -122,7 +121,7 @@ namespace ASC.Socket.IO.Svc
         private void StartNode()
         {
             StopNode();
-            Proc = Process.Start(StartInfo);
+           Proc = Process.Start(StartInfo);
 
             var task = new Task(StartPing, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
             task.Start(TaskScheduler.Default);
@@ -159,7 +158,7 @@ namespace ASC.Socket.IO.Svc
             WebSocket.SetCookie(new WebSocketSharp.Net.Cookie("authorization", SignalrServiceClient.CreateAuthToken()));
             WebSocket.EmitOnPing = true;
 
-            WebSocket.Log.Level = LogLevel.Trace;
+            WebSocket.Log.Level = WebSocketSharp.LogLevel.Trace;
 
             WebSocket.Log.Output = (logData, filePath) =>
             {
@@ -185,7 +184,6 @@ namespace ASC.Socket.IO.Svc
                         Logger.Debug("Ping " + WebSocket.ReadyState);
                         Thread.Sleep(PingInterval);
                     }
-
                     Logger.Debug("Reconnect" + WebSocket.ReadyState);
 
                 }, CancellationTokenSource.Token);
@@ -194,7 +192,6 @@ namespace ASC.Socket.IO.Svc
             WebSocket.OnClose += (sender, e) =>
             {
                 Logger.Info("Close");
-
                 if (CancellationTokenSource.IsCancellationRequested) return;
 
                 if (error)
