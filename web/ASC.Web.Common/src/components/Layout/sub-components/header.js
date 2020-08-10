@@ -16,26 +16,21 @@ const Header = styled.header`
   position: absolute;
   width: 100vw;
   height: 56px;
-
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
-
   .header-module-title {
     display: block;
     font-size: 21px;
     line-height: 0;
-
     @media ${desktop} {
       display: none;
     }
   }
-
   .header-logo-min_icon {
     display: none;
     cursor: pointer;
     
-
     width: 24px;
     height: 24px;
     @media (max-width: 620px) {
@@ -43,14 +38,12 @@ const Header = styled.header`
       display: ${props => props.module && "block"};
     }
   }
-
   .header-logo-icon {
     width: 146px;
     height: 24px;
     position: relative;
     padding: 4px 20px 0 6px;
     cursor: pointer;
-
     @media (max-width: 620px) {
       display: ${props => (props.module ? "none" : "block")};
       padding: 0px 20px 0 6px;

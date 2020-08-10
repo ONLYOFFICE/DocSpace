@@ -91,3 +91,12 @@ export function getSettings() {
       data
     });
   }
+
+  export function sendRegisterRequest(email) {
+    const data = { email };
+    return request({
+      method: "post",
+      url: `/settings/sendjoininvite`,
+      data
+    });
+  }

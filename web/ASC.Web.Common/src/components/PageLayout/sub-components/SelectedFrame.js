@@ -38,7 +38,9 @@ class SelectedFrame extends React.Component {
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     this.wrapper = document.getElementsByClassName('section-wrapper')[0];
     this.container = document.getElementById("rowContainer");
-    if(mouseButton || !this.container/* || e.target.tagName !== "DIV"*/) {
+    //console.log("e.target.tagName", e.target.tagName);
+    //e.target.tagName !== "DIV"
+    if(mouseButton || !this.container || e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") {
       return;
     }
 

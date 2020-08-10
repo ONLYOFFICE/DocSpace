@@ -20,6 +20,7 @@ class AddGroupsPanelComponent extends React.Component {
     changeLanguage(i18n);
 
     this.state = { showActionPanel: false };
+    this.scrollRef = React.createRef();
   }
 
   onPlusClick = () =>
@@ -50,6 +51,22 @@ class AddGroupsPanelComponent extends React.Component {
 
     setShareDataItems(items);
     onClose();
+  };
+
+  componentDidMount() {
+    const scroll = this.scrollRef.current.getElementsByClassName('scroll-body');
+    setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
+    window.addEventListener("keyup", this.onKeyPress);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.onKeyPress);
+  }
+
+  onKeyPress = event => {
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -107,7 +124,7 @@ class AddGroupsPanelComponent extends React.Component {
               />
             </StyledHeaderContent>
 
-            <StyledBody>
+            <StyledBody ref={this.scrollRef}>
               <GroupSelector
                 isOpen={visible}
                 isMultiSelect

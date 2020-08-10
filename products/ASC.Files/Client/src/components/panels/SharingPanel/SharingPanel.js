@@ -61,6 +61,7 @@ class SharingPanelComponent extends React.Component {
     };
 
     this.ref = React.createRef();
+    this.scrollRef = React.createRef();
   }
 
   onPlusClick = () =>
@@ -103,19 +104,11 @@ class SharingPanelComponent extends React.Component {
       }
     }
     
-    if (!selectedItems.length) {
-      if (selectedItems.fileExst) {
-        fileIds.push(selectedItems.id);
+    for (let item of selectedItems) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
       } else {
-        folderIds.push(selectedItems.id);
-      }
-    } else {
-      for (let item of selectedItems) {
-        if (item.fileExst) {
-          fileIds.push(item.id);
-        } else {
-          folderIds.push(item.id);
-        }
+        folderIds.push(item.id);
       }
     }
 
@@ -194,7 +187,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
 
   onShowUsersPanel = () =>
-    this.setState({ showAddUsersPanel: !this.state.showAddUsersPanel });
+    this.setState({ showAddUsersPanel: !this.state.showAddUsersPanel, showActionPanel: false });
 
   onFullAccessItemClick = (item) => {
     const newUsers = this.state.shareDataItems;
@@ -387,7 +380,7 @@ class SharingPanelComponent extends React.Component {
     arrayItems = this.removeDuplicateShareData(arrayItems);
     const baseShareData = JSON.parse(JSON.stringify(arrayItems));
 
-    const accessOptions = !this.props.selectedItems.length ? getAccessOption([this.props.selectedItems]) : getAccessOption(this.props.selectedItems);
+    const accessOptions = getAccessOption(this.props.selectedItems);
 
     this.setState(
       { baseShareData, shareDataItems: arrayItems, accessOptions },
@@ -409,20 +402,12 @@ class SharingPanelComponent extends React.Component {
     const folderId = [];
     const fileId = [];
 
-    if (!selectedItems.length) {
-      if (selectedItems.fileExst) {
-        fileId.push(selectedItems.id);
-      } else {
-        folderId.push(selectedItems.id);
-      }
-    } else {
-      for (let item of selectedItems) {
-        if (item.access === 1 || item.access === 0) {
-          if (item.fileExst) {
-            fileId.push(item.id);
-          } else {
-            folderId.push(item.id);
-          }
+    for (let item of selectedItems) {
+      if (item.access === 1 || item.access === 0) {
+        if (item.fileExst) {
+          fileId.push(item.id);
+        } else {
+          folderId.push(item.id);
         }
       }
     }
@@ -454,7 +439,7 @@ class SharingPanelComponent extends React.Component {
     });
 
   onShowGroupsPanel = () =>
-    this.setState({ showAddGroupsPanel: !this.state.showAddGroupsPanel });
+    this.setState({ showAddGroupsPanel: !this.state.showAddGroupsPanel, showActionPanel: false });
 
   onChangeMessage = (e) => this.setState({ message: e.target.value });
 
@@ -465,11 +450,29 @@ class SharingPanelComponent extends React.Component {
   componentDidMount() {
     this.props.onLoading(true);
     this.getShareData();
+
+    document.addEventListener("keyup", this.onKeyPress);
   }
+
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.onKeyPress);
+  }
+
+  onKeyPress = event => {
+    const { showAddUsersPanel, showEmbeddingPanel, showAddGroupsPanel } = this.state;
+    if(showAddUsersPanel || showEmbeddingPanel || showAddGroupsPanel) return;
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if(this.state.showPanel !== prevState.showPanel && this.state.showPanel === false) {
       this.props.onClose();
+    }
+
+    if(this.state.message === prevState.message) {
+      this.scrollRef.current.view.focus();
     }
   }
 
@@ -606,7 +609,7 @@ class SharingPanelComponent extends React.Component {
                 />*/}
               </div>
             </StyledSharingHeaderContent>
-            <StyledSharingBody stype="mediumBlack" style={{height: '83vh'}}>
+            <StyledSharingBody ref={this.scrollRef} stype="mediumBlack" style={{height: '83vh'}}>
               {shareDataItems.map((item, index) => (
                 <SharingRow
                   key={index}
@@ -705,7 +708,10 @@ const SharingPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  return { isMyId: state.auth.user.id };
+  return { 
+    isMyId: state.auth.user.id,
+    selectedItems: state.files.selection
+  };
 };
 
 export default connect(mapStateToProps)(withRouter(SharingPanel));

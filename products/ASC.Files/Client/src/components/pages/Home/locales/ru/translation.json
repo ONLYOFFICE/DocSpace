@@ -91,5 +91,7 @@
   "ViewTiles": "Плитки",
   "ShowVersionHistory": "Показать историю версий",
   "FinalizeVersion": "Сформировать версию",
-  "Convert": "Конвертация"
+  "Convert": "Конвертация",
+  "Duplicate": "Создать копию",
+  "CopyOperation": "Копирование"
 }

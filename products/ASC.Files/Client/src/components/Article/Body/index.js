@@ -7,7 +7,8 @@ import {
   fetchFiles,
   setTreeFolders,
   setDragItem,
-  setDragging
+  setDragging,
+  setNewTreeFilesBadge
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
@@ -38,13 +39,18 @@ class ArticleBodyContent extends React.Component {
     }
   }
 
-  /*shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.props.updateTreeNew) {
+      this.props.setNewTreeFilesBadge(false);
+      return true;
+    }
+
     if (!isEqual(this.state, nextState) || !isEqual(this.props, nextProps)) {
       return true;
     }
 
     return false;
-  }*/
+  }
 
   onSelect = data => {
     const { selectedKeys, filter, onLoading } = this.props;
@@ -141,7 +147,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, selection, dragging } = state.files;
+  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
@@ -175,10 +181,11 @@ function mapStateToProps(state) {
     currentId: selectedFolder.id,
     isAdmin: state.auth.user.isAdmin,
     selection,
-    dragging
+    dragging,
+    updateTreeNew
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging })(
+export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging, setNewTreeFilesBadge })(
   ArticleBodyContent
 );

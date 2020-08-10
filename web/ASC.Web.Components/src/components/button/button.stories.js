@@ -32,6 +32,8 @@ storiesOf('Components|Buttons', module)
           isClicked={boolean('isClicked', false)}
           isDisabled={boolean('isDisabled', false)}
 
+          minWidth={text('minWidth', '')}
+
           onClick={action('clicked')}
 
           icon={hintIcon}

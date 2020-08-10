@@ -28,7 +28,8 @@ import {
   deselectFile,
   setDragging,
   setProgressBarData,
-  clearProgressData
+  clearProgressData,
+  setNewTreeFilesBadge
 } from "../../../store/files/actions";
 import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
 import store from "../../../store/store";
@@ -242,7 +243,7 @@ class PureHome extends React.Component {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
-    const { getProgress, filter, currentFolderId, treeFolders, getFolder, isRecycleBinFolder, progressData, setProgressBarData } = this.props;
+    const { getProgress, filter, currentFolderId, treeFolders, getFolder, isRecycleBinFolder, progressData, setProgressBarData, setNewTreeFilesBadge } = this.props;
     getProgress().then(res => {
       const currentItem = res.find(x => x.id === id);
       if(currentItem && currentItem.progress !== 100) {
@@ -257,7 +258,7 @@ class PureHome extends React.Component {
           let foldersCount = data.current.foldersCount;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
           
-              if (!isCopy) {
+              if (!isCopy || destFolderId === currentFolderId) {
                 fetchFiles(currentFolderId, filter, store.dispatch)
                   .then((data) => {
                     if (!isRecycleBinFolder) {
@@ -271,6 +272,7 @@ class PureHome extends React.Component {
                         folders,
                         foldersCount
                       );
+                      setNewTreeFilesBadge(true);
                       setTreeFolders(newTreeFolders);
                     }
                     this.setNewFilter();
@@ -283,6 +285,7 @@ class PureHome extends React.Component {
               } else {
                 setProgressBarData({ label: progressData.label, percent: 100, visible: true });
                 setTimeout(() => clearProgressData(store.dispatch), 5000);
+                setNewTreeFilesBadge(true);
                 setTreeFolders(newTreeFolders);
               }
             })
@@ -512,5 +515,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps,
-  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging, setProgressBarData, startUpload }
+  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging, setProgressBarData, startUpload, setNewTreeFilesBadge }
 )(withRouter(Home));

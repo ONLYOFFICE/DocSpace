@@ -91,5 +91,7 @@
   "ViewTiles": "Tiles",
   "ShowVersionHistory": "Show version history",
   "FinalizeVersion": "Finalize version",
-  "Convert": "Convert"
+  "Convert": "Convert",
+  "Duplicate": "Create a copy",
+  "CopyOperation": "Copying"
 }

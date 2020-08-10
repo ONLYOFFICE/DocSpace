@@ -20,14 +20,12 @@ class PureVersionHistory extends React.Component {
   constructor(props) {
     super(props);
 
-    const { files, match } = props;
+    const { match } = props;
     const { fileId } = match.params;
-    const found = files.filter(f => f.id == fileId);
 
     this.state = {
       isLoading: false,
-      fileId: props.match.params.fileId,
-      file: found && found[0],
+      fileId,
       versions: null
     };
   }
@@ -41,14 +39,7 @@ class PureVersionHistory extends React.Component {
     if (fileId) {
       //fetchGroup(fileId);
       api.files.getFileVersionInfo(fileId)
-      .then((versions) => {
-        console.log("getFileVersionInfo result", versions);
-        this.setState({
-          versions
-        })
-      })
-
-      console.log("Loading file versions", fileId);
+        .then((versions) => this.setState({ versions }))
     }
   }
   
@@ -57,10 +48,8 @@ class PureVersionHistory extends React.Component {
   };
 
   render() {
-    const { file, versions } = this.state;
+    const { versions } = this.state;
     const { t, settings } = this.props;
-
-    console.log(`FileId ${file.id}`);
 
     return (
       <>
@@ -90,7 +79,7 @@ class PureVersionHistory extends React.Component {
                 isLoading={this.state.isLoading}
               />
             }
-            sectionHeaderContent={<SectionHeaderContent title={file.title} />}
+            sectionHeaderContent={<SectionHeaderContent title={versions && versions[0].title} />}
             sectionBodyContent={
               <SectionBodyContent onLoading={this.onLoading} versions={versions} culture={settings.culture} />
             }
@@ -122,14 +111,12 @@ const VersionHistory = props => {
 };
 
 VersionHistory.propTypes = {
-  files: PropTypes.array,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
-    files: state.files.files,
     settings: state.auth.settings,
     isLoaded: state.auth.isLoaded
   };

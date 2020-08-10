@@ -28,6 +28,7 @@ storiesOf('Components|Input', module)
               placeholder={text('placeholder', 'Add comment')}
               isDisabled={boolean('isDisabled', false)}
               isReadOnly={boolean('isReadOnly', false)}
+              hasError={boolean('hasError', false)}
               maxLength={number('maxLength', 1000)}
               id={text('id', '')}
               name={text('name', '')}

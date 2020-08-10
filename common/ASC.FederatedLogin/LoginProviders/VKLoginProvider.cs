@@ -89,10 +89,11 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -101,12 +102,17 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             try
             {
-                var token = Auth(context, Scopes, context.Request.Query["access_type"] == "offline"
+                var token = Auth(context, Scopes, out var redirect, context.Request.Query["access_type"] == "offline"
                                       ? new Dictionary<string, string>
                                           {
                                                               { "revoke", "1" }
                                           }
                                       : null);
+
+                if (redirect)
+                {
+                    return null;
+                }
 
                 if (token == null)
                 {
