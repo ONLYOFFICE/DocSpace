@@ -31,6 +31,7 @@ const StyledAsidePanel = styled.div`
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
+    overflow-y: hidden;
 
     @media (max-width: 550px) {
       width: 320px;
