@@ -226,7 +226,7 @@ class Body extends Component {
       const emailTrim = email ? email.trim() : emailOwner.trim();
       const analytics = true;
 
-      //console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, licenseFile, analytics, wizardToken);
+      // console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, analytics, wizardToken);
       
       setPortalOwner(emailTrim, password, selectLanguage.key, selectTimezone.key, wizardToken, analytics)
         .then(() => history.push('/login'))
@@ -301,7 +301,8 @@ class Body extends Component {
     this.setState({ 
       visibleModal: false, 
       errorLoading: false, 
-      errorMessage: null 
+      errorMessage: null,
+      successfullyMessage: null 
     });
   }
 
