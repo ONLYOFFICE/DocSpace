@@ -92,7 +92,7 @@ const StyledRow = styled(Row)`
 `;
 
 const VersionRow = props => {
-  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion } = props;
+  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion, t } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);  
 
@@ -131,12 +131,6 @@ const VersionRow = props => {
   }`;
 
   const linkStyles = { isHovered: true, type: "action" };
-
-  const download = "Download";
-  const restore = "Restore";
-  const save = "Save";
-  const cancel = "Cancel";
-  const editComment = "Edit comment";
 
   const onDownloadAction = () => window.open(info.viewUrl);
   const onEditComment = () => setShowEditPanel(!showEditPanel);
@@ -187,8 +181,8 @@ const VersionRow = props => {
 
 
   const contextOptions = [
-    { key: download, label: download, onClick: onDownloadAction },
-    { key: restore, label: restore, onClick: () => console.log(restore) },
+    { key: 'download', label: t('Download'), onClick: onDownloadAction },
+    { key: 'restore', label: t('Restore'), onClick: () => console.log(t('Restore')) },
   ];
 
   return (
@@ -223,7 +217,7 @@ const VersionRow = props => {
                   displayType="aside"
                   visible={showEditPanel}
                   onClose={onEditComment}
-                  headerContent={editComment}
+                  headerContent={t('EditComment')}
                   bodyContent={
                     <Textarea
                       //className="version_edit-comment"
@@ -236,7 +230,7 @@ const VersionRow = props => {
                   footerContent={
                     <Button
                       className="version_save-button"
-                      label={save}
+                      label={t('AddButton')}
                       size="medium"
                       primary
                       onClick={onSaveClick}
@@ -256,20 +250,20 @@ const VersionRow = props => {
             {...linkStyles}
             className="version_link-action"
           >
-            {restore}
+            {t('Restore')}
           </Link>
           <Link
             onClick={onDownloadAction}
             {...linkStyles}
             className="version_link-action"
           >
-            {download}
+            {t('Download')}
           </Link>
         </Box>
         {showEditPanel && (
             <Box className="version_edit-comment" marginProp='8px 0 16px 70px'>
-              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={save}/>
-              <Button size='medium' onClick={onCancelClick} label={cancel} />
+              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={'AddButton'}/>
+              <Button size='medium' onClick={onCancelClick} label={t('CancelButton')} />
             </Box>
         )}
       </>
@@ -287,5 +281,5 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { fetchFiles })(withRouter(withTranslation()(VersionRow)));
+export default connect(mapStateToProps, { })(withRouter(withTranslation()(VersionRow)));
 //export default VersionRow;
