@@ -37,5 +37,6 @@
   "errorInitWizard": "The service is currently unavailable, please try again later.",
   "errorInitWizardButton": "Try again",
 
-  "generatePassword": "Generate password"
+  "generatePassword": "Generate password",
+  "successfullyUpload": "Uploaded successfully."
 }

@@ -37,5 +37,6 @@
   "errorInitWizard": "В данный момент сервис недоступен, попробуйте позже.",
   "errorInitWizardButton": "Попробовать снова",
 
-  "generatePassword": "Сгенерировать пароль"
+  "generatePassword": "Сгенерировать пароль",
+  "successfullyUpload": "Успешно загружено."
 }
