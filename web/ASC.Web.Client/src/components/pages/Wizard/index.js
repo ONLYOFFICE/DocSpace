@@ -91,7 +91,11 @@ class Body extends Component {
       selectTimezone: null,
 
       emailNeeded: true,
-      emailOwner: 'fake@mail.com'
+      emailOwner: 'fake@mail.com',
+
+      hasErrorEmail: false,
+      hasErrorPass: false, 
+      hasErrorLicense: false
     }
 
     document.title = t('wizardTitle');
@@ -183,7 +187,7 @@ class Body extends Component {
 
   isValidPassHandler = val => this.setState({ isValidPass: val });
   
-  onChangePassword = e => this.setState({ password: e.target.value });
+  onChangePassword = e => this.setState({ password: e.target.value, hasErrorPass: false });
 
   onClickChangeEmail = () => this.setState({ visibleModal: true });
 
@@ -193,7 +197,8 @@ class Body extends Component {
     emailNeeded 
       ? this.setState({ 
           emailValid: result.isValid,
-          email: result.value
+          email: result.value,
+          hasErrorEmail: false
         })
       : this.setState({ 
           emailValid: result.isValid,
@@ -235,23 +240,48 @@ class Body extends Component {
     const { t, isLicenseRequired, licenseUpload } = this.props;
     const { isValidPass, emailValid, license, emailNeeded } = this.state;
 
-    if(!isValidPass) toastr.error(t('errorPassword'));
+    if(!isValidPass) {
+      toastr.error(t('errorPassword'));
+      this.setState({hasErrorPass: true});
+    }
     if(!license) toastr.error(t('errorLicenseRead'));
 
     if ( emailNeeded && !isLicenseRequired) {
-      if(!emailValid) toastr.error(t('errorEmail'));
-      if( isValidPass && emailValid && license ) return true;
+      if(!emailValid) { 
+        this.setState({ hasErrorEmail: true });
+        toastr.error(t('errorEmail'));
+      }
+
+      if( isValidPass && emailValid && license ) {
+        return true;
+      }
     }
 
     if (emailNeeded && isLicenseRequired) {
-      if(!emailValid) toastr.error(t('errorEmail'));
-      if(!licenseUpload) toastr.error(t('errorUploadLicenseFile'));
-      if( isValidPass && emailValid && license && licenseUpload) return true;
+      if(!emailValid) {
+        toastr.error(t('errorEmail'));
+        this.setState({ hasErrorEmail: true });
+      }
+
+      if(!licenseUpload) {
+        toastr.error(t('errorUploadLicenseFile'));
+        this.setState({ hasErrorLicense: true });
+      }
+
+      if( isValidPass && emailValid && license && licenseUpload) {
+        return true;
+      }
     }
 
     if (!emailNeeded && isLicenseRequired) {
-      if(!licenseUpload) toastr.error(t('errorUploadLicenseFile'));
-      if( isValidPass && license && licenseUpload) return true;
+      if(!licenseUpload) {
+        toastr.error(t('errorUploadLicenseFile'));
+        this.setState({ hasErrorLicense: true });
+      }
+
+      if( isValidPass && license && licenseUpload) { 
+        return true; 
+      }
     }
 
     return false; 
@@ -284,13 +314,16 @@ class Body extends Component {
   onInputFileHandler = file => { 
     const { setLicense, wizardToken } = this.props;
 
+    this.setState({ hasErrorLicense: false });
+
     let fd = new FormData();
     fd.append("files", file );
 
     setLicense(wizardToken, fd)
       .catch( e => this.setState({
           errorLoading: true,
-          errorMessage: e 
+          errorMessage: e,
+          hasErrorLicense: true 
       }))
   };
 
@@ -319,7 +352,11 @@ class Body extends Component {
       visibleModal,
       errorMessage,
       errorInitWizard,
-      changeEmail
+      changeEmail,
+      hasErrorEmail,
+      hasErrorPass, 
+      hasErrorLicense,
+      hasErrorReadLicense
     } = this.state;
   
     console.log('wizard render');
@@ -354,6 +391,9 @@ class Body extends Component {
               license={license}
               settings={emailSettings}
               isLicenseRequired={isLicenseRequired}
+              hasErrorEmail={hasErrorEmail}
+              hasErrorPass={hasErrorPass}
+              hasErrorLicense={hasErrorLicense}
               onChangeLicense={this.onChangeLicense}
               isValidPassHandler={this.isValidPassHandler}
               onChangePassword={this.onChangePassword}

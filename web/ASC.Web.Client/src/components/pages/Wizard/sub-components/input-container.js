@@ -55,7 +55,10 @@ const InputContainer = ({
   license, 
   onChangeLicense, 
   settings, 
-  isLicenseRequired
+  isLicenseRequired,
+  hasErrorEmail,
+  hasErrorPass, 
+  hasErrorLicense
 }) => {
   const refPassInput = useRef(null);
 
@@ -73,6 +76,7 @@ const InputContainer = ({
         scale={true}
         placeholder={t('email')}
         emailSettings={settings}
+        hasError={hasErrorEmail}
         onValidateInput={onEmailChangeHandler}
       />
     : null;
@@ -84,6 +88,7 @@ const InputContainer = ({
           placeholder={t('placeholderLicense')}
           size="large"
           scale={true}
+          hasError={hasErrorLicense}
           onInput={onInputFileHandler}
         />
       </Box>
@@ -105,6 +110,7 @@ const InputContainer = ({
         hideNewPasswordButton={true}
         isDisableTooltip={true}
         isTextTooltipVisible={true}
+        hasError={hasErrorPass}
         tooltipPasswordTitle={tooltipPassTitle}
         tooltipPasswordLength={tooltipPassLength}
         tooltipPasswordDigits={tooltipPassDigits}
