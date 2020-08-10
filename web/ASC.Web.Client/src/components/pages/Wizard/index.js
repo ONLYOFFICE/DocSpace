@@ -285,7 +285,7 @@ class Body extends Component {
     const { setLicense, wizardToken } = this.props;
 
     let fd = new FormData();
-    fd.append("file", file );
+    fd.append("files", file );
 
     setLicense(wizardToken, fd)
       .catch( e => this.setState({
