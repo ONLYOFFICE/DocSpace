@@ -382,9 +382,10 @@ namespace ASC.Core.Data
                 {
                     Id = key,
                     Tenant = tenant,
-                    Value = data
+                    Value = data,
+                    LastModified = DateTime.UtcNow
                 };
-                TenantDbContext.CoreSettings.Add(settings);
+                TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
             }
             TenantDbContext.SaveChanges();
             tx.Commit();
