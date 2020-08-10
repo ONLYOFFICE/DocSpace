@@ -88,7 +88,7 @@ const InputContainer = ({
           placeholder={t('placeholderLicense')}
           size="large"
           scale={true}
-          accept=".lic"
+         // accept=".lic"
           hasError={hasErrorLicense}
           onInput={onInputFileHandler}
         />

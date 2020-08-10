@@ -34,7 +34,8 @@ import {
   getMachineName,
   getIsRequiredLicense, 
   setPortalOwner,
-  setLicense 
+  setLicense,
+  resetLicenseUploaded 
 } from '../../../store/wizard/actions';
 
 const { tablet } = utils.device;
@@ -315,7 +316,9 @@ class Body extends Component {
       }});
 
   onInputFileHandler = file => { 
-    const { setLicense, wizardToken } = this.props;
+    const { setLicense, wizardToken, licenseUpload, resetLicenseUploaded } = this.props;
+
+    if (licenseUpload) resetLicenseUploaded();
 
     this.setState({ hasErrorLicense: false });
 
@@ -498,5 +501,6 @@ export default connect(mapStateToProps, {
   getMachineName, 
   getIsRequiredLicense,
   setPortalOwner,
-  setLicense 
+  setLicense,
+  resetLicenseUploaded 
 })(withRouter(WizardPage)); 

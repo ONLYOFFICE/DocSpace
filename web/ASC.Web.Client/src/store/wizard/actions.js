@@ -11,6 +11,7 @@ export const SET_IS_WIZARD_LOADED = 'SET_IS_WIZARD_LOADED';
 export const SET_IS_MACHINE_NAME = 'SET_IS_MACHINE_NAME';
 export const SET_IS_LICENSE_REQUIRED = "SET_IS_LICENSE_REQUIRED";
 export const SET_LICENSE_UPLOAD = "SET_LICENSE_UPLOAD";
+export const RESET_LICENSE_UPLOADED = "RESET_LICENSE_UPLOADED";
 
 export function setIsWizardLoaded(isWizardLoaded) {
   return {
@@ -37,6 +38,12 @@ export function setLicenseUpload(message) {
   return {
     type: SET_LICENSE_UPLOAD,
     message
+  }
+}
+
+export function resetLicenseUploaded() {
+  return {
+    type: RESET_LICENSE_UPLOADED
   }
 }
 
