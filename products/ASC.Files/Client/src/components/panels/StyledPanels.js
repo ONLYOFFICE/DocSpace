@@ -121,6 +121,26 @@ const StyledBody = styled.div`
       padding: 0 0 16px 0;
       width: 470px;
 
+      .header-options {
+        .combo-button-label {
+          max-width: 435px;
+
+          @media (max-width: 550px) {
+            width: 255px;
+          }
+        }
+      }
+
+      .row-option {
+        .option_checkbox {
+          width: 440px;
+
+          @media (max-width: 550px) {
+            width: 265px;
+          }
+        }
+      }
+
       @media (max-width: 550px) {
         width: 320px;
         padding: 0 28px 16px 0;
