@@ -28,9 +28,9 @@ class SelectedFrame extends React.Component {
   wrapper = null;
 
   getCoords = e => {
-    const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
+    //const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
     const posX = e.pageX;
-    const posY = e.pageY + offsetScroll;
+    const posY = e.pageY/* + offsetScroll*/; //Maybe problem with display tile
     return [posY, posX];
   };
 
