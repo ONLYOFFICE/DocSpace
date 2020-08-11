@@ -78,16 +78,16 @@ class ConfirmRoute extends React.Component {
         {...rest}
         render={props =>
           !this.state.isLoaded ? (
-            <PageLayout
-              sectionBodyContent={
-                <Loader className="pageLoader" type="rombs" size='40px' />
-              }
-            />
+            <PageLayout>
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
           ) : (
-            <Component
-              {...(props = { ...props, linkData: this.state.linkData })}
-            />
-          )
+              <Component
+                {...(props = { ...props, linkData: this.state.linkData })}
+              />
+            )
         }
       />
     );
