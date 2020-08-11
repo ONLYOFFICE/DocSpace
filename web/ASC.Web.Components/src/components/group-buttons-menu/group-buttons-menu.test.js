@@ -92,14 +92,20 @@ describe('<GroupButtonsMenu />', () => {
     const item = {
       label: 'Menu item 1',
       disabled: false,
-      onClick: onClick
+      onClick
     };
-    const wrapper = mount(<GroupButtonsMenu {...baseProps} />);
+    const wrapper = mount(<GroupButtonsMenu {...baseProps} menuItems={[item]}/>);
     const instance = wrapper.instance();
 
-    instance.groupButtonClick(item);
+    instance.groupButtonClick({
+      currentTarget: {
+        dataset: {
+          index: 0
+        }
+      }
+    });
 
-    //expect(wrapper.state('visible')).toBe(false);
+    expect(wrapper.state('visible')).toBe(true);
     expect(onClick).toBeCalled();
   });
 
@@ -121,12 +127,18 @@ describe('<GroupButtonsMenu />', () => {
     const item = {
       label: 'Menu item 1',
       disabled: true,
-      onClick: onClick
+      onClick
     };
-    const wrapper = mount(<GroupButtonsMenu {...baseProps} />);
+    const wrapper = mount(<GroupButtonsMenu {...baseProps} menuItems={[item]} />);
     const instance = wrapper.instance();
 
-    instance.groupButtonClick(item);
+    instance.groupButtonClick({
+      currentTarget: {
+        dataset: {
+          index: 0
+        }
+      }
+    });
 
     expect(wrapper.state('visible')).toBe(true);
     expect(onClick).toBeCalledTimes(0);
