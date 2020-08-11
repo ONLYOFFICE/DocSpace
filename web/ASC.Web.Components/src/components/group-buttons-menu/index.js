@@ -30,7 +30,7 @@ const CloseButton = styled.div`
     height: 20px;
     padding: 8px;
 
-    @media ${ tablet } {
+    @media ${tablet} {
       right: 4px;
     }
 
@@ -82,10 +82,24 @@ class GroupButtonsMenu extends React.PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  groupButtonClick = (item) => {
+  groupButtonClick = (e) => {
+    const { priorityItems } = this.state;
+    const index = e.currentTarget.dataset.index;
+    const item = priorityItems[index];
+
     if (item.disabled) return;
-    item.onClick();
-    //this.closeMenu();
+
+    item.onClick && item.onClick(e);
+  };
+
+  groupMoreMenuButtonClick = (e) => {
+    const { moreItems } = this.state;
+    const index = e.currentTarget.dataset.index;
+    const item = moreItems[index];
+
+    if (item.disabled) return;
+
+    item.onClick && item.onClick(e);
   };
 
   componentDidMount() {
@@ -170,7 +184,8 @@ class GroupButtonsMenu extends React.PureComponent {
               selected={selected}
               fontWeight={item.fontWeight}
               disabled={item.disabled}
-              onClick={this.groupButtonClick.bind(this, item)}
+              onClick={this.groupButtonClick}
+              data-index={i}
               {...this.props}
             >
               {item.children}
@@ -188,7 +203,8 @@ class GroupButtonsMenu extends React.PureComponent {
                 key={`moreNavItem-${i}`}
                 label={item.label}
                 disabled={item.disabled}
-                onClick={this.groupButtonClick.bind(this, item)}
+                onClick={this.groupMoreMenuButtonClick}
+                data-index={i}
               />
             )}
           </GroupButton>
