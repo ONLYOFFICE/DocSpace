@@ -36,11 +36,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
       if (!isLoaded) {
         return (
-          <PageLayout
-            sectionBodyContent={
+          <PageLayout>
+            <PageLayout.SectionBody>
               <Loader className="pageLoader" type="rombs" size='40px' />
-            }
-          />
+            </PageLayout.SectionBody>
+          </PageLayout>
         );
       }
 
