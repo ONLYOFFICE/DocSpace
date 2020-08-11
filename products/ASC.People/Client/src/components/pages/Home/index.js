@@ -6,7 +6,6 @@ import { RequestLoader } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
-
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -27,8 +26,8 @@ class PureHome extends React.Component {
     super(props);
 
     const currentGroup = getSelectedGroup(props.groups, props.selectedGroup);
-    document.title = currentGroup 
-      ? `${currentGroup.name} – ${props.t("People")}` 
+    document.title = currentGroup
+      ? `${currentGroup.name} – ${props.t("People")}`
       : `${props.t("People")} – ${props.t("OrganizationName")}`;
 
     this.state = {
@@ -46,14 +45,6 @@ class PureHome extends React.Component {
     const headerIndeterminate =
       headerVisible && selection.length > 0 && selection.length < users.length;
     const headerChecked = headerVisible && selection.length === users.length;
-
-    /*console.log(`renderGroupButtonMenu()
-      headerVisible=${headerVisible} 
-      headerIndeterminate=${headerIndeterminate} 
-      headerChecked=${headerChecked}
-      selection.length=${selection.length}
-      users.length=${users.length}
-      selected=${selected}`);*/
 
     let newState = {};
 
@@ -116,10 +107,20 @@ class PureHome extends React.Component {
         <PageLayout
           withBodyScroll={true}
           withBodyAutoFocus={true}
-          articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent />}
-          articleBodyContent={<ArticleBodyContent />}
-          sectionHeaderContent={
+        >
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+
+          <PageLayout.SectionHeader>
             <SectionHeaderContent
               isHeaderVisible={isHeaderVisible}
               isHeaderIndeterminate={isHeaderIndeterminate}
@@ -129,19 +130,24 @@ class PureHome extends React.Component {
               onClose={this.onClose}
               onLoading={this.onLoading}
             />
-          }
-          sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
-          sectionBodyContent={
+          </PageLayout.SectionHeader>
+
+          <PageLayout.SectionFilter>
+            <SectionFilterContent onLoading={this.onLoading} />
+          </PageLayout.SectionFilter>
+
+          <PageLayout.SectionBody>
             <SectionBodyContent
               selected={selected}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
             />
-          }
-          sectionPagingContent={
+          </PageLayout.SectionBody>
+          
+          <PageLayout.SectionPaging>
             <SectionPagingContent onLoading={this.onLoading} />
-          }
-        />
+          </PageLayout.SectionPaging>
+        </PageLayout>
       </>
     );
   }
@@ -149,9 +155,9 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = props => { 
+const Home = props => {
   changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>); 
+  return (<I18nextProvider i18n={i18n}><HomeContainer {...props} /></I18nextProvider>);
 }
 
 Home.propTypes = {
