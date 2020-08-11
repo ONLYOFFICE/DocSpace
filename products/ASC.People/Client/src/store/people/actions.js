@@ -118,10 +118,10 @@ export function setFilterUrl(filter) {
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-  const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
-  if (params.length > 0 && !isProfileView) {
+  //const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
+  //if (params.length > 0 && !isProfileView) {
     history.push(`${config.homepage}/filter?${params.join("&")}`);
-  }
+  //}
 }
 
 export function setFilter(filter) {
