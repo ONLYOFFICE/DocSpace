@@ -7,29 +7,29 @@ import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
 import {
-  ArticleHeaderContent,
   ArticleBodyContent,
+  ArticleHeaderContent,
   ArticleMainButtonContent
 } from "../../Article";
 import {
-  SectionHeaderContent,
   SectionBodyContent,
   SectionFilterContent,
+  SectionHeaderContent,
   SectionPagingContent
 } from "./Section";
 import {
-  setSelected,
-  fetchFiles,
-  setTreeFolders,
-  getProgress,
-  getFolder,
-  setFilter,
-  selectFile,
-  deselectFile,
-  setDragging,
-  setProgressBarData,
   clearProgressData,
-  setNewTreeFilesBadge
+  deselectFile,
+  fetchFiles,
+  getFolder,
+  getProgress,
+  selectFile,
+  setDragging,
+  setFilter,
+  setNewTreeFilesBadge,
+  setProgressBarData,
+  setSelected,
+  setTreeFolders
 } from "../../../store/files/actions";
 import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
 import store from "../../../store/store";
@@ -73,14 +73,6 @@ class PureHome extends React.Component {
     const headerChecked =
       headerVisible && selection.length === files.length + folders.length;
 
-    /*console.log(`renderGroupButtonMenu()
-      headerVisible=${headerVisible} 
-      headerIndeterminate=${headerIndeterminate} 
-      headerChecked=${headerChecked}
-      selection.length=${selection.length}
-      files.length=${files.length}
-      selected=${selected}`);*/
-
     let newState = {};
 
     if (headerVisible || selected === "close") {
@@ -112,7 +104,7 @@ class PureHome extends React.Component {
 
       const callNext = (i) => {
         if (typeof queue[i] === "function") {
-          queue[i](() => i+1 < length ? callNext(i+1) : callback());
+          queue[i](() => i + 1 < length ? callNext(i + 1) : callback());
         }
       };
       callNext(i);
@@ -222,19 +214,21 @@ class PureHome extends React.Component {
 
   onChangeOverwrite = () =>
     this.setState({ overwriteSetting: !this.state.overwriteSetting });
+
   onChangeOriginalFormat = () =>
     this.setState({
       uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting,
     });
+
   onChangeWindowVisible = () =>
     this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
 
   setNewFilter = () => {
     const { filter, selection, setFilter } = this.props;
     const newFilter = filter.clone();
-    for(let item of selection) {
+    for (let item of selection) {
       const expandedIndex = newFilter.treeFolders.findIndex(x => x == item.id);
-      if(expandedIndex !== -1) {
+      if (expandedIndex !== -1) {
         newFilter.treeFolders.splice(expandedIndex, 1);
       }
     }
@@ -243,10 +237,21 @@ class PureHome extends React.Component {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
-    const { getProgress, filter, currentFolderId, treeFolders, getFolder, isRecycleBinFolder, progressData, setProgressBarData, setNewTreeFilesBadge } = this.props;
+    const {
+      currentFolderId,
+      filter,
+      getFolder,
+      getProgress,
+      isRecycleBinFolder,
+      progressData,
+      setNewTreeFilesBadge,
+      setProgressBarData,
+      treeFolders
+    } = this.props;
+
     getProgress().then(res => {
       const currentItem = res.find(x => x.id === id);
-      if(currentItem && currentItem.progress !== 100) {
+      if (currentItem && currentItem.progress !== 100) {
         setProgressBarData({ label: progressData.label, percent: currentItem.progress, visible: true });
         setTimeout(() => this.loopFilesOperations(id, destFolderId, isCopy), 1000);
       } else {
@@ -257,44 +262,44 @@ class PureHome extends React.Component {
           let folders = data.folders;
           let foldersCount = data.current.foldersCount;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-          
-              if (!isCopy || destFolderId === currentFolderId) {
-                fetchFiles(currentFolderId, filter, store.dispatch)
-                  .then((data) => {
-                    if (!isRecycleBinFolder) {
-                      newTreeFolders = treeFolders;
-                      path = data.selectedFolder.pathParts.slice(0);
-                      folders = data.selectedFolder.folders;
-                      foldersCount = data.selectedFolder.foldersCount;
-                      loopTreeFolders(
-                        path,
-                        newTreeFolders,
-                        folders,
-                        foldersCount
-                      );
-                      setNewTreeFilesBadge(true);
-                      setTreeFolders(newTreeFolders);
-                    }
-                    this.setNewFilter();
-                  })
-                  .catch(err => {
-                    toastr.error(err);
-                    clearProgressData(store.dispatch);
-                  })
-                  .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
-              } else {
-                setProgressBarData({ label: progressData.label, percent: 100, visible: true });
-                setTimeout(() => clearProgressData(store.dispatch), 5000);
-                setNewTreeFilesBadge(true);
-                setTreeFolders(newTreeFolders);
-              }
-            })
-            .catch(err => {
-              toastr.error(err);
-              clearProgressData(store.dispatch);
-            });
-        }
-      })
+
+          if (!isCopy || destFolderId === currentFolderId) {
+            fetchFiles(currentFolderId, filter, store.dispatch)
+              .then((data) => {
+                if (!isRecycleBinFolder) {
+                  newTreeFolders = treeFolders;
+                  path = data.selectedFolder.pathParts.slice(0);
+                  folders = data.selectedFolder.folders;
+                  foldersCount = data.selectedFolder.foldersCount;
+                  loopTreeFolders(
+                    path,
+                    newTreeFolders,
+                    folders,
+                    foldersCount
+                  );
+                  setNewTreeFilesBadge(true);
+                  setTreeFolders(newTreeFolders);
+                }
+                this.setNewFilter();
+              })
+              .catch(err => {
+                toastr.error(err);
+                clearProgressData(store.dispatch);
+              })
+              .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
+          } else {
+            setProgressBarData({ label: progressData.label, percent: 100, visible: true });
+            setTimeout(() => clearProgressData(store.dispatch), 5000);
+            setNewTreeFilesBadge(true);
+            setTreeFolders(newTreeFolders);
+          }
+        })
+          .catch(err => {
+            toastr.error(err);
+            clearProgressData(store.dispatch);
+          });
+      }
+    })
       .catch((err) => {
         toastr.error(err);
         clearProgressData(store.dispatch);
@@ -309,29 +314,29 @@ class PureHome extends React.Component {
       const newSelection = [];
       let newFile = null;
       for (let item of items) {
-        if(!item) break   // temporary fall protection selection tile 
-        
+        if (!item) break   // temporary fall protection selection tile 
+
         item = item.split("_");
         if (item[0] === "folder") {
           newFile = selection.find((x) => x.id === Number(item[1]) && !x.fileExst);
         } else if (item[0] === "file") {
           newFile = selection.find((x) => x.id === Number(item[1]) && x.fileExst);
         }
-        if(newFile) {
+        if (newFile) {
           newSelection.push(newFile);
         }
       }
 
-      for(let item of selection) {
+      for (let item of selection) {
         const element = newSelection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-        if(!element) {
+        if (!element) {
           deselectFile(item);
         }
       }
     } else if (selection.length < items.length) {
       //Add selection
       for (let item of items) {
-        if(!item) break // temporary fall protection selection tile 
+        if (!item) break // temporary fall protection selection tile 
 
         let newFile = null;
         item = item.split("_");
@@ -340,7 +345,7 @@ class PureHome extends React.Component {
         } else if (item[0] === "file") {
           newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
         }
-        if(newFile && fileActionId !== newFile.id) {
+        if (newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(x => x.id === newFile.id && x.fileExst === newFile.fileExst);
           !existItem && selectFile(newFile);
         }
@@ -419,20 +424,26 @@ class PureHome extends React.Component {
           //progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressData.label}
           viewAs={viewAs}
-          articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={
+        >
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+
+          <PageLayout.ArticleMainButton>
             <ArticleMainButtonContent
               onLoading={this.onLoading}
             />
-          }
-          articleBodyContent={
+          </PageLayout.ArticleMainButton>
+
+          <PageLayout.ArticleBody>
             <ArticleBodyContent
               onLoading={this.onLoading}
               isLoading={isLoading}
               onTreeDrop={this.onDrop}
             />
-          }
-          sectionHeaderContent={
+          </PageLayout.ArticleBody>
+
+          <PageLayout.SectionHeader>
             <SectionHeaderContent
               isHeaderVisible={isHeaderVisible}
               isHeaderIndeterminate={isHeaderIndeterminate}
@@ -444,11 +455,13 @@ class PureHome extends React.Component {
               isLoading={isLoading}
               loopFilesOperations={this.loopFilesOperations}
             />
-          }
-          sectionFilterContent={
+          </PageLayout.SectionHeader>
+
+          <PageLayout.SectionFilter>
             <SectionFilterContent onLoading={this.onLoading} />
-          }
-          sectionBodyContent={
+          </PageLayout.SectionFilter>
+
+          <PageLayout.SectionBody>
             <SectionBodyContent
               selected={selected}
               isLoading={isLoading}
@@ -457,11 +470,12 @@ class PureHome extends React.Component {
               loopFilesOperations={this.loopFilesOperations}
               onDropZoneUpload={this.onDrop}
             />
-          }
-          sectionPagingContent={
+          </PageLayout.SectionBody>
+
+          <PageLayout.SectionPaging>
             <SectionPagingContent onLoading={this.onLoading} />
-          }
-        />
+          </PageLayout.SectionPaging>
+        </PageLayout>
       </>
     );
   }
@@ -471,7 +485,11 @@ const HomeContainer = withTranslation()(PureHome);
 
 const Home = (props) => {
   changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><HomeContainer {...props} /></I18nextProvider>);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <HomeContainer {...props} />
+    </I18nextProvider>
+  );
 }
 
 Home.propTypes = {
@@ -482,38 +500,50 @@ Home.propTypes = {
 
 function mapStateToProps(state) {
   const {
-    treeFolders,
-    filter,
-    selectedFolder,
-    selected,
-    selection,
-    folders,
-    files,
+    convertDialogVisible,
     fileAction,
+    files,
+    filter,
+    folders,
     progressData,
-    viewAs,
-    convertDialogVisible
+    selected,
+    selectedFolder,
+    selection,
+    treeFolders,
+    viewAs
   } = state.files;
   const { id } = selectedFolder;
   const indexOfTrash = 3;
 
   return {
-    files,
-    folders,
-    selection,
-    selected,
-    isLoaded: state.auth.isLoaded,
+    convertDialogVisible,
     currentFolderId: id,
-    filter,
-    treeFolders,
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
     fileActionId: fileAction.id,
+    files,
+    filter,
+    folders,
+    isLoaded: state.auth.isLoaded,
+    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
     progressData,
-    viewAs,
-    convertDialogVisible
+    selected,
+    selection,
+    treeFolders,
+    viewAs
   };
 }
 
 export default connect(mapStateToProps,
-  { setSelected, setTreeFolders, getProgress, getFolder, setFilter, selectFile, deselectFile, setDragging, setProgressBarData, startUpload, setNewTreeFilesBadge }
+  {
+    deselectFile,
+    getFolder,
+    getProgress,
+    selectFile,
+    setDragging,
+    setFilter,
+    setNewTreeFilesBadge,
+    setProgressBarData,
+    setSelected,
+    setTreeFolders,
+    startUpload
+  }
 )(withRouter(Home));
