@@ -21,10 +21,9 @@
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\LICENSE.txt">
+    <None Include="LICENSE.txt">
       <Pack>True</Pack>
-      <PackagePath>
-      </PackagePath>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
