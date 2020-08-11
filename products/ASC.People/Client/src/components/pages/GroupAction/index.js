@@ -2,7 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
-import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
+import {
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+  ArticleBodyContent
+} from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -41,22 +45,47 @@ class GroupAction extends React.Component {
 
     return (
       <I18nextProvider i18n={i18n}>
-        {group || !match.params.groupId
-        ? <PageLayout
-          withBodyScroll={true}
-          articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent />}
-          articleBodyContent={<ArticleBodyContent />}
-          sectionHeaderContent={<SectionHeaderContent />}
-          sectionBodyContent={<SectionBodyContent />}
-        />
-        : <PageLayout
-          articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent />}
-          articleBodyContent={<ArticleBodyContent />}
-          sectionBodyContent={<Loader className="pageLoader" type="rombs" size='40px' />}
-          />
-        }
+        {group || !match.params.groupId ? (
+          <PageLayout withBodyScroll={true}>
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent />
+            </PageLayout.ArticleBody>
+
+            <PageLayout.SectionHeader>
+              <SectionHeaderContent />
+            </PageLayout.SectionHeader>
+
+            <PageLayout.SectionBody>
+              <SectionBodyContent />
+            </PageLayout.SectionBody>
+          </PageLayout>
+        ) : (
+            <PageLayout>
+              <PageLayout.ArticleHeader>
+                <ArticleHeaderContent />
+              </PageLayout.ArticleHeader>
+
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
+
+              <PageLayout.ArticleBody>
+                <ArticleBodyContent />
+              </PageLayout.ArticleBody>
+
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
+          )}
       </I18nextProvider>
     );
   }
@@ -80,4 +109,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchGroup, resetGroup })(GroupActionContainer);
+export default connect(mapStateToProps,
+  {
+    fetchGroup,
+    resetGroup
+  })(GroupActionContainer);
