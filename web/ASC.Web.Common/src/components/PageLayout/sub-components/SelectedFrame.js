@@ -28,9 +28,9 @@ class SelectedFrame extends React.Component {
   wrapper = null;
 
   getCoords = e => {
-    //const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
+    const offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
     const posX = e.pageX;
-    const posY = e.pageY/* + offsetScroll*/; //Maybe problem with display tile
+    const posY = e.pageY + offsetScroll;
     return [posY, posX];
   };
 
@@ -112,9 +112,9 @@ class SelectedFrame extends React.Component {
   
           //const topStart = top - itemHeight - this.props.scrollRef.current.view.offsetParent.offsetTop - offset - 16;
           //const topEnd = mouseYX[0] - itemHeight;
-          const topStart = top - itemHeight - offsetTop - offset - smallPadding;
-          const topEnd = mouseYX[0] - offsetTop - offset - smallPadding;
           offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
+          const topStart = top - itemHeight - offsetTop - offset - smallPadding - offsetScroll;
+          const topEnd = mouseYX[0] - offsetTop - offset - smallPadding;
   
           if (itemOffsetTop - offsetScroll >= topStart && itemOffsetTop - offsetScroll <= topEnd) {
             const value = currentItem.getAttribute("value");
