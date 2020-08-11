@@ -20,13 +20,23 @@ const Layout = ({ currentProductId, setCurrentProductId, language, children }) =
 
   return (
     <I18nextProvider i18n={i18n}>
-      <PageLayout
-        withBodyScroll={true}
-        articleHeaderContent={<ArticleHeaderContent />}
-        articleBodyContent={<ArticleBodyContent />}
-        sectionHeaderContent={<SectionHeaderContent />}
-        sectionBodyContent={children}
-      />
+      <PageLayout withBodyScroll={true}>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
+
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
+
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent />
+        </PageLayout.SectionHeader>
+
+        <PageLayout.SectionBody>
+          {children}
+        </PageLayout.SectionBody>
+      </PageLayout>
     </I18nextProvider >
   );
 };
