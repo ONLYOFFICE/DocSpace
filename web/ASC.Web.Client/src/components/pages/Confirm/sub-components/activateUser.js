@@ -315,7 +315,12 @@ Confirm.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired
 };
-const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {...props} />} />);
+const ActivateUserForm = (props) => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Confirm {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>);
 
 
 function mapStateToProps(state) {
@@ -326,4 +331,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser })(withRouter(withTranslation()(ActivateUserForm)));
+export default connect(
+  mapStateToProps,
+  { getConfirmationInfo, activateConfirmUser }
+)(withRouter(withTranslation()(ActivateUserForm)));
