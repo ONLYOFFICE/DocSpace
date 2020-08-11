@@ -189,7 +189,11 @@ const Body = () => {
 };
 
 const About = ({ language }) => (
-  <PageLayout sectionBodyContent={<Body language={language} />} />
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Body language={language} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 export default About;
