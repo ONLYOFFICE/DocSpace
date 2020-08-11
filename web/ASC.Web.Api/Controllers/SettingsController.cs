@@ -1352,7 +1352,7 @@ namespace ASC.Api.Settings
             return productId == Guid.Empty ? "All" : product != null ? product.Name : productId.ToString();
         }
 
-        [Read("license/refresh")]
+        [Read("license/refresh", Check = false)]
         public bool RefreshLicense()
         {
             if (!CoreBaseSettings.Standalone) return false;
