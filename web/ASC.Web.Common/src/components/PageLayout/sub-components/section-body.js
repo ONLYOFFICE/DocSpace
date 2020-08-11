@@ -42,6 +42,7 @@ const StyledDropZoneBody = styled(DragAndDrop)`
   ${commonStyles}
 
   .drag-and-drop {
+    user-select: none;
     height: 100%;
   }
   
