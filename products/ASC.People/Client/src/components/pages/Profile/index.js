@@ -3,7 +3,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
-import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
+import {
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+  ArticleBodyContent
+} from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { fetchProfile, resetProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
@@ -29,8 +33,8 @@ class PureProfile extends React.Component {
     const queryParams = this.state.queryString.split('&');
     const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
     const linkParams = Object.fromEntries(arrayOfQueryParams);
-    
-    if (linkParams.email_change && linkParams.email_change === "success"){
+
+    if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t('ChangeEmailSuccess'));
     }
 
@@ -47,35 +51,53 @@ class PureProfile extends React.Component {
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.props.resetProfile();
   }
 
   render() {
     //console.log("Profile render")
-
     const { profile, isVisitor } = this.props;
 
-    const articleProps = isVisitor ? {} : {
-      articleHeaderContent: <ArticleHeaderContent />,
-      articleMainButtonContent: <ArticleMainButtonContent />,
-      articleBodyContent: <ArticleBodyContent />
-    };
+    return (
+      <PageLayout withBodyAutoFocus={true}>
+        {!isVisitor && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+        {!isVisitor && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+        {!isVisitor && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
-    const sectionProps = profile ? {
-      sectionHeaderContent: <SectionHeaderContent />,
-      sectionBodyContent: <SectionBodyContent />
-    } : {
-      sectionBodyContent: <Loader className="pageLoader" type="rombs" size='40px' />
-    };
+        {profile && (
+          <PageLayout.SectionHeader>
+            <SectionHeaderContent />
+          </PageLayout.SectionHeader>
+        )}
 
-    return <PageLayout {...articleProps} {...sectionProps} withBodyAutoFocus={true}/>;
+        <PageLayout.SectionBody>
+          {profile ? (
+            <SectionBodyContent />
+          ) : (
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            )}
+        </PageLayout.SectionBody>
+      </PageLayout>
+    );
   };
 };
 
 const ProfileContainer = withTranslation()(PureProfile);
 
-const Profile = (props) => { 
+const Profile = (props) => {
 
   changeLanguage(i18n);
 
@@ -83,20 +105,22 @@ const Profile = (props) => {
 };
 
 Profile.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  profile: PropTypes.object,
   fetchProfile: PropTypes.func.isRequired,
-  isLoaded: PropTypes.bool
+  history: PropTypes.object.isRequired,
+  isLoaded: PropTypes.bool,
+  match: PropTypes.object.isRequired,
+  profile: PropTypes.object
 };
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
     isVisitor: state.auth.user.isVisitor,
+    profile: state.profile.targetUser
   };
 }
 
-export default connect(mapStateToProps, {
-  fetchProfile, resetProfile
-})(Profile);
+export default connect(mapStateToProps,
+  {
+    fetchProfile,
+    resetProfile
+  })(Profile);
