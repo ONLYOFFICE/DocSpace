@@ -7,7 +7,7 @@ import VersionRow from "./VersionRow";
 //import i18n from '../../i18n';
 
 const SectionBodyContent = props => {
-  const { versions, culture, onLoading } = props;
+  const { versions, culture, onLoading, getFileVersions } = props;
   console.log("VersionHistory SectionBodyContent render()", versions);
 
   let itemVersion = null;
@@ -23,7 +23,7 @@ const SectionBodyContent = props => {
       }
 
       return (
-        <VersionRow isVersion={isVersion} key={info.id} info={info} index={index} culture={culture} onLoading={onLoading}/>
+        <VersionRow getFileVersions={getFileVersions} isVersion={isVersion} key={info.id} info={info} index={index} culture={culture} onLoading={onLoading}/>
       );
     })}</RowContainer>
   )

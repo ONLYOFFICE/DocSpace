@@ -4,6 +4,8 @@ import styled, { css } from "styled-components";
 import { utils, Scrollbar } from "asc-web-components";
 import DragAndDrop from "../../DragAndDrop";
 import SelectedFrame from "./SelectedFrame";
+import isEqual from "lodash/isEqual";
+
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -40,6 +42,7 @@ const StyledDropZoneBody = styled(DragAndDrop)`
   ${commonStyles}
 
   .drag-and-drop {
+    user-select: none;
     height: 100%;
   }
   
@@ -64,16 +67,29 @@ class SectionBody extends React.Component {
     this.focusRef = React.createRef();
     this.scrollRef = React.createRef();
   }
-  
+
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
+
   componentDidMount() {
     if (!this.props.autoFocus) return;
-    
+
     this.focusRef.current.focus();
   }
 
   render() {
     //console.log("PageLayout SectionBody render");
-    const { children, withScroll, autoFocus, pinned, onDrop, uploadFiles, setSelections, viewAs } = this.props;
+    const { 
+      autoFocus,
+      children,
+      onDrop,
+      pinned,
+      setSelections,
+      uploadFiles,
+      viewAs,
+      withScroll
+    } = this.props;
 
     const focusProps = autoFocus ? {
       ref: this.focusRef,
@@ -105,37 +121,37 @@ class SectionBody extends React.Component {
             </SelectedFrame>
           </Scrollbar>
         ) : (
-          <SelectedFrame
-            viewAs={viewAs}
-            scrollRef={this.scrollRef}
-            setSelections={setSelections}
-          >
-            <div className="section-wrapper">
-              {children}
-              <StyledSpacer pinned={pinned} />
-            </div>
-          </SelectedFrame>
-        )}
-      </StyledDropZoneBody>
-    ) : (
-      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
-        {withScroll ? (
-          <Scrollbar {...scrollProp} stype="mediumBlack">
-            <div className="section-wrapper">
-              <div className="section-wrapper-content" {...focusProps}>
+            <SelectedFrame
+              viewAs={viewAs}
+              scrollRef={this.scrollRef}
+              setSelections={setSelections}
+            >
+              <div className="section-wrapper">
                 {children}
                 <StyledSpacer pinned={pinned} />
               </div>
-            </div>
-          </Scrollbar>
-        ) : (
-          <div className="section-wrapper">
-            {children}
-            <StyledSpacer pinned={pinned} />
-          </div>
-        )}
-      </StyledSectionBody>
-    );
+            </SelectedFrame>
+          )}
+      </StyledDropZoneBody>
+    ) : (
+        <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
+          {withScroll ? (
+            <Scrollbar {...scrollProp} stype="mediumBlack">
+              <div className="section-wrapper">
+                <div className="section-wrapper-content" {...focusProps}>
+                  {children}
+                  <StyledSpacer pinned={pinned} />
+                </div>
+              </div>
+            </Scrollbar>
+          ) : (
+              <div className="section-wrapper">
+                {children}
+                <StyledSpacer pinned={pinned} />
+              </div>
+            )}
+        </StyledSectionBody>
+      );
   }
 }
 
@@ -157,10 +173,10 @@ SectionBody.propTypes = {
 };
 
 SectionBody.defaultProps = {
-  withScroll: true,
   autoFocus: false,
   pinned: false,
   uploadFiles: false,
+  withScroll: true
 };
 
 export default SectionBody;

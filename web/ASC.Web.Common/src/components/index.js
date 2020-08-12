@@ -7,7 +7,7 @@ export { default as Headline } from "./Headline";
 export { default as PeopleSelector } from "./PeopleSelector";
 export { default as GroupSelector } from "./GroupSelector";
 export { default as AdvancedSelector } from './AdvancedSelector';
-export { default as PageLayout } from './PageLayout';
+export { default as PageLayout } from "./PageLayout";
 export { default as Layout } from './Layout';
 export { default as ProfileMenu } from './ProfileMenu';
 export { default as ErrorContainer } from './ErrorContainer';

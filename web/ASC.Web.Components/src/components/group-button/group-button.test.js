@@ -190,23 +190,29 @@ describe('<GroupButton />', () => {
   });
 
   it('causes function dropDownItemClick()', () => {
-    const onClick = jest.fn();
     const onSelect = jest.fn();
-    const child = (<div onClick={onClick}>test</div>);
+    const child = (<div data-index={0}>test</div>);
     const wrapper = shallow(
       <GroupButton
         {...baseProps}
         opened={true}
+        isDropdown={true}
         onSelect={onSelect}
       >
         {child}
       </GroupButton>);
     const instance = wrapper.instance();
 
-    instance.dropDownItemClick(child);
+    instance.dropDownItemClick({
+      currentTarget: {
+        dataset: {
+          index: 0
+        }
+      }
+    });
 
+    expect(onSelect).toBeCalled();
     expect(wrapper.state('isOpen')).toBe(false);
-    expect(onClick).toBeCalled();
   });
 
   it('causes function dropDownToggleClick()', () => {

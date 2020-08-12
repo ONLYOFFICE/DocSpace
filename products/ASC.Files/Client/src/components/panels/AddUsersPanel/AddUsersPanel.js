@@ -91,7 +91,7 @@ class AddUsersPanelComponent extends React.Component {
   }
 
   render() {
-    const { visible, embeddedComponent, t } = this.props;
+    const { visible, embeddedComponent, t, groupsCaption } = this.props;
 
     const zIndex = 310;
 
@@ -134,10 +134,8 @@ class AddUsersPanelComponent extends React.Component {
                 isMultiSelect
                 onSelect={this.onPeopleSelect}
                 embeddedComponent={embeddedComponent}
-
-                //onCancel={this.onCancelSelector}
-                //groupsCaption={groupsCaption}
-                //defaultOptionLabel={t("MeLabel")}
+                groupsCaption={groupsCaption}
+                //onCancel={onClose}
               />
             </StyledBody>
           </StyledContent>

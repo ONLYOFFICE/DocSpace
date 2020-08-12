@@ -15,11 +15,11 @@ export class ExternalRedirect extends Component {
 
   render() {
     return (
-      <PageLayout
-        sectionBodyContent={
-          <Loader className="pageLoader" type="rombs" size='40px' />
-        }
-      />
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <Loader className="pageLoader" type="rombs" size="40px" />
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }

@@ -478,7 +478,7 @@ class SharingPanelComponent extends React.Component {
 
   render() {
     //console.log("Sharing panel render");
-    const { t, isMyId, selectedItems } = this.props;
+    const { t, isMyId, selectedItems, groupsCaption } = this.props;
     const {
       showActionPanel,
       isNotifyUsers,
@@ -609,7 +609,7 @@ class SharingPanelComponent extends React.Component {
                 />*/}
               </div>
             </StyledSharingHeaderContent>
-            <StyledSharingBody ref={this.scrollRef} stype="mediumBlack" style={{height: '83vh'}}>
+            <StyledSharingBody ref={this.scrollRef} stype="mediumBlack" style={{height: `calc(100vh - 170px)`}}>
               {shareDataItems.map((item, index) => (
                 <SharingRow
                   key={index}
@@ -665,6 +665,7 @@ class SharingPanelComponent extends React.Component {
             accessRight={accessRight}
             shareDataItems={shareDataItems}
             setShareDataItems={this.setShareDataItems}
+            groupsCaption={groupsCaption}
           />
         }
 
@@ -710,7 +711,8 @@ const SharingPanel = (props) => (
 const mapStateToProps = (state) => {
   return { 
     isMyId: state.auth.user.id,
-    selectedItems: state.files.selection
+    selectedItems: state.files.selection,
+    groupsCaption: state.auth.settings.customNames.groupsCaption
   };
 };
 

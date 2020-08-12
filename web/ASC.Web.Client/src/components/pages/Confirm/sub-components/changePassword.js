@@ -73,7 +73,7 @@ class Form extends React.PureComponent {
   };
 
   onSubmit = e => {
-    this.setState({ isLoading: true }, function() {
+    this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
       const { history, changePassword } = this.props;
       let hasError = false;
@@ -128,63 +128,63 @@ class Form extends React.PureComponent {
     return !isConfirmLoaded ? (
       <Loader className="pageLoader" type="rombs" size='40px' />
     ) : (
-      <BodyStyle>
-        <div className="password-header">
-          <img
-            className="password-logo"
-            src="images/dark_general.png"
-            alt="Logo"
+        <BodyStyle>
+          <div className="password-header">
+            <img
+              className="password-logo"
+              src="images/dark_general.png"
+              alt="Logo"
+            />
+            <Heading className="password-title" color="#116d9d">
+              {greetingTitle}
+            </Heading>
+          </div>
+          <Text className="password-text" fontSize='14px'>
+            {t("PassworResetTitle")}
+          </Text>
+          <PasswordInput
+            id="password"
+            name="password"
+            inputName="password"
+            inputValue={password}
+            size="huge"
+            scale={true}
+            type="password"
+            isDisabled={isLoading}
+            hasError={passwordEmpty}
+            onValidateInput={this.validatePassword}
+            generatorSpecial="!@#$%^&*"
+            tabIndex={1}
+            value={password}
+            onChange={this.onChange}
+            emailInputName="E-mail"
+            passwordSettings={settings}
+            tooltipPasswordTitle="Password must contain:"
+            tooltipPasswordLength={`${t("ErrorPasswordLength", {
+              fromNumber: 6,
+              toNumber: 30
+            })}:`}
+            placeholder={t("PasswordCustomMode")}
+            maxLength={30}
+            onKeyDown={this.onKeyPress}
+            isAutoFocussed={true}
+            inputWidth="490px"
           />
-          <Heading className="password-title" color="#116d9d">
-            {greetingTitle}
-          </Heading>
-        </div>
-        <Text className="password-text" fontSize='14px'>
-          {t("PassworResetTitle")}
-        </Text>
-        <PasswordInput
-          id="password"
-          name="password"
-          inputName="password"
-          inputValue={password}
-          size="huge"
-          scale={true}
-          type="password"
-          isDisabled={isLoading}
-          hasError={passwordEmpty}
-          onValidateInput={this.validatePassword}
-          generatorSpecial="!@#$%^&*"
-          tabIndex={1}
-          value={password}
-          onChange={this.onChange}
-          emailInputName="E-mail"
-          passwordSettings={settings}
-          tooltipPasswordTitle="Password must contain:"
-          tooltipPasswordLength={`${t("ErrorPasswordLength", {
-            fromNumber: 6,
-            toNumber: 30
-          })}:`}
-          placeholder={t("PasswordCustomMode")}
-          maxLength={30}
-          onKeyDown={this.onKeyPress}
-          isAutoFocussed={true}
-          inputWidth="490px"
-        />
-        <Button
-          id="button"
-          className="password-button"
-          primary
-          size="big"
-          tabIndex={2}
-          label={
-            isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
-          }
-          isDisabled={isLoading}
-          isLoading={isLoading}
-          onClick={this.onSubmit}
-        />
-      </BodyStyle>
-    );
+          <Button
+            id="button"
+            className="password-button"
+            primary
+            size="big"
+            tabIndex={2}
+            label={
+              isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+            }
+            isDisabled={isLoading}
+            isLoading={isLoading}
+            onClick={this.onSubmit}
+          />
+        </BodyStyle>
+      );
   }
 }
 
@@ -200,7 +200,11 @@ Form.defaultProps = {
 };
 
 const ChangePasswordForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Form {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 function mapStateToProps(state) {

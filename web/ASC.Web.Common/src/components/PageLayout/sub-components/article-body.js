@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import isEqual from "lodash/isEqual";
 import { Scrollbar } from "asc-web-components";
 
 const StyledArticleBody = styled.div`
@@ -32,18 +33,24 @@ const StyledArticleWrapper = styled.div`
   margin: 16px 0;
 `;
 
-const ArticleBody = React.memo(props => {
-  //console.log("PageLayout ArticleBody render");
-  const { children } = props;
+class ArticleBody extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-  return (
-    <StyledArticleBody>
-      <Scrollbar className="custom-scrollbar" stype="mediumBlack">
-        <StyledArticleWrapper>{children}</StyledArticleWrapper>
-      </Scrollbar>
-    </StyledArticleBody>
-  );
-});
+  render() {
+    //console.log("PageLayout ArticleBody render");
+    const { children } = this.props;
+
+    return (
+      <StyledArticleBody>
+        <Scrollbar className="custom-scrollbar" stype="mediumBlack">
+          <StyledArticleWrapper>{children}</StyledArticleWrapper>
+        </Scrollbar>
+      </StyledArticleBody>
+    );
+  }
+}
 
 ArticleBody.displayName = "ArticleBody";
 

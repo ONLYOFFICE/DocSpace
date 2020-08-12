@@ -102,10 +102,10 @@ class Form extends React.PureComponent {
                 />
               </>
             ) : (
-              <Text className="owner-confirm-message" fontSize='12px'>
-                {t("ConfirmOwnerPortalSuccessMessage")}
-              </Text>
-            )}
+                <Text className="owner-confirm-message" fontSize='12px'>
+                  {t("ConfirmOwnerPortalSuccessMessage")}
+                </Text>
+              )}
           </div>
         </div>
       </BodyStyle>
@@ -118,7 +118,11 @@ Form.propTypes = {};
 Form.defaultProps = {};
 
 const ChangePasswordForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Form {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 function mapStateToProps(state) {

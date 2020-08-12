@@ -46,73 +46,79 @@ const HomeContainer = styled.div`
 `;
 
 const Tiles = ({ modules, isPrimary }) => {
-    let index = 0;
+  let index = 0;
 
-    const mapped = modules.filter(m => m.isPrimary === isPrimary);
+  const mapped = modules.filter(m => m.isPrimary === isPrimary);
 
-    return mapped.length > 0 ? (
-        <div className="home-modules">
-            {
-                mapped.map(module => (
-                    <div className="home-module" key={++index}>
-                        <ModuleTile {...module} onClick={() => window.open(module.link, '_self')} />
-                    </div>
-                ))
-            }
-        </div>
-    ) : <></>;
+  return mapped.length > 0 ? (
+    <div className="home-modules">
+      {
+        mapped.map(module => (
+          <div className="home-module" key={++index}>
+            <ModuleTile {...module} onClick={() => window.open(module.link, '_self')} />
+          </div>
+        ))
+      }
+    </div>
+  ) : <></>;
 };
 
 Tiles.propTypes = {
-    modules: PropTypes.array.isRequired,
-    isPrimary: PropTypes.bool.isRequired
+  modules: PropTypes.array.isRequired,
+  isPrimary: PropTypes.bool.isRequired
 };
 
 const Body = ({ modules, match, isLoaded }) => {
-    const { t } = useTranslation('translation', { i18n });
-    const { error } = match.params;
+  const { t } = useTranslation('translation', { i18n });
+  const { error } = match.params;
 
-    document.title = `${t("OrganizationName")}`;
+  document.title = `${t("OrganizationName")}`;
 
-    useEffect(() => error && toastr.error(error), [error]);
+  useEffect(() => error && toastr.error(error), [error]);
 
-    useEffect(() => { 
-        changeLanguage(i18n);
-    }, []);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
-    return (
-        !isLoaded
-            ? (
-                <Loader className="pageLoader" type="rombs" size='40px' />
-            )
-            : (
-                <HomeContainer>
-                    <Tiles modules={modules} isPrimary={true} />
-                    <Tiles modules={modules} isPrimary={false} />
+  return (
+    !isLoaded
+      ? (
+        <Loader className="pageLoader" type="rombs" size='40px' />
+      )
+      : (
+        <HomeContainer>
+          <Tiles modules={modules} isPrimary={true} />
+          <Tiles modules={modules} isPrimary={false} />
 
-                    {!modules || !modules.length ? (
-                        <Text className="home-error-text" fontSize='14px' color="#c30">
-                            {t('NoOneModulesAvailable')}
-                        </Text> 
-                    ) : null}
-                </HomeContainer>
-            )
+          {!modules || !modules.length ? (
+            <Text className="home-error-text" fontSize='14px' color="#c30">
+              {t('NoOneModulesAvailable')}
+            </Text>
+          ) : null}
+        </HomeContainer>
+      )
 
-    );
+  );
 };
 
-const Home = props => <PageLayout sectionBodyContent={<Body {...props} />} />;
+const Home = props => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Body {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
+);
 
 Home.propTypes = {
-    modules: PropTypes.array.isRequired,
-    isLoaded: PropTypes.bool
+  modules: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool
 };
 
 function mapStateToProps(state) {
-    return {
-        modules: state.auth.modules,
-        isLoaded: state.auth.isLoaded
-    };
+  return {
+    modules: state.auth.modules,
+    isLoaded: state.auth.isLoaded
+  };
 }
 
 export default connect(mapStateToProps)(withRouter(Home));

@@ -53,6 +53,10 @@ class AddGroupsPanelComponent extends React.Component {
     onClose();
   };
 
+  onPLusClick = () => {
+    console.log("onPlusClick");
+  };
+
   componentDidMount() {
     const scroll = this.scrollRef.current.getElementsByClassName('scroll-body');
     setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
@@ -120,7 +124,7 @@ class AddGroupsPanelComponent extends React.Component {
                 size="16"
                 iconName="PlusIcon"
                 className="header_aside-panel-plus-icon"
-                onClick={() => console.log("onPlusClick")}
+                onClick={this.onPLusClick}
               />
             </StyledHeaderContent>
 

@@ -37,10 +37,13 @@ class PureVersionHistory extends React.Component {
     //document.title = `${t("GroupAction")} – ${t("People")}`;
 
     if (fileId) {
-      //fetchGroup(fileId);
-      api.files.getFileVersionInfo(fileId)
-        .then((versions) => this.setState({ versions }))
+      this.getFileVersions(fileId);
     }
+  }
+
+  getFileVersions = fileId => {
+    api.files.getFileVersionInfo(fileId)
+      .then((versions) => this.setState({ versions }))
   }
   
   onLoading = status => {
@@ -66,34 +69,57 @@ class PureVersionHistory extends React.Component {
           <PageLayout
             withBodyScroll={true}
             withBodyAutoFocus={true}
-            articleHeaderContent={<ArticleHeaderContent />}
-            articleMainButtonContent={
+          >
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+
+            <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent
                 onLoading={this.onLoading}
                 startUpload={this.startUpload}
               />
-            }
-            articleBodyContent={
+            </PageLayout.ArticleMainButton>
+
+            <PageLayout.ArticleBody>
               <ArticleBodyContent
                 onLoading={this.onLoading}
                 isLoading={this.state.isLoading}
               />
-            }
-            sectionHeaderContent={<SectionHeaderContent title={versions && versions[0].title} />}
-            sectionBodyContent={
-              <SectionBodyContent onLoading={this.onLoading} versions={versions} culture={settings.culture} />
-            }
-          />
+            </PageLayout.ArticleBody>
+
+            <PageLayout.SectionHeader>
+              <SectionHeaderContent title={versions && versions[0].title} />
+            </PageLayout.SectionHeader>
+
+            <PageLayout.SectionBody>
+              <SectionBodyContent
+                getFileVersions={this.getFileVersions}
+                onLoading={this.onLoading}
+                versions={versions}
+                culture={settings.culture}
+              />
+            </PageLayout.SectionBody>
+          </PageLayout>
         ) : (
-          <PageLayout
-            articleHeaderContent={<ArticleHeaderContent />}
-            articleMainButtonContent={<ArticleMainButtonContent />}
-            articleBodyContent={<ArticleBodyContent />}
-            sectionBodyContent={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          />
-        )}
+            <PageLayout>
+              <PageLayout.ArticleHeader>
+                <ArticleHeaderContent />
+              </PageLayout.ArticleHeader>
+
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
+
+              <PageLayout.ArticleBody>
+                <ArticleBodyContent />
+              </PageLayout.ArticleBody>
+
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
+          )}
       </>
     );
   }

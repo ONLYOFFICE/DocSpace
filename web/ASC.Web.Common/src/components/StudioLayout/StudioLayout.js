@@ -7,6 +7,7 @@ import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
 import PureStudioLayout from "./PureStudioLayout";
 import { changeLanguage } from '../../utils';
+import isEqual from "lodash/isEqual";
 
 const getSeparator = id => {
   return {
@@ -20,7 +21,7 @@ const toModuleWrapper = (item, iconName) => {
     id: item.id,
     title: item.title,
     iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
-    iconUrl: item.iconUrl, 
+    iconUrl: item.iconUrl,
     notifications: 0,
     url: item.link,
     onClick: (e) => {
@@ -66,11 +67,23 @@ const getAvailableModules = (modules, currentUser) => {
 
 const StudioLayoutContainer = withTranslation()(PureStudioLayout);
 
-const StudioLayout = props => {
-  changeLanguage(i18n);
+class StudioLayout extends React.Component {
+  constructor(props) {
+    super(props);
 
-  return <StudioLayoutContainer i18n={i18n} {...props} />;
-};
+    changeLanguage(i18n);
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
+
+  render() {
+    return <StudioLayoutContainer i18n={i18n} {...this.props} />;
+  }
+}
+
+StudioLayout.displayName = "StudioLayout";
 
 StudioLayout.propTypes = {
   logout: PropTypes.func.isRequired,
