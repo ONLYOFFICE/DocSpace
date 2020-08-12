@@ -68,6 +68,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.OneDrive.Sdk", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files.Core", "products\ASC.Files\Core\ASC.Files.Core.csproj", "{F0A39728-940D-4DBE-A37A-05D4EB57F342}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{BCDB378A-27D1-443B-B80E-DF94DA0221EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -201,6 +203,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B53855C-4347-4402-B750-76C6295A35D3} = {BCDB378A-27D1-443B-B80E-DF94DA0221EA}
+		{D4C1A5C9-2327-4181-B7FD-005ED240B09F} = {BCDB378A-27D1-443B-B80E-DF94DA0221EA}
+		{D78506D2-CC97-4063-A800-B16F5A063DE9} = {BCDB378A-27D1-443B-B80E-DF94DA0221EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {62783077-E041-40BA-A406-E7EF12CAFF2D}
