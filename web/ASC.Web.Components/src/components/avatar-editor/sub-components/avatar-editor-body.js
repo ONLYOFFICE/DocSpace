@@ -361,15 +361,6 @@ class AvatarEditorBody extends React.Component {
                                 step='0.01'
                                 value={this.state.scale}
                             />
-                            <IconButton
-                                iconName="RotateIcon"
-                                color="#A3A9AE"
-                                size="25"
-                                hoverColor="#657077"
-                                isFill={true}
-                                onClick={this.rotateLeft}
-                                className="arrow-button"
-                            />
                             <CloseButton onClick={this.deleteImage}></CloseButton>
                         </div>
                         <div className='avatar-container'>
