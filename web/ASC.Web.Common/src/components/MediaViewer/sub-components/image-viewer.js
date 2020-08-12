@@ -105,12 +105,12 @@ var customToolbar = [
     {
         key: 'zoomIn',
         actionType: 1,
-        render: <div className="iconContainer"><Icons.MediaZoomInIcon size="scale" /></div>
+        render: <div className="iconContainer zoomIn"><Icons.MediaZoomInIcon size="scale" /></div>
     },
     {
         key: 'zoomOut',
         actionType: 2,
-        render: <div className="iconContainer"><Icons.MediaZoomOutIcon size="scale" /></div>
+        render: <div className="iconContainer zoomOut"><Icons.MediaZoomOutIcon size="scale" /></div>
     },
     {
         key: 'reset',
@@ -120,12 +120,12 @@ var customToolbar = [
     {
         key: 'rotateLeft',
         actionType: 5,
-        render: <div className="iconContainer"><Icons.MediaRotateLeftIcon size="scale" /></div>
+        render: <div className="iconContainer rotateLeft"><Icons.MediaRotateLeftIcon size="scale" /></div>
     },
     {
         key: 'rotateRight',
         actionType: 6,
-        render: <div className="iconContainer"><Icons.MediaRotateRightIcon size="scale" /></div>
+        render: <div className="iconContainer rotateRight"><Icons.MediaRotateRightIcon size="scale" /></div>
     },
     {
         key: 'prev',
@@ -198,6 +198,7 @@ class ImageViewer extends React.Component {
                         return customToolbar;
                     }}
                     images={images}
+                    disableKeyboardSupport={true}
                 />
             </div>
         )
