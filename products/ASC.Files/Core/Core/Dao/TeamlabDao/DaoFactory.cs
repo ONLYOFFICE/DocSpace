@@ -37,7 +37,7 @@ namespace ASC.Files.Core.Data
 {
     public class DaoFactory : IDaoFactory
     {
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public IProviderDao ProviderDao { get; }
 
         public DaoFactory(IServiceProvider serviceProvider, IProviderDao providerDao)

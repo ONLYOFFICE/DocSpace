@@ -42,8 +42,8 @@ namespace ASC.Core.Data
 {
     public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
     {
-        public TenantDomainValidator TenantDomainValidator { get; }
-        public DbContextManager<TenantDbContext> DbContextManager { get; }
+        private TenantDomainValidator TenantDomainValidator { get; }
+        private DbContextManager<TenantDbContext> DbContextManager { get; }
 
         public ConfigureDbTenantService(
             TenantDomainValidator tenantDomainValidator,

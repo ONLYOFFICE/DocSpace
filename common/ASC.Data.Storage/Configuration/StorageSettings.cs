@@ -67,7 +67,7 @@ namespace ASC.Data.Storage.Configuration
             }, CacheNotifyAction.Remove);
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
     }
 
     [Serializable]
@@ -80,7 +80,7 @@ namespace ASC.Data.Storage.Configuration
         public ISettings GetDefault(IServiceProvider serviceProvider) => new T();
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
-        public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
+        internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
 
         public abstract Guid ID { get; }
     }
@@ -107,16 +107,16 @@ namespace ASC.Data.Storage.Configuration
 
     public class StorageSettingsHelper
     {
-        public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public ICacheNotify<DataStoreCacheItem> Cache { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private BaseStorageSettingsListener BaseStorageSettingsListener { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private PathUtils PathUtils { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private ICacheNotify<DataStoreCacheItem> Cache { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,

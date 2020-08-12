@@ -55,17 +55,17 @@ namespace ASC.Files.Core.Data
 
         private int tenantID;
         protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticProvider { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreConfiguration CoreConfiguration { get; }
-        public SettingsManager SettingsManager { get; }
-        public AuthContext AuthContext { get; }
-        public IServiceProvider ServiceProvider { get; }
+        protected UserManager UserManager { get; }
+        protected TenantManager TenantManager { get; }
+        protected TenantUtil TenantUtil { get; }
+        protected SetupInfo SetupInfo { get; }
+        protected TenantExtra TenantExtra { get; }
+        protected TenantStatisticsProvider TenantStatisticProvider { get; }
+        protected CoreBaseSettings CoreBaseSettings { get; }
+        protected CoreConfiguration CoreConfiguration { get; }
+        protected SettingsManager SettingsManager { get; }
+        protected AuthContext AuthContext { get; }
+        protected IServiceProvider ServiceProvider { get; }
 
         protected AbstractDao(
             DbContextManager<FilesDbContext> dbContextManager,

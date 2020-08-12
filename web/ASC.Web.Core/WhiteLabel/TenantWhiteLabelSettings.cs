@@ -199,14 +199,14 @@ namespace ASC.Web.Core.WhiteLabel
     {
         private const string moduleName = "whitelabel";
 
-        public WebImageSupplier WebImageSupplier { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public StorageFactory StorageFactory { get; }
-        public WhiteLabelHelper WhiteLabelHelper { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IOptionsMonitor<ILog> Option { get; }
+        private WebImageSupplier WebImageSupplier { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private WhiteLabelHelper WhiteLabelHelper { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public ILog Log { get; set; }
 

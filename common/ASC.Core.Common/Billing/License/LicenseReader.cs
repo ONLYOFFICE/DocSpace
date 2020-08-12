@@ -330,11 +330,11 @@ namespace ASC.Core.Billing
             }
         }
 
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public PaymentManager PaymentManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private IConfiguration Configuration { get; }
     }
 
     public static class LicenseReaderExtension

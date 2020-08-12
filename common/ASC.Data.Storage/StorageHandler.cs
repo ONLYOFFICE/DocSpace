@@ -61,7 +61,7 @@ namespace ASC.Data.Storage.DiscStorage
             _checkAuth = checkAuth;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public async Task Invoke(HttpContext context)
         {

@@ -21,14 +21,14 @@ namespace ASC.Web.Api.Controllers
     [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public AuthContext AuthContext { get; }
-        public AuthManager AuthManager { get; }
-        public CookiesManager CookiesManager { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private AuthContext AuthContext { get; }
+        private AuthManager AuthManager { get; }
+        private CookiesManager CookiesManager { get; }
 
         public AuthenticationController(
             UserManager userManager,

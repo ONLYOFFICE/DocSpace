@@ -43,7 +43,7 @@ namespace ASC.VoipService.Dao
     public class VoipDaoCache
     {
         public ICache Cache { get; }
-        public ICacheNotify<CachedVoipItem> Notify { get; }
+        private ICacheNotify<CachedVoipItem> Notify { get; }
 
         public VoipDaoCache(ICacheNotify<CachedVoipItem> notify)
         {
@@ -63,7 +63,7 @@ namespace ASC.VoipService.Dao
         private readonly ICache cache;
         private static readonly TimeSpan timeout = TimeSpan.FromDays(1);
 
-        public VoipDaoCache VoipDaoCache { get; }
+        private VoipDaoCache VoipDaoCache { get; }
 
         public CachedVoipDao(
             TenantManager tenantManager,

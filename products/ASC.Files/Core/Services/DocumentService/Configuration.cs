@@ -165,7 +165,7 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return Info.File.ConvertedExtension.Trim('.'); }
         }
 
-        public InfoConfig<T> Info { get; set; }
+        internal InfoConfig<T> Info { get; set; }
 
         public string Key
         {
@@ -378,9 +378,9 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public PluginsConfig Plugins { get; set; }
+        private PluginsConfig Plugins { get; set; }
 
-        public CustomizationConfig<T> Customization { get; set; }
+        internal CustomizationConfig<T> Customization { get; set; }
 
         public EmbeddedConfig Embedded
         {
@@ -486,8 +486,8 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + FilesLinkUtility.EditorPage + "?" + FilesLinkUtility.Action + "=view" + ShareLinkParam); }
         }
 
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
 
         public string ToolbarDocked { get => "top"; }
 
@@ -586,7 +586,7 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return !CoreBaseSettings.Standalone && !CoreBaseSettings.CustomMode; }
         }
 
-        public CustomerConfig<T> Customer { get; set; }
+        private CustomerConfig<T> Customer { get; set; }
 
         public FeedbackConfig Feedback
         {
@@ -685,7 +685,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public LogoConfig<T> Logo { get; set; }
+        private LogoConfig<T> Logo { get; set; }
 
         public string ReviewDisplay
         {

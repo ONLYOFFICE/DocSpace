@@ -61,8 +61,8 @@ namespace ASC.Web.Files.Utils
 {
     public class LockerManager
     {
-        public AuthContext AuthContext { get; }
-        public IDaoFactory DaoFactory { get; }
+        private AuthContext AuthContext { get; }
+        private IDaoFactory DaoFactory { get; }
 
         public LockerManager(AuthContext authContext, IDaoFactory daoFactory)
         {
@@ -93,10 +93,10 @@ namespace ASC.Web.Files.Utils
 
     public class BreadCrumbsManager
     {
-        public IDaoFactory DaoFactory { get; }
-        public FileSecurity FileSecurity { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public AuthContext AuthContext { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private AuthContext AuthContext { get; }
 
         public BreadCrumbsManager(
             IDaoFactory daoFactory,
@@ -173,26 +173,26 @@ namespace ASC.Web.Files.Utils
         private const string UPDATE_LIST = "filesUpdateList";
         private readonly ICache cache;
 
-        public IDaoFactory DaoFactory { get; }
-        public FileSecurity FileSecurity { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public PathProvider PathProvider { get; }
-        public AuthContext AuthContext { get; }
-        public FilesIntegration FilesIntegration { get; }
-        public FileMarker FileMarker { get; }
-        public FileUtility FileUtility { get; }
-        public Global Global { get; }
-        public GlobalStore GlobalStore { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public UserManager UserManager { get; }
-        public FileShareLink FileShareLink { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public LockerManager LockerManager { get; }
-        public BreadCrumbsManager BreadCrumbsManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private PathProvider PathProvider { get; }
+        private AuthContext AuthContext { get; }
+        private FilesIntegration FilesIntegration { get; }
+        private FileMarker FileMarker { get; }
+        private FileUtility FileUtility { get; }
+        private Global Global { get; }
+        private GlobalStore GlobalStore { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private UserManager UserManager { get; }
+        private FileShareLink FileShareLink { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private LockerManager LockerManager { get; }
+        private BreadCrumbsManager BreadCrumbsManager { get; }
+        private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
         public EntryManager(

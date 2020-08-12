@@ -133,13 +133,13 @@ namespace ASC.Api.Documents
     }
     public class FileWrapperHelper : FileEntryWrapperHelper
     {
-        public AuthContext AuthContext { get; }
-        public IDaoFactory DaoFactory { get; }
-        public FileSecurity FileSecurity { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
+        private AuthContext AuthContext { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileUtility FileUtility { get; }
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,

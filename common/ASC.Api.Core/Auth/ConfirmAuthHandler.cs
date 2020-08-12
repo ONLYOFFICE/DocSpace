@@ -45,13 +45,13 @@ namespace ASC.Api.Core.Auth
             AuthContext = authContext;
         }
 
-        public SecurityContext SecurityContext { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public AuthManager AuthManager { get; }
-        public AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private SetupInfo SetupInfo { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private AuthManager AuthManager { get; }
+        private AuthContext AuthContext { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

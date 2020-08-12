@@ -54,18 +54,18 @@ namespace ASC.Api.Settings
 
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
-        public ApiContext ApiContext { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public PermissionContext PermissionContext { get; }
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public CoreConfiguration CoreConfiguration { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
-        public MessageService MessageService { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
+        private ApiContext ApiContext { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private PermissionContext PermissionContext { get; }
+        private TenantManager TenantManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IConfiguration Configuration { get; }
+        private MessageService MessageService { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
 
         public SmtpSettingsController(

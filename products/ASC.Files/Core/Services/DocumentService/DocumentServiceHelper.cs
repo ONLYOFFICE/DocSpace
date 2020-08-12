@@ -49,18 +49,18 @@ namespace ASC.Web.Files.Services.DocumentService
 {
     public class DocumentServiceHelper
     {
-        public IDaoFactory DaoFactory { get; }
-        public FileShareLink FileShareLink { get; }
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public FileSecurity FileSecurity { get; }
-        public SetupInfo SetupInfo { get; }
-        public FileUtility FileUtility { get; }
-        public MachinePseudoKeys MachinePseudoKeys { get; }
-        public Global Global { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public LockerManager LockerManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileShareLink FileShareLink { get; }
+        private UserManager UserManager { get; }
+        private AuthContext AuthContext { get; }
+        private FileSecurity FileSecurity { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileUtility FileUtility { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
+        private Global Global { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private LockerManager LockerManager { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(
             IDaoFactory daoFactory,

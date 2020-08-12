@@ -54,7 +54,7 @@ namespace ASC.Web.Files.Services.WCFService
             set { }
         }
 
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         public UserInfo User;
 

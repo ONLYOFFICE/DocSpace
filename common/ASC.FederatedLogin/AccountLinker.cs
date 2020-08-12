@@ -70,10 +70,10 @@ namespace ASC.FederatedLogin
     }
     public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
     {
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public AccountLinkerStorage AccountLinkerStorage { get; }
-        public DbContextManager<AccountLinkContext> DbContextManager { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private AccountLinkerStorage AccountLinkerStorage { get; }
+        private DbContextManager<AccountLinkContext> DbContextManager { get; }
 
         public ConfigureAccountLinker(
             Signature signature,
@@ -105,10 +105,10 @@ namespace ASC.FederatedLogin
     public class AccountLinker
     {
         public string DbId { get; set; }
-        public Signature Signature { get; set; }
-        public InstanceCrypto InstanceCrypto { get; set; }
-        public AccountLinkerStorage AccountLinkerStorage { get; set; }
-        public DbContextManager<AccountLinkContext> AccountLinkContextManager { get; set; }
+        internal Signature Signature { get; set; }
+        internal InstanceCrypto InstanceCrypto { get; set; }
+        internal AccountLinkerStorage AccountLinkerStorage { get; set; }
+        internal DbContextManager<AccountLinkContext> AccountLinkContextManager { get; set; }
 
         public AccountLinkContext AccountLinkContext
         {

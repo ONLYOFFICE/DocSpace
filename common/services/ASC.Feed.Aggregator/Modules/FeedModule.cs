@@ -46,8 +46,8 @@ namespace ASC.Feed.Aggregator.Modules
             get { return TenantManager.GetCurrentTenant().TenantId; }
         }
 
-        public TenantManager TenantManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
+        protected TenantManager TenantManager { get; }
+        protected WebItemSecurity WebItemSecurity { get; }
 
         public FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
         {

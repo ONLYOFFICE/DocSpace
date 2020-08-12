@@ -120,7 +120,7 @@ namespace ASC.Web.Studio.Core
         public string RecaptchaVerifyUrl { get; private set; }
         public int LoginThreshold { get; private set; }
         public string AmiMetaUrl { get; private set; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public SetupInfo(IConfiguration configuration)
         {

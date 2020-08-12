@@ -55,8 +55,8 @@ namespace ASC.Security.Cryptography
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
         internal readonly TimeSpan ValidInterval;
 
-        public TenantManager TenantManager { get; }
-        public IConfiguration Configuration { get; }
+        private TenantManager TenantManager { get; }
+        private IConfiguration Configuration { get; }
 
         public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {

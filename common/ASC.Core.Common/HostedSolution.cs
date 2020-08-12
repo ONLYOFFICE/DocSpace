@@ -44,15 +44,15 @@ namespace ASC.Core
 {
     class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
     {
-        public UserFormatter UserFormatter { get; }
-        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        public IOptionsSnapshot<CachedUserService> UserService { get; }
-        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
-        public IOptionsSnapshot<TariffService> TariffService { get; }
-        public IOptionsSnapshot<TenantManager> TenantManager { get; }
-        public IOptionsSnapshot<TenantUtil> TenantUtil { get; }
-        public IOptionsSnapshot<DbSettingsManager> DbSettingsManager { get; }
-        public IOptionsSnapshot<CoreSettings> CoreSettings { get; }
+        private UserFormatter UserFormatter { get; }
+        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        private IOptionsSnapshot<CachedUserService> UserService { get; }
+        private IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        private IOptionsSnapshot<TariffService> TariffService { get; }
+        private IOptionsSnapshot<TenantManager> TenantManager { get; }
+        private IOptionsSnapshot<TenantUtil> TenantUtil { get; }
+        private IOptionsSnapshot<DbSettingsManager> DbSettingsManager { get; }
+        private IOptionsSnapshot<CoreSettings> CoreSettings { get; }
 
         public ConfigureHostedSolution(
             UserFormatter userFormatter,

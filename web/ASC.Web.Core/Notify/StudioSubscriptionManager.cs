@@ -77,7 +77,7 @@ namespace ASC.Web.Studio.Core.Notify
             get { return StudioNotifyHelper.SubscriptionProvider; }
         }
 
-        public StudioNotifyHelper StudioNotifyHelper { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
 
         #endregion
     }

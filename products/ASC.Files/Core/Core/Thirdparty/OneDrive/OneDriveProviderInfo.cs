@@ -80,8 +80,8 @@ namespace ASC.Files.Thirdparty.OneDrive
         public string ProviderKey { get; set; }
 
         public FolderType RootFolderType { get; set; }
-        public OneDriveStorageDisposableWrapper Wrapper { get; private set; }
-        public OneDriveProviderInfoHelper OneDriveProviderInfoHelper { get; }
+        private OneDriveStorageDisposableWrapper Wrapper { get; set; }
+        private OneDriveProviderInfoHelper OneDriveProviderInfoHelper { get; }
 
         public OneDriveProviderInfo(
             OneDriveStorageDisposableWrapper wrapper,
@@ -143,9 +143,9 @@ namespace ASC.Files.Thirdparty.OneDrive
 
     internal class OneDriveStorageDisposableWrapper : IDisposable
     {
-        public OneDriveStorage Storage { get; private set; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public IServiceProvider ServiceProvider { get; }
+        internal OneDriveStorage Storage { get; private set; }
+        internal ConsumerFactory ConsumerFactory { get; }
+        internal IServiceProvider ServiceProvider { get; }
 
         public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
         {

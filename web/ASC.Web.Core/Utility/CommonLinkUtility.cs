@@ -111,10 +111,10 @@ namespace ASC.Web.Studio.Utility
             get { return ToAbsolute("~/auth.aspx") + "?t=logout"; }
         }
 
-        public UserManager UserManager { get; }
-        public WebItemManagerSecurity WebItemManagerSecurity { get; }
-        public WebItemManager WebItemManager { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private UserManager UserManager { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private WebItemManager WebItemManager { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         public string GetDefault()
         {

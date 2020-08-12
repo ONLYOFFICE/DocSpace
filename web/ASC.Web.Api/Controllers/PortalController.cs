@@ -33,16 +33,16 @@ namespace ASC.Web.Api.Controllers
 
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
-        public ApiContext ApiContext { get; }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public PaymentManager PaymentManager { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public UrlShortener UrlShortener { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public SecurityContext SecurityContext { get; }
-        public IConfiguration Configuration { get; set; }
+        private ApiContext ApiContext { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private UrlShortener UrlShortener { get; }
+        private AuthContext AuthContext { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private SecurityContext SecurityContext { get; }
+        private IConfiguration Configuration { get; set; }
         public ILog Log { get; }
 
 

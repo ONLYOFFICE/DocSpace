@@ -52,7 +52,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         public ICache Cache { get; }
-        public ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
+        private ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
         public TenantLogoManager(
             TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
@@ -166,12 +166,12 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
-        public TenantManager TenantManager { get; }
-        public AuthContext AuthContext { get; }
-        public IConfiguration Configuration { get; }
+        private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private IConfiguration Configuration { get; }
 
         /// <summary>
         /// Get logo stream or null in case of default logo

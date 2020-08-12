@@ -44,10 +44,10 @@ namespace ASC.Web.Files.Configuration
         internal const string ProductPath = "/products/files/";
 
         //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         //public SubscriptionManager SubscriptionManager { get; }
 

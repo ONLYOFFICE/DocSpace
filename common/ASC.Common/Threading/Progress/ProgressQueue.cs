@@ -48,7 +48,7 @@ namespace ASC.Common.Threading.Progress
             Log = log;
         }
 
-        public IOptionsMonitor<ILog> Log { get; }
+        private IOptionsMonitor<ILog> Log { get; }
 
         public void PostConfigure(string name, ProgressQueue<T> queue)
         {

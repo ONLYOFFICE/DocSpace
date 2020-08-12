@@ -39,9 +39,9 @@ namespace ASC.Core.Notify.Jabber
 
         private static DateTime lastErrorTime = default;
 
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public JabberServiceClient(UserManager userManager, AuthContext authContext, TenantManager tenantManager)
         {

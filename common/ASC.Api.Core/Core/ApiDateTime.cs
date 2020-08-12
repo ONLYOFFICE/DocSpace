@@ -289,8 +289,8 @@ namespace ASC.Api.Core
 
         public DateTime UtcTime { get; private set; }
         public TimeSpan TimeZoneOffset { get; private set; }
-        public TenantManager TenantManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private TenantManager TenantManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         public static ApiDateTime GetSample()
         {
@@ -350,8 +350,8 @@ namespace ASC.Api.Core
 
     public class ApiDateTimeHelper
     {
-        public TenantManager TenantManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private TenantManager TenantManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         public ApiDateTimeHelper(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {

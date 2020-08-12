@@ -72,9 +72,9 @@ namespace ASC.Web.Files.Helpers
 
         public const string AppAttr = "docusign";
 
-        public TokenHelper TokenHelper { get; }
-        public AuthContext AuthContext { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private TokenHelper TokenHelper { get; }
+        private AuthContext AuthContext { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public DocuSignToken(
             TokenHelper tokenHelper,
@@ -153,19 +153,19 @@ namespace ASC.Web.Files.Helpers
 
         public static int MaxEmailLength = 10000;
 
-        public DocuSignToken DocuSignToken { get; }
-        public FileSecurity FileSecurity { get; }
-        public IDaoFactory DaoFactory { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public FileMarker FileMarker { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private DocuSignToken DocuSignToken { get; }
+        private FileSecurity FileSecurity { get; }
+        private IDaoFactory DaoFactory { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private UserManager UserManager { get; }
+        private AuthContext AuthContext { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private FileMarker FileMarker { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
