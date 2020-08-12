@@ -52,8 +52,16 @@ const StyledRow = styled(Row)`
     white-space: break-spaces;
 
     @media ${tablet} {
-      display: block;
+      display: none;
       text-decoration: none;
+    }
+  }
+
+  .version_text {
+    display: none;
+
+    @media ${tablet} {
+      display: block;
     }
   }
 
@@ -181,8 +189,9 @@ const VersionRow = props => {
 
 
   const contextOptions = [
-    { key: 'download', label: t('Download'), onClick: onDownloadAction },
+    { key: 'edit', label: t('EditComment'), onClick: onEditComment },
     { key: 'restore', label: t('Restore'), onClick: () => console.log(t('Restore')) },
+    { key: 'download', label: `${t('Download')}(${info.contentLength})`, onClick: onDownloadAction },
   ];
 
   return (
@@ -243,6 +252,7 @@ const VersionRow = props => {
             <Link onClick={onEditComment} className="version_link">
               {info.comment}
             </Link>
+            <Text className="version_text">{info.comment}</Text>
           </>
 
           <Link
