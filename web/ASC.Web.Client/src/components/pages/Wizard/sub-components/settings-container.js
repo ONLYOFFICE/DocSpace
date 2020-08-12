@@ -62,7 +62,8 @@ const SettingsContainer = ({
         className="email-value" 
         type="action" 
         fontSize="13px" 
-        fontWeight="600" 
+        fontWeight="600"
+        isHovered={true} 
         onClick={onClickChangeEmail}
       >
         {email ? email : emailOwner}
