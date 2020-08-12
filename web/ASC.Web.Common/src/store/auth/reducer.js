@@ -31,6 +31,7 @@ const initialState = {
       },
       greetingSettings: 'Web Office Applications',
       enableAdmMess: false,
+      urlLicense: "https://gnu.org/licenses/gpl-3.0.html"
   }
 }
 

@@ -58,7 +58,8 @@ const InputContainer = ({
   isLicenseRequired,
   hasErrorEmail,
   hasErrorPass, 
-  hasErrorLicense
+  hasErrorLicense,
+  urlLicense
 }) => {
   const refPassInput = useRef(null);
 
@@ -146,7 +147,8 @@ const InputContainer = ({
           type="page" 
           color="#116d9d" 
           fontSize="13px"
-          href="https://gnu.org/licenses/gpl-3.0.html" 
+          target="_blank"
+          href={urlLicense ? urlLicense : "https://gnu.org/licenses/gpl-3.0.html"} 
           isBold={false}
         >{t('licenseLink')}</Link>
       </Box>
@@ -164,7 +166,8 @@ InputContainer.propTypes = {
   onChangePassword: PropTypes.func.isRequired,
   isValidPassHandler: PropTypes.func.isRequired,
   license: PropTypes.bool.isRequired,
-  onChangeLicense: PropTypes.func.isRequired
+  onChangeLicense: PropTypes.func.isRequired,
+  urlLicense: PropTypes.string
 };
 
 export default InputContainer;

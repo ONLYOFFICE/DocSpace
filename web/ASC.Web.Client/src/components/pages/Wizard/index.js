@@ -152,7 +152,6 @@ class Body extends Component {
       ])
       .then(() => setIsWizardLoaded(true))
       .catch((e) => { 
-        console.log(e)
         this.setState({
           errorInitWizard: e
       })}); 
@@ -344,7 +343,8 @@ class Body extends Component {
       machineName, 
       settingsPassword,
       language, 
-      isLicenseRequired
+      isLicenseRequired,
+      urlLicense
     } = this.props;
 
     const { 
@@ -405,6 +405,7 @@ class Body extends Component {
               hasErrorEmail={hasErrorEmail}
               hasErrorPass={hasErrorPass}
               hasErrorLicense={hasErrorLicense}
+              urlLicense={urlLicense}
               onChangeLicense={this.onChangeLicense}
               isValidPassHandler={this.isValidPassHandler}
               onChangePassword={this.onChangePassword}
@@ -487,6 +488,7 @@ function mapStateToProps(state) {
     timezones: state.auth.settings.timezones,
 
     portalTimezone: state.auth.settings.timezone,
+    urlLicense: state.auth.settings.urlLicense,
     isLicenseRequired: state.wizard.isLicenseRequired,
 
     licenseUpload: state.wizard.licenseUpload
