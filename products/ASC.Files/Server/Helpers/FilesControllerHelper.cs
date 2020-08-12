@@ -549,6 +549,12 @@ namespace ASC.Files.Helpers
             return history.Select(FileWrapperHelper.Get);
         }
 
+        public FileWrapper<T> LockFile(T fileId, bool lockFile)
+        {
+            var result = FileStorageService.LockFile(fileId, lockFile);
+            return FileWrapperHelper.Get(result);
+        }
+
         public string UpdateComment(T fileId, int version, string comment)
         {
             return FileStorageService.UpdateComment(fileId, version, comment);
