@@ -38,9 +38,9 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
-using ASC.Files.Core.Resources;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -879,7 +879,6 @@ namespace ASC.Files.Core.Data
         public void CompleteVersion(int fileId, int fileVersion)
         {
             var toUpdate = Query(FilesDbContext.Files)
-                .AsNoTracking()
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version >= fileVersion);
 

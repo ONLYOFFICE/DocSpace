@@ -238,6 +238,7 @@ namespace ASC.Files.Core.Data
                     };
 
                     toAdd = FilesDbContext.Tag.Add(toAdd).Entity;
+                    FilesDbContext.SaveChanges();
                     id = toAdd.Id;
                 }
 
