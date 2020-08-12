@@ -470,26 +470,37 @@ WizardPage.propTypes = {
   isLoaded: PropTypes.bool
 }
 
-function mapStateToProps(state) {
+function mapStateToProps({ wizard, auth }) {
+  const {
+    isWizardLoaded,
+    machineName, 
+    isLicenseRequired, 
+    licenseUpload 
+  } = wizard;
+
+  const { 
+    culture, 
+    wizardToken, 
+    passwordSettings, 
+    cultures, 
+    timezones, 
+    timezone, 
+    urlLicense 
+  } = auth.settings;
+
   return {
-    isWizardLoaded: state.wizard.isWizardLoaded, 
-    machineName: state.wizard.machineName,
-
-    language: state.auth.settings.culture,
-
-    wizardToken: state.auth.settings.wizardToken,
-    settingsPassword: state.auth.settings.passwordSettings,
-    
-    isLoaded: state.auth.isLoaded,
-
-    cultures: state.auth.settings.cultures,
-    timezones: state.auth.settings.timezones,
-
-    portalTimezone: state.auth.settings.timezone,
-    urlLicense: state.auth.settings.urlLicense,
-    isLicenseRequired: state.wizard.isLicenseRequired,
-
-    licenseUpload: state.wizard.licenseUpload
+    isLoaded: auth.isLoaded,
+    isWizardLoaded: isWizardLoaded, 
+    machineName: machineName,
+    language: culture,
+    wizardToken: wizardToken,
+    settingsPassword: passwordSettings,
+    cultures: cultures,
+    timezones: timezones,
+    portalTimezone: timezone,
+    urlLicense: urlLicense,
+    isLicenseRequired: isLicenseRequired,
+    licenseUpload: licenseUpload
   };
 }
 
