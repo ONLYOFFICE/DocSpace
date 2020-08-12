@@ -37,7 +37,7 @@ namespace ASC.Security.Cryptography
     {
         private MachinePseudoKeys MachinePseudoKeys { get; }
 
-        private InstanceCrypto(MachinePseudoKeys machinePseudoKeys)
+        public InstanceCrypto(MachinePseudoKeys machinePseudoKeys)
         {
             MachinePseudoKeys = machinePseudoKeys;
         }
