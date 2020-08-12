@@ -51,7 +51,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMe([FromBody]AuthModel auth)
+        public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
             var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
@@ -83,9 +83,9 @@ namespace ASC.Web.Api.Controllers
 
         [AllowAnonymous]
         [Create("confirm", false)]
-        public ValidationResult CheckConfirm([FromBody]EmailValidationKeyModel model)
+        public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
         {
-            return model.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
+            return model.Validate();
         }
 
         private UserInfo GetUser(int tenantId, string userName, string password)

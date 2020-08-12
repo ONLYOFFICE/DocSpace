@@ -26,6 +26,7 @@ namespace ASC.Web.Studio.Utility
         PhoneAuth,
         Auth,
         TfaActivation,
-        TfaAuth
+        TfaAuth,
+        Wizard
     }
 }
