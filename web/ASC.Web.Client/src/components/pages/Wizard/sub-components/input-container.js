@@ -126,7 +126,7 @@ const InputContainer = ({
         ? <Link 
             className='generate-pass-link'
             type="action"
-            fontWeight="normal"
+            fontWeight="600"
             isHovered={true}
             onClick={() => refPassInput.current.onGeneratePassword()}>
               {t('generatePassword')}
