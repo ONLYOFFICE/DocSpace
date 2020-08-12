@@ -32,7 +32,6 @@ const ModalContainer = ({
   errorMessage, 
   emailOwner,
   settings,
-  successfullyMessage,
   onEmailChangeHandler,
   onSaveEmailHandler,
   onCloseModal
@@ -42,17 +41,15 @@ const ModalContainer = ({
 
   const visible = errorLoading ? errorLoading : visibleModal;
 
-  if(errorLoading || ( successfullyMessage && visibleModal )) {
-    header = successfullyMessage ? t('successfullyUpload') : t('errorLicenseTitle');
+  if(errorLoading) {
+    header = t('errorLicenseTitle');
     content = <BodyContainer> 
-        {successfullyMessage 
-          ? successfullyMessage 
-          : errorMessage
+        { errorMessage
             ? errorMessage
             : t('errorLicenseBody')}
     </BodyContainer>;
 
-  } else if( visibleModal && !successfullyMessage) {
+  } else if( visibleModal ) {
     header = t('changeEmailTitle');
 
     content = <EmailInput

@@ -97,8 +97,6 @@ class Body extends Component {
       hasErrorEmail: false,
       hasErrorPass: false, 
       hasErrorLicense: false,
-
-      successfullyMessage: null
     }
 
     document.title = t('wizardTitle');
@@ -301,8 +299,7 @@ class Body extends Component {
     this.setState({ 
       visibleModal: false, 
       errorLoading: false, 
-      errorMessage: null,
-      successfullyMessage: null 
+      errorMessage: null
     });
   }
 
@@ -325,10 +322,6 @@ class Body extends Component {
     fd.append("files", file );
 
     setLicense(wizardToken, fd)
-      .then(res =>  this.setState({
-          visibleModal: true,
-          successfullyMessage: res.message 
-      }))
       .catch( e => this.setState({
           errorLoading: true,
           errorMessage: e,
@@ -365,8 +358,7 @@ class Body extends Component {
       changeEmail,
       hasErrorEmail,
       hasErrorPass, 
-      hasErrorLicense,
-      successfullyMessage
+      hasErrorLicense
     } = this.state;
   
     console.log('wizard render');
@@ -386,7 +378,6 @@ class Body extends Component {
             errorMessage={errorMessage}
             emailOwner={changeEmail ? changeEmail : emailOwner}
             settings={emailSettings}
-            successfullyMessage={successfullyMessage}
             onEmailChangeHandler={this.onEmailChangeHandler}
             onSaveEmailHandler={this.onSaveEmailHandler}
             onCloseModal={this.onCloseModal}
