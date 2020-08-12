@@ -15,8 +15,6 @@ import {
 } from "asc-web-common";
 import { 
   Loader, 
-  Toast, 
-  toastr, 
   utils 
 } from 'asc-web-components';
 
@@ -97,6 +95,8 @@ class Body extends Component {
       hasErrorEmail: false,
       hasErrorPass: false, 
       hasErrorLicense: false,
+
+      checkingMessages: []
     }
 
     document.title = t('wizardTitle');
@@ -233,6 +233,8 @@ class Body extends Component {
             sending: false,
             errorMessage: e
         }))
+    } else {
+      this.setState({ visibleModal: true })
     }
   }
 
@@ -240,16 +242,20 @@ class Body extends Component {
     const { t, isLicenseRequired, licenseUpload } = this.props;
     const { isValidPass, emailValid, license, emailNeeded } = this.state;
 
+    let checkingMessages = [];
     if(!isValidPass) {
-      toastr.error(t('errorPassword'));
-      this.setState({hasErrorPass: true});
+      checkingMessages.push(t('errorPassword'));
+      this.setState({hasErrorPass: true, checkingMessages: checkingMessages });
     }
-    if(!license) toastr.error(t('errorLicenseRead'));
+    if(!license) {
+      checkingMessages.push(t('errorLicenseRead'));
+      this.setState({ checkingMessages: checkingMessages });
+    }
 
     if ( emailNeeded && !isLicenseRequired) {
       if(!emailValid) { 
-        this.setState({ hasErrorEmail: true });
-        toastr.error(t('errorEmail'));
+        checkingMessages.push(t('errorEmail'));
+        this.setState({ hasErrorEmail: true, checkingMessages: checkingMessages });
       }
 
       if( isValidPass && emailValid && license ) {
@@ -259,13 +265,13 @@ class Body extends Component {
 
     if (emailNeeded && isLicenseRequired) {
       if(!emailValid) {
-        toastr.error(t('errorEmail'));
-        this.setState({ hasErrorEmail: true });
+        checkingMessages.push(t('errorEmail'));
+        this.setState({ hasErrorEmail: true, checkingMessages: checkingMessages });
       }
 
       if(!licenseUpload) {
-        toastr.error(t('errorUploadLicenseFile'));
-        this.setState({ hasErrorLicense: true });
+        checkingMessages.push(t('errorUploadLicenseFile'));
+        this.setState({ hasErrorLicense: true,  checkingMessages: checkingMessages });
       }
 
       if( isValidPass && emailValid && license && licenseUpload) {
@@ -275,8 +281,8 @@ class Body extends Component {
 
     if (!emailNeeded && isLicenseRequired) {
       if(!licenseUpload) {
-        toastr.error(t('errorUploadLicenseFile'));
-        this.setState({ hasErrorLicense: true });
+        checkingMessages.push(t('errorUploadLicenseFile'));
+        this.setState({ hasErrorLicense: true, checkingMessages: checkingMessages });
       }
 
       if( isValidPass && license && licenseUpload) { 
@@ -358,7 +364,8 @@ class Body extends Component {
       changeEmail,
       hasErrorEmail,
       hasErrorPass, 
-      hasErrorLicense
+      hasErrorLicense,
+      checkingMessages
     } = this.state;
   
     console.log('wizard render');
@@ -371,13 +378,13 @@ class Body extends Component {
               buttonUrl="/" /> 
     } else if (isWizardLoaded) {
       return <WizardContainer>
-        <Toast/>
           <ModalContainer t={t}
             errorLoading={errorLoading}
             visibleModal={visibleModal}
             errorMessage={errorMessage}
             emailOwner={changeEmail ? changeEmail : emailOwner}
             settings={emailSettings}
+            checkingMessages={checkingMessages}
             onEmailChangeHandler={this.onEmailChangeHandler}
             onSaveEmailHandler={this.onSaveEmailHandler}
             onCloseModal={this.onCloseModal}

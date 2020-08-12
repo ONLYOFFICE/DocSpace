@@ -7,6 +7,7 @@ import {
   EmailInput, 
   Button,
   Box,
+  Text,
   utils 
 } from 'asc-web-components';
 
@@ -34,7 +35,8 @@ const ModalContainer = ({
   settings,
   onEmailChangeHandler,
   onSaveEmailHandler,
-  onCloseModal
+  onCloseModal,
+  checkingMessages
 }) => {
 
   let header, content, footer;
@@ -49,7 +51,7 @@ const ModalContainer = ({
             : t('errorLicenseBody')}
     </BodyContainer>;
 
-  } else if( visibleModal ) {
+  } else if( visibleModal && checkingMessages.length < 1) {
     header = t('changeEmailTitle');
 
     content = <EmailInput
@@ -73,6 +75,25 @@ const ModalContainer = ({
         size="big"
         onClick={onSaveEmailHandler}
       />
+    </BtnContainer>;
+  } else if ( visibleModal && checkingMessages.length > 0) {
+    header = t('errorParamsTitle');
+
+    content = <>
+      <Text as="p">{ t('errorParamsBody') }</Text>
+      {
+        checkingMessages.map((el, index) => <Text key={index} as="p">- {el};</Text>)
+      }
+    </>;
+
+    footer = <BtnContainer>
+      <Button
+        key="saveBtn"
+        label={t('errorParamsFooter')}
+        primary={true}
+        scale={true}
+        size="big"
+        onClick={onCloseModal} />
     </BtnContainer>;
   }
 
