@@ -399,7 +399,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#3B72A7'
                     />
                   }
-                  {false &&
+                  {fileStatus === 8 &&
                     <Icons.FileActionsLockedIcon
                       className='badge'
                       size='small'
