@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === "production") {
         useSuspense: false
       },
       backend: {
-        loadPath: `/locales/Home/{{lng}}/{{ns}}.json`
+        loadPath: `/locales/Wizard/{{lng}}/{{ns}}.json`
       }
     });
 } else if (process.env.NODE_ENV === "development") {
@@ -28,6 +28,9 @@ if (process.env.NODE_ENV === "production") {
   const resources = {
     en: {
       translation: require("./locales/en/translation.json")
+    }, 
+    ru: {
+      translation: require("./locales/ru/translation.json")
     }
   };
 

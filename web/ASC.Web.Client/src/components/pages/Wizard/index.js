@@ -122,9 +122,9 @@ class Body extends Component {
         getIsRequiredLicense(),
         getPortalTimezones(wizardToken)
           .then(() => {
-            const { timezones, portalTimezone } = this.props;
+            const { timezones, timezone } = this.props;
             const zones = this.mapTimezonesToArray(timezones);
-            const select = zones.filter(zone => zone.key === portalTimezone);
+            const select = zones.filter(zone => zone.key === timezone);
             this.setState({
               timezones: zones,
               selectTimezone: {
@@ -135,9 +135,9 @@ class Body extends Component {
           }),
         getPortalCultures()
           .then(() => {
-            const { cultures, language } = this.props;
+            const { cultures, culture } = this.props;
             const languages = this.mapCulturesToArray(cultures, t);
-            let select = languages.filter(lang => lang.key === language );
+            let select = languages.filter(lang => lang.key === culture );
             if (!select.length) select =  languages.filter(lang => lang.key === 'en-US' )
             this.setState({ 
               languages: languages, 
@@ -340,8 +340,8 @@ class Body extends Component {
       t,
       isWizardLoaded,  
       machineName, 
-      settingsPassword,
-      language, 
+      passwordSettings,
+      culture, 
       isLicenseRequired,
       urlLicense
     } = this.props;
@@ -394,7 +394,7 @@ class Body extends Component {
           
           <form className='wizard-form'>
             <InputContainer t={t}s
-              settingsPassword={settingsPassword}
+              settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
               password={password}
               license={license}
@@ -420,7 +420,7 @@ class Body extends Component {
               emailOwner={emailOwner} 
               email={email}
               machineName={machineName}
-              portalCulture={language}
+              portalCulture={culture}
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
               onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
@@ -436,15 +436,15 @@ class Body extends Component {
 }
 
 Body.propTypes = {
-  language: PropTypes.string,
+  culture: PropTypes.string,
   i18n: PropTypes.object,
   isWizardLoaded: PropTypes.bool.isRequired,
   machineName: PropTypes.string.isRequired,
   wizardToken: PropTypes.string,
-  settingsPassword: PropTypes.object,
+  passwordSettings: PropTypes.object,
   cultures: PropTypes.array.isRequired,
   timezones: PropTypes.array.isRequired,
-  portalTimezone: PropTypes.string.isRequired,
+  timezone: PropTypes.string.isRequired,
   licenseUpload: PropTypes.string
 }
 
@@ -466,7 +466,7 @@ const WizardPage = props => {
 }
 
 WizardPage.propTypes = {
-  language: PropTypes.string.isRequired,
+  culture: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool
 }
 
@@ -490,17 +490,17 @@ function mapStateToProps({ wizard, auth }) {
 
   return {
     isLoaded: auth.isLoaded,
-    isWizardLoaded: isWizardLoaded, 
-    machineName: machineName,
-    language: culture,
-    wizardToken: wizardToken,
-    settingsPassword: passwordSettings,
-    cultures: cultures,
-    timezones: timezones,
-    portalTimezone: timezone,
-    urlLicense: urlLicense,
-    isLicenseRequired: isLicenseRequired,
-    licenseUpload: licenseUpload
+    isWizardLoaded, 
+    machineName,
+    culture,
+    wizardToken,
+    passwordSettings,
+    cultures,
+    timezones,
+    timezone,
+    urlLicense,
+    isLicenseRequired,
+    licenseUpload
   };
 }
 
