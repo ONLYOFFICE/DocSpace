@@ -37,12 +37,15 @@ class PureVersionHistory extends React.Component {
     //document.title = `${t("GroupAction")} – ${t("People")}`;
 
     if (fileId) {
-      //fetchGroup(fileId);
-      api.files.getFileVersionInfo(fileId)
-        .then((versions) => this.setState({ versions }))
+      this.getFileVersions(fileId);
     }
   }
 
+  getFileVersions = fileId => {
+    api.files.getFileVersionInfo(fileId)
+      .then((versions) => this.setState({ versions }))
+  }
+  
   onLoading = status => {
     this.setState({ isLoading: status });
   };
@@ -91,6 +94,7 @@ class PureVersionHistory extends React.Component {
 
             <PageLayout.SectionBody>
               <SectionBodyContent
+                getFileVersions={this.getFileVersions}
                 onLoading={this.onLoading}
                 versions={versions}
                 culture={settings.culture}

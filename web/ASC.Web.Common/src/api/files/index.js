@@ -360,3 +360,18 @@ export function finalizeVersion(fileId, version, continueVersion) {
     data
   });
 }
+
+export function markAsVersion(fileId, continueVersion, version) {
+  const data = { continueVersion, version };
+  return request({ method: "put", url: `/files/file/${fileId}/history`, data });
+}
+
+export function versionEditComment(fileId, comment, version) {
+  const data = { comment, version };
+  return request({ method: "put", url: `/files/file/${fileId}/comment`, data });
+}
+
+export function versionRestore(fileId, version) {
+  const data = { version };
+  return request({ method: "put", url: `/files/file/${fileId}`, data });
+}

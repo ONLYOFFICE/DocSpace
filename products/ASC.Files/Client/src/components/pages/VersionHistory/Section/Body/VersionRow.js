@@ -100,9 +100,10 @@ const StyledRow = styled(Row)`
 `;
 
 const VersionRow = props => {
-  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion, t } = props;
+  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion, t, getFileVersions } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
-  const [commentValue, setCommentValue] = useState(info.comment);  
+  const [commentValue, setCommentValue] = useState(info.comment);
+  const [displayComment, setDisplayComment] = useState(info.comment);
 
   const VersionBadge = (props) => (
     <Box {...props} marginProp="0 8px" displayProp="flex">
@@ -140,11 +141,18 @@ const VersionRow = props => {
 
   const linkStyles = { isHovered: true, type: "action" };
 
-  const onDownloadAction = () => window.open(info.viewUrl);
+  const onDownloadAction = () => window.open(`${info.viewUrl}&version=${info.version}`);
   const onEditComment = () => setShowEditPanel(!showEditPanel);
 
   const onChange = e => setCommentValue(e.target.value);
-  const onSaveClick = () => console.log('onSaveClick server');
+
+  const onSaveClick = () =>
+    api.files
+      .versionEditComment(info.id, commentValue, info.version)
+      .then(() => setDisplayComment(commentValue))
+      .catch((err) => toastr.error(err))
+      .finally(() => onEditComment());
+
   const onCancelClick = () => {
     setCommentValue(info.comment);
     setShowEditPanel(!showEditPanel);
@@ -153,37 +161,27 @@ const VersionRow = props => {
 
   const onRestoreClick = () => {
     console.log("onRestoreClick");
-    /*const fileId = info.id;
 
-    onLoading(true);
-
+    //TODO: wait api request
+    /*onLoading(true);
     api.files
-      .finalizeVersionTest(fileId, info.version)
-      .then((data) => {
-        return fetchFiles(
-          selectedFolderId,
-          filter,
-          store.dispatch
-        ).catch((err) => toastr.error(err));
-      })
+      .versionRestore(info.id, info.version)
+      .then(() => getFileVersions(info.id))
+      .catch((err) => toastr.error(err))
       .finally(() => onLoading(false));*/
   }
 
   const onVersionClick = (e) => {
     console.log("onVersionClick");
-    /*const fileId = info.id;
+    
+    //TODO: wait api request
+    /*if(index === 0) return;
+    //const version = isVersion ? info.versionGroup : info.version;
 
     onLoading(true);
-
-    api.files
-      .finalizeVersionTest(fileId, info.version)
-      .then((data) => {
-        return fetchFiles(
-          selectedFolderId,
-          filter,
-          store.dispatch
-        ).catch((err) => toastr.error(err));
-      })
+    api.files.markAsVersion(info.id, isVersion, info.version)
+      .then(() => getFileVersions(info.id))
+      .catch((err) => toastr.error(err))
       .finally(() => onLoading(false));*/
   }
 
@@ -250,9 +248,9 @@ const VersionRow = props => {
             </>
           )}
             <Link onClick={onEditComment} className="version_link">
-              {info.comment}
+              {displayComment}
             </Link>
-            <Text className="version_text">{info.comment}</Text>
+            <Text className="version_text">{displayComment}</Text>
           </>
 
           <Link
@@ -272,7 +270,7 @@ const VersionRow = props => {
         </Box>
         {showEditPanel && (
             <Box className="version_edit-comment" marginProp='8px 0 16px 70px'>
-              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={'AddButton'}/>
+              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={t('AddButton')}/>
               <Button size='medium' onClick={onCancelClick} label={t('CancelButton')} />
             </Box>
         )}
@@ -292,4 +290,3 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, { })(withRouter(withTranslation()(VersionRow)));
-//export default VersionRow;
