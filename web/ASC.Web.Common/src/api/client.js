@@ -22,15 +22,16 @@ client.interceptors.response.use(
     return response;
   },
   error => {
-    if(!localStorage.getItem(WIZARD_KEY)) {
-      if (error.response.status === 401) {
-        setAuthorizationToken();
-        window.location.href = "/login/error=unauthorized";
-      }
+    if(localStorage.getItem(WIZARD_KEY)) 
+      return;
 
-      if (error.response.status === 502) {
-        // window.location.href = `/error/${error.response.status}`;
-      }
+    if (error.response.status === 401) {
+      setAuthorizationToken();
+      window.location.href = "/login/error=unauthorized";
+    }
+
+    if (error.response.status === 502) {
+      // window.location.href = `/error/${error.response.status}`;
     }
 
     return error;
@@ -57,13 +58,11 @@ const checkResponseError = res => {
   if(!res) return;
 
   if (res.data && res.data.error) {
-    console.log('-----------------------')
     console.error(res.data.error);
     throw new Error(res.data.error.message);
   }
 
   if(res.isAxiosError && res.message) {
-    console.log('-----------------------')
     console.error(res.message);
     //toastr.error(res.message);
     throw new Error(res.message);
