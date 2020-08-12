@@ -1,37 +1,50 @@
 import i18n from "i18next";
-import en from "./locales/en/translation.json";
-import ru from "./locales/ru/translation.json";
+import Backend from "i18next-xhr-backend";
 import { constants } from 'asc-web-common';
-
-const {LANGUAGE} = constants;
+const { LANGUAGE } = constants;
 
 const newInstance = i18n.createInstance();
 
-const resources = {
-  en: {
-    translation: en//require("./locales/en/translation.json")
-  },
-  ru: {
-    translation: ru//require("./locales/ru/translation.json")
-  }
-};
+if (process.env.NODE_ENV === "production") {
+  newInstance
+    .use(Backend)
+    .init({
+      lng: localStorage.getItem(LANGUAGE) || 'en',
+      fallbackLng: "en",
 
-newInstance.init({
-  resources: resources,
-  lng: localStorage.getItem(LANGUAGE) || 'en',
-  fallbackLng: "en",
+      interpolation: {
+        escapeValue: false, // not needed for react as it escapes by default
+      },
 
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-    format: function (value, format) {
-      if (format === 'lowercase') return value.toLowerCase();
-      return value;
+      react: {
+        useSuspense: false
+      },
+      backend: {
+        loadPath: `/locales/Home/{{lng}}/{{ns}}.json`
+      }
+    });
+} else if (process.env.NODE_ENV === "development") {
+
+  const resources = {
+    en: {
+      translation: require("./locales/en/translation.json")
     }
-  },
+  };
 
-  react: {
-    useSuspense: false
-  }
-});
+  newInstance.init({
+    resources: resources,
+    lng: localStorage.getItem(LANGUAGE) || 'en',
+    fallbackLng: "en",
+    debug: true,
+
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+
+    react: {
+      useSuspense: false
+    }
+  });
+}
 
 export default newInstance;
