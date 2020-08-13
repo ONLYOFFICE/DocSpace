@@ -375,3 +375,8 @@ export function versionRestore(fileId, version) {
   const data = { version };
   return request({ method: "put", url: `/files/file/${fileId}`, data });
 }
+
+export function lockFile(fileId, lockFile) {
+  const data = { lockFile };
+  return request({ method: "put", url: `/files/file/${fileId}/lock`, data });
+}

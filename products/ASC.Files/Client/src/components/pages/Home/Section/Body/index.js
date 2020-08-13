@@ -310,6 +310,22 @@ class SectionBodyContent extends React.Component {
     history.push(`${settings.homepage}/${fileId}/history`);
   }
 
+  lockFile = () => {
+    const { selection, /*files,*/ selectedFolderId, filter, onLoading } = this.props;
+    const file = selection[0];
+
+    api.files.lockFile(file.id, !file.locked)
+      .then(res => {
+        /*const newFiles = files;
+        const indexOfFile = newFiles.findIndex(x => x.id === res.id);
+        newFiles[indexOfFile] = res;*/
+        onLoading(true);
+        fetchFiles(selectedFolderId, filter, store.dispatch)
+          .catch(err => toastr.error(err))
+          .finally(() => onLoading(false));
+      })
+  }
+
   finalizeVersion = (e) => {
     const { selectedFolderId, filter, onLoading } = this.props;
 
@@ -376,7 +392,7 @@ class SectionBodyContent extends React.Component {
           key: "block-unblock-version",
           label: t("UnblockVersion"),
           icon: 'LockIcon',
-          onClick: () => console.log(t("UnblockVersion")),
+          onClick: this.lockFile,
           disabled: false
         },
         {

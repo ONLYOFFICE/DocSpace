@@ -300,7 +300,8 @@ class FilesRowContent extends React.PureComponent {
       foldersCount,
       fileStatus,
       id,
-      versionGroup
+      versionGroup,
+      locked
     } = item;
 
     const titleWithoutExt = getTitleWithoutExst(item);
@@ -399,7 +400,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#3B72A7'
                     />
                   }
-                  {fileStatus === 8 &&
+                  {locked &&
                     <Icons.FileActionsLockedIcon
                       className='badge'
                       size='small'
