@@ -358,6 +358,7 @@ class SectionBodyContent extends React.Component {
         {
           key: "show-version-history",
           label: t("ShowVersionHistory"),
+          icon: 'HistoryIcon',
           onClick: this.showVersionHistory,
           disabled: false,
           "data-id": item.id
@@ -365,6 +366,7 @@ class SectionBodyContent extends React.Component {
         {
           key: "finalize-version",
           label: t("FinalizeVersion"),
+          icon: 'HistoryFinalizedIcon',
           onClick: this.finalizeVersion,
           disabled: false,
             "data-id": item.id,
@@ -373,6 +375,7 @@ class SectionBodyContent extends React.Component {
         {
           key: "block-unblock-version",
           label: t("UnblockVersion"),
+          icon: 'LockIcon',
           onClick: () => console.log(t("UnblockVersion")),
           disabled: false
         },
@@ -387,6 +390,7 @@ class SectionBodyContent extends React.Component {
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
+        icon: 'CatalogSharedIcon',
         onClick: this.onClickShare,
         disabled: isSharable
       },
@@ -394,12 +398,14 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "send-by-email",
           label: t("SendByEmail"),
+          icon: 'MailIcon',
           disabled: true
         }
         : null,
       {
         key: "link-for-portal-users",
         label: t("LinkForPortalUsers"),
+        icon: 'InvitationLinkIcon',
         onClick: this.onClickLinkForPortal,
         disabled: false
       },
@@ -412,6 +418,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "edit",
           label: t("Edit"),
+          icon: 'AccessEditIcon',
           onClick: this.onClickLinkEdit,
           disabled: false,
           'data-id': item.id
@@ -421,6 +428,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "preview",
           label: t("Preview"),
+          icon: 'EyeIcon',
           onClick: this.onClickLinkEdit,
           disabled: true,
           'data-id': item.id
@@ -430,6 +438,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "view",
           label: t("View"),
+          icon: 'EyeIcon',
           onClick: this.onMediaFileClick,
           disabled: false
         }
@@ -438,6 +447,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "download",
           label: t("Download"),
+          icon: 'DownloadIcon',
           onClick: this.onClickDownload,
           disabled: false
         }
@@ -445,30 +455,35 @@ class SectionBodyContent extends React.Component {
       {
         key: "move",
         label: t("MoveTo"),
+        icon: 'DownloadAsIcon',
         onClick: this.onMoveAction,
         disabled: false
       },
       {
         key: "copy",
         label: t("Copy"),
+        icon: 'CopyIcon',
         onClick: this.onCopyAction,
         disabled: false
       },
       isFile && {
         key: "duplicate",
         label: t("Duplicate"),
+        icon: 'CopyIcon',
         onClick: this.onDuplicate,
         disabled: false
       },
       {
         key: "rename",
         label: t("Rename"),
+        icon: 'RenameIcon',
         onClick: this.onClickRename,
         disabled: false
       },
       {
         key: "delete",
         label: t("Delete"),
+        icon: 'CatalogTrashIcon',
         onClick: this.onClickDelete,
         disabled: false
       },
