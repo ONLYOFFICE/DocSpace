@@ -60,10 +60,10 @@ class CustomTitles extends React.Component {
       }
    }
 
-   componentDidMount(){
+   componentDidMount() {
       const { showReminder } = this.state
 
-      if((greetingTitleFromSessionStorage) && !showReminder){
+      if ((greetingTitleFromSessionStorage) && !showReminder) {
          this.setState({
             showReminder: true
          })
@@ -73,14 +73,14 @@ class CustomTitles extends React.Component {
       })
    }
 
-   componentDidUpdate(prevProps, prevState){
-      if (prevState.isLoadedData !== true){
+   componentDidUpdate(prevProps, prevState) {
+      if (prevState.isLoadedData !== true) {
          this.setState({
             isLoadedData: true
          })
       }
 
-      if(this.state.greetingTitleDefault){
+      if (this.state.greetingTitleDefault) {
          this.checkChanges()
       }
    }
@@ -88,7 +88,7 @@ class CustomTitles extends React.Component {
    onChangeGreetingTitle = (e) => {
       this.setState({ greetingTitle: e.target.value })
 
-      if(this.settingIsEqualInitialValue("greetingTitle", e.target.value)){
+      if (this.settingIsEqualInitialValue("greetingTitle", e.target.value)) {
          saveToSessionStorage("greetingTitle", "")
       } else {
          saveToSessionStorage("greetingTitle", e.target.value)
@@ -110,7 +110,7 @@ class CustomTitles extends React.Component {
       this.setState({
          showReminder: false,
          greetingTitle: greetingTitle,
-         greetingTitleDefault:greetingTitle, 
+         greetingTitleDefault: greetingTitle,
       })
    }
 
@@ -137,7 +137,7 @@ class CustomTitles extends React.Component {
       settingNames.forEach(currentSetting => {
          const valueFromSessionStorage = getFromSessionStorage(currentSetting);
 
-         if(valueFromSessionStorage && !this.settingIsEqualInitialValue(currentSetting, valueFromSessionStorage)) {
+         if (valueFromSessionStorage && !this.settingIsEqualInitialValue(currentSetting, valueFromSessionStorage)) {
             const defaultValue = this.state[currentSetting + "Default"];
 
             this.setState({ [currentSetting]: defaultValue })
@@ -163,16 +163,16 @@ class CustomTitles extends React.Component {
 
       settingNames.forEach(settingName => {
          const valueFromSessionStorage = getFromSessionStorage(settingName);
-         if(valueFromSessionStorage && !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)) hasChanged = true
+         if (valueFromSessionStorage && !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)) hasChanged = true
       })
 
-      if(hasChanged !== this.state.hasChanged){
+      if (hasChanged !== this.state.hasChanged) {
          this.setState({
             hasChanged: hasChanged,
          })
       }
    }
-   
+
    render() {
       const { t } = this.props;
       const { isLoadedData, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore, hasChanged, showReminder } = this.state;
@@ -195,18 +195,18 @@ class CustomTitles extends React.Component {
                            isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
                         />
                         <div className="link-wrapper">
-                           <Link 
+                           <Link
                               onClick={this.onRestoreGreetingSettings}
                               type="action"
                               color="#A3A9AE"
-                           > 
-                              {t('SetDefaultTitle')} 
+                           >
+                              {t('SetDefaultTitle')}
                            </Link>
                         </div>
 
                      </FieldContainer>
                   </div>
-                  {hasChanged && 
+                  {hasChanged &&
                      <SaveCancelButtons
                         onSaveClick={this.onSaveGreetingSettings}
                         onCancelClick={this.onCancelClick}
@@ -228,4 +228,4 @@ function mapStateToProps(state) {
    };
 }
 
-export default connect(mapStateToProps, {setGreetingTitle, restoreGreetingTitle})(withTranslation()(CustomTitles));
+export default connect(mapStateToProps, { setGreetingTitle, restoreGreetingTitle })(withTranslation()(CustomTitles));

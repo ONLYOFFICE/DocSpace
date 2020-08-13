@@ -178,7 +178,7 @@ class Customization extends React.Component {
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, language, timezone} = this.state;
+      const { isLoadedData, language, timezone } = this.state;
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
@@ -186,12 +186,12 @@ class Customization extends React.Component {
                <StyledComponent>
                   <div className="category-item-wrapper">
                      <div className="category-item-heading">
-                        <Link 
-                           className='inherit-title-link header' 
-                           onClick={this.onClickLink} 
+                        <Link
+                           className='inherit-title-link header'
+                           onClick={this.onClickLink}
                            truncate={true}
                            href="/settings/common/customization/language-and-time-zone">
-                              {t('StudioTimeLanguageSettings')}
+                           {t('StudioTimeLanguageSettings')}
                         </Link>
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>
@@ -202,12 +202,12 @@ class Customization extends React.Component {
                   </div>
                   <div className="category-item-wrapper">
                      <div className="category-item-heading">
-                        <Link 
+                        <Link
                            truncate={true}
                            className='inherit-title-link header'
-                           onClick={this.onClickLink} 
+                           onClick={this.onClickLink}
                            href="/settings/common/customization/custom-titles">
-                              {t('CustomTitles')}
+                           {t('CustomTitles')}
                         </Link>
                         <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
                      </div>

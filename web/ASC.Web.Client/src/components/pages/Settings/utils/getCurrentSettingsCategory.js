@@ -7,8 +7,8 @@ export const getCurrentSettingsCategory = (arrayOfParams, settingsTree) => {
     let categoryIndex = 0;
 
     const getCurrentSettingsGroupIndex = (currentParam) => {
-        for(let i = 0; i<settingsTree.length; i++){
-            if(currentParam && settingsTree[i].link === currentParam){
+        for (let i = 0; i < settingsTree.length; i++) {
+            if (currentParam && settingsTree[i].link === currentParam) {
                 return i
             }
         }
@@ -17,35 +17,35 @@ export const getCurrentSettingsCategory = (arrayOfParams, settingsTree) => {
     const getCurrentSettingsCategoryIndex = (currentParam) => {
         const currentCategories = settingsTree[groupIndex].children;
 
-        for(let i = 0; i<currentCategories.length; i++){
-            if(currentParam && currentCategories[i].link === currentParam){
+        for (let i = 0; i < currentCategories.length; i++) {
+            if (currentParam && currentCategories[i].link === currentParam) {
                 return i
             }
         }
     }
 
-    for(let i = 0; i<arrayOfParams.length || i<2; i++){
+    for (let i = 0; i < arrayOfParams.length || i < 2; i++) {
 
         const currentParam = arrayOfParams[i];
 
-        if(currentParam){
+        if (currentParam) {
 
-            switch(i) {
-                case 0 :
+            switch (i) {
+                case 0:
                     groupIndex = getCurrentSettingsGroupIndex(currentParam);
-                    key = groupIndex !== undefined 
-                        ? settingsTree[groupIndex].key + "-0" 
-                        : key
-                    break
-                
-                case 1 :
-                    categoryIndex = getCurrentSettingsCategoryIndex(currentParam);
-                    key = categoryIndex !== undefined 
-                        ? settingsTree[groupIndex].children[categoryIndex].key 
+                    key = groupIndex !== undefined
+                        ? settingsTree[groupIndex].key + "-0"
                         : key
                     break
 
-                default : 
+                case 1:
+                    categoryIndex = getCurrentSettingsCategoryIndex(currentParam);
+                    key = categoryIndex !== undefined
+                        ? settingsTree[groupIndex].children[categoryIndex].key
+                        : key
+                    break
+
+                default:
                     break
             }
         }
