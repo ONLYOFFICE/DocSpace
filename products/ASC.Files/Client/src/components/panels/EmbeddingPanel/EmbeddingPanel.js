@@ -32,7 +32,7 @@ class EmbeddingPanelComponent extends React.Component {
       size: "auto",
       widthValue: "100%",
       heightValue: "100%",
-      link: "",
+      link: `<iframe src="${props.embeddingLink}" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency> </iframe>`,
     };
 
     changeLanguage(i18n);

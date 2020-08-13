@@ -123,7 +123,8 @@ const SharingRow = (props) => {
     window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
 
   const onShareFacebook = () =>
-    window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);
+    window.open(`https://www.facebook.com`);
+    /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
 
   const options = [
     {
