@@ -169,6 +169,12 @@ import OrigSpreadsheetIcon from './spreadsheet.react.svg';
 import OrigUnionIcon from './union.react.svg';
 import OrigKeyIcon from './key.react.svg';
 
+import OrigHistoryFinalizedIcon from './history-finalized.react.svg';
+import OrigHistoryIcon from './history.react.svg';
+import OrigLockIcon from './lock.react.svg';
+import OrigDownloadAsIcon from './download-as.react.svg';
+import OrigRenameIcon from './rename.react.svg';
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   'AZSortingIcon'
@@ -824,4 +830,25 @@ export const SecurityIcon = createStyledIcon(
 export const ArrowRightIcon = createStyledIcon(
   OrigArrowRightIcon,
   'ArrowRightIcon'
+);
+
+export const HistoryFinalizedIcon = createStyledIcon(
+  OrigHistoryFinalizedIcon,
+  'HistoryFinalizedIcon'
+);
+export const HistoryIcon = createStyledIcon(
+  OrigHistoryIcon,
+  'HistoryIcon'
+);
+export const LockIcon = createStyledIcon(
+  OrigLockIcon,
+  'LockIcon'
+);
+export const DownloadAsIcon = createStyledIcon(
+  OrigDownloadAsIcon,
+  'DownloadAsIcon'
+);
+export const RenameIcon = createStyledIcon(
+  OrigRenameIcon,
+  'RenameIcon'
 );
