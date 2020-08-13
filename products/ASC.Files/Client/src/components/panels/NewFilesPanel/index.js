@@ -171,12 +171,16 @@ class NewFilesPanelComponent extends React.Component {
           fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
         } else {
           const filesFolder = folders.find(x => x.id === item.folderId);
-          filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
+          if(filesFolder) {
+            filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
+          }
         }
         this.props.setNewRowItems([`${item.id}`]);
       } else if(item && !item.fileExst) {
         const folderItem = folders.find(x => x.id === item.id && !x.fileExst);
-        folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
+        if(folderItem) {
+          folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
+        }
       }
     }
   
