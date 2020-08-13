@@ -99,6 +99,14 @@ namespace ASC.Api.Documents
 
         /// <summary>
         /// </summary>
+        public bool? Locked { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public string LockedBy { get; set; }
+
+        /// <summary>
+        /// </summary>
         /// <param name="file"></param>
         public FileWrapper()
         {
@@ -188,6 +196,9 @@ namespace ASC.Api.Documents
             result.PureContentLength = file.ContentLength.NullIfDefault();
             result.Comment = file.Comment;
             result.Encrypted = file.Encrypted.NullIfDefault();
+            result.Locked = file.Locked.NullIfDefault();
+            result.LockedBy = file.LockedBy;
+
             try
             {
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
