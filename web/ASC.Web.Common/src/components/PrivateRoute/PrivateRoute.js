@@ -16,24 +16,15 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     restricted,
     allowForMe,
     currentUser,
-    computedMatch
+    computedMatch,
+    wizardToken
   } = rest;
+
   const { userId } = computedMatch.params;
   const token = localStorage.getItem(AUTH_KEY);
 
   const renderComponent = useCallback(
     props => {
-      if (!token || (isLoaded && !isAuthenticated)) {
-        return (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location }
-            }}
-          />
-        );
-      }
-
       if (!isLoaded) {
         return (
           <PageLayout>
@@ -41,6 +32,17 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
               <Loader className="pageLoader" type="rombs" size='40px' />
             </PageLayout.SectionBody>
           </PageLayout>
+        );
+      }
+
+      if (!token || (isLoaded && !isAuthenticated)) {        
+        return (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location }
+            }}
+          />
         );
       }
 
@@ -66,11 +68,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       allowForMe,
       currentUser,
       userId,
+      wizardToken,
       Component
     ]
   );
 
-  // console.log("PrivateRoute render", rest);
+   console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
 };
 
@@ -79,7 +82,8 @@ function mapStateToProps(state) {
     isAuthenticated: state.auth.isAuthenticated,
     isLoaded: state.auth.isLoaded,
     isAdmin: isAdmin(state.auth.user),
-    currentUser: state.auth.user
+    currentUser: state.auth.user,
+    wizardToken: state.auth.settings.wizardToken
   };
 }
 

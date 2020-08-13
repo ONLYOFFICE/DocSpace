@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Core.Common.EF.Model
 {
     [Table("core_settings")]
-    public class DbCoreSettings
+    public class DbCoreSettings : BaseEntity
     {
         public int Tenant { get; set; }
         public string Id { get; set; }
@@ -13,6 +13,11 @@ namespace ASC.Core.Common.EF.Model
 
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
+
+        public override object[] GetKeys()
+        {
+            return new object[] { Tenant, Id };
+        }
     }
 
     public static class CoreSettingsExtension

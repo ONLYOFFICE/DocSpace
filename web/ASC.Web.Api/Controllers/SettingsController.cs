@@ -31,6 +31,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security;
 using System.ServiceModel.Security;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -75,6 +76,7 @@ using ASC.Web.Studio.Core.SMS;
 using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
+using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
@@ -112,6 +114,7 @@ namespace ASC.Api.Settings
         public ProviderManager ProviderManager { get; }
         public MobileDetector MobileDetector { get; }
         public IOptionsSnapshot<AccountLinker> AccountLinker { get; }
+        public FirstTimeTenantSettings FirstTimeTenantSettings { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
@@ -196,7 +199,8 @@ namespace ASC.Api.Settings
             IMemoryCache memoryCache,
             ProviderManager providerManager,
             MobileDetector mobileDetector,
-            IOptionsSnapshot<AccountLinker> accountLinker)
+            IOptionsSnapshot<AccountLinker> accountLinker,
+            FirstTimeTenantSettings firstTimeTenantSettings)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -211,6 +215,7 @@ namespace ASC.Api.Settings
             ProviderManager = providerManager;
             MobileDetector = mobileDetector;
             AccountLinker = accountLinker;
+            FirstTimeTenantSettings = firstTimeTenantSettings;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -249,7 +254,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper = storageSettingsHelper;
         }
 
-        [Read("")]
+        [Read("", Check = false)]
         [AllowAnonymous]
         public SettingsWrapper GetSettings()
         {
@@ -272,6 +277,11 @@ namespace ASC.Api.Settings
             }
             else
             {
+                if (!SettingsManager.Load<WizardSettings>().Completed)
+                {
+                    settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
+                }
+
                 settings.EnabledJoin =
                     (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
                     Tenant.TrustedDomains.Count > 0) ||
@@ -525,15 +535,17 @@ namespace ASC.Api.Settings
         }
 
         [AllowAnonymous]
-        [Read("cultures")]
+        [Read("cultures", Check = false)]
         public IEnumerable<object> GetSupportedCultures()
         {
             return SetupInfo.EnabledCultures.Select(r => r.Name).ToArray();
         }
 
-        [Read("timezones")]
-        public List<object> GetTimeZones()
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
+        [Read("timezones", Check = false)]
+        public List<TimezonesModel> GetTimeZones()
         {
+            ApiContext.AuthByClaim();
             var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
             if (timeZones.All(tz => tz.Id != "UTC"))
@@ -541,7 +553,7 @@ namespace ASC.Api.Settings
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            var listOfTimezones = new List<object>();
+            var listOfTimezones = new List<TimezonesModel>();
 
             foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
             {
@@ -563,6 +575,13 @@ namespace ASC.Api.Settings
             }
 
             return listOfTimezones;
+        }
+
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Read("machine", Check = false)]
+        public string GetMachineName()
+        {
+            return Dns.GetHostName().ToLowerInvariant();
         }
 
         [Read("greetingsettings")]
@@ -699,7 +718,7 @@ namespace ASC.Api.Settings
             return EnabledModules;
         }
 
-        [Read("security/password")]
+        [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
         public object GetPasswordSettings()
         {
@@ -1028,21 +1047,17 @@ namespace ASC.Api.Settings
             return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
         }
 
-        [Update("wizard/complete")]
-        public WizardSettings CompleteWizard()
+        [Update("wizard/complete", Check = false)]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        public WizardSettings CompleteWizard(WizardModel wizardModel)
         {
+            ApiContext.AuthByClaim();
+
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var settings = SettingsManager.Load<WizardSettings>();
-
-            if (settings.Completed)
-                return settings;
-
-            settings.Completed = true;
-            SettingsManager.Save(settings);
-
-            return settings;
+            return FirstTimeTenantSettings.SaveData(wizardModel);
         }
+
 
         [Update("tfaapp")]
         public bool TfaSettings(TfaModel model)
@@ -1321,12 +1336,63 @@ namespace ASC.Api.Settings
             return productId == Guid.Empty ? "All" : product != null ? product.Name : productId.ToString();
         }
 
-        [Read("license/refresh")]
+        [Read("license/refresh", Check = false)]
         public bool RefreshLicense()
         {
             if (!CoreBaseSettings.Standalone) return false;
             LicenseReader.RefreshLicense();
             return true;
+        }
+
+        [AllowAnonymous]
+        [Read("license/required", Check = false)]
+        public bool RequestLicense()
+        {
+            return FirstTimeTenantSettings.RequestLicense;
+        }
+
+
+        [Create("license", Check = false)]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        public object UploadLicense([FromForm]UploadLicenseModel model)
+        {
+            try
+            {
+                if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
+                if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
+
+                ApiContext.AuthByClaim();
+
+                var licenseFile = model.Files.First();
+                var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
+
+                return dueDate >= DateTime.UtcNow.Date
+                                     ? Resource.LicenseUploaded
+                                     : string.Format(Resource.LicenseUploadedOverdue,
+                                                     "",
+                                                     "",
+                                                     dueDate.Date.ToLongDateString());
+            }
+            catch (LicenseExpiredException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorExpired);
+            }
+            catch (LicenseQuotaException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorQuota);
+            }
+            catch (LicensePortalException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorPortal);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseError);
+            }
         }
 
 
@@ -1754,7 +1820,8 @@ namespace ASC.Api.Settings
                 .AddCustomNamingPeopleService()
                 .AddProviderManagerService()
                 .AddAccountLinker()
-                .AddMobileDetectorService();
+                .AddMobileDetectorService()
+                .AddFirstTimeTenantSettings();
         }
     }
 }

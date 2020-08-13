@@ -371,6 +371,12 @@ class SectionBodyContent extends React.Component {
             "data-version": item.version
         },
         {
+          key: "block-unblock-version",
+          label: t("UnblockVersion"),
+          onClick: () => console.log(t("UnblockVersion")),
+          disabled: false
+        },
+        {
           key: "sep2",
           isSeparator: true
         }

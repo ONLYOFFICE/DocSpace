@@ -57,6 +57,8 @@ namespace ASC.Api.Settings
 
         public bool? ThirdpartyEnable { get; set; }
 
+        public string WizardToken { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper

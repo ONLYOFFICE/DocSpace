@@ -18,6 +18,18 @@ const mediaTypes = Object.freeze({
     audio: 1,
     video: 2
 });
+
+const ButtonKeys = Object.freeze({
+    leftArrow: 37,
+    rightArrow: 39,
+    upArrow: 38,
+    downArrow: 40,
+    esc: 27,
+    ctr: 17,
+    one: 49
+});
+
+let ctrIsPressed = false;
 class MediaViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -131,6 +143,8 @@ class MediaViewer extends React.Component {
                 _this.hammer.on('swiperight', _this.prevMedia);
             }
         }, 500);
+        document.addEventListener("keydown", this.onKeydown, false);
+        document.addEventListener("keyup", this.onKeyup, false);
     }
 
     componentWillUnmount() {
@@ -140,6 +154,8 @@ class MediaViewer extends React.Component {
         this.hammer.off('pinchin', this.prevMedia);
         this.hammer.off('pinchend', this.prevMedia);
         this.hammer.off('doubletap', this.prevMedia);
+        document.removeEventListener("keydown", this.onKeydown, false);
+        document.removeEventListener("keyup", this.onKeyup, false);
     }
 
     mapSupplied = {
@@ -242,6 +258,53 @@ class MediaViewer extends React.Component {
     onDownload = () => {
         let currentFileId = this.state.playlist.length > 0 ? this.state.playlist.find(file => file.id === this.state.playlistPos).fileId : 0;
         this.props.onDownload && this.props.onDownload(currentFileId);
+    }
+    onKeyup = (e) => {
+        if(ButtonKeys.ctr === e.keyCode){
+            ctrIsPressed = false;
+        }
+    }
+    onKeydown = (e) => {
+        let isActionKey = false;
+
+        for(let key in ButtonKeys) {
+            if(ButtonKeys[key] === e.keyCode){
+                e.preventDefault();
+                isActionKey=true;
+            }
+        }
+
+        if(isActionKey){
+            switch (e.keyCode){
+                case ButtonKeys.leftArrow:
+                    ctrIsPressed 
+                        ? document.getElementsByClassName("iconContainer rotateLeft").length > 0 && document.getElementsByClassName("iconContainer rotateLeft")[0].click()
+                        : this.prevMedia()
+                    break
+                case ButtonKeys.rightArrow: 
+                    ctrIsPressed
+                        ? document.getElementsByClassName("iconContainer rotateRight").length > 0 && document.getElementsByClassName("iconContainer rotateRight")[0].click()
+                        : this.nextMedia()
+                    break
+                case ButtonKeys.esc:
+                    this.props.onClose()
+                    break
+                case ButtonKeys.upArrow:
+                    document.getElementsByClassName("iconContainer zoomIn").length > 0 && document.getElementsByClassName("iconContainer zoomIn")[0].click();
+                    break
+                case ButtonKeys.downArrow:
+                    document.getElementsByClassName("iconContainer zoomOut").length > 0 && document.getElementsByClassName("iconContainer zoomOut")[0].click();
+                    break
+                case ButtonKeys.ctr:
+                    ctrIsPressed = true;
+                    break
+                case ButtonKeys.one:
+                    ctrIsPressed && document.getElementsByClassName("iconContainer reset").length > 0 && document.getElementsByClassName("iconContainer reset")[0].click();
+                    break
+                default: 
+                    break
+            }
+        }
     }
     render() {
 

@@ -93,5 +93,6 @@
   "FinalizeVersion": "Сформировать версию",
   "Convert": "Конвертация",
   "Duplicate": "Создать копию",
-  "CopyOperation": "Копирование"
+  "CopyOperation": "Копирование",
+  "UnblockVersion": "Заблокировать/Разблокировать"
 }
