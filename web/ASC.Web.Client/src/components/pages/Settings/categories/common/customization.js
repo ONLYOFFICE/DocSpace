@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
+import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
-import { store, utils } from 'asc-web-common';
-import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
+import { store, utils, api } from 'asc-web-common';
+import { setLanguageAndTime, getPortalTimezones } from '../../../../../store/settings/actions';
 import { default as clientStore } from '../../../../../store/store';
 
 const { changeLanguage } = utils;
@@ -47,13 +47,45 @@ const StyledComponent = styled.div`
    .combo-button-label {
       max-width: 100%;
    }
+
+   .category-item-wrapper{
+      margin-bottom:40px;
+
+      .category-item-heading{
+         display:flex;
+         align-items: center;
+         margin-bottom: 5px;
+      }
+
+      .category-item-subheader{
+         font-size: 13px;
+         font-weight: 600;
+         margin-bottom: 5px;
+      }
+
+      .category-item-description{
+         color: #555F65;
+         font-size: 12px;
+         max-width: 1024px;
+      }
+
+      .inherit-title-link{
+         margin-right: 7px;
+         font-size:19px;
+         font-weight: 600;
+      }
+
+      .link-text{
+         margin:0;
+      }
+   }
 `;
 class Customization extends React.Component {
 
    constructor(props) {
       super(props);
 
-      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t, greetingSettings } = props;
+      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t } = props;
       const languages = mapCulturesToArray(rawCultures, t);
       const timezones = mapTimezonesToArray(rawTimezones);
 
@@ -66,16 +98,14 @@ class Customization extends React.Component {
          timezone: findSelectedItemByKey(timezones, portalTimeZoneId || timezones[0]),
          languages,
          language: findSelectedItemByKey(languages, portalLanguage || languages[0]),
-         greetingTitle: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
       }
    }
 
-
    componentDidMount() {
       const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
-      const { timezones, languages } = this.state;
+      const { timezones, languages, isLoadedData } = this.state;
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -91,6 +121,10 @@ class Customization extends React.Component {
 
                this.setState({ languages, language, timezones, timezone });
             });
+      }
+
+      if (timezones.length && languages.length && !isLoadedData) {
+         this.setState({ isLoadedData: true });
       }
    }
 
@@ -136,151 +170,52 @@ class Customization extends React.Component {
       })
    }
 
-   onChangeGreetingTitle = (e) => {
-      this.setState({ greetingTitle: e.target.value })
-   };
-
-   onSaveGreetingSettings = () => {
-      const { setGreetingTitle, t } = this.props;
-      this.setState({ isLoadingGreetingSave: true }, function () {
-         setGreetingTitle(this.state.greetingTitle)
-            .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
-            .catch((error) => toastr.error(error))
-            .finally(() => this.setState({ isLoadingGreetingSave: false }));
-      })
-   }
-
-   onRestoreGreetingSettings = () => {
-      const { restoreGreetingTitle, t } = this.props;
-      this.setState({ isLoadingGreetingRestore: true }, function () {
-         restoreGreetingTitle()
-            .then(() => {
-               this.setState({
-                  greetingTitle: this.props.greetingSettings
-               })
-               toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
-            })
-            .catch((error) => toastr.error(error))
-            .finally(() => this.setState({ isLoadingGreetingRestore: false }));
-      })
+   onClickLink = (e) => {
+      e.preventDefault();
+      const { history } = this.props;
+      history.push(e.target.pathname);
    }
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore } = this.state;
-      const supportEmail = "documentation@onlyoffice.com";
-      const tooltipLanguage =
-         <Text fontSize='13px'>
-            <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
-               "In case you cannot find your language in the list of the
-               available ones, feel free to write to us at
-               <Link href={`mailto:${supportEmail}`} isHovered={true}>
-                  {{ supportEmail }}
-               </Link> to take part in the translation and get up to 1 year free of
-               charge."
-            </Trans>
-            {" "}
-            <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
-         </Text>
-
-      console.log("CustomizationSettings render");
+      const { isLoadedData, language, timezone } = this.state;
       return (
          !isLoadedData ?
             <Loader className="pageLoader" type="rombs" size='40px' />
             : <>
                <StyledComponent>
-                  <div className='settings-block'>
-                     <Text fontSize='16px'>{t('StudioTimeLanguageSettings')}</Text>
-                     <FieldContainer
-                        id='fieldContainerLanguage'
-                        className='margin-top field-container-width'
-                        labelText={`${t("Language")}:`}
-                        tooltipContent={tooltipLanguage}
-                        helpButtonHeaderContent={t("Language")}
-                        isVertical={true}>
-                        <ComboBox
-                           id='comboBoxLanguage'
-                           options={languages}
-                           selectedOption={language}
-                           onSelect={this.onLanguageSelect}
-                           isDisabled={isLoading}
-                           noBorder={false}
-                           scaled={true}
-                           scaledOptions={true}
-                           dropDownMaxHeight={300}
-                           className='dropdown-item-width'
-                        />
-                     </FieldContainer>
-
-                     <FieldContainer
-                        id='fieldContainerTimezone'
-                        className='field-container-width'
-                        labelText={`${t("TimeZone")}:`}
-                        isVertical={true}>
-                        <ComboBox
-                           id='comboBoxTimezone'
-                           options={timezones}
-                           selectedOption={timezone}
-                           onSelect={this.onTimezoneSelect}
-                           isDisabled={isLoading}
-                           noBorder={false}
-                           scaled={true}
-                           scaledOptions={true}
-                           dropDownMaxHeight={300}
-                           className='dropdown-item-width'
-                        />
-                     </FieldContainer>
-                     <Button
-                        id='btnSaveLngTZ'
-                        className='margin-top'
-                        primary={true}
-                        size='medium'
-                        label={t('SaveButton')}
-                        isLoading={isLoading}
-                        onClick={this.onSaveLngTZSettings}
-                     />
+                  <div className="category-item-wrapper">
+                     <div className="category-item-heading">
+                        <Link
+                           className='inherit-title-link header'
+                           onClick={this.onClickLink}
+                           truncate={true}
+                           href="/settings/common/customization/language-and-time-zone">
+                           {t('StudioTimeLanguageSettings')}
+                        </Link>
+                        <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
+                     </div>
+                     <Text className="category-item-subheader" truncate={true}> {language.label} / {timezone.label} </Text>
+                     <Text className="category-item-description">
+                        {t('LanguageAndTimeZoneSettingsDescription')}
+                     </Text>
                   </div>
-
-                  <div className='settings-block'>
-                     <Text fontSize='16px'>{t('GreetingSettingsTitle')}</Text>
-                     <FieldContainer
-                        id='fieldContainerWelcomePage'
-                        className='margin-top field-container-width'
-                        labelText={`${t("GreetingTitle")}:`}
-                        isVertical={true}>
-                        <TextInput
-                           scale={true}
-                           value={greetingTitle}
-                           onChange={this.onChangeGreetingTitle}
-                           isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
-                        />
-
-                     </FieldContainer>
-
-                     <Button
-                        id='btnSaveGreetingSetting'
-                        className='margin-top'
-                        primary={true}
-                        size='medium'
-                        label={t('SaveButton')}
-                        isLoading={isLoadingGreetingSave}
-                        isDisabled={isLoadingGreetingRestore}
-                        onClick={this.onSaveGreetingSettings}
-                     />
-
-                     <Button
-                        id='btnRestoreToDefault'
-                        className='margin-top margin-left'
-                        size='medium'
-                        label={t('RestoreDefaultButton')}
-                        isLoading={isLoadingGreetingRestore}
-                        isDisabled={isLoadingGreetingSave}
-                        onClick={this.onRestoreGreetingSettings}
-                     />
+                  <div className="category-item-wrapper">
+                     <div className="category-item-heading">
+                        <Link
+                           truncate={true}
+                           className='inherit-title-link header'
+                           onClick={this.onClickLink}
+                           href="/settings/common/customization/custom-titles">
+                           {t('CustomTitles')}
+                        </Link>
+                        <Icons.ArrowRightIcon size="small" isfill={true} color="#333333" />
+                     </div>
+                     <Text className="category-item-description">
+                        {t('CustomTitlesSettingsDescription')}
+                     </Text>
                   </div>
-
                </StyledComponent>
-
             </>
       );
    }
@@ -293,12 +228,10 @@ function mapStateToProps(state) {
       language: state.auth.user.cultureName || state.auth.settings.culture,
       rawTimezones: state.auth.settings.timezones,
       rawCultures: state.auth.settings.cultures,
-      greetingSettings: state.auth.settings.greetingSettings,
       nameSchemaId: state.auth.settings.nameSchemaId
    };
 }
 
 export default connect(mapStateToProps, {
-   getPortalCultures, setLanguageAndTime, getPortalTimezones,
-   setGreetingTitle, restoreGreetingTitle
+   getPortalCultures, setLanguageAndTime, getPortalTimezones
 })(withTranslation()(Customization));

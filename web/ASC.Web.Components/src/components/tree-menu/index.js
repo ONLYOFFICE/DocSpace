@@ -25,11 +25,15 @@ const StyledTreeMenu = styled(Tree)`
     .rc-tree-child-tree {
         display: none;
     }
+    .rc-tree-treenode-switcher-open{
+        ${props => props.disableSwitch && "margin-bottom:10px;"}
+    }
     .rc-tree-child-tree-open {
         display: block;
-        margin-left: 8px;
+        ${props => props.disableSwitch && "margin: 0 0 25px 0;"}
+        margin-left: ${props => props.disableSwitch ? "27px" : "8px"};
         li:first-child{
-            margin-top: 6px;
+            margin-top: ${props => props.disableSwitch ? "10px" : "6px"};
             margin-left: 0;
         }
         
@@ -68,13 +72,23 @@ const StyledTreeMenu = styled(Tree)`
         `
         : ''
     }
+    ${props => props.disableSwitch ? 
+        css`
+            li span.rc-tree-switcher{
+                height: 0;
+                margin: 0;
+                width: 0;
+            }
+        `
+        : ``
+    }
 `;
 
 const TreeMenu = React.forwardRef((props, ref) => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, loadData } = props;
+        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, loadData, disableSwitch } = props;
 
     const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
@@ -122,6 +136,8 @@ const TreeMenu = React.forwardRef((props, ref) => {
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             onRightClick={onRightClick}
+
+            disableSwitch={disableSwitch}
         >
             {children}
         </StyledTreeMenu>
@@ -149,7 +165,13 @@ TreeMenu.propTypes = {
     ]),
     className: PropTypes.string,
     id: PropTypes.string,
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+
+    disableSwitch: PropTypes.bool
+}
+
+TreeMenu.defaultProps = {
+    disableSwitch: false
 }
 
 TreeMenu.displayName = "TreeMenu";

@@ -584,52 +584,36 @@ namespace ASC.Api.Settings
             return Dns.GetHostName().ToLowerInvariant();
         }
 
-        /*        [Read("greetingsettings")]
-                public string GetGreetingSettings()
-                {
-                    return Tenant.Name;
-                }*/
+        [Read("greetingsettings")]
+        public ContentResult GetGreetingSettings()
+        {
+            return new ContentResult { Content = Tenant.Name };
+        }
 
         [Create("greetingsettings")]
-        public object SaveGreetingSettings(GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettings(GreetingSettingsModel model)
         {
-            try
-            {
-                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-                Tenant.Name = model.Title;
-                TenantManager.SaveTenant(Tenant);
+            Tenant.Name = model.Title;
+            TenantManager.SaveTenant(Tenant);
 
-                MessageService.Send(MessageAction.GreetingSettingsUpdated);
+            MessageService.Send(MessageAction.GreetingSettingsUpdated);
 
-                return new { Status = 1, Message = Resource.SuccessfullySaveGreetingSettingsMessage };
-            }
-            catch (Exception e)
-            {
-                return new { Status = 0, Message = e.Message.HtmlEncode() };
-            }
+            return new ContentResult { Content = Resource.SuccessfullySaveGreetingSettingsMessage };
         }
 
         [Create("greetingsettings/restore")]
-        public object RestoreGreetingSettings()
+        public ContentResult RestoreGreetingSettings()
         {
-            try
-            {
-                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-                TenantInfoSettingsHelper.RestoreDefaultTenantName();
+            TenantInfoSettingsHelper.RestoreDefaultTenantName();
 
-                return new
-                {
-                    Status = 1,
-                    Message = Resource.SuccessfullySaveGreetingSettingsMessage,
-                    CompanyName = Tenant.Name
-                };
-            }
-            catch (Exception e)
+            return new ContentResult
             {
-                return new { Status = 0, Message = e.Message.HtmlEncode() };
-            }
+                Content = Tenant.Name
+            };
         }
 
         //[Read("recalculatequota")]
