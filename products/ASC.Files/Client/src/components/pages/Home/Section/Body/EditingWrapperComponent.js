@@ -14,7 +14,7 @@ const EditingWrapper = styled.div`
     height: 30px;
     font-size: 15px;
     outline: 0 !important;
-    font-weight: bold;
+    font-weight: 600;
     margin: 0;
     font-family: 'Open Sans',sans-serif,Arial;
     text-align: left;
