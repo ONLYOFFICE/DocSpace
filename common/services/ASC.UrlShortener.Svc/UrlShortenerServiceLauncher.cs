@@ -36,7 +36,7 @@ namespace ASC.UrlShortener.Svc
 {
     public class UrlShortenerServiceLauncher : IHostedService
     {
-        public UrlShortenerService UrlShortenerService { get; }
+        private UrlShortenerService UrlShortenerService { get; }
 
         public UrlShortenerServiceLauncher(UrlShortenerService urlShortenerService)
         {

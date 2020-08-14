@@ -23,12 +23,12 @@ namespace ASC.Employee.Core.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        public MessageService MessageService { get; }
+        private MessageService MessageService { get; }
 
-        public UserManager UserManager { get; }
-        public PermissionContext PermissionContext { get; }
-        public MessageTarget MessageTarget { get; }
-        public GroupWraperFullHelper GroupWraperFullHelper { get; }
+        private UserManager UserManager { get; }
+        private PermissionContext PermissionContext { get; }
+        private MessageTarget MessageTarget { get; }
+        private GroupWraperFullHelper GroupWraperFullHelper { get; }
 
         public GroupController(
             MessageService messageService,

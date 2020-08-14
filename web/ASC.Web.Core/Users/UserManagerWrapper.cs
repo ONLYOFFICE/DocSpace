@@ -48,19 +48,19 @@ namespace ASC.Web.Core.Users
     /// </summary>
     public sealed class UserManagerWrapper
     {
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public MessageService MessageService { get; }
-        public CustomNamingPeople CustomNamingPeople { get; }
-        public TenantUtil TenantUtil { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IPSecurity.IPSecurity IPSecurity { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public UserFormatter UserFormatter { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private MessageService MessageService { get; }
+        private CustomNamingPeople CustomNamingPeople { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IPSecurity.IPSecurity IPSecurity { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private UserFormatter UserFormatter { get; }
 
         public UserManagerWrapper(
             StudioNotifyService studioNotifyService,

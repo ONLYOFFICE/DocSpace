@@ -35,7 +35,7 @@ namespace ASC.Common.Caching
 {
     public class AscCacheNotify
     {
-        public ICacheNotify<AscCacheItem> CacheNotify { get; }
+        private ICacheNotify<AscCacheItem> CacheNotify { get; }
 
         public AscCacheNotify(ICacheNotify<AscCacheItem> cacheNotify)
         {

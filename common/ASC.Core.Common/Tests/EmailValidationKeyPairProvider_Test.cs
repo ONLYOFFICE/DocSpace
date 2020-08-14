@@ -36,7 +36,7 @@ namespace ASC.Common.Tests.Security.Cryptography
     [TestFixture]
     public class EmailValidationKeyPairProvider_Test
     {
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; set; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; set; }
 
         public void PasswordDerivedBytes_Test()
         {

@@ -93,10 +93,10 @@ namespace ASC.Api.Documents
 
     public class FolderWrapperHelper : FileEntryWrapperHelper
     {
-        public AuthContext AuthContext { get; }
-        public IDaoFactory DaoFactory { get; }
-        public FileSecurity FileSecurity { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
+        private AuthContext AuthContext { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
 
         public FolderWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,

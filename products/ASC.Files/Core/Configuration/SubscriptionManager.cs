@@ -129,8 +129,8 @@ namespace ASC.Web.Files.Classes
             get { return NotifySource.GetSubscriptionProvider(); }
         }
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public NotifySource NotifySource { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private NotifySource NotifySource { get; }
 
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {

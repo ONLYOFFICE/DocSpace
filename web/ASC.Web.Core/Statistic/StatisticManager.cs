@@ -44,7 +44,7 @@ namespace ASC.Web.Studio.Core.Statistic
         private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
         private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
 
-        public WebstudioDbContext WebstudioDbContext { get; }
+        private WebstudioDbContext WebstudioDbContext { get; }
 
         public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
         {

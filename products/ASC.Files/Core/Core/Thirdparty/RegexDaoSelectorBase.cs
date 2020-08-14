@@ -38,8 +38,8 @@ namespace ASC.Files.Thirdparty
 {
     internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : class, IProviderInfo
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IDaoFactory DaoFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IDaoFactory DaoFactory { get; }
         public Regex Selector { get; set; }
         protected internal abstract string Name { get; }
         protected internal abstract string Id { get; }

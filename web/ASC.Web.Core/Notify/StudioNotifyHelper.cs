@@ -59,13 +59,13 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly string NotificationImagePath;
 
         private UserManager UserManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private SettingsManager SettingsManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
         private SetupInfo SetupInfo { get; }
         private TenantManager TenantManager { get; }
-        public TenantExtra TenantExtra { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebImageSupplier WebImageSupplier { get; }
+        private TenantExtra TenantExtra { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private WebImageSupplier WebImageSupplier { get; }
         private ILog Log { get; }
 
         public StudioNotifyHelper(

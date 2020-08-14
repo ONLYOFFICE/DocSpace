@@ -37,8 +37,8 @@ namespace ASC.Web.Studio.UserControls.Statistics
 {
     public class TenantStatisticsProvider
     {
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
 
         public TenantStatisticsProvider(UserManager userManager, TenantManager tenantManager)
         {

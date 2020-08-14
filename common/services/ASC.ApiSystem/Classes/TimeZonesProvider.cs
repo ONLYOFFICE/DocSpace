@@ -39,7 +39,7 @@ namespace ASC.ApiSystem.Classes
     {
         public ILog Log { get; }
 
-        public CommonConstants CommonConstants { get; }
+        private CommonConstants CommonConstants { get; }
 
         public TimeZonesProvider(IOptionsMonitor<ILog> option, CommonConstants commonConstants)
         {

@@ -39,7 +39,7 @@ namespace ASC.Web.Files.Helpers
     public class WordpressToken
     {
         public ILog Log { get; set; }
-        public TokenHelper TokenHelper { get; }
+        private TokenHelper TokenHelper { get; }
 
         public const string AppAttr = "wordpress";
 

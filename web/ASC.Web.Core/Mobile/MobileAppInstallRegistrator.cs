@@ -36,7 +36,7 @@ namespace ASC.Web.Core.Mobile
 {
     public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
     {
-        public DbContext DbContext { get; }
+        private DbContext DbContext { get; }
 
         public MobileAppInstallRegistrator(DbContextManager<DbContext> dbContext)
         {

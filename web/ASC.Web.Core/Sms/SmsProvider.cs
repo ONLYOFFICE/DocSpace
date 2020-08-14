@@ -56,7 +56,7 @@ namespace ASC.Web.Core.Sms
     public class SmsProviderManager
     {
         public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
-        public ConsumerFactory ConsumerFactory { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public ClickatellProvider ClickatellProvider { get => ConsumerFactory.Get<ClickatellProvider>(); }
         public TwilioProvider TwilioProvider { get => ConsumerFactory.Get<TwilioProvider>(); }
@@ -397,7 +397,7 @@ namespace ASC.Web.Core.Sms
             set { }
         }
 
-        public VoipDao VoipDao { get; }
+        private VoipDao VoipDao { get; }
 
         public override bool Enable()
         {

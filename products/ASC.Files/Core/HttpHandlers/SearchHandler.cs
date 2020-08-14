@@ -63,16 +63,16 @@ namespace ASC.Web.Files.Configuration
             get { return FilesCommonResource.Search; }
         }
 
-        public FileSecurity FileSecurity { get; }
-        public IDaoFactory DaoFactory { get; }
-        public Global Global { get; }
-        public EntryManager EntryManager { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
-        public PathProvider PathProvider { get; }
-        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private FileSecurity FileSecurity { get; }
+        private IDaoFactory DaoFactory { get; }
+        private Global Global { get; }
+        private EntryManager EntryManager { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileUtility FileUtility { get; }
+        private PathProvider PathProvider { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
 
         public SearchHandler(
             FileSecurity fileSecurity,

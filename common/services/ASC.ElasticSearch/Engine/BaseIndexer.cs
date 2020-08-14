@@ -84,14 +84,14 @@ namespace ASC.ElasticSearch
         private const int QueryLimit = 1000;
 
         public bool IsExist { get; set; }
-        public Client Client { get; }
+        private Client Client { get; }
         public ILog Log { get; }
-        public TenantManager TenantManager { get; }
-        public SearchSettingsHelper SearchSettingsHelper { get; }
-        public BaseIndexerHelper BaseIndexerHelper { get; }
-        public Settings Settings { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public WebstudioDbContext WebstudioDbContext { get; }
+        private TenantManager TenantManager { get; }
+        private SearchSettingsHelper SearchSettingsHelper { get; }
+        private BaseIndexerHelper BaseIndexerHelper { get; }
+        private Settings Settings { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private WebstudioDbContext WebstudioDbContext { get; }
 
         public BaseIndexer(
             Client client,

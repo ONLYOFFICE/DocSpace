@@ -56,7 +56,7 @@ namespace ASC.Web.Files.Classes
 {
     public class GlobalNotify
     {
-        public ICacheNotify<AscCacheItem> Notify { get; set; }
+        private ICacheNotify<AscCacheItem> Notify { get; set; }
         public ILog Logger { get; set; }
 
         public GlobalNotify(ICacheNotify<AscCacheItem> notify, IOptionsMonitor<ILog> options, CoreBaseSettings coreBaseSettings)
@@ -98,13 +98,13 @@ namespace ASC.Web.Files.Classes
 
     public class Global
     {
-        public IConfiguration Configuration { get; }
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public CustomNamingPeople CustomNamingPeople { get; }
-        public FileSecurityCommon FileSecurityCommon { get; }
+        private IConfiguration Configuration { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private CustomNamingPeople CustomNamingPeople { get; }
+        private FileSecurityCommon FileSecurityCommon { get; }
 
         public Global(
             IConfiguration configuration,
@@ -198,8 +198,8 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalStore
     {
-        public StorageFactory StorageFactory { get; }
-        public TenantManager TenantManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private TenantManager TenantManager { get; }
 
         public GlobalStore(StorageFactory storageFactory, TenantManager tenantManager)
         {
@@ -220,8 +220,8 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalSpace
     {
-        public FilesUserSpaceUsage FilesUserSpaceUsage { get; }
-        public AuthContext AuthContext { get; }
+        private FilesUserSpaceUsage FilesUserSpaceUsage { get; }
+        private AuthContext AuthContext { get; }
 
         public GlobalSpace(FilesUserSpaceUsage filesUserSpaceUsage, AuthContext authContext)
         {
@@ -242,15 +242,15 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalFolder
     {
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebItemManager WebItemManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public GlobalStore GlobalStore { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private WebItemManager WebItemManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private GlobalStore GlobalStore { get; }
+        private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
         public GlobalFolder(
@@ -493,9 +493,9 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalFolderHelper
     {
-        public FileMarker FileMarker { get; }
-        public IDaoFactory DaoFactory { get; }
-        public GlobalFolder GlobalFolder { get; }
+        private FileMarker FileMarker { get; }
+        private IDaoFactory DaoFactory { get; }
+        private GlobalFolder GlobalFolder { get; }
 
         public GlobalFolderHelper(FileMarker fileMarker, IDaoFactory daoFactory, GlobalFolder globalFolder)
         {

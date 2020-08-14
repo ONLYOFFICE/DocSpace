@@ -106,8 +106,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        public GoogleDriveStorageDisposableWrapper Wrapper { get; set; }
-        public GoogleDriveProviderInfoHelper GoogleDriveProviderInfoHelper { get; }
+        private GoogleDriveStorageDisposableWrapper Wrapper { get; set; }
+        private GoogleDriveProviderInfoHelper GoogleDriveProviderInfoHelper { get; }
         public ILog Log { get; }
 
         public GoogleDriveProviderInfo(
@@ -182,9 +182,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
     internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
-        public GoogleDriveStorage Storage { get; private set; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public IServiceProvider ServiceProvider { get; }
+        internal GoogleDriveStorage Storage { get; set; }
+        internal ConsumerFactory ConsumerFactory { get; }
+        internal IServiceProvider ServiceProvider { get; }
 
         public GoogleDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
         {

@@ -79,12 +79,12 @@ namespace ASC.Core.Common.Configuration
 
         private readonly bool OnlyDefault;
 
-        public TenantManager TenantManager { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public CoreSettings CoreSettings { get; set; }
-        public ConsumerFactory ConsumerFactory { get; set; }
-        public IConfiguration Configuration { get; }
-        public ICacheNotify<ConsumerCacheItem> Cache { get; }
+        internal protected TenantManager TenantManager { get; set; }
+        internal protected CoreBaseSettings CoreBaseSettings { get; set; }
+        internal protected CoreSettings CoreSettings { get; set; }
+        internal protected ConsumerFactory ConsumerFactory { get; set; }
+        internal protected IConfiguration Configuration { get; }
+        internal protected ICacheNotify<ConsumerCacheItem> Cache { get; }
 
         public bool IsSet
         {

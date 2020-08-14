@@ -112,9 +112,9 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         private const string Base64Start = "data:image/png;base64,";
 
-        public UserPhotoManager UserPhotoManager { get; }
-        public StorageFactory StorageFactory { get; }
-        public TenantManager TenantManager { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private TenantManager TenantManager { get; }
         public ILog Log { get; set; }
 
         public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)

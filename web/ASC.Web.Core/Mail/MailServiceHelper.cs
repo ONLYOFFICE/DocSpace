@@ -44,7 +44,7 @@ namespace ASC.Web.Core.Mail
 {
     public class MailServiceHelperStorage
     {
-        public ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
+        private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
         public ICache Cache { get; }
         public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify)
         {
@@ -72,13 +72,13 @@ namespace ASC.Web.Core.Mail
 
         internal const string CacheKey = "mailserverinfo";
 
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public IConfiguration Configuration { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private UserManager UserManager { get; }
+        private AuthContext AuthContext { get; }
+        private IConfiguration Configuration { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
-        public EFLoggerFactory LoggerFactory { get; }
-        public MailDbContext MailDbContext { get; }
+        private EFLoggerFactory LoggerFactory { get; }
+        private MailDbContext MailDbContext { get; }
         public ICache Cache { get; }
 
         public MailServiceHelper(

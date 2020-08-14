@@ -44,15 +44,15 @@ namespace ASC.Web.Studio.Utility
 {
     public class TenantExtra
     {
-        public UserManager UserManager { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public PaymentManager PaymentManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public LicenseReader LicenseReader { get; }
-        public SetupInfo SetupInfo { get; }
-        public SettingsManager SettingsManager { get; }
+        private UserManager UserManager { get; }
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private LicenseReader LicenseReader { get; }
+        private SetupInfo SetupInfo { get; }
+        private SettingsManager SettingsManager { get; }
 
         public TenantExtra(
             UserManager userManager,
