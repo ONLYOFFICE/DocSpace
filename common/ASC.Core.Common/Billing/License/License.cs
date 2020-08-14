@@ -68,7 +68,16 @@ namespace ASC.Core.Billing
 
             try
             {
-                var license = JsonSerializer.Deserialize<License>(licenseString);
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true,
+                    PropertyNameCaseInsensitive = true
+                };
+
+                options.Converters.Add(new LicenseConverter());
+
+                var license = JsonSerializer.Deserialize<License>(licenseString, options);
+
                 if (license == null) throw new BillingNotFoundException("Can't parse license");
 
                 license.OriginalLicense = licenseString;
@@ -79,6 +88,53 @@ namespace ASC.Core.Billing
             {
                 throw new BillingNotFoundException("Can't parse license");
             }
+        }
+    }
+
+    public class LicenseConverter : JsonConverter<object>
+    {
+        public override bool CanConvert(Type typeToConvert)
+        {
+            return
+                   typeof(int) == typeToConvert ||
+                   typeof(bool) == typeToConvert;
+        }
+
+        public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (typeToConvert == typeof(int) && reader.TokenType == JsonTokenType.String)
+            {
+                var i = reader.GetString();
+                if (!int.TryParse(i, out var result))
+                {
+                    return 0;
+                }
+
+                return result;
+            }
+
+            if (typeToConvert == typeof(bool))
+            {
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    var i = reader.GetString();
+                    if (!bool.TryParse(i, out var result))
+                    {
+                        return false;
+                    }
+
+                    return result;
+                }
+
+                return reader.GetBoolean();
+            }
+
+            return null;
+        }
+
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+        {
+            return;
         }
     }
 }

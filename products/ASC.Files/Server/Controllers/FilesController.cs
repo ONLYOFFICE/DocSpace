@@ -42,6 +42,7 @@ using ASC.Core.Users;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
@@ -812,15 +813,15 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("file/{fileId}", DisableFormat = true)]
-        public FileWrapper<string> UpdateFile(string fileId, string title, int lastVersion)
+        public FileWrapper<string> UpdateFile(string fileId, UpdateFileModel model)
         {
-            return FilesControllerHelperString.UpdateFile(fileId, title, lastVersion);
+            return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
         [Update("file/{fileId:int}")]
-        public FileWrapper<int> UpdateFile(int fileId, string title, int lastVersion)
+        public FileWrapper<int> UpdateFile(int fileId, UpdateFileModel model)
         {
-            return FilesControllerHelperInt.UpdateFile(fileId, title, lastVersion);
+            return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
         /// <summary>
@@ -1061,14 +1062,39 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/history", DisableFormat = true)]
-        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, ChangeHistoryModel model)
         {
-            return FilesControllerHelperString.ChangeHistory(fileId, version, continueVersion);
+            return FilesControllerHelperString.ChangeHistory(fileId, model.Version, model.ContinueVersion);
         }
+
         [Update("file/{fileId:int}/history")]
-        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, ChangeHistoryModel model)
         {
-            return FilesControllerHelperInt.ChangeHistory(fileId, version, continueVersion);
+            return FilesControllerHelperInt.ChangeHistory(fileId, model.Version, model.ContinueVersion);
+        }
+
+        [Update("file/{fileId}/lock", DisableFormat = true)]
+        public FileWrapper<string> LockFile(string fileId, LockFileModel model)
+        {
+            return FilesControllerHelperString.LockFile(fileId, model.LockFile);
+        }
+
+        [Update("file/{fileId:int}/lock")]
+        public FileWrapper<int> LockFile(int fileId, LockFileModel model)
+        {
+            return FilesControllerHelperInt.LockFile(fileId, model.LockFile);
+        }
+
+        [Update("file/{fileId}/comment", DisableFormat = true)]
+        public object UpdateComment(string fileId, UpdateCommentModel model)
+        {
+            return FilesControllerHelperString.UpdateComment(fileId, model.Version, model.Comment);
+        }
+
+        [Update("file/{fileId:int}/comment")]
+        public object UpdateComment(int fileId, UpdateCommentModel model)
+        {
+            return FilesControllerHelperInt.UpdateComment(fileId, model.Version, model.Comment);
         }
 
         /// <summary>

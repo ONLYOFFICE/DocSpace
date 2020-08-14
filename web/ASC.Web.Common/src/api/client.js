@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AUTH_KEY } from "../constants";
+import { AUTH_KEY, WIZARD_KEY } from "../constants";
 
 const PREFIX = "api";
 const VERSION = "2.0";
@@ -22,6 +22,9 @@ client.interceptors.response.use(
     return response;
   },
   error => {
+    if(localStorage.getItem(WIZARD_KEY)) 
+      return;
+
     if (error.response.status === 401) {
       setAuthorizationToken();
       window.location.href = "/login/error=unauthorized";
