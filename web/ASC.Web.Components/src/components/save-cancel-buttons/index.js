@@ -26,6 +26,7 @@ const StyledSaveCancelButtons = styled.div`
 
     @media ${tablet} {
         justify-content:flex-end;
+        position:fixed;
 
         .unsaved-changes{
             display:none;
