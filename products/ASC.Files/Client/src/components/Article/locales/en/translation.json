@@ -6,5 +6,10 @@
   "NewFolder": "New Folder",
   "UploadFiles": "Upload files",
   "UploadFolder": "Upload folder",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
+
+  "settingsMenuTitle": "Settings",
+  "settingCommonSettings": "Common Settings",
+  "settingsAdminSettings": "Admin Settings",
+  "settingsConnectedCloud": "Connected Clouds"
 }
