@@ -7,12 +7,22 @@ const { FolderType, ShareAccessRights } = constants;
 
 
 const StyledTreeMenu = styled(TreeMenu)`
+  margin-top: 20px !important;
+
   .rc-tree-node-content-wrapper{
     background: ${props => !props.dragging && "none !important"};
   }
   
   .rc-tree-node-selected {
     background: #DFE2E3 !important;
+  }
+
+  .rc-tree-switcher.rc-tree-switcher-noop {
+    visibility: hidden;
+  }
+
+  .settings-node {
+    margin-left: 9px !important;
   }
 `;
 
@@ -47,19 +57,20 @@ class TreeSettings extends React.Component {
         icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
       >
         <TreeNode
+          className="settings-node"
           id='common-settings'
           key='common-settings'
           title={t('settingCommonSettings')}
-          icon={false}
-          isLeaf={true}
 
         ></TreeNode>
         <TreeNode
+          className="settings-node"
           id='admin-settings'
           key='admin-settings'
           title={t('settingsAdminSettings')}
         ></TreeNode>
         <TreeNode
+          className="settings-node"
           id='connected-cloud'
           key='connected-cloud'
           title={t('settingsConnectedCloud')}
