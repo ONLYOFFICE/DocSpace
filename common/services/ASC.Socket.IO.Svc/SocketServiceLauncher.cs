@@ -59,7 +59,7 @@ namespace ASC.Socket.IO.Svc
         private SignalrServiceClient SignalrServiceClient { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
-        public SocketServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, CoreBaseSettings coreBaseSettings, SignalrServiceClient signalrServiceClient, IHostEnvironment hostEnvironment, IConfigureOptions<SignalrServiceClient> configureOptions)
+        public SocketServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, CoreBaseSettings coreBaseSettings, SignalrServiceClient signalrServiceClient, IHostEnvironment hostEnvironment, IConfigureNamedOptions<SignalrServiceClient> configureOptions)
         {
             Logger = options.CurrentValue;
             CancellationTokenSource = new CancellationTokenSource();
