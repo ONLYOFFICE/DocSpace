@@ -34,7 +34,35 @@ const StyledSaveCancelButtons = styled.div`
     }
 `;
 
+const ButtonKeys = Object.freeze({
+    enter: 13,
+    esc: 27,
+});
+
 class SaveCancelButtons extends React.Component {
+
+    componentDidMount() {
+        document.addEventListener("keydown", this.onKeydown, false);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.onKeydown, false);
+    }
+
+    onKeydown = (e) => {
+        const { onSaveClick, onCancelClick } = this.props
+
+        switch (e.keyCode) {
+            case ButtonKeys.enter:
+                onSaveClick()
+                break
+            case ButtonKeys.esc:
+                onCancelClick()
+                break
+            default:
+                break
+        }
+    }
 
     render() {
         const { onSaveClick, onCancelClick, showReminder, reminderTest, saveButtonLabel, cancelButtonLabel, className, id } = this.props
