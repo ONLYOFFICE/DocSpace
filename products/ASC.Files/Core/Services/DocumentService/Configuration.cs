@@ -42,8 +42,8 @@ using ASC.Core.Users;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
@@ -165,7 +165,7 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return Info.File.ConvertedExtension.Trim('.'); }
         }
 
-        internal InfoConfig<T> Info { get; set; }
+        public InfoConfig<T> Info { get; set; }
 
         public string Key
         {
@@ -378,9 +378,9 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        private PluginsConfig Plugins { get; set; }
+        public PluginsConfig Plugins { get; set; }
 
-        internal CustomizationConfig<T> Customization { get; set; }
+        public CustomizationConfig<T> Customization { get; set; }
 
         public EmbeddedConfig Embedded
         {
@@ -460,7 +460,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static string Serialize(ActionLinkConfig actionLinkConfig)
         {
-           return JsonSerializer.Serialize(actionLinkConfig);
+            return JsonSerializer.Serialize(actionLinkConfig);
         }
     }
 
@@ -586,7 +586,7 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return !CoreBaseSettings.Standalone && !CoreBaseSettings.CustomMode; }
         }
 
-        private CustomerConfig<T> Customer { get; set; }
+        public CustomerConfig<T> Customer { get; set; }
 
         public FeedbackConfig Feedback
         {
@@ -685,7 +685,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        private LogoConfig<T> Logo { get; set; }
+        public LogoConfig<T> Logo { get; set; }
 
         public string ReviewDisplay
         {
