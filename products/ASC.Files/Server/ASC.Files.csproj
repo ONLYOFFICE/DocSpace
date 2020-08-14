@@ -45,9 +45,4 @@
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="AppLimit.CloudComputing.SharpBox">
-      <HintPath>..\..\..\thirdparty\AppLimit.CloudComputing.SharpBox\bin\Debug\AppLimit.CloudComputing.SharpBox.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
