@@ -6,11 +6,13 @@ import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store as commonStore, constants, history, ErrorBoundary} from "asc-web-common";
+
 const {
   getUserInfo,
   getPortalSettings,
   setIsLoaded
 } = commonStore.auth.actions;
+
 const { AUTH_KEY } = constants;
 
 const token = localStorage.getItem(AUTH_KEY);
@@ -19,6 +21,7 @@ if (!token) {
   getPortalSettings(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))
     .catch(e => history.push(`/login/error=${e}`));
+  
 } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
   getUserInfo(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))

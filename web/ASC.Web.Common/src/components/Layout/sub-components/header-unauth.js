@@ -49,7 +49,7 @@ const Header = styled.header`
   }
 `;
 
-const HeaderUnauth = ({ t, enableAdmMess }) => {
+const HeaderUnauth = ({ t, enableAdmMess, wizardToken }) => {
 
   //console.log("Header render");
 
@@ -68,7 +68,7 @@ const HeaderUnauth = ({ t, enableAdmMess }) => {
         </div>
 
         <div>
-          {enableAdmMess && <RecoverAccess t={t} />}
+          {(enableAdmMess && !wizardToken) && <RecoverAccess t={t} />}
         </div>
       </Box>
     </Header>
@@ -79,12 +79,14 @@ HeaderUnauth.displayName = "Header";
 
 HeaderUnauth.propTypes = {
   t: PropTypes.func.isRequired,
-  enableAdmMess: PropTypes.bool.isRequired
+  enableAdmMess: PropTypes.bool,
+  wizardToken: PropTypes.string
 };
 
 function mapStateToProps(state) {
   return {
-    enableAdmMess: state.auth.settings.enableAdmMess
+    enableAdmMess: state.auth.settings.enableAdmMess,
+    wizardToken: state.auth.settings.wizardToken
   };
 }
 

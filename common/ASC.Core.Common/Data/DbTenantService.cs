@@ -91,7 +91,7 @@ namespace ASC.Core.Data
                 PaymentId = r.PaymentId,
                 Spam = r.Spam,
                 Status = r.Status,
-                StatusChangeDate = r.StatusChanged,
+                StatusChangeDate = r.StatusChangedHack ?? DateTime.MinValue,
                 TenantAlias = r.Alias,
                 TenantId = r.Id,
                 MappedDomain = r.MappedDomain,
@@ -382,9 +382,10 @@ namespace ASC.Core.Data
                 {
                     Id = key,
                     Tenant = tenant,
-                    Value = data
+                    Value = data,
+                    LastModified = DateTime.UtcNow
                 };
-                TenantDbContext.CoreSettings.Add(settings);
+                TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
             }
             TenantDbContext.SaveChanges();
             tx.Commit();

@@ -26,11 +26,16 @@ export function getSettings() {
     return request(options);
   }
 
-  export function getPortalTimezones() {
-    return request({
+  export function getPortalTimezones(confirmKey = null) {
+    const options = {
       method: "get",
       url: "/settings/timezones.json"
-    });
+    };
+
+    if(confirmKey)
+      options.headers = { confirm: confirmKey };
+
+      return request(options);
   }
 
   export function setLanguageAndTime(lng, timeZoneID) {
@@ -99,4 +104,56 @@ export function getSettings() {
       url: `/settings/sendjoininvite`,
       data
     });
+  }
+
+  export function getMachineName(confirmKey = null) {
+    const options = {
+      method: "get",
+      url: "/settings/machine.json"
+    };
+
+    if ( confirmKey ) 
+      options.headers = { confirm: confirmKey };
+
+      return request(options);
+  }
+
+  export function setPortalOwner( email, pwd, lng, timeZone, confirmKey = null, analytics ) {
+    const options = { 
+      method: "put",
+      url: "/settings/wizard/complete.json",
+      data: {
+        email: email,
+      pwd: pwd,
+      lng: lng,
+      timeZone: timeZone,
+      analytics: analytics
+      }
+    }
+
+    if ( confirmKey ) {
+      options.headers = { confirm: confirmKey};
+    }
+    return request(options);
+  }
+
+  export function getIsLicenseRequired() {
+    return request({
+      method: 'get',
+      url: '/settings/license/required.json'
+    })
+  }
+
+  export function setLicense(confirmKey = null, data) {
+    const options = { 
+      method: "post",
+      url: `/settings/license`,
+      data
+    }
+
+    if ( confirmKey ) {
+      options.headers = { confirm: confirmKey }
+    }
+
+    return request(options);
   }
