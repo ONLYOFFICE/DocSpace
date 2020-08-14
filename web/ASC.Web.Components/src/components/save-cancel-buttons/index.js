@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from "prop-types";
-import Button  from "../button";
-import Text  from "../text";
+import Button from "../button";
+import Text from "../text";
 import { tablet } from '../../utils/device'
 
 const StyledSaveCancelButtons = styled.div`
@@ -33,14 +33,14 @@ const StyledSaveCancelButtons = styled.div`
     }
 `;
 
-class SaveCancelButtons extends React.Component{
+class SaveCancelButtons extends React.Component {
 
-    render(){
-        const { onSaveClick, onCancelClick, showReminder, reminderTest, saveButtonLabel, cancelButtonLabel } = this.props
-        return(
-            <StyledSaveCancelButtons>
+    render() {
+        const { onSaveClick, onCancelClick, showReminder, reminderTest, saveButtonLabel, cancelButtonLabel, className, id } = this.props
+        return (
+            <StyledSaveCancelButtons className={className} id={id}>
                 <div>
-                    <Button 
+                    <Button
                         className="save-button"
                         size="big"
                         isDisabled={false}
@@ -48,7 +48,7 @@ class SaveCancelButtons extends React.Component{
                         onClick={onSaveClick}
                         label={saveButtonLabel}
                     />
-                    <Button 
+                    <Button
                         size="big"
                         isDisabled={false}
                         onClick={onCancelClick}
@@ -62,6 +62,8 @@ class SaveCancelButtons extends React.Component{
 }
 
 SaveCancelButtons.propTypes = {
+    id: PropTypes.string,
+    className: PropTypes.string,
     reminderTest: PropTypes.string,
     saveButtonLabel: PropTypes.string,
     cancelButtonLabel: PropTypes.string,
