@@ -44,7 +44,7 @@ class AvatarEditor extends React.Component {
         })
         if (typeof this.props.onDeleteImage === 'function') this.props.onDeleteImage();
     }
-    onSizeChange(data){
+    onSizeChange(data) {
         this.setState(data);
     }
     onPositionChange(data) {
@@ -53,11 +53,14 @@ class AvatarEditor extends React.Component {
     onLoadFileError(error) {
         if (typeof this.props.onLoadFileError === 'function') this.props.onLoadFileError(error);
     }
-    onLoadFile(file) {
-        if (typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file);
-        this.setState({ isContainsFile: true });
+    onLoadFile(file, callback) {
+        if (typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file, callback);
+        if (!this.state.isContainsFile) this.setState({ isContainsFile: true });
     }
     onSaveButtonClick() {
+        this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar)
+    }
+    saveAvatar = () => {
         this.state.isContainsFile ?
             this.props.onSave(this.state.isContainsFile, {
                 x: this.state.x,
@@ -101,6 +104,7 @@ class AvatarEditor extends React.Component {
                         onLoadFileError={this.onLoadFileError}
                         onLoadFile={this.onLoadFile}
                         deleteImage={this.onDeleteImage}
+                        saveAvatar={this.saveAvatar}
                         maxSize={this.props.maxSize * 1000000} // megabytes to bytes
                         accept={this.props.accept}
                         image={this.props.image}
@@ -128,7 +132,7 @@ class AvatarEditor extends React.Component {
                         hoverColor="#657077"
                         isFill={true}
                         onClick={this.onClickRotateLeft}
-                        style={{display: "inline-block", marginLeft: "8px"}}
+                        style={{ display: "inline-block", marginLeft: "8px" }}
                     />
                 ]}
                 onClose={this.onClose}
