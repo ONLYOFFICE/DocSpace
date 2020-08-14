@@ -353,7 +353,7 @@ class SectionBodyContent extends React.Component {
     const folderIds = [];
     const fileIds = [];
     selection[0].fileExst ? fileIds.push(selection[0].id) : folderIds.push(selection[0].id);
-    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = false;
 
     setProgressBarData({ visible: true, percent: 0, label: t("CopyOperation")});

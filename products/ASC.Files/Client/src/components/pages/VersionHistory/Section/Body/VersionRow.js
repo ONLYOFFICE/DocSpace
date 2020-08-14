@@ -160,35 +160,27 @@ const VersionRow = props => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    console.log("onRestoreClick");
-
-    //TODO: wait api request
-    /*onLoading(true);
+    onLoading(true);
     api.files
       .versionRestore(info.id, info.version)
       .then(() => getFileVersions(info.id))
       .catch((err) => toastr.error(err))
-      .finally(() => onLoading(false));*/
+      .finally(() => onLoading(false));
   }
 
-  const onVersionClick = (e) => {
-    console.log("onVersionClick");
-    
-    //TODO: wait api request
-    /*if(index === 0) return;
-    //const version = isVersion ? info.versionGroup : info.version;
-
+  const onVersionClick = () => {
     onLoading(true);
-    api.files.markAsVersion(info.id, isVersion, info.version)
+    api.files
+      .markAsVersion(info.id, isVersion, info.version)
       .then(() => getFileVersions(info.id))
       .catch((err) => toastr.error(err))
-      .finally(() => onLoading(false));*/
+      .finally(() => onLoading(false));
   }
 
 
   const contextOptions = [
     { key: 'edit', label: t('EditComment'), onClick: onEditComment },
-    { key: 'restore', label: t('Restore'), onClick: () => console.log(t('Restore')) },
+    { key: 'restore', label: t('Restore'), onClick: onRestoreClick },
     { key: 'download', label: `${t('Download')}(${info.contentLength})`, onClick: onDownloadAction },
   ];
 
