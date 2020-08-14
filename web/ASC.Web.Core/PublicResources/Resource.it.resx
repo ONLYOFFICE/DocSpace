@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -129,6 +70,9 @@
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
     <value>Notifiche di amministratore</value>
   </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Il tuo messaggio è stato inviato con successo. Sarai contattato dall'amministratore del portale.</value>
+  </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Un collegamento per confermare l'operazione è stato inviato all'indirizzo :email (l'indirizzo email del proprietario del portale).</value>
   </data>
@@ -140,6 +84,15 @@
   </data>
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personalizzato</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Indirizzo email non corretto</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Codice promozionale errato</value>
+  </data>
+  <data name="EmailAndPasswordSaved" xml:space="preserve">
+    <value>Queste impostazioni sono state salvate con successo</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Non si dispone di permessi sufficienti per effettuare questa azione</value>
@@ -153,11 +106,17 @@
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>Un {!user} con questo indirizzo email è già registrato</value>
   </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Impossibile usare gli indirizzi email da questo dominio per iscrizione</value>
+  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Il campo Email è vuoto</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>L'indirizzo email corrente coincide con quello nuovo.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Il testo del messaggio è vuoto</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>E' impossibile trovare il file caricato</value>
@@ -173,6 +132,9 @@
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
     <value>Indirizzo email non valido</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nome dominio non valido</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
     <value>Il campo Password è vuoto.</value>
@@ -195,6 +157,9 @@
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>lettere maiuscole</value>
   </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Il limite di richieste è stato superato</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>L'utente non è stato trovato</value>
   </data>
@@ -213,11 +178,32 @@
   <data name="FileSizePostfix" xml:space="preserve">
     <value>byte,KB,MB,GB,TB</value>
   </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Il collegamento per confermare il tuo account è stato inviato all'indirizzo email specificato</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Il server non è riuscito a salvare le impostazioni.</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Troppe operazioni LDAP</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licenza errata</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>La licenza è scaduta</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Il numero di portali supera quello consentito dalla licenza</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Il numero di utenti supera quello consentito dalla licenza</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Caricato con successo</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Caricato con successo. {0}Il supporto e gli aggiornamenti non sono disponibili per questa licenza dal {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Le istruzioni di modifica dell'email sono state inviate correttamente</value>
@@ -233,6 +219,9 @@
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota di spazio su disco superata</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Accesso al portale</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
     <value>Il profilo è stato eliminato</value>

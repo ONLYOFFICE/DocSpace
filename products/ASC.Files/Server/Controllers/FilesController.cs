@@ -1073,6 +1073,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.ChangeHistory(fileId, model.Version, model.ContinueVersion);
         }
 
+        [Update("file/{fileId}/lock", DisableFormat = true)]
+        public FileWrapper<string> LockFile(string fileId, LockFileModel model)
+        {
+            return FilesControllerHelperString.LockFile(fileId, model.LockFile);
+        }
+
+        [Update("file/{fileId:int}/lock")]
+        public FileWrapper<int> LockFile(int fileId, LockFileModel model)
+        {
+            return FilesControllerHelperInt.LockFile(fileId, model.LockFile);
+        }
+
         [Update("file/{fileId}/comment", DisableFormat = true)]
         public object UpdateComment(string fileId, UpdateCommentModel model)
         {

@@ -522,9 +522,14 @@ namespace ASC.Web.Studio.Utility
 
         public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
+            return $"confirm/{confirmType}?{GetToken(email, confirmType, postfix, userId)}";
+        }
+
+        public string GetToken(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        {
             var validationKey = EmailValidationKeyProvider.GetEmailKey(email + confirmType + (postfix ?? ""));
 
-            var link = $"confirm/{confirmType}?key={validationKey}";
+            var link = $"type={confirmType}&key={validationKey}";
 
             if (!string.IsNullOrEmpty(email))
             {

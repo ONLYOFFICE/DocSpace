@@ -487,7 +487,8 @@ namespace ASC.Core.Billing
                     {
                         Tenant = tenant,
                         Tariff = bi.Item1,
-                        Stamp = bi.Item2
+                        Stamp = bi.Item2,
+                        CreateOn = DateTime.UtcNow
                     };
 
                     CoreDbContext.Tariffs.Add(efTariff);

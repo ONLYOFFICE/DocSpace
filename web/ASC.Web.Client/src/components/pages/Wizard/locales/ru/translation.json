@@ -1,0 +1,46 @@
+{
+  "wizardTitle": "Благодарим Вас за выбор ONLYOFFICE! В целях безопасности необходимо выполнить процедуру установки пароля",
+  "welcomeTitle": "Добро пожаловать на Ваш портал!",
+  "desc": "Пожалуйста, введите регистрационные данные.",
+  "placeholderEmail": "E-mail",
+  "placeholderPass": "Пароль",
+  "placeholderLicense": "Ваш файл лицензии",
+  "license": "Принять условия ",
+  "licenseLink": "лицензионного соглашения", 
+  "domain": "Домен:",
+  "email": "E-mail:",
+  "language": "Язык:",
+  "timezone": "Часовой пояс:",
+  "buttonContinue": "Продолжить",
+  "errorLicenseTitle": "Ошибка загрузки",
+  "errorLicenseBody": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
+  "changeEmailTitle": "Измененить адрес электронной почты",
+  "changeEmailBtn": "Сохранить",
+
+  "closeModalButton": "Закрыть",
+
+  "tooltipPasswordTitle": "Пароль должен содержать:",
+  "tooltipPasswordLength": "-30 символов",
+  "tooltipPasswordDigits": "цыфры",
+  "tooltipPasswordCapital": "Заглавные буквы",
+  "tooltipPasswordSpecial": "Специальные символы (!@#$%^&*)",
+
+  "Culture_en": "Английский (Великобритания)",
+  "Culture_en-US": "Английский (США)",
+  "Culture_ru-RU": "Русский (Россия)",
+
+  "errorPassword": "Пароль не соответсвует требованиям",
+  "errorEmail": "Некорректный адрес электронной почты",
+  "errorLicenseRead": "Необходимо приянть условия лицензионного соглашения",
+  "errorUploadLicenseFile": "Небходим файл лицензии",
+
+  "errorInitWizardHeader": "Что-то пошло не так.",
+  "errorInitWizard": "В данный момент сервис недоступен, попробуйте позже.",
+  "errorInitWizardButton": "Попробовать снова",
+
+  "generatePassword": "Сгенерировать пароль",
+
+  "errorParamsTitle": "Ошибка регистрации",
+  "errorParamsBody": "Введены некорректные данные:",
+  "errorParamsFooter": "Закрыть"
+}

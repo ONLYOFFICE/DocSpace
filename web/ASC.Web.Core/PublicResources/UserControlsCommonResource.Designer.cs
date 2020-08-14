@@ -69,6 +69,33 @@ namespace ASC.Web.Core.PublicResources {
             }
         }
         
+        /// <summary>        
+        ///   Looks up a localized string similar to License expired or user quota does not match the license.
+        /// </summary>
+        public static string LicenseException {
+            get {
+                return ResourceManager.GetString("LicenseException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License key is not correct.
+        /// </summary>
+        public static string LicenseKeyNotCorrect {
+            get {
+                return ResourceManager.GetString("LicenseKeyNotCorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must enter a license key.
+        /// </summary>
+        public static string LicenseKeyNotFound {
+            get {
+                return ResourceManager.GetString("LicenseKeyNotFound", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to month.
         /// </summary>
