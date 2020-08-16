@@ -44,10 +44,10 @@ namespace ASC.Feed.Data
 {
     public class FeedAggregateDataProvider
     {
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public FeedDbContext FeedDbContext { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private TenantUtil TenantUtil { get; }
+        private FeedDbContext FeedDbContext { get; }
 
         public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FeedDbContext> dbContextManager)
             : this(authContext, tenantManager, tenantUtil)

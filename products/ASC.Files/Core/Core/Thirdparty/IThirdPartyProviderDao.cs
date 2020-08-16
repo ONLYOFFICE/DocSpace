@@ -23,13 +23,13 @@ namespace ASC.Files.Thirdparty
     internal abstract class ThirdPartyProviderDao<T> : IDisposable where T : class, IProviderInfo
     {
         public int TenantID { get; private set; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public SetupInfo SetupInfo { get; }
+        protected IServiceProvider ServiceProvider { get; }
+        protected UserManager UserManager { get; }
+        protected TenantUtil TenantUtil { get; }
+        protected FilesDbContext FilesDbContext { get; }
+        protected SetupInfo SetupInfo { get; }
         public ILog Log { get; }
-        public FileUtility FileUtility { get; }
+        protected FileUtility FileUtility { get; }
 
         public RegexDaoSelectorBase<T> DaoSelector { get; set; }
         public T ProviderInfo { get; set; }

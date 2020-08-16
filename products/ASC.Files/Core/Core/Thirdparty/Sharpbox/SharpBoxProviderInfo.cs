@@ -126,7 +126,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         public FolderType RootFolderType { get; set; }
-        public SharpBoxStorageDisposableWrapper Wrapper { get; private set; }
+        private SharpBoxStorageDisposableWrapper Wrapper { get; set; }
     }
 
     class SharpBoxStorageDisposableWrapper : IDisposable

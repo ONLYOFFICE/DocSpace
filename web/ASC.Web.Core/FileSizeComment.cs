@@ -35,8 +35,8 @@ namespace ASC.Web.Studio.Core
 {
     public class FileSizeComment
     {
-        public TenantExtra TenantExtra { get; }
-        public SetupInfo SetupInfo { get; }
+        private TenantExtra TenantExtra { get; }
+        private SetupInfo SetupInfo { get; }
 
         public FileSizeComment(TenantExtra tenantExtra, SetupInfo setupInfo)
         {

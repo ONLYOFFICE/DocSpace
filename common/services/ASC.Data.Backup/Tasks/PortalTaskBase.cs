@@ -68,8 +68,8 @@ namespace ASC.Data.Backup.Tasks
         public string ConfigPath { get; private set; }
 
         public bool ProcessStorage { get; set; }
-        public ModuleProvider ModuleProvider { get; set; }
-        public DbFactory DbFactory { get; set; }
+        protected ModuleProvider ModuleProvider { get; set; }
+        protected DbFactory DbFactory { get; set; }
 
         protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
         {

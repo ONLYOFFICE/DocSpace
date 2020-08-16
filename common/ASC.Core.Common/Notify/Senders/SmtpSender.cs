@@ -58,8 +58,8 @@ namespace ASC.Core.Notify.Senders
 </html>";
 
         protected ILog Log { get; set; }
-        public IConfiguration Configuration { get; }
-        public IServiceProvider ServiceProvider { get; }
+        protected IConfiguration Configuration { get; }
+        protected IServiceProvider ServiceProvider { get; }
 
         private string Host { get; set; }
         private int Port { get; set; }

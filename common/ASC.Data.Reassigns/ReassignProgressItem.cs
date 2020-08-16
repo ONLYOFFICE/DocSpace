@@ -67,8 +67,8 @@ namespace ASC.Data.Reassigns
         public bool IsCompleted { get; set; }
         public Guid FromUser { get; }
         public Guid ToUser { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public QueueWorkerRemove QueueWorkerRemove { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private QueueWorkerRemove QueueWorkerRemove { get; }
 
         public ReassignProgressItem(
             IServiceProvider serviceProvider,

@@ -38,7 +38,7 @@ namespace ASC.IPSecurity
     {
         private const string dbId = "core";
 
-        public TenantDbContext TenantDbContext { get; }
+        private TenantDbContext TenantDbContext { get; }
 
         public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager)
         {

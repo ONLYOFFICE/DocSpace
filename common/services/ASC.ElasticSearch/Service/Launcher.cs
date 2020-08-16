@@ -46,8 +46,8 @@ namespace ASC.ElasticSearch
     {
         private ILog Log { get; }
         private ICacheNotify<AscCacheItem> Notify { get; }
-        public ICacheNotify<IndexAction> IndexNotify { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<IndexAction> IndexNotify { get; }
+        private IServiceProvider ServiceProvider { get; }
         public IContainer Container { get; }
         private bool IsStarted { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }

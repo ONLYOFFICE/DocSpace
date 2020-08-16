@@ -11,6 +11,7 @@ import HeaderUnauth from "./sub-components/header-unauth";
 
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
+import { connect } from "react-redux";
 
 class Layout extends React.Component {
   constructor(props) {
@@ -286,4 +287,11 @@ LayoutWrapper.propTypes = {
   language: PropTypes.string.isRequired
 };
 
-export default LayoutWrapper;
+function mapStateToProps(state) {
+  return {
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+  };
+}
+
+export default connect(mapStateToProps, null)(LayoutWrapper);
+

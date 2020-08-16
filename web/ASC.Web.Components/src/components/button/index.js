@@ -30,7 +30,7 @@ const hoverCss = css`
 `;
 
 // eslint-disable-next-line no-unused-vars
-const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, innerRef, ...props}) => <button ref={innerRef} type="button" {...props}></button>;
+const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, innerRef, minWidth, ...props}) => <button ref={innerRef} type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,

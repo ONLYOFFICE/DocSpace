@@ -44,12 +44,12 @@ namespace ASC.Web.Core.Files
         public const string FilesBaseVirtualPath = "~/products/files/";
         public const string EditorPage = "doceditor";
         private readonly string FilesUploaderURL;
-        public CommonLinkUtility CommonLinkUtility { get; set; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public CoreSettings CoreSettings { get; set; }
-        public IConfiguration Configuration { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        private CommonLinkUtility CommonLinkUtility { get; set; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private CoreBaseSettings CoreBaseSettings { get; set; }
+        private CoreSettings CoreSettings { get; set; }
+        private IConfiguration Configuration { get; }
+        private InstanceCrypto InstanceCrypto { get; }
 
         public FilesLinkUtility(
             CommonLinkUtility commonLinkUtility,

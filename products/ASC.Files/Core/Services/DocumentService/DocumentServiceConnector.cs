@@ -52,14 +52,14 @@ namespace ASC.Web.Files.Services.DocumentService
     public class DocumentServiceConnector
     {
         public ILog Logger { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
-        public GlobalStore GlobalStore { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public TenantManager TenantManager { get; }
-        public TenantExtra TenantExtra { get; }
-        public CoreSettings CoreSettings { get; }
-        public PathProvider PathProvider { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileUtility FileUtility { get; }
+        private GlobalStore GlobalStore { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private TenantManager TenantManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private CoreSettings CoreSettings { get; }
+        private PathProvider PathProvider { get; }
 
         public DocumentServiceConnector(
             IOptionsMonitor<ILog> optionsMonitor,

@@ -30,7 +30,10 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
+using System.Security;
 using System.ServiceModel.Security;
+using System.Text.RegularExpressions;
 using System.Web;
 
 using ASC.Api.Collections;
@@ -39,6 +42,7 @@ using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -48,12 +52,16 @@ using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Migration;
+using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
+using ASC.FederatedLogin.Profile;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
 using ASC.Web.Core.Users;
@@ -68,12 +76,14 @@ using ASC.Web.Studio.Core.SMS;
 using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
+using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -90,48 +100,54 @@ namespace ASC.Api.Settings
         //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public SmsProviderManager SmsProviderManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
-        public CustomNamingPeople CustomNamingPeople { get; }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public AuthContext AuthContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public StudioNotifyHelper StudioNotifyHelper { get; }
-        public LicenseReader LicenseReader { get; }
-        public PermissionContext PermissionContext { get; }
-        public SettingsManager SettingsManager { get; }
-        public TfaManager TfaManager { get; }
-        public WebItemManager WebItemManager { get; }
-        public WebItemManagerSecurity WebItemManagerSecurity { get; }
-        public TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
-        public TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
-        public StorageHelper StorageHelper { get; }
-        public TenantLogoManager TenantLogoManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public ColorThemesSettingsHelper ColorThemesSettingsHelper { get; }
-        public IConfiguration Configuration { get; }
-        public SetupInfo SetupInfo { get; }
-        public BuildVersion BuildVersion { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public StatisticManager StatisticManager { get; }
-        public IPRestrictionsService IPRestrictionsService { get; }
-        public CoreConfiguration CoreConfiguration { get; }
-        public MessageTarget MessageTarget { get; }
-        public StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
-        public CoreSettings CoreSettings { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
+        private MessageService MessageService { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private SmsProviderManager SmsProviderManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        private CustomNamingPeople CustomNamingPeople { get; }
+        private IPSecurity.IPSecurity IpSecurity { get; }
+        private IMemoryCache MemoryCache { get; }
+        private ProviderManager ProviderManager { get; }
+        private MobileDetector MobileDetector { get; }
+        private IOptionsSnapshot<AccountLinker> AccountLinker { get; }
+        private FirstTimeTenantSettings FirstTimeTenantSettings { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
+        private AuthContext AuthContext { get; }
+        private CookiesManager CookiesManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private LicenseReader LicenseReader { get; }
+        private PermissionContext PermissionContext { get; }
+        private SettingsManager SettingsManager { get; }
+        private TfaManager TfaManager { get; }
+        private WebItemManager WebItemManager { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
+        private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        private StorageHelper StorageHelper { get; }
+        private TenantLogoManager TenantLogoManager { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private ColorThemesSettingsHelper ColorThemesSettingsHelper { get; }
+        private IConfiguration Configuration { get; }
+        private SetupInfo SetupInfo { get; }
+        private BuildVersion BuildVersion { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private StatisticManager StatisticManager { get; }
+        private IPRestrictionsService IPRestrictionsService { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private MessageTarget MessageTarget { get; }
+        private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
+        private CoreSettings CoreSettings { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
         public ILog Log { get; set; }
 
         public SettingsController(
@@ -178,7 +194,13 @@ namespace ASC.Api.Settings
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter,
-            CustomNamingPeople customNamingPeople)
+            CustomNamingPeople customNamingPeople,
+            IPSecurity.IPSecurity ipSecurity,
+            IMemoryCache memoryCache,
+            ProviderManager providerManager,
+            MobileDetector mobileDetector,
+            IOptionsSnapshot<AccountLinker> accountLinker,
+            FirstTimeTenantSettings firstTimeTenantSettings)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -188,6 +210,12 @@ namespace ASC.Api.Settings
             SmsProviderManager = smsProviderManager;
             TimeZoneConverter = timeZoneConverter;
             CustomNamingPeople = customNamingPeople;
+            IpSecurity = ipSecurity;
+            MemoryCache = memoryCache;
+            ProviderManager = providerManager;
+            MobileDetector = mobileDetector;
+            AccountLinker = accountLinker;
+            FirstTimeTenantSettings = firstTimeTenantSettings;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -226,7 +254,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper = storageSettingsHelper;
         }
 
-        [Read("")]
+        [Read("", Check = false)]
         [AllowAnonymous]
         public SettingsWrapper GetSettings()
         {
@@ -247,8 +275,161 @@ namespace ASC.Api.Settings
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
             }
+            else
+            {
+                if (!SettingsManager.Load<WizardSettings>().Completed)
+                {
+                    settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
+                }
+
+                settings.EnabledJoin =
+                    (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
+                    Tenant.TrustedDomains.Count > 0) ||
+                    Tenant.TrustedDomainsType == TenantTrustedDomainsType.All;
+
+                var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+
+                settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
+
+                settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
+            }
 
             return settings;
+        }
+
+        [Create("messagesettings")]
+        public ContentResult EnableAdminMessageSettings(AdminMessageSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
+
+            MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+
+            return new ContentResult() { Content = Resource.SuccessfullySaveSettingsMessage };
+        }
+
+        [AllowAnonymous]
+        [Create("sendadmmail")]
+        public ContentResult SendAdmMail(AdminMessageSettingsModel model)
+        {
+            var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+            var enableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
+
+            if (!enableAdmMess)
+                throw new MethodAccessException("Method not available");
+
+            if (!model.Email.TestEmailRegex())
+                throw new Exception(Resource.ErrorNotCorrectEmail);
+
+            if (string.IsNullOrEmpty(model.Message))
+                throw new Exception(Resource.ErrorEmptyMessage);
+
+            CheckCache("sendadmmail");
+
+            StudioNotifyService.SendMsgToAdminFromNotAuthUser(model.Email, model.Message);
+            MessageService.Send(MessageAction.ContactAdminMailSent);
+
+            return new ContentResult() { Content = Resource.AdminMessageSent };
+        }
+
+        [Create("maildomainsettings")]
+        public ContentResult SaveMailDomainSettings(MailDomainSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (model.Type == TenantTrustedDomainsType.Custom)
+            {
+                Tenant.TrustedDomains.Clear();
+                foreach (var d in model.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
+                {
+                    if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
+                        return new ContentResult() { Content = Resource.ErrorNotCorrectTrustedDomain };
+
+                    Tenant.TrustedDomains.Add(d);
+                }
+
+                if (Tenant.TrustedDomains.Count == 0)
+                    model.Type = TenantTrustedDomainsType.None;
+            }
+
+            Tenant.TrustedDomainsType = model.Type;
+
+            SettingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = model.InviteUsersAsVisitors });
+
+            TenantManager.SaveTenant(Tenant);
+
+            MessageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
+
+            return new ContentResult { Content = Resource.SuccessfullySaveSettingsMessage };
+        }
+
+        [AllowAnonymous]
+        [Create("sendjoininvite")]
+        public ContentResult SendJoinInviteMail(AdminMessageSettingsModel model)
+        {
+            try
+            {
+                var email = model.Email;
+                if (!(
+                    (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
+                    Tenant.TrustedDomains.Count > 0) ||
+                    Tenant.TrustedDomainsType == TenantTrustedDomainsType.All))
+                    throw new MethodAccessException("Method not available");
+
+                if (!email.TestEmailRegex())
+                    throw new Exception(Resource.ErrorNotCorrectEmail);
+
+                CheckCache("sendjoininvite");
+
+                var user = UserManager.GetUserByEmail(email);
+                if (!user.ID.Equals(Constants.LostUser.ID))
+                    throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+
+                var settings = SettingsManager.Load<IPRestrictionsSettings>();
+
+                if (settings.Enable && !IpSecurity.Verify())
+                    throw new Exception(Resource.ErrorAccessRestricted);
+
+                var trustedDomainSettings = SettingsManager.Load<StudioTrustedDomainSettings>();
+                var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
+                var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
+
+                if (!enableInviteUsers)
+                    emplType = EmployeeType.Visitor;
+
+                switch (Tenant.TrustedDomainsType)
+                {
+                    case TenantTrustedDomainsType.Custom:
+                        {
+                            var address = new MailAddress(email);
+                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                StudioNotifyService.SendJoinMsg(email, emplType);
+                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                                return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                            }
+
+                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                        }
+                    case TenantTrustedDomainsType.All:
+                        {
+                            StudioNotifyService.SendJoinMsg(email, emplType);
+                            MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                            return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                        }
+                    default:
+                        throw new Exception(Resource.ErrorNotCorrectEmail);
+                }
+            }
+            catch (FormatException)
+            {
+                return new ContentResult() { Content = Resource.ErrorNotCorrectEmail };
+            }
+            catch (Exception e)
+            {
+                return new ContentResult() { Content = e.Message.HtmlEncode() };
+            }
         }
 
         [Read("customschemas")]
@@ -309,16 +490,62 @@ namespace ASC.Api.Settings
             return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
         }
 
+
         [AllowAnonymous]
-        [Read("cultures")]
+        [Read("authproviders")]
+        public ICollection<AccountInfo> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+        {
+            ICollection<AccountInfo> infos = new List<AccountInfo>();
+            IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
+
+            if (AuthContext.IsAuthenticated)
+            {
+                linkedAccounts = AccountLinker.Get("webstudio").GetLinkedProfiles(AuthContext.CurrentAccount.ID.ToString());
+            }
+
+            fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
+
+            foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
+            {
+                if (inviteView && provider.ToLower() == "twitter") continue;
+
+                var loginProvider = ProviderManager.GetLoginProvider(provider);
+                if (loginProvider != null && loginProvider.IsEnabled)
+                {
+
+                    var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
+                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
+                                     ? ("&mode=popup&callback=" + clientCallback)
+                                     : ("&mode=Redirect&returnurl="
+                                        + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
+                                            "Auth.aspx"
+                                            + (Request.DesktopApp() ? "?desktop=true" : "")
+                                            ).ToString())));
+
+                    infos.Add(new AccountInfo
+                    {
+                        Linked = linkedAccounts.Any(x => x.Provider == provider),
+                        Provider = provider,
+                        Url = url + mode
+                    });
+                }
+            }
+
+            return infos;
+        }
+
+        [AllowAnonymous]
+        [Read("cultures", Check = false)]
         public IEnumerable<object> GetSupportedCultures()
         {
             return SetupInfo.EnabledCultures.Select(r => r.Name).ToArray();
         }
 
-        [Read("timezones")]
-        public List<object> GetTimeZones()
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
+        [Read("timezones", Check = false)]
+        public List<TimezonesModel> GetTimeZones()
         {
+            ApiContext.AuthByClaim();
             var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
             if (timeZones.All(tz => tz.Id != "UTC"))
@@ -326,7 +553,7 @@ namespace ASC.Api.Settings
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            var listOfTimezones = new List<object>();
+            var listOfTimezones = new List<TimezonesModel>();
 
             foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
             {
@@ -348,6 +575,13 @@ namespace ASC.Api.Settings
             }
 
             return listOfTimezones;
+        }
+
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Read("machine", Check = false)]
+        public string GetMachineName()
+        {
+            return Dns.GetHostName().ToLowerInvariant();
         }
 
         /*        [Read("greetingsettings")]
@@ -500,7 +734,7 @@ namespace ASC.Api.Settings
             return EnabledModules;
         }
 
-        [Read("security/password")]
+        [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
         public object GetPasswordSettings()
         {
@@ -829,21 +1063,17 @@ namespace ASC.Api.Settings
             return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
         }
 
-        [Update("wizard/complete")]
-        public WizardSettings CompleteWizard()
+        [Update("wizard/complete", Check = false)]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        public WizardSettings CompleteWizard(WizardModel wizardModel)
         {
+            ApiContext.AuthByClaim();
+
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var settings = SettingsManager.Load<WizardSettings>();
-
-            if (settings.Completed)
-                return settings;
-
-            settings.Completed = true;
-            SettingsManager.Save(settings);
-
-            return settings;
+            return FirstTimeTenantSettings.SaveData(wizardModel);
         }
+
 
         [Update("tfaapp")]
         public bool TfaSettings(TfaModel model)
@@ -1122,12 +1352,63 @@ namespace ASC.Api.Settings
             return productId == Guid.Empty ? "All" : product != null ? product.Name : productId.ToString();
         }
 
-        [Read("license/refresh")]
+        [Read("license/refresh", Check = false)]
         public bool RefreshLicense()
         {
             if (!CoreBaseSettings.Standalone) return false;
             LicenseReader.RefreshLicense();
             return true;
+        }
+
+        [AllowAnonymous]
+        [Read("license/required", Check = false)]
+        public bool RequestLicense()
+        {
+            return FirstTimeTenantSettings.RequestLicense;
+        }
+
+
+        [Create("license", Check = false)]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        public object UploadLicense([FromForm]UploadLicenseModel model)
+        {
+            try
+            {
+                if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
+                if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
+
+                ApiContext.AuthByClaim();
+
+                var licenseFile = model.Files.First();
+                var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
+
+                return dueDate >= DateTime.UtcNow.Date
+                                     ? Resource.LicenseUploaded
+                                     : string.Format(Resource.LicenseUploadedOverdue,
+                                                     "",
+                                                     "",
+                                                     dueDate.Date.ToLongDateString());
+            }
+            catch (LicenseExpiredException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorExpired);
+            }
+            catch (LicenseQuotaException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorQuota);
+            }
+            catch (LicensePortalException ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseErrorPortal);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("License upload", ex);
+                throw new Exception(Resource.LicenseError);
+            }
         }
 
 
@@ -1488,6 +1769,21 @@ namespace ASC.Api.Settings
 
             return new { Url = hubUrl };
         }
+
+
+        private readonly int maxCount = 10;
+        private readonly int expirationMinutes = 2;
+        private void CheckCache(string basekey)
+        {
+            var key = ApiContext.HttpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+            if (MemoryCache.TryGetValue<int>(key, out var count))
+            {
+                if (count > maxCount)
+                    throw new Exception(Resource.ErrorRequestLimitExceeded);
+            }
+
+            MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
+        }
     }
 
     public static class SettingsControllerExtension
@@ -1537,7 +1833,11 @@ namespace ASC.Api.Settings
                 .AddEmployeeWraper()
                 .AddConsumerFactoryService()
                 .AddSmsProviderManagerService()
-                .AddCustomNamingPeopleService();
+                .AddCustomNamingPeopleService()
+                .AddProviderManagerService()
+                .AddAccountLinker()
+                .AddMobileDetectorService()
+                .AddFirstTimeTenantSettings();
         }
     }
 }

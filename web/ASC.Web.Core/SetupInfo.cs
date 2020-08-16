@@ -120,7 +120,7 @@ namespace ASC.Web.Studio.Core
         public string RecaptchaVerifyUrl { get; private set; }
         public int LoginThreshold { get; private set; }
         public string AmiMetaUrl { get; private set; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public SetupInfo(IConfiguration configuration)
         {
@@ -178,7 +178,7 @@ namespace ASC.Web.Studio.Core
             DisplayPersonalBanners = GetAppSettings("web.display.personal.banners", false);
             ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
             ShareFacebookUrl = GetAppSettings("web.share.facebook", "");
-            ControlPanelUrl = GetAppSettings("web.controlpanel.url", "");
+            ControlPanelUrl = GetAppSettings("web:controlpanel:url", "");
             FontOpenSansUrl = GetAppSettings("web.font.opensans.url", "");
             VoipEnabled = GetAppSettings("voip.enabled", "false");
             StartProductList = GetAppSettings("web.start.product.list", "");

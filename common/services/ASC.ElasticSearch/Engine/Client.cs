@@ -49,8 +49,8 @@ namespace ASC.ElasticSearch
 
         public ILog Log { get; }
 
-        public CoreConfiguration CoreConfiguration { get; }
-        public Settings Settings { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private Settings Settings { get; }
 
         public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, Settings settings)
         {

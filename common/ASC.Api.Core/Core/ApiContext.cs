@@ -39,7 +39,7 @@ namespace ASC.Api.Core
     public class ApiContext : ICloneable
     {
         public IHttpContextAccessor HttpContextAccessor { get; set; }
-        private Tenant tenant;
+        public Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext)); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
@@ -199,8 +199,8 @@ namespace ASC.Api.Core
             }
         }
 
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
 
         public ApiContext SetCount(int count)
         {

@@ -39,9 +39,9 @@ namespace ASC.Web.Core.Sms
 {
     public class SmsSender
     {
-        public IConfiguration Configuration { get; }
-        public TenantManager TenantManager { get; }
-        public SmsProviderManager SmsProviderManager { get; }
+        private IConfiguration Configuration { get; }
+        private TenantManager TenantManager { get; }
+        private SmsProviderManager SmsProviderManager { get; }
         public ILog Log { get; }
 
         public SmsSender(

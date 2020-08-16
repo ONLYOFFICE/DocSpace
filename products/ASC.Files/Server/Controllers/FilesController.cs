@@ -42,6 +42,7 @@ using ASC.Core.Users;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
@@ -77,33 +78,33 @@ namespace ASC.Api.Documents
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
-        public FilesControllerHelper<string> FilesControllerHelperString { get; }
-        public FilesControllerHelper<int> FilesControllerHelperInt { get; }
-        public FileStorageService<int> FileStorageServiceInt { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public SecurityContext SecurityContext { get; }
-        public FolderWrapperHelper FolderWrapperHelper { get; }
-        public FileOperationWraperHelper FileOperationWraperHelper { get; }
-        public EntryManager EntryManager { get; }
-        public UserManager UserManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        public BoxLoginProvider BoxLoginProvider { get; }
-        public DropboxLoginProvider DropboxLoginProvider { get; }
-        public GoogleLoginProvider GoogleLoginProvider { get; }
-        public OneDriveLoginProvider OneDriveLoginProvider { get; }
-        public MessageService MessageService { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public FolderContentWrapperHelper FolderContentWrapperHelper { get; }
-        public WordpressToken WordpressToken { get; }
-        public WordpressHelper WordpressHelper { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public EasyBibHelper EasyBibHelper { get; }
-        public ProductEntryPoint ProductEntryPoint { get; }
+        private FilesControllerHelper<string> FilesControllerHelperString { get; }
+        private FilesControllerHelper<int> FilesControllerHelperInt { get; }
+        private FileStorageService<int> FileStorageServiceInt { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private SecurityContext SecurityContext { get; }
+        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private FileOperationWraperHelper FileOperationWraperHelper { get; }
+        private EntryManager EntryManager { get; }
+        private UserManager UserManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private BoxLoginProvider BoxLoginProvider { get; }
+        private DropboxLoginProvider DropboxLoginProvider { get; }
+        private GoogleLoginProvider GoogleLoginProvider { get; }
+        private OneDriveLoginProvider OneDriveLoginProvider { get; }
+        private MessageService MessageService { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
+        private WordpressToken WordpressToken { get; }
+        private WordpressHelper WordpressHelper { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private EasyBibHelper EasyBibHelper { get; }
+        private ProductEntryPoint ProductEntryPoint { get; }
 
         /// <summary>
         /// </summary>
@@ -812,15 +813,15 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("file/{fileId}", DisableFormat = true)]
-        public FileWrapper<string> UpdateFile(string fileId, string title, int lastVersion)
+        public FileWrapper<string> UpdateFile(string fileId, UpdateFileModel model)
         {
-            return FilesControllerHelperString.UpdateFile(fileId, title, lastVersion);
+            return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
         [Update("file/{fileId:int}")]
-        public FileWrapper<int> UpdateFile(int fileId, string title, int lastVersion)
+        public FileWrapper<int> UpdateFile(int fileId, UpdateFileModel model)
         {
-            return FilesControllerHelperInt.UpdateFile(fileId, title, lastVersion);
+            return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
         /// <summary>
@@ -1061,14 +1062,39 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/history", DisableFormat = true)]
-        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, ChangeHistoryModel model)
         {
-            return FilesControllerHelperString.ChangeHistory(fileId, version, continueVersion);
+            return FilesControllerHelperString.ChangeHistory(fileId, model.Version, model.ContinueVersion);
         }
+
         [Update("file/{fileId:int}/history")]
-        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, ChangeHistoryModel model)
         {
-            return FilesControllerHelperInt.ChangeHistory(fileId, version, continueVersion);
+            return FilesControllerHelperInt.ChangeHistory(fileId, model.Version, model.ContinueVersion);
+        }
+
+        [Update("file/{fileId}/lock", DisableFormat = true)]
+        public FileWrapper<string> LockFile(string fileId, LockFileModel model)
+        {
+            return FilesControllerHelperString.LockFile(fileId, model.LockFile);
+        }
+
+        [Update("file/{fileId:int}/lock")]
+        public FileWrapper<int> LockFile(int fileId, LockFileModel model)
+        {
+            return FilesControllerHelperInt.LockFile(fileId, model.LockFile);
+        }
+
+        [Update("file/{fileId}/comment", DisableFormat = true)]
+        public object UpdateComment(string fileId, UpdateCommentModel model)
+        {
+            return FilesControllerHelperString.UpdateComment(fileId, model.Version, model.Comment);
+        }
+
+        [Update("file/{fileId:int}/comment")]
+        public object UpdateComment(int fileId, UpdateCommentModel model)
+        {
+            return FilesControllerHelperInt.UpdateComment(fileId, model.Version, model.Comment);
         }
 
         /// <summary>

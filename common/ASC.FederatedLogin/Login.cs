@@ -26,25 +26,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Utils;
-using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-
-using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.FederatedLogin
 {
@@ -52,33 +52,30 @@ namespace ASC.FederatedLogin
     {
         private Dictionary<string, string> _params;
 
-        private readonly RequestDelegate _next;
         private IWebHostEnvironment WebHostEnvironment { get; }
         private IMemoryCache MemoryCache { get; }
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private ProviderManager ProviderManager { get; }
 
         public Login(
-            RequestDelegate next,
             IWebHostEnvironment webHostEnvironment,
             IMemoryCache memoryCache,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            ConsumerFactory consumerFactory)
+            ProviderManager providerManager)
         {
-            _next = next;
             WebHostEnvironment = webHostEnvironment;
             MemoryCache = memoryCache;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
-            ConsumerFactory = consumerFactory;
+            ProviderManager = providerManager;
         }
 
 
         public async Task Invoke(HttpContext context)
         {
-            context.PushRewritenUri();
+            var scope = context.PushRewritenUri();
 
             if (string.IsNullOrEmpty(context.Request.Query["p"]))
             {
@@ -91,21 +88,22 @@ namespace ASC.FederatedLogin
 
                 //Pack and redirect
                 var uriBuilder = new UriBuilder(context.Request.GetUrlRewriter());
-                var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_params)));
+                var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(_params)));
                 uriBuilder.Query = "p=" + token;
                 context.Response.Redirect(uriBuilder.Uri.ToString(), true);
+                await context.Response.CompleteAsync();
+                return;
             }
             else
             {
-                _params = ((Dictionary<string, object>)JsonConvert.DeserializeObject(
-                    Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(context.Request.Query["p"])))).ToDictionary(x => x.Key, y => (string)y.Value);
+                _params = JsonSerializer.Deserialize<Dictionary<string, string>>(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(context.Request.Query["p"])));
             }
 
             if (!string.IsNullOrEmpty(Auth))
             {
                 try
                 {
-                    var profile = ProviderManager.Process(Auth, Signature, InstanceCrypto, ConsumerFactory, context, _params);
+                    var profile = ProviderManager.Process(Auth, context, _params);
                     if (profile != null)
                     {
                         await SendClientData(context, profile);
@@ -185,7 +183,7 @@ namespace ASC.FederatedLogin
             switch (Mode)
             {
                 case LoginMode.Redirect:
-                    RedirectToReturnUrl(context, profile);
+                    await RedirectToReturnUrl(context, profile);
                     break;
                 case LoginMode.Popup:
                     await SendJsCallback(context, profile);
@@ -200,7 +198,7 @@ namespace ASC.FederatedLogin
             await context.Response.WriteAsync(JsCallbackHelper.GetCallbackPage().Replace("%PROFILE%", profile.ToJson()).Replace("%CALLBACK%", Callback));
         }
 
-        private void RedirectToReturnUrl(HttpContext context, LoginProfile profile)
+        private async Task RedirectToReturnUrl(HttpContext context, LoginProfile profile)
         {
             var useMinimalProfile = Minimal;
             if (useMinimalProfile)
@@ -219,6 +217,49 @@ namespace ASC.FederatedLogin
             {
                 context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfile(profile).ToString(), true);
             }
+
+            await context.Response.CompleteAsync();
+            return;
+        }
+    }
+
+    public class LoginHandler
+    {
+        private RequestDelegate Next { get; }
+        private IServiceProvider ServiceProvider { get; }
+
+        public LoginHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        {
+            Next = next;
+            ServiceProvider = serviceProvider;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var login = scope.ServiceProvider.GetService<Login>();
+            await login.Invoke(context);
+        }
+    }
+
+    public static class LoginHandlerExtensions
+    {
+        public static DIHelper AddLoginHandlerService(this DIHelper services)
+        {
+            if (services.TryAddScoped<Login>())
+            {
+                return services
+                    .AddSignatureService()
+                    .AddInstanceCryptoService()
+                    .AddProviderManagerService();
+            }
+
+            return services;
+        }
+
+        public static IApplicationBuilder UseLoginHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<LoginHandler>();
         }
     }
 }

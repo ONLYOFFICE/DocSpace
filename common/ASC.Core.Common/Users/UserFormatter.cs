@@ -140,7 +140,7 @@ namespace ASC.Core.Users
 
         public Regex UserNameRegex;
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public bool IsValidUserName(string firstName, string lastName)
         {

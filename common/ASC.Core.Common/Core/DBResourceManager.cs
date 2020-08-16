@@ -134,9 +134,9 @@ namespace TMResourceData
             get { return typeof(DBResourceSet); }
         }
 
-        public IConfiguration Configuration { get; }
-        public IOptionsMonitor<ILog> Option { get; }
-        public DbContextManager<ResourceDbContext> DbContext { get; }
+        private IConfiguration Configuration { get; }
+        private IOptionsMonitor<ILog> Option { get; }
+        private DbContextManager<ResourceDbContext> DbContext { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
@@ -163,9 +163,9 @@ namespace TMResourceData
             private readonly string filename;
             private readonly ILog log;
 
-            public IConfiguration Configuration { get; }
-            public IOptionsMonitor<ILog> Option { get; }
-            public DbContextManager<ResourceDbContext> DbContext { get; }
+            private IConfiguration Configuration { get; }
+            private IOptionsMonitor<ILog> Option { get; }
+            private DbContextManager<ResourceDbContext> DbContext { get; }
 
             public DBResourceSet(
                 IConfiguration configuration,
@@ -289,7 +289,7 @@ namespace TMResourceData
         private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
         public string DefaultLogoText;
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<ILog> option)
         {

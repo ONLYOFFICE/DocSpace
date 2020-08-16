@@ -94,30 +94,30 @@ namespace ASC.Web.Files.ThirdPartyApp
         }
 
         public ILog Logger { get; }
-        public PathProvider PathProvider { get; }
-        public TenantUtil TenantUtil { get; }
-        public AuthContext AuthContext { get; }
-        public SecurityContext SecurityContext { get; }
-        public UserManager UserManager { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public CookiesManager CookiesManager { get; }
-        public MessageService MessageService { get; }
-        public Global Global { get; }
-        public GlobalStore GlobalStore { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public SettingsManager SettingsManager { get; }
-        public PersonalSettingsHelper PersonalSettingsHelper { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public FileUtility FileUtility { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public IOptionsSnapshot<AccountLinker> Snapshot { get; }
-        public SetupInfo SetupInfo { get; }
-        public GoogleLoginProvider GoogleLoginProvider { get; }
-        public TokenHelper TokenHelper { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private PathProvider PathProvider { get; }
+        private TenantUtil TenantUtil { get; }
+        private AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private CookiesManager CookiesManager { get; }
+        private MessageService MessageService { get; }
+        private Global Global { get; }
+        private GlobalStore GlobalStore { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private SettingsManager SettingsManager { get; }
+        private PersonalSettingsHelper PersonalSettingsHelper { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private FileUtility FileUtility { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private IOptionsSnapshot<AccountLinker> Snapshot { get; }
+        private SetupInfo SetupInfo { get; }
+        private GoogleLoginProvider GoogleLoginProvider { get; }
+        private TokenHelper TokenHelper { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public GoogleDriveApp()
         {
@@ -154,8 +154,9 @@ namespace ASC.Web.Files.ThirdPartyApp
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
             Logger = option.CurrentValue;
             PathProvider = pathProvider;

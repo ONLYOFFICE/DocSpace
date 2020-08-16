@@ -43,9 +43,6 @@ namespace ASC.Data.Storage.Configuration
 {
     public class BaseStorageSettingsListener
     {
-
-        public IServiceProvider ServiceProvider { get; }
-
         public BaseStorageSettingsListener(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
@@ -53,34 +50,24 @@ namespace ASC.Data.Storage.Configuration
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
-                var settings = scopeClass.SettingsManager.LoadForTenant<StorageSettings>(i.TenantId);
+                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
+                var storageSettings = scope.ServiceProvider.GetService<SettingsManager>();
+                var settings = storageSettings.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
-                    scopeClass.StorageSettingsHelper.Clear(settings);
+                    storageSettingsHelper.Clear(settings);
                 }
 
-                var cdnSettings = scopeClass.SettingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
+                var cdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
+                var cdnSettings = storageSettings.LoadForTenant<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
-                    scopeClass.StorageSettingsHelper.Clear(cdnSettings);
+                    storageSettingsHelper.Clear(cdnSettings);
                 }
             }, CacheNotifyAction.Remove);
         }
 
-        class Scope
-        {
-            internal StorageSettingsHelper StorageSettingsHelper { get; }
-            internal SettingsManager SettingsManager { get; }
-            internal CdnStorageSettings CdnStorageSettings { get; }
-
-            public Scope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
-            {
-                StorageSettingsHelper = storageSettingsHelper;
-                SettingsManager = settingsManager;
-                CdnStorageSettings = cdnStorageSettings;
-            }
-        }
+        private IServiceProvider ServiceProvider { get; }
     }
 
     [Serializable]
@@ -93,7 +80,7 @@ namespace ASC.Data.Storage.Configuration
         public ISettings GetDefault(IServiceProvider serviceProvider) => new T();
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
-        public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
+        internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
 
         public abstract Guid ID { get; }
     }
@@ -120,16 +107,16 @@ namespace ASC.Data.Storage.Configuration
 
     public class StorageSettingsHelper
     {
-        public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public ICacheNotify<DataStoreCacheItem> Cache { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private BaseStorageSettingsListener BaseStorageSettingsListener { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private PathUtils PathUtils { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private ICacheNotify<DataStoreCacheItem> Cache { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,

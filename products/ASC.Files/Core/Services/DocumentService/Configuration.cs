@@ -42,8 +42,8 @@ using ASC.Core.Users;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
@@ -460,7 +460,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static string Serialize(ActionLinkConfig actionLinkConfig)
         {
-           return JsonSerializer.Serialize(actionLinkConfig);
+            return JsonSerializer.Serialize(actionLinkConfig);
         }
     }
 
@@ -486,8 +486,8 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + FilesLinkUtility.EditorPage + "?" + FilesLinkUtility.Action + "=view" + ShareLinkParam); }
         }
 
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
 
         public string ToolbarDocked { get => "top"; }
 

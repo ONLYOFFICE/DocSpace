@@ -97,7 +97,7 @@ namespace ASC.Common.Threading
         private readonly TaskScheduler scheduler;
         private readonly ConcurrentDictionary<string, CancellationTokenSource> cancelations;
 
-        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
 
         static DistributedTaskQueue()
         {

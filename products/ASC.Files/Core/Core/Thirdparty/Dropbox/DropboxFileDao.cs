@@ -51,9 +51,9 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public DropboxDaoSelector DropboxDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private DropboxDaoSelector DropboxDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public DropboxFileDao(
             IServiceProvider serviceProvider,

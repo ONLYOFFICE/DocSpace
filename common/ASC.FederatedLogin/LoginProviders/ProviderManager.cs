@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Profile;
@@ -38,21 +40,44 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public class ProviderManager
     {
-        public static ILoginProvider GetLoginProvider(string providerType, Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
+        public static List<string> AuthProviders = new List<string>
+            {
+                ProviderConstants.Google,
+                ProviderConstants.Facebook,
+                ProviderConstants.Twitter,
+                ProviderConstants.LinkedIn,
+                ProviderConstants.MailRu,
+                ProviderConstants.VK,
+                ProviderConstants.Yandex,
+                ProviderConstants.GosUslugi
+            };
+
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+
+        public ProviderManager(Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
+        {
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
+            ConsumerFactory = consumerFactory;
+        }
+
+        public ILoginProvider GetLoginProvider(string providerType)
         {
             return providerType == ProviderConstants.OpenId
-                ? new OpenIdLoginProvider(signature, instanceCrypto, consumerFactory)
-                : consumerFactory.GetByKey(providerType) as ILoginProvider;
+                ? new OpenIdLoginProvider(Signature, InstanceCrypto, ConsumerFactory)
+                : ConsumerFactory.GetByKey(providerType) as ILoginProvider;
         }
 
-        public static LoginProfile Process(string providerType, Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory, HttpContext context, IDictionary<string, string> @params)
+        public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params)
         {
-            return GetLoginProvider(providerType, signature, instanceCrypto, consumerFactory).ProcessAuthoriztion(context, @params);
+            return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params);
         }
 
-        public static LoginProfile GetLoginProfile(string providerType, string accessToken, Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
+        public LoginProfile GetLoginProfile(string providerType, string accessToken)
         {
-            var consumer = GetLoginProvider(providerType, signature, instanceCrypto, consumerFactory);
+            var consumer = GetLoginProvider(providerType);
             if (consumer == null) throw new ArgumentException("Unknown provider type", "providerType");
 
             try
@@ -61,8 +86,34 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(signature, instanceCrypto, ex);
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
             }
+        }
+
+        public bool IsNotEmpty
+        {
+            get
+            {
+                return AuthProviders
+                    .Select(GetLoginProvider)
+                    .Any(loginProvider => loginProvider != null && loginProvider.IsEnabled);
+            }
+        }
+    }
+
+    public static class ProviderManagerServiceExtension
+    {
+        public static DIHelper AddProviderManagerService(this DIHelper services)
+        {
+            if (services.TryAddScoped<ProviderManager>())
+            {
+                return services
+                    .AddSignatureService()
+                    .AddInstanceCryptoService()
+                    .AddConsumerFactoryService();
+            }
+
+            return services;
         }
     }
 }

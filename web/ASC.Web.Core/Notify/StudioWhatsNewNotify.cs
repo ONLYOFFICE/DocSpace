@@ -53,7 +53,7 @@ namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioWhatsNewNotify
     {
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public IConfiguration Confuguration { get; }
 
         public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration)

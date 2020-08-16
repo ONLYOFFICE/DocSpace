@@ -52,24 +52,24 @@ namespace ASC.Web.Files.Utils
 {
     public class FileUploader
     {
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public FileUtility FileUtility { get; }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public AuthContext AuthContext { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public FileMarker FileMarker { get; }
-        public FileConverter FileConverter { get; }
-        public IDaoFactory DaoFactory { get; }
-        public Global Global { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public FileSecurity FileSecurity { get; }
-        public EntryManager EntryManager { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private FileUtility FileUtility { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private SetupInfo SetupInfo { get; }
+        private TenantExtra TenantExtra { get; }
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
+        private FileMarker FileMarker { get; }
+        private FileConverter FileConverter { get; }
+        private IDaoFactory DaoFactory { get; }
+        private Global Global { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private FileSecurity FileSecurity { get; }
+        private EntryManager EntryManager { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
 
         public FileUploader(
             FilesSettingsHelper filesSettingsHelper,

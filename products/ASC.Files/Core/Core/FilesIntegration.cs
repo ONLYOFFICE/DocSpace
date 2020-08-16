@@ -40,9 +40,9 @@ namespace ASC.Web.Files.Api
     {
         private static readonly IDictionary<string, IFileSecurityProvider> providers = new Dictionary<string, IFileSecurityProvider>();
 
-        public IDaoFactory DaoFactory { get; }
-        public IFileSecurity FileSecurity { get; }
-        public GlobalStore GlobalStore { get; }
+        private IDaoFactory DaoFactory { get; }
+        private IFileSecurity FileSecurity { get; }
+        private GlobalStore GlobalStore { get; }
 
         public FilesIntegration(IDaoFactory daoFactory, IFileSecurity fileSecurity, GlobalStore globalStore)
         {

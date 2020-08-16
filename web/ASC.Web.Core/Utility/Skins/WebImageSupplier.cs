@@ -37,9 +37,9 @@ namespace ASC.Web.Core.Utility.Skins
     public class WebImageSupplier
     {
         private string FolderName { get; }
-        public WebItemManager WebItemManager { get; }
-        public WebPath WebPath { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private WebItemManager WebItemManager { get; }
+        private WebPath WebPath { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
         {

@@ -37,7 +37,7 @@ namespace ASC.Data.Storage
         private readonly int tenant;
         private long currentSize;
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public TenantQuotaController(int tenant, TenantManager tenantManager)
         {

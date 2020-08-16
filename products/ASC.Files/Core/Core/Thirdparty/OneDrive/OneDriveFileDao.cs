@@ -50,9 +50,9 @@ namespace ASC.Files.Thirdparty.OneDrive
 {
     internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public OneDriveDaoSelector OneDriveDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private OneDriveDaoSelector OneDriveDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public OneDriveFileDao(
             IServiceProvider serviceProvider,

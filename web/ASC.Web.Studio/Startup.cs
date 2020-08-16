@@ -4,6 +4,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
+using ASC.FederatedLogin;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +33,10 @@ namespace ASC.Web.Studio
             diHelper
                 .AddStorage()
                 .AddPathUtilsService()
-                .AddStorageHandlerService();
+                .AddStorageHandlerService()
+                .AddLoginHandlerService();
+
+            services.AddMemoryCache();
 
             base.ConfigureServices(services);
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
@@ -59,6 +63,13 @@ namespace ASC.Web.Studio
             {
                 endpoints.InitializeHttpHandlers();
             });
+
+            app.MapWhen(
+               context => context.Request.Path.ToString().EndsWith("login.ashx"),
+               appBranch =>
+               {
+                   appBranch.UseLoginHandler();
+               });
         }
     }
 }

@@ -38,7 +38,7 @@ namespace ASC.Notify.Config
             ServiceProvider = serviceProvider;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public void Configure(NotifyServiceCfg options)
         {

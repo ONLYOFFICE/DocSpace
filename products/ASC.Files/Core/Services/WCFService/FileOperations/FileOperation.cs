@@ -257,7 +257,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected List<TId> Files { get; private set; }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         protected FileOperation(IServiceProvider serviceProvider, T fileOperationData) : base(serviceProvider)
         {

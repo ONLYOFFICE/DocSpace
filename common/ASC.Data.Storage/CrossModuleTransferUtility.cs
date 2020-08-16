@@ -50,7 +50,7 @@ namespace ASC.Data.Storage
             chunksize = 5 * 1024 * 1024;
         }
 
-        public IOptionsMonitor<ILog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
         {

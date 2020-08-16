@@ -40,7 +40,7 @@ namespace ASC.Core.Data
 {
     public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     {
-        public DbContextManager<UserDbContext> DbContextManager { get; }
+        private DbContextManager<UserDbContext> DbContextManager { get; }
         public string DbId { get; set; }
 
         public ConfigureEFUserService(DbContextManager<UserDbContext> dbContextManager)

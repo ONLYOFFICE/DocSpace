@@ -45,7 +45,7 @@ namespace ASC.Core.Notify
             ServiceProvider = serviceProvider;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
