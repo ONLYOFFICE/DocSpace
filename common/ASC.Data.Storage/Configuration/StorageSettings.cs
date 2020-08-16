@@ -50,19 +50,17 @@ namespace ASC.Data.Storage.Configuration
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                var storageSettings = scope.ServiceProvider.GetService<SettingsManager>();
-                var settings = storageSettings.LoadForTenant<StorageSettings>(i.TenantId);
+                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var settings = scopeClass.SettingsManager.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
-                    storageSettingsHelper.Clear(settings);
+                    scopeClass.StorageSettingsHelper.Clear(settings);
                 }
 
-                var cdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
-                var cdnSettings = storageSettings.LoadForTenant<CdnStorageSettings>(i.TenantId);
+                var cdnSettings = scopeClass.SettingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
-                    storageSettingsHelper.Clear(cdnSettings);
+                    scopeClass.StorageSettingsHelper.Clear(cdnSettings);
                 }
             }, CacheNotifyAction.Remove);
         }
@@ -208,6 +206,20 @@ namespace ASC.Data.Storage.Configuration
             return dataStore = ((IDataStore)
                 Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
                 .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
+        }
+
+        class Scope
+        {
+            internal StorageSettingsHelper StorageSettingsHelper { get; }
+            internal SettingsManager SettingsManager { get; }
+            internal CdnStorageSettings CdnStorageSettings { get; }
+
+            public Scope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
+            {
+                StorageSettingsHelper = storageSettingsHelper;
+                SettingsManager = settingsManager;
+                CdnStorageSettings = cdnStorageSettings;
+            }
         }
     }
 
