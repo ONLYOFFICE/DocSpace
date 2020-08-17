@@ -11,12 +11,17 @@ import {
   Text
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
+import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
 import { api, utils } from "asc-web-common";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "InviteDialog",
+  localesPath: "dialogs/InviteDialog"
+});
 const { getShortenedLink } = api.portal;
 const { changeLanguage } = utils;
+
 const textAreaName = "link-textarea";
 
 class InviteDialogComponent extends React.Component {
@@ -30,7 +35,7 @@ class InviteDialogComponent extends React.Component {
       guestInvitationLink,
       isLoading: false,
       isLinkShort: false,
-      visible: false,
+      visible: false
     };
   }
 
@@ -50,10 +55,7 @@ class InviteDialogComponent extends React.Component {
 
   onGetShortenedLink = () => {
     this.setState({ isLoading: true });
-    const {
-      userInvitationLink,
-      guestInvitationLink
-    } = this.props;
+    const { userInvitationLink, guestInvitationLink } = this.props;
 
     getShortenedLink(userInvitationLink)
       .then(link => this.setState({ userInvitationLink: link }))
@@ -80,8 +82,8 @@ class InviteDialogComponent extends React.Component {
     copy(this.state.userInvitationLink);
 
     changeLanguage(i18n)
-    .then(()=>  this.setState({visible: true}))
-    .then(()=>  toastr.success(t("LinkCopySuccess")));
+      .then(() => this.setState({ visible: true }))
+      .then(() => toastr.success(t("LinkCopySuccess")));
   }
 
   onClickToCloseButton = () =>
@@ -93,78 +95,77 @@ class InviteDialogComponent extends React.Component {
     const { t, visible, settings, guestsCaption } = this.props;
 
     return (
-      this.state.visible &&
-      <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={this.onClose}
-          headerContent={t("InviteLinkTitle")}
-          bodyContent={
-            <>
-              <Text as="p">
-                {t("HelpAnswerLinkInviteSettings")}
-              </Text>
-              <Text className="text-dialog" as="p">
-                {t("InviteLinkValidInterval", { count: 7 })}
-              </Text>
-              <div className="flex">
-                <div>
-                  <Link
-                    className="link-dialog"
-                    type="action"
-                    isHovered={true}
-                    onClick={this.onCopyLinkToClipboard}
-                  >
-                    {t("CopyToClipboard")}
-                  </Link>
-                  {settings && !this.state.isLinkShort && (
+      this.state.visible && (
+        <ModalDialogContainer>
+          <ModalDialog
+            visible={visible}
+            onClose={this.onClose}
+            headerContent={t("InviteLinkTitle")}
+            bodyContent={
+              <>
+                <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text>
+                <Text className="text-dialog" as="p">
+                  {t("InviteLinkValidInterval", { count: 7 })}
+                </Text>
+                <div className="flex">
+                  <div>
                     <Link
+                      className="link-dialog"
                       type="action"
                       isHovered={true}
-                      onClick={this.onGetShortenedLink}
+                      onClick={this.onCopyLinkToClipboard}
                     >
-                      {t("GetShortenLink")}
+                      {t("CopyToClipboard")}
                     </Link>
-                  )}
+                    {settings && !this.state.isLinkShort && (
+                      <Link
+                        type="action"
+                        isHovered={true}
+                        onClick={this.onGetShortenedLink}
+                      >
+                        {t("GetShortenLink")}
+                      </Link>
+                    )}
+                  </div>
+                  <Checkbox
+                    label={t("InviteUsersAsCollaborators", { guestsCaption })}
+                    isChecked={this.state.isGuest}
+                    onChange={this.onCheckedGuest}
+                    isDisabled={this.state.isLoading}
+                  />
                 </div>
-                <Checkbox
-                  label={t("InviteUsersAsCollaborators", { guestsCaption })}
-                  isChecked={this.state.isGuest}
-                  onChange={this.onCheckedGuest}
+                <Textarea
+                  className="textarea-dialog"
+                  isReadOnly={true}
                   isDisabled={this.state.isLoading}
+                  name={textAreaName}
+                  value={
+                    this.state.isGuest
+                      ? this.state.guestInvitationLink
+                      : this.state.userInvitationLink
+                  }
                 />
-              </div>
-              <Textarea
-                className="textarea-dialog"
-                isReadOnly={true}
-                isDisabled={this.state.isLoading}
-                name={textAreaName}
-                value={
-                  this.state.isGuest
-                    ? this.state.guestInvitationLink
-                    : this.state.userInvitationLink
-                }
-              />
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                key="CloseBtn"
-                label={
-                  this.state.isLoading
-                    ? t("LoadingProcessing")
-                    : t("CloseButton")
-                }
-                size="medium"
-                primary={true}
-                onClick={this.onClickToCloseButton}
-                isLoading={this.state.isLoading}
-              />
-            </>
-          }
-        />
-      </ModalDialogContainer>
+              </>
+            }
+            footerContent={
+              <>
+                <Button
+                  key="CloseBtn"
+                  label={
+                    this.state.isLoading
+                      ? t("LoadingProcessing")
+                      : t("CloseButton")
+                  }
+                  size="medium"
+                  primary={true}
+                  onClick={this.onClickToCloseButton}
+                  isLoading={this.state.isLoading}
+                />
+              </>
+            }
+          />
+        </ModalDialogContainer>
+      )
     );
   }
 }
@@ -180,9 +181,7 @@ const mapStateToProps = state => {
 
 const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
 
-const InviteDialog = props => (
-  <InviteDialogTranslated i18n={i18n} {...props} />
-);
+const InviteDialog = props => <InviteDialogTranslated i18n={i18n} {...props} />;
 
 InviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
