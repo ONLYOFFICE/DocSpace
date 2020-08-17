@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { Trans } from "react-i18next";
 
 import { createI18N } from "../../../helpers/i18n";
-//const path = require("path");
 const i18n = createI18N({
   page: "About",
   localesPath: "pages/About"

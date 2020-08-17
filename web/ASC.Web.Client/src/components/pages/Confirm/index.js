@@ -6,7 +6,6 @@ import { I18nextProvider } from "react-i18next";
 import { Error404, utils } from "asc-web-common";
 
 import { createI18N } from "../../../helpers/i18n";
-//const path = require("path");
 const i18n = createI18N({
   page: "Confirm",
   localesPath: "pages/Confirm"
