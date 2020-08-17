@@ -58,7 +58,7 @@ const StyledDropdownItem = styled.div`
     ${props => props.isSeparator && 
       `
         padding: 0px 16px;
-        border: 0.5px solid #ECEEF1;
+        border: 1px solid #ECEEF1;
         cursor: default;
         margin: 6px 16px 6px;
         line-height: 1px;
