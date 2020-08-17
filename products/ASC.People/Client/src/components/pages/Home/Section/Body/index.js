@@ -31,9 +31,18 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { Loader } from "asc-web-components";
-import { store, api, constants } from 'asc-web-common';
-import i18n from '../../i18n';
-import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog } from '../../../../dialogs';
+import { store, api, constants } from "asc-web-common";
+import {
+  ChangeEmailDialog,
+  ChangePasswordDialog,
+  DeleteSelfProfileDialog,
+  DeleteProfileEverDialog
+} from "../../../../dialogs";
+import { createI18N } from "../../../../../helpers/i18n";
+const i18n = createI18N({
+  page: "Home",
+  localesPath: "pages/Home"
+});
 const { isArrayEqual } = utils.array;
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
@@ -50,7 +59,7 @@ class SectionBodyContent extends React.PureComponent {
         changeEmail: false,
         changePassword: false,
         deleteSelfProfile: false,
-        deleteProfileEver: false,
+        deleteProfileEver: false
       },
       isEmailValid: false
     };
@@ -80,18 +89,24 @@ class SectionBodyContent extends React.PureComponent {
     history.push(`${settings.homepage}/edit/${user.userName}`);
   };
 
-  toggleChangePasswordDialog = (email) => {
-    const checkedEmail = typeof (email) === 'string' ? email : undefined;
+  toggleChangePasswordDialog = email => {
+    const checkedEmail = typeof email === "string" ? email : undefined;
     this.setState({
-      dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword },
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        changePassword: !this.state.dialogsVisible.changePassword
+      },
       user: { email: checkedEmail }
     });
   };
 
-  toggleChangeEmailDialog = (user) => {
+  toggleChangeEmailDialog = user => {
     const checkedUser = user ? user : {};
     this.setState({
-      dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail },
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        changeEmail: !this.state.dialogsVisible.changeEmail
+      },
       user: {
         email: checkedUser.email,
         id: checkedUser.id
@@ -104,7 +119,7 @@ class SectionBodyContent extends React.PureComponent {
 
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id], isRefetchPeople)
-      .then(() => toastr.success(t('SuccessChangeUserStatus')))
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
@@ -114,7 +129,7 @@ class SectionBodyContent extends React.PureComponent {
 
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id], isRefetchPeople)
-      .then(() => toastr.success(t('SuccessChangeUserStatus')))
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
@@ -131,19 +146,25 @@ class SectionBodyContent extends React.PureComponent {
   toggleDeleteProfileEverDialog = user => {
     const checkedUser = user ? user : {};
     this.setState({
-      dialogsVisible: { ...this.state.dialogsVisible, deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver },
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver
+      },
       user: {
         id: checkedUser.id,
         displayName: checkedUser.displayName,
-        userName: checkedUser.userName,
+        userName: checkedUser.userName
       }
     });
   };
 
   toggleDeleteSelfProfileDialog = email => {
-    const checkedEmail = typeof (email) === 'string' ? email : undefined;
+    const checkedEmail = typeof email === "string" ? email : undefined;
     this.setState({
-      dialogsVisible: { ...this.state.dialogsVisible, deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile },
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile
+      },
       user: { email: checkedEmail }
     });
   };
@@ -154,10 +175,13 @@ class SectionBodyContent extends React.PureComponent {
     resendUserInvites([user.id])
       .then(() =>
         toastr.success(
-          <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
+          <Trans
+            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+            i18n={i18n}
+          >
             The email activation instructions have been sent to the
-                <strong>{{ email: user.email }}</strong> email address
-            </Trans>
+            <strong>{{ email: user.email }}</strong> email address
+          </Trans>
         )
       )
       .catch(error => toastr.error(error))
@@ -186,11 +210,11 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
           user.mobilePhone &&
-          isMobileOnly && {
-            key: "send-message",
-            label: t("LblSendMessage"),
-            onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
-          },
+            isMobileOnly && {
+              key: "send-message",
+              label: t("LblSendMessage"),
+              onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
+            },
           { key: "separator", isSeparator: true },
           {
             key: "edit",
@@ -211,15 +235,18 @@ class SectionBodyContent extends React.PureComponent {
             ? viewer.isOwner
               ? null
               : {
-                key: "delete-profile",
-                label: t("DeleteSelfProfile"),
-                onClick: this.toggleDeleteSelfProfileDialog.bind(this, user.email)
-              }
+                  key: "delete-profile",
+                  label: t("DeleteSelfProfile"),
+                  onClick: this.toggleDeleteSelfProfileDialog.bind(
+                    this,
+                    user.email
+                  )
+                }
             : {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick.bind(this, user)
-            }
+                key: "disable",
+                label: t("DisableUserButton"),
+                onClick: this.onDisableClick.bind(this, user)
+              }
         ];
       case "disabled":
         return [
@@ -257,17 +284,17 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onInviteAgainClick.bind(this, user)
           },
           !isSelf &&
-          (user.status === EmployeeStatus.Active
-            ? {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick.bind(this, user)
-            }
-            : {
-              key: "enable",
-              label: t("EnableUserButton"),
-              onClick: this.onEnableClick.bind(this, user)
-            }),
+            (user.status === EmployeeStatus.Active
+              ? {
+                  key: "disable",
+                  label: t("DisableUserButton"),
+                  onClick: this.onDisableClick.bind(this, user)
+                }
+              : {
+                  key: "enable",
+                  label: t("EnableUserButton"),
+                  onClick: this.onEnableClick.bind(this, user)
+                }),
           isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -312,102 +339,113 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     //console.log("Home SectionBodyContent render()");
-    const { users, viewer, selection, history, settings, t, filter } = this.props;
+    const {
+      users,
+      viewer,
+      selection,
+      history,
+      settings,
+      t,
+      filter
+    } = this.props;
     const { dialogsVisible, user } = this.state;
 
-    return users == null
-      ? (<Loader className="pageLoader" type="rombs" size='40px' />)
-      : users.length > 0 ? (
-        <>
-          <RowContainer useReactWindow={false}>
-            {users.map(user => {
-              const contextOptions = this.getUserContextOptions(user, viewer).filter(o => o);
-              const contextOptionsProps = !contextOptions.length
-                ? {}
-                : { contextOptions };
-              const checked = isUserSelected(selection, user.id);
-              const checkedProps = isAdmin(viewer) ? { checked } : {};
-              const element = (
-                <Avatar
-                  size="small"
-                  role={getUserRole(user)}
-                  userName={user.displayName}
-                  source={user.avatar}
+    return users == null ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : users.length > 0 ? (
+      <>
+        <RowContainer useReactWindow={false}>
+          {users.map(user => {
+            const contextOptions = this.getUserContextOptions(
+              user,
+              viewer
+            ).filter(o => o);
+            const contextOptionsProps = !contextOptions.length
+              ? {}
+              : { contextOptions };
+            const checked = isUserSelected(selection, user.id);
+            const checkedProps = isAdmin(viewer) ? { checked } : {};
+            const element = (
+              <Avatar
+                size="small"
+                role={getUserRole(user)}
+                userName={user.displayName}
+                source={user.avatar}
+              />
+            );
+
+            return (
+              <Row
+                key={user.id}
+                status={getUserStatus(user)}
+                data={user}
+                element={element}
+                onSelect={this.onContentRowSelect}
+                {...checkedProps}
+                {...contextOptionsProps}
+                needForUpdate={this.needForUpdate}
+              >
+                <UserContent
+                  user={user}
+                  history={history}
+                  settings={settings}
+                  selectGroup={this.props.selectGroup}
                 />
-              );
+              </Row>
+            );
+          })}
+        </RowContainer>
 
-              return (
-                <Row
-                  key={user.id}
-                  status={getUserStatus(user)}
-                  data={user}
-                  element={element}
-                  onSelect={this.onContentRowSelect}
-                  {...checkedProps}
-                  {...contextOptionsProps}
-                  needForUpdate={this.needForUpdate}
-                >
-                  <UserContent
-                    user={user}
-                    history={history}
-                    settings={settings}
-                    selectGroup={this.props.selectGroup}
-                  />
-                </Row>
-              );
-            })}
-          </RowContainer>
-
-          {dialogsVisible.changeEmail &&
-            <ChangeEmailDialog
-              visible={dialogsVisible.changeEmail}
-              onClose={this.toggleChangeEmailDialog}
-              user={user}
-            />
-          }
-          {dialogsVisible.changePassword &&
-            <ChangePasswordDialog
-              visible={dialogsVisible.changePassword}
-              onClose={this.toggleChangePasswordDialog}
-              email={user.email}
-            />
-          }
-
-          {dialogsVisible.deleteSelfProfile &&
-            <DeleteSelfProfileDialog
-              visible={dialogsVisible.deleteSelfProfile}
-              onClose={this.toggleDeleteSelfProfileDialog}
-              email={user.email}
-            />
-          }
-
-          {dialogsVisible.deleteProfileEver &&
-            <DeleteProfileEverDialog
-              visible={dialogsVisible.deleteProfileEver}
-              onClose={this.toggleDeleteProfileEverDialog}
-              user={user}
-              filter={filter}
-              settings={settings}
-              history={history}
-            />
-          }
-        </>
-      ) : (
-          <EmptyScreenContainer
-            imageSrc="images/empty_screen_filter.png"
-            imageAlt="Empty Screen Filter image"
-            headerText={t("NotFoundTitle")}
-            descriptionText={t("NotFoundDescription")}
-            buttons={
-              <>
-                <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-                <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-                  {t("ClearButton")}
-                </Link>
-              </>
-            }
+        {dialogsVisible.changeEmail && (
+          <ChangeEmailDialog
+            visible={dialogsVisible.changeEmail}
+            onClose={this.toggleChangeEmailDialog}
+            user={user}
           />
-        );
+        )}
+        {dialogsVisible.changePassword && (
+          <ChangePasswordDialog
+            visible={dialogsVisible.changePassword}
+            onClose={this.toggleChangePasswordDialog}
+            email={user.email}
+          />
+        )}
+
+        {dialogsVisible.deleteSelfProfile && (
+          <DeleteSelfProfileDialog
+            visible={dialogsVisible.deleteSelfProfile}
+            onClose={this.toggleDeleteSelfProfileDialog}
+            email={user.email}
+          />
+        )}
+
+        {dialogsVisible.deleteProfileEver && (
+          <DeleteProfileEverDialog
+            visible={dialogsVisible.deleteProfileEver}
+            onClose={this.toggleDeleteProfileEverDialog}
+            user={user}
+            filter={filter}
+            settings={settings}
+            history={history}
+          />
+        )}
+      </>
+    ) : (
+      <EmptyScreenContainer
+        imageSrc="images/empty_screen_filter.png"
+        imageAlt="Empty Screen Filter image"
+        headerText={t("NotFoundTitle")}
+        descriptionText={t("NotFoundDescription")}
+        buttons={
+          <>
+            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+              {t("ClearButton")}
+            </Link>
+          </>
+        }
+      />
+    );
   }
 }
 
@@ -428,5 +466,13 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople, selectGroup }
+  {
+    selectUser,
+    deselectUser,
+    setSelection,
+    updateUserStatus,
+    resetFilter,
+    fetchPeople,
+    selectGroup
+  }
 )(withRouter(withTranslation()(SectionBodyContent)));

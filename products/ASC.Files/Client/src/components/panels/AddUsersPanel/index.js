@@ -3,13 +3,17 @@ import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
 import { PeopleSelector, utils } from "asc-web-common";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
 import {
   StyledAddUsersPanelPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody
 } from "../StyledPanels";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "AddUsersPanel",
+  localesPath: "panels/AddUsersPanel"
+});
 
 const { changeLanguage } = utils;
 
@@ -37,7 +41,12 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   onPeopleSelect = users => {
-    const { accessRight, shareDataItems, setShareDataItems, onClose } = this.props;
+    const {
+      accessRight,
+      shareDataItems,
+      setShareDataItems,
+      onClose
+    } = this.props;
     const items = shareDataItems;
     for (let item of users) {
       if (item.key) {
@@ -56,7 +65,7 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   componentDidMount() {
-    const scroll = this.scrollRef.current.getElementsByClassName('scroll-body');
+    const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");
     setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
     window.addEventListener("keyup", this.onKeyPress);
   }

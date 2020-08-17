@@ -1,18 +1,17 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import {
-  utils,
-  TreeMenu,
-  TreeNode,
-  Icons,
-  Link
-} from "asc-web-components";
+import React from "react";
+import { connect } from "react-redux";
+import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
 import { history } from "asc-web-common";
-import { selectGroup } from '../../../store/people/actions';
+import { selectGroup } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
-import { withTranslation, I18nextProvider } from 'react-i18next';
-import i18n from '../i18n';
-import { utils as commonUtils } from 'asc-web-common';
+import { withTranslation, I18nextProvider } from "react-i18next";
+import { utils as commonUtils } from "asc-web-common";
+
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "Article",
+  localesPath: "Article"
+});
 
 const { changeLanguage } = commonUtils;
 
@@ -31,28 +30,27 @@ const getItems = data => {
                 color="#657077"
               />
             ) : (
-                ""
-              )
+              ""
+            )
           }
         >
           {getItems(item.children)}
         </TreeNode>
       );
     }
-    return (
-      <TreeNode key={item.key} title={item.title} />
-    );
+    return <TreeNode key={item.key} title={item.title} />;
   });
 };
 
 class ArticleBodyContent extends React.Component {
-
   shouldComponentUpdate(nextProps) {
-    if(!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
+    if (
+      !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
+    ) {
       return true;
     }
 
-    if(!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
+    if (!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
       return true;
     }
 
@@ -66,7 +64,9 @@ class ArticleBodyContent extends React.Component {
     document.title = currentGroup
       ? `${currentGroup.name} – ${t("People")}`
       : `${t("People")} – ${t("OrganizationName")}`;
-    selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+    selectGroup(
+      data && data.length === 1 && data[0] !== "root" ? data[0] : null
+    );
   };
 
   switcherIcon = obj => {
@@ -104,8 +104,8 @@ class ArticleBodyContent extends React.Component {
         {getItems(data)}
       </TreeMenu>
     );
-  };
-};
+  }
+}
 
 const getTreeGroups = (groups, departments) => {
   const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
@@ -113,32 +113,41 @@ const getTreeGroups = (groups, departments) => {
   let newLink = link.split("&");
   const index = newLink.findIndex(x => x.includes("group"));
   index && newLink.splice(1, 1);
-  newLink = newLink.join('&');
+  newLink = newLink.join("&");
 
   const onTitleClick = () => {
     history.push("/products/people/");
-  }
+  };
 
   const treeData = [
-      {
-          key: "root",
-          title: <Link {...linkProps} onClick={onTitleClick} href={`${history.location.pathname}`}>{departments}</Link>,
-          root: true,
-          children: groups.map(g => {
-              return {
-                key: g.id,
-                title: (
-                  <Link
-                    {...linkProps}
-                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}
-                  >
-                    {g.name}
-                  </Link>
-                ),
-                root: false
-              };
-          }) || []
-      }
+    {
+      key: "root",
+      title: (
+        <Link
+          {...linkProps}
+          onClick={onTitleClick}
+          href={`${history.location.pathname}`}
+        >
+          {departments}
+        </Link>
+      ),
+      root: true,
+      children:
+        groups.map(g => {
+          return {
+            key: g.id,
+            title: (
+              <Link
+                {...linkProps}
+                href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+              >
+                {g.name}
+              </Link>
+            ),
+            root: false
+          };
+        }) || []
+    }
   ];
 
   return treeData;
@@ -146,9 +155,13 @@ const getTreeGroups = (groups, departments) => {
 
 const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
 
-const BodyContent = (props) => {
+const BodyContent = props => {
   changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><ArticleBodyContentWrapper {...props} /></I18nextProvider>);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ArticleBodyContentWrapper {...props} />
+    </I18nextProvider>
+  );
 };
 
 function mapStateToProps(state) {
@@ -156,9 +169,14 @@ function mapStateToProps(state) {
 
   return {
     data: getTreeGroups(groups, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"],
+    selectedKeys: state.people.selectedGroup
+      ? [state.people.selectedGroup]
+      : ["root"],
     groups
   };
 }
 
-export default connect(mapStateToProps, { selectGroup })(BodyContent);
+export default connect(
+  mapStateToProps,
+  { selectGroup }
+)(BodyContent);

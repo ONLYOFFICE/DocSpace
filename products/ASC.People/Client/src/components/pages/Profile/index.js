@@ -7,15 +7,18 @@ import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent
-} from '../../Article';
-import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { fetchProfile, resetProfile } from '../../../store/profile/actions';
-import i18n from "./i18n";
+} from "../../Article";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "Profile",
+  localesPath: "pages/Profile"
+});
 const { changeLanguage } = utils;
 
 class PureProfile extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -30,12 +33,14 @@ class PureProfile extends React.Component {
     const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
 
-    const queryParams = this.state.queryString.split('&');
-    const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
+    const queryParams = this.state.queryString.split("&");
+    const arrayOfQueryParams = queryParams.map(queryParam =>
+      queryParam.split("=")
+    );
     const linkParams = Object.fromEntries(arrayOfQueryParams);
 
     if (linkParams.email_change && linkParams.email_change === "success") {
-      toastr.success(t('ChangeEmailSuccess'));
+      toastr.success(t("ChangeEmailSuccess"));
     }
 
     fetchProfile(userId);
@@ -87,21 +92,24 @@ class PureProfile extends React.Component {
           {profile ? (
             <SectionBodyContent />
           ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            )}
+            <Loader className="pageLoader" type="rombs" size="40px" />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     );
-  };
-};
+  }
+}
 
 const ProfileContainer = withTranslation()(PureProfile);
 
-const Profile = (props) => {
-
+const Profile = props => {
   changeLanguage(i18n);
 
-  return <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ProfileContainer {...props} />
+    </I18nextProvider>
+  );
 };
 
 Profile.propTypes = {
@@ -119,8 +127,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps,
+export default connect(
+  mapStateToProps,
   {
     fetchProfile,
     resetProfile
-  })(Profile);
+  }
+)(Profile);

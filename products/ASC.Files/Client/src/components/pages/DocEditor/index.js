@@ -4,8 +4,12 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { RequestLoader } from "asc-web-components";
 import { utils, api } from "asc-web-common";
-import { withTranslation, I18nextProvider } from 'react-i18next';
-import i18n from "./i18n";
+import { withTranslation, I18nextProvider } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "DocEditor",
+  localesPath: "pages/DocEditor"
+});
 
 const { changeLanguage, getObjectByLocation } = utils;
 const { files } = api;
@@ -30,27 +34,26 @@ class PureEditor extends React.Component {
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
     const wrapperStyle = {
-      height: '100vh'
-    }
+      height: "100vh"
+    };
 
-    files.openEdit(fileId)
-      .then(config => {
-        if (window.innerWidth < 720) {
-          config.type = 'mobile';
-        }
+    files.openEdit(fileId).then(config => {
+      if (window.innerWidth < 720) {
+        config.type = "mobile";
+      }
 
-        window.DocsAPI.DocEditor("editor", config);
-      });
+      window.DocsAPI.DocEditor("editor", config);
+    });
 
     return (
       <div style={wrapperStyle}>
         <RequestLoader
           visible={isLoading}
           zIndex={256}
-          loaderSize='16px'
+          loaderSize="16px"
           loaderColor={"#999"}
-          label={`${t('LoadingProcessing')} ${t('LoadingDescription')}`}
-          fontSize='12px'
+          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+          fontSize="12px"
           fontColor={"#999"}
         />
         <div id="editor"></div>
@@ -61,10 +64,14 @@ class PureEditor extends React.Component {
 
 const EditorContainer = withTranslation()(PureEditor);
 
-const DocEditor = (props) => {
+const DocEditor = props => {
   changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><EditorContainer {...props} /></I18nextProvider>);
-}
+  return (
+    <I18nextProvider i18n={i18n}>
+      <EditorContainer {...props} />
+    </I18nextProvider>
+  );
+};
 
 DocEditor.propTypes = {
   files: PropTypes.array,
