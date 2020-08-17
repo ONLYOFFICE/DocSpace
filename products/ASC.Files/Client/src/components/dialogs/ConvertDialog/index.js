@@ -4,9 +4,14 @@ import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
 import { utils } from "asc-web-common";
 import { setTreeFolders, getProgress } from "../../../store/files/actions";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "ConvertDialog",
+  localesPath: "dialogs/ConvertDialog"
+});
+
 const { changeLanguage } = utils;
 
 class ConvertDialogComponent extends React.Component {
@@ -26,15 +31,15 @@ class ConvertDialogComponent extends React.Component {
     this.setState({ hideMessage: !this.state.hideMessage });
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.props.visible !== nextProps.visible) {
+    if (this.props.visible !== nextProps.visible) {
       return true;
     }
 
-    if(this.state.saveOriginalFormat !== nextState.saveOriginalFormat) {
+    if (this.state.saveOriginalFormat !== nextState.saveOriginalFormat) {
       return true;
     }
 
-    if(this.state.hideMessage !== nextState.hideMessage) {
+    if (this.state.hideMessage !== nextState.hideMessage) {
       return true;
     }
 
@@ -103,14 +108,15 @@ const ModalDialogContainerTranslated = withTranslation()(
   ConvertDialogComponent
 );
 
-const ConvertDialog = (props) => (
+const ConvertDialog = props => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {};
 };
 
-export default connect(mapStateToProps, { setTreeFolders, getProgress })(
-  withRouter(ConvertDialog)
-);
+export default connect(
+  mapStateToProps,
+  { setTreeFolders, getProgress }
+)(withRouter(ConvertDialog));
