@@ -18,7 +18,7 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
     </div>
 
     <div className='block-info'>
-      <Text isBold={true} fontSize="13px" fontWeight={700} truncate={true} title={label}>
+      <Text isBold={true} fontSize="13px" fontWeight={600} truncate={true} title={label}>
         {label}
       </Text>
       <Text color="#A3A9AE" fontSize="13px" className="email-text" truncate={true} title={email}>

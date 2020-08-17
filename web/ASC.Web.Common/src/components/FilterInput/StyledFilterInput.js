@@ -27,7 +27,8 @@ const StyledFilterInput = styled.div`
 
       .search-input-block {
           & > input { 
-              height: 30px; 
+              height: 30px;
+              line-height: 30px;
           }
       }
     }
@@ -233,6 +234,16 @@ export const StyledCloseButtonBlock = styled.div`
           fill: #A3A9AE; 
         }
       }
+
+    :hover {
+      .styled-close-button {
+        svg {
+          path {
+            fill: #555F65;
+          }
+        }
+      }
+    }
   `}
 `;
 

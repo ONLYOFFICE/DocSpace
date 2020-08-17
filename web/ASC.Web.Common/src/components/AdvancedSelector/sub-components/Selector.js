@@ -80,6 +80,7 @@ const Selector = props => {
 
   useEffect(() => {
     resetCache();
+    setCurrentGroup(getCurrentGroup(convertGroups(groups)));
   }, [searchValue, currentGroup, hasNextPage]);
 
   const [selectedOptionList, setSelectedOptionList] = useState(
@@ -336,6 +337,7 @@ const Selector = props => {
                 className="row-option" 
                 {...tooltipProps}
                 onClick={onLinkClick}
+                noHover
               >
                 {option.label}
                 {displayType === "aside" && getOptionTooltipContent && (
@@ -510,6 +512,7 @@ const Selector = props => {
           title={label}
           style={style}
           className={`row-group${isSelected ? " selected" : ""}`}
+          noHover
         >
           {isMultiSelect && allowGroupSelection && (
             <Checkbox
