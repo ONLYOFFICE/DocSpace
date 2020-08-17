@@ -194,7 +194,7 @@ export const StyledFilterItem = styled.div`
 
 export const StyledFilterItemContent = styled.div`
   display: flex;
-  padding: 5px 4px 2px 7px;
+  padding: 4px 4px 2px 7px;
   width: 100%;
   user-select: none;
   color: #333;

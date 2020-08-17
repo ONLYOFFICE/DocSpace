@@ -85,7 +85,8 @@ class ContextMenuButton extends React.Component {
       onMouseOut,
       onMouseOver,
       size,
-      style
+      style,
+      isFill
     } = this.props;
 
     const { isOpen } = this.state;
@@ -100,7 +101,7 @@ class ContextMenuButton extends React.Component {
           iconName={iconButtonName}
           iconHoverName={iconHoverName}
           iconClickName={iconClickName}
-          isFill={false}
+          isFill={isFill}
           isDisabled={isDisabled}
           onClick={this.onIconButtonClick}
           onMouseEnter={onMouseEnter}
@@ -165,7 +166,8 @@ ContextMenuButton.defaultProps = {
   iconName: 'VerticalDotsIcon',
   size: 16,
   isDisabled: false,
-  directionX: 'left'
+  directionX: 'left',
+  isFill: false
 };
 
 export default ContextMenuButton

@@ -8,7 +8,7 @@ const StyledBadge = styled.div`
   border: 1px solid transparent;
   border-radius: ${props => props.borderRadius};
   width: fit-content;
-  padding: 2px;
+  padding: 1px;
   line-height: 0.8;
   cursor: pointer;
   overflow: hidden;
