@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\common\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+  </ItemGroup>
+
+</Project>
