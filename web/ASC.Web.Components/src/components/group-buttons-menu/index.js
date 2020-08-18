@@ -16,7 +16,7 @@ const StyledGroupButtonsMenu = styled.div`
     height: 57px;
     list-style: none;
     padding: 0 18px 19px 0;
-    width: 100%;
+    width: ${props => props.width ? props.width + 'px' : '100%'};;
     white-space: nowrap;
     display: ${props => props.visible ? 'block' : 'none'};
     z-index: 195;
@@ -146,8 +146,12 @@ class GroupButtonsMenu extends React.PureComponent {
     const moreMenuElement = document.getElementById("moreMenu");
     const groupMenuOuterElement = document.getElementById("groupMenuOuter");
 
-    const moreMenuWidth = moreMenuElement && moreMenuElement.getBoundingClientRect().width;
-    const groupMenuOuterWidth = groupMenuOuterElement && groupMenuOuterElement.getBoundingClientRect().width;
+    const screenWidth = window.innerWidth;
+    const groupMenuOuterValues = groupMenuOuterElement
+      && groupMenuOuterElement.getBoundingClientRect();
+    const moreMenuWidth = moreMenuElement
+      && moreMenuElement.getBoundingClientRect().width;
+    const groupMenuOuterWidth = screenWidth - groupMenuOuterValues.x;
 
     const visibleItemsCount = this.countMenuItems(this.widthsArray, groupMenuOuterWidth, moreMenuWidth);
     const navItemsCopy = this.props.menuItems;
@@ -157,7 +161,8 @@ class GroupButtonsMenu extends React.PureComponent {
 
     this.setState({
       priorityItems: priorityItems,
-      moreItems: moreItems
+      moreItems: moreItems,
+      width: groupMenuOuterWidth
     });
   };
 
@@ -168,10 +173,10 @@ class GroupButtonsMenu extends React.PureComponent {
   render() {
     //console.log("GroupButtonsMenu render");
     const { selected, moreLabel, closeTitle } = this.props;
-    const { priorityItems, moreItems, visible } = this.state;
+    const { priorityItems, moreItems, visible, width } = this.state;
 
     return (
-      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible} >
+      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible} width={width} >
         <GroupMenuWrapper id="groupMenu">
           {priorityItems.map((item, i) =>
             <GroupButton
