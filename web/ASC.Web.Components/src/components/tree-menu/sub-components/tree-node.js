@@ -125,7 +125,7 @@ const TreeNodeMenu = styled(TreeNode)`
         position: relative;
     }
     span.rc-tree-iconEle{
-        margin: 3px 7px 3px 12px;
+        margin: 2px 7px 3px 12px;
         ${props => props.disableSwitch && "margin-left: 0;"}
         ${props => props.disableSwitch && "margin-right: 10px;"}
         height: 17px;

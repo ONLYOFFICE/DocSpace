@@ -1,7 +1,7 @@
-export const AUTH_KEY = 'asc_auth_key';
-export const LANGUAGE = 'language';
-export const ARTICLE_PINNED_KEY = 'asc_article_pinned_key';
-export const WIZARD_KEY = 'asc_wizard_key';
+export const AUTH_KEY = "asc_auth_key";
+export const LANGUAGE = "language";
+export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
+export const WIZARD_KEY = "asc_wizard_key";
 
 /**
  * Enum for employee activation status.
@@ -48,7 +48,7 @@ export const FilterType = Object.freeze({
   ByDepartment: 9,
   ArchiveOnly: 10,
   ByExtension: 11,
-  MediaOnly: 12,
+  MediaOnly: 12
 });
 
 /**
@@ -96,4 +96,23 @@ export const ShareAccessRights = Object.freeze({
   Review: 5,
   Comment: 6,
   FormFilling: 7
-})
+});
+
+export const i18nBaseSettings = {
+  lng: localStorage.getItem(LANGUAGE) || "en",
+  supportedLngs: ["en", "ru"],
+  fallbackLng: false, //fallbackLng: "en",
+  load: "languageOnly",
+
+  interpolation: {
+    escapeValue: false, // not needed for react as it escapes by default
+    format: function(value, format) {
+      if (format === "lowercase") return value.toLowerCase();
+      return value;
+    }
+  },
+
+  react: {
+    useSuspense: true
+  }
+};

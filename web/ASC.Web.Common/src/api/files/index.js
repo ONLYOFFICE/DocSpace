@@ -371,8 +371,8 @@ export function versionEditComment(fileId, comment, version) {
   return request({ method: "put", url: `/files/file/${fileId}/comment`, data });
 }
 
-export function versionRestore(fileId, version) {
-  const data = { version };
+export function versionRestore(fileId, lastversion) {
+  const data = { lastversion };
   return request({ method: "put", url: `/files/file/${fileId}`, data });
 }
 

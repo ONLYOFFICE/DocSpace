@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { RequestLoader, Checkbox, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
-import { withTranslation, I18nextProvider } from 'react-i18next';
-import i18n from "./i18n";
+import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
@@ -31,11 +30,18 @@ import {
   setSelected,
   setTreeFolders
 } from "../../../store/files/actions";
-import { loopTreeFolders, checkFolderType } from "../../../store/files/selectors";
+import {
+  loopTreeFolders,
+  checkFolderType
+} from "../../../store/files/selectors";
 import store from "../../../store/store";
 import { ConvertDialog } from "../../dialogs";
 import { startUpload, onConvert, setDialogVisible } from "./FilesUploader";
-
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "Home",
+  localesPath: "pages/Home"
+});
 const { changeLanguage } = utils;
 
 class PureHome extends React.Component {
@@ -102,9 +108,9 @@ class PureHome extends React.Component {
         callback();
       }
 
-      const callNext = (i) => {
+      const callNext = i => {
         if (typeof queue[i] === "function") {
-          queue[i](() => i + 1 < length ? callNext(i + 1) : callback());
+          queue[i](() => (i + 1 < length ? callNext(i + 1) : callback()));
         }
       };
       callNext(i);
@@ -115,8 +121,8 @@ class PureHome extends React.Component {
       const dirReader = dirEntry.createReader();
 
       // keep quering recursively till no more entries
-      const getEntries = (func) => {
-        dirReader.readEntries((moreEntries) => {
+      const getEntries = func => {
+        dirReader.readEntries(moreEntries => {
           if (moreEntries.length) {
             entries = [...entries, ...moreEntries];
             getEntries(func);
@@ -142,8 +148,8 @@ class PureHome extends React.Component {
 
     const readEntries = (entries, callback) => {
       const queue = [];
-      loop(entries, (entry) => {
-        queue.push((func) => readEntry(entry, func));
+      loop(entries, entry => {
+        queue.push(func => readEntry(entry, func));
       });
       inSeries(queue, () => callback());
     };
@@ -167,7 +173,7 @@ class PureHome extends React.Component {
 
     const readItems = (items, func) => {
       const entries = [];
-      loop(items, (item) => {
+      loop(items, item => {
         const entry = item.webkitGetAsEntry();
         if (entry) {
           if (entry.isFile) {
@@ -189,11 +195,11 @@ class PureHome extends React.Component {
     readItems(items, () => startUpload(files, folderId, t));
   };
 
-  onSectionHeaderContentCheck = (checked) => {
+  onSectionHeaderContentCheck = checked => {
     this.props.setSelected(checked ? "all" : "none");
   };
 
-  onSectionHeaderContentSelect = (selected) => {
+  onSectionHeaderContentSelect = selected => {
     this.props.setSelected(selected);
   };
 
@@ -208,7 +214,7 @@ class PureHome extends React.Component {
     }
   };
 
-  onLoading = (status) => {
+  onLoading = status => {
     this.setState({ isLoading: status });
   };
 
@@ -217,7 +223,7 @@ class PureHome extends React.Component {
 
   onChangeOriginalFormat = () =>
     this.setState({
-      uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting,
+      uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting
     });
 
   onChangeWindowVisible = () =>
@@ -249,78 +255,106 @@ class PureHome extends React.Component {
       treeFolders
     } = this.props;
 
-    getProgress().then(res => {
-      const currentItem = res.find(x => x.id === id);
-      if (currentItem && currentItem.progress !== 100) {
-        setProgressBarData({ label: progressData.label, percent: currentItem.progress, visible: true });
-        setTimeout(() => this.loopFilesOperations(id, destFolderId, isCopy), 1000);
-      } else {
-        setProgressBarData({ label: progressData.label, percent: 100, visible: true });
-        getFolder(destFolderId).then(data => {
-          let newTreeFolders = treeFolders;
-          let path = data.pathParts.slice(0);
-          let folders = data.folders;
-          let foldersCount = data.current.foldersCount;
-          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
-          if (!isCopy || destFolderId === currentFolderId) {
-            fetchFiles(currentFolderId, filter, store.dispatch)
-              .then((data) => {
-                if (!isRecycleBinFolder) {
-                  newTreeFolders = treeFolders;
-                  path = data.selectedFolder.pathParts.slice(0);
-                  folders = data.selectedFolder.folders;
-                  foldersCount = data.selectedFolder.foldersCount;
-                  loopTreeFolders(
-                    path,
-                    newTreeFolders,
-                    folders,
-                    foldersCount
-                  );
-                  setNewTreeFilesBadge(true);
-                  setTreeFolders(newTreeFolders);
-                }
-                this.setNewFilter();
-              })
-              .catch(err => {
-                toastr.error(err);
-                clearProgressData(store.dispatch);
-              })
-              .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
-          } else {
-            setProgressBarData({ label: progressData.label, percent: 100, visible: true });
-            setTimeout(() => clearProgressData(store.dispatch), 5000);
-            setNewTreeFilesBadge(true);
-            setTreeFolders(newTreeFolders);
-          }
-        })
-          .catch(err => {
-            toastr.error(err);
-            clearProgressData(store.dispatch);
+    getProgress()
+      .then(res => {
+        const currentItem = res.find(x => x.id === id);
+        if (currentItem && currentItem.progress !== 100) {
+          setProgressBarData({
+            label: progressData.label,
+            percent: currentItem.progress,
+            visible: true
           });
-      }
-    })
-      .catch((err) => {
+          setTimeout(
+            () => this.loopFilesOperations(id, destFolderId, isCopy),
+            1000
+          );
+        } else {
+          setProgressBarData({
+            label: progressData.label,
+            percent: 100,
+            visible: true
+          });
+          getFolder(destFolderId)
+            .then(data => {
+              let newTreeFolders = treeFolders;
+              let path = data.pathParts.slice(0);
+              let folders = data.folders;
+              let foldersCount = data.current.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+              if (!isCopy || destFolderId === currentFolderId) {
+                fetchFiles(currentFolderId, filter, store.dispatch)
+                  .then(data => {
+                    if (!isRecycleBinFolder) {
+                      newTreeFolders = treeFolders;
+                      path = data.selectedFolder.pathParts.slice(0);
+                      folders = data.selectedFolder.folders;
+                      foldersCount = data.selectedFolder.foldersCount;
+                      loopTreeFolders(
+                        path,
+                        newTreeFolders,
+                        folders,
+                        foldersCount
+                      );
+                      setNewTreeFilesBadge(true);
+                      setTreeFolders(newTreeFolders);
+                    }
+                    this.setNewFilter();
+                  })
+                  .catch(err => {
+                    toastr.error(err);
+                    clearProgressData(store.dispatch);
+                  })
+                  .finally(() =>
+                    setTimeout(() => clearProgressData(store.dispatch), 5000)
+                  );
+              } else {
+                setProgressBarData({
+                  label: progressData.label,
+                  percent: 100,
+                  visible: true
+                });
+                setTimeout(() => clearProgressData(store.dispatch), 5000);
+                setNewTreeFilesBadge(true);
+                setTreeFolders(newTreeFolders);
+              }
+            })
+            .catch(err => {
+              toastr.error(err);
+              clearProgressData(store.dispatch);
+            });
+        }
+      })
+      .catch(err => {
         toastr.error(err);
         clearProgressData(store.dispatch);
       });
   };
 
   setSelections = items => {
-    const { selection, folders, files, selectFile, deselectFile, fileActionId } = this.props;
+    const {
+      selection,
+      folders,
+      files,
+      selectFile,
+      deselectFile,
+      fileActionId
+    } = this.props;
 
     if (selection.length > items.length) {
       //Delete selection
       const newSelection = [];
       let newFile = null;
       for (let item of items) {
-        if (!item) break   // temporary fall protection selection tile 
+        if (!item) break; // temporary fall protection selection tile
 
         item = item.split("_");
         if (item[0] === "folder") {
-          newFile = selection.find((x) => x.id === Number(item[1]) && !x.fileExst);
+          newFile = selection.find(
+            x => x.id === Number(item[1]) && !x.fileExst
+          );
         } else if (item[0] === "file") {
-          newFile = selection.find((x) => x.id === Number(item[1]) && x.fileExst);
+          newFile = selection.find(x => x.id === Number(item[1]) && x.fileExst);
         }
         if (newFile) {
           newSelection.push(newFile);
@@ -328,7 +362,9 @@ class PureHome extends React.Component {
       }
 
       for (let item of selection) {
-        const element = newSelection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+        const element = newSelection.find(
+          x => x.id === item.id && x.fileExst === item.fileExst
+        );
         if (!element) {
           deselectFile(item);
         }
@@ -336,17 +372,19 @@ class PureHome extends React.Component {
     } else if (selection.length < items.length) {
       //Add selection
       for (let item of items) {
-        if (!item) break // temporary fall protection selection tile 
+        if (!item) break; // temporary fall protection selection tile
 
         let newFile = null;
         item = item.split("_");
         if (item[0] === "folder") {
-          newFile = folders.find((x) => x.id === Number(item[1]) && !x.fileExst);
+          newFile = folders.find(x => x.id === Number(item[1]) && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+          newFile = files.find(x => x.id === Number(item[1]) && x.fileExst);
         }
         if (newFile && fileActionId !== newFile.id) {
-          const existItem = selection.find(x => x.id === newFile.id && x.fileExst === newFile.fileExst);
+          const existItem = selection.find(
+            x => x.id === newFile.id && x.fileExst === newFile.fileExst
+          );
           !existItem && selectFile(newFile);
         }
       }
@@ -430,9 +468,7 @@ class PureHome extends React.Component {
           </PageLayout.ArticleHeader>
 
           <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent
-              onLoading={this.onLoading}
-            />
+            <ArticleMainButtonContent onLoading={this.onLoading} />
           </PageLayout.ArticleMainButton>
 
           <PageLayout.ArticleBody>
@@ -483,14 +519,14 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = (props) => {
+const Home = props => {
   changeLanguage(i18n);
   return (
     <I18nextProvider i18n={i18n}>
       <HomeContainer {...props} />
     </I18nextProvider>
   );
-}
+};
 
 Home.propTypes = {
   files: PropTypes.array,
@@ -532,7 +568,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps,
+export default connect(
+  mapStateToProps,
   {
     deselectFile,
     getFolder,

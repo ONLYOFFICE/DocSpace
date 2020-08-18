@@ -13,10 +13,13 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "SendInviteDialog",
+  localesPath: "dialogs/SendInviteDialog"
+});
 const { resendUserInvites } = api.people;
 const { changeLanguage } = utils;
 

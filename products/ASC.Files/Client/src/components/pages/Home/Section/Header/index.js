@@ -488,7 +488,9 @@ class SectionHeaderContent extends React.Component {
                     directionX="right"
                     iconName="PlusIcon"
                     size={17}
-                    color="#657077"
+                    color="#A3A9AE"
+                    hoverColor="#657077"
+                    isFill
                     getData={this.getContextOptionsPlus}
                     isDisabled={false}
                   />
@@ -498,6 +500,8 @@ class SectionHeaderContent extends React.Component {
                     iconName="VerticalDotsIcon"
                     size={17}
                     color="#A3A9AE"
+                    hoverColor="#657077"
+                    isFill
                     getData={this.getContextOptionsFolder}
                     isDisabled={false}
                   />
@@ -508,7 +512,9 @@ class SectionHeaderContent extends React.Component {
                     directionX="right"
                     iconName="PlusIcon"
                     size={17}
-                    color="#657077"
+                    color="#A3A9AE"
+                    hoverColor="#657077"
+                    isFill
                     getData={this.getContextOptionsPlus}
                     isDisabled={false}
                   />

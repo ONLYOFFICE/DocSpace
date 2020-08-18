@@ -4,26 +4,34 @@ import {
   IconButton,
   ContextMenuButton,
   toastr,
-  AvatarEditor,
+  AvatarEditor
 } from "asc-web-components";
-import { Headline } from 'asc-web-common';
+import { Headline } from "asc-web-common";
 import { withRouter } from "react-router";
 import {
   getUserStatus,
   toEmployeeWrapper
 } from "../../../../../store/people/selectors";
 import { withTranslation, Trans } from "react-i18next";
+import { updateUserStatus } from "../../../../../store/people/actions";
+import { updateProfile } from "../../../../../store/profile/actions";
 import {
-  updateUserStatus
-} from "../../../../../store/people/actions";
-import {
-  updateProfile
+  fetchProfile,
+  getUserPhoto
 } from "../../../../../store/profile/actions";
-import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
-import { DeleteSelfProfileDialog, ChangePasswordDialog, ChangeEmailDialog, DeleteProfileEverDialog } from '../../../../dialogs';
-import i18n from '../../i18n';
+import {
+  DeleteSelfProfileDialog,
+  ChangePasswordDialog,
+  ChangeEmailDialog,
+  DeleteProfileEverDialog
+} from "../../../../dialogs";
+import { createI18N } from "../../../../../helpers/i18n";
+const i18n = createI18N({
+  page: "Profile",
+  localesPath: "pages/Profile"
+});
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
@@ -39,29 +47,29 @@ const StyledContainer = styled.div`
   display: flex;
   align-items: center;
 
-    .action-button {
-      margin-left: 16px;
+  .action-button {
+    margin-left: 16px;
 
-      @media (max-width: 1024px) {
-        margin-left: auto;
+    @media (max-width: 1024px) {
+      margin-left: auto;
 
-        & > div:first-child {
-          padding: 8px 16px 8px 0px;
-          margin-right: -16px;
-        }
-      }
-    }
-    .arrow-button {
-      @media (max-width: 1024px) {
-        padding: 8px 16px 8px 16px;
-        margin-left: -16px;
+      & > div:first-child {
+        padding: 8px 16px 8px 0px;
         margin-right: -16px;
       }
     }
-
-    .header-headline {
-      margin-left: 16px;
+  }
+  .arrow-button {
+    @media (max-width: 1024px) {
+      padding: 8px 16px 8px 16px;
+      margin-left: -16px;
+      margin-right: -16px;
     }
+  }
+
+  .header-headline {
+    margin-left: 16px;
+  }
 `;
 
 class SectionHeaderContent extends React.PureComponent {
@@ -95,7 +103,7 @@ class SectionHeaderContent extends React.PureComponent {
         changePassword: false,
         changeEmail: false,
         deleteProfileEver: false
-      },
+      }
     };
 
     return newState;
@@ -111,7 +119,11 @@ class SectionHeaderContent extends React.PureComponent {
               tmpFile: this.state.avatar.tmpFile,
               defaultWidth: avatarDefaultSizes[1],
               defaultHeight: avatarDefaultSizes[2],
-              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
+              image: userPhotoData.original
+                ? userPhotoData.original.indexOf("default_user_photo") !== -1
+                  ? null
+                  : userPhotoData.original
+                : null
             },
             visibleAvatarEditor: true
           });
@@ -138,7 +150,7 @@ class SectionHeaderContent extends React.PureComponent {
     loadAvatar(this.state.profile.id, data)
       .then(response => {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function() {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
@@ -180,7 +192,7 @@ class SectionHeaderContent extends React.PureComponent {
         .then(() => this.props.updateProfile(this.props.profile))
         .then(() => this.props.fetchProfile(this.state.profile.id))
         .then(() => toastr.success(this.props.t("ChangesApplied")))
-        .catch((error) => {
+        .catch(error => {
           toastr.error(error);
         });
     } else {
@@ -189,7 +201,7 @@ class SectionHeaderContent extends React.PureComponent {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
-          toastr.success(this.props.t('ChangesApplied'));
+          toastr.success(this.props.t("ChangesApplied"));
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error));
@@ -202,9 +214,21 @@ class SectionHeaderContent extends React.PureComponent {
     });
   };
 
-  toggleChangePasswordDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword } });
+  toggleChangePasswordDialog = () =>
+    this.setState({
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        changePassword: !this.state.dialogsVisible.changePassword
+      }
+    });
 
-  toggleChangeEmailDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail } });
+  toggleChangeEmailDialog = () =>
+    this.setState({
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        changeEmail: !this.state.dialogsVisible.changeEmail
+      }
+    });
 
   onEditClick = () => {
     const { history, settings } = this.props;
@@ -217,8 +241,8 @@ class SectionHeaderContent extends React.PureComponent {
     updateUserStatus(status, new Array(userId))
       .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
-      .then(() => toastr.success(t('SuccessChangeUserStatus')))
-      .catch(error => toastr.error(error))
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .catch(error => toastr.error(error));
   };
 
   onDisableClick = () =>
@@ -236,23 +260,33 @@ class SectionHeaderContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   };
 
-  toggleDeleteProfileEverDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver } });
-
+  toggleDeleteProfileEverDialog = () =>
+    this.setState({
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver
+      }
+    });
 
   toggleDeleteSelfProfileDialog = () => {
-    this.setState(
-      {
-        dialogsVisible: { ...this.state.dialogsVisible, deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile }
-      });
+    this.setState({
+      dialogsVisible: {
+        ...this.state.dialogsVisible,
+        deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile
+      }
+    });
   };
 
   onInviteAgainClick = () => {
     resendUserInvites(new Array(this.state.profile.id))
       .then(() =>
         toastr.success(
-          <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
+          <Trans
+            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+            i18n={i18n}
+          >
             The email activation instructions have been sent to the
-                <strong>{{ email: this.state.profile.email }}</strong> email address
+            <strong>{{ email: this.state.profile.email }}</strong> email address
           </Trans>
         )
       )
@@ -295,15 +329,15 @@ class SectionHeaderContent extends React.PureComponent {
             ? viewer.isOwner
               ? {}
               : {
-                key: "delete-profile",
-                label: t("DeleteSelfProfile"),
-                onClick: this.toggleDeleteSelfProfileDialog
-              }
+                  key: "delete-profile",
+                  label: t("DeleteSelfProfile"),
+                  onClick: this.toggleDeleteSelfProfileDialog
+                }
             : {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
+                key: "disable",
+                label: t("DisableUserButton"),
+                onClick: this.onDisableClick
+              }
         ];
       case "disabled":
         return [
@@ -351,17 +385,17 @@ class SectionHeaderContent extends React.PureComponent {
             onClick: this.openAvatarEditor
           },
           !isMe(user, viewer.userName) &&
-          (user.status === EmployeeStatus.Active
-            ? {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
-            : {
-              key: "enable",
-              label: t("EnableUserButton"),
-              onClick: this.onEnableClick
-            }),
+            (user.status === EmployeeStatus.Active
+              ? {
+                  key: "disable",
+                  label: t("DisableUserButton"),
+                  onClick: this.onDisableClick
+                }
+              : {
+                  key: "enable",
+                  label: t("EnableUserButton"),
+                  onClick: this.onEnableClick
+                }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -380,7 +414,15 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, isAdmin, viewer, t, filter, settings, history } = this.props;
+    const {
+      profile,
+      isAdmin,
+      viewer,
+      t,
+      filter,
+      settings,
+      history
+    } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
@@ -395,7 +437,7 @@ class SectionHeaderContent extends React.PureComponent {
           onClick={this.onClickBack}
           className="arrow-button"
         />
-        <Headline className='header-headline' type='content' truncate={true}>
+        <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
         </Headline>
@@ -424,34 +466,34 @@ class SectionHeaderContent extends React.PureComponent {
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}
-          saveButtonLabel={t('SaveButton')}
+          saveButtonLabel={t("SaveButton")}
         />
 
-        {dialogsVisible.deleteSelfProfile &&
+        {dialogsVisible.deleteSelfProfile && (
           <DeleteSelfProfileDialog
             visible={dialogsVisible.deleteSelfProfile}
             onClose={this.toggleDeleteSelfProfileDialog}
             email={this.state.profile.email}
           />
-        }
+        )}
 
-        {dialogsVisible.changePassword &&
+        {dialogsVisible.changePassword && (
           <ChangePasswordDialog
             visible={dialogsVisible.changePassword}
             onClose={this.toggleChangePasswordDialog}
             email={this.state.profile.email}
           />
-        }
+        )}
 
-        {dialogsVisible.changeEmail &&
+        {dialogsVisible.changeEmail && (
           <ChangeEmailDialog
             visible={dialogsVisible.changeEmail}
             onClose={this.toggleChangeEmailDialog}
             user={this.state.profile}
           />
-        }
+        )}
 
-        {dialogsVisible.deleteProfileEver &&
+        {dialogsVisible.deleteProfileEver && (
           <DeleteProfileEverDialog
             visible={dialogsVisible.deleteProfileEver}
             onClose={this.toggleDeleteProfileEverDialog}
@@ -460,7 +502,7 @@ class SectionHeaderContent extends React.PureComponent {
             settings={settings}
             history={history}
           />
-        }
+        )}
       </StyledContainer>
     );
   }

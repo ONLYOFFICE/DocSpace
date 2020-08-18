@@ -12,8 +12,8 @@ const Scrollbar = React.forwardRef((props, ref) => {
       view: { outline: 'none' }
     },
     smallBlack: {
-      thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '2px', marginLeft: '2px', borderRadius: 'inherit' },
-      thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '2px', marginTop: '2px', borderRadius: 'inherit' },
+      thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '3px', marginLeft: '2px', borderRadius: 'inherit' },
+      thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '3px', marginTop: '2px', borderRadius: 'inherit' },
       view: { outline: 'none' }
     },
     mediumBlack: {

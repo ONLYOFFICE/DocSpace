@@ -1,13 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import i18n from "../../../i18n";
+//import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Text, ToggleContent, RadioButtonGroup } from "asc-web-components";
-import { utils } from 'asc-web-common';
+//import { utils } from "asc-web-common";
 
-const { changeLanguage } = utils;
+import { createI18N } from "../../../../../../helpers/i18n";
+
+const i18n = createI18N({
+  page: "Settings",
+  localesPath: "pages/Settings"
+});
+
+//const { changeLanguage } = utils;
 
 const ProjectsContainer = styled.div`
   display: flex;
@@ -99,17 +106,17 @@ class PureModulesSettings extends Component {
                     })
                   }
                 ]}
-                orientation='vertical'
-                spacing='10px'
+                orientation="vertical"
+                spacing="10px"
               />
             </RadioButtonContainer>
             <ProjectsBody>
-              <Text className="projects_margin" fontSize='12px'>
+              <Text className="projects_margin" fontSize="12px">
                 {t("AccessRightsProductUsersCan", {
                   category: t("People")
                 })}
               </Text>
-              <Text fontSize='12px'>
+              <Text fontSize="12px">
                 <li>{t("ProductUserOpportunities")}</li>
               </Text>
             </ProjectsBody>
@@ -128,4 +135,7 @@ const ModulesSettings = props => (
   </I18nextProvider>
 );
 
-export default connect(null, {})(withRouter(ModulesSettings));
+export default connect(
+  null,
+  {}
+)(withRouter(ModulesSettings));

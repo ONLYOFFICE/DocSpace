@@ -532,10 +532,10 @@ class FilterInput extends React.Component {
             hideFilterItems, sortId, sortDirection } = this.state;
 
         // console.log("filter input render, openFilterItems", openFilterItems, 'hideFilterItems', hideFilterItems);
-        let iconSize = 33;
+        let iconSize = 30;
         switch (size) {
             case 'base':
-                iconSize = 33;
+                iconSize = 30;
                 break;
             case 'middle':
             case 'big':

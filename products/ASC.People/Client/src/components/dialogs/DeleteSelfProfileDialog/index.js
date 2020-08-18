@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Link,
-  Text
-} from "asc-web-components";
+import { toastr, ModalDialog, Button, Link, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
+import ModalDialogContainer from "../ModalDialogContainer";
 import { api, utils } from "asc-web-common";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "DeleteSelfProfileDialog",
+  localesPath: "dialogs/DeleteSelfProfileDialog"
+});
 const { sendInstructionsToDelete } = api.people;
 const { changeLanguage } = utils;
 
@@ -28,15 +26,15 @@ class DeleteSelfProfileDialogComponent extends React.Component {
     const { onClose } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToDelete()
-        .then((res) => {
+        .then(res => {
           toastr.success(res);
         })
-        .catch((error) => toastr.error(error))
+        .catch(error => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
-    })
-  }
+    });
+  };
 
   render() {
     console.log("DeleteSelfProfileDialog render");
@@ -48,10 +46,17 @@ class DeleteSelfProfileDialogComponent extends React.Component {
         <ModalDialog
           visible={visible}
           onClose={onClose}
-          headerContent={t('DeleteProfileTitle')}
+          headerContent={t("DeleteProfileTitle")}
           bodyContent={
-            <Text fontSize='13px'>
-              {t('DeleteProfileInfo')} <Link type="page" href={`mailto:${email}`} noHover color='#316DAA' title={email}>
+            <Text fontSize="13px">
+              {t("DeleteProfileInfo")}{" "}
+              <Link
+                type="page"
+                href={`mailto:${email}`}
+                noHover
+                color="#316DAA"
+                title={email}
+              >
                 {email}
               </Link>
             </Text>
@@ -60,16 +65,16 @@ class DeleteSelfProfileDialogComponent extends React.Component {
             <>
               <Button
                 key="SendBtn"
-                label={t('SendButton')}
+                label={t("SendButton")}
                 size="medium"
                 primary={true}
                 onClick={this.onDeleteSelfProfileInstructions}
                 isLoading={isRequestRunning}
               />
               <Button
-                className='button-dialog'
+                className="button-dialog"
                 key="CloseBtn"
-                label={t('CloseButton')}
+                label={t("CloseButton")}
                 size="medium"
                 onClick={onClose}
                 isDisabled={isRequestRunning}
@@ -82,8 +87,9 @@ class DeleteSelfProfileDialogComponent extends React.Component {
   }
 }
 
-
-const DeleteSelfProfileDialogTranslated = withTranslation()(DeleteSelfProfileDialogComponent);
+const DeleteSelfProfileDialogTranslated = withTranslation()(
+  DeleteSelfProfileDialogComponent
+);
 
 const DeleteSelfProfileDialog = props => (
   <DeleteSelfProfileDialogTranslated i18n={i18n} {...props} />
@@ -92,7 +98,7 @@ const DeleteSelfProfileDialog = props => (
 DeleteSelfProfileDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired
 };
 
 export default DeleteSelfProfileDialog;

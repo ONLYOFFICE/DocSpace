@@ -14,10 +14,14 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
 import { removeUser } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "DeleteUsersDialog",
+  localesPath: "dialogs/DeleteUsersDialog"
+});
 
 const { Filter } = api;
 const { changeLanguage } = utils;
@@ -185,4 +189,7 @@ DeleteUsersDialog.propTypes = {
   removeUser: PropTypes.func.isRequired
 };
 
-export default connect(null, { removeUser })(withRouter(DeleteUsersDialog));
+export default connect(
+  null,
+  { removeUser }
+)(withRouter(DeleteUsersDialog));

@@ -39,6 +39,10 @@ const dropdownStyles = css`
 
     .header-groups {
       grid-area: header-groups;
+
+      .group_header {
+        line-height: 30px;
+      }
       /* background-color: white; */
     }
 
@@ -46,6 +50,10 @@ const dropdownStyles = css`
       grid-area: body-groups;
       margin-left: -8px;
       /* background-color: white; */
+
+      .row-group:first-child {
+        font-weight: 700;
+      }
 
       .row-group {
         box-sizing: border-box;
@@ -59,7 +67,7 @@ const dropdownStyles = css`
         }
 
         &:hover {
-          background-color: #f8f9f9;
+          background-color: #eceef1;
           border-radius: 3px;
         }
       }
@@ -199,6 +207,11 @@ const StyledSelector = styled(Container)`
         box-sizing: border-box;
         height: 32px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #eceef1;
+          border-radius: 3px;
+        }
 
         .option_checkbox {
           width: 265px;
