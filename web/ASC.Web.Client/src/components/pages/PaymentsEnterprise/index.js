@@ -159,9 +159,7 @@ const Body = ({ modules, match, isLoaded }) => {
   ) : (
     <BodyStyle>
       <HeaderStylePayments>
-        <Text className="payments-header">
-          You are using ONLYOFFICE Enterprise Edition
-        </Text>
+        <Text className="payments-header">{t("Using")}</Text>
         <Text className="payments-header-additional_support">
           {t("SubscriptionAndUpdatesExpires")} 1 march 2021.
         </Text>
@@ -170,23 +168,21 @@ const Body = ({ modules, match, isLoaded }) => {
         </Text>
       </HeaderStylePayments>
       <BodyAdvantages>
-        <Text className="advantages-enterprise">
-          Renew subscription to get:
-        </Text>
+        <Text className="advantages-enterprise">{t("SubscriptionGet")}</Text>
         <Text className="payments-body first-advantages">
-          ONLYOFFICE editors with pro features
+          {t("OnlyOfficeEditor")}
         </Text>
         <Text className="payments-body second-advantages">
-          Private Rooom for encrypted collaboretion
+          {t("PrivateRooomr")}
         </Text>
         <Text className="payments-body third-advantages">
-          Mobile web editors
+          {t("WebEditors")}
         </Text>
         <Text className="payments-body four-advantages">
-          Regular functionality and security updates during 1 year
+          {t("FunctionalityAndSecurity")}
         </Text>
         <Text className="payments-body five-advantages">
-          1 year of professional tech support service
+          {t("ProfessionalTechSupport")}
         </Text>
         <img
           className="payments-icon-enterprise"

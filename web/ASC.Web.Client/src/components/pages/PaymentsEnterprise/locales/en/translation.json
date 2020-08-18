@@ -2,13 +2,11 @@
   "PurchaseQuestions": "For any purchase questions, contact us at ",
   "TechnicalIssues": "For for solving technical issues, use",
   "SubscriptionAndUpdatesExpires": "Your subscription for support and updates expires on",
-  "AboutCompanyAddressTitle": "address",
-  "AboutCompanyEmailTitle": "email",
-  "AboutCompanyTelTitle": "tel.",
-  "LicensedUnder": "This software is licensed under: <1>{{license}}</1>",
-  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>All rights reserved.</1>",
-  "People": "People",
-  "AboutTitle": "About",
-
-  "SourceCode": "Source code is available on"
+  "OnlyOfficeEditor": "ONLYOFFICE editors with pro features",
+  "PrivateRooom": "Private Rooom for encrypted collaboretion",
+  "WebEditors": "Mobile web editors",
+  "FunctionalityAndSecurity": "Regular functionality and security updates during 1 year",
+  "ProfessionalTechSupport": "1 year of professional tech support service",
+  "Using": " You are using ONLYOFFICE Enterprise Edition",
+  "SubscriptionGet": "Renew subscription to get:"
 }
