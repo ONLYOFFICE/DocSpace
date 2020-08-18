@@ -80,7 +80,6 @@ const Selector = props => {
 
   useEffect(() => {
     resetCache();
-    setCurrentGroup(getCurrentGroup(convertGroups(groups)));
   }, [searchValue, currentGroup, hasNextPage]);
 
   const [selectedOptionList, setSelectedOptionList] = useState(
