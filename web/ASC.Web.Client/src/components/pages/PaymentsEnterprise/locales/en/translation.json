@@ -1,7 +1,7 @@
 {
-  "AboutCompanyTitle": "About this program",
-  "AboutCompanyVersion": "Version",
-  "AboutCompanyLicensor": "Copyright",
+  "PurchaseQuestions": "For any purchase questions, contact us at ",
+  "TechnicalIssues": "For for solving technical issues, use",
+  "SubscriptionAndUpdatesExpires": "Your subscription for support and updates expires on",
   "AboutCompanyAddressTitle": "address",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyTelTitle": "tel.",
