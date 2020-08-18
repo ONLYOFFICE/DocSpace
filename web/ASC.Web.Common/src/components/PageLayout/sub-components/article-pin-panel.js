@@ -35,18 +35,19 @@ const StyledArticlePinPanel = styled.div`
 const ArticlePinPanel = React.memo(props => {
   //console.log("PageLayout ArticlePinPanel render");
   const { pinned, pinText, onPin, unpinText, onUnpin } = props;
+  const textStyles = { as: 'span', color: '#555F65', fontSize: '14px', fontWeight: 600 };
 
   return (
     <StyledArticlePinPanel>
       {pinned ? (
         <div onClick={onUnpin}>
           <Icons.CatalogUnpinIcon size="medium" />
-          <Text as='span' color="#555F65">{unpinText}</Text>
+          <Text {...textStyles} >{unpinText}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
           <Icons.CatalogPinIcon size="medium" />
-          <Text as='span' color="#555F65">{pinText}</Text>
+          <Text {...textStyles} >{pinText}</Text>
         </div>
       )}
     </StyledArticlePinPanel>

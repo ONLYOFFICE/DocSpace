@@ -12,6 +12,8 @@ const StyledSectionHeader = styled.div`
 
   @media ${tablet} {
     margin-right: 16px;
+    border-bottom: none;
+    height: 44px;
   }
 
   .section-header {
