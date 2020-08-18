@@ -146,7 +146,7 @@ const LicenseBlockStyle = styled.div`
     margin: 32px 612px 32px 155px;
   }
 `;
-const Body = ({ modules, match, isLoaded }) => {
+const Body = ({ standAloneMode, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
 
   useEffect(() => {
@@ -189,21 +189,21 @@ const Body = ({ modules, match, isLoaded }) => {
           src="images/payments_enterprise.png"
           width="222px"
           height="247px"
-          alt="Logo"
+          alt="Icon"
         />
         <img
           className="payments-icon-enterprise first_icon"
           src="images/payments_enterprise_icon_first.png"
           width="24px"
           height="23px"
-          alt="Logo"
+          alt="Icon"
         />
         <img
           className="payments-icon-enterprise second_icon"
           src="images/payments_enterprise_icon_first.png"
           width="24px"
           height="23px"
-          alt="Logo"
+          alt="Icon"
         />
 
         <img
@@ -212,7 +212,7 @@ const Body = ({ modules, match, isLoaded }) => {
           src="images/payments_enterprise_icon_four.png"
           width="24px"
           height="23px"
-          alt="Logo"
+          alt="Icon"
         />
         <img
           className="payments-icon-enterprise 
@@ -220,7 +220,7 @@ const Body = ({ modules, match, isLoaded }) => {
           src="images/payments_enterprise_icon_second.png"
           width="24px"
           height="23px"
-          alt="Logo"
+          alt="Icon"
         />
         <img
           className="payments-icon-enterprise 
@@ -228,7 +228,7 @@ const Body = ({ modules, match, isLoaded }) => {
           src="images/payments_enterprise_icon_third.png"
           width="24px"
           height="23px"
-          alt="Logo"
+          alt="Icon"
         />
       </BodyAdvantages>
       <LicenseBlockStyle>
