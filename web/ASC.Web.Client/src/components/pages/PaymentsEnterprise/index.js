@@ -6,11 +6,11 @@ import { Loader, Button, Text, Link } from "asc-web-components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-
+import { store, history } from "asc-web-common";
 const { changeLanguage } = utils;
 const supportLinkPurchaseQuestions = "sales@onlyoffice.com";
 const supportLinkTechnicalIssues = "https://helpdesk.onlyoffice.com";
-
+const { getPortalSettings, setIsLoaded } = store.auth.actions;
 const BodyStyle = styled.div`
   margin: 0 auto;
   width: 920px;
@@ -149,6 +149,12 @@ const LicenseBlockStyle = styled.div`
 const Body = ({ standAloneMode, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
 
+  const onButtonClickBuy = (e) => {
+    getPortalSettings(store.dispatch)
+      .then(() => store.dispatch(setIsLoaded(true)))
+      .catch((e) => history.push(`/login/error=${e}`));
+  };
+
   useEffect(() => {
     changeLanguage(i18n);
     document.title = `${t("Payments")}`;
@@ -239,6 +245,7 @@ const Body = ({ standAloneMode, isLoaded }) => {
         <Button
           className="button-payments-enterprise button-buy"
           label="Buy now"
+          onClick={onButtonClickBuy}
         />
       </LicenseBlockStyle>
       <Text className="contact-emails">
