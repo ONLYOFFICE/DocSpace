@@ -6,10 +6,5 @@
   "NewFolder": "Новая папка",
   "UploadFiles": "Загрузить файлы",
   "UploadFolder": "Загрузить папку",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
-
-  "settingsMenuTitle": "Настройки",
-  "settingCommonSettings": "Общие настройки",
-  "settingsAdminSettings": "Настройки администратора",
-  "settingsConnectedCloud": "Подключенные облака"
+  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
 }

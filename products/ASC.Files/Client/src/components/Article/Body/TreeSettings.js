@@ -1,10 +1,16 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons, toastr, utils, Badge } from "asc-web-components";
-import styled from "styled-components";
-import { api, constants } from "asc-web-common";
-const { files } = api;
-const { FolderType, ShareAccessRights } = constants;
+import { TreeMenu, TreeNode, Icons } from "asc-web-components";
+import styled from "styled-components";       
+import { history, utils } from "asc-web-common";
+import { withTranslation, I18nextProvider } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
 
+const i18n = createI18N({
+  page: "SettingsTree",
+  localesPath: "pages/Settings"
+})
+
+const { changeLanguage } = utils;
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 20px !important;
@@ -17,16 +23,12 @@ const StyledTreeMenu = styled(TreeMenu)`
     background: #DFE2E3 !important;
   }
 
-  .rc-tree-switcher.rc-tree-switcher-noop {
-    visibility: hidden;
-  }
-
   .settings-node {
-    margin-left: 9px !important;
+    margin-left: 8px !important;
   }
 `;
 
-class TreeSettings extends React.Component {
+class PureTreeSettings extends React.Component {
   constructor(props) {
     super(props);
 
@@ -36,6 +38,9 @@ class TreeSettings extends React.Component {
   }
 
   switcherIcon = (obj) => {
+    if (obj.isLeaf) {
+      return null;
+    }
     if(obj.expanded) {
       return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
     } else {
@@ -43,8 +48,9 @@ class TreeSettings extends React.Component {
     }
   }
 
-  onSelect = (e, r) => {
-    console.log(e, r)
+  onSelect = (section) => {
+    const path = section[0];
+    return history.push(`/products/files/settings/${path}`);
   }
 
   renderTreeNode = () => {
@@ -53,28 +59,31 @@ class TreeSettings extends React.Component {
       <TreeNode
         id="settings"
         key="settings"
-        title={t('settingsMenuTitle')}
+        title={t('treeSettingsMenuTitle')}
+        isLeaf={false}
         icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
       >
         <TreeNode
           className="settings-node"
           id='common-settings'
           key='common-settings'
-          title={t('settingCommonSettings')}
-
-        ></TreeNode>
+          isLeaf={true}
+          title={t('treeSettingsCommonSettings')}
+        />
         <TreeNode
           className="settings-node"
           id='admin-settings'
           key='admin-settings'
-          title={t('settingsAdminSettings')}
-        ></TreeNode>
+          isLeaf={true}
+          title={t('treeSettingsAdminSettings')}
+        />
         <TreeNode
           className="settings-node"
-          id='connected-cloud'
-          key='connected-cloud'
-          title={t('settingsConnectedCloud')}
-        ></TreeNode>
+          id='connected-clouds'
+          key='connected-clouds'
+          isLeaf={true}
+          title={t('treeSettingsConnectedCloud')}
+        />
       </TreeNode>
     );
   }
@@ -86,16 +95,28 @@ class TreeSettings extends React.Component {
 
     return (
       <StyledTreeMenu
+        defaultExpandParent={false}
         className="settings-tree-menu"
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
-        onClick={()=>console.log('111')}
         showIcon={true}
+        onExpand={() => console.log('expand')}
       >
         {nodes}
       </StyledTreeMenu>
     );
   }
+}
+
+const TreeSettingsContainer = withTranslation()(PureTreeSettings);
+
+const TreeSettings = props => {
+  changeLanguage(i18n);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <TreeSettingsContainer { ...props } />
+    </I18nextProvider>
+  );
 }
 
 export default TreeSettings;

@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from './TreeSettings';
 import {
@@ -15,12 +14,8 @@ import {
 import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
 import { NewFilesPanel } from "../../panels";
-import i18n from "../i18n";
-import { utils as commonUtils } from 'asc-web-common';
 
-const { changeLanguage } = commonUtils;
-
-class PureArticleBodyContent extends React.Component {
+class ArticleBodyContent extends React.Component {
   state = {
     expandedKeys: this.props.filter.treeFolders,
     data: this.props.data,
@@ -59,7 +54,7 @@ class PureArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectedKeys, filter, onLoading } = this.props;
+    const { selectedKeys, filter, onLoading, setSettingsPath } = this.props;
     if (selectedKeys[0] !== data[0]) {
       onLoading(true);
       const newFilter = filter.clone();
@@ -104,7 +99,6 @@ class PureArticleBodyContent extends React.Component {
       isShare,
       setDragging,
       onTreeDrop,
-      t
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -148,18 +142,11 @@ class PureArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        <TreeSettings t={t}/>
+        <TreeSettings/>
       </>
     );
   }
 }
-
-const ArticleBodyContentContainer = withTranslation()(PureArticleBodyContent);
-
-const ArticleBodyContent = (props) => {
-  changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><ArticleBodyContentContainer {...props} /></I18nextProvider>);
-};
 
 function mapStateToProps(state) {
   const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew } = state.files;

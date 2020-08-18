@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { withRouter, Route, Switch } from "react-router";
 import { RequestLoader, Checkbox, toastr } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, history, PrivateRoute } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -16,6 +16,7 @@ import {
   SectionHeaderContent,
   SectionPagingContent
 } from "./Section";
+import Settings from '../Settings';
 import {
   clearProgressData,
   deselectFile,
@@ -399,6 +400,10 @@ class PureHome extends React.Component {
     }
   }
 
+  onSelectSettings = (data) => {
+    console.log(data);
+  } 
+
   render() {
     const {
       isHeaderVisible,
@@ -478,39 +483,51 @@ class PureHome extends React.Component {
               onTreeDrop={this.onDrop}
             />
           </PageLayout.ArticleBody>
+            <PageLayout.SectionHeader>
+              <Switch>
+                <PrivateRoute path="/products/files/filter" component={() => (
+                  <SectionHeaderContent
+                    isHeaderVisible={isHeaderVisible}
+                    isHeaderIndeterminate={isHeaderIndeterminate}
+                    isHeaderChecked={isHeaderChecked}
+                    onCheck={this.onSectionHeaderContentCheck}
+                    onSelect={this.onSectionHeaderContentSelect}
+                    onClose={this.onClose}
+                    onLoading={this.onLoading}
+                    isLoading={isLoading}
+                    loopFilesOperations={this.loopFilesOperations}
+                  />
+                )} />
+              </Switch>
+            </PageLayout.SectionHeader>
+            
+            <PageLayout.SectionFilter>
+              <Switch>
+                <PrivateRoute path="/products/files/filter" component={() => (
+                  <SectionFilterContent  onLoading={this.onLoading} />
+                )} />
+              </Switch>
+            </PageLayout.SectionFilter>
+            
+            <PageLayout.SectionBody>
+              <Switch>
+                <PrivateRoute exact path="/products/files/settings/:setting" component={Settings} />
+                <PrivateRoute path="/products/files/filter" component={() => (
+                  <SectionBodyContent
+                    selected={selected}
+                    isLoading={isLoading}
+                    onLoading={this.onLoading}
+                    onChange={this.onRowChange}
+                    loopFilesOperations={this.loopFilesOperations}
+                    onDropZoneUpload={this.onDrop}
+                  />
+                )} />
+              </Switch>
+            </PageLayout.SectionBody>
 
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent
-              isHeaderVisible={isHeaderVisible}
-              isHeaderIndeterminate={isHeaderIndeterminate}
-              isHeaderChecked={isHeaderChecked}
-              onCheck={this.onSectionHeaderContentCheck}
-              onSelect={this.onSectionHeaderContentSelect}
-              onClose={this.onClose}
-              onLoading={this.onLoading}
-              isLoading={isLoading}
-              loopFilesOperations={this.loopFilesOperations}
-            />
-          </PageLayout.SectionHeader>
-
-          <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={this.onLoading} />
-          </PageLayout.SectionFilter>
-
-          <PageLayout.SectionBody>
-            <SectionBodyContent
-              selected={selected}
-              isLoading={isLoading}
-              onLoading={this.onLoading}
-              onChange={this.onRowChange}
-              loopFilesOperations={this.loopFilesOperations}
-              onDropZoneUpload={this.onDrop}
-            />
-          </PageLayout.SectionBody>
-
-          <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={this.onLoading} />
-          </PageLayout.SectionPaging>
+            <PageLayout.SectionPaging>
+              <SectionPagingContent onLoading={this.onLoading} />
+            </PageLayout.SectionPaging>
         </PageLayout>
       </>
     );
