@@ -173,7 +173,7 @@ const Body = ({ modules, match, isLoaded }) => {
           {t("OnlyOfficeEditor")}
         </Text>
         <Text className="payments-body second-advantages">
-          {t("PrivateRooomr")}
+          {t("PrivateRooom")}
         </Text>
         <Text className="payments-body third-advantages">
           {t("WebEditors")}
