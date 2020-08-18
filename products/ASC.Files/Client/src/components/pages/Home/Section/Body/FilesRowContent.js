@@ -499,7 +499,7 @@ class FilesRowContent extends React.PureComponent {
             >
               {fileExst
                 ? contentLength
-                : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
+                : `${t("TitleDocuments")}: ${filesCount} | ${t("TitleSubfolders")}: ${foldersCount}`}
             </Text>
           </SimpleFilesRowContent>
         </>
