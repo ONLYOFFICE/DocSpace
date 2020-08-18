@@ -151,7 +151,8 @@ class GroupButtonsMenu extends React.PureComponent {
       && groupMenuOuterElement.getBoundingClientRect();
     const moreMenuWidth = moreMenuElement
       && moreMenuElement.getBoundingClientRect().width;
-    const groupMenuOuterWidth = screenWidth - groupMenuOuterValues.x;
+    const xWidth = groupMenuOuterValues && groupMenuOuterValues.x;
+    const groupMenuOuterWidth = screenWidth - xWidth;
 
     const visibleItemsCount = this.countMenuItems(this.widthsArray, groupMenuOuterWidth, moreMenuWidth);
     const navItemsCopy = this.props.menuItems;

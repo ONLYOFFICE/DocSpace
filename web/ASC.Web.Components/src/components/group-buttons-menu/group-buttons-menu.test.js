@@ -189,8 +189,8 @@ describe('<GroupButtonsMenu />', () => {
     const priorityItemsCount = menuNode.state.priorityItems.length;
 
     expect(menuNodeStyle.width).toEqual('100%');
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(2);
+    expect(priorityItemsCount).toEqual(3);
+    expect(moreItemsCount).toEqual(0);
   });
 
   it('render with 1024px width and 3 items', () => {
@@ -207,8 +207,8 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(menuNodeStyle.width).toEqual('1024px');
     expect(menuNode.props.menuItems.length).toEqual(3);
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(2);
+    expect(priorityItemsCount).toEqual(3);
+    expect(moreItemsCount).toEqual(0);
   })
 
   it('render with 1024px width and 10 items', () => {
@@ -225,8 +225,8 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(menuNodeStyle.width).toEqual('1024px');
     expect(menuNode.props.menuItems.length).toEqual(10);
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(9);
+    expect(priorityItemsCount).toEqual(10);
+    expect(moreItemsCount).toEqual(0);
   })
 
   it('render with 1024px width and 100 items', () => {
@@ -243,8 +243,8 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(menuNodeStyle.width).toEqual('1024px');
     expect(menuNode.props.menuItems.length).toEqual(100);
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(99);
+    expect(priorityItemsCount).toEqual(100);
+    expect(moreItemsCount).toEqual(0);
   })
 
   it('render with 500px width and 3 items', () => {
@@ -261,8 +261,8 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(menuNodeStyle.width).toEqual('500px');
     expect(menuNode.props.menuItems.length).toEqual(3);
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(2);
+    expect(priorityItemsCount).toEqual(3);
+    expect(moreItemsCount).toEqual(0);
   })
 
   it('render with 500px width and 10 items', () => {
@@ -279,8 +279,8 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(menuNodeStyle.width).toEqual('500px');
     expect(menuNode.props.menuItems.length).toEqual(10);
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(9);
+    expect(priorityItemsCount).toEqual(10);
+    expect(moreItemsCount).toEqual(0);
   })
 
   it('render with 500px width and 100 items', () => {
@@ -297,8 +297,8 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(menuNodeStyle.width).toEqual('500px');
     expect(menuNode.props.menuItems.length).toEqual(100);
-    expect(priorityItemsCount).toEqual(1);
-    expect(moreItemsCount).toEqual(99);
+    expect(priorityItemsCount).toEqual(100);
+    expect(moreItemsCount).toEqual(0);
   })
 
 });
