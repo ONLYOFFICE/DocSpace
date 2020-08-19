@@ -1,15 +1,58 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
 import IconButton from '../icon-button'
+import Backdrop from '../backdrop'
+import Aside from '../aside'
+import Heading from '../heading'
+import Text from '../text'
+import Link from '../link'
+import { desktop } from '../../utils/device'
+import throttle from "lodash/throttle";
 
 const StyledOuter = styled.div`
   display: inline-block;
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+`;
+
+const Content = styled.div`
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  padding: 0 16px 16px;
+
+  .header {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700 !important;
+  }
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+`;
+
+const Body = styled.div`
+  position: relative;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+
+  .context-menu-button_link {
+    margin-top: 16px;
+  }
+
+  .context-menu-button_link-header:not(:first-child) {
+    margin-top: 32px;
+  }
 `;
 
 class ContextMenuButton extends React.Component {
@@ -20,17 +63,53 @@ class ContextMenuButton extends React.Component {
 
     this.state = {
       isOpen: props.opened,
-      data: props.data
+      data: props.data,
+      displayType: this.getTypeByWidth()
     };
+    this.throttledResize = throttle(this.resize, 300);
   }
 
-  handleClick = (e) => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
+  getTypeByWidth = () => {
+    if (this.props.displayType !== "auto") return this.props.displayType;
+    return window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "dropdown";
+  };
+
+  resize = () => {
+    if (this.props.displayType !== "auto") return;
+    const type = this.getTypeByWidth();
+    if (type === this.state.displayType) return;
+    this.setState({ displayType: type });
+  };
+
+  popstate = () => {
+    window.removeEventListener("popstate", this.popstate, false);
+    this.onClose();
+    window.history.go(1);
+  };
+
+  componentDidMount() {
+    window.addEventListener("resize", this.throttledResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.throttledResize);
+  }
+
   stopAction = (e) => e.preventDefault();
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
+  onClose = () => this.setState({ isOpen: !this.state.isOpen });
 
   componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
+    }
+
+    if (this.props.opened && this.state.displayType === "aside") {
+      window.addEventListener("popstate", this.popstate, false);
+    }
+
+    if (this.props.displayType !== prevProps.displayType) {
+      this.setState({displayType: this.getTypeByWidth()});
     }
   }
 
@@ -86,10 +165,11 @@ class ContextMenuButton extends React.Component {
       onMouseOver,
       size,
       style,
-      isFill
+      isFill,
+      asideHeader
     } = this.props;
 
-    const { isOpen } = this.state;
+    const { isOpen, displayType } = this.state;
     const iconButtonName = isOpen && iconOpenName ? iconOpenName : iconName;
     return (
       <StyledOuter ref={this.ref} className={className} id={id} style={style}>
@@ -109,20 +189,54 @@ class ContextMenuButton extends React.Component {
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
         />
-        <DropDown 
-          directionX={directionX}
-          directionY={directionY}
-          open={isOpen}
-          clickOutsideAction={this.clickOutsideAction}
-          columnCount={columnCount}
-        >
-          {
-            this.state.data.map((item, index) =>
-              (item && (item.label || item.icon || item.key)) && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}
+        {displayType === 'dropdown' ? 
+          <DropDown 
+            directionX={directionX}
+            directionY={directionY}
+            open={isOpen}
+            clickOutsideAction={this.clickOutsideAction}
+            columnCount={columnCount}
+          >
+            {
+              this.state.data.map((item, index) =>
+                (item && (item.label || item.icon || item.key)) && (
+                  <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)} />
+                )
+              )
+            }
+          </DropDown>
+          : <>
+              <Backdrop
+                onClick={this.onClose}
+                visible={isOpen}
+                zIndex={310}
               />
-            )
-          }
-        </DropDown>
+              <Aside visible={isOpen} scale={false} zIndex={310}>
+                <Content>
+                  <Header>
+                    <Heading className="header" size="medium" truncate={true}>
+                      {asideHeader}
+                    </Heading>
+                  </Header>
+                  <Body>
+                    {this.state.data.map((item, index) =>
+                      (item && (item.label || item.icon || item.key)) && (
+                      <Link
+                        className={`context-menu-button_link${item.isHeader ? '-header' : ''}`}
+                        key={item.key || index}
+                        fontSize={item.isHeader ? '15px' : '13px'}
+                        noHover={item.isHeader}
+                        fontWeight={600}
+                        onClick={this.onDropDownItemClick.bind(this, item)}
+                      >
+                        {item.label}
+                      </Link>
+                      ))}
+                  </Body>
+                </Content>
+              </Aside>
+          </>
+      }
       </StyledOuter>
     );
   }
@@ -156,7 +270,8 @@ ContextMenuButton.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  columnCount: PropTypes.number
+  columnCount: PropTypes.number,
+  displayType: PropTypes.string
 };
 
 ContextMenuButton.defaultProps = {
@@ -167,7 +282,8 @@ ContextMenuButton.defaultProps = {
   size: 16,
   isDisabled: false,
   directionX: 'left',
-  isFill: false
+  isFill: false,
+  displayType: 'dropdown'
 };
 
 export default ContextMenuButton
