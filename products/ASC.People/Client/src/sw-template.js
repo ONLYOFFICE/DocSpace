@@ -80,7 +80,7 @@ if ("function" === typeof importScripts) {
 
     // translations caching
     workbox.routing.registerRoute(
-      /\translation.json$/,
+      ({ url }) => url.pathname.endsWith("/translation.json"),
       // Use cache but update in the background.
       new workbox.strategies.StaleWhileRevalidate({
         // Use a custom cache name.
