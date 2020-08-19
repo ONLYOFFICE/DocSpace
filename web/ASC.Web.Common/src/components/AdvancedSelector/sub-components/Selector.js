@@ -595,7 +595,7 @@ const Selector = props => {
                 isDisabled={isDisabled}
                 options={getSelectorGroups(groups)}
                 selectedOption={currentGroup}
-                dropDownMaxHeight={200}
+                dropDownMaxHeight={220}
                 scaled={true}
                 scaledOptions={true}
                 size="content"
@@ -631,7 +631,7 @@ const Selector = props => {
                     className="options_list"
                     height={height}
                     itemCount={itemCount}
-                    itemSize={32}
+                    itemSize={36}
                     onItemsRendered={onItemsRendered}
                     ref={ref}
                     width={width + 8}
