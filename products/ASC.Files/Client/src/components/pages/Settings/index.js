@@ -1,12 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 import { withRouter } from "react-router";
-
-import { 
-  Box,
-  ToggleButton 
-} from 'asc-web-components';
 import { PageLayout, utils } from "asc-web-common";
 import {
   ArticleHeaderContent,
@@ -27,14 +21,6 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
-const StyledSettings = styled(Box)`
-  display: grid;
-  
-  .toggle-btn {
-    display: block;
-  }
-`;
-
 class PureSettings extends React.Component {
   constructor(props) {
     super(props)
@@ -43,41 +29,6 @@ class PureSettings extends React.Component {
       intermediateVersion: false,
       thirdParty: false
     }
-  }
-
-  componentDidMount() {
-    this.switchHeader();
-  }
-
-  componentDidUpdate() {
-    this.switchHeader();
-  }
-
-  componentWillUnmount() {
-    const { setSettingsIsLoad } = this.props;
-    setSettingsIsLoad(null);
-  }
-
-  switchHeader = () => {
-    const { match, setSettingsIsLoad } = this.props;
-    const { setting } = match.params;
-    console.log(setting)
-    let header; 
-
-    switch (setting) {
-      case "common-settings":
-        header = "Common Setting"; break;
-      case "settings":
-        header = "Common Setting"; break;
-      case "admin-settings":
-        header = "Admin Settings"; break;
-      case "connected-clouds":
-        header = "Connected Clouds"; break;
-      default:
-        header = null;
-    }
-    console.log(header)
-    setSettingsIsLoad(header);
   }
 
   isCheckedIntermediate = () => {
@@ -91,29 +42,6 @@ class PureSettings extends React.Component {
       thirdParty: !this.state.thirdParty
     })
   }
- 
-  renderAdminSettings = () => {
-    const { 
-      intermediateVersion, 
-      thirdParty 
-    } = this.state;
-    return (
-      <StyledSettings>
-        <ToggleButton 
-          className="toggle-btn"
-          label="Keep all saved intermediate versions"
-          onChange={this.isCheckedIntermediate}
-          isChecked={intermediateVersion}
-        />
-        <ToggleButton
-          className="toggle-btn"
-          label="Allow users to connect third-party storages"
-          onChange={this.isCheckedThirdParty}
-          isChecked={thirdParty}
-        />
-      </StyledSettings>
-    )
-  }
 
   renderCommonSettings = () => {
     return <span>CommonSettings</span>
@@ -123,25 +51,14 @@ class PureSettings extends React.Component {
     return <span>Clouds</span>
   }
 
-  renderSettings = setting => {
-    switch (setting) {
-      case "common-settings":
-        return this.renderCommonSettings();
-      case "admin-settings":
-        return this.renderAdminSettings();
-      case "connected-clouds":
-        return this.renderClouds();
-      default:
-        return this.renderCommonSettings();
-    }
-  }
-
   render() {
-    console.log('render settings')
+    console.log('render settings');
+    const { 
+      intermediateVersion,
+      thirdParty
+    } = this.state;
     const { match, t } = this.props;
     const { setting } = match.params;
-    console.log(match)
-    const content = this.renderSettings(setting);
 
     return (
       <PageLayout>
@@ -162,8 +79,13 @@ class PureSettings extends React.Component {
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent />
-          {content}
+          <SectionBodyContent
+            setting={setting}
+            thirdParty={thirdParty}
+            intermediateVersion={intermediateVersion}
+            isCheckedThirdParty={this.isCheckedThirdParty}
+            isCheckedIntermediate={this.isCheckedIntermediate}
+          />
         </PageLayout.SectionBody>
       </PageLayout>
     );

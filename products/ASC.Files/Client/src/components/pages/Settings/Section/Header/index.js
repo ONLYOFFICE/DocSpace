@@ -2,7 +2,6 @@ import React from 'react';
 import styled from "styled-components";
 import { Headline } from 'asc-web-common';
 import { utils } from "asc-web-components";
-import { withTranslation } from "react-i18next";
 
 const { tablet, desktop } = utils.device;
 

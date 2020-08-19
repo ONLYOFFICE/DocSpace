@@ -2,5 +2,9 @@
   "treeSettingsMenuTitle": "Настройки",
   "treeSettingsCommonSettings": "Общие настройки",
   "treeSettingsAdminSettings": "Настройки администратора",
-  "treeSettingsConnectedCloud": "Подключенные облака"
+  "treeSettingsConnectedCloud": "Подключенные облака",
+
+  "common-settings": "Общие Настройки",
+  "admin-settings": "Настройки администратора",
+  "connected-clouds": "Подключенные облака"
 }
