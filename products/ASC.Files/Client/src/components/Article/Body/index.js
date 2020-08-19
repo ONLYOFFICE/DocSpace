@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
+import { history } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from './TreeSettings';
 import {
@@ -54,7 +55,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectedKeys, filter, onLoading, setSettingsPath } = this.props;
+    const { selectedKeys, filter, onLoading } = this.props;
     if (selectedKeys[0] !== data[0]) {
       onLoading(true);
       const newFilter = filter.clone();
@@ -142,7 +143,7 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        <TreeSettings/>
+        <TreeSettings />
       </>
     );
   }

@@ -1,19 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { withRouter } from "react-router";
+import { PageLayout, utils } from "asc-web-common";
+import {
+  ArticleHeaderContent,
+  ArticleBodyContent,
+  ArticleMainButtonContent
+} from "../../Article";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
 
-import { 
-  Box,
-  ToggleButton 
-} from 'asc-web-components';
+import { withTranslation, I18nextProvider } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
 
-const StyledSettings = styled(Box)`
-  .toggle-btn-container {
-    display: block;
-  }
-`;
+import { setSettingsIsLoad } from '../../../store/files/actions'
 
-class Settings extends React.Component {
+const i18n = createI18N({
+  page: "SettingsTree",
+  localesPath: "pages/Settings"
+})
+
+const { changeLanguage } = utils;
+
+class PureSettings extends React.Component {
   constructor(props) {
     super(props)
 
@@ -34,70 +42,78 @@ class Settings extends React.Component {
       thirdParty: !this.state.thirdParty
     })
   }
- 
-  renderAdminSettings = () => {
-    const { 
-      intermediateVersion, 
-      thirdParty 
-    } = this.state;
-    return (
-      <StyledSettings>
-        <Box className="toggle-btn-container">
-        <ToggleButton 
-          label="Keep all saved intermediate versions"
-          onChange={this.isCheckedIntermediate}
-          isChecked={intermediateVersion}
-        />
-        </Box>
-        <br />
-        <Box className="toggle-btn-container">
-        <ToggleButton
-          label="Allow users to connect third-party storages"
-          onChange={this.isCheckedThirdParty}
-          isChecked={thirdParty}
-        />
-        </Box>
-      </StyledSettings>
-    )
-  }
 
   renderCommonSettings = () => {
-
+    return <span>CommonSettings</span>
   }
 
   renderClouds = () => {
-
-  }
-
-  renderSettings = setting => {
-    switch (setting) {
-      case "common-settings":
-        return this.renderCommonSettings();
-      case "admin-settings":
-        return this.renderAdminSettings();
-      case "connected-clouds":
-        return this.renderClouds();
-      default:
-        return this.renderCommonSettings();
-    }
+    return <span>Clouds</span>
   }
 
   render() {
-    const { settingsPath, match } = this.props;
+    console.log('render settings');
+    const { 
+      intermediateVersion,
+      thirdParty
+    } = this.state;
+    const { match, t } = this.props;
     const { setting } = match.params;
-    const content = this.renderSettings(setting);
 
     return (
-      <>
-      {content}
-      </>
+      <PageLayout>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
+
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
+
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
+
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent title={t(`${setting}`)}/>
+        </PageLayout.SectionHeader>
+
+        <PageLayout.SectionBody>
+          <SectionBodyContent
+            setting={setting}
+            thirdParty={thirdParty}
+            intermediateVersion={intermediateVersion}
+            isCheckedThirdParty={this.isCheckedThirdParty}
+            isCheckedIntermediate={this.isCheckedIntermediate}
+          />
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 } 
 
-function mapStateToProps(state) {
-  const { settingsPath } = state.files;
-  return { settingsPath };
+const SettingsContainer = withTranslation()(PureSettings);
+
+const Settings = props => {
+  changeLanguage(i18n);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <SettingsContainer {...props} />
+    </I18nextProvider>
+  );
 }
 
-export default connect(mapStateToProps)(Settings);
+function mapStateToProps(state) {
+  const { settingsIsLoad } = state.files;
+
+  return { 
+    settingsIsLoad
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  {
+    setSettingsIsLoad
+  }
+)(withRouter(Settings));

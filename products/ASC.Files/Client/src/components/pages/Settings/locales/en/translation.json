@@ -2,5 +2,9 @@
   "treeSettingsMenuTitle": "Settings",
   "treeSettingsCommonSettings": "Common Settings",
   "treeSettingsAdminSettings": "Admin Settings",
-  "treeSettingsConnectedCloud": "Connected Clouds"
+  "treeSettingsConnectedCloud": "Connected Clouds",
+
+  "common-settings": "Common Settings",
+  "admin-settings": "Admin Settings",
+  "connected-clouds": "Connected Clouds"
 }

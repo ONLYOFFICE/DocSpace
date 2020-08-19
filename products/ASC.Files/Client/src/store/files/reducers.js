@@ -19,7 +19,8 @@ import {
   SET_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
   SET_NEW_TREE_FILES,
-  SET_NEW_ROW_ITEMS
+  SET_NEW_ROW_ITEMS,
+  SET_SETTINGS_IS_LOAD
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -43,7 +44,8 @@ const initialState = {
   progressData: { percent: 0, label: "", visible: false },
   convertDialogVisible: false,
   updateTreeNew: false,
-  newRowItems: []
+  newRowItems: [],
+  settingsIsLoad: null
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -141,6 +143,10 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         newRowItems: action.newRowItems
       });
+    case SET_SETTINGS_IS_LOAD: 
+      return Object.assign({}, state, {
+        settingsIsLoad: action.isLoad
+      })
     default:
       return state;
   }
