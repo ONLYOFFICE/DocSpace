@@ -108,10 +108,10 @@ namespace ASC.VoipService
             }
         }
 
-        public AuthContext AuthContext { get; }
-        public TenantUtil TenantUtil { get; }
-        public SecurityContext SecurityContext { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        protected AuthContext AuthContext { get; }
+        protected TenantUtil TenantUtil { get; }
+        protected SecurityContext SecurityContext { get; }
+        protected BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public VoipSettings(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {

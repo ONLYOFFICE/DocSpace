@@ -61,8 +61,8 @@ namespace ASC.Feed.Aggregator
         private readonly object aggregateLock = new object();
         private readonly object removeLock = new object();
 
-        public IConfiguration Configuration { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IConfiguration Configuration { get; }
+        private IServiceProvider ServiceProvider { get; }
         public IContainer Container { get; }
 
         public FeedAggregatorService(

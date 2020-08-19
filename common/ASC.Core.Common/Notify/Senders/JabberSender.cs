@@ -42,7 +42,7 @@ namespace ASC.Core.Notify.Senders
     {
         private readonly ILog log;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public JabberSender(IServiceProvider serviceProvider)
         {

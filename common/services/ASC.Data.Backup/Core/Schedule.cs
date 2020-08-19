@@ -14,10 +14,10 @@ namespace ASC.Data.Backup
 {
     public class Schedule
     {
-        public TenantManager TenantManager { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public TenantUtil TenantUtil { get; }
-        public BackupHelper BackupHelper { get; }
+        private TenantManager TenantManager { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantUtil TenantUtil { get; }
+        private BackupHelper BackupHelper { get; }
 
         public Schedule(IOptionsMonitor<ILog> options, TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
         {

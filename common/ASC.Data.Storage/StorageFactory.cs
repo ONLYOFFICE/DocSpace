@@ -158,16 +158,16 @@ namespace ASC.Data.Storage
     {
         private const string DefaultTenantName = "default";
 
-        public StorageFactoryListener StorageFactoryListener { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
-        public SettingsManager SettingsManager { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
-        public TenantManager TenantManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private StorageFactoryListener StorageFactoryListener { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private PathUtils PathUtils { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public StorageFactory(
             StorageFactoryListener storageFactoryListener,

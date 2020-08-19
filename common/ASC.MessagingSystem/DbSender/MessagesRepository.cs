@@ -61,7 +61,7 @@ namespace ASC.MessagingSystem.DbSender
         private readonly Timer ClearTimer;
 
         public ILog Log { get; set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {

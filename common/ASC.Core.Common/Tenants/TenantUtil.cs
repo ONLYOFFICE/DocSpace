@@ -35,8 +35,8 @@ namespace ASC.Core.Tenants
 {
     class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
     {
-        public IOptionsSnapshot<TenantManager> TenantManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private IOptionsSnapshot<TenantManager> TenantManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         public ConfigureTenantUtil(
             IOptionsSnapshot<TenantManager> tenantManager,

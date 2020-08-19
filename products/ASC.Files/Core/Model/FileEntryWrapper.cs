@@ -149,8 +149,8 @@ namespace ASC.Api.Documents
 
     public class FileEntryWrapperHelper
     {
-        public ApiDateTimeHelper ApiDateTimeHelper { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private ApiDateTimeHelper ApiDateTimeHelper { get; }
+        private EmployeeWraperHelper EmployeeWraperHelper { get; }
 
         public FileEntryWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,

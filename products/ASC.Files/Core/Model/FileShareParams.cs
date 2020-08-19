@@ -53,7 +53,7 @@ namespace ASC.Api.Documents
 
     public class FileShareParamsHelper
     {
-        public UserManager UserManager { get; }
+        private UserManager UserManager { get; }
         public FileShareParamsHelper(UserManager userManager)
         {
             UserManager = userManager;

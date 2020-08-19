@@ -379,7 +379,7 @@ namespace ASC.Common.Logging
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void Configure(LogNLog options)
         {

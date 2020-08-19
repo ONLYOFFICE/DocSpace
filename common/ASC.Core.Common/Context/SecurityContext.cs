@@ -72,7 +72,7 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
         private UserFormatter UserFormatter { get; }
         private CookieStorage CookieStorage { get; }
-        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
+        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
@@ -288,8 +288,8 @@ namespace ASC.Core
 
     public class PermissionContext
     {
-        public IPermissionResolver PermissionResolver { get; private set; }
-        public AuthContext AuthContext { get; }
+        public IPermissionResolver PermissionResolver { get; set; }
+        private AuthContext AuthContext { get; }
 
         public PermissionContext(IPermissionResolver permissionResolver, AuthContext authContext)
         {

@@ -49,10 +49,10 @@ namespace ASC.Core
         private readonly Dictionary<string, HostedSolution> regions = new Dictionary<string, HostedSolution>();
         private readonly string dbid;
 
-        public IConfiguration Configuraion { get; }
-        public CookieStorage CookieStorage { get; }
-        public EFLoggerFactory LoggerFactory { get; }
-        public IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
+        private IConfiguration Configuraion { get; }
+        private CookieStorage CookieStorage { get; }
+        private EFLoggerFactory LoggerFactory { get; }
+        private IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,

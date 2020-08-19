@@ -41,7 +41,7 @@ namespace ASC.Common.Utils
             MachinePseudoKeys = machinePseudoKeys;
         }
 
-        public MachinePseudoKeys MachinePseudoKeys { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
 
         public string Create<T>(T obj)
         {

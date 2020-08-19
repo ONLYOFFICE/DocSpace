@@ -81,8 +81,8 @@ namespace ASC.Core.Caching
 
     class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
     {
-        public IOptionsSnapshot<DbQuotaService> Service { get; }
-        public QuotaServiceCache QuotaServiceCache { get; }
+        private IOptionsSnapshot<DbQuotaService> Service { get; }
+        private QuotaServiceCache QuotaServiceCache { get; }
 
         public ConfigureCachedQuotaService(
             IOptionsSnapshot<DbQuotaService> service,

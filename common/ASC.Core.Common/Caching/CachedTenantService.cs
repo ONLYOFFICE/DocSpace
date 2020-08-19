@@ -154,8 +154,8 @@ namespace ASC.Core.Caching
 
     class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
     {
-        public IOptionsSnapshot<DbTenantService> Service { get; }
-        public TenantServiceCache TenantServiceCache { get; }
+        private IOptionsSnapshot<DbTenantService> Service { get; }
+        private TenantServiceCache TenantServiceCache { get; }
 
         public ConfigureCachedTenantService(
             IOptionsSnapshot<DbTenantService> service,

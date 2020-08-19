@@ -107,7 +107,7 @@ namespace ASC.Web.Core.Users
     public class ThumbnailsData
     {
         private Guid UserId { get; set; }
-        public UserPhotoManager UserPhotoManager { get; }
+        private UserPhotoManager UserPhotoManager { get; }
 
         public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
         {

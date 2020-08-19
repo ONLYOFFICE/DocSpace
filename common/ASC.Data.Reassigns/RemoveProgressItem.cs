@@ -67,7 +67,7 @@ namespace ASC.Data.Reassigns
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
         public Guid FromUser { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public UserInfo User { get; }
 
         public RemoveProgressItem(

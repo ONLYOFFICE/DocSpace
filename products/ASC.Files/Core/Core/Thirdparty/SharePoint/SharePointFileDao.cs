@@ -49,9 +49,9 @@ namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public SharePointDaoSelector SharePointDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private SharePointDaoSelector SharePointDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public SharePointFileDao(
             IServiceProvider serviceProvider,

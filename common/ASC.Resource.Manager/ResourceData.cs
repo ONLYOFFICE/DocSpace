@@ -39,7 +39,7 @@ namespace ASC.Resource.Manager
     {
         private const string Dbid = "tmresource";
 
-        public ResourceDbContext DbContext { get; }
+        private ResourceDbContext DbContext { get; }
 
         public ResourceData(DbContextManager<ResourceDbContext> dbContext)
         {

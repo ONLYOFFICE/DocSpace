@@ -26,9 +26,9 @@ namespace ASC.Api.Core.Middleware
             this.IPSecurity = IPSecurity;
         }
 
-        public AuthContext AuthContext { get; }
+        private AuthContext AuthContext { get; }
         public IPRestrictionsSettings IPRestrictionsSettings { get; }
-        public IPSecurity.IPSecurity IPSecurity { get; }
+        private IPSecurity.IPSecurity IPSecurity { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
