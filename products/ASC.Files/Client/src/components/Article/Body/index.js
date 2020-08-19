@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
 import TreeFolders from "./TreeFolders";
+import TreeSettings from './TreeSettings';
 import {
   setFilter,
   fetchFiles,
@@ -53,7 +54,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectedKeys, filter, onLoading } = this.props;
+    const { selectedKeys, filter, onLoading, setSettingsPath } = this.props;
     if (selectedKeys[0] !== data[0]) {
       onLoading(true);
       const newFilter = filter.clone();
@@ -97,7 +98,7 @@ class ArticleBodyContent extends React.Component {
       isAdmin,
       isShare,
       setDragging,
-      onTreeDrop
+      onTreeDrop,
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -141,6 +142,7 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
+        <TreeSettings/>
       </>
     );
   }
