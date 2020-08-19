@@ -50,6 +50,8 @@ class PureTreeSettings extends React.Component {
 
   onSelect = (section) => {
     const path = section[0];
+    if(path === 'settings')
+      return history.push('/products/files/settings/common-settings');
     return history.push(`/products/files/settings/${path}`);
   }
 
@@ -89,8 +91,6 @@ class PureTreeSettings extends React.Component {
   }
 
   render() {
-    const { drop } = this.state;
-
     const nodes = this.renderTreeNode();
 
     return (

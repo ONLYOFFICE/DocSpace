@@ -39,6 +39,7 @@ export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
+export const SET_SETTINGS_IS_LOAD = "SET_SETTINGS_IS_LOAD";
 
 export function setFile(file) {
   return {
@@ -185,6 +186,13 @@ export function setNewRowItems(newRowItems) {
     type: SET_NEW_ROW_ITEMS,
     newRowItems
   };
+}
+
+export function setSettingsIsLoad(isLoad) {
+  return {
+    type: SET_SETTINGS_IS_LOAD,
+    isLoad
+  }
 }
 
 export function setFilterUrl(filter) {

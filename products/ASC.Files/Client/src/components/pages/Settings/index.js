@@ -1,19 +1,41 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { withRouter } from "react-router";
 
 import { 
   Box,
   ToggleButton 
 } from 'asc-web-components';
+import { PageLayout, utils } from "asc-web-common";
+import {
+  ArticleHeaderContent,
+  ArticleBodyContent,
+  ArticleMainButtonContent
+} from "../../Article";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
+
+import { withTranslation, I18nextProvider } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
+
+import { setSettingsIsLoad } from '../../../store/files/actions'
+
+const i18n = createI18N({
+  page: "SettingsTree",
+  localesPath: "pages/Settings"
+})
+
+const { changeLanguage } = utils;
 
 const StyledSettings = styled(Box)`
-  .toggle-btn-container {
+  display: grid;
+  
+  .toggle-btn {
     display: block;
   }
 `;
 
-class Settings extends React.Component {
+class PureSettings extends React.Component {
   constructor(props) {
     super(props)
 
@@ -21,6 +43,41 @@ class Settings extends React.Component {
       intermediateVersion: false,
       thirdParty: false
     }
+  }
+
+  componentDidMount() {
+    this.switchHeader();
+  }
+
+  componentDidUpdate() {
+    this.switchHeader();
+  }
+
+  componentWillUnmount() {
+    const { setSettingsIsLoad } = this.props;
+    setSettingsIsLoad(null);
+  }
+
+  switchHeader = () => {
+    const { match, setSettingsIsLoad } = this.props;
+    const { setting } = match.params;
+    console.log(setting)
+    let header; 
+
+    switch (setting) {
+      case "common-settings":
+        header = "Common Setting"; break;
+      case "settings":
+        header = "Common Setting"; break;
+      case "admin-settings":
+        header = "Admin Settings"; break;
+      case "connected-clouds":
+        header = "Connected Clouds"; break;
+      default:
+        header = null;
+    }
+    console.log(header)
+    setSettingsIsLoad(header);
   }
 
   isCheckedIntermediate = () => {
@@ -42,31 +99,28 @@ class Settings extends React.Component {
     } = this.state;
     return (
       <StyledSettings>
-        <Box className="toggle-btn-container">
         <ToggleButton 
+          className="toggle-btn"
           label="Keep all saved intermediate versions"
           onChange={this.isCheckedIntermediate}
           isChecked={intermediateVersion}
         />
-        </Box>
-        <br />
-        <Box className="toggle-btn-container">
         <ToggleButton
+          className="toggle-btn"
           label="Allow users to connect third-party storages"
           onChange={this.isCheckedThirdParty}
           isChecked={thirdParty}
         />
-        </Box>
       </StyledSettings>
     )
   }
 
   renderCommonSettings = () => {
-
+    return <span>CommonSettings</span>
   }
 
   renderClouds = () => {
-
+    return <span>Clouds</span>
   }
 
   renderSettings = setting => {
@@ -83,21 +137,61 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { settingsPath, match } = this.props;
+    console.log('render settings')
+    const { match, t } = this.props;
     const { setting } = match.params;
+    console.log(match)
     const content = this.renderSettings(setting);
 
     return (
-      <>
-      {content}
-      </>
+      <PageLayout>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
+
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
+
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
+
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent title={t(`${setting}`)}/>
+        </PageLayout.SectionHeader>
+
+        <PageLayout.SectionBody>
+          <SectionBodyContent />
+          {content}
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 } 
 
-function mapStateToProps(state) {
-  const { settingsPath } = state.files;
-  return { settingsPath };
+const SettingsContainer = withTranslation()(PureSettings);
+
+const Settings = props => {
+  changeLanguage(i18n);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <SettingsContainer {...props} />
+    </I18nextProvider>
+  );
 }
 
-export default connect(mapStateToProps)(Settings);
+function mapStateToProps(state) {
+  const { settingsIsLoad } = state.files;
+
+  return { 
+    settingsIsLoad
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  {
+    setSettingsIsLoad
+  }
+)(withRouter(Settings));
