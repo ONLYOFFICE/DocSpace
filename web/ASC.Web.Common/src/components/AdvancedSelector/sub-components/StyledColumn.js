@@ -25,7 +25,7 @@ const StyledColumn = styled(Container)`
             }
         `
         : css`
-            width: 325px;
+            width: 320px;
             height: 100%;
         `
     }

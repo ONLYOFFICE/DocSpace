@@ -525,7 +525,7 @@ class FilterInput extends React.Component {
         const { className, id, style, size,
             isDisabled, scale, getFilterData, placeholder,
             getSortData, directionAscLabel, directionDescLabel,
-            filterColumnCount, viewAs } = this.props;
+            filterColumnCount, viewAs, contextMenuHeader } = this.props;
         /* eslint-enable react/prop-types */
 
         const { searchText, filterValues, openFilterItems,
@@ -566,6 +566,7 @@ class FilterInput extends React.Component {
                     >
                         <div className='styled-filter-block' ref={this.filterWrapper}>
                             <FilterBlock
+                                contextMenuHeader={contextMenuHeader}
                                 openFilterItems={openFilterItems}
                                 hideFilterItems={hideFilterItems}
                                 iconSize={iconSize}
@@ -620,7 +621,8 @@ FilterInput.protoTypes = {
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     needForUpdate: PropTypes.bool,
     filterColumnCount: PropTypes.number,
-    onChangeViewAs: PropTypes.func
+    onChangeViewAs: PropTypes.func,
+    contextMenuHeader: PropTypes.string
 };
 
 FilterInput.defaultProps = {

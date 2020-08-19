@@ -111,6 +111,7 @@ class GroupButtonsMenu extends React.PureComponent {
     this.widthsArray = groupMenuItemsArray.map(item => item.offsetWidth);
 
     window.addEventListener('resize', this.throttledResize);
+    window.addEventListener('orientationchange', this.throttledResize);
 
     this.updateMenu();
   }
@@ -169,6 +170,7 @@ class GroupButtonsMenu extends React.PureComponent {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.throttledResize);
+    window.removeEventListener('orientationchange', this.throttledResize);
   }
 
   render() {

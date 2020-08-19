@@ -1,5 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -92,7 +94,7 @@ const dropdownStyles = css`
 `;
 
 const asideStyles = css`
-  height: 100%;
+  height: calc(100% - 16px);
   grid-template-columns: 1fr;
   ${props =>
     props.isMultiSelect && props.hasSelected
@@ -199,6 +201,12 @@ const StyledSelector = styled(Container)`
     .body-options {
       grid-area: body-options;
       margin-left: -8px;
+
+      @media ${tablet} {
+        width: 290px;
+        padding-top: 12px;
+      }
+      
       /* background-color: white; */
 
       .row-option {
@@ -206,6 +214,7 @@ const StyledSelector = styled(Container)`
         padding-top: 8px;
         box-sizing: border-box;
         height: 32px;
+        margin-top: 4px;
         cursor: pointer;
 
         &:hover {
