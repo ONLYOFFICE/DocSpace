@@ -289,6 +289,7 @@ class SectionFilterContent extends React.Component {
         language={i18n.language}
         isReady={this.state.isReady}
         {...filterColumnCount}
+        contextMenuHeader={t("AddFilter")}
       />
     );
   }
