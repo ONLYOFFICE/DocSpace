@@ -27,7 +27,14 @@ class PureSettings extends React.Component {
 
     this.state = {
       intermediateVersion: false,
-      thirdParty: false
+      thirdParty: false,
+      originalCopy: false,
+      trash: false,
+      recent: false,
+      favorites: false,
+      templates: false,
+      updateOrCreate: false,
+      keepIntermediate: false
     }
   }
 
@@ -37,7 +44,7 @@ class PureSettings extends React.Component {
     })
   }
 
-  isCheckedThirdParty = () => {
+  isCheckedThirdParty = (e) => {
     this.setState({
       thirdParty: !this.state.thirdParty
     })
@@ -55,7 +62,14 @@ class PureSettings extends React.Component {
     console.log('render settings');
     const { 
       intermediateVersion,
-      thirdParty
+      thirdParty,
+      originalCopy,
+      trash,
+      recent,
+      favorites,
+      templates,
+      updateOrCreate,
+      keepIntermediate,
     } = this.state;
     const { match, t } = this.props;
     const { setting } = match.params;
@@ -83,6 +97,14 @@ class PureSettings extends React.Component {
             setting={setting}
             thirdParty={thirdParty}
             intermediateVersion={intermediateVersion}
+            originalCopy={originalCopy}
+            trash={trash}
+            recent={recent}
+            favorites={favorites}
+            templates={templates}
+            updateOrCreate={updateOrCreate}
+            keepIntermediate={keepIntermediate}
+            t={t}
             isCheckedThirdParty={this.isCheckedThirdParty}
             isCheckedIntermediate={this.isCheckedIntermediate}
           />
