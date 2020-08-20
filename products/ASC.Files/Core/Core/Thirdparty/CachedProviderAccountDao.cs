@@ -46,7 +46,7 @@ namespace ASC.Files.Thirdparty
     internal class CachedProviderAccountDaoNotify
     {
         public ConcurrentDictionary<string, IProviderInfo> Cache { get; private set; }
-        public ICacheNotify<ProviderAccountCacheItem> CacheNotify { get; private set; }
+        internal ICacheNotify<ProviderAccountCacheItem> CacheNotify { get; set; }
 
         public CachedProviderAccountDaoNotify(ICacheNotify<ProviderAccountCacheItem> cacheNotify)
         {

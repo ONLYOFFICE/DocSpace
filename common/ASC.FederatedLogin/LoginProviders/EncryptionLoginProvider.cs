@@ -44,12 +44,12 @@ namespace ASC.Web.Studio.Core
 {
     public class EncryptionLoginProvider
     {
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public IOptionsSnapshot<AccountLinker> Snapshot { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private IOptionsSnapshot<AccountLinker> Snapshot { get; }
 
         public EncryptionLoginProvider(
             UserManager userManager,

@@ -85,8 +85,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         private DriveService _driveService;
 
         public bool IsOpened { get; private set; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public FileUtility FileUtility { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private FileUtility FileUtility { get; }
         public ILog Log { get; }
 
         public const long MaxChunkedUploadFileSize = 2L * 1024L * 1024L * 1024L;

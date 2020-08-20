@@ -88,10 +88,10 @@ namespace ASC.Web.Files.ThirdPartyApp
     public class TokenHelper
     {
         public ILog Logger { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private FilesDbContext FilesDbContext { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public TokenHelper(
             DbContextManager<FilesDbContext> dbContextManager,

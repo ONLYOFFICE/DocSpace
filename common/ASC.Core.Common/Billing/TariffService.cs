@@ -46,7 +46,7 @@ namespace ASC.Core.Billing
     public class TariffServiceStorage
     {
         public ICache Cache { get; }
-        public ICacheNotify<TariffCacheItem> Notify { get; }
+        internal ICacheNotify<TariffCacheItem> Notify { get; }
 
         public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify)
         {
@@ -98,14 +98,14 @@ namespace ASC.Core.Billing
             ILog = iLog;
         }
 
-        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
-        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
-        public DbContextManager<CoreDbContext> CoreDbContextManager { get; }
-        public TariffServiceStorage TariffServiceStorage { get; }
-        public IOptionsMonitor<ILog> ILog { get; }
+        private IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
+        private IConfiguration Configuration { get; }
+        private DbContextManager<CoreDbContext> CoreDbContextManager { get; }
+        private TariffServiceStorage TariffServiceStorage { get; }
+        private IOptionsMonitor<ILog> ILog { get; }
 
         public void Configure(string name, TariffService options)
         {
@@ -152,12 +152,12 @@ namespace ASC.Core.Billing
         internal int PaymentDelay { get; set; }
 
         public TimeSpan CacheExpiration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public CoreSettings CoreSettings { get; set; }
-        public IConfiguration Configuration { get; set; }
-        public CoreDbContext CoreDbContext { get; set; }
-        public TariffServiceStorage TariffServiceStorage { get; set; }
-        public IOptionsMonitor<ILog> Options { get; set; }
+        internal CoreBaseSettings CoreBaseSettings { get; set; }
+        internal CoreSettings CoreSettings { get; set; }
+        internal IConfiguration Configuration { get; set; }
+        internal CoreDbContext CoreDbContext { get; set; }
+        internal TariffServiceStorage TariffServiceStorage { get; set; }
+        internal IOptionsMonitor<ILog> Options { get; set; }
 
         public TariffService()
         {

@@ -68,8 +68,8 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        internal Signature Signature { get; }
+        internal InstanceCrypto InstanceCrypto { get; }
 
         protected BaseLoginProvider()
         {

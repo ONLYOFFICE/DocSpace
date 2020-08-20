@@ -14,9 +14,9 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class ModulesController : ControllerBase
     {
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public ModulesController(
             UserManager userManager,

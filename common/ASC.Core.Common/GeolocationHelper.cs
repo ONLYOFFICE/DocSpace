@@ -40,7 +40,7 @@ namespace ASC.Geolocation
         public string Dbid { get; set; }
 
         public ILog Log { get; }
-        public DbContext DbContext { get; }
+        private DbContext DbContext { get; }
 
         public GeolocationHelper(DbContextManager<DbContext> dbContext, IOptionsMonitor<ILog> option)
         {

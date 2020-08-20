@@ -42,7 +42,7 @@ namespace ASC.ElasticSearch
         private QueryContainer queryContainer = new QueryContainer();
         private int limit = 1000, offset;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public Selector(IServiceProvider serviceProvider)
         {

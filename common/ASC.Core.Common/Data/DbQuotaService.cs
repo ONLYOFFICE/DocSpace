@@ -38,7 +38,7 @@ namespace ASC.Core.Data
 {
     class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
     {
-        public DbContextManager<CoreDbContext> DbContextManager { get; }
+        private DbContextManager<CoreDbContext> DbContextManager { get; }
         public string DbId { get; set; }
 
         public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)

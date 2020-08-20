@@ -214,11 +214,11 @@ namespace ASC.Data.Storage
 
         public virtual bool IsSupportChunking { get { return false; } }
 
-        public TenantManager TenantManager { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        protected TenantManager TenantManager { get; }
+        protected PathUtils PathUtils { get; }
+        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        protected IHttpContextAccessor HttpContextAccessor { get; }
+        protected IOptionsMonitor<ILog> Options { get; }
 
         #endregion
 

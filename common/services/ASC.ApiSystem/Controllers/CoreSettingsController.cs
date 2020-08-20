@@ -44,7 +44,7 @@ namespace ASC.ApiSystem.Controllers
     [Route("[controller]")]
     public class CoreSettingsController : ControllerBase
     {
-        public CoreSettings CoreSettings { get; }
+        private CoreSettings CoreSettings { get; }
         private ILog Log { get; }
 
         public CoreSettingsController(

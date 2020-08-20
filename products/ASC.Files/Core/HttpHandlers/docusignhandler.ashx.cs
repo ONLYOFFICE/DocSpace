@@ -51,8 +51,8 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class DocuSignHandler
     {
-        public RequestDelegate Next { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private RequestDelegate Next { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public DocuSignHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
@@ -77,10 +77,10 @@ namespace ASC.Web.Files.HttpHandlers
         }
 
         private ILog Log { get; set; }
-        public TenantExtra TenantExtra { get; }
-        public DocuSignHelper DocuSignHelper { get; }
-        public SecurityContext SecurityContext { get; }
-        public NotifyClient NotifyClient { get; }
+        private TenantExtra TenantExtra { get; }
+        private DocuSignHelper DocuSignHelper { get; }
+        private SecurityContext SecurityContext { get; }
+        private NotifyClient NotifyClient { get; }
 
         public DocuSignHandlerService(
             IOptionsMonitor<ILog> optionsMonitor,

@@ -96,8 +96,8 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        public BoxStorageDisposableWrapper Wrapper { get; private set; }
-        public BoxProviderInfoHelper BoxProviderInfoHelper { get; }
+        private BoxStorageDisposableWrapper Wrapper { get; set; }
+        private BoxProviderInfoHelper BoxProviderInfoHelper { get; }
 
         public BoxProviderInfo(
             BoxStorageDisposableWrapper wrapper,
@@ -170,8 +170,8 @@ namespace ASC.Files.Thirdparty.Box
     internal class BoxStorageDisposableWrapper : IDisposable
     {
         public BoxStorage Storage { get; private set; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
         {

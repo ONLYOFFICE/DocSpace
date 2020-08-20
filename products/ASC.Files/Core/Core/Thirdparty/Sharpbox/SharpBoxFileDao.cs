@@ -54,9 +54,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public SharpBoxDaoSelector SharpBoxDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private SharpBoxDaoSelector SharpBoxDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public SharpBoxFileDao(
             IServiceProvider serviceProvider,

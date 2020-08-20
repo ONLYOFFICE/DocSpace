@@ -51,9 +51,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 {
     internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public GoogleDriveDaoSelector GoogleDriveDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private GoogleDriveDaoSelector GoogleDriveDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public GoogleDriveFileDao(
             IServiceProvider serviceProvider,

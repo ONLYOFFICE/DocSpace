@@ -38,9 +38,9 @@ namespace ASC.VoipService.Twilio
         private readonly VoipSettings settings;
         private readonly string baseUrl;
 
-        public AuthContext AuthContext { get; }
-        public TenantUtil TenantUtil { get; }
-        public SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private TenantUtil TenantUtil { get; }
+        private SecurityContext SecurityContext { get; }
 
         public TwilioResponseHelper(
             VoipSettings settings, 

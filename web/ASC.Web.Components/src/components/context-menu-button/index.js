@@ -64,7 +64,7 @@ class ContextMenuButton extends React.Component {
     this.state = {
       isOpen: props.opened,
       data: props.data,
-      displayType: this.getTypeByWidth()
+      displayType: props.displayType
     };
     this.throttledResize = throttle(this.resize, 300);
   }

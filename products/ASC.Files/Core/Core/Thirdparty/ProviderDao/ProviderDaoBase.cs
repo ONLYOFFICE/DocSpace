@@ -77,11 +77,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             };
         }
 
-        public IServiceProvider ServiceProvider { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityDao<string> SecurityDao { get; }
-        public TagDao<string> TagDao { get; }
-        public CrossDao CrossDao { get; }
+        protected IServiceProvider ServiceProvider { get; }
+        protected TenantManager TenantManager { get; }
+        protected SecurityDao<string> SecurityDao { get; }
+        protected TagDao<string> TagDao { get; }
+        protected CrossDao CrossDao { get; }
 
         protected bool IsCrossDao(string id1, string id2)
         {

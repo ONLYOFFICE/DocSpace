@@ -40,7 +40,7 @@ namespace ASC.MessagingSystem
         private IEnumerable<string> _items;
 
         public ILog Log { get; set; }
-        public IOptionsMonitor<ILog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public MessageTarget(IOptionsMonitor<ILog> option)
         {

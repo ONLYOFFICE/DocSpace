@@ -136,7 +136,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public class AdditionalWhiteLabelSettingsHelper
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public AdditionalWhiteLabelSettingsHelper(IConfiguration configuration)
         {

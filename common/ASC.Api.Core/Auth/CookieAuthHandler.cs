@@ -24,7 +24,7 @@ namespace ASC.Api.Core.Auth
             SecurityContext = securityContext;
         }
 
-        public SecurityContext SecurityContext { get; }
+        private SecurityContext SecurityContext { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

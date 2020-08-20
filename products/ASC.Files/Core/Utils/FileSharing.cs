@@ -50,16 +50,16 @@ namespace ASC.Web.Files.Utils
 {
     public class FileSharingAceHelper<T>
     {
-        public FileSecurity FileSecurity { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public FileUtility FileUtility { get; }
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public FileMarker FileMarker { get; }
-        public NotifyClient NotifyClient { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FileSharingHelper FileSharingHelper { get; }
+        private FileSecurity FileSecurity { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private FileUtility FileUtility { get; }
+        private UserManager UserManager { get; }
+        private AuthContext AuthContext { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private FileMarker FileMarker { get; }
+        private NotifyClient NotifyClient { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FileSharingHelper FileSharingHelper { get; }
 
         public FileSharingAceHelper(
             FileSecurity fileSecurity,
@@ -223,11 +223,11 @@ namespace ASC.Web.Files.Utils
             UserManager = userManager;
         }
 
-        public Global Global { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FileSecurity FileSecurity { get; }
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
+        private Global Global { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FileSecurity FileSecurity { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
 
         public bool CanSetAccess<T>(FileEntry<T> entry)
         {
@@ -242,14 +242,14 @@ namespace ASC.Web.Files.Utils
 
     public class FileSharing
     {
-        public Global Global { get; }
-        public FileSecurity FileSecurity { get; }
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public FileShareLink FileShareLink { get; }
-        public IDaoFactory DaoFactory { get; }
-        public FileSharingHelper FileSharingHelper { get; }
+        private Global Global { get; }
+        private FileSecurity FileSecurity { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private FileShareLink FileShareLink { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSharingHelper FileSharingHelper { get; }
         public ILog Logger { get; }
 
         public FileSharing(

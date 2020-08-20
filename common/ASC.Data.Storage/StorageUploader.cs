@@ -51,7 +51,7 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         static StorageUploader()
         {
@@ -139,8 +139,8 @@ namespace ASC.Data.Storage
             Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
-        public IServiceProvider ServiceProvider { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
 
         protected override void DoJob()
         {

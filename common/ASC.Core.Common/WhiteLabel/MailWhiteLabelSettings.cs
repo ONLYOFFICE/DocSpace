@@ -153,7 +153,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
     }
 
     public static class MailWhiteLabelSettingsExtention
