@@ -94,7 +94,7 @@ const dropdownStyles = css`
 `;
 
 const asideStyles = css`
-  height: calc(100% - 16px);
+  height: 100%;
   grid-template-columns: 1fr;
   ${props =>
     props.isMultiSelect && props.hasSelected
@@ -204,7 +204,6 @@ const StyledSelector = styled(Container)`
 
       @media ${tablet} {
         width: 290px;
-        padding-top: 12px;
       }
       
       /* background-color: white; */
@@ -214,7 +213,7 @@ const StyledSelector = styled(Container)`
         padding-top: 8px;
         box-sizing: border-box;
         height: 32px;
-        margin-top: 4px;
+        margin-top: 16px;
         cursor: pointer;
 
         &:hover {
@@ -228,7 +227,7 @@ const StyledSelector = styled(Container)`
 
         .option-info {
           position: absolute;
-          top: 10px;
+          top: 12px;
           right: 10px;
           padding: 8px 0 8px 8px;
           margin-top: -8px;
