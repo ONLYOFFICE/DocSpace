@@ -6,6 +6,7 @@ const commonStyle = css`
     font-style: normal;
     color: #FFFFFF;
     margin-left: 60px;
+    margin-top: -3px;
     max-width: 300px;
     white-space: nowrap;
     overflow: hidden;
@@ -26,7 +27,7 @@ export const MenuContainer = styled.div`
     height: 76px;
     background: linear-gradient(200.71deg, #2274AA 0%, #0F4071 100%);
     border-radius: 6px 6px 0px 0px;
-    padding: 15px;
+    padding: 16px;
     cursor: default;
     box-sizing: border-box;
 `;
