@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppLimit.CloudComputing.SharpBox", "AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj", "{2CBD1C65-D521-4160-950D-875B3443174D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppLimit.CloudComputing.SharpBox", "thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj", "{2CBD1C65-D521-4160-950D-875B3443174D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Graph.Core", "Microsoft.Graph.Core\Microsoft.Graph.Core.csproj", "{81E1084E-8325-4C99-9566-ECEEC80AFD44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Graph.Core", "thirdparty\Microsoft.Graph.Core\Microsoft.Graph.Core.csproj", "{81E1084E-8325-4C99-9566-ECEEC80AFD44}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.OneDrive.Sdk", "onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj", "{915C6FCA-E465-49E3-9A47-2700478DB8AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.OneDrive.Sdk", "thirdparty\onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj", "{915C6FCA-E465-49E3-9A47-2700478DB8AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
