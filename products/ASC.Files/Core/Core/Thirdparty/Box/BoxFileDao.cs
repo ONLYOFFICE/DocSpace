@@ -51,9 +51,9 @@ namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public BoxDaoSelector BoxDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private BoxDaoSelector BoxDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public BoxFileDao(
             IServiceProvider serviceProvider,

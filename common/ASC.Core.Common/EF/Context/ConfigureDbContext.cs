@@ -12,8 +12,8 @@ namespace ASC.Core.Common.EF
     public class ConfigureDbContext : IConfigureNamedOptions<BaseDbContext>
     {
         const string baseName = "default";
-        public EFLoggerFactory LoggerFactory { get; }
-        public IConfiguration Configuration { get; }
+        private EFLoggerFactory LoggerFactory { get; }
+        private IConfiguration Configuration { get; }
 
         public ConfigureDbContext(EFLoggerFactory loggerFactory, IConfiguration configuration)
         {
@@ -36,8 +36,8 @@ namespace ASC.Core.Common.EF
     public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
         const string baseName = "default";
-        public IConfiguration Configuration { get; }
-        public DbContextManager<T> DbContext { get; }
+        private IConfiguration Configuration { get; }
+        private DbContextManager<T> DbContext { get; }
 
         public ConfigureMultiRegionalDbContext(IConfiguration configuration, DbContextManager<T> dbContext)
         {

@@ -67,10 +67,10 @@ namespace ASC.Api.Settings.Smtp
         protected int CurrentTenant { get; private set; }
 
         protected Guid CurrentUser { get; private set; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public IConfiguration Configuration { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private IConfiguration Configuration { get; }
         protected ILog Logger { get; private set; }
 
         public SmtpSettingsWrapper SmtpSettings { get; private set; }

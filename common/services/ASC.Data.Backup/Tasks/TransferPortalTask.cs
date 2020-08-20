@@ -50,8 +50,8 @@ namespace ASC.Data.Backup.Tasks
         public bool DeleteBackupFileAfterCompletion { get; set; }
         public bool BlockOldPortalAfterStart { get; set; }
         public bool DeleteOldPortalAfterCompletion { get; set; }
-        public IOptionsMonitor<ILog> Options { get; set; }
-        public IServiceProvider ServiceProvider { get; set; }
+        private IOptionsMonitor<ILog> Options { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
         public int Limit { get; private set; }
 

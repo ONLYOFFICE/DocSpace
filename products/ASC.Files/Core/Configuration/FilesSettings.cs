@@ -96,8 +96,8 @@ namespace ASC.Web.Files.Classes
 
     public class FilesSettingsHelper
     {
-        public SettingsManager SettingsManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings)
         {

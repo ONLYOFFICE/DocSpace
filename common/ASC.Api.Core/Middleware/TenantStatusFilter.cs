@@ -21,7 +21,7 @@ namespace ASC.Api.Core.Middleware
             TenantManager = tenantManager;
         }
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {

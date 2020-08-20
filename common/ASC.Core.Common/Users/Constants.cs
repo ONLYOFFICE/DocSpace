@@ -61,7 +61,7 @@ namespace ASC.Core.Users
             }
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
 
         #region system group and category groups

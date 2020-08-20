@@ -53,13 +53,13 @@ namespace ASC.Web.Files.Classes
 
         public readonly string GetFileServicePath;
 
-        public WebImageSupplier WebImageSupplier { get; }
-        public IDaoFactory DaoFactory { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public GlobalStore GlobalStore { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private WebImageSupplier WebImageSupplier { get; }
+        private IDaoFactory DaoFactory { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private GlobalStore GlobalStore { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public PathProvider(
             WebImageSupplier webImageSupplier,

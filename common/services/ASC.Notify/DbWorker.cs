@@ -51,7 +51,7 @@ namespace ASC.Notify
         private readonly string dbid;
         private readonly object syncRoot = new object();
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
         public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)

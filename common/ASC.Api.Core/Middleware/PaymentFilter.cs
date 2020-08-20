@@ -24,7 +24,7 @@ namespace ASC.Api.Core.Middleware
             TenantExtra = tenantExtra;
         }
 
-        public TenantExtra TenantExtra { get; }
+        private TenantExtra TenantExtra { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {

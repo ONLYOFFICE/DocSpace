@@ -53,10 +53,10 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
-        public IServiceProvider ServiceProvider { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
 
         static StaticUploader()
         {
@@ -191,7 +191,7 @@ namespace ASC.Data.Storage
         private readonly string path;
         private readonly string mappedPath;
         public string Result { get; private set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
@@ -246,8 +246,8 @@ namespace ASC.Data.Storage
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
 
-        public IServiceProvider ServiceProvider { get; }
-        public StaticUploader StaticUploader { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private StaticUploader StaticUploader { get; }
 
         public UploadOperationProgress(StaticUploader staticUploader, string relativePath, string mappedPath)
         {

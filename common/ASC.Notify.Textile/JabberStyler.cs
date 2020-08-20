@@ -50,10 +50,10 @@ namespace ASC.Notify.Textile
         static readonly Regex TagReplacer = new Regex(@"<(.|\n)*?>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
         static readonly Regex MultiLineBreaksReplacer = new Regex(@"(?:\r\n|\r(?!\n)|(?!<\r)\n){3,}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IConfiguration Configuration { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
 
         public JabberStyler(
             CoreBaseSettings coreBaseSettings,

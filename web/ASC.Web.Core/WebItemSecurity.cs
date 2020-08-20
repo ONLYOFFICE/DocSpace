@@ -45,7 +45,7 @@ namespace ASC.Web.Core
     public class WebItemSecurityCache
     {
         public ICache Cache { get; }
-        public ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
+        private ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
 
         public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify)
         {
@@ -99,7 +99,7 @@ namespace ASC.Web.Core
         private AuthorizationManager AuthorizationManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private WebItemSecurityCache WebItemSecurityCache { get; }
-        public SettingsManager SettingsManager { get; }
+        private SettingsManager SettingsManager { get; }
 
         public WebItemSecurity(
             UserManager userManager,
@@ -365,7 +365,7 @@ namespace ASC.Web.Core
         private class WebItemSecurityObject : ISecurityObject
         {
             public Guid WebItemId { get; private set; }
-            public WebItemManager WebItemManager { get; }
+            private WebItemManager WebItemManager { get; }
 
             public Type ObjectType
             {

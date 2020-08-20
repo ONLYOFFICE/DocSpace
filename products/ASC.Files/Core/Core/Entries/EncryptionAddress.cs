@@ -45,8 +45,8 @@ namespace ASC.Web.Files.Core.Entries
 
     public class EncryptionAddressHelper
     {
-        public FileSharing FileSharing { get; }
-        public EncryptionLoginProvider EncryptionLoginProvider { get; }
+        private FileSharing FileSharing { get; }
+        private EncryptionLoginProvider EncryptionLoginProvider { get; }
 
         public EncryptionAddressHelper(FileSharing fileSharing, EncryptionLoginProvider encryptionLoginProvider)
         {

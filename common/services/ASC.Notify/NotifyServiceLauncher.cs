@@ -60,11 +60,11 @@ namespace ASC.Notify
     public class NotifyServiceLauncher : IHostedService
     {
         public NotifyServiceCfg NotifyServiceCfg { get; }
-        public NotifyService NotifyService { get; }
-        public NotifySender NotifySender { get; }
-        public NotifyCleaner NotifyCleaner { get; }
-        public WebItemManager WebItemManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private NotifyService NotifyService { get; }
+        private NotifySender NotifySender { get; }
+        private NotifyCleaner NotifyCleaner { get; }
+        private WebItemManager WebItemManager { get; }
+        private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         public NotifyServiceLauncher(

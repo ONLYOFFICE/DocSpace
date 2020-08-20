@@ -39,27 +39,24 @@ namespace ASC.Data.Backup.Service
 {
     internal class BackupServiceLauncher : IHostedService
     {
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private IConfiguration Configuration { get; set; }
-        public BackupServiceNotifier BackupServiceNotifier { get; }
 
         public BackupServiceLauncher(
             IServiceProvider serviceProvider,
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
-            IConfiguration configuration,
-            BackupServiceNotifier backupServiceNotifier)
+            IConfiguration configuration)
         {
             ServiceProvider = serviceProvider;
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
-            BackupServiceNotifier = backupServiceNotifier;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

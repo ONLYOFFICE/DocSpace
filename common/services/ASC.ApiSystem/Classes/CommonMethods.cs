@@ -59,7 +59,7 @@ namespace ASC.ApiSystem.Controllers
 {
     public class CommonMethods
     {
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         private IConfiguration Configuration { get; }
 

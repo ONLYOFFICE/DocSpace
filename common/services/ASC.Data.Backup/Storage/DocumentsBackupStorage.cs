@@ -46,7 +46,7 @@ namespace ASC.Data.Backup.Storage
         private SecurityContext SecurityContext { get; set; }
         private IDaoFactory DaoFactory { get; set; }
         private StorageFactory StorageFactory { get; set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public DocumentsBackupStorage(
             TenantManager tenantManager,

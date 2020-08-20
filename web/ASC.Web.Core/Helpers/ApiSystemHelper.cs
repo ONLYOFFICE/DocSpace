@@ -51,7 +51,7 @@ namespace ASC.Web.Core.Helpers
         public string ApiCacheUrl { get; private set; }
 
         private string Skey { get; set; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
 
         public ApiSystemHelper(IConfiguration configuration, CommonLinkUtility commonLinkUtility)
         {

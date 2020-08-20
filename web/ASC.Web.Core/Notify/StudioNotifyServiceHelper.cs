@@ -12,10 +12,10 @@ namespace ASC.Web.Core.Notify
 {
     public class StudioNotifyServiceHelper
     {
-        public ICacheNotify<NotifyItem> Cache { get; }
-        public StudioNotifyHelper StudioNotifyHelper { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private ICacheNotify<NotifyItem> Cache { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext, TenantManager tenantManager, ICacheNotify<NotifyItem> cache)
         {

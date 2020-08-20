@@ -38,9 +38,9 @@ namespace ASC.Notify
 {
     public class ServiceLauncher : IHostedService
     {
-        public WebItemManager WebItemManager { get; }
-        public StudioNotifyServiceSender StudioNotifyServiceSender { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private WebItemManager WebItemManager { get; }
+        private StudioNotifyServiceSender StudioNotifyServiceSender { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender, IServiceProvider serviceProvider)
         {

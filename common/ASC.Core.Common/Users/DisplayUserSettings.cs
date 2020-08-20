@@ -61,8 +61,8 @@ namespace ASC.Web.Core.Users
             UserFormatter = userFormatter;
         }
 
-        public UserManager UserManager { get; }
-        public UserFormatter UserFormatter { get; }
+        private UserManager UserManager { get; }
+        private UserFormatter UserFormatter { get; }
 
         public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
         {

@@ -320,7 +320,7 @@ namespace ASC.Data.Backup.Service
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
         private ILog Log { get; set; }
-        public IServiceProvider ServiceProvider { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
         public BackupProgressItem(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
@@ -631,7 +631,7 @@ namespace ASC.Data.Backup.Service
         public string CurrentRegion { get; set; }
         public int Limit { get; set; }
         public ILog Log { get; set; }
-        public IServiceProvider ServiceProvider { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
 
         public TransferProgressItem(
@@ -735,7 +735,7 @@ namespace ASC.Data.Backup.Service
 
     public class FactoryProgressItem
     {
-        public IServiceProvider ServiceProvider { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
         public FactoryProgressItem(
             IServiceProvider serviceProvider

@@ -66,9 +66,9 @@ namespace ASC.Web.Files.Utils
 
     public class MailMergeTaskRunner
     {
-        public SetupInfo SetupInfo { get; }
-        public SecurityContext SecurityContext { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private SetupInfo SetupInfo { get; }
+        private SecurityContext SecurityContext { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         //private ApiServer _apiServer;
 

@@ -41,7 +41,7 @@ namespace ASC.ApiSystem.Controllers
     public class SettingsController : ControllerBase
     {
         private CommonMethods CommonMethods { get; }
-        public CoreSettings CoreSettings { get; }
+        private CoreSettings CoreSettings { get; }
         private ILog Log { get; }
 
         public SettingsController(

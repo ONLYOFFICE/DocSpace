@@ -40,11 +40,11 @@ namespace ASC.Web.Files.Utils
 {
     public class FileShareLink
     {
-        public FileUtility FileUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public Global Global { get; }
-        public FileSecurity FileSecurity { get; }
+        private FileUtility FileUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private Global Global { get; }
+        private FileSecurity FileSecurity { get; }
 
         public FileShareLink(
             FileUtility fileUtility,

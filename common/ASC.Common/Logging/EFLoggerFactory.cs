@@ -32,7 +32,7 @@ namespace ASC.Common.Logging
 
     public class EFLoggerProvider : ILoggerProvider
     {
-        public IOptionsMonitor<ILog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public EFLoggerProvider(IOptionsMonitor<ILog> option)
         {

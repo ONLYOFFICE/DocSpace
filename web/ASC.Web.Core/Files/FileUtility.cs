@@ -40,7 +40,7 @@ namespace ASC.Web.Core.Files
 {
     public class FileUtility
     {
-        public DbContextManager<FilesDbContext> FilesDbContext { get; set; }
+        private DbContextManager<FilesDbContext> FilesDbContext { get; set; }
         public FileUtility(
             IConfiguration configuration,
             FilesLinkUtility filesLinkUtility,
@@ -315,8 +315,8 @@ namespace ASC.Web.Core.Files
             get => extsCoAuthoring ?? (extsCoAuthoring = (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList());
         }
 
-        public IConfiguration Configuration { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
+        private IConfiguration Configuration { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
 
         public static readonly List<string> ExtsArchive = new List<string>
             {
