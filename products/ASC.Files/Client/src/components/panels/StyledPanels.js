@@ -148,6 +148,7 @@ const StyledBody = styled.div`
 
       .body-options {
         padding-top: 16px;
+        width: 100%;
       }
     }
     .footer {
