@@ -20,7 +20,8 @@ import {
   SET_CONVERT_DIALOG_VISIBLE,
   SET_NEW_TREE_FILES,
   SET_NEW_ROW_ITEMS,
-  SET_SETTINGS_IS_LOAD
+  SET_SELECTED_SETTING,
+  SET_EXPAND_SETTINGS_TREE
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -45,7 +46,8 @@ const initialState = {
   convertDialogVisible: false,
   updateTreeNew: false,
   newRowItems: [],
-  settingsIsLoad: null
+  selectedSetting: [],
+  expandedSetting: []
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -143,9 +145,13 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         newRowItems: action.newRowItems
       });
-    case SET_SETTINGS_IS_LOAD: 
+    case SET_SELECTED_SETTING: 
       return Object.assign({}, state, {
-        settingsIsLoad: action.isLoad
+        selectedSetting: action.setting
+      })
+    case SET_EXPAND_SETTINGS_TREE:
+      return Object.assign({}, state, {
+        expandedSetting: action.setting
       })
     default:
       return state;

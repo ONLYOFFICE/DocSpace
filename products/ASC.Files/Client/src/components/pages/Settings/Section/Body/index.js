@@ -29,8 +29,6 @@ class SectionBodyContent extends React.Component {
       setting,
       intermediateVersion,
       thirdParty,
-      isCheckedThirdParty,
-      isCheckedIntermediate,
       t
     } = this.props;
 
@@ -39,17 +37,17 @@ class SectionBodyContent extends React.Component {
     return (
       <StyledSettings>
         <ToggleButton 
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('intermediateVersion')}
-          onChange={isCheckedIntermediate}
+          onChange={(e)=>console.log(e)}
           isChecked={intermediateVersion}
         />
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('thirdParty')}
-          onChange={isCheckedThirdParty}
+          onChange={(e)=>console.log(e)}
           isChecked={thirdParty}
         />
       </StyledSettings>
@@ -71,35 +69,35 @@ class SectionBodyContent extends React.Component {
     return (
       <StyledSettings>
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('originalCopy')}
           onChange={(e)=>console.log(e)}
           isChecked={originalCopy}
         />
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('displayNotification')}
           onChange={(e)=>console.log(e)}
           isChecked={trash}
         />
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('displayRecent')}
           onChange={(e)=>console.log(e)}
           isChecked={recent}
         />
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('displayFavorites')}
           onChange={(e)=>console.log(e)}
           isChecked={favorites}
         />
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('displayTemplates')}
           onChange={(e)=>console.log(e)}
@@ -107,14 +105,14 @@ class SectionBodyContent extends React.Component {
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('updateOrCreate')}
           onChange={(e)=>console.log(e)}
           isChecked={updateOrCreate}
         />
         <ToggleButton
-          isDisabled={false}
+          isDisabled={true}
           className="toggle-btn"
           label={t('keepIntermediateVersion')}
           onChange={(e)=>console.log(e)}

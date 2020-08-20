@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
-import { history } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from './TreeSettings';
 import {

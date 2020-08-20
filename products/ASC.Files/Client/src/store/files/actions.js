@@ -39,7 +39,8 @@ export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
-export const SET_SETTINGS_IS_LOAD = "SET_SETTINGS_IS_LOAD";
+export const SET_SELECTED_SETTING = "SET_SELECTED_SETTING";
+export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
 
 export function setFile(file) {
   return {
@@ -188,10 +189,17 @@ export function setNewRowItems(newRowItems) {
   };
 }
 
-export function setSettingsIsLoad(isLoad) {
+export function setSelectedSetting(setting) {
   return {
-    type: SET_SETTINGS_IS_LOAD,
-    isLoad
+    type: SET_SELECTED_SETTING,
+    setting
+  }
+}
+
+export function setExpandSettingsTree(setting) {
+  return {
+    type: SET_EXPAND_SETTINGS_TREE,
+    setting
   }
 }
 
