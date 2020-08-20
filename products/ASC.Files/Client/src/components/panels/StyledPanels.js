@@ -85,7 +85,7 @@ const StyledContent = styled.div`
   position: relative;
   width: 100%;
   background-color: #fff;
-  padding: 0 16px 16px;
+  padding: 0 16px;
 
   .files-operations-panel {
     border-bottom: 1px solid #dee2e6;
@@ -147,7 +147,6 @@ const StyledBody = styled.div`
       }
 
       .body-options {
-        padding-top: 16px;
         width: 100%;
       }
     }
@@ -264,6 +263,7 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing_panel-remove-icon {
     margin-left: auto;
+    line-height: 24px;
 
     svg {
       width: 16px;
