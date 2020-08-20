@@ -11,6 +11,8 @@
     <PackageTags>onedrive sharepoint files livesdk liveconnect cloud storage microsoftaccount windowsliveid microsoftid windowsphone windowsstore metro xaml html</PackageTags>
     <PackageProjectUrl>https://github.com/OneDrive/onedrive-sdk-csharp</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.0.7</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Microsoft.Graph.Core\Microsoft.Graph.Core.csproj" />

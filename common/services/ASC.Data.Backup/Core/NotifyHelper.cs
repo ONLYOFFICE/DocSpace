@@ -44,7 +44,7 @@ namespace ASC.Data.Backup
 {
     public class NotifyHelper
     {
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public NotifyHelper(IServiceProvider serviceProvider)
         {

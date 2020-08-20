@@ -76,7 +76,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
         public bool IsOpened { get; private set; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public long MaxChunkedUploadFileSize = 10L * 1024L * 1024L * 1024L;
 

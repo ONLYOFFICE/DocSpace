@@ -213,8 +213,8 @@ namespace ASC.FederatedLogin.Profile
             get { return !IsFailed; }
         }
 
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
 
         internal string GetField(string name)
         {

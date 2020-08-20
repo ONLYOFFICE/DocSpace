@@ -37,7 +37,7 @@ namespace ASC.Web.Core.Mobile
         private readonly TimeSpan cacheExpiration;
         private readonly IMobileAppInstallRegistrator registrator;
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TenantManager tenantManager)
             : this(registrator, TimeSpan.FromMinutes(30), tenantManager)

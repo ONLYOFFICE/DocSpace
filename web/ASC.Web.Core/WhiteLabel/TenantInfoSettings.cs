@@ -68,10 +68,10 @@ namespace ASC.Web.Core.WhiteLabel
 
     public class TenantInfoSettingsHelper
     {
-        public WebImageSupplier WebImageSupplier { get; }
-        public StorageFactory StorageFactory { get; }
-        public TenantManager TenantManager { get; }
-        public IConfiguration Configuration { get; }
+        private WebImageSupplier WebImageSupplier { get; }
+        private StorageFactory StorageFactory { get; }
+        private TenantManager TenantManager { get; }
+        private IConfiguration Configuration { get; }
 
         public TenantInfoSettingsHelper(
             WebImageSupplier webImageSupplier,

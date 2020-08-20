@@ -43,7 +43,7 @@ namespace ASC.Core
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
-        public Constants Constants { get; }
+        internal Constants Constants { get; }
 
         public UserManagerConstants(Constants constants)
         {

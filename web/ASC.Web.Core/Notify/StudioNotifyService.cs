@@ -65,16 +65,16 @@ namespace ASC.Web.Studio.Core.Notify
         private TenantExtra TenantExtra { get; }
         private AuthManager Authentication { get; }
         private AuthContext AuthContext { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         private TenantManager TenantManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private SetupInfo SetupInfo { get; }
         private IServiceProvider ServiceProvider { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public WebItemManager WebItemManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private WebItemManager WebItemManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(

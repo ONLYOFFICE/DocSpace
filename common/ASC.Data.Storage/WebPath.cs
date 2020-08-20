@@ -145,14 +145,14 @@ namespace ASC.Data.Storage
     {
         private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
 
-        public WebPathSettings WebPathSettings { get; }
-        public StaticUploader StaticUploader { get; }
-        public SettingsManager SettingsManager { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private WebPathSettings WebPathSettings { get; }
+        private StaticUploader StaticUploader { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
         public IHostEnvironment HostEnvironment { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IOptionsMonitor<ILog> Options { get; }
 
         public WebPath(
             WebPathSettings webPathSettings,

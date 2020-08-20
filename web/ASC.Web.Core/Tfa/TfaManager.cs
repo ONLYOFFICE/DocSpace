@@ -50,7 +50,7 @@ namespace ASC.Web.Studio.Core.TFA
     {
         private string code;
 
-        public Signature Signature { get; }
+        private Signature Signature { get; }
 
         public string Code
         {
@@ -73,11 +73,11 @@ namespace ASC.Web.Studio.Core.TFA
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
         private static readonly ICache Cache = AscCache.Memory;
 
-        public SettingsManager SettingsManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public SetupInfo SetupInfo { get; }
-        public Signature Signature { get; }
+        private SettingsManager SettingsManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private CookiesManager CookiesManager { get; }
+        private SetupInfo SetupInfo { get; }
+        private Signature Signature { get; }
 
         public TfaManager(
             SettingsManager settingsManager,

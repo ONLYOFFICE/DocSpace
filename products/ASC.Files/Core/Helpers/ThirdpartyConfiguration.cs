@@ -40,13 +40,13 @@ namespace ASC.Web.Files.Helpers
 {
     public class ThirdpartyConfiguration
     {
-        public IConfiguration Configuration { get; }
-        public IDaoFactory DaoFactory { get; }
-        public BoxLoginProvider BoxLoginProvider { get; }
-        public DropboxLoginProvider DropboxLoginProvider { get; }
-        public OneDriveLoginProvider OneDriveLoginProvider { get; }
-        public DocuSignLoginProvider DocuSignLoginProvider { get; }
-        public GoogleLoginProvider GoogleLoginProvider { get; }
+        private IConfiguration Configuration { get; }
+        private IDaoFactory DaoFactory { get; }
+        private BoxLoginProvider BoxLoginProvider { get; }
+        private DropboxLoginProvider DropboxLoginProvider { get; }
+        private OneDriveLoginProvider OneDriveLoginProvider { get; }
+        private DocuSignLoginProvider DocuSignLoginProvider { get; }
+        private GoogleLoginProvider GoogleLoginProvider { get; }
 
         public ThirdpartyConfiguration(
             IConfiguration configuration,

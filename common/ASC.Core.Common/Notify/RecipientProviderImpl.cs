@@ -36,7 +36,7 @@ namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider
     {
-        public UserManager UserManager { get; }
+        private UserManager UserManager { get; }
 
         public RecipientProviderImpl(UserManager userManager) =>
             (UserManager) = (userManager);

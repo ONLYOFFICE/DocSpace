@@ -70,7 +70,7 @@ namespace ASC.Web.Files.Utils
         private readonly ICache cache;
         private const int TIMER_PERIOD = 500;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public FileConverterQueue(IServiceProvider ServiceProvider)
         {
@@ -435,24 +435,24 @@ namespace ASC.Web.Files.Utils
 
     public class FileConverter
     {
-        public FileUtility FileUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public IDaoFactory DaoFactory { get; }
-        public SetupInfo SetupInfo { get; }
-        public PathProvider PathProvider { get; }
-        public FileSecurity FileSecurity { get; }
-        public FileMarker FileMarker { get; }
-        public TenantManager TenantManager { get; }
-        public AuthContext AuthContext { get; }
-        public EntryManager EntryManager { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public FileShareLink FileShareLink { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public IHttpContextAccessor HttpContextAccesor { get; }
+        private FileUtility FileUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private IDaoFactory DaoFactory { get; }
+        private SetupInfo SetupInfo { get; }
+        private PathProvider PathProvider { get; }
+        private FileSecurity FileSecurity { get; }
+        private FileMarker FileMarker { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private EntryManager EntryManager { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private FileShareLink FileShareLink { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IHttpContextAccessor HttpContextAccesor { get; }
 
         public FileConverter(
             FileUtility fileUtility,

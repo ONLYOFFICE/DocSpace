@@ -61,14 +61,14 @@ namespace ASC.Files.Core.Data
         public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
 
         private static readonly object syncRoot = new object();
-        public FactoryIndexer<DbFile> FactoryIndexer { get; }
-        public GlobalStore GlobalStore { get; }
-        public GlobalSpace GlobalSpace { get; }
-        public GlobalFolder GlobalFolder { get; }
-        public IDaoFactory DaoFactory { get; }
-        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
-        public ProviderFolderDao ProviderFolderDao { get; }
-        public CrossDao CrossDao { get; }
+        private FactoryIndexer<DbFile> FactoryIndexer { get; }
+        private GlobalStore GlobalStore { get; }
+        private GlobalSpace GlobalSpace { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private IDaoFactory DaoFactory { get; }
+        private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        private ProviderFolderDao ProviderFolderDao { get; }
+        private CrossDao CrossDao { get; }
 
         public FileDao(
             FactoryIndexer<DbFile> factoryIndexer,

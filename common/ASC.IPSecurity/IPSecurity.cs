@@ -47,12 +47,12 @@ namespace ASC.IPSecurity
 
         public bool IpSecurityEnabled { get; }
 
-        public IConfiguration Configuration { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public IPRestrictionsService IPRestrictionsService { get; }
-        public SettingsManager SettingsManager { get; }
+        private IConfiguration Configuration { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private IPRestrictionsService IPRestrictionsService { get; }
+        private SettingsManager SettingsManager { get; }
 
         private readonly string CurrentIpForTest;
 

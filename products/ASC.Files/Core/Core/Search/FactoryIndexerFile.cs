@@ -43,7 +43,7 @@ namespace ASC.Web.Files.Core.Search
 {
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
-        public IDaoFactory DaoFactory { get; }
+        private IDaoFactory DaoFactory { get; }
 
         public FactoryIndexerFile(
             IOptionsMonitor<ILog> options,

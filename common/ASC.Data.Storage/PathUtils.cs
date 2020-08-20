@@ -39,9 +39,9 @@ namespace ASC.Data.Storage
     public class PathUtils
     {
         private string StorageRoot { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
         public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {

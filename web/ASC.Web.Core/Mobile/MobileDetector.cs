@@ -41,7 +41,7 @@ namespace ASC.Web.Core.Mobile
 
         private static readonly ICache cache = AscCache.Memory;
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public bool IsMobile()
         {
