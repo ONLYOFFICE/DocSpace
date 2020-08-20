@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
@@ -83,6 +84,18 @@ namespace ASC.Data.Storage.Migration
         public void StopMigrate()
         {
             StorageUploader.Stop();
+        }
+    }
+
+    public static class MigrationServiceExtension
+    {
+        public static DIHelper AddMigrationService(this DIHelper services)
+        {
+            services.TryAddSingleton<MigrationService>();
+
+            return services
+                .AddStaticUploaderService()
+                .AddStorageFactoryConfigService();
         }
     }
 }

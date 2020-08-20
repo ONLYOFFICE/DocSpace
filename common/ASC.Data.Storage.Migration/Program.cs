@@ -6,9 +6,9 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Core.Common;
-using ASC.Core.Notify.Senders;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage.Migration
@@ -52,10 +52,8 @@ namespace ASC.Data.Storage.Migration
 
                     diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
 
-                    diHelper
-                    .AddJabberSenderService()
-                    .AddSmtpSenderService()
-                    .AddAWSSenderService();
+                    diHelper.AddMigrationServiceLauncher();
+                    services.AddHostedService<MigrationServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })

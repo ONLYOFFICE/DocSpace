@@ -27,8 +27,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using ASC.Core;
-using ASC.Data.Storage.Configuration;
+using ASC.Common;
 
 using Microsoft.Extensions.Hosting;
 
@@ -37,25 +36,14 @@ namespace ASC.Data.Storage.Migration
     public class MigrationServiceLauncher : IHostedService
     {
         public MigrationService MigrationService { get; }
-        public TenantManager TenantManager { get; }
-        public StorageSettings StorageSettings { get; }
 
-        public MigrationServiceLauncher(
-            MigrationService migrationService,
-            TenantManager tenantManager,
-            StorageSettings storageSettings)
+        public MigrationServiceLauncher(MigrationService migrationService)
         {
             MigrationService = migrationService;
-            TenantManager = tenantManager;
-            StorageSettings = storageSettings;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-
-            MigrationService.Migrate(tenantId, StorageSettings);
-
             return Task.CompletedTask;
         }
 
@@ -67,6 +55,15 @@ namespace ASC.Data.Storage.Migration
             }
 
             return Task.CompletedTask;
+        }
+    }
+
+    public static class MigrationServiceLauncherExtension
+    {
+        public static DIHelper AddMigrationServiceLauncher(this DIHelper services)
+        {
+            return services
+                .AddMigrationService();
         }
     }
 }

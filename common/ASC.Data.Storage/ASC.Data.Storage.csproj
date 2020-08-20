@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="protos\MigrationCacheItem.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Api.Gax" Version="3.0.0" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="3.0.0" />
     <PackageReference Include="Google.Apis" Version="1.46.0" />
@@ -42,6 +46,7 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
+    <Protobuf Include="protos\MigrationCacheItem.proto" />
   </ItemGroup>
   
 </Project>
