@@ -16,7 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\thirdparty\websocket-sharp-master\websocket-sharp\websocket-sharp.csproj" />
+    <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
