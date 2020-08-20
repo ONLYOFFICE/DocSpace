@@ -1,46 +1,54 @@
 import React from  'react';
 import styled from 'styled-components';
 import { 
-  Box,
+  Heading,
   ToggleButton 
 } from 'asc-web-components';
 
 const StyledSettings = styled.div`
-
-  .setting-container {
-    display: flex;
-    flex-direction: row;
-  }
+  display: grid;
+  grid-gap: 10px;
 
   .toggle-btn {
+    display: block;
+    position: relative;
+  }
 
+  .heading {
+    margin-bottom: 0;
   }
 `;
 
-const SectionBodyContent = ({ 
-  setting,
-  intermediateVersion,
-  thirdParty,
-  isCheckedThirdParty,
-  isCheckedIntermediate
-}) => {
-  let content;
+class SectionBodyContent extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-  const renderAdminSettings = () => {
+  renderAdminSettings = () => {
+    const {
+      setting,
+      intermediateVersion,
+      thirdParty,
+      isCheckedThirdParty,
+      isCheckedIntermediate,
+      t
+    } = this.props;
+
+    document.title = t(`${setting}`);
+
     return (
-      <StyledSettings displayProp="flex" className="setting-container">
+      <StyledSettings>
         <ToggleButton 
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
-          label="Keep all saved intermediate versions"
+          label={t('intermediateVersion')}
           onChange={isCheckedIntermediate}
           isChecked={intermediateVersion}
         />
-        <br />
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
-          label="Allow users to connect third-party storages"
+          label={t('thirdParty')}
           onChange={isCheckedThirdParty}
           isChecked={thirdParty}
         />
@@ -48,20 +56,93 @@ const SectionBodyContent = ({
     )
   }
 
-  const renderCommonSettings = () => {
+  renderCommonSettings = () => {
+    const {
+      originalCopy,
+      trash,
+      recent,
+      favorites,
+      templates,
+      updateOrCreate,
+      keepIntermediate,
+      t
+    } = this.props;
+
+    return (
+      <StyledSettings>
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('originalCopy')}
+          onChange={(e)=>console.log(e)}
+          isChecked={originalCopy}
+        />
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('displayNotification')}
+          onChange={(e)=>console.log(e)}
+          isChecked={trash}
+        />
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('displayRecent')}
+          onChange={(e)=>console.log(e)}
+          isChecked={recent}
+        />
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('displayFavorites')}
+          onChange={(e)=>console.log(e)}
+          isChecked={favorites}
+        />
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('displayTemplates')}
+          onChange={(e)=>console.log(e)}
+          isChecked={templates}
+        />
+        <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('updateOrCreate')}
+          onChange={(e)=>console.log(e)}
+          isChecked={updateOrCreate}
+        />
+        <ToggleButton
+          isDisabled={false}
+          className="toggle-btn"
+          label={t('keepIntermediateVersion')}
+          onChange={(e)=>console.log(e)}
+          isChecked={keepIntermediate}
+        />
+      </StyledSettings>
+    );
+  }
+
+  renderClouds = () => {
 
   }
 
-  const renderClouds = () => {
+  render() {
+    const { setting } = this.props;
+    let content;
 
+    if(setting === 'admin-settings')
+      content = this.renderAdminSettings();
+    if(setting === 'common-settings') 
+      content = this.renderCommonSettings();
+    if(setting === 'connected-clouds')
+      content = this.renderAdminSettings();
+
+    return content;
   }
 
-  if(setting === 'admin-settings')
-    return renderAdminSettings();
-  if(setting === 'common-settings') 
-    return renderAdminSettings();
-  if(setting === 'connected-clouds')
-    return renderAdminSettings();
+  
 }
 
 export default SectionBodyContent;
