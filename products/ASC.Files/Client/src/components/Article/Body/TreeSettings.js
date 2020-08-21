@@ -9,7 +9,7 @@ import { createI18N } from "../../../helpers/i18n";
 import { setSelectedSetting, setExpandSettingsTree } from '../../../store/files/actions';
 
 const i18n = createI18N({
-  page: "SettingsTree",
+  page: "Settings",
   localesPath: "pages/Settings"
 })
 
