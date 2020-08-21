@@ -36,14 +36,19 @@ namespace ASC.Data.Storage.Migration
     public class MigrationServiceLauncher : IHostedService
     {
         public MigrationService MigrationService { get; }
+        public MigrationServiceListener MigrationServiceListener { get; }
 
-        public MigrationServiceLauncher(MigrationService migrationService)
+        public MigrationServiceLauncher(MigrationService migrationService,
+            MigrationServiceListener migrationServiceListener)
         {
             MigrationService = migrationService;
+            MigrationServiceListener = migrationServiceListener;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            MigrationServiceListener.Start();
+
             return Task.CompletedTask;
         }
 

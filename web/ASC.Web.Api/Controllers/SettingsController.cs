@@ -40,6 +40,7 @@ using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -57,6 +58,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
+using ASC.Migration;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
@@ -149,6 +151,7 @@ namespace ASC.Api.Settings
         private CoreSettings CoreSettings { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
         public ILog Log { get; set; }
+        public ICacheNotify<MigrationCache> MigrationNotify { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -200,7 +203,8 @@ namespace ASC.Api.Settings
             ProviderManager providerManager,
             MobileDetector mobileDetector,
             IOptionsSnapshot<AccountLinker> accountLinker,
-            FirstTimeTenantSettings firstTimeTenantSettings)
+            FirstTimeTenantSettings firstTimeTenantSettings,
+            ICacheNotify<MigrationCache> migrationNotify)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -252,6 +256,7 @@ namespace ASC.Api.Settings
             StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
             CoreSettings = coreSettings;
             StorageSettingsHelper = storageSettingsHelper;
+            MigrationNotify = migrationNotify;
         }
 
         [Read("", Check = false)]
@@ -1618,7 +1623,7 @@ namespace ASC.Api.Settings
 
             if (!CoreBaseSettings.Standalone) return -1;
 
-            using var migrateClient = new ServiceClient();
+            var migrateClient = new ServiceClient(MigrationNotify);
             return migrateClient.GetProgress(Tenant.TenantId);
         }
 
@@ -1702,7 +1707,7 @@ namespace ASC.Api.Settings
 
             try
             {
-                using var migrateClient = new ServiceClient();
+                var migrateClient = new ServiceClient(MigrationNotify);
                 migrateClient.UploadCdn(Tenant.TenantId, "/", WebHostEnvironment.ContentRootPath, settings);
             }
             catch (Exception e)
@@ -1746,11 +1751,10 @@ namespace ASC.Api.Settings
 
         private void StartMigrate(StorageSettings settings)
         {
-            using (var migrateClient = new ServiceClient())
-            {
-                migrateClient.Migrate(Tenant.TenantId, settings);
-            }
-
+            var migrateClient = new ServiceClient(MigrationNotify);
+            
+            migrateClient.Migrate(Tenant.TenantId, settings);
+            
             Tenant.SetStatus(TenantStatus.Migrating);
             TenantManager.SaveTenant(Tenant);
         }

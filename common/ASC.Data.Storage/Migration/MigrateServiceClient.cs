@@ -24,31 +24,57 @@
 */
 
 
-using ASC.Common.Module;
+using ASC.Common.Caching;
 using ASC.Data.Storage.Configuration;
+using ASC.Migration;
 
 namespace ASC.Data.Storage.Migration
 {
-    public class ServiceClient : BaseWcfClient<IService>, IService
+    public class ServiceClient : IService
     {
+        public ICacheNotify<MigrationCache> Notify { get; }
+
+        public ServiceClient(ICacheNotify<MigrationCache> notify)
+        {
+            Notify = notify;
+        }
+
         public void Migrate(int tenant, StorageSettings storageSettings)
         {
-            Channel.Migrate(tenant, storageSettings);
+            var storSettings = new BaseStorSettings { ID = storageSettings.ID.ToString(), Module = storageSettings.Module };
+
+            Notify.Publish(new MigrationCache
+            {
+                Tenant = tenant,
+                StorSettings = storSettings
+            },
+                CacheNotifyAction.Insert);
         }
 
         public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
         {
-            Channel.UploadCdn(tenantId, relativePath, mappedPath, settings);
+            var cdnStorSettings = new BaseStorSettings { ID = settings.ID.ToString(), Module = settings.Module };
+
+            Notify.Publish(new MigrationCache
+            {
+                TenantId = tenantId,
+                RelativePath = relativePath,
+                MappedPath = mappedPath,
+                CdnStorSettings = cdnStorSettings
+            },
+                CacheNotifyAction.Insert);
         }
 
         public double GetProgress(int tenant)
         {
-            return Channel.GetProgress(tenant);
+            Notify.Publish(new MigrationCache { Tenant = tenant }, CacheNotifyAction.Insert);
+
+            return tenant;
         }
 
         public void StopMigrate()
         {
-            Channel.StopMigrate();
+            Notify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
         }
     }
 }

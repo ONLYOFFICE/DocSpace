@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="protos\MigrationCacheItem.proto" />
+    <None Remove="protos\MigrationCache.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
-    <Protobuf Include="protos\MigrationCacheItem.proto" />
+    <Protobuf Include="protos\MigrationCache.proto" />
   </ItemGroup>
   
 </Project>

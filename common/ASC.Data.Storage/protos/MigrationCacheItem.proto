@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-message MigrationCacheItem {
-	int32 Tenant = 1;
-	int32 TenantId = 2;
-	string RelativePath = 3;
-	string MappedPath = 4;
-}

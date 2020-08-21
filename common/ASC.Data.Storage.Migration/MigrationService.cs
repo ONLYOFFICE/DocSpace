@@ -27,16 +27,40 @@
 using System;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Migration;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Migration
 {
+    public class MigrationServiceListener
+    {
+        public IServiceProvider ServiceProvider { get; }
+        public ICacheNotify<MigrationCache> Notify { get; }
+
+        public MigrationServiceListener(IServiceProvider serviceProvider, ICacheNotify<MigrationCache> notify)
+        {
+            ServiceProvider = serviceProvider;
+            Notify = notify;
+        }
+
+        public void Start()
+        {
+            Notify.Subscribe((n) =>
+            {
+                var scope = ServiceProvider.CreateScope();
+                var service = scope.ServiceProvider.GetService<MigrationService>();
+                service.Migrate(n.TenantId, new StorageSettings { Module = n.StorSettings.Module, });
+            }, CacheNotifyAction.Insert);
+        }
+    }
+
     public class MigrationService : IService
     {
         public StorageUploader StorageUploader { get; }
@@ -91,7 +115,8 @@ namespace ASC.Data.Storage.Migration
     {
         public static DIHelper AddMigrationService(this DIHelper services)
         {
-            services.TryAddSingleton<MigrationService>();
+            services.TryAddScoped<MigrationService>();
+            services.TryAddSingleton<MigrationServiceListener>();
 
             return services
                 .AddStaticUploaderService()

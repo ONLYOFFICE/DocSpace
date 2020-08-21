@@ -48,7 +48,7 @@ namespace ASC.Data.Storage.Migration
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddNLogManager("ASC.Data.Storage.Migration");
+                    diHelper.AddNLogManager("ASC.Data.Storage.Migration", "ASC.Migration");
 
                     diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
 
