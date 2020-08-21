@@ -309,9 +309,11 @@ class FilterBlock extends React.Component {
     }
     if (hideFilterItems.length > 0) {
       let open = false;
+      let showItem = false;
       let hideFilterItemsList = hideFilterItems.map(function (item) {
-        const { key, group, groupLabel, label, typeSelector, groupsCaption, defaultOptionLabel, defaultOption, defaultSelectLabel, selectedItem } = item;
+        const { key, group, groupLabel, label, typeSelector, groupsCaption, defaultOptionLabel, defaultOption, defaultSelectLabel, selectedItem, openItem } = item;
         open = key.indexOf('_-1') == -1 ? false : true
+        showItem = openItem || !!item.selectedItem.key;
         return <FilterItem
           block={true}
           isDisabled={_this.props.isDisabled}
@@ -335,7 +337,7 @@ class FilterBlock extends React.Component {
         </FilterItem>
       })
       hideItems.push(
-        <HideFilter key="hide-filter" count={hideFilterItems.length} isDisabled={this.props.isDisabled} open={open}>
+        <HideFilter key="hide-filter" count={hideFilterItems.length} isDisabled={this.props.isDisabled} openItem={showItem} open={open}>
           {
             hideFilterItemsList
           }
@@ -351,7 +353,7 @@ class FilterBlock extends React.Component {
     let result = [];
     d.forEach(element => {
       if (!element.inSubgroup) {
-        element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? ((e) => _this.props.onClickFilterItem(e, element)) : undefined;
+        element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? ((e, open) => _this.props.onClickFilterItem(e, element, open)) : undefined;
         element.key = element.group != element.key ? element.group + "_" + element.key : element.key;
         if (element.subgroup != undefined) {
           if (d.findIndex(x => x.group === element.subgroup) == -1) element.disabled = true;

@@ -389,7 +389,7 @@ class FilterInput extends React.Component {
             if (fullWidth <= this.minWidth || filterWidth > fullWidth / 2) this.updateFilter();
         }
     }
-    onClickFilterItem(event, filterItem) {
+    onClickFilterItem(event, filterItem, openItem) {
         const currentFilterItems = cloneObjectsArray(this.state.filterValues);
 
 
@@ -415,6 +415,7 @@ class FilterInput extends React.Component {
                 defaultOptionLabel: filterItem.defaultOptionLabel,
                 defaultSelectLabel: filterItem.defaultSelectLabel,
                 selectedItem,
+                openItem
             };
             currentFilterItems.push(selectFilterItem);
             this.setState({
