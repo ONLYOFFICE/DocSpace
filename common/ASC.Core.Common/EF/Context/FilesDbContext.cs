@@ -5,14 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public class FilesDbContext : BaseDbContext
+    public partial class FilesDbContext : BaseDbContext
     {
         public DbSet<FilesConverts> FilesConverts { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddFilesConverts();
+            modelBuilder.MySqlAddFilesConverts();
+
+            modelBuilder.PgSqlAddFilesConverts();
+
+            OnModelCreatingPartial(modelBuilder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class FilesDbExtension

@@ -5,11 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public class VoipDbContext : BaseDbContext
+    public partial class VoipDbContext : BaseDbContext
     {
         public DbSet<VoipNumber> VoipNumbers { get; set; }
         public DbSet<DbVoipCall> VoipCalls { get; set; }
         public DbSet<CrmContact> CrmContact { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.MySqlAddVoipNumber()
+                .MySqlAddDbVoipCall()
+                .MySqlAddCrmContact();
+
+            modelBuilder.PgSqlAddVoipNumber()
+                .PgSqlAddDbVoipCall()
+                .PgSqlAddCrmContact();
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class VoipDbExtension

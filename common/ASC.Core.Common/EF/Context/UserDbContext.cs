@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public class UserDbContext : BaseDbContext
+    public partial class UserDbContext : BaseDbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<UserSecurity> UserSecurity { get; set; }
@@ -19,16 +19,35 @@ namespace ASC.Core.Common.EF
         public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .AddAcl()
-                .AddSubscription()
-                .AddSubscriptionMethod()
-                .AddUser();
+                .MySqlAddAcl()
+                .MySqlAddSubscription()
+                .MySqlAddSubscriptionMethod()
+                .MySqlAddUser();
+            modelBuilder.MySqlAddDbGroup();
+            modelBuilder.MySqlAddUserSecurity();
+            modelBuilder.MySqlAddUserGroup();
+            modelBuilder.MySqlAddUserPhoto();
+
+            modelBuilder
+                .PgSqlAddAcl()
+                .PgSqlAddSubscription()
+                .PgSqlAddSubscriptionMethod()
+                .PgSqlAddUser();
+            modelBuilder.PgSqlAddDbGroup();
+            modelBuilder.PgSqlAddUserSecurity();
+            modelBuilder.PgSqlAddUserGroup();
+            modelBuilder.PgSqlAddUserPhoto();
+
+            OnModelCreatingPartial(modelBuilder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class UserDbExtension

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public class MailDbContext : BaseDbContext
+    public partial class MailDbContext : BaseDbContext
     {
         public DbSet<MailboxServer> MailboxServer { get; set; }
         public DbSet<ServerServer> ServerServer { get; set; }
@@ -15,10 +15,27 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<GreyListingWhiteList> GreyListingWhiteList { get; set; }
 
         public MailDbContext() { }
-        public MailDbContext(DbContextOptions<MailDbContext> options)
-            : base(options)
+        public MailDbContext(DbContextOptions options) : base(options)
         {
+            Database.EnsureCreated();
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .MySqlAddMailbox()
+                .MySqlAddMailboxProvider()
+                .MySqlAddMailboxServer()
+                .MySqlAddServerServer();
+
+            modelBuilder
+                .PgSqlAddMailbox()
+                .PgSqlAddMailboxProvider()
+                .PgSqlAddMailboxServer()
+                .PgSqlAddServerServer();
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
     public static class MailDbExtension
     {

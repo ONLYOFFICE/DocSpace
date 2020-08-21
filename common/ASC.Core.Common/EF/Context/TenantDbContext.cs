@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public class TenantDbContext : BaseDbContext
+    public partial class TenantDbContext : BaseDbContext
     {
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<User> Users { get; set; }
@@ -20,16 +20,31 @@ namespace ASC.Core.Common.EF.Context
         public TenantDbContext(DbContextOptions<TenantDbContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddUser();
+            modelBuilder.MySqlAddUser();
+            modelBuilder.MySqlAddCoreSettings();
+            modelBuilder.MySqlAddDbTenant();
+            modelBuilder.MySqlAddUserSecurity();
+            modelBuilder.MySqlAddDbTenantForbiden();
+            modelBuilder.MySqlAddTenantIpRestrictions();
+            modelBuilder.MySqlAddDbTenantPartner();
+            modelBuilder.MySqlAddDbTenantVersion();
 
-            modelBuilder.AddCoreSettings();
+            modelBuilder.PgSqlAddUser();
+            modelBuilder.PgSqlAddCoreSettings();
+            modelBuilder.PgSqlAddDbTenant();
+            modelBuilder.PgSqlAddUserSecurity();
+            modelBuilder.PgSqlAddDbTenantForbiden();
+            modelBuilder.PgSqlAddTenantIpRestrictions();
+            modelBuilder.PgSqlAddDbTenantPartner();
+            modelBuilder.PgSqlAddDbTenantVersion();
 
-            modelBuilder.AddDbTenant();
+            OnModelCreatingPartial(modelBuilder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class TenantDbExtension

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
@@ -14,5 +15,77 @@ namespace ASC.Core.Common.EF.Model.Mail
         [Column("display_short_name")]
         public string DisplayShortName { get; set; }
         public string Documentation { get; set; }
+    }
+    public static class MailboxProviderExtension
+    {
+        public static ModelBuilder MySqlAddMailboxProvider(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MailboxProvider>(entity =>
+            {
+                entity.ToTable("mail_mailbox_provider");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.DisplayName)
+                    .HasColumnName("display_name")
+                    .HasColumnType("varchar(255)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.DisplayShortName)
+                    .HasColumnName("display_short_name")
+                    .HasColumnType("varchar(255)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Documentation)
+                    .HasColumnName("documentation")
+                    .HasColumnType("varchar(255)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(255)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+
+            return modelBuilder;
+        }
+        public static ModelBuilder PgSqlAddMailboxProvider(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MailboxProvider>(entity =>
+            {
+                entity.ToTable("mail_mailbox_provider", "onlyoffice");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DisplayName)
+                    .HasColumnName("display_name")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("NULL::character varying");
+
+                entity.Property(e => e.DisplayShortName)
+                    .HasColumnName("display_short_name")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("NULL::character varying");
+
+                entity.Property(e => e.Documentation)
+                    .HasColumnName("documentation")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("NULL::character varying");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(255);
+            });
+
+            return modelBuilder;
+        }
     }
 }

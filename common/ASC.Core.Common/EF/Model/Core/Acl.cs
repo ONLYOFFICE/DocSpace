@@ -24,10 +24,67 @@ namespace ASC.Core.Common.EF
 
     public static class AclExtension
     {
-        public static ModelBuilder AddAcl(this ModelBuilder modelBuilder)
+        public static ModelBuilder MySqlAddAcl(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Acl>()
-                .HasKey(c => new { c.Tenant, c.Subject, c.Action, c.Object });
+            modelBuilder.Entity<Acl>(entity =>
+            {
+                entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("core_acl");
+
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
+
+                entity.Property(e => e.Subject)
+                    .HasColumnName("subject")
+                    .HasColumnType("varchar(38)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Action)
+                    .HasColumnName("action")
+                    .HasColumnType("varchar(38)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Object)
+                    .HasColumnName("object")
+                    .HasColumnType("varchar(255)")
+                    .HasDefaultValueSql("''")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.AceType).HasColumnName("acetype");
+            });
+
+            return modelBuilder;
+        }
+        public static ModelBuilder PgSqlAddAcl(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Acl>(entity =>
+            {
+                entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
+                    .HasName("core_acl_pkey");
+
+                entity.ToTable("core_acl", "onlyoffice");
+
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
+
+                entity.Property(e => e.Subject)
+                    .HasColumnName("subject")
+                    .HasMaxLength(38);
+
+                entity.Property(e => e.Action)
+                    .HasColumnName("action")
+                    .HasMaxLength(38);
+
+                entity.Property(e => e.Object)
+                    .HasColumnName("object")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("'0'::character varying");
+
+                entity.Property(e => e.AceType).HasColumnName("acetype");
+            });
 
             return modelBuilder;
         }

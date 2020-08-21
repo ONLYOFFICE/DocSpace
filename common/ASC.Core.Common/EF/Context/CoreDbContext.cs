@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public class CoreDbContext : BaseDbContext
+    public partial class CoreDbContext : BaseDbContext
     {
         public DbSet<DbTariff> Tariffs { get; set; }
         public DbSet<DbButton> Buttons { get; set; }
@@ -13,19 +13,25 @@ namespace ASC.Core.Common.EF
         public DbSet<DbQuota> Quotas { get; set; }
         public DbSet<DbQuotaRow> QuotaRows { get; set; }
 
-        public CoreDbContext() { }
-        public CoreDbContext(DbContextOptions<CoreDbContext> options)
-            : base(options)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .AddAcl()
-                .AddDbButton()
-                .AddDbQuotaRow();
+                .MySqlAddAcl()
+                .MySqlAddDbButton()
+                .MySqlAddDbQuotaRow()
+                .MySqlAddDbQuota()
+                .MySqlAddDbTariff();
+
+            modelBuilder
+                .PgSqlAddAcl()
+                .PgSqlAddDbButton()
+                .PgSqlAddDbQuotaRow()
+                .PgSqlAddDbQuota()
+                .PgSqlAddDbTariff();
+
+            OnModelCreatingPartial(modelBuilder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
 

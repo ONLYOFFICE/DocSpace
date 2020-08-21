@@ -12,10 +12,7 @@ namespace ASC.Core.Common.EF
     public class BaseDbContext : DbContext
     {
         public BaseDbContext() { }
-
-        public BaseDbContext(DbContextOptions options) : base(options)
-        {
-        }
+        public BaseDbContext(DbContextOptions options) : base(options) => Database.EnsureCreated();
 
         internal ILoggerFactory LoggerFactory { get; set; }
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
@@ -25,6 +22,7 @@ namespace ASC.Core.Common.EF
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+            optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
         }
     }
 

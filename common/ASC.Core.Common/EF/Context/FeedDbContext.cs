@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public class FeedDbContext : BaseDbContext
+    public partial class FeedDbContext : BaseDbContext
     {
         public DbSet<FeedLast> FeedLast { get; set; }
         public DbSet<FeedAggregate> FeedAggregates { get; set; }
@@ -15,9 +15,20 @@ namespace ASC.Core.Common.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .AddFeedUsers()
-                .AddFeedReaded();
+                .MySqlAddFeedUsers()
+                .MySqlAddFeedReaded()
+                .MySqlAddFeedAggregate()
+                .MySqlAddFeedLast();
+
+            modelBuilder
+                .PgSqlAddFeedUsers()
+                .PgSqlAddFeedReaded()
+                .PgSqlAddFeedAggregate()
+                .PgSqlAddFeedLast();
+
+            OnModelCreatingPartial(modelBuilder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class FeedDbExtension

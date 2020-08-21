@@ -32,7 +32,7 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesTagLink()
                 .AddDbFilesThirdpartyApp()
                 .AddDbEncryptedData()
-                .AddDbTenant();
+                .MySqlAddDbTenant();
         }
     }
 
