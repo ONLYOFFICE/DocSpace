@@ -60,11 +60,12 @@ class ContextMenuButton extends React.Component {
     super(props);
 
     this.ref = React.createRef();
+    const displayType = props.displayType === 'auto' ? this.getTypeByWidth() : props.displayType;
 
     this.state = {
       isOpen: props.opened,
       data: props.data,
-      displayType: props.displayType
+      displayType
     };
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -132,7 +133,8 @@ class ContextMenuButton extends React.Component {
   }
 
   onDropDownItemClick = (item, e) => {
-    item.onClick && item.onClick(e);
+    const open = this.state.displayType === "dropdown";
+    item.onClick && item.onClick(e, open);
     this.toggle(!this.state.isOpen);
   }
 
