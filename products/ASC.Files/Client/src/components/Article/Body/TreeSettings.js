@@ -1,12 +1,15 @@
 import React from "react";
+import { connect } from 'react-redux';
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";       
 import { history, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
+import { setSelectedSetting, setExpandSettingsTree } from '../../../store/files/actions';
+
 const i18n = createI18N({
-  page: "SettingsTree",
+  page: "Settings",
   localesPath: "pages/Settings"
 })
 
@@ -14,10 +17,6 @@ const { changeLanguage } = utils;
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 20px !important;
-
-  .rc-tree-node-content-wrapper{
-    background: ${props => !props.dragging && "none !important"};
-  }
   
   .rc-tree-node-selected {
     background: #DFE2E3 !important;
@@ -31,10 +30,6 @@ const StyledTreeMenu = styled(TreeMenu)`
 class PureTreeSettings extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      drop: false
-    };
   }
 
   switcherIcon = (obj) => {
@@ -49,10 +44,17 @@ class PureTreeSettings extends React.Component {
   }
 
   onSelect = (section) => {
+    const { setSelectedSetting, setExpandSettingsTree } = this.props;
     const path = section[0];
-    if(path === 'settings')
+
+    if(path === 'settings') {
+      setSelectedSetting(['common-settings']);
+      setExpandSettingsTree(section);
       return history.push('/products/files/settings/common-settings');
-    return history.push(`/products/files/settings/${path}`);
+    } 
+    
+    setSelectedSetting(section);
+    return history.push(`/products/files/settings/${path}`);    
   }
 
   renderTreeNode = () => {
@@ -80,6 +82,7 @@ class PureTreeSettings extends React.Component {
           title={t('treeSettingsAdminSettings')}
         />
         <TreeNode
+        selectable={true}
           className="settings-node"
           id='connected-clouds'
           key='connected-clouds'
@@ -91,10 +94,16 @@ class PureTreeSettings extends React.Component {
   }
 
   render() {
+    const { 
+      selectedSetting,
+      expandedSetting
+    } = this.props;
     const nodes = this.renderTreeNode();
 
     return (
       <StyledTreeMenu
+        expandedKeys={expandedSetting}
+        selectedKeys={selectedSetting}
         defaultExpandParent={false}
         className="settings-tree-menu"
         switcherIcon={this.switcherIcon}
@@ -119,4 +128,19 @@ const TreeSettings = props => {
   );
 }
 
-export default TreeSettings;
+function mapStateToProps(state) {
+  const { 
+    selectedSetting,
+    expandedSetting
+   } = state.files;
+  return {
+    selectedSetting,
+    expandedSetting
+  }
+}
+
+export default connect(
+  mapStateToProps, { 
+    setSelectedSetting,
+    setExpandSettingsTree 
+  })(TreeSettings);

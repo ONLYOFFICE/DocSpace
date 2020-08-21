@@ -12,10 +12,8 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
-import { setSettingsIsLoad } from '../../../store/files/actions'
-
 const i18n = createI18N({
-  page: "SettingsTree",
+  page: "Settings",
   localesPath: "pages/Settings"
 })
 
@@ -36,26 +34,6 @@ class PureSettings extends React.Component {
       updateOrCreate: false,
       keepIntermediate: false
     }
-  }
-
-  isCheckedIntermediate = () => {
-    this.setState({
-      intermediateVersion: !this.state.intermediateVersion
-    })
-  }
-
-  isCheckedThirdParty = (e) => {
-    this.setState({
-      thirdParty: !this.state.thirdParty
-    })
-  }
-
-  renderCommonSettings = () => {
-    return <span>CommonSettings</span>
-  }
-
-  renderClouds = () => {
-    return <span>Clouds</span>
   }
 
   render() {
@@ -126,16 +104,7 @@ const Settings = props => {
 }
 
 function mapStateToProps(state) {
-  const { settingsIsLoad } = state.files;
-
-  return { 
-    settingsIsLoad
-  };
+  return {};
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    setSettingsIsLoad
-  }
-)(withRouter(Settings));
+export default connect(mapStateToProps)(withRouter(Settings));
