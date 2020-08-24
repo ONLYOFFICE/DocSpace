@@ -170,6 +170,8 @@ import OrigKeyIcon from './key.react.svg';
 import OrigAmazonIcon from './amazon.react.svg';
 import OrigMailRuIcon from './mail.ru.react.svg';
 import OrigTelegramIcon from './telegram.react.svg';
+import OrigBitlyIcon from './bitly.react.svg';
+import OrigBoxIcon from './box.react.svg';
 
 
 export const AZSortingIcon = createStyledIcon(
@@ -831,4 +833,12 @@ export const MailRuIcon = createStyledIcon(
 export const TelegramIcon = createStyledIcon(
   OrigTelegramIcon,
   'TelegramIcon'
+);
+export const BitlyIcon = createStyledIcon(
+  OrigBitlyIcon,
+  'BitlyIcon'
+);
+export const BoxIcon = createStyledIcon(
+  OrigBoxIcon,
+  'BoxIcon'
 );
