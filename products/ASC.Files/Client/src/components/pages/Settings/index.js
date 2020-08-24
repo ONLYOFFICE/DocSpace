@@ -38,7 +38,6 @@ class PureSettings extends React.Component {
   }
 
   onLoading = status => {
-    console.log(status)
     this.setState({ isLoading: status });
   };
 

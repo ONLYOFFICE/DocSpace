@@ -22,21 +22,26 @@ const StyledSettings = styled.div`
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
+
   }
 
   componentDidMount() {
-    this.props.onLoading(false);
+    const { setting, onLoading, t } = this.props;
+    document.title = t(`${setting}`);
+    onLoading(false);
+  }
+
+  componentDidUpdate() {
+    const { setting, t } = this.props;
+    document.title = t(`${setting}`);
   }
 
   renderAdminSettings = () => {
     const {
-      setting,
       intermediateVersion,
       thirdParty,
       t
     } = this.props;
-
-    document.title = t(`${setting}`);
 
     return (
       <StyledSettings>

@@ -37,7 +37,8 @@ class PureTreeSettings extends React.Component {
     const { match, setSelectedSetting, setExpandSettingsTree } = this.props;
     const { setting } = match.params;
     setSelectedSetting([setting]);
-    setExpandSettingsTree(['settings']);
+    if (setting)
+      setExpandSettingsTree(['settings']);
   }
 
   switcherIcon = (obj) => {
