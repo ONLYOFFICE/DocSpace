@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5017/",
+      "applicationUrl": "http://localhost:5018/",
       "sslPort": 0
     }
   },
@@ -29,7 +29,7 @@
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products"
       },
-      "applicationUrl": "http://localhost:5017/"
+      "applicationUrl": "http://localhost:5018/"
     }
   }
 }
