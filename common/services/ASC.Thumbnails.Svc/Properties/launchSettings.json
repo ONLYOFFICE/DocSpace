@@ -14,7 +14,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "$STORAGE_ROOT": "../../../Data",
-        "log__name": "urlshortener",
+        "log__name": "thumbnails",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products"
       }
@@ -25,7 +25,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "$STORAGE_ROOT": "../../../Data",
-        "log__name": "urlshortener",
+        "log__name": "thumbnails",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products"
       },
