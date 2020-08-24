@@ -11,7 +11,10 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <WarningsAsErrors></WarningsAsErrors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.450</Version>
+    <Version>1.1.0.451</Version>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <AssemblyVersion>1.1.0.450</AssemblyVersion>
+    <FileVersion>1.1.0.450</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>

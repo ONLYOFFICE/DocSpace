@@ -397,7 +397,7 @@ namespace ASC.Core.Notify.Signalr
         {
             if (services.TryAddScoped<SignalrServiceClient>())
             {
-                services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
+                services.TryAddScoped<IConfigureNamedOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
 
                 return services
                     .AddTenantManagerService()
