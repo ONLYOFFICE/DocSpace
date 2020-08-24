@@ -1,9 +1,7 @@
 import React from "react";
-import { Icons, DropDown, utils } from "asc-web-components";
+import { Icons, DropDown } from "asc-web-components";
 import PropTypes from 'prop-types';
 import { Caret, StyledHideFilterButton } from '../StyledFilterInput';
-
-const { handleAnyClick } = utils.event;
 
 class HideFilter extends React.Component {
   constructor(props) {
@@ -14,17 +12,6 @@ class HideFilter extends React.Component {
     this.state = {
       popoverOpen: this.props.open
     };
-  }
-
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
-  componentDidUpdate(prevState) {
-    const { popoverOpen } = this.state;
-    if (popoverOpen !== prevState.popoverOpen) {
-      handleAnyClick(popoverOpen, this.handleClick);
-    }
   }
 
   onClick = (state, e) => {
@@ -38,47 +25,46 @@ class HideFilter extends React.Component {
     }
   };
 
-  handleClick = e => {
-    this.state.popoverOpen &&
-      !this.dropDownRef.current.firstElementChild.contains(e.target) &&
-      this.onClick(false);
+  handleClickOutside = e => {
+    if (this.ref.current.contains(e.target)) return;
+    this.setState({ popoverOpen: !this.state.popoverOpen });
   };
 
   render() {
     //console.log("HideFilter render");
-    const { isDisabled, count, children } = this.props;
+    const { isDisabled, count, children, openItem } = this.props;
     const { popoverOpen } = this.state;
     return (
-      <div
-        className='styled-hide-filter'
-        onClick={this.onClick.bind(this, !popoverOpen)}
-        ref={this.ref}
-      >
-        <StyledHideFilterButton
-          id="PopoverLegacy"
-          isDisabled={isDisabled}
+      <>
+        <div
+          className="styled-hide-filter"
+          onClick={this.onClick.bind(this, !popoverOpen)}
+          ref={this.ref}
         >
-          {count}
-          <Caret isOpen={popoverOpen}>
-            <Icons.ExpanderDownIcon
-              color="#A3A9AE"
-              isfill={true}
-              size="scale"
-            />
-          </Caret>
-        </StyledHideFilterButton>
+          <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
+            {count}
+            <Caret isOpen={popoverOpen && openItem}>
+              <Icons.ExpanderDownIcon
+                color="#A3A9AE"
+                isfill={true}
+                size="scale"
+              />
+            </Caret>
+          </StyledHideFilterButton>
 
-        <div className='dropdown-style' ref={this.dropDownRef}>
-          <DropDown
-            className="drop-down"
-            clickOutsideAction={this.handleClick}
-            manualY="8px"
-            open={popoverOpen}
-          >
-            {children}
-          </DropDown>
+          <div className="dropdown-style" ref={this.dropDownRef}>
+            <DropDown
+              className="drop-down"
+              clickOutsideAction={this.handleClickOutside}
+              manualY="8px"
+              open={popoverOpen && openItem}
+            >
+              {children}
+            </DropDown>
+          </div>
         </div>
-      </div>
+        {popoverOpen && !openItem && children}
+      </>
     );
   }
 }
@@ -87,5 +73,6 @@ HideFilter.propTypes = {
   count: PropTypes.number,
   isDisabled: PropTypes.bool,
   open: PropTypes.bool,
+  openItem: PropTypes.bool
 }
 export default HideFilter;

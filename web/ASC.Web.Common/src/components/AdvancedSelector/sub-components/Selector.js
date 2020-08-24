@@ -79,6 +79,7 @@ const Selector = props => {
   const listGroupsRef = useRef(null);
 
   useEffect(() => {
+    currentGroup === "No groups" && setCurrentGroup(getCurrentGroup(convertGroups(groups)));
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
