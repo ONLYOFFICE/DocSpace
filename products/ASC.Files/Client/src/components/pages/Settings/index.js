@@ -24,6 +24,7 @@ class PureSettings extends React.Component {
     super(props)
 
     this.state = {
+      isLoading: false,
       intermediateVersion: false,
       thirdParty: false,
       originalCopy: false,
@@ -36,8 +37,13 @@ class PureSettings extends React.Component {
     }
   }
 
+  onLoading = status => {
+    console.log(status)
+    this.setState({ isLoading: status });
+  };
+
   render() {
-    console.log('render settings');
+    console.log('Settings render()');
     const { 
       intermediateVersion,
       thirdParty,
@@ -59,11 +65,14 @@ class PureSettings extends React.Component {
         </PageLayout.ArticleHeader>
 
         <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
+          <ArticleMainButtonContent onLoading={this.onLoading} />
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>
-          <ArticleBodyContent />
+          <ArticleBodyContent 
+            onLoading={this.onLoading}
+            isLoading={this.state.isLoading}
+          />
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
@@ -83,6 +92,7 @@ class PureSettings extends React.Component {
             updateOrCreate={updateOrCreate}
             keepIntermediate={keepIntermediate}
             t={t}
+            onLoading={this.onLoading}
             isCheckedThirdParty={this.isCheckedThirdParty}
             isCheckedIntermediate={this.isCheckedIntermediate}
           />

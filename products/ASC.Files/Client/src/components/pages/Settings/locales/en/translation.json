@@ -4,12 +4,12 @@
   "treeSettingsAdminSettings": "Admin Settings",
   "treeSettingsConnectedCloud": "Connected Clouds",
 
-  "common-settings": "Common Settings",
-  "admin-settings": "Admin Settings",
-  "connected-clouds": "Connected Clouds",
+  "common": "Common Settings",
+  "admin": "Admin Settings",
+  "thirdParty": "Connected Clouds",
 
   "intermediateVersion": "Keep all saved intermediate versions",
-  "thirdParty": "Allow users to connect third-party storages",
+  "thirdPartyBtn": "Allow users to connect third-party storages",
 
   "originalCopy": "Save the file copy in the original format as well",
   "displayNotification": "Display notification when moving the element to the trash",

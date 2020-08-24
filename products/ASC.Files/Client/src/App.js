@@ -4,11 +4,11 @@ import { Router, Switch, Redirect } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
-import Settings from "./components/pages/Settings";
 
 import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline } from "asc-web-common";
 
 const VersionHistory = React.lazy(() => import('./components/pages/VersionHistory'));
+const Settings = React.lazy(() => import('./components/pages/Settings'));
 
 const withStudioLayout = Component => props => <StudioLayout><Component {...props} /></StudioLayout>;
 

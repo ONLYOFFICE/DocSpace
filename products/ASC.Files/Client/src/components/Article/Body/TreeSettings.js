@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";       
 import { history, utils } from "asc-web-common";
@@ -32,6 +33,13 @@ class PureTreeSettings extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    const { match, setSelectedSetting, setExpandSettingsTree } = this.props;
+    const { setting } = match.params;
+    setSelectedSetting([setting]);
+    setExpandSettingsTree(['settings']);
+  }
+
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
@@ -48,13 +56,19 @@ class PureTreeSettings extends React.Component {
     const path = section[0];
 
     if(path === 'settings') {
-      setSelectedSetting(['common-settings']);
+      setSelectedSetting(['common']);
       setExpandSettingsTree(section);
-      return history.push('/products/files/settings/common-settings');
+      return history.push('/products/files/settings/common');
     } 
     
     setSelectedSetting(section);
     return history.push(`/products/files/settings/${path}`);    
+  }
+
+  onExpand = (data) => {
+    const { setExpandSettingsTree, setSelectedSetting } = this.props;
+    setSelectedSetting(['common']);
+    setExpandSettingsTree(data);
   }
 
   renderTreeNode = () => {
@@ -70,14 +84,14 @@ class PureTreeSettings extends React.Component {
         <TreeNode
           className="settings-node"
           id='common-settings'
-          key='common-settings'
+          key='common'
           isLeaf={true}
           title={t('treeSettingsCommonSettings')}
         />
         <TreeNode
           className="settings-node"
           id='admin-settings'
-          key='admin-settings'
+          key='admin'
           isLeaf={true}
           title={t('treeSettingsAdminSettings')}
         />
@@ -85,7 +99,7 @@ class PureTreeSettings extends React.Component {
         selectable={true}
           className="settings-node"
           id='connected-clouds'
-          key='connected-clouds'
+          key='thirdParty'
           isLeaf={true}
           title={t('treeSettingsConnectedCloud')}
         />
@@ -109,7 +123,7 @@ class PureTreeSettings extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         showIcon={true}
-        onExpand={() => console.log('expand')}
+        onExpand={this.onExpand}
       >
         {nodes}
       </StyledTreeMenu>
@@ -143,4 +157,4 @@ export default connect(
   mapStateToProps, { 
     setSelectedSetting,
     setExpandSettingsTree 
-  })(TreeSettings);
+  })(withRouter(TreeSettings));

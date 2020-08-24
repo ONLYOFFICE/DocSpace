@@ -24,6 +24,10 @@ class SectionBodyContent extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    this.props.onLoading(false);
+  }
+
   renderAdminSettings = () => {
     const {
       setting,
@@ -46,7 +50,7 @@ class SectionBodyContent extends React.Component {
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
-          label={t('thirdParty')}
+          label={t('thirdPartyBtn')}
           onChange={(e)=>console.log(e)}
           isChecked={thirdParty}
         />
@@ -130,11 +134,11 @@ class SectionBodyContent extends React.Component {
     const { setting } = this.props;
     let content;
 
-    if(setting === 'admin-settings')
+    if(setting === 'admin')
       content = this.renderAdminSettings();
-    if(setting === 'common-settings') 
+    if(setting === 'common') 
       content = this.renderCommonSettings();
-    if(setting === 'connected-clouds')
+    if(setting === 'thirdParty')
       content = this.renderAdminSettings();
 
     return content;
