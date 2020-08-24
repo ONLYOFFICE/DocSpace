@@ -10,6 +10,7 @@ import {
   ArticleBodyContent,
   ArticleMainButtonContent
 } from "../../Article";
+import { setIsLoading } from "../../../store/files/actions";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -27,7 +28,6 @@ class PureVersionHistory extends React.Component {
     const { fileId } = match.params;
 
     this.state = {
-      isLoading: false,
       fileId,
       versions: null
     };
@@ -50,18 +50,14 @@ class PureVersionHistory extends React.Component {
       .then(versions => this.setState({ versions }));
   };
 
-  onLoading = status => {
-    this.setState({ isLoading: status });
-  };
-
   render() {
     const { versions } = this.state;
-    const { t, settings } = this.props;
+    const { t, settings, isLoading } = this.props;
 
     return (
       <>
         <RequestLoader
-          visible={this.state.isLoading}
+          visible={isLoading}
           zIndex={256}
           loaderSize="16px"
           loaderColor={"#999"}
@@ -77,15 +73,15 @@ class PureVersionHistory extends React.Component {
 
             <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent
-                onLoading={this.onLoading}
+                onLoading={setIsLoading}
                 startUpload={this.startUpload}
               />
             </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>
               <ArticleBodyContent
-                onLoading={this.onLoading}
-                isLoading={this.state.isLoading}
+                onLoading={setIsLoading}
+                isLoading={isLoading}
               />
             </PageLayout.ArticleBody>
 
@@ -96,7 +92,7 @@ class PureVersionHistory extends React.Component {
             <PageLayout.SectionBody>
               <SectionBodyContent
                 getFileVersions={this.getFileVersions}
-                onLoading={this.onLoading}
+                onLoading={setIsLoading}
                 versions={versions}
                 culture={settings.culture}
               />
@@ -145,8 +141,9 @@ VersionHistory.propTypes = {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    isLoaded: state.auth.isLoaded
+    isLoaded: state.auth.isLoaded,
+    isLoading: state.files.isLoading
   };
 }
 
-export default connect(mapStateToProps)(withRouter(VersionHistory));
+export default connect(mapStateToProps, { setIsLoading })(withRouter(VersionHistory));

@@ -41,6 +41,7 @@ export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_SETTING = "SET_SELECTED_SETTING";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
+export const SET_IS_LOADING = "SET_IS_LOADING";
 
 export function setFile(file) {
   return {
@@ -200,6 +201,13 @@ export function setExpandSettingsTree(setting) {
   return {
     type: SET_EXPAND_SETTINGS_TREE,
     setting
+  }
+}
+
+export function setIsLoading(isLoading) {
+  return {
+    type: SET_IS_LOADING,
+    isLoading
   }
 }
 

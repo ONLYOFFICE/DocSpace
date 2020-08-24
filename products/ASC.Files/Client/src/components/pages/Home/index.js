@@ -28,7 +28,8 @@ import {
   setNewTreeFilesBadge,
   setProgressBarData,
   setSelected,
-  setTreeFolders
+  setTreeFolders,
+  setIsLoading
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
@@ -52,7 +53,6 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false,
 
       overwriteSetting: false,
       uploadOriginalFormatSetting: false,
@@ -212,10 +212,6 @@ class PureHome extends React.Component {
     } else {
       setSelected("close");
     }
-  };
-
-  onLoading = status => {
-    this.setState({ isLoading: status });
   };
 
   onChangeOverwrite = () =>
@@ -405,12 +401,11 @@ class PureHome extends React.Component {
       isHeaderIndeterminate,
       isHeaderChecked,
       selected,
-      isLoading,
       overwriteSetting,
       uploadOriginalFormatSetting,
       hideWindowSetting
     } = this.state;
-    const { t, progressData, viewAs, convertDialogVisible } = this.props;
+    const { t, progressData, viewAs, isLoading, convertDialogVisible, setIsLoading } = this.props;
 
     const progressBarContent = (
       <div>
@@ -468,12 +463,12 @@ class PureHome extends React.Component {
           </PageLayout.ArticleHeader>
 
           <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent onLoading={this.onLoading} />
+            <ArticleMainButtonContent onLoading={setIsLoading} />
           </PageLayout.ArticleMainButton>
 
           <PageLayout.ArticleBody>
             <ArticleBodyContent
-              onLoading={this.onLoading}
+              onLoading={setIsLoading}
               isLoading={isLoading}
               onTreeDrop={this.onDrop}
             />
@@ -486,21 +481,21 @@ class PureHome extends React.Component {
                 onCheck={this.onSectionHeaderContentCheck}
                 onSelect={this.onSectionHeaderContentSelect}
                 onClose={this.onClose}
-                onLoading={this.onLoading}
+                onLoading={setIsLoading}
                 isLoading={isLoading}
                 loopFilesOperations={this.loopFilesOperations}
               />
             </PageLayout.SectionHeader>
 
             <PageLayout.SectionFilter>
-              <SectionFilterContent onLoading={this.onLoading} />
+              <SectionFilterContent onLoading={setIsLoading} />
             </PageLayout.SectionFilter>
             
             <PageLayout.SectionBody>
               <SectionBodyContent
                 selected={selected}
                 isLoading={isLoading}
-                onLoading={this.onLoading}
+                onLoading={setIsLoading}
                 onChange={this.onRowChange}
                 loopFilesOperations={this.loopFilesOperations}
                 onDropZoneUpload={this.onDrop}
@@ -508,7 +503,7 @@ class PureHome extends React.Component {
             </PageLayout.SectionBody>
 
             <PageLayout.SectionPaging>
-              <SectionPagingContent onLoading={this.onLoading} />
+              <SectionPagingContent onLoading={setIsLoading} />
             </PageLayout.SectionPaging>
         </PageLayout>
       </>
@@ -545,7 +540,8 @@ function mapStateToProps(state) {
     selectedFolder,
     selection,
     treeFolders,
-    viewAs
+    viewAs,
+    isLoading
   } = state.files;
   const { id } = selectedFolder;
   const indexOfTrash = 3;
@@ -563,7 +559,8 @@ function mapStateToProps(state) {
     selected,
     selection,
     treeFolders,
-    viewAs
+    viewAs, 
+    isLoading
   };
 }
 
@@ -580,6 +577,7 @@ export default connect(
     setProgressBarData,
     setSelected,
     setTreeFolders,
-    startUpload
+    startUpload,
+    setIsLoading
   }
 )(withRouter(Home));

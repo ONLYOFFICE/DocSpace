@@ -9,7 +9,8 @@ import {
   setTreeFolders,
   setDragItem,
   setDragging,
-  setNewTreeFilesBadge
+  setNewTreeFilesBadge,
+  setIsLoading
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
@@ -54,16 +55,16 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectedKeys, filter, onLoading } = this.props;
+    const { selectedKeys, filter, setIsLoading } = this.props;
     if (selectedKeys[0] !== data[0]) {
-      onLoading(true);
+      setIsLoading(true);
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
 
       fetchFiles(data[0], newFilter, store.dispatch)
         .catch(err => toastr.error(err))
-        .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -86,7 +87,7 @@ class ArticleBodyContent extends React.Component {
       filter,
       setFilter,
       setTreeFolders,
-      onLoading,
+      setIsLoading,
       isLoading,
       dragging,
       setDragItem,
@@ -111,7 +112,7 @@ class ArticleBodyContent extends React.Component {
             visible={showNewFilesPanel}
             onClose={this.onShowNewFilesPanel}
             setNewFilesCount={this.setNewFilesCount}
-            onLoading={onLoading}
+            onLoading={setIsLoading}
             folderId={newFolderId}
             treeFolders={data}
             setTreeFolders={setTreeFolders}
@@ -127,7 +128,7 @@ class ArticleBodyContent extends React.Component {
           setFilter={setFilter}
           setTreeFolders={setTreeFolders}
           expandedKeys={expandedKeys}
-          onLoading={onLoading}
+          onLoading={setIsLoading}
           isLoading={isLoading}
           dragging={dragging}
           setDragging={setDragging}
@@ -149,7 +150,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew } = state.files;
+  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew, isLoading } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
@@ -184,10 +185,11 @@ function mapStateToProps(state) {
     isAdmin: state.auth.user.isAdmin,
     selection,
     dragging,
-    updateTreeNew
+    updateTreeNew,
+    isLoading
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging, setNewTreeFilesBadge })(
+export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging, setNewTreeFilesBadge, setIsLoading })(
   ArticleBodyContent
 );

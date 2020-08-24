@@ -8,6 +8,7 @@ import {
   ArticleMainButtonContent
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import { setIsLoading } from '../../../store/files/actions';
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -24,7 +25,6 @@ class PureSettings extends React.Component {
     super(props)
 
     this.state = {
-      isLoading: false,
       intermediateVersion: false,
       thirdParty: false,
       originalCopy: false,
@@ -36,10 +36,6 @@ class PureSettings extends React.Component {
       keepIntermediate: false
     }
   }
-
-  onLoading = status => {
-    this.setState({ isLoading: status });
-  };
 
   render() {
     console.log('Settings render()');
@@ -54,8 +50,9 @@ class PureSettings extends React.Component {
       updateOrCreate,
       keepIntermediate,
     } = this.state;
-    const { match, t } = this.props;
+    const { match, t, isLoading, setIsLoading } = this.props;
     const { setting } = match.params;
+    console.log(setting)
 
     return (
       <PageLayout>
@@ -64,13 +61,14 @@ class PureSettings extends React.Component {
         </PageLayout.ArticleHeader>
 
         <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent onLoading={this.onLoading} />
+          <ArticleMainButtonContent onLoading={setIsLoading} />
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>
           <ArticleBodyContent 
-            onLoading={this.onLoading}
-            isLoading={this.state.isLoading}
+            onLoading={setIsLoading}
+            isLoading={isLoading}
+           
           />
         </PageLayout.ArticleBody>
 
@@ -91,7 +89,7 @@ class PureSettings extends React.Component {
             updateOrCreate={updateOrCreate}
             keepIntermediate={keepIntermediate}
             t={t}
-            onLoading={this.onLoading}
+            onLoading={setIsLoading}
             isCheckedThirdParty={this.isCheckedThirdParty}
             isCheckedIntermediate={this.isCheckedIntermediate}
           />
@@ -113,7 +111,14 @@ const Settings = props => {
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    isLoading: state.files.isLoading
+  };
 }
 
-export default connect(mapStateToProps)(withRouter(Settings));
+export default connect(
+  mapStateToProps,
+  {
+    setIsLoading
+  }
+  )(withRouter(Settings));
