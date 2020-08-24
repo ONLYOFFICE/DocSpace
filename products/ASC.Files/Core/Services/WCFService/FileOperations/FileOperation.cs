@@ -108,6 +108,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public abstract void RunJob(DistributedTask _, CancellationToken cancellationToken);
         protected abstract void Do(IServiceScope serviceScope);
+
     }
 
     internal class ComposeFileOperation<T1, T2> : FileOperation
@@ -283,7 +284,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken = cancellationToken;
 
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
                 scopeClass.TenantManager.SetCurrentTenant(CurrentTenant);
 
 
@@ -388,22 +389,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FillDistributedTask();
             TaskInfo.PublishChanges();
         }
-
-        class Scope
-        {
-            internal TenantManager TenantManager { get; }
-            internal IDaoFactory DaoFactory { get; }
-            internal FileSecurity FileSecurity { get; }
-            internal IOptionsMonitor<ILog> Options { get; }
-
-            public Scope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
-            {
-                TenantManager = tenantManager;
-                DaoFactory = daoFactory;
-                FileSecurity = fileSecurity;
-                Options = options;
-            }
-        }
     }
 
+    public class FileOperationScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal IDaoFactory DaoFactory { get; }
+        internal FileSecurity FileSecurity { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
+
+        public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            DaoFactory = daoFactory;
+            FileSecurity = fileSecurity;
+            Options = options;
+        }
+    }
 }

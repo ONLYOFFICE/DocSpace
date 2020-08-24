@@ -38,7 +38,7 @@ using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
-    internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
+    public class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         public ProviderFolderDao(
             IServiceProvider serviceProvider,

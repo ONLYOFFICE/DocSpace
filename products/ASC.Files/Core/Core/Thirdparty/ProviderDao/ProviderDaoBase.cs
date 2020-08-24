@@ -45,7 +45,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
-    internal class ProviderDaoBase : IDisposable
+    public class ProviderDaoBase : IDisposable
     {
         private readonly List<IDaoSelector> Selectors;
 
@@ -130,7 +130,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<CrossDaoScope>();
             scopeClass.TenantManager.SetCurrentTenant(TenantID);
 
             return CrossDao.PerformCrossDaoFileCopy(
@@ -154,7 +154,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fromSelector = GetSelector(fromFolderId);
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<CrossDaoScope>();
 
             return CrossDao.PerformCrossDaoFolderCopy(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
@@ -166,19 +166,19 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             Selectors.ForEach(r => r.Dispose());
         }
+    }
 
-        class Scope
+    public class CrossDaoScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal IFolderDao<int> FolderDao { get; }
+        internal IFileDao<int> FileDao { get; }
+
+        public CrossDaoScope(TenantManager tenantManager, IFolderDao<int> folderDao, IFileDao<int> fileDao)
         {
-            internal TenantManager TenantManager { get; }
-            internal FolderDao FolderDao { get; }
-            internal IFileDao<int> FileDao { get; }
-
-            public Scope(TenantManager tenantManager, FolderDao folderDao, IFileDao<int> fileDao)
-            {
-                TenantManager = tenantManager;
-                FolderDao = folderDao;
-                FileDao = fileDao;
-            }
+            TenantManager = tenantManager;
+            FolderDao = folderDao;
+            FileDao = fileDao;
         }
     }
 
@@ -188,13 +188,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             if (services.TryAddScoped<CrossDao>())
             {
+                services.TryAddScoped<CrossDaoScope>();
                 return services
                     .AddSharpBoxDaoSelectorService()
                     .AddSharePointSelectorService()
                     .AddOneDriveSelectorService()
                     .AddGoogleDriveSelectorService()
                     .AddDropboxDaoSelectorService()
-                    .AddBoxDaoSelectorService();
+                    .AddBoxDaoSelectorService()
+                    .AddFolderDaoService();
             }
 
             return services;

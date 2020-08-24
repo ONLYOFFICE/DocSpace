@@ -29,6 +29,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+
+using ASC.Common;
 using ASC.Common.Module;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -50,7 +52,7 @@ namespace ASC.Core.Configuration
         public static void Synchronize()
         {
             using var scope = ServiceProvider.CreateScope();
-            var ScopeClass = scope.ServiceProvider.GetService<Scope>();
+            var ScopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
             if (ScopeClass.CoreBaseSettings.Standalone)
             {
                 var tenants = ScopeClass.TenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
@@ -90,18 +92,18 @@ namespace ASC.Core.Configuration
                 }
             }
             return null;
-        }
+        }   
+    }
 
-        class Scope
+    public class AmiPublicDnsSyncServiceScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+
+        public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
         {
-            internal TenantManager TenantManager { get; }
-            internal CoreBaseSettings CoreBaseSettings { get; }
-             
-            public Scope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
-            {
-                TenantManager = tenantManager;
-                CoreBaseSettings = coreBaseSettings;
-            }
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
         }
     }
 }

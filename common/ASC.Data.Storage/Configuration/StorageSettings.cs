@@ -50,7 +50,7 @@ namespace ASC.Data.Storage.Configuration
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<StorageSettingsHelperScope>();
                 var settings = scopeClass.SettingsManager.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
@@ -207,19 +207,19 @@ namespace ASC.Data.Storage.Configuration
                 Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
                 .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
         }
+    }
 
-        class Scope
+    public class StorageSettingsHelperScope
+    {
+        internal StorageSettingsHelper StorageSettingsHelper { get; }
+        internal SettingsManager SettingsManager { get; }
+        internal CdnStorageSettings CdnStorageSettings { get; }
+
+        public StorageSettingsHelperScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
         {
-            internal StorageSettingsHelper StorageSettingsHelper { get; }
-            internal SettingsManager SettingsManager { get; }
-            internal CdnStorageSettings CdnStorageSettings { get; }
-
-            public Scope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
-            {
-                StorageSettingsHelper = storageSettingsHelper;
-                SettingsManager = settingsManager;
-                CdnStorageSettings = cdnStorageSettings;
-            }
+            StorageSettingsHelper = storageSettingsHelper;
+            SettingsManager = settingsManager;
+            CdnStorageSettings = cdnStorageSettings;
         }
     }
 
@@ -240,6 +240,8 @@ namespace ASC.Data.Storage.Configuration
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
+                services.TryAddScoped<CdnStorageSettings>();
+                services.TryAddScoped<StorageSettingsHelperScope>();
                 return services
                     .AddSettingsManagerService()
                     .AddBaseStorageSettingsService()
@@ -253,6 +255,8 @@ namespace ASC.Data.Storage.Configuration
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
+                services.TryAddScoped<CdnStorageSettings>();
+                services.TryAddScoped<StorageSettingsHelperScope>();
                 return services
                     .AddSettingsManagerService()
                     .AddBaseStorageSettingsService()

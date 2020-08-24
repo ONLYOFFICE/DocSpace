@@ -172,7 +172,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (folderIds.Count == 0) return needToMark;
 
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -353,7 +353,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (fileIds.Count == 0) return needToMark;
 
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -568,23 +568,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             return false;
         }
+    }
 
-        class Scope
+    public class FileMoveCopyOperationScope
+    {
+        internal FilesMessageService FilesMessageService { get; }
+        internal FileMarker FileMarker { get; }
+        internal FileUtility FileUtility { get; }
+        internal Global Global { get; }
+        internal EntryManager EntryManager { get; }
+
+        public FileMoveCopyOperationScope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
         {
-            internal FilesMessageService FilesMessageService { get; }
-            internal FileMarker FileMarker { get; }
-            internal FileUtility FileUtility { get; }
-            internal Global Global { get; }
-            internal EntryManager EntryManager { get; }
-
-            public Scope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
-            {
-                FilesMessageService = filesMessageService;
-                FileMarker = fileMarker;
-                FileUtility = fileUtility;
-                Global = global;
-                EntryManager = entryManager;
-            }
+            FilesMessageService = filesMessageService;
+            FileMarker = fileMarker;
+            FileUtility = fileUtility;
+            Global = global;
+            EntryManager = entryManager;
         }
     }
 }

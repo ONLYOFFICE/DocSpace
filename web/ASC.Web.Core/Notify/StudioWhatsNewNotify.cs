@@ -82,7 +82,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyScope>();
 
                     var tenant = scopeClass.TenantManager.GetTenant(tenantid);
                     if (tenant == null ||
@@ -291,48 +291,48 @@ namespace ASC.Web.Studio.Core.Notify
             public DateTime Date { get; set; }
             public string Action { get; set; }
         }
+    }
 
-        class Scope
+    public class StudioWhatsNewNotifyScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal PaymentManager PaymentManager { get; }
+        internal TenantUtil TenantUtil { get; }
+        internal StudioNotifyHelper StudioNotifyHelper { get; }
+        internal UserManager UserManager { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal AuthContext AuthContext { get; }
+        internal AuthManager AuthManager { get; }
+        internal CommonLinkUtility CommonLinkUtility { get; }
+        internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        internal FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+        internal CoreSettings CoreSettings { get; }
+
+        public StudioWhatsNewNotifyScope(TenantManager tenantManager,
+            PaymentManager paymentManager,
+            TenantUtil tenantUtil,
+            StudioNotifyHelper studioNotifyHelper,
+            UserManager userManager,
+            SecurityContext securityContext,
+            AuthContext authContext,
+            AuthManager authManager,
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            FeedAggregateDataProvider feedAggregateDataProvider,
+            CoreSettings coreSettings)
         {
-            internal TenantManager TenantManager { get; }
-            internal PaymentManager PaymentManager { get; }
-            internal TenantUtil TenantUtil { get; }
-            internal StudioNotifyHelper StudioNotifyHelper { get; }
-            internal UserManager UserManager { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal AuthContext AuthContext { get; }
-            internal AuthManager AuthManager { get; }
-            internal CommonLinkUtility CommonLinkUtility { get; }
-            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-            internal FeedAggregateDataProvider FeedAggregateDataProvider { get; }
-            internal CoreSettings CoreSettings { get; }
-
-            public Scope(TenantManager tenantManager,
-                PaymentManager paymentManager,
-                TenantUtil tenantUtil,
-                StudioNotifyHelper studioNotifyHelper,
-                UserManager userManager,
-                SecurityContext securityContext,
-                AuthContext authContext,
-                AuthManager authManager,
-                CommonLinkUtility commonLinkUtility,
-                DisplayUserSettingsHelper displayUserSettingsHelper,
-                FeedAggregateDataProvider feedAggregateDataProvider,
-                CoreSettings coreSettings)
-            {
-                TenantManager = tenantManager;
-                PaymentManager = paymentManager;
-                TenantUtil = tenantUtil;
-                StudioNotifyHelper = studioNotifyHelper;
-                UserManager = userManager;
-                SecurityContext = securityContext;
-                AuthContext = authContext;
-                AuthManager = authManager;
-                CommonLinkUtility = commonLinkUtility;
-                DisplayUserSettingsHelper = displayUserSettingsHelper;
-                FeedAggregateDataProvider = feedAggregateDataProvider;
-                CoreSettings = coreSettings;
-            }
+            TenantManager = tenantManager;
+            PaymentManager = paymentManager;
+            TenantUtil = tenantUtil;
+            StudioNotifyHelper = studioNotifyHelper;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            AuthContext = authContext;
+            AuthManager = authManager;
+            CommonLinkUtility = commonLinkUtility;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            FeedAggregateDataProvider = feedAggregateDataProvider;
+            CoreSettings = coreSettings;
         }
     }
 
@@ -341,7 +341,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static DIHelper AddStudioWhatsNewNotify(this DIHelper services)
         {
             services.TryAddSingleton<StudioWhatsNewNotify>();
-
+            services.TryAddScoped<StudioWhatsNewNotifyScope>();
             return services
                 .AddWebItemManager()
                 .AddFeedAggregateDataProvider()

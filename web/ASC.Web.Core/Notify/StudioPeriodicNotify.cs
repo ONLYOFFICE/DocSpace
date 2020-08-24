@@ -93,7 +93,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
 
                     scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
@@ -542,7 +542,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
 
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(scopeClass.SettingsManager, scopeClass.Configuration);
                     scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
@@ -929,7 +929,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
 
                     scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
@@ -1112,7 +1112,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var sendCount = 0;
 
                     using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
 
                     scopeClass.TenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
@@ -1220,71 +1220,73 @@ namespace ASC.Web.Studio.Core.Notify
 
             return !isSubscribe;
         }
+    }
 
-        class Scope
+    public class StudioPeriodicNotifyScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal UserManager UserManager { get; }
+        internal StudioNotifyHelper StudioNotifyHelper { get; }
+        internal PaymentManager PaymentManager { get; }
+        internal TenantExtra TenantExtra { get; }
+        internal AuthContext AuthContext { get; }
+        internal CommonLinkUtility CommonLinkUtility { get; }
+        internal ApiSystemHelper ApiSystemHelper { get; }
+        internal SetupInfo SetupInfo { get; }
+        internal DbContextManager<FeedDbContext> DbContextManager { get; }
+        internal CouponManager CouponManager { get; }
+        internal IConfiguration Configuration { get; }
+        internal SettingsManager SettingsManager { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+        internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        internal AuthManager AuthManager { get; }
+        internal SecurityContext SecurityContext { get; }
+
+        public StudioPeriodicNotifyScope(TenantManager tenantManager,
+            UserManager userManager,
+            StudioNotifyHelper studioNotifyHelper,
+            PaymentManager paymentManager,
+            TenantExtra tenantExtra,
+            AuthContext authContext,
+            CommonLinkUtility commonLinkUtility,
+            ApiSystemHelper apiSystemHelper,
+            SetupInfo setupInfo,
+            DbContextManager<FeedDbContext> dbContextManager,
+            CouponManager couponManager,
+            IConfiguration configuration,
+            SettingsManager settingsManager,
+            CoreBaseSettings coreBaseSettings,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            AuthManager authManager,
+            SecurityContext securityContext)
         {
-            internal TenantManager TenantManager { get; }
-            internal UserManager UserManager { get; }
-            internal StudioNotifyHelper StudioNotifyHelper { get; }
-            internal PaymentManager PaymentManager { get; }
-            internal TenantExtra TenantExtra { get; }
-            internal AuthContext AuthContext { get; }
-            internal CommonLinkUtility CommonLinkUtility { get; }
-            internal ApiSystemHelper ApiSystemHelper { get; }
-            internal SetupInfo SetupInfo { get; }
-            internal DbContextManager<FeedDbContext> DbContextManager { get; }
-            internal CouponManager CouponManager { get; }
-            internal IConfiguration Configuration { get; }
-            internal SettingsManager SettingsManager { get; }
-            internal CoreBaseSettings CoreBaseSettings { get; }
-            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-            internal AuthManager AuthManager { get; }
-            internal SecurityContext SecurityContext { get; }
-
-            public Scope(TenantManager tenantManager,
-                UserManager userManager,
-                StudioNotifyHelper studioNotifyHelper,
-                PaymentManager paymentManager,
-                TenantExtra tenantExtra,
-                AuthContext authContext,
-                CommonLinkUtility commonLinkUtility,
-                ApiSystemHelper apiSystemHelper,
-                SetupInfo setupInfo,
-                DbContextManager<FeedDbContext> dbContextManager,
-                CouponManager couponManager,
-                IConfiguration configuration,
-                SettingsManager settingsManager,
-                CoreBaseSettings coreBaseSettings,
-                DisplayUserSettingsHelper displayUserSettingsHelper,
-                AuthManager authManager,
-                SecurityContext securityContext)
-            {
-                TenantManager = tenantManager;
-                UserManager = userManager;
-                StudioNotifyHelper = studioNotifyHelper;
-                PaymentManager = paymentManager;
-                TenantExtra = tenantExtra;
-                AuthContext = authContext;
-                CommonLinkUtility = commonLinkUtility;
-                ApiSystemHelper = apiSystemHelper;
-                SetupInfo = setupInfo;
-                DbContextManager = dbContextManager;
-                CouponManager = couponManager;
-                Configuration = configuration;
-                SettingsManager = settingsManager;
-                CoreBaseSettings = coreBaseSettings;
-                DisplayUserSettingsHelper = displayUserSettingsHelper;
-                AuthManager = authManager;
-                SecurityContext = securityContext;
-            }
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            StudioNotifyHelper = studioNotifyHelper;
+            PaymentManager = paymentManager;
+            TenantExtra = tenantExtra;
+            AuthContext = authContext;
+            CommonLinkUtility = commonLinkUtility;
+            ApiSystemHelper = apiSystemHelper;
+            SetupInfo = setupInfo;
+            DbContextManager = dbContextManager;
+            CouponManager = couponManager;
+            Configuration = configuration;
+            SettingsManager = settingsManager;
+            CoreBaseSettings = coreBaseSettings;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            AuthManager = authManager;
+            SecurityContext = securityContext;
         }
     }
+
     public static class StudioPeriodicNotifyExtension
     {
         public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
         {
             services.TryAddSingleton<StudioPeriodicNotify>();
             services.TryAddSingleton<CouponManager>();
+            services.TryAddScoped<StudioPeriodicNotifyScope>();
 
             return services
                 .AddApiSystemHelper()

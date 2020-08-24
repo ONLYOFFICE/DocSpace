@@ -81,7 +81,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             base.RunJob(_, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
 
             using var stream = TempStream.Create();
             using (var zip = new ZipOutputStream(stream, true)
@@ -149,7 +149,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
 
             ReplaceLongPath(entriesPathId);
 
@@ -262,7 +262,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         internal void CompressToZip(ZipOutputStream zip, Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)
@@ -435,7 +435,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    internal class Scope
+    public class FileDownloadOperationScope
     {
         internal GlobalStore GlobalStore { get; }
         internal FilesLinkUtility FilesLinkUtility { get; }
@@ -443,7 +443,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         internal FileConverter FileConverter { get; }
         internal FilesMessageService FilesMessageService { get; }
 
-        public Scope(GlobalStore globalStore, FilesLinkUtility filesLinkUtility, SetupInfo setupInfo, FileConverter fileConverter, FilesMessageService filesMessageService)
+        public FileDownloadOperationScope(GlobalStore globalStore, FilesLinkUtility filesLinkUtility, SetupInfo setupInfo, FileConverter fileConverter, FilesMessageService filesMessageService)
         {
             GlobalStore = globalStore;
             FilesLinkUtility = filesLinkUtility;
@@ -452,4 +452,5 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FilesMessageService = filesMessageService;
         }
     }
+
 }

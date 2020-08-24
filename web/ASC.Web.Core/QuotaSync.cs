@@ -51,7 +51,7 @@ namespace ASC.Web.Studio.Core.Quota
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
             scopeClass.TenantManager.SetCurrentTenant(TenantId);
 
             var storageModules = scopeClass.StorageFactoryConfig.GetModuleList(string.Empty).ToList();
@@ -75,19 +75,19 @@ namespace ASC.Web.Studio.Core.Quota
             TaskInfo.SetProperty(TenantIdKey, TenantId);
             return TaskInfo;
         }
+    }
 
-        class Scope
+    class QuotaSyncScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal StorageFactoryConfig StorageFactoryConfig { get; }
+        internal StorageFactory StorageFactory { get; }
+
+        public QuotaSyncScope(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
         {
-            internal TenantManager TenantManager { get; }
-            internal StorageFactoryConfig StorageFactoryConfig { get; }
-            internal StorageFactory StorageFactory { get; }
-
-            public Scope(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
-            {
-                TenantManager = tenantManager;
-                StorageFactoryConfig = storageFactoryConfig;
-                StorageFactory = storageFactory;
-            }
+            TenantManager = tenantManager;
+            StorageFactoryConfig = storageFactoryConfig;
+            StorageFactory = storageFactory;
         }
     }
 }

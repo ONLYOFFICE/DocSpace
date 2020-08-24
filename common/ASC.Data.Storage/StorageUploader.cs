@@ -148,7 +148,7 @@ namespace ASC.Data.Storage
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<StorageUploaderScope>();
                 var tenant = scopeClass.TenantManager.GetTenant(tenantId);
                 scopeClass.TenantManager.SetCurrentTenant(tenant);
 
@@ -201,26 +201,25 @@ namespace ASC.Data.Storage
                 Log.Error(e);
             }
         }
+    }
 
+    public class StorageUploaderScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal StorageFactory StorageFactory { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
+        internal StorageSettingsHelper StorageSettingsHelper { get; }
+        internal SettingsManager SettingsManager { get; }
 
-        class Scope
+        public StorageUploaderScope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, IOptionsMonitor<ILog> options, StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager)
         {
-            internal TenantManager TenantManager { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal StorageFactory StorageFactory { get; }
-            internal IOptionsMonitor<ILog> Options { get; }
-            internal StorageSettingsHelper StorageSettingsHelper { get; }
-            internal SettingsManager SettingsManager { get; }
-
-            public Scope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, IOptionsMonitor<ILog> options, StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager)
-            {
-                TenantManager = tenantManager;
-                SecurityContext = securityContext;
-                StorageFactory = storageFactory;
-                Options = options;
-                StorageSettingsHelper = storageSettingsHelper;
-                SettingsManager = settingsManager;
-            }
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            StorageFactory = storageFactory;
+            Options = options;
+            StorageSettingsHelper = storageSettingsHelper;
+            SettingsManager = settingsManager;
         }
     }
 }

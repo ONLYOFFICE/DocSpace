@@ -61,7 +61,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
 
             scopeClass.TenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
@@ -108,7 +108,7 @@ namespace ASC.Web.Studio.Core.Notify
             var cron = Configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
 
             if (Configuration["core:notify:tariff"] != "false")
             {
@@ -169,36 +169,36 @@ namespace ASC.Web.Studio.Core.Notify
             using var scope = ServiceProvider.CreateScope();
             scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
         }
+    }
 
-        class Scope
+    public class StudioNotifyServiceSenderScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal UserManager UserManager { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal AuthContext AuthContext { get; }
+        internal StudioNotifyHelper StudioNotifyHelper { get; }
+        internal DisplayUserSettings DisplayUserSettings { get; }
+        internal TenantExtra TenantExtra { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+
+        public StudioNotifyServiceSenderScope(TenantManager tenantManager,
+            UserManager userManager,
+            SecurityContext securityContext,
+            AuthContext authContext,
+            StudioNotifyHelper studioNotifyHelper,
+            DisplayUserSettings displayUserSettings,
+            TenantExtra tenantExtra,
+            CoreBaseSettings coreBaseSettings)
         {
-            internal TenantManager TenantManager { get; }
-            internal UserManager UserManager { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal AuthContext AuthContext { get; }
-            internal StudioNotifyHelper StudioNotifyHelper { get; }
-            internal DisplayUserSettings DisplayUserSettings { get; }
-            internal TenantExtra TenantExtra { get; }
-            internal CoreBaseSettings CoreBaseSettings { get; }
-
-            public Scope(TenantManager tenantManager,
-                UserManager userManager,
-                SecurityContext securityContext,
-                AuthContext authContext,
-                StudioNotifyHelper studioNotifyHelper,
-                DisplayUserSettings displayUserSettings,
-                TenantExtra tenantExtra,
-                CoreBaseSettings coreBaseSettings)
-            {
-                TenantManager = tenantManager;
-                UserManager = userManager;
-                SecurityContext = securityContext;
-                AuthContext = authContext;
-                StudioNotifyHelper = studioNotifyHelper;
-                DisplayUserSettings = displayUserSettings;
-                TenantExtra = tenantExtra;
-                CoreBaseSettings = coreBaseSettings;
-            }
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            AuthContext = authContext;
+            StudioNotifyHelper = studioNotifyHelper;
+            DisplayUserSettings = displayUserSettings;
+            TenantExtra = tenantExtra;
+            CoreBaseSettings = coreBaseSettings;
         }
     }
 
@@ -207,6 +207,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
         {
             services.TryAddSingleton<StudioNotifyServiceSender>();
+            services.TryAddScoped<StudioNotifyServiceSenderScope>();
 
             return services
                 .AddStudioPeriodicNotify()
@@ -218,8 +219,7 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddStudioNotifyHelperService()
                 .AddDisplayUserSettingsService()
                 .AddTenantExtraService()
-                .AddCoreBaseSettingsService()
-                ;
+                .AddCoreBaseSettingsService();
         }
     }
 }

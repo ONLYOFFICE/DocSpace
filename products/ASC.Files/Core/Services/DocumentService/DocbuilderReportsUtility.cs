@@ -154,7 +154,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
             var logger = scopeClass.Options.CurrentValue;
             try
             {
@@ -247,25 +247,6 @@ namespace ASC.Web.Files.Services.DocumentService
             TaskInfo.SetProperty("status", Status);
             TaskInfo.SetProperty("reportOrigin", Origin);
             TaskInfo.SetProperty("exception", Exception);
-        }
-
-        class Scope
-        {
-            internal IOptionsMonitor<ILog> Options { get; }
-            internal TenantManager TenantManager { get; }
-            internal AuthContext AuthContext { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal DocumentServiceConnector DocumentServiceConnector { get; }
-
-            public Scope(IOptionsMonitor<ILog> options, TenantManager tenantManager, AuthContext authContext, SecurityContext securityContext, DocumentServiceConnector documentServiceConnector)
-            {
-                Options = options;
-                TenantManager = tenantManager;
-                AuthContext = authContext;
-                SecurityContext = securityContext;
-                DocumentServiceConnector = documentServiceConnector;
-            }
-
         }
     }
 
@@ -375,5 +356,28 @@ namespace ASC.Web.Files.Services.DocumentService
         public void Enqueue(ReportState state) => DocbuilderReportsUtility.Enqueue(state);
         public void Terminate(ReportOrigin origin) => DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
         public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+    }
+
+    public class ReportStateScope
+    {
+        internal IOptionsMonitor<ILog> Options { get; }
+        internal TenantManager TenantManager { get; }
+        internal AuthContext AuthContext { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal DocumentServiceConnector DocumentServiceConnector { get; }
+
+        public ReportStateScope(
+            IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            AuthContext authContext,
+            SecurityContext securityContext,
+            DocumentServiceConnector documentServiceConnector)
+        {
+            Options = options;
+            TenantManager = tenantManager;
+            AuthContext = authContext;
+            SecurityContext = securityContext;
+            DocumentServiceConnector = documentServiceConnector;
+        }
     }
 }

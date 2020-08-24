@@ -112,7 +112,7 @@ namespace ASC.Data.Storage
             var task = new Task<string>(() =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<UploadOperationScope>();
                 scopeClass.TenantManager.SetCurrentTenant(tenantId);
                 var staticUploader = scopeClass.StaticUploader;
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
@@ -208,7 +208,7 @@ namespace ASC.Data.Storage
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<UploadOperationScope>();
                 var tenant = scopeClass.TenantManager.GetTenant(tenantId);
                 scopeClass.TenantManager.SetCurrentTenant(tenant);
                 scopeClass.SecurityContext.AuthenticateMe(tenant.OwnerId);
@@ -283,7 +283,7 @@ namespace ASC.Data.Storage
         }
     }
 
-    internal class Scope
+    public class UploadOperationScope
     {
         internal TenantManager TenantManager { get; }
         internal StaticUploader StaticUploader { get; }
@@ -291,7 +291,11 @@ namespace ASC.Data.Storage
         internal SettingsManager SettingsManager { get; }
         internal StorageSettingsHelper StorageSettingsHelper { get; }
 
-        public Scope(TenantManager tenantManager, StaticUploader staticUploader, SecurityContext securityContext, SettingsManager settingsManager, StorageSettingsHelper storageSettingsHelper)
+        public UploadOperationScope(TenantManager tenantManager,
+            StaticUploader staticUploader,
+            SecurityContext securityContext,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper)
         {
             TenantManager = tenantManager;
             StaticUploader = staticUploader;
@@ -307,6 +311,7 @@ namespace ASC.Data.Storage
         {
             if (services.TryAddScoped<StaticUploader>())
             {
+                services.TryAddScoped<UploadOperationScope>();
                 return services
                     .AddTenantManagerService()
                     .AddCdnStorageSettingsService();

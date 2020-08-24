@@ -101,7 +101,7 @@ namespace ASC.Data.Reassigns
         public void RunJob()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
             var logger = scopeClass.Options.Get("ASC.Web");
             var tenant = scopeClass.TenantManager.SetCurrentTenant(_tenantId);
 
@@ -206,42 +206,42 @@ namespace ASC.Data.Reassigns
             else
                 messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
         }
+    }
 
-        class Scope
+    public class ReassignProgressItemScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+        internal MessageService MessageService { get; }
+        internal StudioNotifyService StudioNotifyService { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal UserManager UserManager { get; }
+        internal UserPhotoManager UserPhotoManager { get; }
+        internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        internal MessageTarget MessageTarget { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
+
+        public ReassignProgressItemScope(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            MessageService messageService,
+            StudioNotifyService studioNotifyService,
+            SecurityContext securityContext,
+            UserManager userManager,
+            UserPhotoManager userPhotoManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            MessageTarget messageTarget,
+            IOptionsMonitor<ILog> options)
         {
-            internal TenantManager TenantManager { get; }
-            internal CoreBaseSettings CoreBaseSettings { get; }
-            internal MessageService MessageService { get; }
-            internal StudioNotifyService StudioNotifyService { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal UserManager UserManager { get; }
-            internal UserPhotoManager UserPhotoManager { get; }
-            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-            internal MessageTarget MessageTarget { get; }
-            internal IOptionsMonitor<ILog> Options { get; }
-
-            public Scope(TenantManager tenantManager,
-                CoreBaseSettings coreBaseSettings,
-                MessageService messageService,
-                StudioNotifyService studioNotifyService,
-                SecurityContext securityContext,
-                UserManager userManager,
-                UserPhotoManager userPhotoManager,
-                DisplayUserSettingsHelper displayUserSettingsHelper,
-                MessageTarget messageTarget,
-                IOptionsMonitor<ILog> options)
-            {
-                TenantManager = tenantManager;
-                CoreBaseSettings = coreBaseSettings;
-                MessageService = messageService;
-                StudioNotifyService = studioNotifyService;
-                SecurityContext = securityContext;
-                UserManager = userManager;
-                UserPhotoManager = userPhotoManager;
-                DisplayUserSettingsHelper = displayUserSettingsHelper;
-                MessageTarget = messageTarget;
-                Options = options;
-            }
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            MessageService = messageService;
+            StudioNotifyService = studioNotifyService;
+            SecurityContext = securityContext;
+            UserManager = userManager;
+            UserPhotoManager = userPhotoManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            MessageTarget = messageTarget;
+            Options = options;
         }
     }
 
@@ -251,6 +251,7 @@ namespace ASC.Data.Reassigns
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
             services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+            services.TryAddScoped<ReassignProgressItemScope>();
             services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
             return services;
         }

@@ -43,7 +43,7 @@ namespace ASC.Core.Common.Tests
         public void SearchUsers()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
 
             var users = scopeClass.UserManager.Search(null, EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
@@ -80,7 +80,7 @@ namespace ASC.Core.Common.Tests
         public void DepartmentManagers()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
             var tenant = scopeClass.TenantManager.SetCurrentTenant(1024);
 
             var deps = scopeClass.UserManager.GetDepartments();
@@ -108,7 +108,7 @@ namespace ASC.Core.Common.Tests
         public void UserGroupsPerformanceTest()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
             var tenant = scopeClass.TenantManager.SetCurrentTenant(0);
 
             foreach (var u in scopeClass.UserManager.GetUsers())
@@ -143,12 +143,12 @@ namespace ASC.Core.Common.Tests
         }
     }
 
-    class Scope
+    public class UserManagerTestScope
     {
         internal UserManager UserManager { get; }
         internal TenantManager TenantManager { get; }
 
-        public Scope(UserManager userManager, TenantManager tenantManager)
+        public UserManagerTestScope(UserManager userManager, TenantManager tenantManager)
         {
             UserManager = userManager;
             TenantManager = tenantManager;

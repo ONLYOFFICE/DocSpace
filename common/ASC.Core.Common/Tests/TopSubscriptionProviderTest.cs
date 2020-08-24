@@ -27,6 +27,8 @@
 #if DEBUG
 using System;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
@@ -57,7 +59,7 @@ namespace ASC.Core.Common.Tests
         public void CreateProviders()
         {
             using var scope = serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<TopSubscriptionProviderTestScope>();
             scopeClass.TenantManager.SetCurrentTenant(tenant);
 
             tenant = new Tenants.Tenant(0, "teamlab");
@@ -141,19 +143,19 @@ namespace ASC.Core.Common.Tests
                 subProvider.UnSubscribe(nAction, rndObj2, everyone);
             }
         }
+    }
 
-        class Scope
+    public class TopSubscriptionProviderTestScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal SubscriptionManager SubscriptionManager { get; }
+        internal RecipientProviderImpl RecipientProviderImpl { get; }
+
+        public TopSubscriptionProviderTestScope(TenantManager tenantManager, SubscriptionManager subscriptionManager, RecipientProviderImpl recipientProviderImpl)
         {
-            internal TenantManager TenantManager { get; }
-            internal SubscriptionManager SubscriptionManager { get; }
-            internal RecipientProviderImpl RecipientProviderImpl { get; }
-
-            public Scope(TenantManager tenantManager, SubscriptionManager subscriptionManager, RecipientProviderImpl recipientProviderImpl)
-            {
-                TenantManager = tenantManager;
-                SubscriptionManager = subscriptionManager;
-                RecipientProviderImpl = recipientProviderImpl;
-            }
+            TenantManager = tenantManager;
+            SubscriptionManager = subscriptionManager;
+            RecipientProviderImpl = recipientProviderImpl;
         }
     }
 }

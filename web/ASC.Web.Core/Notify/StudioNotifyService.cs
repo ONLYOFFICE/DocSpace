@@ -828,7 +828,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceScope>();
                     scopeClass.TenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
@@ -878,20 +878,19 @@ namespace ASC.Web.Studio.Core.Notify
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
-
-        class Scope
-        {
-            internal TenantManager TenantManager { get; }
-            internal StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
-
-            public Scope(TenantManager tenantManager, StudioNotifyServiceHelper studioNotifyServiceHelper)
-            {
-                TenantManager = tenantManager;
-                StudioNotifyServiceHelper = studioNotifyServiceHelper;
-            }
-        }
-
         #endregion
+    }
+
+    public class StudioNotifyServiceScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
+
+        public StudioNotifyServiceScope(TenantManager tenantManager, StudioNotifyServiceHelper studioNotifyServiceHelper)
+        {
+            TenantManager = tenantManager;
+            StudioNotifyServiceHelper = studioNotifyServiceHelper;
+        }
     }
 
     public static class StudioNotifyServiceExtension
@@ -900,7 +899,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             if (services.TryAddScoped<StudioNotifyService>())
             {
-
+                services.TryAddScoped<StudioNotifyServiceScope>();
                 return services
                     .AddDisplayUserSettingsService()
                     .AddMailWhiteLabelSettingsService()

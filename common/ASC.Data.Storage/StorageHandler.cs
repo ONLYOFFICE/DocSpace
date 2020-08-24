@@ -66,7 +66,7 @@ namespace ASC.Data.Storage.DiscStorage
         public async Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
 
             if (_checkAuth && !scopeClass.SecurityContext.IsAuthenticated)
             {
@@ -143,22 +143,21 @@ namespace ASC.Data.Storage.DiscStorage
                 return (context.GetRouteValue(name) ?? "").ToString();
             }
         }
+    }
 
-        class Scope
+    public class StorageHandlerScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal StorageFactory StorageFactory { get; }
+        internal EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+
+        public StorageHandlerScope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
         {
-            internal TenantManager TenantManager { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal StorageFactory StorageFactory { get; }
-            internal EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-
-            public Scope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
-            {
-                TenantManager = tenantManager;
-                SecurityContext = securityContext;
-                StorageFactory = storageFactory;
-                EmailValidationKeyProvider = emailValidationKeyProvider;
-            }
-
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            StorageFactory = storageFactory;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
         }
     }
 
@@ -189,6 +188,7 @@ namespace ASC.Data.Storage.DiscStorage
         }
         public static DIHelper AddStorageHandlerService(this DIHelper services)
         {
+            services.TryAddScoped<StorageHandlerScope>();
             return services
                 .AddTenantManagerService()
                 .AddSecurityContextService()

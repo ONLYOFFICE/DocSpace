@@ -121,7 +121,7 @@ namespace ASC.Feed.Aggregator
             {
                 var cfg = FeedSettings.GetInstance(Configuration);
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
                 scopeClass.BaseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
                 var start = DateTime.UtcNow;
@@ -285,8 +285,9 @@ namespace ASC.Feed.Aggregator
                 return false;
             }
         }
+    }
 
-        class Scope
+    public class FeedAggregatorServiceScope
         {
             internal BaseCommonLinkUtility BaseCommonLinkUtility { get; }
             internal TenantManager TenantManager { get; }
@@ -295,7 +296,7 @@ namespace ASC.Feed.Aggregator
             internal SecurityContext SecurityContext { get; }
             internal AuthManager AuthManager { get; }
 
-            public Scope(BaseCommonLinkUtility baseCommonLinkUtility,
+            public FeedAggregatorServiceScope(BaseCommonLinkUtility baseCommonLinkUtility,
                 TenantManager tenantManager,
                 FeedAggregateDataProvider feedAggregateDataProvider,
                 UserManager userManager,
@@ -310,13 +311,13 @@ namespace ASC.Feed.Aggregator
                 AuthManager = authManager;
             }
         }
-    }
 
     public static class FeedAggregatorServiceExtension
     {
         public static DIHelper AddFeedAggregatorService(this DIHelper services)
         {
             services.TryAddSingleton<FeedAggregatorService>();
+            services.TryAddScoped<FeedAggregatorServiceScope>();
 
             return services
                 .AddBaseCommonLinkUtilityService()

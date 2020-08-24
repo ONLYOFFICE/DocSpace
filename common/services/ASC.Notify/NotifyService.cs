@@ -99,7 +99,7 @@ namespace ASC.Notify
             }
 
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
             scopeClass.TenantManager.SetCurrentTenant(tenant);
             scopeClass.TenantWhiteLabelSettingsHelper.Apply(scopeClass.SettingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);
@@ -111,29 +111,30 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifyServiceExtension
-    {
-        public static DIHelper AddNotifyService(this DIHelper services)
-        {
-            services.TryAddSingleton<NotifyService>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services
-                .AddDbWorker();
-        }
-    }
-
-    class Scope
+    public class NotifyServiceScope
     {
         internal TenantManager TenantManager { get; }
         internal TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
         internal SettingsManager SettingsManager { get; }
 
-        public Scope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
+        public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
         {
             TenantManager = tenantManager;
             TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
             SettingsManager = settingsManager;
+        }
+    }
+
+    public static class NotifyServiceExtension
+    {
+        public static DIHelper AddNotifyService(this DIHelper services)
+        {
+            services.TryAddSingleton<NotifyService>();
+            services.TryAddScoped<NotifyServiceScope>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services
+                .AddDbWorker();
         }
     }
 }

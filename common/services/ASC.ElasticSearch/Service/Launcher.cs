@@ -92,7 +92,7 @@ namespace ASC.ElasticSearch
             var task = new Task(async () =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
 
                 while (!scopeClass.FactoryIndexer.CheckState(false))
                 {
@@ -178,19 +178,18 @@ namespace ASC.ElasticSearch
                 Log.ErrorFormat("Product {0}", product.IndexName);
             }
         }
+    }
 
-        class Scope
+    public class ServiceLauncherScope
+    {
+        internal FactoryIndexer FactoryIndexer { get; }
+        internal Service.Service Service { get; }
+
+        public ServiceLauncherScope(FactoryIndexer factoryIndexer, Service.Service service)
         {
-            internal FactoryIndexer FactoryIndexer { get; }
-            internal Service.Service Service { get; }
-
-            public Scope(FactoryIndexer factoryIndexer, Service.Service service)
-            {
-                FactoryIndexer = factoryIndexer;
-                Service = service;
-            }
+            FactoryIndexer = factoryIndexer;
+            Service = service;
         }
-
     }
 
     public static class ServiceLauncherExtension
@@ -198,7 +197,9 @@ namespace ASC.ElasticSearch
         public static DIHelper AddServiceLauncher(this DIHelper services)
         {
             services.TryAddSingleton<ServiceLauncher>();
+            services.TryAddScoped<ServiceLauncherScope>();
             services.TryAddSingleton<Service.Service>();
+            services.TryAddScoped<ServiceScope>();
 
             return services
                 .AddSettingsService()

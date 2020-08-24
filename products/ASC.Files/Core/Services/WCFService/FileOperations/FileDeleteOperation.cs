@@ -123,7 +123,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
 
             foreach (var folderId in folderIds)
             {
@@ -207,7 +207,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
         {
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
 
             foreach (var fileId in fileIds)
             {
@@ -274,17 +274,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             return false;
         }
+    }
 
-        class Scope
+    public class FileDeleteOperationScope
+    {
+        internal FileMarker FileMarker { get; }
+        internal FilesMessageService FilesMessageService { get; }
+
+        public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService)
         {
-            internal FileMarker FileMarker { get; }
-            internal FilesMessageService FilesMessageService { get; }
-
-            public Scope(FileMarker fileMarker, FilesMessageService filesMessageService)
-            {
-                FileMarker = fileMarker;
-                FilesMessageService = filesMessageService;
-            }
+            FileMarker = fileMarker;
+            FilesMessageService = filesMessageService;
         }
     }
 }

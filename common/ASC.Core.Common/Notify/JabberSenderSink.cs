@@ -25,6 +25,8 @@
 
 
 using System;
+
+using ASC.Common;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Messages;
@@ -52,7 +54,7 @@ namespace ASC.Core.Notify
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                var scopeClass = scope.ServiceProvider.GetService<JabberSenderSinkScope>();
                 var result = SendResult.OK;
                 var username = scopeClass.UserManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
                 if (string.IsNullOrEmpty(username))
@@ -83,17 +85,26 @@ namespace ASC.Core.Notify
                 return new SendResponse(message, senderName, ex);
             }
         }
+    }
 
-        class Scope
+    public class JabberSenderSinkScope
+    {
+        internal UserManager UserManager { get; }
+        internal TenantManager TenantManager { get; }
+
+        public JabberSenderSinkScope(UserManager userManager, TenantManager tenantManager)
         {
-            internal UserManager UserManager { get; }
-            internal TenantManager TenantManager { get; }
+            TenantManager = tenantManager;
+            UserManager = userManager;
+        }
+    }
 
-            public Scope(UserManager userManager, TenantManager tenantManager)
-            {
-                TenantManager = tenantManager;
-                UserManager = userManager;
-            }
+    public static class JabberSenderSinkExtension
+    {
+        public static DIHelper AddJabberSenderSinkService(this DIHelper services)
+        {
+            services.TryAddScoped<JabberSenderSinkScope>();
+            return services;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Utils;
 
 using CommandLine;
@@ -22,17 +23,7 @@ namespace ASC.Resource.Manager
         {
             Parser.Default.ParseArguments<Options>(args).WithParsed(Export);
         }
-        class Scope
-        {
-            internal ResourceData ResourceData { get; }
-            internal IConfiguration Configuration { get; }
-
-            public Scope(ResourceData resourceData, IConfiguration configuration )
-            {
-                ResourceData = resourceData;
-                Configuration = configuration;
-            }
-        }
+        
         public static void Export(Options options)
         {
             var services = new ServiceCollection();
@@ -40,7 +31,7 @@ namespace ASC.Resource.Manager
             startup.ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<ProgramScope>();
 
             var cultures = new List<string>();
             var projects = new List<ResFile>();
@@ -197,6 +188,27 @@ namespace ASC.Resource.Manager
             _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
 
             return string.Join(',', bag.ToArray());
+        }
+    }
+
+    public class ProgramScope
+    {
+        internal ResourceData ResourceData { get; }
+        internal IConfiguration Configuration { get; }
+
+        public ProgramScope(ResourceData resourceData, IConfiguration configuration)
+        {
+            ResourceData = resourceData;
+            Configuration = configuration;
+        }
+    }
+
+    public static class ProgramExtension
+    {
+        public static DIHelper AddProgramService(this DIHelper services)
+        {
+            services.TryAddScoped<ProgramScope>();
+            return services;
         }
     }
 }

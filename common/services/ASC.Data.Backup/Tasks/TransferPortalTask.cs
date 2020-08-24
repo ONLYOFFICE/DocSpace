@@ -29,6 +29,7 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.Extensions;
@@ -249,6 +250,20 @@ namespace ASC.Data.Backup.Tasks
                 Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
 
             return Path.Combine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
+        }
+
+    }
+
+    public static class TransferPortalTaskExtension
+    {
+        public static DIHelper AddTransferPortalTaskService(this DIHelper services)
+        {
+            services.TryAddScoped<TransferPortalTask>();
+            return services
+                .AddStorageFactoryConfigService()
+                .AddBackupPortalTaskService()
+                .AddDbFactoryService()
+                .AddRestorePortalTaskService();
         }
     }
 }

@@ -369,7 +369,7 @@ namespace ASC.Data.Backup.Service
             }
 
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
 
 
             var tenant = scopeClass.TenantManager.GetTenant(TenantId);
@@ -501,7 +501,7 @@ namespace ASC.Data.Backup.Service
         public override void RunJob()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
 
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
@@ -660,7 +660,7 @@ namespace ASC.Data.Backup.Service
         public override void RunJob()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
 
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             var tenant = scopeClass.TenantManager.GetTenant(TenantId);
@@ -793,7 +793,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    internal class Scope
+    internal class BackupWorkerScope
     {
         internal TenantManager TenantManager { get; }
         internal BackupStorageFactory BackupStorageFactory { get; }
@@ -804,7 +804,7 @@ namespace ASC.Data.Backup.Service
         internal RestorePortalTask RestorePortalTask { get; }
         internal TransferPortalTask TransferPortalTask { get; }
 
-        public Scope(TenantManager tenantManager,
+        public BackupWorkerScope(TenantManager tenantManager,
             BackupStorageFactory backupStorageFactory,
             NotifyHelper notifyHelper,
             BackupRepository backupRepository,
@@ -833,8 +833,7 @@ namespace ASC.Data.Backup.Service
             services.TryAddTransient<BackupProgressItem>();
             services.TryAddTransient<TransferProgressItem>();
             services.TryAddTransient<RestoreProgressItem>();
-
-
+            services.TryAddScoped<BackupWorkerScope>();
             services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
             services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
             services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
@@ -848,7 +847,8 @@ namespace ASC.Data.Backup.Service
                 .AddNotifyHelperService()
                 .AddBackupPortalTaskService()
                 .AddDbFactoryService()
-                .AddRestorePortalTaskService();
+                .AddRestorePortalTaskService()
+                .AddTransferPortalTaskService();
         }
     }
 }

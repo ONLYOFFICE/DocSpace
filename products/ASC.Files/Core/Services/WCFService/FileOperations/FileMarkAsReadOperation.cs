@@ -84,7 +84,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
@@ -125,19 +125,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
         }
+    }
 
-        class Scope
+    public class FileMarkAsReadOperationScope
+    {
+        internal FileMarker FileMarker { get; }
+        internal GlobalFolder GlobalFolder { get; }
+        internal IDaoFactory DaoFactory { get; }
+
+        public FileMarkAsReadOperationScope(FileMarker fileMarker, GlobalFolder globalFolder, IDaoFactory daoFactory)
         {
-            internal FileMarker FileMarker { get; }
-            internal GlobalFolder GlobalFolder { get; }
-            internal IDaoFactory DaoFactory { get; }
-
-            public Scope(FileMarker fileMarker, GlobalFolder globalFolder, IDaoFactory daoFactory)
-            {
-                FileMarker = fileMarker;
-                GlobalFolder = globalFolder;
-                DaoFactory = daoFactory;
-            }
+            FileMarker = fileMarker;
+            GlobalFolder = globalFolder;
+            DaoFactory = daoFactory;
         }
     }
 }

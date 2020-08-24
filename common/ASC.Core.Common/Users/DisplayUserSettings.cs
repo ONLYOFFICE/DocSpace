@@ -98,6 +98,7 @@ namespace ASC.Web.Core.Users
         public static DIHelper AddDisplayUserSettingsService(this DIHelper services)
         {
             services.TryAddScoped<DisplayUserSettingsHelper>();
+            services.TryAddScoped<DisplayUserSettings>();
 
             return services
                 .AddUserFormatter()

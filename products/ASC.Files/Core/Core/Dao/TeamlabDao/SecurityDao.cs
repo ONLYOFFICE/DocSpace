@@ -42,7 +42,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
-    internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
+    public class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     {
         public SecurityDao(UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
@@ -361,7 +361,7 @@ namespace ASC.Files.Core.Data
         }
     }
 
-    internal class SecurityTreeRecord
+    public class SecurityTreeRecord
     {
         public DbFilesSecurity DbFilesSecurity { get; set; }
         public DbFolderTree DbFolderTree { get; set; }

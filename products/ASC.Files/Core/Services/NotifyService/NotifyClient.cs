@@ -55,7 +55,7 @@ namespace ASC.Web.Files.Services.NotifyService
         public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
             var recipient = scopeClass.NotifySource.GetRecipientsProvider().GetRecipient(scopeClass.SecurityContext.CurrentAccount.ID.ToString());
@@ -74,7 +74,7 @@ namespace ASC.Web.Files.Services.NotifyService
         public void SendDocuSignStatus(string subject, string status)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
             var recipient = scopeClass.NotifySource.GetRecipientsProvider().GetRecipient(scopeClass.SecurityContext.CurrentAccount.ID.ToString());
@@ -112,7 +112,7 @@ namespace ASC.Web.Files.Services.NotifyService
             if (fileEntry == null || recipients.Count == 0) return;
 
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
             var folderDao = scopeClass.DaoFactory.GetFolderDao<T>();
@@ -153,7 +153,7 @@ namespace ASC.Web.Files.Services.NotifyService
             if (file == null || recipientIds.Count == 0) return;
 
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.NotifySource, scope);
 
             var recipientsProvider = scopeClass.NotifySource.GetRecipientsProvider();
@@ -194,39 +194,39 @@ namespace ASC.Web.Files.Services.NotifyService
                     return string.Empty;
             }
         }
+    }
 
-        class Scope
+    public class NotifyClientScope
+    {
+        internal NotifySource NotifySource { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal FilesLinkUtility FilesLinkUtility { get; }
+        internal FileUtility FileUtility { get; }
+        internal BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        internal IDaoFactory DaoFactory { get; }
+        internal PathProvider PathProvider { get; }
+        internal UserManager UserManager { get; }
+        internal TenantManager TenantManager { get; }
+
+        public NotifyClientScope(NotifySource notifySource,
+            SecurityContext securityContext,
+            FilesLinkUtility filesLinkUtility,
+            FileUtility fileUtility,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            IDaoFactory daoFactory,
+            PathProvider pathProvider,
+            UserManager userManager,
+            TenantManager tenantManager)
         {
-            internal NotifySource NotifySource { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal FilesLinkUtility FilesLinkUtility { get; }
-            internal FileUtility FileUtility { get; }
-            internal BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-            internal IDaoFactory DaoFactory { get; }
-            internal PathProvider PathProvider { get; }
-            internal UserManager UserManager { get; }
-            internal TenantManager TenantManager { get; }
-
-            public Scope(NotifySource notifySource,
-                SecurityContext securityContext,
-                FilesLinkUtility filesLinkUtility,
-                FileUtility fileUtility,
-                BaseCommonLinkUtility baseCommonLinkUtility,
-                IDaoFactory daoFactory,
-                PathProvider pathProvider,
-                UserManager userManager,
-                TenantManager tenantManager)
-            {
-                NotifySource = notifySource;
-                SecurityContext = securityContext;
-                FilesLinkUtility = filesLinkUtility;
-                FileUtility = fileUtility;
-                BaseCommonLinkUtility = baseCommonLinkUtility;
-                DaoFactory = daoFactory;
-                PathProvider = pathProvider;
-                UserManager = userManager;
-                TenantManager = tenantManager;
-            }
+            NotifySource = notifySource;
+            SecurityContext = securityContext;
+            FilesLinkUtility = filesLinkUtility;
+            FileUtility = fileUtility;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+            DaoFactory = daoFactory;
+            PathProvider = pathProvider;
+            UserManager = userManager;
+            TenantManager = tenantManager;
         }
     }
 
@@ -236,7 +236,7 @@ namespace ASC.Web.Files.Services.NotifyService
         {
             if (services.TryAddScoped<NotifyClient>())
             {
-
+                services.TryAddScoped<NotifyClientScope>();
                 return services
                     .AddFilesNotifySourceService()
                     .AddBaseCommonLinkUtilityService()

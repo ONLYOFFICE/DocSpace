@@ -80,7 +80,7 @@ namespace ASC.Core.Notify.Senders
                 {
                     Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
                     using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                    var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
                     scopeClass.TenantManager.SetCurrentTenant(m.Tenant);
 
                     if (!scopeClass.CoreConfiguration.SmtpSettings.IsDefaultSettings)
@@ -226,18 +226,18 @@ namespace ASC.Core.Notify.Senders
         private bool IsRefreshNeeded()
         {
             return quota == null || (DateTime.UtcNow - lastRefresh) > refreshTimeout;
-        }
+        }       
+    }
 
-        class Scope
+    public class AWSSenderScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal CoreConfiguration CoreConfiguration { get; }
+
+        public AWSSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
         {
-            internal TenantManager TenantManager { get; }
-            internal CoreConfiguration CoreConfiguration { get; }
-
-            public Scope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
-            {
-                TenantManager = tenantManager;
-                CoreConfiguration = coreConfiguration;
-            }
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
         }
     }
 
@@ -246,6 +246,7 @@ namespace ASC.Core.Notify.Senders
         public static DIHelper AddAWSSenderService(this DIHelper services)
         {
             services.TryAddSingleton<AWSSender>();
+            services.TryAddScoped<AWSSenderScope>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

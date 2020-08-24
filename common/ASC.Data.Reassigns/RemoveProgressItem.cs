@@ -97,7 +97,7 @@ namespace ASC.Data.Reassigns
         public void RunJob()
         {
             using var scope = ServiceProvider.CreateScope();   
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var logger = scopeClass.Options.Get("ASC.Web");
             var tenant = scopeClass.TenantManager.SetCurrentTenant(_tenantId);
             var userName = scopeClass.UserFormatter.GetUserName(User, DisplayUserNameFormat.Default);
@@ -243,45 +243,45 @@ namespace ASC.Data.Reassigns
 
             studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
         }
+    }
 
-        class Scope
+    public class RemoveProgressItemScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+        internal MessageService MessageService { get; }
+        internal StudioNotifyService StudioNotifyService { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal UserManager UserManager { get; }
+        internal MessageTarget MessageTarget { get; }
+        internal WebItemManagerSecurity WebItemManagerSecurity { get; }
+        internal StorageFactory StorageFactory { get; }
+        internal UserFormatter UserFormatter { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
+
+        public RemoveProgressItemScope(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            MessageService messageService,
+            StudioNotifyService studioNotifyService,
+            SecurityContext securityContext,
+            UserManager userManager,
+            MessageTarget messageTarget,
+            WebItemManagerSecurity webItemManagerSecurity,
+            StorageFactory storageFactory,
+            UserFormatter userFormatter,
+            IOptionsMonitor<ILog> options)
         {
-            internal TenantManager TenantManager { get; }
-            internal CoreBaseSettings CoreBaseSettings { get; }
-            internal MessageService MessageService { get; }
-            internal StudioNotifyService StudioNotifyService { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal UserManager UserManager { get; }
-            internal MessageTarget MessageTarget { get; }
-            internal WebItemManagerSecurity WebItemManagerSecurity { get; }
-            internal StorageFactory StorageFactory { get; }
-            internal UserFormatter UserFormatter { get; }
-            internal IOptionsMonitor<ILog> Options { get; }
-
-            public Scope(TenantManager tenantManager,
-                CoreBaseSettings coreBaseSettings,
-                MessageService messageService,
-                StudioNotifyService studioNotifyService,
-                SecurityContext securityContext,
-                UserManager userManager,
-                MessageTarget messageTarget,
-                WebItemManagerSecurity webItemManagerSecurity,
-                StorageFactory storageFactory,
-                UserFormatter userFormatter,
-                IOptionsMonitor<ILog> options)
-            {
-                TenantManager = tenantManager;
-                CoreBaseSettings = coreBaseSettings;
-                MessageService = messageService;
-                StudioNotifyService = studioNotifyService;
-                SecurityContext = securityContext;
-                UserManager = userManager;
-                MessageTarget = messageTarget;
-                WebItemManagerSecurity = webItemManagerSecurity;
-                StorageFactory = storageFactory;
-                UserFormatter = userFormatter;
-                Options = options;
-            }
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            MessageService = messageService;
+            StudioNotifyService = studioNotifyService;
+            SecurityContext = securityContext;
+            UserManager = userManager;
+            MessageTarget = messageTarget;
+            WebItemManagerSecurity = webItemManagerSecurity;
+            StorageFactory = storageFactory;
+            UserFormatter = userFormatter;
+            Options = options;
         }
     }
 
@@ -292,6 +292,7 @@ namespace ASC.Data.Reassigns
 
             services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
             services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+            services.TryAddScoped<RemoveProgressItemScope>();
             services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
             return services;
         }

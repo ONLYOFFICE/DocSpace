@@ -48,6 +48,8 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
+using Autofac.Core;
+
 using Google.Protobuf;
 
 using Microsoft.Extensions.Configuration;
@@ -130,7 +132,7 @@ namespace ASC.Web.Studio.Core.Notify
                  InterceptorLifetime.Global,
                  (r, p, scope) =>
                  {
-                     var scopeClass = scope.ServiceProvider.GetService<Scope>();
+                     var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
                      try
                      {
                          // culture
@@ -258,7 +260,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
             var log = scopeClass.Options.CurrentValue;
 
             scopeClass.CommonLinkUtility.GetLocationByRequest(out var product, out var module);
@@ -353,58 +355,58 @@ namespace ASC.Web.Studio.Core.Notify
 
             return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
         }
+    }
 
-        class Scope
+    public class NotifyConfigurationScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal WebItemSecurity WebItemSecurity { get; }
+        internal UserManager UserManager { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
+        internal TenantExtra TenantExtra { get; }
+        internal WebItemManagerSecurity WebItemManagerSecurity { get; }
+        internal WebItemManager WebItemManager { get; }
+        internal IConfiguration Configuration { get; }
+        internal TenantLogoManager TenantLogoManager { get; }
+        internal AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
+        internal TenantUtil TenantUtil { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+        internal CommonLinkUtility CommonLinkUtility { get; }
+        internal SettingsManager SettingsManager { get; }
+        internal StudioNotifyHelper StudioNotifyHelper { get; }
+
+        public NotifyConfigurationScope(TenantManager tenantManager,
+            WebItemSecurity webItemSecurity,
+            UserManager userManager,
+            IOptionsMonitor<ILog> options,
+            TenantExtra tenantExtra,
+            WebItemManagerSecurity webItemManagerSecurity,
+            WebItemManager webItemManager,
+            IConfiguration configuration,
+            TenantLogoManager tenantLogoManager,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility,
+            SettingsManager settingsManager,
+            StudioNotifyHelper studioNotifyHelper
+            )
         {
-            internal TenantManager TenantManager { get; }
-            internal WebItemSecurity WebItemSecurity { get; }
-            internal UserManager UserManager { get; }
-            internal IOptionsMonitor<ILog> Options { get; }
-            internal TenantExtra TenantExtra { get; }
-            internal WebItemManagerSecurity WebItemManagerSecurity { get; }
-            internal WebItemManager WebItemManager { get; }
-            internal IConfiguration Configuration { get; }
-            internal TenantLogoManager TenantLogoManager { get; }
-            internal AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
-            internal TenantUtil TenantUtil { get; }
-            internal CoreBaseSettings CoreBaseSettings { get; }
-            internal CommonLinkUtility CommonLinkUtility { get; }
-            internal SettingsManager SettingsManager { get; }
-            internal StudioNotifyHelper StudioNotifyHelper { get; }
-
-            public Scope(TenantManager tenantManager,
-                WebItemSecurity webItemSecurity,
-                UserManager userManager,
-                IOptionsMonitor<ILog> options,
-                TenantExtra tenantExtra,
-                WebItemManagerSecurity webItemManagerSecurity,
-                WebItemManager webItemManager,
-                IConfiguration configuration,
-                TenantLogoManager tenantLogoManager,
-                AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-                TenantUtil tenantUtil,
-                CoreBaseSettings coreBaseSettings,
-                CommonLinkUtility commonLinkUtility,
-                SettingsManager settingsManager,
-                StudioNotifyHelper studioNotifyHelper
-                )
-            {
-                TenantManager = tenantManager;
-                WebItemSecurity = webItemSecurity;
-                UserManager = userManager;
-                Options = options;
-                TenantExtra = tenantExtra;
-                WebItemManagerSecurity = webItemManagerSecurity;
-                WebItemManager = webItemManager;
-                Configuration = configuration;
-                TenantLogoManager = tenantLogoManager;
-                AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
-                TenantUtil = tenantUtil;
-                CoreBaseSettings = coreBaseSettings;
-                CommonLinkUtility = commonLinkUtility;
-                SettingsManager = settingsManager;
-                StudioNotifyHelper = studioNotifyHelper;
-            }
+            TenantManager = tenantManager;
+            WebItemSecurity = webItemSecurity;
+            UserManager = userManager;
+            Options = options;
+            TenantExtra = tenantExtra;
+            WebItemManagerSecurity = webItemManagerSecurity;
+            WebItemManager = webItemManager;
+            Configuration = configuration;
+            TenantLogoManager = tenantLogoManager;
+            AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+            TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
+            CommonLinkUtility = commonLinkUtility;
+            SettingsManager = settingsManager;
+            StudioNotifyHelper = studioNotifyHelper;
         }
     }
 
@@ -412,6 +414,8 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddNotifyConfiguration(this DIHelper services)
         {
+            services.TryAddScoped<NotifyConfigurationScope>();
+
             return services
                 .AddJabberStylerService()
                 .AddTextileStylerService()

@@ -112,7 +112,7 @@ namespace ASC.Core.Notify.Senders
         public virtual NoticeSendResult Send(NotifyMessage m)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
             scopeClass.TenantManager.SetCurrentTenant(m.Tenant);
 
             var smtpClient = GetSmtpClient();
@@ -319,17 +319,17 @@ namespace ASC.Core.Notify.Senders
                 return null;
             }
         }
+    }
 
-        class Scope
+    public class SmtpSenderScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal CoreConfiguration CoreConfiguration { get; }
+
+        public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
         {
-            internal TenantManager TenantManager { get; }
-            internal CoreConfiguration CoreConfiguration { get; }
-
-            public Scope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
-            {
-                TenantManager = tenantManager;
-                CoreConfiguration = coreConfiguration;
-            }
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
         }
     }
 
@@ -338,6 +338,7 @@ namespace ASC.Core.Notify.Senders
         public static DIHelper AddSmtpSenderService(this DIHelper services)
         {
             services.TryAddSingleton<SmtpSender>();
+            services.TryAddScoped<SmtpSenderScope>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

@@ -69,7 +69,7 @@ namespace ASC.Data.Backup
         public void SendAboutBackupCompleted(Guid userId)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
             client.SendNoticeToAsync(
@@ -82,7 +82,7 @@ namespace ASC.Data.Backup
         public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
             var owner = scopeClass.UserManager.GetUsers(tenant.OwnerId);
@@ -100,7 +100,7 @@ namespace ASC.Data.Backup
         public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
             var owner = scopeClass.UserManager.GetUsers(tenant.OwnerId);
@@ -120,7 +120,7 @@ namespace ASC.Data.Backup
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<Scope>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifySource, scope);
 
             var users = scopeClass.UserManager.GetUsers()
@@ -138,28 +138,30 @@ namespace ASC.Data.Backup
                     new TagValue(Tags.PortalUrl, url));
             }
         }
+    }
 
-        class Scope
+    public class NotifyHelperScope
+    {
+        internal UserManager UserManager { get; }
+        internal StudioNotifyHelper StudioNotifyHelper { get; }
+        internal StudioNotifySource StudioNotifySource { get; }
+        internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+
+        public NotifyHelperScope(UserManager userManager, StudioNotifyHelper studioNotifyHelper, StudioNotifySource studioNotifySource, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            internal UserManager UserManager { get; }
-            internal StudioNotifyHelper StudioNotifyHelper { get; }
-            internal StudioNotifySource StudioNotifySource { get; }
-            internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-
-            public Scope(UserManager userManager, StudioNotifyHelper studioNotifyHelper, StudioNotifySource studioNotifySource, DisplayUserSettingsHelper displayUserSettingsHelper)
-            {
-                UserManager = userManager;
-                StudioNotifyHelper = studioNotifyHelper;
-                StudioNotifySource = studioNotifySource;
-                DisplayUserSettingsHelper = displayUserSettingsHelper;
-            }
+            UserManager = userManager;
+            StudioNotifyHelper = studioNotifyHelper;
+            StudioNotifySource = studioNotifySource;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
     }
+
     public static class NotifyHelperExtension
     {
         public static DIHelper AddNotifyHelperService(this DIHelper services)
         {
             services.TryAddSingleton<NotifyHelper>();
+            services.TryAddScoped<NotifyHelperScope>();
 
             return services
                 .AddNotifyConfiguration()
