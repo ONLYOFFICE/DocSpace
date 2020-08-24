@@ -41,7 +41,7 @@ const ConsumerModalDialog = (props) => {
                             <Text isBold={true}>{token}:</Text>
                         </Box>
                         <Box>
-                            <TextInput placeholder={token} />
+                            <TextInput placeholder={token} isAutoFocussed={i === 0 && true} />
                         </Box>
                     </Box>
                 </React.Fragment>

@@ -4,6 +4,7 @@ import { Box, Text, Link } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
 import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
+import ConsumerItemToggle from "./sub-components/consumerItemToggle";
 
 class ThirdPartyServices extends React.Component {
 
@@ -33,19 +34,20 @@ class ThirdPartyServices extends React.Component {
         })
     }
 
-    onToggleClick = () => {
-        this.onModalOpen();
-    }
-
     titleDescription = "Ключи авторизации позволяют подключить портал ONLYOFFICE к сторонним сервисам, таким как Twitter, Facebook, Dropbox и т.д. Подключите портал к Facebook, Twitter или Linkedin, если Вы не хотите каждый раз при входе вводить свои учетные данные на портале. Привяжите портал к таким сервисам, как Dropbox, OneDrive и т.д. чтобы перенести документы из всех этих хранилищ в модуль Документы ONLYOFFICE."
 
     render() {
 
         const { t } = this.props;
         const { consumers, selectedConsumer, dialogVisible } = this.state;
-        const { titleDescription, onModalClose, onToggleClick } = this;
+        const { titleDescription, onModalOpen, onModalClose, onToggleClick } = this;
 
-        const refs = consumers.reduce((acc, consumer) => {
+        const consumerRefs = consumers.reduce((acc, consumer) => {
+            acc[consumer.name] = React.createRef();
+            return acc;
+        }, []);
+
+        const toggleRefs = consumers.reduce((acc, consumer) => {
             acc[consumer.name] = React.createRef();
             return acc;
         }, []);
@@ -69,25 +71,33 @@ class ThirdPartyServices extends React.Component {
                         <Box displayProp="flex" widthProp="100%">
                             {consumers
                                 .map((consumer, i) =>
-                                    <ConsumerItem
-                                        key={i}
+                                    <React.Fragment key={i}>
+                                        <ConsumerItem
+                                            ref={el => (consumerRefs[i] = el)}
 
-                                        ref={el => (refs[i] = el)}
+                                            name={consumer.name}
+                                            description={consumer.description}
 
-                                        name={consumer.name}
-                                        description={consumer.description}
+                                            consumers={consumers}
 
-                                        consumers={consumers}
+                                            dialogVisible={dialogVisible}
+                                            selectedConsumer={selectedConsumer}
 
-                                        dialogVisible={dialogVisible}
-                                        selectedConsumer={selectedConsumer}
-
-                                        onModalClose={onModalClose}
+                                            onModalClose={onModalClose}
+                                            // onToggleClick={() => {
+                                            //     this.setState({ selectedConsumer: consumer.name })
+                                            //     onToggleClick()
+                                            // }}
+                                        />
+                                        <ConsumerItemToggle 
+                                        ref={el => (toggleRefs[i] = el)} 
+                                        name={consumer.name} 
                                         onToggleClick={() => {
                                             this.setState({ selectedConsumer: consumer.name })
-                                            onToggleClick()
-                                        }}
-                                    />
+                                            onModalOpen()
+                                        }} 
+                                        />
+                                    </React.Fragment>
                                 )}
                         </Box>
                     </Box>

@@ -1,27 +1,21 @@
 import React from "react";
 import { Box, Text, ToggleButton, Icons } from "asc-web-components";
 import ConsumerModalDialog from "./modal-dialog";
-import styled from "styled-components";
-
-const StyledToggle = styled(ToggleButton)`
-   position: relative;
-`;
 
 class ConsumerItem extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            toggleActive: false
+            //toggleActive: false
         }
     }
 
     onModalButtonClick = () => {
-        //TODO: input validate, api request, 
-        // refs on toggle?
+        //TODO: input validate, api -> set tokens, 
         this.props.onModalClose();
-        this.setState({ toggleActive: true });
-        console.log("Click");
+        //this.setState({ toggleActive: true });
+        console.log(this.props.selectedConsumer);
     }
 
     render() {
@@ -36,9 +30,9 @@ class ConsumerItem extends React.Component {
                         <div>
                             {React.createElement(Icons[`${name}Icon`], { size: "scale" })}
                         </div>
-                        <div>
+                        {/* <div>
                             <StyledToggle onChange={onToggleClick} isChecked={toggleActive} />
-                        </div>
+                        </div> */}
                     </Box>
                     <Box displayProp="flex" marginProp="10px 10px 10px auto">
                         <Text>
