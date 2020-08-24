@@ -54,7 +54,7 @@ namespace ASC.Data.Storage.Migration
         {
             Notify.Subscribe((n) =>
             {
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
                 var service = scope.ServiceProvider.GetService<MigrationService>();
                 service.Migrate(n.TenantId, new StorageSettings { Module = n.StorSettings.Module, });
             }, CacheNotifyAction.Insert);
