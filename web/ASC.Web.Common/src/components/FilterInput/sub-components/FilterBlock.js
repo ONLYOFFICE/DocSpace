@@ -313,7 +313,7 @@ class FilterBlock extends React.Component {
       let hideFilterItemsList = hideFilterItems.map(function (item) {
         const { key, group, groupLabel, label, typeSelector, groupsCaption, defaultOptionLabel, defaultOption, defaultSelectLabel, selectedItem, openItem } = item;
         open = key.indexOf('_-1') == -1 ? false : true
-        showItem = openItem || !!item.selectedItem.key;
+        showItem = openItem || !!(item.selectedItem ? item.selectedItem.key : item.key);
         return <FilterItem
           block={true}
           isDisabled={_this.props.isDisabled}
