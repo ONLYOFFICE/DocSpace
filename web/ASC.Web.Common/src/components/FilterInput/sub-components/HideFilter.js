@@ -32,39 +32,36 @@ class HideFilter extends React.Component {
 
   render() {
     //console.log("HideFilter render");
-    const { isDisabled, count, children, openItem } = this.props;
+    const { isDisabled, count, children } = this.props;
     const { popoverOpen } = this.state;
     return (
-      <>
-        <div
-          className="styled-hide-filter"
-          onClick={this.onClick.bind(this, !popoverOpen)}
-          ref={this.ref}
-        >
-          <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
-            {count}
-            <Caret isOpen={popoverOpen && openItem}>
-              <Icons.ExpanderDownIcon
-                color="#A3A9AE"
-                isfill={true}
-                size="scale"
-              />
-            </Caret>
-          </StyledHideFilterButton>
+      <div
+        className="styled-hide-filter"
+        onClick={this.onClick.bind(this, !popoverOpen)}
+        ref={this.ref}
+      >
+        <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
+          {count}
+          <Caret isOpen={popoverOpen}>
+            <Icons.ExpanderDownIcon
+              color="#A3A9AE"
+              isfill={true}
+              size="scale"
+            />
+          </Caret>
+        </StyledHideFilterButton>
 
-          <div className="dropdown-style" ref={this.dropDownRef}>
-            <DropDown
-              className="drop-down"
-              clickOutsideAction={this.handleClickOutside}
-              manualY="8px"
-              open={popoverOpen && openItem}
-            >
-              {children}
-            </DropDown>
-          </div>
+        <div className="dropdown-style" ref={this.dropDownRef}>
+          <DropDown
+            className="drop-down"
+            clickOutsideAction={this.handleClickOutside}
+            manualY="8px"
+            open={popoverOpen}
+          >
+            {children}
+          </DropDown>
         </div>
-        {popoverOpen && !openItem && children}
-      </>
+      </div>
     );
   }
 }
@@ -73,6 +70,5 @@ HideFilter.propTypes = {
   count: PropTypes.number,
   isDisabled: PropTypes.bool,
   open: PropTypes.bool,
-  openItem: PropTypes.bool
 }
 export default HideFilter;
