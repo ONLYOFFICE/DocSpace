@@ -7,7 +7,7 @@ import { history, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
-import { setSelectedSetting, setExpandSettingsTree } from '../../../store/files/actions';
+import { setSelectedNode, setExpandSettingsTree } from '../../../store/files/actions';
 
 const i18n = createI18N({
   page: "Settings",
@@ -34,9 +34,9 @@ class PureTreeSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { match, setSelectedSetting, setExpandSettingsTree } = this.props;
+    const { match, setSelectedNode, setExpandSettingsTree } = this.props;
     const { setting } = match.params;
-    setSelectedSetting([setting]);
+    setSelectedNode([setting]);
     if (setting)
       setExpandSettingsTree(['settings']);
   }
@@ -53,22 +53,21 @@ class PureTreeSettings extends React.Component {
   }
 
   onSelect = (section) => {
-    const { setSelectedSetting, setExpandSettingsTree } = this.props;
+    const { setSelectedNode, setExpandSettingsTree } = this.props;
     const path = section[0];
 
     if(path === 'settings') {
-      setSelectedSetting(['common']);
+      setSelectedNode(['common']);
       setExpandSettingsTree(section);
       return history.push('/products/files/settings/common');
     } 
     
-    setSelectedSetting(section);
+    setSelectedNode(section);
     return history.push(`/products/files/settings/${path}`);    
   }
 
   onExpand = (data) => {
-    const { setExpandSettingsTree, setSelectedSetting } = this.props;
-    setSelectedSetting(['common']);
+    const { setExpandSettingsTree } = this.props;
     setExpandSettingsTree(data);
   }
 
@@ -110,7 +109,7 @@ class PureTreeSettings extends React.Component {
 
   render() {
     const { 
-      selectedSetting,
+      selectedTreeNode,
       expandedSetting
     } = this.props;
     const nodes = this.renderTreeNode();
@@ -118,7 +117,7 @@ class PureTreeSettings extends React.Component {
     return (
       <StyledTreeMenu
         expandedKeys={expandedSetting}
-        selectedKeys={selectedSetting}
+        selectedKeys={selectedTreeNode}
         defaultExpandParent={false}
         className="settings-tree-menu"
         switcherIcon={this.switcherIcon}
@@ -145,17 +144,17 @@ const TreeSettings = props => {
 
 function mapStateToProps(state) {
   const { 
-    selectedSetting,
+    selectedTreeNode,
     expandedSetting
    } = state.files;
   return {
-    selectedSetting,
+    selectedTreeNode,
     expandedSetting
   }
 }
 
 export default connect(
   mapStateToProps, { 
-    setSelectedSetting,
+    setSelectedNode,
     setExpandSettingsTree 
   })(withRouter(TreeSettings));

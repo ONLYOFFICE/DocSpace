@@ -10,7 +10,8 @@ import {
   setDragItem,
   setDragging,
   setNewTreeFilesBadge,
-  setIsLoading
+  setIsLoading,
+  setSelectedNode
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
@@ -55,8 +56,9 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectedKeys, filter, setIsLoading } = this.props;
-    if (selectedKeys[0] !== data[0]) {
+    const { filter, setIsLoading, selectedTreeNode, setSelectedNode } = this.props;
+    if (selectedTreeNode[0] !== data[0]) {
+      setSelectedNode(data)
       setIsLoading(true);
       const newFilter = filter.clone();
       newFilter.page = 0;
@@ -83,7 +85,6 @@ class ArticleBodyContent extends React.Component {
   render() {
     const {
       data,
-      selectedKeys,
       filter,
       setFilter,
       setTreeFolders,
@@ -100,6 +101,7 @@ class ArticleBodyContent extends React.Component {
       isShare,
       setDragging,
       onTreeDrop,
+      selectedTreeNode
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -121,7 +123,7 @@ class ArticleBodyContent extends React.Component {
           />
         )}
         <TreeFolders
-          selectedKeys={selectedKeys}
+          selectedKeys={selectedTreeNode}
           onSelect={this.onSelect}
           data={data}
           filter={filter}
@@ -150,7 +152,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew, isLoading } = state.files;
+  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew, isLoading, selectedTreeNode } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
@@ -172,6 +174,8 @@ function mapStateToProps(state) {
     selectedFolder.pathParts && 
     selectedFolder.pathParts[0] === commonId;
 
+  const selected = selectedTreeNode.length>0 ? selectedTreeNode : [ selectedFolder.id.toString() ];
+
   return {
     data: treeFolders,
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
@@ -186,10 +190,11 @@ function mapStateToProps(state) {
     selection,
     dragging,
     updateTreeNew,
-    isLoading
+    isLoading,
+    selectedTreeNode: selected
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging, setNewTreeFilesBadge, setIsLoading })(
+export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging, setNewTreeFilesBadge, setIsLoading, setSelectedNode })(
   ArticleBodyContent
 );

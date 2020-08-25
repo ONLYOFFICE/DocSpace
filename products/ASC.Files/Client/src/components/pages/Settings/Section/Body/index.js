@@ -36,6 +36,10 @@ class SectionBodyContent extends React.Component {
     document.title = t(`${setting}`);
   }
 
+  componentWillUnmount() {
+    document.title = 'ASC.Files';
+  }
+
   renderAdminSettings = () => {
     const {
       intermediateVersion,
