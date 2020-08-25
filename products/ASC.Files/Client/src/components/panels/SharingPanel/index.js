@@ -391,7 +391,7 @@ class SharingPanelComponent extends React.Component {
 
     this.setState(
       { baseShareData, shareDataItems: arrayItems, accessOptions },
-      this.props.onLoading(false)
+      () => this.props.onLoading(false)
     );
   };
 
