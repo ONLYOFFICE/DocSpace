@@ -69,7 +69,7 @@ namespace ASC.Data.Storage.Migration
         {
             Notify.Publish(new MigrationCache { Tenant = tenant }, CacheNotifyAction.Insert);
 
-            return tenant;
+            return GetProgress(tenant);
         }
 
         public void StopMigrate()

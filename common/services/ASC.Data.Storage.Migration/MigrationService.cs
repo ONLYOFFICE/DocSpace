@@ -52,12 +52,25 @@ namespace ASC.Data.Storage.Migration
 
         public void Start()
         {
-            Notify.Subscribe((n) =>
+            Notify.Subscribe(n =>
             {
                 using var scope = ServiceProvider.CreateScope();
                 var service = scope.ServiceProvider.GetService<MigrationService>();
-                service.Migrate(n.TenantId, new StorageSettings { Module = n.StorSettings.Module, });
+                service.Migrate(n.Tenant, new StorageSettings { Module = n.StorSettings.Module, });
+                service.UploadCdn(n.TenantId, n.RelativePath, n.MappedPath, new CdnStorageSettings { Module = n.CdnStorSettings.Module });
+                service.StopMigrate();
             }, CacheNotifyAction.Insert);
+        }
+
+        public void GetMigrationProgress()
+        {
+            Notify.Subscribe(n =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var service = scope.ServiceProvider.GetService<MigrationService>();
+                service.GetProgress(n.Tenant);
+            },
+            CacheNotifyAction.Insert);
         }
     }
 
@@ -66,6 +79,7 @@ namespace ASC.Data.Storage.Migration
         public StorageUploader StorageUploader { get; }
         public StaticUploader StaticUploader { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
+        public MigrationServiceListener MigrationServiceListener { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
@@ -73,12 +87,14 @@ namespace ASC.Data.Storage.Migration
             StorageUploader storageUploader,
             StaticUploader staticUploader,
             StorageFactoryConfig storageFactoryConfig,
+            MigrationServiceListener migrationServiceListener,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options)
         {
             StorageUploader = storageUploader;
             StaticUploader = staticUploader;
             StorageFactoryConfig = storageFactoryConfig;
+            MigrationServiceListener = migrationServiceListener;
             ServiceProvider = serviceProvider;
             Log = options.Get("ASC.Data.Storage.Migration");
         }
@@ -100,6 +116,8 @@ namespace ASC.Data.Storage.Migration
 
         public double GetProgress(int tenantId)
         {
+            MigrationServiceListener.GetMigrationProgress();
+
             var progress = (ProgressBase)StorageUploader.GetProgress(tenantId) ?? StaticUploader.GetProgress(tenantId);
 
             return progress != null ? progress.Percentage : -1;
