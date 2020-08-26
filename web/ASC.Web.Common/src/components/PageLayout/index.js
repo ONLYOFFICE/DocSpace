@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Backdrop, ProgressBar } from "asc-web-components";
-import { withTranslation } from 'react-i18next';
-import i18n from './i18n';
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
 
 import Article from "./sub-components/article";
@@ -80,17 +80,20 @@ class PageLayoutComponent extends React.Component {
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
     const articleElement =
-      document.getElementsByTagName('article') &&
-      document.getElementsByTagName('article')[0];
+      document.getElementsByTagName("article") &&
+      document.getElementsByTagName("article")[0];
     articleElement && this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
-    window.removeEventListener("orientationchange", this.orientationChangeHandler);
+    window.removeEventListener(
+      "orientationchange",
+      this.orientationChangeHandler
+    );
   }
 
   orientationChangeHandler = () => {
-    const articleElement = document.getElementsByTagName('article')[0];
+    const articleElement = document.getElementsByTagName("article")[0];
 
     if (!articleElement) return;
 
@@ -107,7 +110,7 @@ class PageLayoutComponent extends React.Component {
     if (!isOrientationVertical && isValueExist) {
       this.pinArticle();
     }
-  }
+  };
 
   backdropClick = () => {
     this.setState({
@@ -359,10 +362,12 @@ PageLayoutComponent.defaultProps = {
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
 
 const PageLayout = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
-  return <PageLayoutTranslated i18n={i18n} {...props} />
-}
+  return <PageLayoutTranslated i18n={i18n} {...props} />;
+};
 
 PageLayout.ArticleHeader = ArticleHeader;
 PageLayout.ArticleMainButton = ArticleMainButton;
@@ -375,6 +380,6 @@ PageLayout.SectionPaging = SectionPaging;
 PageLayout.propTypes = {
   language: PropTypes.string,
   children: PropTypes.any
-}
+};
 
 export default PageLayout;

@@ -14,4 +14,3 @@ export { default as ErrorContainer } from './ErrorContainer';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as FilterInput } from './FilterInput';
 export { default as MediaViewer } from './MediaViewer';
-export { default as DragAndDrop } from './DragAndDrop';

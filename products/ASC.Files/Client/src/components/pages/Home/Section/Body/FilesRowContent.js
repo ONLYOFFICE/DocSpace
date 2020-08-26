@@ -318,6 +318,7 @@ class FilesRowContent extends React.PureComponent {
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
     const showNew = !!newItems;
+    const onMobileRowClickProp = this.props.dragging ? { onClick: this.onMobileRowClick } : {};
 
     return isEdit
       ? <EditingWrapperComponent
@@ -351,7 +352,7 @@ class FilesRowContent extends React.PureComponent {
           <SimpleFilesRowContent
             sideColor="#333"
             isFile={fileExst}
-            onClick={this.onMobileRowClick}
+            {...onMobileRowClickProp}
           >
             <Link
               containerWidth='100%'
@@ -508,7 +509,7 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems } = state.files;
+  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging } = state.files;
   const { settings } = state.auth;
   const indexOfTrash = 3;
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
@@ -524,7 +525,8 @@ function mapStateToProps(state) {
     newItems: selectedFolder.new,
     selectedFolder,
     folders,
-    newRowItems
+    newRowItems,
+    dragging
   }
 }
 
