@@ -19,5 +19,8 @@
 
   "storingFileVersion": "Storing file versions",
   "updateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
-  "keepIntermediateVersion": "Keep intermediate versions when editing"
+  "keepIntermediateVersion": "Keep intermediate versions when editing",
+
+  "LoadingProcessing": "Loading...",
+  "LoadingDescription": "Please wait..."
 }

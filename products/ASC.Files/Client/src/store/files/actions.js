@@ -39,7 +39,7 @@ export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
-export const SET_SELECTED_SETTING = "SET_SELECTED_SETTING";
+export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 
@@ -190,10 +190,10 @@ export function setNewRowItems(newRowItems) {
   };
 }
 
-export function setSelectedSetting(setting) {
+export function setSelectedNode(node) {
   return {
-    type: SET_SELECTED_SETTING,
-    setting
+    type: SET_SELECTED_NODE,
+    node
   }
 }
 

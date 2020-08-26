@@ -20,7 +20,7 @@ import {
   SET_CONVERT_DIALOG_VISIBLE,
   SET_NEW_TREE_FILES,
   SET_NEW_ROW_ITEMS,
-  SET_SELECTED_SETTING,
+  SET_SELECTED_NODE,
   SET_EXPAND_SETTINGS_TREE,
   SET_IS_LOADING
 } from "./actions";
@@ -47,7 +47,7 @@ const initialState = {
   convertDialogVisible: false,
   updateTreeNew: false,
   newRowItems: [],
-  selectedSetting: [],
+  selectedTreeNode: [],
   expandedSetting: [], 
   isLoading: false
 };
@@ -147,10 +147,14 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         newRowItems: action.newRowItems
       });
-    case SET_SELECTED_SETTING: 
-      return Object.assign({}, state, {
-        selectedSetting: action.setting
-      })
+    case SET_SELECTED_NODE: 
+      if ( action.node[0] ) {
+        return Object.assign({}, state, {
+          selectedTreeNode: action.node
+        }) 
+      } else {
+        return state;
+      }
     case SET_EXPAND_SETTINGS_TREE:
       return Object.assign({}, state, {
         expandedSetting: action.setting

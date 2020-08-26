@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import { PageLayout, utils } from "asc-web-common";
+import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -52,9 +53,18 @@ class PureSettings extends React.Component {
     } = this.state;
     const { match, t, isLoading, setIsLoading } = this.props;
     const { setting } = match.params;
-    console.log(setting)
 
     return (
+      <>
+      <RequestLoader
+          visible={isLoading}
+          zIndex={256}
+          loaderSize="16px"
+          loaderColor={"#999"}
+          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+          fontSize="12px"
+          fontColor={"#999"}
+        />
       <PageLayout>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -95,6 +105,7 @@ class PureSettings extends React.Component {
           />
         </PageLayout.SectionBody>
       </PageLayout>
+      </>
     );
   }
 } 

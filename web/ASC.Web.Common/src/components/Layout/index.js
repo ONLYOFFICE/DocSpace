@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Aside, utils } from "asc-web-components";
 import HeaderComponent from "./sub-components/header";
@@ -40,7 +40,13 @@ class Layout extends React.Component {
       hash += props.currentModuleId;
     }
     if (props.currentUser) {
-      const { id, displayName, email, avatarSmall, cultureName } = props.currentUser;
+      const {
+        id,
+        displayName,
+        email,
+        avatarSmall,
+        cultureName
+      } = props.currentUser;
       hash += id + displayName + email + avatarSmall + cultureName;
     }
     if (props.availableModules) {
@@ -50,7 +56,10 @@ class Layout extends React.Component {
       }
     }
     if (props.availableModules && this.state.availableModules) {
-      hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
+      hash += utils.array.isArrayEqual(
+        this.state.availableModules,
+        props.availableModules
+      );
     }
     return hash;
   };
@@ -129,7 +138,7 @@ class Layout extends React.Component {
     if (this.timeout == null) return;
     clearTimeout(this.timeout);
     this.timeout = null;
-  }
+  };
 
   handleNavMouseEnter = () => {
     if (!this.state.isNavHoverEnabled) return;
@@ -163,7 +172,6 @@ class Layout extends React.Component {
   };
 
   render() {
-
     //console.log("Layout render");
 
     return (
@@ -181,15 +189,16 @@ class Layout extends React.Component {
             userActions={this.state.currentUserActions}
           />
         )}
-        {this.state.authHeader ?
+        {this.state.authHeader ? (
           <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
           />
-          : <HeaderUnauth t={this.props.t}>{this.props.children}</HeaderUnauth>
-        }
+        ) : (
+          <HeaderUnauth t={this.props.t}>{this.props.children}</HeaderUnauth>
+        )}
         {this.state.isNavAvailable && (
           <Nav
             opened={this.state.isNavOpened}
@@ -274,7 +283,10 @@ const LayoutTranslationWrapper = withTranslation()(Layout);
 
 const LayoutWrapper = props => {
   const { language } = props;
-  i18n.changeLanguage(language);
+
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   return (
     <>
@@ -289,9 +301,11 @@ LayoutWrapper.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName || state.auth.settings.culture,
+    language: state.auth.user.cultureName || state.auth.settings.culture
   };
 }
 
-export default connect(mapStateToProps, null)(LayoutWrapper);
-
+export default connect(
+  mapStateToProps,
+  null
+)(LayoutWrapper);
