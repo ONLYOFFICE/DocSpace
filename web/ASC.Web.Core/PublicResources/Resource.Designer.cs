@@ -187,6 +187,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bad keys.
+        /// </summary>
+        public static string ErrorBadKeys {
+            get {
+                return ResourceManager.GetString("ErrorBadKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your profile is suspended.
         /// </summary>
         public static string ErrorDisabledProfile {
