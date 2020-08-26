@@ -5,12 +5,28 @@ import ConsumerItem from "./sub-components/consumerItem";
 import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import ConsumerItemToggle from "./sub-components/consumerItemToggle";
+import styled from "styled-components";
+
+const RootContainer = styled(Box)`
+
+  @media (max-width: 768px) {
+    margin: 0;
+    }
+`;
+const ConsumersContainer = styled(Box)`
+
+  @media (max-width: 375px) {
+    margin: 0;
+    }
+`;
+const Separator = styled.div`
+ border: 1px solid #ECEEF1;
+`;
 
 class ThirdPartyServices extends React.Component {
 
     constructor(props) {
         super(props);
-
         const { t } = props;
         document.title = `${t("ThirdPartyAuthorization")} – ${t("OrganizationName")}`;
 
@@ -40,7 +56,7 @@ class ThirdPartyServices extends React.Component {
 
         const { t } = this.props;
         const { consumers, selectedConsumer, dialogVisible } = this.state;
-        const { titleDescription, onModalOpen, onModalClose, onToggleClick } = this;
+        const { titleDescription, onModalOpen, onModalClose } = this;
 
         const consumerRefs = consumers.reduce((acc, consumer) => {
             acc[consumer.name] = React.createRef();
@@ -54,54 +70,58 @@ class ThirdPartyServices extends React.Component {
 
         return (
             <>
-                <Box displayProp="flex" flexDirection="column">
-                    <Box marginProp="10px">
+                <RootContainer displayProp="flex" flexDirection="column" marginProp="0 88px 0 0">
+                    <Box className="title-description-container">
                         <Text>
                             {titleDescription}
-                            {" "}
+                        </Text>
+                        <Box marginProp="16px 0 0 0">
                             <Link
-                                isHovered={true}
+                                color="#316DAA"
+                                isHovered={false}
                                 target="_blank"
-                                href="https://helpcenter.onlyoffice.com/ru/server/windows/community/authorization-keys.aspx">
+                                href="https://helpcenter.onlyoffice.com/ru/server/windows/community/authorization-keys.aspx"
+                            >
                                 {t("LearnMore")}
                             </Link>
-                        </Text>
-                    </Box>
-                    <Box displayProp="flex">
-                        <Box displayProp="flex" widthProp="100%">
-                            {consumers
-                                .map((consumer, i) =>
-                                    <React.Fragment key={i}>
-                                        <ConsumerItem
-                                            ref={el => (consumerRefs[i] = el)}
-
-                                            name={consumer.name}
-                                            description={consumer.description}
-
-                                            consumers={consumers}
-
-                                            dialogVisible={dialogVisible}
-                                            selectedConsumer={selectedConsumer}
-
-                                            onModalClose={onModalClose}
-                                            // onToggleClick={() => {
-                                            //     this.setState({ selectedConsumer: consumer.name })
-                                            //     onToggleClick()
-                                            // }}
-                                        />
-                                        <ConsumerItemToggle 
-                                        ref={el => (toggleRefs[i] = el)} 
-                                        name={consumer.name} 
-                                        onToggleClick={() => {
-                                            this.setState({ selectedConsumer: consumer.name })
-                                            onModalOpen()
-                                        }} 
-                                        />
-                                    </React.Fragment>
-                                )}
                         </Box>
                     </Box>
-                </Box>
+                    <Box
+                        className="consumers-list-container"
+                        widthProp="100%"
+                        displayProp="flex"
+                        flexWrap="wrap"
+                        alignItems="stretch"
+                        alignContent="stretch"
+                        marginProp="32px 176px 40px 0"
+                    >
+                        {consumers
+                            .map((consumer, i) =>
+                                <ConsumersContainer key={i} widthProp="400px" marginProp="0 24px 24px 0">
+                                    <Separator />
+                                    <Box displayProp="flex" className="consumer-item-container">
+                                        <ConsumerItem
+                                            ref={el => (consumerRefs[i] = el)}
+                                            name={consumer.name}
+                                            description={consumer.description}
+                                            consumers={consumers}
+                                            dialogVisible={dialogVisible}
+                                            selectedConsumer={selectedConsumer}
+                                            onModalClose={onModalClose}
+                                        />
+                                        <ConsumerItemToggle
+                                            ref={el => (toggleRefs[i] = el)}
+                                            name={consumer.name}
+                                            onToggleClick={() => {
+                                                this.setState({ selectedConsumer: consumer.name })
+                                                onModalOpen()
+                                            }}
+                                        />
+                                    </Box>
+                                </ConsumersContainer>
+                            )}
+                    </Box>
+                </RootContainer>
             </>
         )
     }

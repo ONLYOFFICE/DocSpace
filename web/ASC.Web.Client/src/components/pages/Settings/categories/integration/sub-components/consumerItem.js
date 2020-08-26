@@ -25,16 +25,13 @@ class ConsumerItem extends React.Component {
 
         return (
             <>
-                <Box displayProp="flex" flexDirection="column" marginProp="16px">
-                    <Box displayProp="flex" justifyContent="space-between" widthProp="100%">
+                <Box displayProp="flex" flexDirection="column">
+                    <Box displayProp="flex" justifyContent="space-between" widthProp="100%" marginProp="21px 0 0 0">
                         <div>
                             {React.createElement(Icons[`${name}Icon`], { size: "scale" })}
                         </div>
-                        {/* <div>
-                            <StyledToggle onChange={onToggleClick} isChecked={toggleActive} />
-                        </div> */}
                     </Box>
-                    <Box displayProp="flex" marginProp="10px 10px 10px auto">
+                    <Box displayProp="flex" marginProp="21px 0 0 0">
                         <Text>
                             {description}
                         </Text>

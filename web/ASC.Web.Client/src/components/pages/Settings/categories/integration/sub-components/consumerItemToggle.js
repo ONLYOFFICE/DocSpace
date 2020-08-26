@@ -42,10 +42,10 @@ class ConsumerItemToggle extends React.Component {
 
         return (
             <>
-                <div>
+                <Box marginProp="28px 0 0 0">
                     <StyledToggle onChange={onToggleClick}
                         isChecked={toggleActive} />
-                </div>
+                </Box>
             </>
         );
     }
