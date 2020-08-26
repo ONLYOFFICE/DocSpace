@@ -318,7 +318,6 @@ class FilesRowContent extends React.PureComponent {
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
     const showNew = !!newItems;
-    const onMobileRowClickProp = this.props.dragging ? { onClick: this.onMobileRowClick } : {};
 
     return isEdit
       ? <EditingWrapperComponent
@@ -352,7 +351,7 @@ class FilesRowContent extends React.PureComponent {
           <SimpleFilesRowContent
             sideColor="#333"
             isFile={fileExst}
-            {...onMobileRowClickProp}
+            onClick={this.onMobileRowClick}
           >
             <Link
               containerWidth='100%'

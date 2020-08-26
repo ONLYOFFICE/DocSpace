@@ -849,6 +849,9 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseDown = e => {
+    if(window.innerWidth < 1025 || e.target.tagName === "rect" || e.target.tagName === "path") {
+      return;
+    }
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     const label = e.currentTarget.getAttribute('label');
     if (mouseButton || e.currentTarget.tagName !== "DIV" || label) { return; }
