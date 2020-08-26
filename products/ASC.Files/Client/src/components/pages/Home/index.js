@@ -94,105 +94,12 @@ class PureHome extends React.Component {
     this.setState(newState);
   };
 
-  onDrop = (e, uploadToFolder) => {
-    const items = e.dataTransfer.items;
-    let files = [];
+  onDrop = (files, e, uploadToFolder) => {
     const { t, currentFolderId, startUpload } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
-    const inSeries = (queue, callback) => {
-      let i = 0;
-      let length = queue.length;
-
-      if (!queue || !queue.length) {
-        callback();
-      }
-
-      const callNext = i => {
-        if (typeof queue[i] === "function") {
-          queue[i](() => (i + 1 < length ? callNext(i + 1) : callback()));
-        }
-      };
-      callNext(i);
-    };
-
-    const readDirEntry = (dirEntry, callback) => {
-      let entries = [];
-      const dirReader = dirEntry.createReader();
-
-      // keep quering recursively till no more entries
-      const getEntries = func => {
-        dirReader.readEntries(moreEntries => {
-          if (moreEntries.length) {
-            entries = [...entries, ...moreEntries];
-            getEntries(func);
-          } else {
-            func();
-          }
-        });
-      };
-
-      getEntries(() => readEntries(entries, callback));
-    };
-
-    const readEntry = (entry, callback) => {
-      if (entry.isFile) {
-        entry.file(file => {
-          addFile(file, entry.fullPath);
-          callback();
-        });
-      } else if (entry.isDirectory) {
-        readDirEntry(entry, callback);
-      }
-    };
-
-    const readEntries = (entries, callback) => {
-      const queue = [];
-      loop(entries, entry => {
-        queue.push(func => readEntry(entry, func));
-      });
-      inSeries(queue, () => callback());
-    };
-
-    const addFile = (file, relativePath) => {
-      file.relativePath = relativePath || "";
-      files.push(file);
-    };
-
-    const loop = (items, callback) => {
-      let length;
-
-      if (items) {
-        length = items.length;
-        // Loop array items
-        for (let i = 0; i < length; i++) {
-          callback(items[i], i);
-        }
-      }
-    };
-
-    const readItems = (items, func) => {
-      const entries = [];
-      loop(items, item => {
-        const entry = item.webkitGetAsEntry();
-        if (entry) {
-          if (entry.isFile) {
-            addFile(item.getAsFile(), entry.fullPath);
-          } else {
-            entries.push(entry);
-          }
-        }
-      });
-
-      if (entries.length) {
-        readEntries(entries, func);
-      } else {
-        func();
-      }
-    };
-
     this.props.setDragging(false);
-    readItems(items, () => startUpload(files, folderId, t));
+    startUpload(files, folderId, t);
   };
 
   onSectionHeaderContentCheck = checked => {

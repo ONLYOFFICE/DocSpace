@@ -26,7 +26,8 @@ export const startUpload = (uploadFiles, folderId, t) => {
     const convertFiles = [];
     let convertFilesSize = 0;
 
-    for (let item of uploadFiles) {
+    for (let index of Object.keys(uploadFiles)) {
+      const item = uploadFiles[index];
       if (item.size !== 0) {
         const parts = item.name.split(".");
         const ext = parts.length > 1 ? "." + parts.pop() : "";

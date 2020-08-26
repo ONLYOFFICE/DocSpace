@@ -12,7 +12,8 @@ import {
   Row,
   RowContainer,
   toastr,
-  Link
+  Link,
+  DragAndDrop
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
@@ -20,7 +21,7 @@ import FilesTileContent from "./FilesTileContent";
 import TileContainer from './TileContainer';
 import Tile from './Tile';
 
-import { api, constants, MediaViewer, DragAndDrop } from 'asc-web-common';
+import { api, constants, MediaViewer } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,
@@ -823,30 +824,11 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  onDragEnter = (item, e) => {
-    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if (!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
-      e.currentTarget.style.background = backgroundDragColor;
-    }
-  }
-
-  onDragLeave = (item, e) => {
-    const { selection, dragging, setDragging } = this.props;
-    const isCurrentItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if (!e.dataTransfer.items.length) {
-      e.currentTarget.style.background = "none";
-    } else if (!item.fileExst && !isCurrentItem) {
-      e.currentTarget.style.background = backgroundDragEnterColor;
-    }
-    if (dragging && !e.relatedTarget) { setDragging(false); }
-  }
-
-  onDrop = (item, e) => {
-    if (e.dataTransfer.items.length > 0 && !item.fileExst) {
+  onDrop = (item, items, e) => {
+    if (!item.fileExst) {
       const { setDragging, onDropZoneUpload } = this.props;
-      e.currentTarget.style.background = backgroundDragEnterColor;
       setDragging(false);
-      onDropZoneUpload(e, item.id);
+      onDropZoneUpload(items, e, item.id);
     }
   }
 
@@ -868,13 +850,13 @@ class SectionBodyContent extends React.Component {
 
   onMouseDown = e => {
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    const label = e.target.getAttribute('label');
-    if (mouseButton || e.target.tagName !== "DIV" || label) { return; }
+    const label = e.currentTarget.getAttribute('label');
+    if (mouseButton || e.currentTarget.tagName !== "DIV" || label) { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
     const { selection, setDragging } = this.props;
 
-    const elem = e.target.closest('.draggable');
+    const elem = e.currentTarget.closest('.draggable');
     if (!elem) {
       return;
     }
@@ -1196,8 +1178,6 @@ class SectionBodyContent extends React.Component {
                       <DragAndDrop
                         {...classNameProp}
                         onDrop={this.onDrop.bind(this, item)}
-                        onDragEnter={this.onDragEnter.bind(this, item)}
-                        onDragLeave={this.onDragLeave.bind(this, item)}
                         onMouseDown={this.onMouseDown}
                         dragging={dragging && isFolder && item.access < 2}
                         key={`dnd-key_${item.id}`}
@@ -1259,8 +1239,6 @@ class SectionBodyContent extends React.Component {
                       <DragAndDrop
                         {...classNameProp}
                         onDrop={this.onDrop.bind(this, item)}
-                        onDragEnter={this.onDragEnter.bind(this, item)}
-                        onDragLeave={this.onDragLeave.bind(this, item)}
                         onMouseDown={this.onMouseDown}
                         dragging={dragging && isFolder && item.access < 2}
                         key={`dnd-key_${item.id}`}
