@@ -12,7 +12,7 @@ const StyledDragAndDrop = styled.div`
   height: 100%;
   border: ${props => props.drag ? "1px dashed #bbb" : "1px solid transparent"};
   outline: none;
-  background: ${props => props.dragging ? props.isDragAccept ? "#EFEFB2" : "#F8F7BF" : "none"};
+  background: ${props => props.dragging ? props.isDragAccept ? "#EFEFB2" : "#F8F7BF" : "none !important"};
 `;
 
 const DragAndDrop = props => {
