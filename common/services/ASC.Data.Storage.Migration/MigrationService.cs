@@ -29,7 +29,6 @@ using System;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Migration;
@@ -44,7 +43,9 @@ namespace ASC.Data.Storage.Migration
         public IServiceProvider ServiceProvider { get; }
         public ICacheNotify<MigrationCache> Notify { get; }
 
-        public MigrationServiceListener(IServiceProvider serviceProvider, ICacheNotify<MigrationCache> notify)
+        public MigrationServiceListener(
+            IServiceProvider serviceProvider,
+            ICacheNotify<MigrationCache> notify)
         {
             ServiceProvider = serviceProvider;
             Notify = notify;
@@ -52,25 +53,26 @@ namespace ASC.Data.Storage.Migration
 
         public void Start()
         {
-            Notify.Subscribe(n =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var service = scope.ServiceProvider.GetService<MigrationService>();
-                service.Migrate(n.Tenant, new StorageSettings { Module = n.StorSettings.Module, });
-                service.UploadCdn(n.TenantId, n.RelativePath, n.MappedPath, new CdnStorageSettings { Module = n.CdnStorSettings.Module });
-                service.StopMigrate();
-            }, CacheNotifyAction.Insert);
-        }
+            using var scope = ServiceProvider.CreateScope();
+            var service = scope.ServiceProvider.GetService<MigrationService>();
 
-        public void GetMigrationProgress()
-        {
             Notify.Subscribe(n =>
             {
-                using var scope = ServiceProvider.CreateScope();
-                var service = scope.ServiceProvider.GetService<MigrationService>();
-                service.GetProgress(n.Tenant);
+                service.Migrate(n.Tenant, new StorageSettings { Module = n.StorSettings.Module, });
             },
             CacheNotifyAction.Insert);
+
+            Notify.Subscribe(n =>
+            {
+                service.UploadCdn(n.TenantId, n.RelativePath, n.MappedPath, new CdnStorageSettings { Module = n.CdnStorSettings.Module });
+            },
+            CacheNotifyAction.Insert);
+
+            Notify.Subscribe(n =>
+            {
+                service.StopMigrate();
+            },
+            CacheNotifyAction.InsertOrUpdate);
         }
     }
 
@@ -79,7 +81,6 @@ namespace ASC.Data.Storage.Migration
         public StorageUploader StorageUploader { get; }
         public StaticUploader StaticUploader { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
-        public MigrationServiceListener MigrationServiceListener { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
@@ -87,14 +88,12 @@ namespace ASC.Data.Storage.Migration
             StorageUploader storageUploader,
             StaticUploader staticUploader,
             StorageFactoryConfig storageFactoryConfig,
-            MigrationServiceListener migrationServiceListener,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options)
         {
             StorageUploader = storageUploader;
             StaticUploader = staticUploader;
             StorageFactoryConfig = storageFactoryConfig;
-            MigrationServiceListener = migrationServiceListener;
             ServiceProvider = serviceProvider;
             Log = options.Get("ASC.Data.Storage.Migration");
         }
@@ -116,11 +115,7 @@ namespace ASC.Data.Storage.Migration
 
         public double GetProgress(int tenantId)
         {
-            MigrationServiceListener.GetMigrationProgress();
-
-            var progress = (ProgressBase)StorageUploader.GetProgress(tenantId) ?? StaticUploader.GetProgress(tenantId);
-
-            return progress != null ? progress.Percentage : -1;
+            throw new NotImplementedException();
         }
 
         public void StopMigrate()

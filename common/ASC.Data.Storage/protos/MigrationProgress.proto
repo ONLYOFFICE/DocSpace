@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package ASC.Migration;
+
+message MigrationProgress{
+	bool IsCompleted = 1;
+    int32 Progress = 2;
+    string Error = 3;
+    string Link = 4;
+    int32 TenantId = 5;
+}

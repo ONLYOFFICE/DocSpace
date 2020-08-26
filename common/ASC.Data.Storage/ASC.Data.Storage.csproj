@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <None Remove="protos\MigrationCache.proto" />
+    <None Remove="protos\MigrationProgress.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +48,9 @@
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
     <Protobuf Include="protos\MigrationCache.proto" />
+    <Protobuf Include="protos\MigrationProgress.proto">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Protobuf>
   </ItemGroup>
   
 </Project>

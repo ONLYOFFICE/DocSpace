@@ -24,26 +24,41 @@
 */
 
 
+using System;
+
 using ASC.Common.Caching;
+using ASC.Common.Threading.Progress;
 using ASC.Data.Storage.Configuration;
 using ASC.Migration;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Migration
 {
     public class ServiceClient : IService
     {
-        public ICacheNotify<MigrationCache> Notify { get; }
+        public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
+        public ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public ICache Cache { get; }
 
-        public ServiceClient(ICacheNotify<MigrationCache> notify)
+        public ServiceClient(
+            ICacheNotify<MigrationCache> cacheMigrationNotify,
+            ICacheNotify<MigrationProgress> progressMigrationNotify,
+            IServiceProvider serviceProvider,
+            ICache cache)
         {
-            Notify = notify;
+            CacheMigrationNotify = cacheMigrationNotify;
+            ProgressMigrationNotify = progressMigrationNotify;
+            ServiceProvider = serviceProvider;
+            Cache = cache;
         }
 
         public void Migrate(int tenant, StorageSettings storageSettings)
         {
             var storSettings = new BaseStorSettings { ID = storageSettings.ID.ToString(), Module = storageSettings.Module };
 
-            Notify.Publish(new MigrationCache
+            CacheMigrationNotify.Publish(new MigrationCache
             {
                 Tenant = tenant,
                 StorSettings = storSettings
@@ -55,7 +70,7 @@ namespace ASC.Data.Storage.Migration
         {
             var cdnStorSettings = new BaseStorSettings { ID = settings.ID.ToString(), Module = settings.Module };
 
-            Notify.Publish(new MigrationCache
+            CacheMigrationNotify.Publish(new MigrationCache
             {
                 TenantId = tenantId,
                 RelativePath = relativePath,
@@ -67,14 +82,29 @@ namespace ASC.Data.Storage.Migration
 
         public double GetProgress(int tenant)
         {
-            Notify.Publish(new MigrationCache { Tenant = tenant }, CacheNotifyAction.Insert);
+            ProgressMigrationNotify.Subscribe(n =>
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var service = scope.ServiceProvider.GetService<ServiceClient>();
+                service.GetProgress(n.TenantId);
+            },
+            CacheNotifyAction.Insert);
 
-            return GetProgress(tenant);
+            Cache.Get<MigrationProgress>(GetCacheKey(tenant));
+
+            var progress = (ProgressBase)StorageUploader.GetProgress(tenant) ?? StaticUploader.GetProgress(tenant);
+
+            return progress != null ? progress.Percentage : -1;
+        }
+
+        private string GetCacheKey(int tenantId)
+        {
+            return typeof(MigrationProgress).FullName + tenantId;
         }
 
         public void StopMigrate()
         {
-            Notify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
+            CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
         }
     }
 }
