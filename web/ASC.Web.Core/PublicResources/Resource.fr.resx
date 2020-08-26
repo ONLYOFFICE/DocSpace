@@ -100,6 +100,9 @@
   <data name="ErrorAccessRestricted" xml:space="preserve">
     <value>L'accès au portail est limité</value>
   </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Clés invalides</value>
+  </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Votre profil est suspendu</value>
   </data>
