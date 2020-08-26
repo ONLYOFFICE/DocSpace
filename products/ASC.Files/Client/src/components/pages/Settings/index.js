@@ -71,7 +71,7 @@ class PureSettings extends React.Component {
         </PageLayout.ArticleHeader>
 
         <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent onLoading={setIsLoading} />
+          <ArticleMainButtonContent isDisabled={true} />
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>

@@ -1,9 +1,12 @@
 import React from  'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { 
   Heading,
   ToggleButton 
 } from 'asc-web-components';
+
+import { setStoreOriginal } from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
   display: grid;
@@ -23,6 +26,9 @@ class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = { 
+      originalCopy: false
+    }
   }
 
   componentDidMount() {
@@ -38,6 +44,13 @@ class SectionBodyContent extends React.Component {
 
   componentWillUnmount() {
     document.title = 'ASC.Files';
+  }
+
+  onChangeOriginalCopy = () => {
+    const { originalCopy } = this.state;
+    const { setStoreOriginal } = this.props;
+    setStoreOriginal({ set: !originalCopy });
+    this.setState({ originalCopy: !originalCopy });
   }
 
   renderAdminSettings = () => {
@@ -69,23 +82,27 @@ class SectionBodyContent extends React.Component {
 
   renderCommonSettings = () => {
     const {
-      originalCopy,
       trash,
       recent,
       favorites,
       templates,
       updateOrCreate,
       keepIntermediate,
+      setStoreOriginal,
       t
     } = this.props;
+
+    const { 
+      originalCopy
+    } = this.state;
 
     return (
       <StyledSettings>
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('originalCopy')}
-          onChange={(e)=>console.log(e)}
+          onChange={this.onChangeOriginalCopy}
           isChecked={originalCopy}
         />
         <ToggleButton
@@ -136,7 +153,7 @@ class SectionBodyContent extends React.Component {
   }
 
   renderClouds = () => {
-
+    return (<></>)
   }
 
   render() {
@@ -148,7 +165,7 @@ class SectionBodyContent extends React.Component {
     if(setting === 'common') 
       content = this.renderCommonSettings();
     if(setting === 'thirdParty')
-      content = this.renderAdminSettings();
+      content = this.renderClouds();
 
     return content;
   }
@@ -156,4 +173,4 @@ class SectionBodyContent extends React.Component {
   
 }
 
-export default SectionBodyContent;
+export default connect(null, {setStoreOriginal})(SectionBodyContent);

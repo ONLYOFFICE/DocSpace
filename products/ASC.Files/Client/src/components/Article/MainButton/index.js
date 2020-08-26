@@ -51,11 +51,11 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, isCanCreate } = this.props;
+    const { t, isCanCreate, isDisabled } = this.props;
 
     return (
       <MainButton
-        isDisabled={!isCanCreate}
+        isDisabled={isDisabled ? isDisabled : !isCanCreate}
         isDropdown={true}
         text={t("Actions")}
       >
