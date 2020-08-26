@@ -77,7 +77,6 @@ using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
 using ASC.Web.Studio.UserControls.FirstTime;
-using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
@@ -1773,12 +1772,12 @@ namespace ASC.Api.Settings
 
 
         [Read("authservice")]
-        public IEnumerable<AuthService> GetAuthServices()
+        public IEnumerable<AuthServiceModel> GetAuthServices()
         {
             return ConsumerFactory.GetAll<Consumer>()
                 .Where(consumer => consumer.ManagedKeys.Any())
-                .Select(r => new AuthService(r))
                 .OrderBy(services => services.Order)
+                .Select(r => new AuthServiceModel(r))
                 .ToList();
         }
 
