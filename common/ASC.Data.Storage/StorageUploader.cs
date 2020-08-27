@@ -38,6 +38,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
 using ASC.Migration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -150,8 +151,6 @@ namespace ASC.Data.Storage
         {
             try
             {
-                CacheMigrationNotify.Publish(new MigrationProgress { TenantId = tenantId }, CacheNotifyAction.Insert);
-
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -212,6 +211,15 @@ namespace ASC.Data.Storage
                 Error = e;
                 Log.Error(e);
             }
+
+            CacheMigrationNotify.Publish(new MigrationProgress
+            {
+                TenantId = tenantId,
+                Progress=Percentage,
+                Error = Error.ToString(),
+                IsCompleted = IsCompleted
+            },
+            CacheNotifyAction.Insert);
         }
     }
 }

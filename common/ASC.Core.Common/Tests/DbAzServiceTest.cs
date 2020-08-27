@@ -29,8 +29,10 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using System.Linq;
+
     using ASC.Common.Security.Authorizing;
     using ASC.Core.Data;
+
     using NUnit.Framework;
 
     [TestFixture]

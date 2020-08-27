@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Feed.Data;
 
 namespace ASC.Feed.Aggregator.Modules
@@ -33,7 +34,7 @@ namespace ASC.Feed.Aggregator.Modules
     public interface IFeedModule
     {
         string Name { get; }
-        
+
         string Product { get; }
 
         IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime);

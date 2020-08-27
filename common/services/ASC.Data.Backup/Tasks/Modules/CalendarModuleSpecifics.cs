@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Data.Backup.Tasks.Data;
 
 namespace ASC.Data.Backup.Tasks.Modules
@@ -33,7 +34,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     public class CalendarModuleSpecifics : ModuleSpecificsBase
     {
         private Helpers helpers;
-        
+
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("calendar_calendars", "tenant", "id") {UserIDColumns = new[] {"owner_id"}},
@@ -56,8 +57,8 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         private readonly RelationInfo[] _tableRelations;
 
-            public CalendarModuleSpecifics(Helpers helpers)
-        : base(helpers)
+        public CalendarModuleSpecifics(Helpers helpers)
+    : base(helpers)
         {
             this.helpers = helpers;
             _tableRelations = new[]

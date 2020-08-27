@@ -3,15 +3,11 @@ syntax = "proto3";
 package ASC.Migration;
 
 message MigrationCache {
-	int32 Tenant = 1;
-	int32 TenantId = 2;
-	string RelativePath = 3;
-	string MappedPath = 4;
-	BaseStorSettings StorSettings = 5;
-	BaseStorSettings CdnStorSettings = 6;
+	int32 TenantId = 1;
+	StorSettings StorSettings = 2;
 }
 
-message BaseStorSettings {
+message StorSettings {
 	string ID = 1;
 	string Module = 2;
 }

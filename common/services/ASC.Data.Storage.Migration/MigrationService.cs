@@ -41,14 +41,17 @@ namespace ASC.Data.Storage.Migration
     public class MigrationServiceListener
     {
         public IServiceProvider ServiceProvider { get; }
-        public ICacheNotify<MigrationCache> Notify { get; }
+        public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
+        public ICacheNotify<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
 
         public MigrationServiceListener(
             IServiceProvider serviceProvider,
-            ICacheNotify<MigrationCache> notify)
+            ICacheNotify<MigrationCache> cacheMigrationNotify,
+            ICacheNotify<MigrationUploadCdn> uploadCdnMigrationNotify)
         {
             ServiceProvider = serviceProvider;
-            Notify = notify;
+            CacheMigrationNotify = cacheMigrationNotify;
+            UploadCdnMigrationNotify = uploadCdnMigrationNotify;
         }
 
         public void Start()
@@ -56,19 +59,19 @@ namespace ASC.Data.Storage.Migration
             using var scope = ServiceProvider.CreateScope();
             var service = scope.ServiceProvider.GetService<MigrationService>();
 
-            Notify.Subscribe(n =>
+            CacheMigrationNotify.Subscribe(n =>
             {
-                service.Migrate(n.Tenant, new StorageSettings { Module = n.StorSettings.Module, });
+                service.Migrate(n.TenantId, new StorageSettings { Module = n.StorSettings.Module, });
             },
             CacheNotifyAction.Insert);
 
-            Notify.Subscribe(n =>
+            UploadCdnMigrationNotify.Subscribe(n =>
             {
-                service.UploadCdn(n.TenantId, n.RelativePath, n.MappedPath, new CdnStorageSettings { Module = n.CdnStorSettings.Module });
+                service.UploadCdn(n.Tenant, n.RelativePath, n.MappedPath, new CdnStorageSettings { Module = n.CdnStorSettings.Module });
             },
             CacheNotifyAction.Insert);
 
-            Notify.Subscribe(n =>
+            CacheMigrationNotify.Subscribe(n =>
             {
                 service.StopMigrate();
             },

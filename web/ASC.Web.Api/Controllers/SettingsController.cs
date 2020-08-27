@@ -40,7 +40,6 @@ using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -58,7 +57,6 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
-using ASC.Migration;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
@@ -1748,9 +1746,9 @@ namespace ASC.Api.Settings
         //}
 
         private void StartMigrate(StorageSettings settings)
-        {            
+        {
             ServiceClient.Migrate(Tenant.TenantId, settings);
-            
+
             Tenant.SetStatus(TenantStatus.Migrating);
             TenantManager.SaveTenant(Tenant);
         }
@@ -1837,7 +1835,8 @@ namespace ASC.Api.Settings
                 .AddProviderManagerService()
                 .AddAccountLinker()
                 .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings();
+                .AddFirstTimeTenantSettings()
+                .AddServiceClient();
         }
     }
 }
