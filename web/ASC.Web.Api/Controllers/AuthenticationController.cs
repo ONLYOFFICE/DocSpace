@@ -21,14 +21,14 @@ namespace ASC.Web.Api.Controllers
     [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public AuthContext AuthContext { get; }
-        public AuthManager AuthManager { get; }
-        public CookiesManager CookiesManager { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private AuthContext AuthContext { get; }
+        private AuthManager AuthManager { get; }
+        private CookiesManager CookiesManager { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -51,7 +51,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMe([FromBody]AuthModel auth)
+        public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
             var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
@@ -83,9 +83,9 @@ namespace ASC.Web.Api.Controllers
 
         [AllowAnonymous]
         [Create("confirm", false)]
-        public ValidationResult CheckConfirm([FromBody]EmailValidationKeyModel model)
+        public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
         {
-            return model.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
+            return model.Validate();
         }
 
         private UserInfo GetUser(int tenantId, string userName, string password)

@@ -253,6 +253,7 @@ class SectionFilterContent extends React.Component {
         placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
         language={i18n.language}
+        contextMenuHeader={t("AddFilter")}
       />
     );
   }

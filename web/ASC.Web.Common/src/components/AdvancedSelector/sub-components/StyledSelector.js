@@ -1,5 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -39,6 +41,10 @@ const dropdownStyles = css`
 
     .header-groups {
       grid-area: header-groups;
+
+      .group_header {
+        line-height: 30px;
+      }
       /* background-color: white; */
     }
 
@@ -46,6 +52,10 @@ const dropdownStyles = css`
       grid-area: body-groups;
       margin-left: -8px;
       /* background-color: white; */
+
+      .row-group:first-child {
+        font-weight: 700;
+      }
 
       .row-group {
         box-sizing: border-box;
@@ -59,7 +69,7 @@ const dropdownStyles = css`
         }
 
         &:hover {
-          background-color: #f8f9f9;
+          background-color: #eceef1;
           border-radius: 3px;
         }
       }
@@ -191,6 +201,11 @@ const StyledSelector = styled(Container)`
     .body-options {
       grid-area: body-options;
       margin-left: -8px;
+
+      @media ${tablet} {
+        width: 290px;
+      }
+      
       /* background-color: white; */
 
       .row-option {
@@ -198,7 +213,13 @@ const StyledSelector = styled(Container)`
         padding-top: 8px;
         box-sizing: border-box;
         height: 32px;
+        margin-top: 16px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #eceef1;
+          border-radius: 3px;
+        }
 
         .option_checkbox {
           width: 265px;
@@ -206,7 +227,7 @@ const StyledSelector = styled(Container)`
 
         .option-info {
           position: absolute;
-          top: 10px;
+          top: 12px;
           right: 10px;
           padding: 8px 0 8px 8px;
           margin-top: -8px;

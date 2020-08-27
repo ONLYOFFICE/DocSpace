@@ -40,8 +40,8 @@ namespace ASC.Core
     {
         private readonly IUserService userService;
 
-        public UserManager UserManager { get; }
-        public UserFormatter UserFormatter { get; }
+        private UserManager UserManager { get; }
+        private UserFormatter UserFormatter { get; }
 
         public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
         {

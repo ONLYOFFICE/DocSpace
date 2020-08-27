@@ -45,7 +45,7 @@ namespace ASC.Web.Files.Services.NotifyService
 {
     public class NotifyClient
     {
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public NotifyClient(IServiceProvider serviceProvider)
         {

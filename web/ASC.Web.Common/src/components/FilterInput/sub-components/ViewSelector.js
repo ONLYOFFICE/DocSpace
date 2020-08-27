@@ -5,56 +5,60 @@ import { StyledViewSelector } from '../StyledFilterInput';
 
 
 class ViewSelector extends React.Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.state = {
-            viewAs: props.viewAs
-        }
+    this.state = {
+      viewAs: props.viewAs
     }
+  }
 
-    render(){
-        const { isDisabled, viewAs} = this.props;
+  onClickViewSelector = item => {
+    this.props.onClickViewSelector && this.props.onClickViewSelector(item);
+  };
 
-        return(
-            <StyledViewSelector isDisabled={isDisabled}>
-                <IconButton
-                    className={`view-selector-button ${viewAs === "row" ? "active" : ""}`}
-                    color={viewAs === "row" ? "#ffffff" : "#A3A9AE"}
-                    hoverColor={"#ffffff"}
-                    clickColor={"#ffffff"}
-                    iconName={'FilterViewSelectorRowIcon'}
-                    isDisabled={isDisabled}
-                    isFill={true}
-                    onClick={(item) => this.props.onClickViewSelector(item)}
-                    size={16}
-                    id="rowSelectorButton"
-                />
+  render() {
+    const { isDisabled, viewAs } = this.props;
 
-                <IconButton
-                    className={`view-selector-button ${viewAs === "tile" ? "active" : ""}`}
-                    color={viewAs === "tile" ? "#ffffff" : "#A3A9AE"}
-                    hoverColor={"#ffffff"}
-                    clickColor={"#ffffff"}
-                    iconName={'FilterViewSelectorTileIcon'}
-                    isDisabled={isDisabled}
-                    isFill={true}
-                    onClick={(item) => this.props.onClickViewSelector(item)}
-                    size={16}
-                    id="tileSelectorButton"
-                />
-            </StyledViewSelector>
-        )
-    }
+    return (
+      <StyledViewSelector isDisabled={isDisabled}>
+        <IconButton
+          className={`view-selector-button ${viewAs === "row" ? "active" : ""}`}
+          color={viewAs === "row" ? "#ffffff" : "#A3A9AE"}
+          hoverColor={"#ffffff"}
+          clickColor={"#ffffff"}
+          iconName={'FilterViewSelectorRowIcon'}
+          isDisabled={isDisabled}
+          isFill={true}
+          onClick={this.onClickViewSelector}
+          size={16}
+          id="rowSelectorButton"
+        />
+
+        <IconButton
+          className={`view-selector-button ${viewAs === "tile" ? "active" : ""}`}
+          color={viewAs === "tile" ? "#ffffff" : "#A3A9AE"}
+          hoverColor={"#ffffff"}
+          clickColor={"#ffffff"}
+          iconName={'FilterViewSelectorTileIcon'}
+          isDisabled={isDisabled}
+          isFill={true}
+          onClick={this.onClickViewSelector}
+          size={16}
+          id="tileSelectorButton"
+        />
+      </StyledViewSelector>
+    )
+  }
 }
 ViewSelector.propTypes = {
-    isDisabled: PropTypes.bool,
-    viewAs: PropTypes.string,
-    onClickViewSelector: PropTypes.func
+  isDisabled: PropTypes.bool,
+  viewAs: PropTypes.string,
+  onClickViewSelector: PropTypes.func
 }
 
 ViewSelector.defaultProps = {
-    isDisabled: false
+  isDisabled: false
 }
 
 export default ViewSelector;

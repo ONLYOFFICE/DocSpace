@@ -14,7 +14,7 @@ const EditingWrapper = styled.div`
     height: 30px;
     font-size: 15px;
     outline: 0 !important;
-    font-weight: bold;
+    font-weight: 600;
     margin: 0;
     font-family: 'Open Sans',sans-serif,Arial;
     text-align: left;
@@ -39,7 +39,7 @@ const EditingWrapper = styled.div`
 `;
 
 const EditingWrapperComponent = props => {
-    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onKeyUpUpdateItem, onClickUpdateItem, cancelUpdateItem } = props;
+    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem } = props;
     const [loading, setLoading] = useState(false);
 
     const onUpdate = () => {
@@ -50,6 +50,16 @@ const EditingWrapperComponent = props => {
     const onCancel = (e) => {
       setLoading(true);
       cancelUpdateItem(e);
+    }
+
+    const onKeyUpUpdateItem = e => {
+      if (e.keyCode === 13) {
+        setLoading(true);
+        onClickUpdateItem();
+      }
+  
+      if (e.keyCode === 27)
+        return cancelUpdateItem();
     }
 
     return(

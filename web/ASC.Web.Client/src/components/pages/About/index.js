@@ -2,10 +2,16 @@
 import { Text, Link } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { useTranslation } from "react-i18next";
-import i18n from "./i18n";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
+
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "About",
+  localesPath: "pages/About"
+});
+
 const { changeLanguage } = utils;
 
 const BodyStyle = styled.div`
@@ -189,7 +195,11 @@ const Body = () => {
 };
 
 const About = ({ language }) => (
-  <PageLayout sectionBodyContent={<Body language={language} />} />
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Body language={language} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 export default About;

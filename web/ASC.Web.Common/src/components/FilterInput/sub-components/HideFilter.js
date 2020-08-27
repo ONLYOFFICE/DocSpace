@@ -1,9 +1,7 @@
 import React from "react";
-import { Icons, DropDown, utils } from "asc-web-components";
+import { Icons, DropDown } from "asc-web-components";
 import PropTypes from 'prop-types';
 import { Caret, StyledHideFilterButton } from '../StyledFilterInput';
-
-const { handleAnyClick } = utils.event;
 
 class HideFilter extends React.Component {
   constructor(props) {
@@ -14,17 +12,6 @@ class HideFilter extends React.Component {
     this.state = {
       popoverOpen: this.props.open
     };
-  }
-
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
-  componentDidUpdate(prevState) {
-    const { popoverOpen } = this.state;
-    if (popoverOpen !== prevState.popoverOpen) {
-      handleAnyClick(popoverOpen, this.handleClick);
-    }
   }
 
   onClick = (state, e) => {
@@ -38,10 +25,9 @@ class HideFilter extends React.Component {
     }
   };
 
-  handleClick = e => {
-    this.state.popoverOpen &&
-      !this.dropDownRef.current.firstElementChild.contains(e.target) &&
-      this.onClick(false);
+  handleClickOutside = e => {
+    if (this.ref.current.contains(e.target)) return;
+    this.setState({ popoverOpen: !this.state.popoverOpen });
   };
 
   render() {
@@ -50,14 +36,11 @@ class HideFilter extends React.Component {
     const { popoverOpen } = this.state;
     return (
       <div
-        className='styled-hide-filter'
+        className="styled-hide-filter"
         onClick={this.onClick.bind(this, !popoverOpen)}
         ref={this.ref}
       >
-        <StyledHideFilterButton
-          id="PopoverLegacy"
-          isDisabled={isDisabled}
-        >
+        <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
           <Caret isOpen={popoverOpen}>
             <Icons.ExpanderDownIcon
@@ -68,10 +51,10 @@ class HideFilter extends React.Component {
           </Caret>
         </StyledHideFilterButton>
 
-        <div className='dropdown-style' ref={this.dropDownRef}>
+        <div className="dropdown-style" ref={this.dropDownRef}>
           <DropDown
             className="drop-down"
-            clickOutsideAction={this.handleClick}
+            clickOutsideAction={this.handleClickOutside}
             manualY="8px"
             open={popoverOpen}
           >

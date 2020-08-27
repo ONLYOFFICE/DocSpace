@@ -104,7 +104,13 @@ class ProfileRemove extends React.PureComponent {
 ProfileRemove.propTypes = {
   location: PropTypes.object.isRequired,
 };
-const ProfileRemoveForm = (props) => (<PageLayout sectionBodyContent={<ProfileRemove {...props} />} />);
+const ProfileRemoveForm = (props) => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <ProfileRemove {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
+);
 
 function mapStateToProps(state) {
   return {

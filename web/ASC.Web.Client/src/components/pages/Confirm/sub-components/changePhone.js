@@ -110,7 +110,13 @@ const PhoneForm = props => {
 }
 
 const ChangePhoneForm = props => {
-  return <PageLayout sectionBodyContent={<PhoneForm {...props} />} />;
+  return (
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <PhoneForm {...props} />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  );
 };
 
 function mapStateToProps(state) {

@@ -47,8 +47,8 @@ namespace ASC.MessagingSystem
         private const string hostHeader = "Host";
         private const string refererHeader = "Referer";
 
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<ILog> options)
         {

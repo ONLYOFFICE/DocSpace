@@ -57,18 +57,6 @@ class SectionFilterContent extends React.Component {
     this.state = {
       isReady: false
     }
-
-  }
-  componentDidMount() {
-    const { location, filter, onLoading, selectedFolderId, filterColumnCount } = this.props;
-
-    const newFilter = getFilterByLocation(location);
-
-    if (!newFilter || newFilter.equals(filter)) return;
-    this.setState({ isReady: true })
-    onLoading(true);
-    fetchFiles(selectedFolderId, newFilter, store.dispatch)
-      .finally(() => onLoading(false));
   }
 
   onFilter = data => {
@@ -301,6 +289,7 @@ class SectionFilterContent extends React.Component {
         language={i18n.language}
         isReady={this.state.isReady}
         {...filterColumnCount}
+        contextMenuHeader={t("AddFilter")}
       />
     );
   }

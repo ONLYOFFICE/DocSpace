@@ -5,14 +5,18 @@ import { withRouter } from "react-router";
 import { RequestLoader, Loader } from "asc-web-components";
 import { PageLayout, utils, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import i18n from "./i18n";
-
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
   ArticleMainButtonContent
 } from "../../Article";
+import { setIsLoading } from "../../../store/files/actions";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "VersionHistory",
+  localesPath: "pages/VersionHistory"
+});
 
 const { changeLanguage } = utils;
 
@@ -24,7 +28,6 @@ class PureVersionHistory extends React.Component {
     const { fileId } = match.params;
 
     this.state = {
-      isLoading: false,
       fileId,
       versions: null
     };
@@ -37,24 +40,24 @@ class PureVersionHistory extends React.Component {
     //document.title = `${t("GroupAction")} – ${t("People")}`;
 
     if (fileId) {
-      //fetchGroup(fileId);
-      api.files.getFileVersionInfo(fileId)
-        .then((versions) => this.setState({ versions }))
+      this.getFileVersions(fileId);
     }
   }
-  
-  onLoading = status => {
-    this.setState({ isLoading: status });
+
+  getFileVersions = fileId => {
+    api.files
+      .getFileVersionInfo(fileId)
+      .then(versions => this.setState({ versions }));
   };
 
   render() {
     const { versions } = this.state;
-    const { t, settings } = this.props;
+    const { t, settings, isLoading } = this.props;
 
     return (
       <>
         <RequestLoader
-          visible={this.state.isLoading}
+          visible={isLoading}
           zIndex={256}
           loaderSize="16px"
           loaderColor={"#999"}
@@ -63,36 +66,56 @@ class PureVersionHistory extends React.Component {
           fontColor={"#999"}
         />
         {versions ? (
-          <PageLayout
-            withBodyScroll={true}
-            withBodyAutoFocus={true}
-            articleHeaderContent={<ArticleHeaderContent />}
-            articleMainButtonContent={
+          <PageLayout withBodyScroll={true} withBodyAutoFocus={true}>
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+
+            <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent
-                onLoading={this.onLoading}
+                onLoading={setIsLoading}
                 startUpload={this.startUpload}
               />
-            }
-            articleBodyContent={
+            </PageLayout.ArticleMainButton>
+
+            <PageLayout.ArticleBody>
               <ArticleBodyContent
-                onLoading={this.onLoading}
-                isLoading={this.state.isLoading}
+                onLoading={setIsLoading}
+                isLoading={isLoading}
               />
-            }
-            sectionHeaderContent={<SectionHeaderContent title={versions && versions[0].title} />}
-            sectionBodyContent={
-              <SectionBodyContent onLoading={this.onLoading} versions={versions} culture={settings.culture} />
-            }
-          />
+            </PageLayout.ArticleBody>
+
+            <PageLayout.SectionHeader>
+              <SectionHeaderContent title={versions && versions[0].title} />
+            </PageLayout.SectionHeader>
+
+            <PageLayout.SectionBody>
+              <SectionBodyContent
+                getFileVersions={this.getFileVersions}
+                onLoading={setIsLoading}
+                versions={versions}
+                culture={settings.culture}
+              />
+            </PageLayout.SectionBody>
+          </PageLayout>
         ) : (
-          <PageLayout
-            articleHeaderContent={<ArticleHeaderContent />}
-            articleMainButtonContent={<ArticleMainButtonContent />}
-            articleBodyContent={<ArticleBodyContent />}
-            sectionBodyContent={
+          <PageLayout>
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent />
+            </PageLayout.ArticleBody>
+
+            <PageLayout.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          />
+            </PageLayout.SectionBody>
+          </PageLayout>
         )}
       </>
     );
@@ -118,8 +141,9 @@ VersionHistory.propTypes = {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    isLoaded: state.auth.isLoaded
+    isLoaded: state.auth.isLoaded,
+    isLoading: state.files.isLoading
   };
 }
 
-export default connect(mapStateToProps)(withRouter(VersionHistory));
+export default connect(mapStateToProps, { setIsLoading })(withRouter(VersionHistory));

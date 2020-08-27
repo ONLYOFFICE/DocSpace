@@ -27,7 +27,8 @@ const StyledFilterInput = styled.div`
 
       .search-input-block {
           & > input { 
-              height: 30px; 
+              height: 30px;
+              line-height: 30px;
           }
       }
     }
@@ -194,7 +195,7 @@ export const StyledFilterItem = styled.div`
 
 export const StyledFilterItemContent = styled.div`
   display: flex;
-  padding: 5px 4px 2px 7px;
+  padding: 4px 4px 2px 7px;
   width: 100%;
   user-select: none;
   color: #333;
@@ -233,6 +234,16 @@ export const StyledCloseButtonBlock = styled.div`
           fill: #A3A9AE; 
         }
       }
+
+    :hover {
+      .styled-close-button {
+        svg {
+          path {
+            fill: #555F65;
+          }
+        }
+      }
+    }
   `}
 `;
 

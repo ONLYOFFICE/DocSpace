@@ -2,12 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ModalDialog from '../modal-dialog'
 import Button from '../button'
+import IconButton from '../icon-button'
 import AvatarEditorBody from './sub-components/avatar-editor-body'
 
 
 class AvatarEditor extends React.Component {
     constructor(props) {
         super(props);
+        this.avatarEditorBodyRef = React.createRef();
 
         this.state = {
             isContainsFile: !!this.props.image,
@@ -42,7 +44,7 @@ class AvatarEditor extends React.Component {
         })
         if (typeof this.props.onDeleteImage === 'function') this.props.onDeleteImage();
     }
-    onSizeChange(data){
+    onSizeChange(data) {
         this.setState(data);
     }
     onPositionChange(data) {
@@ -51,11 +53,14 @@ class AvatarEditor extends React.Component {
     onLoadFileError(error) {
         if (typeof this.props.onLoadFileError === 'function') this.props.onLoadFileError(error);
     }
-    onLoadFile(file) {
-        if (typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file);
-        this.setState({ isContainsFile: true });
+    onLoadFile(file, callback) {
+        if (typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file, callback);
+        if (!this.state.isContainsFile) this.setState({ isContainsFile: true });
     }
     onSaveButtonClick() {
+        this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar)
+    }
+    saveAvatar = () => {
         this.state.isContainsFile ?
             this.props.onSave(this.state.isContainsFile, {
                 x: this.state.x,
@@ -65,6 +70,9 @@ class AvatarEditor extends React.Component {
             }, this.state.croppedImage) :
 
             this.props.onSave(this.state.isContainsFile);
+    }
+    onClickRotateLeft = e => {
+        this.avatarEditorBodyRef.current.rotateLeft(e)
     }
     onClose() {
         this.setState({ visible: false });
@@ -96,6 +104,7 @@ class AvatarEditor extends React.Component {
                         onLoadFileError={this.onLoadFileError}
                         onLoadFile={this.onLoadFile}
                         deleteImage={this.onDeleteImage}
+                        saveAvatar={this.saveAvatar}
                         maxSize={this.props.maxSize * 1000000} // megabytes to bytes
                         accept={this.props.accept}
                         image={this.props.image}
@@ -104,6 +113,7 @@ class AvatarEditor extends React.Component {
                         unknownTypeError={this.props.unknownTypeError}
                         maxSizeFileError={this.props.maxSizeFileError}
                         unknownError={this.props.unknownError}
+                        ref={this.avatarEditorBodyRef}
                     />
                 }
                 footerContent={[
@@ -113,6 +123,16 @@ class AvatarEditor extends React.Component {
                         primary={true}
                         size="medium"
                         onClick={this.onSaveButtonClick}
+                    />,
+                    <IconButton
+                        key="RotateBtn"
+                        iconName="RotateIcon"
+                        color="#A3A9AE"
+                        size="25"
+                        hoverColor="#657077"
+                        isFill={true}
+                        onClick={this.onClickRotateLeft}
+                        style={{ display: "inline-block", marginLeft: "8px" }}
                     />
                 ]}
                 onClose={this.onClose}

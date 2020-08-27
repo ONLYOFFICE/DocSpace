@@ -352,8 +352,8 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
 
         public ILog Log { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public TenantUtil TenantUtil { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private TenantUtil TenantUtil { get; }
         public SharePointProviderInfoHelper SharePointProviderInfoHelper { get; }
 
         public Folder GetFolderById(object id)

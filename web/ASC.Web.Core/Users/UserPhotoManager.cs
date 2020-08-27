@@ -195,13 +195,13 @@ namespace ASC.Web.Core.Users
 
         private static readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
 
-        public UserManager UserManager { get; }
-        public WebImageSupplier WebImageSupplier { get; }
-        public TenantManager TenantManager { get; }
-        public StorageFactory StorageFactory { get; }
-        public UserPhotoManagerCache UserPhotoManagerCache { get; }
-        public SettingsManager SettingsManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private UserManager UserManager { get; }
+        private WebImageSupplier WebImageSupplier { get; }
+        private TenantManager TenantManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private UserPhotoManagerCache UserPhotoManagerCache { get; }
+        private SettingsManager SettingsManager { get; }
+        private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         private Tenant tenant;

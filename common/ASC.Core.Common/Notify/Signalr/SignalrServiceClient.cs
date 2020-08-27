@@ -45,10 +45,10 @@ namespace ASC.Core.Notify.Signalr
 {
     public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
     {
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        internal TenantManager TenantManager { get; }
+        internal CoreSettings CoreSettings { get; }
+        internal IConfiguration Configuration { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
 
         public ConfigureSignalrServiceClient(
             TenantManager tenantManager,
@@ -111,8 +111,8 @@ namespace ASC.Core.Notify.Signalr
 
         internal string hub;
 
-        public TenantManager TenantManager { get; internal set; }
-        public CoreSettings CoreSettings { get; internal set; }
+        internal TenantManager TenantManager { get; set; }
+        internal CoreSettings CoreSettings { get; set; }
 
         static SignalrServiceClient()
         {
@@ -397,7 +397,7 @@ namespace ASC.Core.Notify.Signalr
         {
             if (services.TryAddScoped<SignalrServiceClient>())
             {
-                services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
+                services.TryAddScoped<IConfigureNamedOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
 
                 return services
                     .AddTenantManagerService()

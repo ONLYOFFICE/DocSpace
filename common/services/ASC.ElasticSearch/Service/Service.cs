@@ -43,8 +43,8 @@ namespace ASC.ElasticSearch.Service
     public class Service
     {
         public IContainer Container { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public ICacheNotify<ReIndexAction> CacheNotify { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<ReIndexAction> CacheNotify { get; }
 
         public Service(IContainer container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {

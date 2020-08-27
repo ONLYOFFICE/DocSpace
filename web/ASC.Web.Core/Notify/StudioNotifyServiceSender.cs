@@ -48,8 +48,8 @@ namespace ASC.Web.Studio.Core.Notify
     {
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
-        public IServiceProvider ServiceProvider { get; }
-        public IConfiguration Configuration { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IConfiguration Configuration { get; }
 
         public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
         {

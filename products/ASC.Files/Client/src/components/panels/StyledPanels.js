@@ -16,9 +16,22 @@ const PanelStyles = css`
 `;
 
 const StyledAsidePanel = styled.div`
+  z-index: 310;
+  .modal-dialog-aside {
+    padding: 0;
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+    width: 500px;
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
+  }
+
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
+    overflow-y: hidden;
 
     @media (max-width: 550px) {
       width: 320px;
@@ -72,14 +85,10 @@ const StyledContent = styled.div`
   position: relative;
   width: 100%;
   background-color: #fff;
-  padding: 0 16px 16px;
+  padding: 0 16px;
 
   .files-operations-panel {
     border-bottom: 1px solid #dee2e6;
-  }
-
-  .files-operations-body {
-    padding: 16px 0;
   }
 
   .header_aside-panel-header {
@@ -112,13 +121,33 @@ const StyledBody = styled.div`
       padding: 0 0 16px 0;
       width: 470px;
 
+      .header-options {
+        .combo-button-label {
+          max-width: 435px;
+
+          @media (max-width: 550px) {
+            width: 255px;
+          }
+        }
+      }
+
+      .row-option {
+        .option_checkbox {
+          width: 440px;
+
+          @media (max-width: 550px) {
+            width: 265px;
+          }
+        }
+      }
+
       @media (max-width: 550px) {
         width: 320px;
         padding: 0 28px 16px 0;
       }
 
       .body-options {
-        padding-top: 16px;
+        width: 100%;
       }
     }
     .footer {
@@ -234,6 +263,7 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing_panel-remove-icon {
     margin-left: auto;
+    line-height: 24px;
 
     svg {
       width: 16px;

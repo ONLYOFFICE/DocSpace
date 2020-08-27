@@ -14,8 +14,12 @@ import {
   UpdateUserForm
 } from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
-import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "ProfileAction",
+  localesPath: "pages/ProfileAction"
+});
 const { changeLanguage } = utils;
 
 class ProfileAction extends React.Component {
@@ -55,37 +59,52 @@ class ProfileAction extends React.Component {
       loaded = profile.userName === userId || profile.id === userId;
     }
 
-    const articleProps = isVisitor
-      ? {}
-      : {
-          articleHeaderContent: <ArticleHeaderContent />,
-          articleMainButtonContent: <ArticleMainButtonContent />,
-          articleBodyContent: <ArticleBodyContent />
-        };
-
-    const sectionProps = loaded
-      ? {
-          sectionHeaderContent: <SectionHeaderContent />,
-          sectionBodyContent: type ? <CreateUserForm /> : <UpdateUserForm />
-        }
-      : {
-          sectionBodyContent: (
-            <Loader className="pageLoader" type="rombs" size='40px' />
-          )
-        };
-
     return (
       <I18nextProvider i18n={i18n}>
-        <PageLayout {...articleProps} {...sectionProps} />
+        <PageLayout>
+          {!isVisitor && (
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+          )}
+          {!isVisitor && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
+          {!isVisitor && (
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent />
+            </PageLayout.ArticleBody>
+          )}
+
+          {loaded && (
+            <PageLayout.SectionHeader>
+              <SectionHeaderContent />
+            </PageLayout.SectionHeader>
+          )}
+
+          <PageLayout.SectionBody>
+            {loaded ? (
+              type ? (
+                <CreateUserForm />
+              ) : (
+                <UpdateUserForm />
+              )
+            ) : (
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            )}
+          </PageLayout.SectionBody>
+        </PageLayout>
       </I18nextProvider>
     );
   }
 }
 
 ProfileAction.propTypes = {
+  fetchProfile: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  profile: PropTypes.object,
-  fetchProfile: PropTypes.func.isRequired
+  profile: PropTypes.object
 };
 
 const ProfileActionTranslate = withTranslation()(ProfileAction);
@@ -102,9 +121,12 @@ const ProfileActionContainer = props => {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
     isVisitor: state.auth.user.isVisitor,
+    profile: state.profile.targetUser
   };
 }
 
-export default connect(mapStateToProps, { fetchProfile })(ProfileActionContainer);
+export default connect(
+  mapStateToProps,
+  { fetchProfile }
+)(ProfileActionContainer);

@@ -35,6 +35,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Notify.Signalr;
 using ASC.Feed.Aggregator.Modules;
 using ASC.Feed.Configuration;
 using ASC.Feed.Data;
@@ -51,7 +52,7 @@ namespace ASC.Feed.Aggregator
     public class FeedAggregatorService : IHostedService
     {
         private ILog Log { get; set; }
-        //private static readonly SignalrServiceClient signalrServiceClient = new SignalrServiceClient("counters");//TODO
+        private SignalrServiceClient SignalrServiceClient { get; }
 
         private Timer aggregateTimer;
         private Timer removeTimer;
@@ -60,20 +61,24 @@ namespace ASC.Feed.Aggregator
         private readonly object aggregateLock = new object();
         private readonly object removeLock = new object();
 
-        public IConfiguration Configuration { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IConfiguration Configuration { get; }
+        private IServiceProvider ServiceProvider { get; }
         public IContainer Container { get; }
 
         public FeedAggregatorService(
             IConfiguration configuration,
             IServiceProvider serviceProvider,
             IContainer container,
-            IOptionsMonitor<ILog> optionsMonitor)
+            IOptionsMonitor<ILog> optionsMonitor,
+            SignalrServiceClient signalrServiceClient,
+            IConfigureNamedOptions<SignalrServiceClient> configureOptions)
         {
             Configuration = configuration;
             ServiceProvider = serviceProvider;
             Container = container;
             Log = optionsMonitor.Get("ASC.Feed.Agregator");
+            SignalrServiceClient = signalrServiceClient;
+            configureOptions.Configure("counters", SignalrServiceClient);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -220,7 +225,7 @@ namespace ASC.Feed.Aggregator
                     }
                 }
 
-                //signalrServiceClient.SendUnreadUsers(unreadUsers);
+                SignalrServiceClient.SendUnreadUsers(unreadUsers);
 
                 Log.DebugFormat("Time of collecting news: {0}", DateTime.UtcNow - start);
             }
@@ -300,7 +305,8 @@ namespace ASC.Feed.Aggregator
                 .AddUserManagerService()
                 .AddSecurityContextService()
                 .AddAuthManager()
-                .AddFeedAggregateDataProvider();
+                .AddFeedAggregateDataProvider()
+                .AddSignalrServiceClient();
         }
     }
 }

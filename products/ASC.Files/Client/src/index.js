@@ -1,29 +1,55 @@
-import './wdyr';
+import "./wdyr";
 
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import axios from "axios";
 import store from "./store/store";
-import { fetchMyFolder, fetchTreeFolders, fetchFiles } from "./store/files/actions";
+import {
+  fetchMyFolder,
+  fetchTreeFolders,
+  fetchFiles
+} from "./store/files/actions";
 import config from "../package.json";
 import "./custom.scss";
 import App from "./App";
 
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, ErrorBoundary, api } from "asc-web-common";
+import {
+  store as commonStore,
+  constants,
+  ErrorBoundary,
+  api
+} from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
-const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures } = commonStore.auth.actions;
+const {
+  setIsLoaded,
+  getUser,
+  getPortalSettings,
+  getModules,
+  setCurrentProductId,
+  setCurrentProductHomePage,
+  getPortalPasswordSettings,
+  getPortalCultures
+} = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 const { FilesFilter } = api;
 
 const token = localStorage.getItem(AUTH_KEY);
 
 if (token) {
-  getUserInfo(store.dispatch)
-    .then(() => getPortalPasswordSettings(store.dispatch))
-    .then(() => getPortalCultures(store.dispatch))
-    .then(() => fetchMyFolder(store.dispatch))
-    .then(() => fetchTreeFolders(store.dispatch))
+  const requests = [
+    getUser(store.dispatch),
+    getPortalSettings(store.dispatch),
+    getModules(store.dispatch),
+    getPortalPasswordSettings(store.dispatch),
+    getPortalCultures(store.dispatch),
+    fetchMyFolder(store.dispatch),
+    fetchTreeFolders(store.dispatch)
+  ];
+
+  axios
+    .all(requests)
     .then(() => {
       const reg = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
       const match = window.location.pathname.match(reg);
@@ -45,7 +71,7 @@ if (token) {
       if (filter && filter.authorType) {
         const filterObj = filter;
         const authorType = filterObj.authorType;
-        const indexOfUnderscore = authorType.indexOf('_');
+        const indexOfUnderscore = authorType.indexOf("_");
         const type = authorType.slice(0, indexOfUnderscore);
         const itemId = authorType.slice(indexOfUnderscore + 1);
 
@@ -55,8 +81,7 @@ if (token) {
             itemId,
             filter: filterObj
           };
-        }
-        else {
+        } else {
           filterObj.authorType = null;
           dataObj = filterObj;
         }
@@ -69,11 +94,11 @@ if (token) {
 
       const { filter, itemId, type } = data;
       const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
-      
+
       switch (type) {
-        case 'group':
+        case "group":
           return Promise.all([api.groups.getGroup(itemId), newFilter]);
-        case 'user':
+        case "user":
           return Promise.all([api.people.getUserById(itemId), newFilter]);
         default:
           return Promise.resolve(newFilter);
@@ -81,7 +106,7 @@ if (token) {
     })
     .catch(err => {
       Promise.resolve(FilesFilter.getDefault());
-      console.warn('Filter restored by default', err);
+      console.warn("Filter restored by default", err);
     })
     .then(data => {
       if (!data) return Promise.resolve();
@@ -89,10 +114,10 @@ if (token) {
 
       const result = data[0];
       const filter = data[1];
-      const type = result.displayName ? 'user' : 'group';
+      const type = result.displayName ? "user" : "group";
       const selectedItem = {
         key: result.id,
-        label: type === 'user' ? result.displayName : result.name,
+        label: type === "user" ? result.displayName : result.name,
         type
       };
       filter.selectedItem = selectedItem;
@@ -107,13 +132,14 @@ if (token) {
     })
     .then(() => {
       store.dispatch(setCurrentProductHomePage(config.homepage));
-      store.dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
+      store.dispatch(
+        setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4")
+      );
       store.dispatch(setIsLoaded(true));
     });
-}
-else {
+} else {
   store.dispatch(setIsLoaded(true));
-};
+}
 
 ReactDOM.render(
   <Provider store={store}>

@@ -41,9 +41,9 @@ namespace ASC.Web.Files.Helpers
     {
         private readonly ILog log;
 
-        public MessageTarget MessageTarget { get; }
-        public MessageService MessageService { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private MessageTarget MessageTarget { get; }
+        private MessageService MessageService { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public FilesMessageService(
             IOptionsMonitor<ILog> options,

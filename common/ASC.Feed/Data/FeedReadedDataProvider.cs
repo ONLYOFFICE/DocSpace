@@ -40,9 +40,9 @@ namespace ASC.Feed.Data
     {
         private const string dbId = Constants.FeedDbId;
 
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public FeedDbContext FeedDbContext { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private FeedDbContext FeedDbContext { get; }
 
         public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbContextManager<FeedDbContext> dbContextManager)
         {

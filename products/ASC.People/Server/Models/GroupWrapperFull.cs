@@ -67,8 +67,8 @@ namespace ASC.Web.Api.Models
 
     public class GroupWraperFullHelper
     {
-        public UserManager UserManager { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private UserManager UserManager { get; }
+        private EmployeeWraperHelper EmployeeWraperHelper { get; }
 
         public GroupWraperFullHelper(UserManager userManager, EmployeeWraperHelper employeeWraperHelper)
         {

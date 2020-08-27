@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, setNewRowItems } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
@@ -35,6 +35,11 @@ const SimpleFilesRowContent = styled(RowContent)`
 .share-icon {
   margin-top: -4px;
   padding-right: 8px;
+}
+
+.row_update-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 `;
 
@@ -67,7 +72,7 @@ class FilesRowContent extends React.PureComponent {
       editingId: props.fileAction.id,
       showNewFilesPanel: false,
       newFolderId: [],
-      newItems: props.item.new,
+      newItems: props.item.new || props.item.fileStatus === 2,
       showConvertDialog: false
       //loading: false
     };
@@ -112,7 +117,16 @@ class FilesRowContent extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { fileAction } = this.props;
+    const { fileAction, item, newRowItems, setNewRowItems } = this.props;
+    const itemId = item.id.toString();
+
+    if(newRowItems.length && newRowItems.includes(itemId)) {
+      const rowItems = newRowItems.filter(x => x !== itemId)
+      if(this.state.newItems !== 0) {
+        this.setState({newItems: 0}, () => setNewRowItems(rowItems));
+      }
+    }
+
     if (fileAction) {
       if (fileAction.id !== prevProps.fileAction.id) {
         this.setState({ editingId: fileAction.id })
@@ -133,17 +147,6 @@ class FilesRowContent extends React.PureComponent {
     (this.props.fileAction.type === FileAction.Create)
       ? this.createItem()
       : this.updateItem();
-  }
-
-  onKeyUpUpdateItem = e => {
-    if (e.keyCode === 13) {
-      (this.props.fileAction.type === FileAction.Create)
-        ? this.createItem()
-        : this.updateItem();
-    }
-
-    if (e.keyCode === 27)
-      return this.cancelUpdateItem()
   }
 
   onFilesClick = () => {
@@ -225,16 +228,17 @@ class FilesRowContent extends React.PureComponent {
 
   onBadgeClick = () => {
     const { showNewFilesPanel } = this.state;
-    const { item, treeFolders, setTreeFolders, rootFolderId, newItems, filter } = this.props;
+    const { item, treeFolders, setTreeFolders, rootFolderId, newItems, setNewRowItems, setNewTreeFilesBadge } = this.props;
     if (item.fileExst) {
       api.files
         .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
           const dataItem = data.find((x) => x.id === rootFolderId);
-          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
+          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
+          setNewTreeFilesBadge(true);
           setTreeFolders(data);
-          fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
+          setNewRowItems([`${item.id}`]);
         })
         .catch((err) => toastr.error(err))
     } else {
@@ -301,7 +305,8 @@ class FilesRowContent extends React.PureComponent {
       foldersCount,
       fileStatus,
       id,
-      versionGroup
+      versionGroup,
+      locked
     } = item;
 
     const titleWithoutExt = getTitleWithoutExst(item);
@@ -312,7 +317,7 @@ class FilesRowContent extends React.PureComponent {
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
-    const showNew = item.new && item.new > 0;
+    const showNew = !!newItems;
 
     return isEdit
       ? <EditingWrapperComponent
@@ -321,7 +326,6 @@ class FilesRowContent extends React.PureComponent {
         okIcon={okIcon}
         cancelIcon={cancelIcon}
         renameTitle={this.renameTitle}
-        onKeyUpUpdateItem={this.onKeyUpUpdateItem}
         onClickUpdateItem={this.onClickUpdateItem}
         cancelUpdateItem={this.cancelUpdateItem}
         itemId={id}
@@ -353,7 +357,7 @@ class FilesRowContent extends React.PureComponent {
               containerWidth='100%'
               type='page'
               title={titleWithoutExt}
-              fontWeight="bold"
+              fontWeight="600"
               fontSize='15px'
               {...linkStyles}
               color="#333"
@@ -401,7 +405,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#3B72A7'
                     />
                   }
-                  {false &&
+                  {locked &&
                     <Icons.FileActionsLockedIcon
                       className='badge'
                       size='small'
@@ -424,7 +428,7 @@ class FilesRowContent extends React.PureComponent {
                       data-id={id}
                     />
                   }
-                  {fileStatus === 2 &&
+                  {showNew &&
                     <Badge
                       className='badge-version'
                       backgroundColor="#ED7309"
@@ -442,7 +446,7 @@ class FilesRowContent extends React.PureComponent {
                 </div>
                 :
                 <div className='badges'>
-                  {!!showNew &&
+                  {showNew &&
                     <Badge
                       className='badge-version'
                       backgroundColor="#ED7309"
@@ -466,37 +470,36 @@ class FilesRowContent extends React.PureComponent {
               as="div"
               color="#333"
               fontSize='12px'
-              fontWeight={600}
+              fontWeight={400}
               title={fileOwner}
               truncate={true}
             >
               {fileOwner}
             </Text>
-            <Link
+            <Text
               containerMinWidth='190px'
               containerWidth='15%'
-              type='page'
               title={updatedDate}
               fontSize='12px'
               fontWeight={400}
               color="#333"
-              isTextOverflow={true}
+              className="row_update-text"
             >
               {updatedDate && updatedDate}
-            </Link>
+            </Text>
             <Text
               containerMinWidth='90px'
               containerWidth='8%'
               as="div"
               color="#333"
               fontSize='12px'
-              fontWeight={600}
+              fontWeight={400}
               title=''
               truncate={true}
             >
               {fileExst
                 ? contentLength
-                : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
+                : `${t("TitleDocuments")}: ${filesCount} | ${t("TitleSubfolders")}: ${foldersCount}`}
             </Text>
           </SimpleFilesRowContent>
         </>
@@ -505,7 +508,7 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders, folders } = state.files;
+  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging } = state.files;
   const { settings } = state.auth;
   const indexOfTrash = 3;
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
@@ -520,10 +523,12 @@ function mapStateToProps(state) {
     rootFolderId,
     newItems: selectedFolder.new,
     selectedFolder,
-    folders
+    folders,
+    newRowItems,
+    dragging
   }
 }
 
-export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setProgressBarData })(
+export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setProgressBarData, setNewTreeFilesBadge, setNewRowItems })(
   withRouter(withTranslation()(FilesRowContent))
 );

@@ -47,9 +47,9 @@ namespace ASC.Web.Core.Utility
             }
         }
 
-        public IConfiguration Configuration { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private IConfiguration Configuration { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
 
         public UrlShortener(IConfiguration configuration, ConsumerFactory consumerFactory, CommonLinkUtility commonLinkUtility)
         {
@@ -66,7 +66,7 @@ namespace ASC.Web.Core.Utility
             ConsumerFactory = consumerFactory;
         }
 
-        public ConsumerFactory ConsumerFactory { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public string GetShortenLink(string shareLink)
         {
@@ -91,7 +91,7 @@ namespace ASC.Web.Core.Utility
             CommonLinkUtility = commonLinkUtility;
         }
 
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
 
         public string GetShortenLink(string shareLink)
         {

@@ -44,14 +44,14 @@ namespace ASC.Web.Files
 {
     public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     {
-        public ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public PathProvider PathProvider { get; }
+        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private PathProvider PathProvider { get; }
 
         public FilesSpaceUsageStatManager(
             DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
@@ -125,8 +125,8 @@ namespace ASC.Web.Files
 
     public class FilesUserSpaceUsage : IUserSpaceUsage
     {
-        public ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
-        public TenantManager TenantManager { get; }
+        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
+        private TenantManager TenantManager { get; }
 
         public FilesUserSpaceUsage(
             DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,

@@ -4,33 +4,45 @@ import {
   TreeNode,
   Icons,
   Link,
+  Text,
   utils
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElement } from '../../../utils';
+import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElement, getCurrentSettingsCategory } from '../../../utils';
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
       font-size: inherit;
       font-weight: inherit;
+      color: #657077;
+
+      &.header{
+        font-weight: bold;
+        text-transform: uppercase;
+        pointer-events: none;
+      }
+  }
+
+  .rc-tree-node-content-wrapper-open{
+    pointer-events:none;
   }
 `;
 
 const getTreeItems = (data, path, t) => {
   return data.map(item => {
-    if (item.children && item.children.length) {
-      const link = path + getSelectedLinkByKey(item.key, settingsTree);
+    if (item.children && item.children.length && !item.isCategory) {
       return (
         <TreeNode
-          title={<Link className='inherit-title-link' href={link}>{t(item.tKey)}</Link>}
+          title={<Text className='inherit-title-link header'>{t(item.tKey)}</Text>}
           key={item.key}
           icon={item.icon && React.createElement(Icons[item.icon], {
             size: 'scale',
             isfill: true,
             color: 'dimgray',
           })}
+          disableSwitch={true}
         >
           {getTreeItems(item.children, path, t)}
         </TreeNode>
@@ -46,6 +58,7 @@ const getTreeItems = (data, path, t) => {
           isfill: true,
           color: 'dimgray',
         })}
+        disableSwitch={true}
       />
     );
   });
@@ -57,20 +70,8 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { match, history } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
-
-    if (locationPathname === fullSettingsUrl) {
-      const defaultKey = ['0'];
-      const rightKey = selectKeyOfTreeElement(defaultKey[0], settingsTree)
-      const newPath = match.path + getSelectedLinkByKey(rightKey[0], settingsTree);
-      history.push(newPath);
-      this.state = {
-        selectedKeys: rightKey
-      };
-      return;
-    }
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
@@ -84,18 +85,14 @@ class ArticleBodyContent extends React.Component {
     else if(selectedItem === "accessrights") {
       link = `/${resultPath}/owner`;
     }
+    const CurrentSettingsCategoryKey = getCurrentSettingsCategory(arrayOfParams, settingsTree);
 
-    const key = getKeyByLink(arrayOfParams, settingsTree);
-    const rightKey = selectKeyOfTreeElement([key], settingsTree)
     if(link === "") {
-      link = getSelectedLinkByKey(rightKey[0], settingsTree) 
+      link = getSelectedLinkByKey(CurrentSettingsCategoryKey, settingsTree) 
     }
 
-    const path = match.path + link;
-    history.push(path);
-
     this.state = {
-      selectedKeys: rightKey
+      selectedKeys: [CurrentSettingsCategoryKey]
     };
   }
 
@@ -116,8 +113,7 @@ class ArticleBodyContent extends React.Component {
       return;
     }
 
-    const key = selectKeyOfTreeElement(value, settingsTree);
-    this.setState({ selectedKeys: key });
+    this.setState({ selectedKeys: value });
   };
 
   switcherIcon = obj => {
@@ -139,8 +135,6 @@ class ArticleBodyContent extends React.Component {
     const { selectedKeys } = this.state;
     const { match, t } = this.props;
 
-    console.log("SettingsTreeMenu", this.props);
-
     return (
       <StyledTreeMenu
         className="people-tree-menu"
@@ -153,6 +147,7 @@ class ArticleBodyContent extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
+        disableSwitch={true}
       >
         {getTreeItems(settingsTree, match.path, t)}
       </StyledTreeMenu>

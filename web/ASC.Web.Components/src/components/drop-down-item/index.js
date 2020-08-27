@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
+import Text from '../text'
 import { tablet } from '../../utils/device'
 
 const itemTruncate = css`
@@ -25,7 +26,7 @@ const disabledAndHeaderStyle = css`
 `;
 
 const StyledDropdownItem = styled.div`
-    display: block;
+    display: flex;
     width: 100%;
     max-width: 500px;
     border: 0px;
@@ -58,7 +59,7 @@ const StyledDropdownItem = styled.div`
     ${props => props.isSeparator && 
       `
         padding: 0px 16px;
-        border: 0.5px solid #ECEEF1;
+        border: 1px solid #ECEEF1;
         cursor: default;
         margin: 6px 16px 6px;
         line-height: 1px;
@@ -87,8 +88,7 @@ const StyledDropdownItem = styled.div`
     ${props => props.disabled && disabledAndHeaderStyle }
 `;
 
-const IconWrapper = styled.span`
-    display: inline-block;
+const IconWrapper = styled.div`
     width: 16px;
     margin-right: 8px;
     line-height: 14px;
@@ -110,7 +110,7 @@ const DropDownItem = props => {
           {React.createElement(Icons[icon], { size: "scale", color: color, isfill: true })}
         </IconWrapper>
       }
-      {isSeparator ? '\u00A0' : label ? label : children && children}
+      {isSeparator ? '\u00A0' : label ? label  : children && children}
     </StyledDropdownItem>
   );
 };

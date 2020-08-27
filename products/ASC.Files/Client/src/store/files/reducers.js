@@ -17,7 +17,13 @@ import {
   SET_DRAG_ITEM,
   SET_MEDIA_VIEWER_VISIBLE,
   SET_PROGRESS_BAR_DATA,
-  SET_CONVERT_DIALOG_VISIBLE
+  SET_CONVERT_DIALOG_VISIBLE,
+  SET_NEW_TREE_FILES,
+  SET_NEW_ROW_ITEMS,
+  SET_SELECTED_NODE,
+  SET_EXPAND_SETTINGS_TREE,
+  SET_IS_LOADING,
+  SET_THIRD_PARTY
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -39,7 +45,16 @@ const initialState = {
   dragItem: null,
   mediaViewerData: { visible: false, id: null },
   progressData: { percent: 0, label: "", visible: false },
-  convertDialogVisible: false
+  convertDialogVisible: false,
+  updateTreeNew: false,
+  newRowItems: [],
+  selectedTreeNode: [],
+  isLoading: false,
+  settingsTree: {
+    thirdParty: false,
+    expandedSetting: []
+  }
+  
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -129,6 +144,34 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible
       });
+    case SET_NEW_TREE_FILES: 
+      return Object.assign({}, state, {
+        updateTreeNew: action.updateTreeNew
+      });
+    case SET_NEW_ROW_ITEMS: 
+      return Object.assign({}, state, {
+        newRowItems: action.newRowItems
+      });
+    case SET_SELECTED_NODE: 
+      if ( action.node[0] ) {
+        return Object.assign({}, state, {
+          selectedTreeNode: action.node
+        }) 
+      } else {
+        return state;
+      }
+    case SET_EXPAND_SETTINGS_TREE:
+      return Object.assign({}, state, {
+        settingsTree: { ...state.settingsTree , expandedSetting: action.setting }
+      })
+    case SET_IS_LOADING:
+      return Object.assign({}, state, {
+        isLoading: action.isLoading
+      })
+    case SET_THIRD_PARTY:
+      return Object.assign({}, state, {
+        settingsTree: { ...state.settingsTree, thirdParty: action.data }
+      })
     default:
       return state;
   }

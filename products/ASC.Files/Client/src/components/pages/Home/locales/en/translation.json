@@ -93,5 +93,7 @@
   "FinalizeVersion": "Finalize version",
   "Convert": "Convert",
   "Duplicate": "Create a copy",
-  "CopyOperation": "Copying"
+  "CopyOperation": "Copying",
+  "UnblockVersion": "Unblock/Check-in",
+  "AddFilter": "Add filter"
 }

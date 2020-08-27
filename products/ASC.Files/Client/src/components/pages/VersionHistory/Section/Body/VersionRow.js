@@ -52,8 +52,16 @@ const StyledRow = styled(Row)`
     white-space: break-spaces;
 
     @media ${tablet} {
-      display: block;
+      display: none;
       text-decoration: none;
+    }
+  }
+
+  .version_text {
+    display: none;
+
+    @media ${tablet} {
+      display: block;
     }
   }
 
@@ -92,9 +100,10 @@ const StyledRow = styled(Row)`
 `;
 
 const VersionRow = props => {
-  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion } = props;
+  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion, t, getFileVersions } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
-  const [commentValue, setCommentValue] = useState(info.comment);  
+  const [commentValue, setCommentValue] = useState(info.comment);
+  const [displayComment, setDisplayComment] = useState(info.comment);
 
   const VersionBadge = (props) => (
     <Box {...props} marginProp="0 8px" displayProp="flex">
@@ -132,17 +141,18 @@ const VersionRow = props => {
 
   const linkStyles = { isHovered: true, type: "action" };
 
-  const download = "Download";
-  const restore = "Restore";
-  const save = "Save";
-  const cancel = "Cancel";
-  const editComment = "Edit comment";
-
-  const onDownloadAction = () => window.open(info.viewUrl);
+  const onDownloadAction = () => window.open(`${info.viewUrl}&version=${info.version}`);
   const onEditComment = () => setShowEditPanel(!showEditPanel);
 
   const onChange = e => setCommentValue(e.target.value);
-  const onSaveClick = () => console.log('onSaveClick server');
+
+  const onSaveClick = () =>
+    api.files
+      .versionEditComment(info.id, commentValue, info.version)
+      .then(() => setDisplayComment(commentValue))
+      .catch((err) => toastr.error(err))
+      .finally(() => onEditComment());
+
   const onCancelClick = () => {
     setCommentValue(info.comment);
     setShowEditPanel(!showEditPanel);
@@ -150,45 +160,28 @@ const VersionRow = props => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    console.log("onRestoreClick");
-    /*const fileId = info.id;
-
     onLoading(true);
-
     api.files
-      .finalizeVersionTest(fileId, info.version)
-      .then((data) => {
-        return fetchFiles(
-          selectedFolderId,
-          filter,
-          store.dispatch
-        ).catch((err) => toastr.error(err));
-      })
-      .finally(() => onLoading(false));*/
+      .versionRestore(info.id, info.version)
+      .then(() => getFileVersions(info.id))
+      .catch((err) => toastr.error(err))
+      .finally(() => onLoading(false));
   }
 
-  const onVersionClick = (e) => {
-    console.log("onVersionClick");
-    /*const fileId = info.id;
-
+  const onVersionClick = () => {
     onLoading(true);
-
     api.files
-      .finalizeVersionTest(fileId, info.version)
-      .then((data) => {
-        return fetchFiles(
-          selectedFolderId,
-          filter,
-          store.dispatch
-        ).catch((err) => toastr.error(err));
-      })
-      .finally(() => onLoading(false));*/
+      .markAsVersion(info.id, isVersion, info.version)
+      .then(() => getFileVersions(info.id))
+      .catch((err) => toastr.error(err))
+      .finally(() => onLoading(false));
   }
 
 
   const contextOptions = [
-    { key: download, label: download, onClick: onDownloadAction },
-    { key: restore, label: restore, onClick: () => console.log(restore) },
+    { key: 'edit', label: t('EditComment'), onClick: onEditComment },
+    { key: 'restore', label: t('Restore'), onClick: onRestoreClick },
+    { key: 'download', label: `${t('Download')}(${info.contentLength})`, onClick: onDownloadAction },
   ];
 
   return (
@@ -223,7 +216,7 @@ const VersionRow = props => {
                   displayType="aside"
                   visible={showEditPanel}
                   onClose={onEditComment}
-                  headerContent={editComment}
+                  headerContent={t('EditComment')}
                   bodyContent={
                     <Textarea
                       //className="version_edit-comment"
@@ -236,7 +229,7 @@ const VersionRow = props => {
                   footerContent={
                     <Button
                       className="version_save-button"
-                      label={save}
+                      label={t('AddButton')}
                       size="medium"
                       primary
                       onClick={onSaveClick}
@@ -247,8 +240,9 @@ const VersionRow = props => {
             </>
           )}
             <Link onClick={onEditComment} className="version_link">
-              {info.comment}
+              {displayComment}
             </Link>
+            <Text className="version_text">{displayComment}</Text>
           </>
 
           <Link
@@ -256,20 +250,20 @@ const VersionRow = props => {
             {...linkStyles}
             className="version_link-action"
           >
-            {restore}
+            {t('Restore')}
           </Link>
           <Link
             onClick={onDownloadAction}
             {...linkStyles}
             className="version_link-action"
           >
-            {download}
+            {t('Download')}
           </Link>
         </Box>
         {showEditPanel && (
             <Box className="version_edit-comment" marginProp='8px 0 16px 70px'>
-              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={save}/>
-              <Button size='medium' onClick={onCancelClick} label={cancel} />
+              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={t('AddButton')}/>
+              <Button size='medium' onClick={onCancelClick} label={t('CancelButton')} />
             </Box>
         )}
       </>
@@ -287,5 +281,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { fetchFiles })(withRouter(withTranslation()(VersionRow)));
-//export default VersionRow;
+export default connect(mapStateToProps, { })(withRouter(withTranslation()(VersionRow)));

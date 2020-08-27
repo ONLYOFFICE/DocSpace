@@ -11,11 +11,22 @@ import {
   Scrollbar
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
-import { fetchFiles, setTreeFolders, getProgress, setProgressBarData, clearProgressData } from "../../../store/files/actions";
+import {
+  fetchFiles,
+  setTreeFolders,
+  getProgress,
+  setProgressBarData,
+  clearProgressData,
+  setNewTreeFilesBadge
+} from "../../../store/files/actions";
 import { loopTreeFolders } from "../../../store/files/selectors";
 import store from "../../../store/store";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "DeleteDialog",
+  localesPath: "dialogs/DeleteDialog"
+});
 
 const { files } = api;
 const { changeLanguage } = utils;
@@ -44,34 +55,53 @@ class DeleteDialogComponent extends React.Component {
   }
 
   loopDeleteOperation = id => {
-    const { currentFolderId, filter, treeFolders, setTreeFolders, isRecycleBinFolder, getProgress, setProgressBarData, t } = this.props;
+    const {
+      currentFolderId,
+      filter,
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      getProgress,
+      setProgressBarData,
+      t
+    } = this.props;
     const successMessage = "Files and folders was deleted";
-    getProgress().then(res => {
-      const currentProcess = res.find(x => x.id === id);
-      if(currentProcess && currentProcess.progress !== 100) {
-        setProgressBarData({ percent: currentProcess.progress, label: t("DeleteOperation"), visible: true });
-        setTimeout(() => this.loopDeleteOperation(id), 1000);
-      } else {
-        setProgressBarData({ percent: 100, label: t("DeleteOperation"), visible: true });
-        setTimeout(() => clearProgressData(store.dispatch), 5000);
-        fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
-          if (!isRecycleBinFolder) {
-            const path = data.selectedFolder.pathParts.slice(0);
-            const newTreeFolders = treeFolders;
-            const folders = data.selectedFolder.folders;
-            const foldersCount = data.selectedFolder.foldersCount;
-            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-            setTreeFolders(newTreeFolders);
-          }
-          toastr.success(successMessage);
-        })
-      }
-    })
-    .catch(err => {
-      toastr.error(err);
-      clearProgressData(store.dispatch);
-    })
-  }
+    getProgress()
+      .then(res => {
+        const currentProcess = res.find(x => x.id === id);
+        if (currentProcess && currentProcess.progress !== 100) {
+          setProgressBarData({
+            percent: currentProcess.progress,
+            label: t("DeleteOperation"),
+            visible: true
+          });
+          setTimeout(() => this.loopDeleteOperation(id), 1000);
+        } else {
+          setProgressBarData({
+            percent: 100,
+            label: t("DeleteOperation"),
+            visible: true
+          });
+          setTimeout(() => clearProgressData(store.dispatch), 5000);
+          fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
+            if (!isRecycleBinFolder) {
+              const path = data.selectedFolder.pathParts.slice(0);
+              const newTreeFolders = treeFolders;
+              const folders = data.selectedFolder.folders;
+              const foldersCount = data.selectedFolder.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+              this.props.setNewTreeFilesBadge(true);
+              setTreeFolders(newTreeFolders);
+            }
+            toastr.success(successMessage);
+          });
+        }
+      })
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(store.dispatch);
+      });
+  };
 
   onDelete = () => {
     const { isRecycleBinFolder, onClose, t, setProgressBarData } = this.props;
@@ -79,7 +109,6 @@ class DeleteDialogComponent extends React.Component {
 
     const deleteAfter = true; //Delete after finished
     const immediately = isRecycleBinFolder ? true : false; //Don't move to the Recycle Bin
-    
 
     const folderIds = [];
     const fileIds = [];
@@ -95,8 +124,12 @@ class DeleteDialogComponent extends React.Component {
     }
 
     onClose();
-    if(folderIds.length || fileIds.length) {
-      setProgressBarData({ visible: true, label: t("DeleteOperation"), percent: 0 });
+    if (folderIds.length || fileIds.length) {
+      setProgressBarData({
+        visible: true,
+        label: t("DeleteOperation"),
+        percent: 0
+      });
 
       files
         .removeFiles(folderIds, fileIds, deleteAfter, immediately)
@@ -107,7 +140,7 @@ class DeleteDialogComponent extends React.Component {
         .catch(err => {
           toastr.error(err);
           clearProgressData(store.dispatch);
-        })
+        });
     }
   };
 
@@ -247,6 +280,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { setTreeFolders, getProgress, setProgressBarData })(
-  withRouter(DeleteDialog)
-);
+export default connect(
+  mapStateToProps,
+  { setTreeFolders, getProgress, setProgressBarData, setNewTreeFilesBadge }
+)(withRouter(DeleteDialog));

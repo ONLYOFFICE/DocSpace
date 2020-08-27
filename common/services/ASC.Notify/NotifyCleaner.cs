@@ -45,7 +45,7 @@ namespace ASC.Notify
         private readonly ILog log;
         private readonly ManualResetEvent stop = new ManualResetEvent(false);
         public NotifyServiceCfg NotifyServiceCfg { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
         public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)

@@ -12,7 +12,8 @@ import {
   Row,
   RowContainer,
   toastr,
-  Link
+  Link,
+  DragAndDrop
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
@@ -20,7 +21,7 @@ import FilesTileContent from "./FilesTileContent";
 import TileContainer from './TileContainer';
 import Tile from './Tile';
 
-import { api, constants, MediaViewer, DragAndDrop } from 'asc-web-common';
+import { api, constants, MediaViewer } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,
@@ -37,7 +38,9 @@ import {
   setMediaViewerData,
   setProgressBarData,
   clearProgressData,
-  setSelection
+  setSelection,
+  setSelected,
+  setNewTreeFilesBadge
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -243,6 +246,7 @@ class SectionBodyContent extends React.Component {
             const folders = data.selectedFolder.folders;
             const foldersCount = data.selectedFolder.foldersCount;
             loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+            this.props.setNewTreeFilesBadge(true);
             setTreeFolders(newTreeFolders);
           }
           isFolder
@@ -307,6 +311,22 @@ class SectionBodyContent extends React.Component {
     history.push(`${settings.homepage}/${fileId}/history`);
   }
 
+  lockFile = () => {
+    const { selection, /*files,*/ selectedFolderId, filter, onLoading } = this.props;
+    const file = selection[0];
+
+    api.files.lockFile(file.id, !file.locked)
+      .then(res => {
+        /*const newFiles = files;
+        const indexOfFile = newFiles.findIndex(x => x.id === res.id);
+        newFiles[indexOfFile] = res;*/
+        onLoading(true);
+        fetchFiles(selectedFolderId, filter, store.dispatch)
+          .catch(err => toastr.error(err))
+          .finally(() => onLoading(false));
+      })
+  }
+
   finalizeVersion = (e) => {
     const { selectedFolderId, filter, onLoading } = this.props;
 
@@ -334,7 +354,7 @@ class SectionBodyContent extends React.Component {
     const folderIds = [];
     const fileIds = [];
     selection[0].fileExst ? fileIds.push(selection[0].id) : folderIds.push(selection[0].id);
-    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = false;
 
     setProgressBarData({ visible: true, percent: 0, label: t("CopyOperation")});
@@ -355,6 +375,7 @@ class SectionBodyContent extends React.Component {
         {
           key: "show-version-history",
           label: t("ShowVersionHistory"),
+          icon: 'HistoryIcon',
           onClick: this.showVersionHistory,
           disabled: false,
           "data-id": item.id
@@ -362,10 +383,18 @@ class SectionBodyContent extends React.Component {
         {
           key: "finalize-version",
           label: t("FinalizeVersion"),
+          icon: 'HistoryFinalizedIcon',
           onClick: this.finalizeVersion,
           disabled: false,
             "data-id": item.id,
             "data-version": item.version
+        },
+        {
+          key: "block-unblock-version",
+          label: t("UnblockVersion"),
+          icon: 'LockIcon',
+          onClick: this.lockFile,
+          disabled: false
         },
         {
           key: "sep2",
@@ -378,6 +407,7 @@ class SectionBodyContent extends React.Component {
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
+        icon: 'CatalogSharedIcon',
         onClick: this.onClickShare,
         disabled: isSharable
       },
@@ -385,12 +415,14 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "send-by-email",
           label: t("SendByEmail"),
+          icon: 'MailIcon',
           disabled: true
         }
         : null,
       {
         key: "link-for-portal-users",
         label: t("LinkForPortalUsers"),
+        icon: 'InvitationLinkIcon',
         onClick: this.onClickLinkForPortal,
         disabled: false
       },
@@ -403,6 +435,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "edit",
           label: t("Edit"),
+          icon: 'AccessEditIcon',
           onClick: this.onClickLinkEdit,
           disabled: false,
           'data-id': item.id
@@ -412,6 +445,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "preview",
           label: t("Preview"),
+          icon: 'EyeIcon',
           onClick: this.onClickLinkEdit,
           disabled: true,
           'data-id': item.id
@@ -421,6 +455,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "view",
           label: t("View"),
+          icon: 'EyeIcon',
           onClick: this.onMediaFileClick,
           disabled: false
         }
@@ -429,6 +464,7 @@ class SectionBodyContent extends React.Component {
         ? {
           key: "download",
           label: t("Download"),
+          icon: 'DownloadIcon',
           onClick: this.onClickDownload,
           disabled: false
         }
@@ -436,30 +472,35 @@ class SectionBodyContent extends React.Component {
       {
         key: "move",
         label: t("MoveTo"),
+        icon: 'DownloadAsIcon',
         onClick: this.onMoveAction,
         disabled: false
       },
       {
         key: "copy",
         label: t("Copy"),
+        icon: 'CopyIcon',
         onClick: this.onCopyAction,
         disabled: false
       },
       isFile && {
         key: "duplicate",
         label: t("Duplicate"),
+        icon: 'CopyIcon',
         onClick: this.onDuplicate,
         disabled: false
       },
       {
         key: "rename",
         label: t("Rename"),
+        icon: 'RenameIcon',
         onClick: this.onClickRename,
         disabled: false
       },
       {
         key: "delete",
         label: t("Delete"),
+        icon: 'CatalogTrashIcon',
         onClick: this.onClickDelete,
         disabled: false
       },
@@ -486,11 +527,13 @@ class SectionBodyContent extends React.Component {
 
   onContentRowSelect = (checked, file) => {
     if (!file) return;
+    const { selected, setSelected, selectFile, deselectFile } = this.props;
 
+    selected === 'close' && setSelected('none');
     if (checked) {
-      this.props.selectFile(file);
+      selectFile(file);
     } else {
-      this.props.deselectFile(file);
+      deselectFile(file);
     }
   };
 
@@ -781,30 +824,11 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  onDragEnter = (item, e) => {
-    const isCurrentItem = this.props.selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if (!item.fileExst && (!isCurrentItem || e.dataTransfer.items.length)) {
-      e.currentTarget.style.background = backgroundDragColor;
-    }
-  }
-
-  onDragLeave = (item, e) => {
-    const { selection, dragging, setDragging } = this.props;
-    const isCurrentItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-    if (!e.dataTransfer.items.length) {
-      e.currentTarget.style.background = "none";
-    } else if (!item.fileExst && !isCurrentItem) {
-      e.currentTarget.style.background = backgroundDragEnterColor;
-    }
-    if (dragging && !e.relatedTarget) { setDragging(false); }
-  }
-
-  onDrop = (item, e) => {
-    if (e.dataTransfer.items.length > 0 && !item.fileExst) {
+  onDrop = (item, items, e) => {
+    if (!item.fileExst) {
       const { setDragging, onDropZoneUpload } = this.props;
-      e.currentTarget.style.background = backgroundDragEnterColor;
       setDragging(false);
-      onDropZoneUpload(e, item.id);
+      onDropZoneUpload(items, e, item.id);
     }
   }
 
@@ -825,14 +849,17 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseDown = e => {
+    if(window.innerWidth < 1025 || e.target.tagName === "rect" || e.target.tagName === "path") {
+      return;
+    }
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
-    const label = e.target.getAttribute('label');
-    if (mouseButton || e.target.tagName !== "DIV" || label) { return; }
+    const label = e.currentTarget.getAttribute('label');
+    if (mouseButton || e.currentTarget.tagName !== "DIV" || label) { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
     const { selection, setDragging } = this.props;
 
-    const elem = e.target.closest('.draggable');
+    const elem = e.currentTarget.closest('.draggable');
     if (!elem) {
       return;
     }
@@ -1029,7 +1056,11 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  onSelectItem = item => this.props.setSelection([item]);
+  onSelectItem = item => {
+    const { selected, setSelected, setSelection } = this.props;
+    selected === 'close' && setSelected('none');
+    setSelection([item]);
+  }
 
   render() {
     const {
@@ -1150,8 +1181,6 @@ class SectionBodyContent extends React.Component {
                       <DragAndDrop
                         {...classNameProp}
                         onDrop={this.onDrop.bind(this, item)}
-                        onDragEnter={this.onDragEnter.bind(this, item)}
-                        onDragLeave={this.onDragLeave.bind(this, item)}
                         onMouseDown={this.onMouseDown}
                         dragging={dragging && isFolder && item.access < 2}
                         key={`dnd-key_${item.id}`}
@@ -1213,8 +1242,6 @@ class SectionBodyContent extends React.Component {
                       <DragAndDrop
                         {...classNameProp}
                         onDrop={this.onDrop.bind(this, item)}
-                        onDragEnter={this.onDragEnter.bind(this, item)}
-                        onDragLeave={this.onDragLeave.bind(this, item)}
                         onMouseDown={this.onMouseDown}
                         dragging={dragging && isFolder && item.access < 2}
                         key={`dnd-key_${item.id}`}
@@ -1316,7 +1343,7 @@ const mapStateToProps = state => {
     isAdmin: state.auth.user.isAdmin,
     mediaViewerVisible: mediaViewerData.visible,
     currentMediaFileId: mediaViewerData.id,
-    dragging
+    dragging,
   };
 };
 
@@ -1338,6 +1365,8 @@ export default connect(
     setDragItem,
     setMediaViewerData,
     setProgressBarData,
-    setSelection
+    setSelection,
+    setSelected,
+    setNewTreeFilesBadge
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

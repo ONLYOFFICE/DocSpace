@@ -150,7 +150,7 @@ class AvatarEditorBody extends React.Component {
         fr.readAsDataURL(acceptedFiles[0]);
         fr.onload = function () {
             var img = new Image();
-            img.onload= function () {
+            img.onload = function () {
                 var canvas = resizeImage.resize2Canvas(img, 1024, 1024);
                 var data = resizeImage.resize(canvas, 1024, 1024, resizeImage.JPEG);
                 _this.setState({
@@ -161,7 +161,7 @@ class AvatarEditorBody extends React.Component {
                 fetch(data)
                     .then(res => res.blob())
                     .then(blob => {
-                        const file = new File([blob], "File name",{ type: "image/jpg" })
+                        const file = new File([blob], "File name", { type: "image/jpg" })
                         _this.props.onLoadFile(file);
                     })
             };
@@ -179,7 +179,7 @@ class AvatarEditorBody extends React.Component {
     onImageChange = () => {
 
         const image = this.setEditorRef.current.getImage().toDataURL();
-        if(this.setEditorRef.current !== null){
+        if (this.setEditorRef.current !== null) {
             this.setState({
                 croppedImage: image
             });
@@ -193,7 +193,7 @@ class AvatarEditorBody extends React.Component {
     distance = (p1, p2) => {
         return (Math.sqrt(Math.pow((p1.clientX - p2.clientX), 2) + Math.pow((p1.clientY - p2.clientY), 2)));
     }
-    onTouchStart = (evt) =>{
+    onTouchStart = (evt) => {
         evt.preventDefault();
         var tt = evt.targetTouches;
         if (tt.length >= 2) {
@@ -208,7 +208,7 @@ class AvatarEditorBody extends React.Component {
         var tt = evt.targetTouches;
         if (this.scaling) {
             this.curr_scale = this.distance(tt[0], tt[1]) / this.dist * this.scale_factor;
-            
+
             this.setState({
                 scale: this.curr_scale < 1 ? 1 : this.curr_scale > 5 ? 5 : this.curr_scale
             });
@@ -274,6 +274,8 @@ class AvatarEditorBody extends React.Component {
         this.setState({
             rotate: this.state.rotate - 90,
         })
+    }
+    onSaveImage(callback) {
         var img = new Image();
         var _this = this;
         img.src = this.state.image;
@@ -283,28 +285,28 @@ class AvatarEditorBody extends React.Component {
             canvas.setAttribute('height', img.width);
             var context = canvas.getContext('2d');
 
-            context.translate(canvas.width/2,canvas.height/2);
-            context.rotate(-90 * Math.PI / 180);
-            context.drawImage(img,-img.width/2,-img.height/2);
+            context.translate(canvas.width / 2, canvas.height / 2);
+            context.rotate(this.state.rotate * Math.PI / 180);
+            context.drawImage(img, -img.width / 2, -img.height / 2);
 
-            var rotatedImageSrc =  canvas.toDataURL("image/jpeg");
+            var rotatedImageSrc = canvas.toDataURL("image/jpeg");
             fetch(rotatedImageSrc)
                 .then(res => res.blob())
                 .then(blob => {
-                    const file = new File([blob], "File name",{ type: "image/jpg" })
-                    _this.props.onLoadFile(file);
+                    const file = new File([blob], "File name", { type: "image/jpg" })
+                    _this.props.onLoadFile(file, callback);
                 })
         }
     }
-    componentDidUpdate(prevProps){
-        if(prevProps.image !== this.props.image){
-            setTimeout(()=>{
+    componentDidUpdate(prevProps) {
+        if (prevProps.image !== this.props.image) {
+            setTimeout(() => {
                 this.setState({
                     image: this.props.image,
                     rotate: 0
                 });
-            },0);
-        }else if(!prevProps.visible && this.props.visible){
+            }, 0);
+        } else if (!prevProps.visible && this.props.visible) {
             this.setState({
                 image: this.props.image ? this.props.image : "",
                 rotate: 0
@@ -360,15 +362,6 @@ class AvatarEditorBody extends React.Component {
                                 max='5'
                                 step='0.01'
                                 value={this.state.scale}
-                            />
-                            <IconButton
-                                iconName="RotateIcon"
-                                color="#A3A9AE"
-                                size="25"
-                                hoverColor="#657077"
-                                isFill={true}
-                                onClick={this.rotateLeft}
-                                className="arrow-button"
                             />
                             <CloseButton onClick={this.deleteImage}></CloseButton>
                         </div>

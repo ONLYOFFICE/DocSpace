@@ -47,8 +47,8 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class ThirdPartyAppHandler
     {
-        public RequestDelegate Next { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private RequestDelegate Next { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public ThirdPartyAppHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
@@ -67,8 +67,8 @@ namespace ASC.Web.Files.HttpHandlers
 
     public class ThirdPartyAppHandlerService
     {
-        public AuthContext AuthContext { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private AuthContext AuthContext { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
         private ILog Log { get; set; }
 
         public string HandlerPath { get; set; }

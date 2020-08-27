@@ -2,17 +2,17 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Text
-} from "asc-web-components";
+import { toastr, ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
-import { fetchPeople } from '../../../store/people/actions';
-import ModalDialogContainer from '../ModalDialogContainer';
+import { fetchPeople } from "../../../store/people/actions";
+import ModalDialogContainer from "../ModalDialogContainer";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "DeleteProfileEverDialog",
+  localesPath: "dialogs/DeleteProfileEverDialog"
+});
+
 const { deleteUser } = api.people;
 const { Filter } = api;
 const { changeLanguage } = utils;
@@ -31,20 +31,20 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const { onClose, filter, fetchPeople, user, t } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       deleteUser(user.id)
-        .then((res) => {
-          toastr.success(t('SuccessfullyDeleteUserInfoMessage'));
+        .then(res => {
+          toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
           return fetchPeople(filter);
         })
-        .catch((error) => toastr.error(error))
+        .catch(error => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
-    })
+    });
   };
 
   onReassignDataClick = () => {
     const { history, settings, user } = this.props;
-    history.push(`${settings.homepage}/reassign/${user.userName}`)
+    history.push(`${settings.homepage}/reassign/${user.userName}`);
   };
 
   render() {
@@ -57,37 +57,36 @@ class DeleteProfileEverDialogComponent extends React.Component {
         <ModalDialog
           visible={visible}
           onClose={onClose}
-          headerContent={t('Confirmation')}
+          headerContent={t("Confirmation")}
           bodyContent={
             <>
               <Text>
-                <Trans i18nKey='DeleteUserConfirmation' i18n={i18n}>
-                  {{ userCaption }} <strong>{{ user: user.displayName }}</strong> will be deleted.
-              </Trans>
+                <Trans i18nKey="DeleteUserConfirmation" i18n={i18n}>
+                  {{ userCaption }}{" "}
+                  <strong>{{ user: user.displayName }}</strong> will be deleted.
+                </Trans>
               </Text>
-              <Text>{t('NotBeUndone')}</Text>
-              <Text color="#c30" fontSize="18px" className='warning-text'>
-                {t('Warning')}
+              <Text>{t("NotBeUndone")}</Text>
+              <Text color="#c30" fontSize="18px" className="warning-text">
+                {t("Warning")}
               </Text>
-              <Text>
-                {t('DeleteUserDataConfirmation')}
-              </Text>
+              <Text>{t("DeleteUserDataConfirmation")}</Text>
             </>
           }
           footerContent={
             <>
               <Button
                 key="OKBtn"
-                label={t('OKButton')}
+                label={t("OKButton")}
                 size="medium"
                 primary={true}
                 onClick={this.onDeleteProfileEver}
                 isLoading={isRequestRunning}
               />
               <Button
-                className='button-dialog'
+                className="button-dialog"
                 key="ReassignBtn"
-                label={t('ReassignData')}
+                label={t("ReassignData")}
                 size="medium"
                 onClick={this.onReassignDataClick}
                 isDisabled={isRequestRunning}
@@ -100,7 +99,9 @@ class DeleteProfileEverDialogComponent extends React.Component {
   }
 }
 
-const DeleteProfileEverDialogTranslated = withTranslation()(DeleteProfileEverDialogComponent);
+const DeleteProfileEverDialogTranslated = withTranslation()(
+  DeleteProfileEverDialogComponent
+);
 
 const DeleteProfileEverDialog = props => (
   <DeleteProfileEverDialogTranslated i18n={i18n} {...props} />
@@ -122,4 +123,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchPeople })(withRouter(DeleteProfileEverDialog));
+export default connect(
+  mapStateToProps,
+  { fetchPeople }
+)(withRouter(DeleteProfileEverDialog));

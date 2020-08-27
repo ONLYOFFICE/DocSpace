@@ -55,10 +55,10 @@ namespace ASC.Notify.Textile
             MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
         }
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IConfiguration Configuration { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
 
         public void ApplyFormating(NoticeMessage message)
         {

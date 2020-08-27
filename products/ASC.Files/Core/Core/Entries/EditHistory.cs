@@ -149,10 +149,10 @@ namespace ASC.Files.Core
         }
 
         public ILog Logger { get; }
-        public TenantUtil TenantUtil { get; }
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private TenantUtil TenantUtil { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         public string ServerVersion;
     }
@@ -193,9 +193,9 @@ namespace ASC.Files.Core
             set { _name = value; }
         }
 
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
     }
 
     [DebuggerDisplay("{Author.Name}")]
@@ -224,7 +224,7 @@ namespace ASC.Files.Core
             }
         }
 
-        public TenantUtil TenantUtil { get; }
+        private TenantUtil TenantUtil { get; }
     }
 
     [DebuggerDisplay("{Version}")]

@@ -52,8 +52,8 @@
   "TitleUploaded": "Загружен",
   "TitleModified": "Обновлён",
   "TitleRemoved": "Удалён",
-  "TitleSubfolders": "Flds",
-  "TitleDocuments": "Dcs",
+  "TitleSubfolders": "Папки",
+  "TitleDocuments": "Файлы",
   "Share": "Общий доступ",
   "DownloadAs": "Скачать как",
   "More": "Больше",
@@ -93,5 +93,7 @@
   "FinalizeVersion": "Сформировать версию",
   "Convert": "Конвертация",
   "Duplicate": "Создать копию",
-  "CopyOperation": "Копирование"
+  "CopyOperation": "Копирование",
+  "UnblockVersion": "Заблокировать/Разблокировать",
+  "AddFilter": "Добавить фильтр"
 }

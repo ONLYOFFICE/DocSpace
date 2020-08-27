@@ -1,16 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import axios from "axios";
 import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, history, ErrorBoundary} from "asc-web-common";
+import {
+  store as commonStore,
+  constants,
+  history,
+  ErrorBoundary
+} from "asc-web-common";
+
 const {
-  getUserInfo,
+  getUser,
   getPortalSettings,
+  getModules,
   setIsLoaded
 } = commonStore.auth.actions;
+
 const { AUTH_KEY } = constants;
 
 const token = localStorage.getItem(AUTH_KEY);
@@ -20,7 +29,14 @@ if (!token) {
     .then(() => store.dispatch(setIsLoaded(true)))
     .catch(e => history.push(`/login/error=${e}`));
 } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-  getUserInfo(store.dispatch)
+  const requests = [
+    getUser(store.dispatch),
+    getPortalSettings(store.dispatch),
+    getModules(store.dispatch)
+  ];
+
+  axios
+    .all(requests)
     .then(() => store.dispatch(setIsLoaded(true)))
     .catch(e => history.push(`/login/error=${e}`));
 }

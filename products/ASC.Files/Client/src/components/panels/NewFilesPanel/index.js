@@ -16,8 +16,7 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, api } from "asc-web-common";
-import i18n from "./i18n";
-import { ReactSVG } from 'react-svg'
+import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -25,9 +24,27 @@ import {
   StyledBody,
   StyledFooter
 } from "../StyledPanels";
-import { getFileIcon, getFolderIcon, canWebEdit, isImage, isSound, isVideo } from "../../../store/files/selectors";
-import { fetchFiles, setMediaViewerData, setTreeFolders } from '../../../store/files/actions';
+import {
+  getFileIcon,
+  getFolderIcon,
+  canWebEdit,
+  isImage,
+  isSound,
+  isVideo
+} from "../../../store/files/selectors";
+import {
+  fetchFiles,
+  setMediaViewerData,
+  setTreeFolders,
+  setNewTreeFilesBadge,
+  setNewRowItems
+} from "../../../store/files/actions";
 import store from "../../../store/store";
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "NewFilesPanel",
+  localesPath: "panels/NewFilesPanel"
+});
 
 const { changeLanguage } = commonUtils;
 
@@ -45,10 +62,8 @@ class NewFilesPanelComponent extends React.Component {
     onLoading(true);
     api.files
       .getNewFiles(folderId[folderId.length - 1])
-      .then(files =>
-        this.setState({ files })
-      )
-      .catch((err) => toastr.error(err))
+      .then(files => this.setState({ files }))
+      .catch(err => toastr.error(err))
       .finally(() => onLoading(false));
   }
 
@@ -60,7 +75,7 @@ class NewFilesPanelComponent extends React.Component {
 
     return (
       <ReactSVG
-        beforeInjection={(svg) => {
+        beforeInjection={svg => {
           svg.setAttribute("style", "margin-top: 4px");
           isEdit && svg.setAttribute("style", "margin-left: 24px");
         }}
@@ -76,9 +91,11 @@ class NewFilesPanelComponent extends React.Component {
 
     const folderIds = [];
     const fileIds = [];
+    const itemsIds = [];
 
-    for(let item of this.state.files) {
-      if(item.fileExst) {
+    for (let item of this.state.files) {
+      itemsIds.push(`${item.id}`);
+      if (item.fileExst) {
         fileIds.push(item.id);
       } else {
         folderIds.push(item.id);
@@ -87,7 +104,11 @@ class NewFilesPanelComponent extends React.Component {
 
     api.files
       .markAsRead(folderIds, fileIds)
-      .then(() => this.setNewFilesCount(folderId, markAsReadFiles))
+      .then(() => {
+        this.props.setNewTreeFilesBadge(true);
+        this.setNewFilesCount(folderId, markAsReadFiles);
+        this.props.setNewRowItems(itemsIds);
+      })
       .catch(err => toastr.error(err))
       .finally(() => onClose());
   };
@@ -100,35 +121,32 @@ class NewFilesPanelComponent extends React.Component {
 
     isFile ? fileId.push(item.id) : folderIds.push(item.id);
 
-    //onLoading(true);
-
-    //api.files.markAsRead([], [])
-    api.files.markAsRead(folderIds, fileId)
+    api.files
+      .markAsRead(folderIds, fileId)
       .then(() => {
+        this.props.setNewTreeFilesBadge(true);
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
       })
       .catch(err => toastr.error(err))
       .finally(() => {
         !isFile && onClose();
-        //onLoading(false);
       });
-  }
+  };
 
   onFilesClick = item => {
     const { id, fileExst, viewUrl } = item;
     const { filter, setMediaViewerData } = this.props;
-    if (!fileExst) {
 
-      fetchFiles(id, filter, store.dispatch)
-        .catch(err => toastr.error(err))
+    if (!fileExst) {
+      fetchFiles(id, filter, store.dispatch).catch(err => toastr.error(err));
     } else {
       if (canWebEdit(fileExst)) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
       }
 
-      const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
-
+      const isOpenMedia =
+        isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
       if (isOpenMedia) {
         const mediaItem = { visible: true, id };
         setMediaViewerData(mediaItem);
@@ -140,48 +158,56 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const { treeFolders, setTreeFolders, folders, files, filter } = this.props;
-    const newFilter = filter.clone();
+    const { treeFolders, setTreeFolders, folders, files } = this.props;
 
     const data = treeFolders;
     let dataItem;
 
     const loop = (index, newData) => {
       dataItem = newData.find(x => x.id === folderPath[index]);
-      if(index === folderPath.length - 1) {
+      if (index === folderPath.length - 1) {
         const rootItem = data.find(x => x.id === folderPath[0]);
-        const newFilesCounter = dataItem.newItems ? dataItem.newItems : dataItem.new;
-        rootItem.newItems = markAsReadAll ? rootItem.newItems - newFilesCounter : rootItem.newItems - 1;
+        const newFilesCounter = dataItem.newItems
+          ? dataItem.newItems
+          : dataItem.new;
+        rootItem.newItems = markAsReadAll
+          ? rootItem.newItems - newFilesCounter
+          : rootItem.newItems - 1;
         dataItem.newItems = markAsReadAll ? 0 : newFilesCounter - 1;
-        fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
+        this.props.setNewRowItems([`${item.id}`]);
         return;
-      } else { loop(index + 1, dataItem.folders); }
-    }
+      } else {
+        loop(index + 1, dataItem.folders);
+      }
+    };
 
-    if(folderPath.length > 1) {
+    if (folderPath.length > 1) {
       loop(0, data);
     } else {
-      dataItem = data.find(x => x.id === folderPath[0]);
+      dataItem = data.find(x => x.id === +folderPath[0]);
       dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
 
-      if(item && item.fileExst) {
+      if (item && item.fileExst) {
         const fileItem = files.find(x => x.id === item.id && x.fileExst);
-        if(fileItem) {
+        if (fileItem) {
           fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
         } else {
           const filesFolder = folders.find(x => x.id === item.folderId);
-          filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
+          if (filesFolder) {
+            filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
+          }
         }
-        fetchFiles(this.props.selectedFolder.id, newFilter, store.dispatch);
-      } else if(item && !item.fileExst) {
+        this.props.setNewRowItems([`${item.id}`]);
+      } else if (item && !item.fileExst) {
         const folderItem = folders.find(x => x.id === item.id && !x.fileExst);
-        folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
+        if (folderItem) {
+          folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
+        }
       }
     }
-  
-    setTreeFolders(data);
-  }
 
+    setTreeFolders(data);
+  };
 
   render() {
     //console.log("NewFiles panel render");
@@ -201,11 +227,13 @@ class NewFilesPanelComponent extends React.Component {
             </StyledHeaderContent>
             <StyledBody className="files-operations-body">
               <RowContainer useReactWindow manualHeight="83vh">
-                {files.map((file) => {
+                {files.map(file => {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <RowContent onClick={this.onNewFilesClick.bind(this, file)}>
+                      <RowContent
+                        onClick={this.onNewFilesClick.bind(this, file)}
+                      >
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -218,7 +246,6 @@ class NewFilesPanelComponent extends React.Component {
                         >
                           {file.title}
                         </Link>
-
                         <></>
                         <Text fontSize="12px" containerWidth="auto">
                           {file.checked && t("ConvertInto")}
@@ -252,20 +279,23 @@ class NewFilesPanelComponent extends React.Component {
 
 NewFilesPanelComponent.propTypes = {
   onClose: PropTypes.func,
-  visible: PropTypes.bool,
+  visible: PropTypes.bool
 };
 
 const NewFilesPanelContainerTranslated = withTranslation()(
   NewFilesPanelComponent
 );
 
-const NewFilesPanel = (props) => (
+const NewFilesPanel = props => (
   <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  const { filter, files, folders, treeFolders, selectedFolder } = state.files
+const mapStateToProps = state => {
+  const { filter, files, folders, treeFolders, selectedFolder } = state.files;
   return { filter, files, folders, treeFolders, selectedFolder };
 };
 
-export default connect(mapStateToProps, { setMediaViewerData, setTreeFolders })(withRouter(NewFilesPanel));
+export default connect(
+  mapStateToProps,
+  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems }
+)(withRouter(NewFilesPanel));

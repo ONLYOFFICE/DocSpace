@@ -61,6 +61,15 @@
   <data name="BackupSpaceExceed" xml:space="preserve">
     <value>Функция резервного копирования недоступна, так как дисковое пространство превышает {0}. Перейдите в {1}раздел "Статистика"{2}, чтобы проверить занятое дисковое пространство.</value>
   </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>Истек срок действия лицензии или количество пользователей не соответствует лицензии</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>Некорректный лицензионный ключ</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Необходимо ввести лицензионный ключ</value>
+  </data>
   <data name="TariffPerMonth" xml:space="preserve">
     <value>месяц</value>
   </data>

@@ -60,8 +60,8 @@ namespace ASC.Files.Thirdparty.Dropbox
             get => Wrapper.Storage != null && Wrapper.Storage.IsOpened;
         }
 
-        public DropboxStorageDisposableWrapper Wrapper { get; }
-        public DropboxProviderInfoHelper DropboxProviderInfoHelper { get; }
+        private DropboxStorageDisposableWrapper Wrapper { get; }
+        private DropboxProviderInfoHelper DropboxProviderInfoHelper { get; }
         public int ID { get; set; }
 
         public Guid Owner { get; set; }

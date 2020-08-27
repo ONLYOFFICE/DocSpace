@@ -42,9 +42,9 @@ namespace ASC.Web.Files.Utils
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-        public IOptionsMonitor<ILog> Options { get; }
-        public GlobalStore GlobalStore { get; }
-        public SetupInfo SetupInfo { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private GlobalStore GlobalStore { get; }
+        private SetupInfo SetupInfo { get; }
 
         public ChunkedUploadSessionHolder(IOptionsMonitor<ILog> options, GlobalStore globalStore, SetupInfo setupInfo)
         {

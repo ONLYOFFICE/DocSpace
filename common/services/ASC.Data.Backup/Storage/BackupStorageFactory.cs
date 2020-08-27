@@ -44,13 +44,13 @@ namespace ASC.Data.Backup.Storage
 {
     public class BackupStorageFactory
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IConfiguration Configuration { get; }
-        public DocumentsBackupStorage DocumentsBackupStorage { get; }
-        public DataStoreBackupStorage DataStoreBackupStorage { get; }
-        public LocalBackupStorage LocalBackupStorage { get; }
-        public ConsumerBackupStorage ConsumerBackupStorage { get; }
-        public TenantManager TenantManager { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IConfiguration Configuration { get; }
+        private DocumentsBackupStorage DocumentsBackupStorage { get; }
+        private DataStoreBackupStorage DataStoreBackupStorage { get; }
+        private LocalBackupStorage LocalBackupStorage { get; }
+        private ConsumerBackupStorage ConsumerBackupStorage { get; }
+        private TenantManager TenantManager { get; }
 
         public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage, LocalBackupStorage localBackupStorage, IServiceProvider serviceProvider, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
         {

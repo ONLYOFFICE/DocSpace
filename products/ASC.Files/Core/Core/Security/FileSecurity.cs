@@ -41,8 +41,8 @@ namespace ASC.Files.Core.Security
 {
     public class FileSecurityCommon
     {
-        public UserManager UserManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
+        private UserManager UserManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
 
         public FileSecurityCommon(UserManager userManager, WebItemSecurity webItemSecurity)
         {
@@ -76,12 +76,12 @@ namespace ASC.Files.Core.Security
             get { return FileShare.Read; }
         }
 
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public AuthContext AuthContext { get; }
-        public AuthManager AuthManager { get; }
-        public GlobalFolder GlobalFolder { get; }
-        public FileSecurityCommon FileSecurityCommon { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private AuthManager AuthManager { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private FileSecurityCommon FileSecurityCommon { get; }
 
         public FileSecurity(
             IDaoFactory daoFactory,

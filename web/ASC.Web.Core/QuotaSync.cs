@@ -39,7 +39,7 @@ namespace ASC.Web.Studio.Core.Quota
         public const string TenantIdKey = "tenantID";
         protected DistributedTask TaskInfo { get; private set; }
         private int TenantId { get; set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public QuotaSync(int tenantId, IServiceProvider serviceProvider)
         {

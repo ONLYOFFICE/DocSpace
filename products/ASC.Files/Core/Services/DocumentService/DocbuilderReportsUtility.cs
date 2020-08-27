@@ -106,7 +106,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public object Obj { get; set; }
 
         protected DistributedTask TaskInfo { get; private set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public ReportState(IServiceProvider serviceProvider, ReportStateData reportStateData, IHttpContextAccessor httpContextAccessor)
         {
@@ -328,9 +328,9 @@ namespace ASC.Web.Files.Services.DocumentService
     public class DocbuilderReportsUtilityHelper
     {
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public DocbuilderReportsUtilityHelper(
             DocbuilderReportsUtility docbuilderReportsUtility,

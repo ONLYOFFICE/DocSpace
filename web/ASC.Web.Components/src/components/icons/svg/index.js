@@ -135,6 +135,8 @@ import OrigCheckboxCheckedIcon from './checkbox.checked.react.svg';
 import OrigCheckboxIndeterminateIcon from './checkbox.indeterminate.react.svg';
 import OrigFilterViewSelectorRowIcon from './filter.view.selector.row.react.svg';
 import OrigFilterViewSelectorTileIcon from './filter.view.selector.tile.react.svg';
+import OrigSecurityIcon from './security.react.svg';
+import OrigArrowRightIcon from './arrow.right.react.svg'
 
 import OrigEyeIcon from './eye.react.svg';
 import OrigEyeOffIcon from './eye.off.react.svg';
@@ -166,6 +168,12 @@ import OrigAddGuestIcon from './add.guest.react.svg';
 import OrigSpreadsheetIcon from './spreadsheet.react.svg';
 import OrigUnionIcon from './union.react.svg';
 import OrigKeyIcon from './key.react.svg';
+
+import OrigHistoryFinalizedIcon from './history-finalized.react.svg';
+import OrigHistoryIcon from './history.react.svg';
+import OrigLockIcon from './lock.react.svg';
+import OrigDownloadAsIcon from './download-as.react.svg';
+import OrigRenameIcon from './rename.react.svg';
 
 import OrigAmazonIcon from './amazon.react.svg';
 import OrigMailRuIcon from './mail.ru.react.svg';
@@ -822,6 +830,35 @@ export const FilterViewSelectorTileIcon = createStyledIcon(
   OrigFilterViewSelectorTileIcon,
   'FilterViewSelectorTileIcon'
 );
+export const SecurityIcon = createStyledIcon(
+  OrigSecurityIcon,
+  'SecurityIcon'
+);
+export const ArrowRightIcon = createStyledIcon(
+  OrigArrowRightIcon,
+  'ArrowRightIcon'
+);
+
+export const HistoryFinalizedIcon = createStyledIcon(
+  OrigHistoryFinalizedIcon,
+  'HistoryFinalizedIcon'
+);
+export const HistoryIcon = createStyledIcon(
+  OrigHistoryIcon,
+  'HistoryIcon'
+);
+export const LockIcon = createStyledIcon(
+  OrigLockIcon,
+  'LockIcon'
+);
+export const DownloadAsIcon = createStyledIcon(
+  OrigDownloadAsIcon,
+  'DownloadAsIcon'
+);
+export const RenameIcon = createStyledIcon(
+  OrigRenameIcon,
+  'RenameIcon'
+);
 export const AmazonIcon = createStyledIcon(
   OrigAmazonIcon,
   'AmazonIcon'
@@ -840,5 +877,4 @@ export const BitlyIcon = createStyledIcon(
 );
 export const BoxIcon = createStyledIcon(
   OrigBoxIcon,
-  'BoxIcon'
-);
+  'BoxIcon');

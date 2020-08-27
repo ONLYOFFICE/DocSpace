@@ -8,8 +8,8 @@ const CloseButton = props => {
   return (
     <div className={`styled-close-button ${className}`}>
       <IconButton
+        className="close-button"
         color={"#A3A9AE"}
-        hoverColor={"#A3A9AE"}
         clickColor={"#A3A9AE"}
         size={10}
         iconName={'CrossIcon'}

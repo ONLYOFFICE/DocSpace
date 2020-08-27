@@ -42,7 +42,7 @@ namespace ASC.Web.Files.Utils
             TenantManager = tenantManager;
         }
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public void FilesChangeEditors(object fileId, bool finish = false)
         {
