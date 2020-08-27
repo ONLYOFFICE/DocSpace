@@ -144,7 +144,7 @@ namespace ASC.Core.Common.Configuration
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
         {
             Name = name;
