@@ -17,22 +17,26 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            if (baseName == "default")
+            {
+                modelBuilder
                 .MySqlAddResAuthorsLang()
                 .MySqlAddResAuthorsFile()
                 .MySqlAddResAuthors()
                 .MySqlAddResCultures()
                 .MySqlAddResData()
                 .MySqlAddResFiles();
-
-            modelBuilder
-               .PgSqlAddResAuthorsLang()
-               .PgSqlAddResAuthorsFile()
-               .PgSqlAddResAuthors()
-               .PgSqlAddResCultures()
-               .PgSqlAddResData()
-               .PgSqlAddResFiles();
-
+            }
+            else
+            {
+                modelBuilder
+                   .PgSqlAddResAuthorsLang()
+                   .PgSqlAddResAuthorsFile()
+                   .PgSqlAddResAuthors()
+                   .PgSqlAddResCultures()
+                   .PgSqlAddResData()
+                   .PgSqlAddResFiles();
+            }
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

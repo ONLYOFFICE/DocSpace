@@ -11,9 +11,11 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.MySqlAddAccountLinks();
-
-            modelBuilder.PgSqlAddAccountLinks();
+            if(baseName=="default")
+            {
+                modelBuilder.MySqlAddAccountLinks();
+            }
+            else modelBuilder.PgSqlAddAccountLinks();
 
             OnModelCreatingPartial(modelBuilder);
         }

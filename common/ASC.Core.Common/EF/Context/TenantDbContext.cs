@@ -24,24 +24,28 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.MySqlAddUser();
-            modelBuilder.MySqlAddCoreSettings();
-            modelBuilder.MySqlAddDbTenant();
-            modelBuilder.MySqlAddUserSecurity();
-            modelBuilder.MySqlAddDbTenantForbiden();
-            modelBuilder.MySqlAddTenantIpRestrictions();
-            modelBuilder.MySqlAddDbTenantPartner();
-            modelBuilder.MySqlAddDbTenantVersion();
-
-            modelBuilder.PgSqlAddUser();
-            modelBuilder.PgSqlAddCoreSettings();
-            modelBuilder.PgSqlAddDbTenant();
-            modelBuilder.PgSqlAddUserSecurity();
-            modelBuilder.PgSqlAddDbTenantForbiden();
-            modelBuilder.PgSqlAddTenantIpRestrictions();
-            modelBuilder.PgSqlAddDbTenantPartner();
-            modelBuilder.PgSqlAddDbTenantVersion();
-
+            if (baseName == "default")
+            {
+                modelBuilder.MySqlAddUser();
+                modelBuilder.MySqlAddCoreSettings();
+                modelBuilder.MySqlAddDbTenant();
+                modelBuilder.MySqlAddUserSecurity();
+                modelBuilder.MySqlAddDbTenantForbiden();
+                modelBuilder.MySqlAddTenantIpRestrictions();
+                modelBuilder.MySqlAddDbTenantPartner();
+                modelBuilder.MySqlAddDbTenantVersion();
+            }
+            else
+            {
+                modelBuilder.PgSqlAddUser();
+                modelBuilder.PgSqlAddCoreSettings();
+                modelBuilder.PgSqlAddDbTenant();
+                modelBuilder.PgSqlAddUserSecurity();
+                modelBuilder.PgSqlAddDbTenantForbiden();
+                modelBuilder.PgSqlAddTenantIpRestrictions();
+                modelBuilder.PgSqlAddDbTenantPartner();
+                modelBuilder.PgSqlAddDbTenantVersion();
+            }
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

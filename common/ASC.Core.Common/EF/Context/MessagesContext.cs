@@ -15,17 +15,21 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddDbFunction();
-            modelBuilder.MySqlAddWebstudioSettings()
-                .MySqlAddAuditEvent()
-                .MySqlAddLoginEvents()
-                .MySqlAddDbTenant();
-
-            modelBuilder.PgSqlAddWebstudioSettings()
-                .PgSqlAddAuditEvent()
-                .PgSqlAddLoginEvents()
-                .PgSqlAddDbTenant();
-
+            if (baseName == "default")
+            {
+                modelBuilder.AddDbFunction();
+                modelBuilder.MySqlAddWebstudioSettings()
+                    .MySqlAddAuditEvent()
+                    .MySqlAddLoginEvents()
+                    .MySqlAddDbTenant();
+            }
+            else
+            {
+                modelBuilder.PgSqlAddWebstudioSettings()
+                    .PgSqlAddAuditEvent()
+                    .PgSqlAddLoginEvents()
+                    .PgSqlAddDbTenant();
+            }
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

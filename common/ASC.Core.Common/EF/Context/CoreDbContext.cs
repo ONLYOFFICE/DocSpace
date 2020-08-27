@@ -15,19 +15,24 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            if (baseName == "default")
+            {
+                modelBuilder
                 .MySqlAddAcl()
                 .MySqlAddDbButton()
                 .MySqlAddDbQuotaRow()
                 .MySqlAddDbQuota()
                 .MySqlAddDbTariff();
-
-            modelBuilder
+            }
+            else
+            {
+                modelBuilder
                 .PgSqlAddAcl()
                 .PgSqlAddDbButton()
                 .PgSqlAddDbQuotaRow()
                 .PgSqlAddDbQuota()
                 .PgSqlAddDbTariff();
+            }
 
             OnModelCreatingPartial(modelBuilder);
         }

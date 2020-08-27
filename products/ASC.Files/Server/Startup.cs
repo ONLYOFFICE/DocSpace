@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Common;
+using ASC.Common.Security.Authentication;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 
@@ -34,7 +37,7 @@ namespace ASC.Files
             services.AddMemoryCache();
 
             var diHelper = new DIHelper(services);
-
+            
             diHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
@@ -49,8 +52,17 @@ namespace ASC.Files
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             base.Configure(app, env);
 
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context_1 = serviceScope.ServiceProvider.GetRequiredService<DbContextManager<FilesDbContext>>();
+                context_1.Value.Database.EnsureCreated();
+            }
+          
+           
+            
             app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
                 appBranch =>

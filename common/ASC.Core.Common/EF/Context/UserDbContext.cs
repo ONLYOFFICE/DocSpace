@@ -25,26 +25,30 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            if (baseName == "default")
+            {
+                modelBuilder
                 .MySqlAddAcl()
                 .MySqlAddSubscription()
                 .MySqlAddSubscriptionMethod()
                 .MySqlAddUser();
-            modelBuilder.MySqlAddDbGroup();
-            modelBuilder.MySqlAddUserSecurity();
-            modelBuilder.MySqlAddUserGroup();
-            modelBuilder.MySqlAddUserPhoto();
-
-            modelBuilder
-                .PgSqlAddAcl()
-                .PgSqlAddSubscription()
-                .PgSqlAddSubscriptionMethod()
-                .PgSqlAddUser();
-            modelBuilder.PgSqlAddDbGroup();
-            modelBuilder.PgSqlAddUserSecurity();
-            modelBuilder.PgSqlAddUserGroup();
-            modelBuilder.PgSqlAddUserPhoto();
-
+                modelBuilder.MySqlAddDbGroup();
+                modelBuilder.MySqlAddUserSecurity();
+                modelBuilder.MySqlAddUserGroup();
+                modelBuilder.MySqlAddUserPhoto();
+            }
+            else
+            {
+                modelBuilder
+                  .PgSqlAddAcl()
+                  .PgSqlAddSubscription()
+                  .PgSqlAddSubscriptionMethod()
+                  .PgSqlAddUser();
+                modelBuilder.PgSqlAddDbGroup();
+                modelBuilder.PgSqlAddUserSecurity();
+                modelBuilder.PgSqlAddUserGroup();
+                modelBuilder.PgSqlAddUserPhoto();
+            }
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -21,18 +21,23 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            if (baseName == "default")
+            {
+                modelBuilder
                 .MySqlAddMailbox()
                 .MySqlAddMailboxProvider()
                 .MySqlAddMailboxServer()
                 .MySqlAddServerServer();
+            }
 
-            modelBuilder
-                .PgSqlAddMailbox()
-                .PgSqlAddMailboxProvider()
-                .PgSqlAddMailboxServer()
-                .PgSqlAddServerServer();
-
+            else
+            {
+                modelBuilder
+                  .PgSqlAddMailbox()
+                  .PgSqlAddMailboxProvider()
+                  .PgSqlAddMailboxServer()
+                  .PgSqlAddServerServer();
+            }
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

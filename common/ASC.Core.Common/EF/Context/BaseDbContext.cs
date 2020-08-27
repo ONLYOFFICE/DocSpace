@@ -11,6 +11,7 @@ namespace ASC.Core.Common.EF
 {
     public class BaseDbContext : DbContext
     {
+        public string baseName;
         public BaseDbContext() { }
         public BaseDbContext(DbContextOptions options) : base(options) => Database.EnsureCreated();
 
@@ -21,8 +22,11 @@ namespace ASC.Core.Common.EF
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
-            optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+            if (baseName == "default")
+            {
+                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+            }
+            else optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
         }
     }
 
