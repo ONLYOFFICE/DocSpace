@@ -8,7 +8,7 @@ const SecuritySettings = lazy(() => import("./categories/security"));
 const CustomizationSettings = lazy(() => import("./categories/common/customization"));
 const LanguageAndTimeZoneSettings = lazy(() => import("./categories/common/language-and-time-zone"));
 const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
-const IntegrationSettings = lazy(() => import("./categories/integration"));
+const IntegrationSettings = lazy(() => import("./categories/integration/third-party-services"));
 
 const Settings = () => {
   const basePath = '/settings';
@@ -17,7 +17,7 @@ const Settings = () => {
     <Layout key='1'>
       <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>
         <Switch>
-         
+
           <Route
             exact
             path={[`${basePath}/common/customization`, `${basePath}/common`, basePath]}
@@ -38,7 +38,8 @@ const Settings = () => {
             component={SecuritySettings}
           />
           <Route
-            path={`${basePath}/common/integration`}
+            exact
+            path={`${basePath}/integration/third-party-services`}
             component={IntegrationSettings}
           />
           <Redirect
