@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, Error403 } from "asc-web-common";
 import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
@@ -49,20 +49,19 @@ class PureSettings extends React.Component {
       updateOrCreate,
       keepIntermediate,
     } = this.state;
-    const { match, t, isLoading, setIsLoading } = this.props;
+    const { match, t, isLoading, setIsLoading, thirdParty } = this.props;
     const { setting } = match.params;
 
-    return (
-      <>
+    const settings = <>
       <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        />
+        visible={isLoading}
+        zIndex={256}
+        loaderSize="16px"
+        loaderColor={"#999"}
+        label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+        fontSize="12px"
+        fontColor={"#999"}
+      />
       <PageLayout>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -76,7 +75,7 @@ class PureSettings extends React.Component {
           <ArticleBodyContent 
             onLoading={setIsLoading}
             isLoading={isLoading}
-           
+          
           />
         </PageLayout.ArticleBody>
 
@@ -102,8 +101,9 @@ class PureSettings extends React.Component {
           />
         </PageLayout.SectionBody>
       </PageLayout>
-      </>
-    );
+    </>;
+
+    return !thirdParty && setting === 'thirdParty' ? <Error403 /> : settings;
   }
 } 
 
@@ -120,7 +120,8 @@ const Settings = props => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading
+    isLoading: state.files.isLoading,
+    thirdParty: state.files.settingsTree.thirdParty
   };
 }
 

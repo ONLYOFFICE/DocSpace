@@ -181,8 +181,7 @@ class SectionBodyContent extends React.Component {
       content = this.renderCommonSettings();
     if(setting === 'thirdParty' && thirdParty )
       content = this.renderClouds();
-
-    return content;
+    return content; 
   }
 }
 
