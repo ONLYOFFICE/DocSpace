@@ -27,7 +27,7 @@ const App = ({ settings }) => {
             <PrivateRoute exact path={[`${homepage}/settings/:setting`, `${homepage}/settings/` ]} component={withStudioLayout(Settings)} />
             <PrivateRoute exact path={`${homepage}/doceditor`} component={DocEditor} />
             <PrivateRoute exact path={`${homepage}/:fileId/history`} component={withStudioLayout(VersionHistory)} />
-            <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
+            <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={withStudioLayout(Login)} />
             <PrivateRoute component={withStudioLayout(Error404)} />
           </Switch>
         </Suspense>
