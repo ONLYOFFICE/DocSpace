@@ -1354,7 +1354,7 @@ namespace ASC.Api.Settings
 
         [Create("license", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public object UploadLicense([FromForm]UploadLicenseModel model)
+        public object UploadLicense([FromForm] UploadLicenseModel model)
         {
             try
             {
@@ -1755,6 +1755,68 @@ namespace ASC.Api.Settings
         }
 
 
+        [Read("authservice")]
+        public IEnumerable<AuthServiceModel> GetAuthServices()
+        {
+            return ConsumerFactory.GetAll<Consumer>()
+                .Where(consumer => consumer.ManagedKeys.Any())
+                .OrderBy(services => services.Order)
+                .Select(r => new AuthServiceModel(r))
+                .ToList();
+        }
+
+        [Create("authservice")]
+        public bool SaveAuthKeys(AuthServiceModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
+                throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
+
+            var changed = false;
+            var consumer = ConsumerFactory.GetByKey<Consumer>(model.Name);
+
+            var validateKeyProvider = (IValidateKeysProvider)ConsumerFactory.GetAll<Consumer>().FirstOrDefault(r => r.Name == consumer.Name && r is IValidateKeysProvider);
+            if (validateKeyProvider != null)
+            {
+                try
+                {
+                    if (validateKeyProvider is TwilioProvider twilioLoginProvider)
+                    {
+                        twilioLoginProvider.ClearOldNumbers();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            }
+
+            if (model.Props.All(r => string.IsNullOrEmpty(r.Value)))
+            {
+                consumer.Clear();
+                changed = true;
+            }
+            else
+            {
+                foreach (var authKey in model.Props.Where(authKey => consumer[authKey.Name] != authKey.Value))
+                {
+                    consumer[authKey.Name] = authKey.Value;
+                    changed = true;
+                }
+            }
+
+            if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !consumer.All(r => string.IsNullOrEmpty(r.Value)))
+            {
+                consumer.Clear();
+                throw new ArgumentException(Resource.ErrorBadKeys);
+            }
+
+            if (changed)
+                MessageService.Send(MessageAction.AuthorizationKeysSetting);
+
+            return changed;
+        }
+
         private readonly int maxCount = 10;
         private readonly int expirationMinutes = 2;
         private void CheckCache(string basekey)
@@ -1821,7 +1883,8 @@ namespace ASC.Api.Settings
                 .AddProviderManagerService()
                 .AddAccountLinker()
                 .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings();
+                .AddFirstTimeTenantSettings()
+                .AddTwilioProviderService();
         }
     }
 }
