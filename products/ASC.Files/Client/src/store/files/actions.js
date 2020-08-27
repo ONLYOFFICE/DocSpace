@@ -42,6 +42,7 @@ export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
 export const SET_IS_LOADING = "SET_IS_LOADING";
+export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
 
 export function setFile(file) {
   return {
@@ -208,6 +209,13 @@ export function setIsLoading(isLoading) {
   return {
     type: SET_IS_LOADING,
     isLoading
+  }
+}
+
+export function setThirdParty(data) {
+  return {
+    type: SET_THIRD_PARTY,
+    data
   }
 }
 
@@ -454,3 +462,15 @@ export function clearProgressData(dispatch) {
       });
   };
 }*/
+
+export function updateIfExist(data) {
+  return dispatch => {
+    return files.updateIfExist(data);
+  }
+}
+
+export function storeOriginal(data) {
+  return dispatch => {
+    return files.storeOriginal(data);
+  }
+}

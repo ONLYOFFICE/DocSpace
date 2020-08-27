@@ -22,7 +22,8 @@ import {
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
   SET_EXPAND_SETTINGS_TREE,
-  SET_IS_LOADING
+  SET_IS_LOADING,
+  SET_THIRD_PARTY
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -48,8 +49,12 @@ const initialState = {
   updateTreeNew: false,
   newRowItems: [],
   selectedTreeNode: [],
-  expandedSetting: [], 
-  isLoading: false
+  isLoading: false,
+  settingsTree: {
+    thirdParty: false,
+    expandedSetting: []
+  }
+  
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -157,11 +162,15 @@ const filesReducer = (state = initialState, action) => {
       }
     case SET_EXPAND_SETTINGS_TREE:
       return Object.assign({}, state, {
-        expandedSetting: action.setting
+        settingsTree: { ...state.settingsTree , expandedSetting: action.setting }
       })
     case SET_IS_LOADING:
       return Object.assign({}, state, {
         isLoading: action.isLoading
+      })
+    case SET_THIRD_PARTY:
+      return Object.assign({}, state, {
+        settingsTree: { ...state.settingsTree, thirdParty: action.data }
       })
     default:
       return state;

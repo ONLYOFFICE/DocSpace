@@ -380,3 +380,13 @@ export function lockFile(fileId, lockFile) {
   const data = { lockFile };
   return request({ method: "put", url: `/files/file/${fileId}/lock`, data });
 }
+
+export function updateIfExist(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/updateifexist", data });
+}
+
+export function storeOriginal(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/storeoriginal.json", data });
+}

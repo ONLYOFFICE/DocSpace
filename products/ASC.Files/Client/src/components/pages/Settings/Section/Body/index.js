@@ -5,8 +5,9 @@ import {
   Heading,
   ToggleButton 
 } from 'asc-web-components';
+import { history } from "asc-web-common";
 
-import { setStoreOriginal } from '../../../../../store/files/actions';
+import { updateIfExist, storeOriginal, setThirdParty } from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
   display: grid;
@@ -27,7 +28,8 @@ class SectionBodyContent extends React.Component {
     super(props);
 
     this.state = { 
-      originalCopy: false
+      originalCopy: true,
+      updateExist: true
     }
   }
 
@@ -46,11 +48,9 @@ class SectionBodyContent extends React.Component {
     document.title = 'ASC.Files';
   }
 
-  onChangeOriginalCopy = () => {
-    const { originalCopy } = this.state;
-    const { setStoreOriginal } = this.props;
-    setStoreOriginal({ set: !originalCopy });
-    this.setState({ originalCopy: !originalCopy });
+  onChangeThirdParty = () => {
+    const { thirdParty, setThirdParty } = this.props;
+    setThirdParty(!thirdParty);
   }
 
   renderAdminSettings = () => {
@@ -70,14 +70,30 @@ class SectionBodyContent extends React.Component {
           isChecked={intermediateVersion}
         />
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('thirdPartyBtn')}
-          onChange={(e)=>console.log(e)}
+          onChange={this.onChangeThirdParty}
           isChecked={thirdParty}
         />
       </StyledSettings>
     )
+  }
+
+  onChangeOriginalCopy = () => {
+    const { originalCopy } = this.state;
+    const { storeOriginal } = this.props;
+
+    storeOriginal( originalCopy );
+    this.setState({ originalCopy: !originalCopy });
+  }
+
+  onChangeUpdateIfExist = () => {
+    const { updateExist } = this.state;
+    const { updateIfExist } = this.props;
+
+    updateIfExist( !updateExist );
+    this.setState({ updateExist: !updateExist });
   }
 
   renderCommonSettings = () => {
@@ -86,14 +102,13 @@ class SectionBodyContent extends React.Component {
       recent,
       favorites,
       templates,
-      updateOrCreate,
       keepIntermediate,
-      setStoreOriginal,
       t
     } = this.props;
 
     const { 
-      originalCopy
+      originalCopy,
+      updateExist
     } = this.state;
 
     return (
@@ -135,11 +150,11 @@ class SectionBodyContent extends React.Component {
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('updateOrCreate')}
-          onChange={(e)=>console.log(e)}
-          isChecked={updateOrCreate}
+          onChange={this.onChangeUpdateIfExist}
+          isChecked={updateExist}
         />
         <ToggleButton
           isDisabled={true}
@@ -157,20 +172,27 @@ class SectionBodyContent extends React.Component {
   }
 
   render() {
-    const { setting } = this.props;
+    const { setting, thirdParty } = this.props;
     let content;
 
     if(setting === 'admin')
       content = this.renderAdminSettings();
     if(setting === 'common') 
       content = this.renderCommonSettings();
-    if(setting === 'thirdParty')
+    if(setting === 'thirdParty' && thirdParty )
       content = this.renderClouds();
 
     return content;
   }
-
-  
 }
 
-export default connect(null, {setStoreOriginal})(SectionBodyContent);
+function mapStateToProps(state) {
+  const { settingsTree } = state.files;
+  const { thirdParty } = settingsTree;
+
+  return { 
+    thirdParty
+  }
+}
+
+export default connect(mapStateToProps, { updateIfExist, storeOriginal, setThirdParty })(SectionBodyContent);

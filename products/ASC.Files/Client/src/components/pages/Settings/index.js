@@ -27,7 +27,6 @@ class PureSettings extends React.Component {
 
     this.state = {
       intermediateVersion: false,
-      thirdParty: false,
       originalCopy: false,
       trash: false,
       recent: false,
@@ -42,7 +41,6 @@ class PureSettings extends React.Component {
     console.log('Settings render()');
     const { 
       intermediateVersion,
-      thirdParty,
       originalCopy,
       trash,
       recent,
@@ -89,7 +87,6 @@ class PureSettings extends React.Component {
         <PageLayout.SectionBody>
           <SectionBodyContent
             setting={setting}
-            thirdParty={thirdParty}
             intermediateVersion={intermediateVersion}
             originalCopy={originalCopy}
             trash={trash}

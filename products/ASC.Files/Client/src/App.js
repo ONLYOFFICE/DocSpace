@@ -24,7 +24,7 @@ const App = ({ settings }) => {
           <Switch>
             <Redirect exact from="/" to={`${homepage}`} />
             <PrivateRoute exact path={[homepage, `${homepage}/filter`]} component={withStudioLayout(Home)} />
-            <PrivateRoute exact path={`${homepage}/settings/:setting`} component={withStudioLayout(Settings)} />
+            <PrivateRoute exact path={[`${homepage}/settings/:setting`, `${homepage}/settings/` ]} component={withStudioLayout(Settings)} />
             <PrivateRoute exact path={`${homepage}/doceditor`} component={DocEditor} />
             <PrivateRoute exact path={`${homepage}/:fileId/history`} component={withStudioLayout(VersionHistory)} />
             <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
