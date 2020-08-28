@@ -20,7 +20,7 @@ const i18n = createI18N({
 });
 const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage } = utils;
-const { tablet, mobile } = Utils.device;
+const { tablet } = Utils.device;
 
 const StyledBody = styled.div`
   margin: 0 auto;
@@ -30,7 +30,7 @@ const StyledBody = styled.div`
     width: 600px;
     margin: 0 auto;
   }
-  @media ${mobile} {
+  @media (max-width: 632px) {
     width: 343px;
     margin: 0 auto;
   }

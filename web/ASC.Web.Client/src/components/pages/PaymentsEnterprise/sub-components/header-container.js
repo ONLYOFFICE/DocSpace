@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { Text, utils } from "asc-web-components";
 
-const { tablet, mobile } = utils.device;
+const { tablet } = utils.device;
 
 const StyledHeader = styled.div`
   position: static;
@@ -44,7 +44,7 @@ const StyledHeader = styled.div`
     }
   }
 
-  @media ${mobile} {
+  @media (max-width: 632px) {
     width: 343px;
     .payments-header {
       margin-top: 0px;

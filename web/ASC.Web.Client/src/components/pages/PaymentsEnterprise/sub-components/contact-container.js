@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import { Text, Link, utils } from "asc-web-components";
 
-const { mobile } = utils.device;
 const StyledContactContainer = styled.div`
   .contact-emails {
     position: static;
@@ -15,7 +14,7 @@ const StyledContactContainer = styled.div`
     color: #316daa;
   }
 
-  @media ${mobile} {
+  @media (max-width: 632px) {
     width: 343px;
 
     .contact-emails {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { Text, utils } from "asc-web-components";
-const { tablet, mobile } = utils.device;
+const { tablet } = utils.device;
 const StyledBodyAdvantages = styled.div`
   margin-top: 40px;
 
@@ -84,7 +84,7 @@ const StyledBodyAdvantages = styled.div`
       margin-bottom: 22px;
     }
   }
-  @media ${mobile} {
+  @media (max-width: 632px) {
     margin-top: 16px;
     width: 311px;
     height: 301px;

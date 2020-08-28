@@ -4,7 +4,7 @@ const initialState = {
   salesEmail: "sales@onlyoffice.com",
   helpUrl: "https://helpdesk.onlyoffice.com",
   buyUrl: "http://www.onlyoffice.com/post.ashx?type=buyenterprise",
-  standAloneMode: true,
+  standaloneMode: true,
   dateExpires: "1 марта 2020",
   createPortals: "1/2",
 };

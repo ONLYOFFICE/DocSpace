@@ -1353,15 +1353,16 @@ namespace ASC.Api.Settings
 
 
         [Create("license", Check = false)]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
         public object UploadLicense([FromForm] UploadLicenseModel model)
         {
             try
             {
+                ApiContext.AuthByClaim();
                 if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
                 if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
 
-                ApiContext.AuthByClaim();
+               
 
                 var licenseFile = model.Files.First();
                 var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());

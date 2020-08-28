@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Button, utils, FileInput } from "asc-web-components";
 
-const { tablet, mobile } = utils.device;
+const { tablet } = utils.device;
 
 const StyledButtonContainer = styled.div`
   position: static;
@@ -60,7 +60,7 @@ const StyledButtonContainer = styled.div`
       left: 0px;
     }
   }
-  @media ${mobile} {
+  @media (max-width: 632px) {
     width: 343px;
     height: 168px;
     .button-buy {
