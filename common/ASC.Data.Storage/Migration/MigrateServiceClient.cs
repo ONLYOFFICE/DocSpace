@@ -28,11 +28,8 @@ using System;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Threading.Progress;
 using ASC.Data.Storage.Configuration;
 using ASC.Migration;
-
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Migration
 {
@@ -41,7 +38,6 @@ namespace ASC.Data.Storage.Migration
         public ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
         public IServiceProvider ServiceProvider { get; }
         public ICache Cache { get; }
-        public double Progress { get; private set; }
 
         public ServiceClientListener(
             ICacheNotify<MigrationProgress> progressMigrationNotify,
@@ -54,13 +50,22 @@ namespace ASC.Data.Storage.Migration
             ProgressListening();
         }
 
+        public MigrationProgress GetProgress(int tenantId)
+        {
+            return Cache.Get<MigrationProgress>(GetCacheKey(tenantId));
+        }
+
         private void ProgressListening()
         {
             ProgressMigrationNotify.Subscribe(n =>
             {
-                Progress = n.Progress;
+                var migrationProgress = new MigrationProgress { 
+                    TenantId = n.TenantId,
+                    Progress = n.Progress,
+                    IsCompleted = n.IsCompleted,
+                    Error = n.Error };
 
-                Cache.Insert(GetCacheKey(n.TenantId), Progress, DateTime.MaxValue);
+                Cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
             },
            CacheNotifyAction.Insert);
         }
@@ -77,20 +82,17 @@ namespace ASC.Data.Storage.Migration
         public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
         public ICacheNotify<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
         public IServiceProvider ServiceProvider { get; }
-        public ICache Cache { get; }
 
         public ServiceClient(
             ServiceClientListener serviceClientListener,
             ICacheNotify<MigrationCache> cacheMigrationNotify,
             ICacheNotify<MigrationUploadCdn> uploadCdnMigrationNotify,
-            IServiceProvider serviceProvider,
-            ICache cache)
+            IServiceProvider serviceProvider)
         {
             ServiceClientListener = serviceClientListener;
             CacheMigrationNotify = cacheMigrationNotify;
             UploadCdnMigrationNotify = uploadCdnMigrationNotify;
             ServiceProvider = serviceProvider;
-            Cache = cache;
         }
 
         public void Migrate(int tenant, StorageSettings storageSettings)
@@ -121,7 +123,9 @@ namespace ASC.Data.Storage.Migration
 
         public double GetProgress(int tenant)
         {
-            return ServiceClientListener.Progress;
+            var migrationProgress = ServiceClientListener.GetProgress(tenant);
+
+            return migrationProgress.Progress;
         }
 
         public void StopMigrate()

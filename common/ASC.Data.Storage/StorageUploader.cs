@@ -223,7 +223,7 @@ namespace ASC.Data.Storage
             CacheMigrationNotify.Publish(new MigrationProgress
             {
                 TenantId = tenantId,
-                Progress=Percentage,
+                Progress = Percentage,
                 Error = Error.ToString(),
                 IsCompleted = IsCompleted
             },
