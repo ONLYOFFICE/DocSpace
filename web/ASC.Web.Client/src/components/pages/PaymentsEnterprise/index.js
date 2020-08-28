@@ -110,6 +110,7 @@ class Body extends React.PureComponent {
       errorMessage: null,
       license: false,
       hasErrorLicense: false,
+      visibleModal: false,
     };
 
     document.title = `${t("Payments")}`;
@@ -126,11 +127,19 @@ class Body extends React.PureComponent {
         errorLoading: true,
         errorMessage: e,
         hasErrorLicense: true,
+        visibleModal: true,
       })
     );
   };
   onButtonClickBuy = (e) => {
     window.open(e.target.value, "_blank");
+  };
+  onCloseModal = () => {
+    this.setState({
+      visibleModal: false,
+      errorLoading: false,
+      errorMessage: null,
+    });
   };
   render() {
     const {
@@ -142,7 +151,12 @@ class Body extends React.PureComponent {
       t,
     } = this.props;
 
-    const { errorLoading, hasErrorLicense, errorMessage } = this.state;
+    const {
+      errorLoading,
+      hasErrorLicense,
+      errorMessage,
+      visibleModal,
+    } = this.state;
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -150,8 +164,11 @@ class Body extends React.PureComponent {
         <HeaderContainer t={t} dateExpires={dateExpires} />
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
+          t={t}
+          visibleModal={visibleModal}
           errorLoading={errorLoading}
           errorMessage={errorMessage}
+          onCloseModal={this.onCloseModal}
         />
         <ButtonContainer
           t={t}

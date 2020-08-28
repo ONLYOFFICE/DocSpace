@@ -10,5 +10,8 @@
   "Using": " You are using ONLYOFFICE Enterprise Edition",
   "SubscriptionGet": "Renew subscription to get:",
   "Buy": "Buy now",
-  "Upload": "Upload license"
+  "Upload": "Upload license",
+  "Payments": "Payments",
+  "LoadingError": "Loading error",
+  "LicenseError": "Licence  is not valid. Make sure you choose the right file"
 }

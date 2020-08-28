@@ -37,7 +37,7 @@ const StyledBodyAdvantages = styled.div`
     margin: 224px 864px 193px 32px;
   }
   .payments-body {
-    margin-right: 609px;
+    /* margin-right: 609px; */
     margin-bottom: 22px;
     margin-left: 64px;
 
@@ -47,19 +47,19 @@ const StyledBodyAdvantages = styled.div`
   }
   .first-advantages {
     margin-top: 37px;
-    width: 247px;
+    /* width: 247px; */
   }
   .second-advantages {
-    width: 278px;
+    /* width: 278px; */
   }
   .third-advantages {
-    width: 124px;
+    /* width: 124px; */
   }
   .four-advantages {
-    width: 366px;
+    /* width: 366px; */
   }
   .five-advantages {
-    width: 276px;
+    /* width: 276px; */
   }
   .advantages-enterprise {
     width: 856px;
