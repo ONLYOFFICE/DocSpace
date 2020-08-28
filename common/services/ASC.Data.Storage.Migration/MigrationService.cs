@@ -131,12 +131,17 @@ namespace ASC.Data.Storage.Migration
     {
         public static DIHelper AddMigrationService(this DIHelper services)
         {
-            services.TryAddScoped<MigrationService>();
-            services.TryAddSingleton<MigrationServiceListener>();
+            if (services.TryAddScoped<MigrationService>())
+            {
+                services.TryAddSingleton<MigrationServiceListener>();
+                services.TryAddSingleton<StorageUploader>();
 
-            return services
-                .AddStaticUploaderService()
-                .AddStorageFactoryConfigService();
+                return services
+                    .AddStaticUploaderService()
+                    .AddStorageFactoryConfigService();
+            }
+
+            return services;
         }
     }
 }
