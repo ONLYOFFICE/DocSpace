@@ -11,6 +11,7 @@ export const SET_FILTER = "SET_FILTER";
 export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
 export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
 export const SET_LOGO_URLS = "SET_LOGO_URLS";
+export const SET_CONSUMERS = "SET_CONSUMERS";
 
 export function setOptions(options) {
   return {
@@ -65,6 +66,13 @@ export function setLogoUrls(urls) {
   return {
     type: SET_LOGO_URLS,
     urls
+  };
+}
+
+export function setConsumers(consumers) {
+  return {
+    type: SET_CONSUMERS,
+    consumers
   };
 }
 
@@ -129,27 +137,27 @@ export function getUpdateListAdmin(filter) {
 export function getWhiteLabelLogoText() {
   return dispatch => {
     return api.settings.getLogoText()
-    .then(res => {
-      dispatch(setLogoText(res));
-    });
+      .then(res => {
+        dispatch(setLogoText(res));
+      });
   };
 }
 
 export function getWhiteLabelLogoSizes() {
   return dispatch => {
     return api.settings.getLogoSizes()
-    .then(res => {
-      dispatch(setLogoSizes(res));
-    });
+      .then(res => {
+        dispatch(setLogoSizes(res));
+      });
   };
 }
 
 export function getWhiteLabelLogoUrls() {
   return dispatch => {
     return api.settings.getLogoUrls()
-    .then(res => {
-      dispatch(setLogoUrls(Object.values(res)));
-    });
+      .then(res => {
+        dispatch(setLogoUrls(Object.values(res)));
+      });
   };
 }
 
@@ -180,7 +188,15 @@ export function setGreetingTitle(greetingTitle) {
 export function restoreGreetingTitle() {
   return dispatch => {
     return api.settings.restoreGreetingSettings().then(res => {
-      if(res) dispatch(setGreetingSettings(res.Content));
+      if (res) dispatch(setGreetingSettings(res.Content));
     });
   };
+}
+
+export function getConsumers() {
+  return dispatch => {
+    return api.settings.getConsumersList().then(res =>
+      dispatch(setConsumers(res))
+    )
+  }
 }
