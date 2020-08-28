@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Button, utils, FileInput, Link } from "asc-web-components";
+import {
+  Button,
+  utils,
+  FileInput,
+  Link,
+  ModalDialog,
+} from "asc-web-components";
 import { store, history } from "asc-web-common";
 
 import { setLicense } from "../../../../store/payments/actions";
@@ -78,70 +84,34 @@ const StyledButtonContainer = styled.div`
   }
 `;
 
-class ButtonContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      errorMessage: null,
-      errorLoading: false,
-      hasErrorLicense: false,
-    };
-  }
-  onButtonClickUpload = (file) => {
-    //const { wizardToken } = this.props;
+const ButtonContainer = ({
+  t,
+  buyUrl,
+  onButtonClickBuy,
+  onButtonClickUpload,
+}) => {
+  return (
+    <StyledButtonContainer>
+      <Button
+        className="button-payments-enterprise button-buy"
+        label={t("Buy")}
+        value={`${buyUrl}`}
+        onClick={onButtonClickBuy}
+      />
+      <FileInput
+        type="file"
+        className="button-payments-enterprise button-upload input"
+        placeholder={"Upload file"}
+        accept=".lic"
+        onInput={onButtonClickUpload}
+      />
+      <Button
+        type="submit"
+        className="button-payments-enterprise button-upload"
+        label={t("Upload")}
+      />
+    </StyledButtonContainer>
+  );
+};
 
-    const { licenseUpload, setLicense } = this.props;
-    //if (licenseUpload) resetLicenseUploaded();
-    let fd = new FormData();
-    fd.append("files", file);
-
-    setLicense(null, fd).catch((e) =>
-      this.setState({
-        errorLoading: true,
-        errorMessage: e,
-        hasErrorLicense: true,
-      })
-    );
-  };
-  onButtonClickBuy = (e) => {
-    window.open(e.target.value, "_blank");
-  };
-  render() {
-    const { t, buyUrl } = this.props;
-    const { errorLoading, hasErrorLicense } = this.state;
-
-    return (
-      <StyledButtonContainer>
-        <Button
-          className="button-payments-enterprise button-buy"
-          label={t("Buy")}
-          value={`${buyUrl}`}
-          onClick={this.onButtonClickBuy}
-        />
-        <FileInput
-          type="file"
-          className="button-payments-enterprise button-upload input"
-          placeholder={"Upload file"}
-          accept=".lic"
-          onInput={this.onButtonClickUpload}
-        />
-        <Button
-          type="submit"
-          className="button-payments-enterprise button-upload"
-          label={t("Upload")}
-        />
-      </StyledButtonContainer>
-    );
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    buyUrl: state.payments.buyUrl,
-    licenseUpload: state.payments.licenseUpload,
-  };
-}
-
-export default connect(mapStateToProps, { setLicense, resetLicenseUploaded })(
-  withRouter(ButtonContainer)
-);
+export default ButtonContainer;
