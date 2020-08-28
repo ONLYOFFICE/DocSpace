@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { Text, Link, utils } from "asc-web-components";
-const supportLinkPurchaseQuestions = "sales@onlyoffice.com";
-const supportLinkTechnicalIssues = "https://helpdesk.onlyoffice.com";
+
 const { tablet, mobile } = utils.device;
 const StyledContactContainer = styled.div`
   .contact-emails {
@@ -24,25 +23,23 @@ const StyledContactContainer = styled.div`
   }
 `;
 
-const ContactContainer = ({ t }) => {
+const ContactContainer = ({ t, salesEmail, helpUrl }) => {
   return (
     <StyledContactContainer>
       <Text className="contact-emails">
         {t("PurchaseQuestions")}{" "}
-        <Link
-          className="contact-emails_link"
-          href={`mailto:${supportLinkPurchaseQuestions}`}
-        >
-          {supportLinkPurchaseQuestions}
+        <Link className="contact-emails_link" href={`mailto:${salesEmail}`}>
+          {salesEmail}
         </Link>
       </Text>
       <Text className="contact-emails">
         {t("TechnicalIssues")}{" "}
         <Link
+          target="\_blank"
           className="contact-emails_link"
-          href={`${supportLinkTechnicalIssues}`}
+          href={`${helpUrl}`}
         >
-          {supportLinkTechnicalIssues}
+          {helpUrl}
         </Link>
       </Text>
     </StyledContactContainer>

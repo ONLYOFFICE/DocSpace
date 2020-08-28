@@ -4,12 +4,11 @@ import styled from "styled-components";
 
 import { Button, utils } from "asc-web-components";
 import { store, history } from "asc-web-common";
-const { getPortalSettings, setIsLoaded } = store.auth.actions;
+// const { getPortalSettings, setIsLoaded } = store.auth.actions;
 const { tablet, mobile } = utils.device;
+
 const onButtonClickBuy = (e) => {
-  getPortalSettings(store.dispatch)
-    .then(() => store.dispatch(setIsLoaded(true)))
-    .catch((e) => history.push(`/login/error=${e}`));
+  window.open(e.target.value, "_blank");
 };
 const StyledButtonContainer = styled.div`
   position: static;
@@ -70,12 +69,13 @@ const StyledButtonContainer = styled.div`
   }
 `;
 
-const ButtonContainer = ({ t }) => {
+const ButtonContainer = ({ t, buyUrl }) => {
   return (
     <StyledButtonContainer>
       <Button
         className="button-payments-enterprise button-buy"
         label="Buy now"
+        value={`${buyUrl}`}
         onClick={onButtonClickBuy}
       />
       <Button

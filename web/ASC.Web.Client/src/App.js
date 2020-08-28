@@ -18,9 +18,7 @@ const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
-const PaymentsEnterprise = lazy(() =>
-  import("./components/pages/PaymentsEnterprise")
-);
+const Payments = lazy(() => import("./components/pages/Payments"));
 
 const App = () => {
   return navigator.onLine ? (
@@ -48,7 +46,7 @@ const App = () => {
             />
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute restricted path="/settings" component={Settings} />
-            <PrivateRoute path="/payments" component={PaymentsEnterprise} />
+            <PrivateRoute path="/payments" component={Payments} />
             <PrivateRoute
               exact
               path={["/coming-soon"]}

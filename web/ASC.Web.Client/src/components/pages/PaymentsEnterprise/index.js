@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, Error404 } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 
 import { Loader, utils as Utils } from "asc-web-components";
@@ -32,11 +32,11 @@ const StyledBody = styled.div`
   }
   @media ${mobile} {
     width: 343px;
-    margin-right: 0 auto;
+    margin: 0 auto;
   }
 `;
 
-const Body = ({ standAloneMode, isLoaded }) => {
+const Body = ({ standAloneMode, isLoaded, salesEmail, helpUrl, buyUrl }) => {
   const { t } = useTranslation("translation", { i18n });
   useEffect(() => {
     changeLanguage(i18n);
@@ -49,8 +49,8 @@ const Body = ({ standAloneMode, isLoaded }) => {
     <StyledBody>
       <HeaderContainer t={t} />
       <AdvantagesContainer t={t} />
-      <ButtonContainer t={t} />
-      <ContactContainer t={t} />
+      <ButtonContainer t={t} buyUrl={buyUrl} />
+      <ContactContainer t={t} salesEmail={salesEmail} helpUrl={helpUrl} />
     </StyledBody>
   );
 };
@@ -70,8 +70,11 @@ PaymentsEnterprise.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    standAloneMode: state.auth.settings.standAloneMode,
+    standAloneMode: state.payments.standAloneMode,
     isLoaded: state.auth.isLoaded,
+    salesEmail: state.payments.salesEmail,
+    helpUrl: state.payments.helpUrl,
+    buyUrl: state.payments.buyUrl,
   };
 }
 export default connect(mapStateToProps)(withRouter(PaymentsEnterprise));
