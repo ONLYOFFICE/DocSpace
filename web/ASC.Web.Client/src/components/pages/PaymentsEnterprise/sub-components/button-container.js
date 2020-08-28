@@ -20,7 +20,7 @@ const StyledButtonContainer = styled.div`
   background: #edf2f7;
   height: 108px;
   margin-bottom: 17px;
-
+  position: relative;
   .button-payments-enterprise {
     border-radius: 3px;
     padding: 13px 20px;
@@ -43,12 +43,16 @@ const StyledButtonContainer = styled.div`
 
   .input {
     position: absolute;
-    border: 2px solid red;
-    margin-right: 40px;
+
+    left: 155px; /*width of button-buy and margin*/
+    bottom: 0px;
+    opacity: 0;
+    z-index: 1;
   }
   @media ${tablet} {
     width: 600px;
     height: 168px;
+
     .button-buy {
       width: 536px;
 
@@ -60,6 +64,10 @@ const StyledButtonContainer = styled.div`
       margin: 0px 32px 32px 32px;
 
       border-radius: 3px;
+    }
+    .input {
+      bottom: 0px;
+      left: 0px;
     }
   }
   @media ${mobile} {
@@ -67,15 +75,9 @@ const StyledButtonContainer = styled.div`
     height: 168px;
     .button-buy {
       width: 279px;
-
-      margin: 32px 32px 16px 32px;
-      border-radius: 3px;
     }
     .button-upload {
       width: 279px;
-      margin: 0px 32px 32px 32px;
-
-      border-radius: 3px;
     }
   }
 `;
@@ -117,27 +119,18 @@ class ButtonContainer extends React.Component {
           value={`${buyUrl}`}
           onClick={onButtonClickBuy}
         />
-        {/* <Link
-          type="action"
-          color="black"
-          isBold={true}
-          onClick={this.onInputFileHandler}
-        >
-          {t("Upload")}
-        </Link> */}
-        {/* <Button
-          type="submit"
-          className="button-payments-enterprise button-upload"
-          label={t("Upload")}
-          onCLick={this.onInputFileHandler}
-        /> */}
-
         <FileInput
-          tabIndex={3}
-          className="input"
+          type="file"
+          className="button-payments-enterprise button-upload input"
           placeholder={"Upload file"}
           accept=".lic"
           onInput={this.onInputFileHandler}
+        />
+        <Button
+          type="submit"
+          className="button-payments-enterprise button-upload"
+          label={t("Upload")}
+          onCLick={this.FileInput}
         />
       </StyledButtonContainer>
     );
@@ -147,7 +140,6 @@ class ButtonContainer extends React.Component {
 function mapStateToProps(state) {
   return {
     buyUrl: state.payments.buyUrl,
-    wizardToken: state.payments.wizardToken,
     licenseUpload: state.payments.licenseUpload,
   };
 }
