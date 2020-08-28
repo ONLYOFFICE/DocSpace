@@ -66,7 +66,7 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({ t, dateExpires }) => {
+const HeaderContainer = ({ t, dateExpires, createPortals }) => {
   return (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
@@ -77,7 +77,7 @@ const HeaderContainer = ({ t, dateExpires }) => {
           марта 2021 года. */}
         </Text>
         <Text className="payments-header-additional_portals">
-          Порталы, созданные вами: 1/2
+          {t("createdPortals")} {createPortals}
         </Text>
       </sd>
     </StyledHeader>
@@ -85,6 +85,8 @@ const HeaderContainer = ({ t, dateExpires }) => {
 };
 
 HeaderContainer.propTypes = {
+  dateExpires: PropTypes.string.isRequired,
+  createPortals: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 

@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
-import { PageLayout, utils, Error404 } from "asc-web-common";
-import { useTranslation } from "react-i18next";
-
+import React from "react";
+import { PageLayout, utils } from "asc-web-common";
 import { Loader, utils as Utils } from "asc-web-components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
@@ -14,7 +12,6 @@ import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
 import ModalDialogContainer from "./sub-components/modal-dialog-container";
 import { setLicense } from "../../../store/payments/actions";
-import { resetLicenseUploaded } from "../../../store/wizard/actions";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -44,11 +41,10 @@ class Body extends React.PureComponent {
     super(props);
     const { t } = this.props;
     this.state = {
-      errorLoading: false,
       errorMessage: null,
       license: false,
       hasErrorLicense: false,
-      visibleModal: false,
+      visibleModalDialog: false,
     };
 
     document.title = `${t("Payments")}`;
@@ -56,26 +52,23 @@ class Body extends React.PureComponent {
 
   onButtonClickUpload = (file) => {
     const { setLicense } = this.props;
-    //if (licenseUpload) resetLicenseUploaded();
     let fd = new FormData();
     fd.append("files", file);
 
     setLicense(null, fd).catch((e) =>
       this.setState({
-        errorLoading: true,
         errorMessage: e,
         hasErrorLicense: true,
-        visibleModal: true,
+        visibleModalDialog: true,
       })
     );
   };
   onButtonClickBuy = (e) => {
     window.open(e.target.value, "_blank");
   };
-  onCloseModal = () => {
+  onCloseModalDialog = () => {
     this.setState({
-      visibleModal: false,
-      errorLoading: false,
+      visibleModalDialog: false,
       errorMessage: null,
     });
   };
@@ -87,26 +80,25 @@ class Body extends React.PureComponent {
       buyUrl,
       dateExpires,
       t,
+      createPortals,
     } = this.props;
 
-    const {
-      errorLoading,
-      hasErrorLicense,
-      errorMessage,
-      visibleModal,
-    } = this.state;
+    const { hasErrorLicense, errorMessage, visibleModalDialog } = this.state;
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledBody>
-        <HeaderContainer t={t} dateExpires={dateExpires} />
+        <HeaderContainer
+          t={t}
+          dateExpires={dateExpires}
+          createPortals={createPortals}
+        />
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
           t={t}
-          visibleModal={visibleModal}
-          errorLoading={errorLoading}
+          visibleModalDialog={visibleModalDialog}
           errorMessage={errorMessage}
-          onCloseModal={this.onCloseModal}
+          onCloseModalDialog={this.onCloseModalDialog}
         />
         <ButtonContainer
           t={t}
@@ -144,12 +136,9 @@ function mapStateToProps(state) {
     helpUrl: state.payments.helpUrl,
     buyUrl: state.payments.buyUrl,
     dateExpires: state.payments.dateExpires,
-    licenseUpload: state.wizard.licenseUpload,
-    wizardToken: state.payments.wizardToken,
-    hasErrorLicense: state.payments.hasErrorLicense,
+    createPortals: state.payments.createPortals,
   };
 }
 export default connect(mapStateToProps, {
   setLicense,
-  resetLicenseUploaded,
 })(withRouter(PaymentsEnterprise));

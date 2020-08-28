@@ -1,23 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
-import { withRouter } from "react-router";
-
-import {
-  Button,
-  utils,
-  FileInput,
-  Link,
-  ModalDialog,
-} from "asc-web-components";
-import { store, history } from "asc-web-common";
-
-import { setLicense } from "../../../../store/payments/actions";
-import { resetLicenseUploaded } from "../../../../store/wizard/actions";
-// const { getPortalSettings, setIsLoaded } = store.auth.actions;
-const { tablet, mobile } = utils.device;
-
+import { utils, ModalDialog } from "asc-web-components";
+const { tablet } = utils.device;
 const StyledBody = styled.div`
   font-family: Open Sans;
   font-style: normal;
@@ -42,20 +27,28 @@ const StyledHeader = styled.div`
     margin-bottom: 17px;
   }
 `;
-const ModalDialogContainer = ({ t, visibleModal, onCloseModal }) => {
+const ModalDialogContainer = ({
+  t,
+  visibleModalDialog,
+  onCloseModalDialog,
+}) => {
   const header = <StyledHeader>{t("LoadingError")}</StyledHeader>;
   const body = <StyledBody>{t("LicenseError")}</StyledBody>;
   return (
     <ModalDialog
       bodyPadding="0px"
-      visible={visibleModal}
+      visible={visibleModalDialog}
       displayType="auto"
       zIndex={310}
       headerContent={header}
       bodyContent={body}
-      onClose={onCloseModal}
+      onClose={onCloseModalDialog}
     />
   );
 };
-
+ModalDialogContainer.propTypes = {
+  visibleModalDialog: PropTypes.bool.isRequired,
+  onCloseModalDialog: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired,
+};
 export default ModalDialogContainer;

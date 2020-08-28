@@ -13,5 +13,6 @@
   "Upload": "Upload license",
   "Payments": "Payments",
   "LoadingError": "Loading error",
-  "LicenseError": "Licence  is not valid. Make sure you choose the right file"
+  "LicenseError": "Licence  is not valid. Make sure you choose the right file",
+  "createdPortals": "Number of portals you've created"
 }

@@ -6,6 +6,7 @@ const initialState = {
   buyUrl: "http://www.onlyoffice.com/post.ashx?type=buyenterprise",
   standAloneMode: true,
   dateExpires: "1 марта 2020",
+  createPortals: "1/2",
 };
 
 const paymentsReducer = (state = initialState, action) => {

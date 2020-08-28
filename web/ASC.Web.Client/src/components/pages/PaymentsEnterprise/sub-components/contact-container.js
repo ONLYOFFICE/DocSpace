@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { Text, Link, utils } from "asc-web-components";
 
-const { tablet, mobile } = utils.device;
+const { mobile } = utils.device;
 const StyledContactContainer = styled.div`
   .contact-emails {
     position: static;
@@ -52,6 +52,8 @@ const ContactContainer = ({ t, salesEmail, helpUrl }) => {
 };
 
 ContactContainer.propTypes = {
+  salesEmail: PropTypes.string.isRequired,
+  help: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 

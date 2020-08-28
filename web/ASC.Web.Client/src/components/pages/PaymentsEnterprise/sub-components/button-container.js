@@ -1,20 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import {
-  Button,
-  utils,
-  FileInput,
-  Link,
-  ModalDialog,
-} from "asc-web-components";
-import { store, history } from "asc-web-common";
+import PropTypes from "prop-types";
+import { Button, utils, FileInput } from "asc-web-components";
 
-import { setLicense } from "../../../../store/payments/actions";
-import { resetLicenseUploaded } from "../../../../store/wizard/actions";
-// const { getPortalSettings, setIsLoaded } = store.auth.actions;
 const { tablet, mobile } = utils.device;
 
 const StyledButtonContainer = styled.div`
@@ -114,4 +102,10 @@ const ButtonContainer = ({
   );
 };
 
+ButtonContainer.propTypes = {
+  buyUrl: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
+  onButtonClickUpload: PropTypes.func.isRequired,
+  onButtonClickBuy: PropTypes.func.isRequired,
+};
 export default ButtonContainer;
