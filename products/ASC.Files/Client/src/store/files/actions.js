@@ -474,3 +474,15 @@ export function storeOriginal(data) {
     return files.storeOriginal(data);
   }
 }
+
+export function changeDeleteConfirm(data) {
+  return dispatch => {
+    return files.changeDeleteConfirm(data);
+  }
+}
+
+export function storeForceSave(data) {
+  return dispatch => {
+    return files.storeForceSave(data);
+  }
+}

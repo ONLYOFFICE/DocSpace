@@ -49,7 +49,7 @@ class PureSettings extends React.Component {
       updateOrCreate,
       keepIntermediate,
     } = this.state;
-    const { match, t, isLoading, setIsLoading, thirdParty } = this.props;
+    const { match, t, isLoading, setIsLoading, thirdParty, isAdmin } = this.props;
     const { setting } = match.params;
 
     const settings = <>
@@ -103,7 +103,9 @@ class PureSettings extends React.Component {
       </PageLayout>
     </>;
 
-    return !thirdParty && setting === 'thirdParty' ? <Error403 /> : settings;
+    return (!thirdParty && setting === 'thirdParty') || (!isAdmin && setting === 'admin') 
+      ? <Error403 /> 
+      : settings;
   }
 } 
 
@@ -121,7 +123,8 @@ const Settings = props => {
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
-    thirdParty: state.files.settingsTree.thirdParty
+    thirdParty: state.files.settingsTree.thirdParty,
+    isAdmin: state.auth.user.isAdmin
   };
 }
 

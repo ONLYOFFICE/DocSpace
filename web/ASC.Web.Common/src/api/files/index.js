@@ -388,5 +388,15 @@ export function updateIfExist(val) {
 
 export function storeOriginal(val) {
   const data = { set: val };
-  return request({ method: "put", url: "files/storeoriginal.json", data });
+  return request({ method: "put", url: "files/storeoriginal", data });
+}
+
+export function changeDeleteConfirm(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/changedeleteconfrim", data });
+}
+
+export function storeForceSave(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/storeforcesave", data });
 }
