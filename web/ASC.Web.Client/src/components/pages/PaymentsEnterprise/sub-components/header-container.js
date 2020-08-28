@@ -21,6 +21,7 @@ const StyledHeader = styled.div`
   .payments-header-additional_support {
   }
   .payments-header-additional_portals {
+    margin-top: 13px;
   }
 
   @media ${tablet} {
@@ -39,7 +40,7 @@ const StyledHeader = styled.div`
     }
     .payments-header-additional_portals {
       line-height: 20px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
   }
 
@@ -71,7 +72,7 @@ const HeaderContainer = ({ t }) => {
       <Text className="payments-header">{t("Using")}</Text>
       <sd>
         <Text className="payments-header-additional_support">
-          {t("SubscriptionAndUpdatesExpires")} 1 марта 2021 года.
+          {t("SubscriptionAndUpdatesExpires")}
         </Text>
         <Text className="payments-header-additional_portals">
           Порталы, созданные вами: 1/2

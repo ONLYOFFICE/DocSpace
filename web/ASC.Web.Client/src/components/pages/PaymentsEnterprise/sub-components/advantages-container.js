@@ -37,7 +37,7 @@ const StyledBodyAdvantages = styled.div`
     margin: 224px 864px 193px 32px;
   }
   .payments-body {
-    margin-right: 609px;
+    /* margin-right: 609px; */
     margin-bottom: 22px;
     margin-left: 64px;
 
@@ -47,9 +47,9 @@ const StyledBodyAdvantages = styled.div`
   }
   .first-advantages {
     margin-top: 37px;
-    width: 247px;
+    /* width: 247px; */
   }
-  .second-advantages {
+  /* .second-advantages {
     width: 278px;
   }
   .third-advantages {
@@ -60,7 +60,7 @@ const StyledBodyAdvantages = styled.div`
   }
   .five-advantages {
     width: 276px;
-  }
+  } */
   .advantages-enterprise {
     width: 856px;
     height: 30px;
@@ -72,12 +72,16 @@ const StyledBodyAdvantages = styled.div`
 
   @media ${tablet} {
     width: 568px;
-    height: 245px;
+    height: 249px;
+
     .main_icon {
       display: none;
     }
     .advantages-enterprise {
       width: 536px;
+    }
+    .payments-body {
+      margin-bottom: 22px;
     }
   }
   @media ${mobile} {
@@ -144,14 +148,14 @@ const AdvantagesContainer = ({ t }) => {
       />
       <img
         className="payments-icon-enterprise first_icon"
-        src="images/payments_enterprise_icon_first.svg"
+        src="images/payments_enterprise_cubes.svg"
         width="24px"
         height="23px"
         alt="Icon"
       />
       <img
         className="payments-icon-enterprise second_icon"
-        src="images/payments_enterprise_icon_five.svg"
+        src="images/payments_enterprise_lock.svg"
         width="24px"
         height="23px"
         alt="Icon"
@@ -160,7 +164,7 @@ const AdvantagesContainer = ({ t }) => {
       <img
         className="payments-icon-enterprise 
           third_icon"
-        src="images/payments_enterprise_icon_four.svg"
+        src="images/payments_enterprise_smartphone.svg"
         width="24px"
         height="23px"
         alt="Icon"
@@ -168,7 +172,7 @@ const AdvantagesContainer = ({ t }) => {
       <img
         className="payments-icon-enterprise 
           four_icon"
-        src="images/payments_enterprise_icon_second.svg"
+        src="images/payments_enterprise_update.svg"
         width="24px"
         height="23px"
         alt="Icon"
@@ -176,7 +180,7 @@ const AdvantagesContainer = ({ t }) => {
       <img
         className="payments-icon-enterprise 
           five_icon"
-        src="images/payments_enterprise_icon_third.svg"
+        src="images/payments_enterprise_help.svg"
         width="24px"
         height="23px"
         alt="Icon"

@@ -32,7 +32,7 @@ const StyledBody = styled.div`
   }
   @media ${mobile} {
     width: 343px;
-    margin: 0 auto;
+    margin-right: 0 auto;
   }
 `;
 
