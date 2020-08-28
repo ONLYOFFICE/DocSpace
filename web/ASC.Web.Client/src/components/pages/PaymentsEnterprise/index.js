@@ -12,8 +12,10 @@ import HeaderContainer from "./sub-components/header-container";
 import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
-
+import { setLicense } from "../../../store/payments/actions";
+import { resetLicenseUploaded } from "../../../store/wizard/actions";
 import { createI18N } from "../../../helpers/i18n";
+
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
@@ -36,7 +38,16 @@ const StyledBody = styled.div`
   }
 `;
 
-const Body = ({ standAloneMode, isLoaded, salesEmail, helpUrl, buyUrl }) => {
+const Body = ({
+  isLoaded,
+  salesEmail,
+  helpUrl,
+  buyUrl,
+  dateExpires,
+  hasErrorLicense,
+  licenseUpload,
+  wizardToken,
+}) => {
   const { t } = useTranslation("translation", { i18n });
   useEffect(() => {
     changeLanguage(i18n);
@@ -47,9 +58,13 @@ const Body = ({ standAloneMode, isLoaded, salesEmail, helpUrl, buyUrl }) => {
     <Loader className="pageLoader" type="rombs" size="40px" />
   ) : (
     <StyledBody>
-      <HeaderContainer t={t} />
+      <HeaderContainer t={t} dateExpires={dateExpires} />
       <AdvantagesContainer t={t} />
-      <ButtonContainer t={t} buyUrl={buyUrl} />
+      <ButtonContainer
+        t={t}
+        buyUrl={buyUrl}
+        hasErrorLicense={hasErrorLicense}
+      />
       <ContactContainer t={t} salesEmail={salesEmail} helpUrl={helpUrl} />
     </StyledBody>
   );
@@ -70,11 +85,17 @@ PaymentsEnterprise.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    standAloneMode: state.payments.standAloneMode,
     isLoaded: state.auth.isLoaded,
     salesEmail: state.payments.salesEmail,
     helpUrl: state.payments.helpUrl,
     buyUrl: state.payments.buyUrl,
+    dateExpires: state.payments.dateExpires,
+    licenseUpload: state.wizard.licenseUpload,
+    wizardToken: state.payments.wizardToken,
+    hasErrorLicense: state.payments.hasErrorLicense,
   };
 }
-export default connect(mapStateToProps)(withRouter(PaymentsEnterprise));
+export default connect(mapStateToProps, {
+  setLicense,
+  resetLicenseUploaded,
+})(withRouter(PaymentsEnterprise));

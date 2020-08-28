@@ -1,15 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
-import { Button, utils } from "asc-web-components";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { Button, utils, FileInput, Link } from "asc-web-components";
 import { store, history } from "asc-web-common";
+
+import { setLicense } from "../../../../store/payments/actions";
+import { resetLicenseUploaded } from "../../../../store/wizard/actions";
 // const { getPortalSettings, setIsLoaded } = store.auth.actions;
 const { tablet, mobile } = utils.device;
 
 const onButtonClickBuy = (e) => {
   window.open(e.target.value, "_blank");
 };
+
 const StyledButtonContainer = styled.div`
   position: static;
   background: #edf2f7;
@@ -34,6 +39,12 @@ const StyledButtonContainer = styled.div`
   .button-upload {
     width: 153px;
     margin: 32px 612px 32px 0px;
+  }
+
+  .input {
+    position: absolute;
+    border: 2px solid red;
+    margin-right: 40px;
   }
   @media ${tablet} {
     width: 600px;
@@ -69,25 +80,78 @@ const StyledButtonContainer = styled.div`
   }
 `;
 
-const ButtonContainer = ({ t, buyUrl }) => {
-  return (
-    <StyledButtonContainer>
-      <Button
-        className="button-payments-enterprise button-buy"
-        label="Buy now"
-        value={`${buyUrl}`}
-        onClick={onButtonClickBuy}
-      />
-      <Button
-        className="button-payments-enterprise button-upload"
-        label="Upload license"
-      />
-    </StyledButtonContainer>
-  );
-};
+class ButtonContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      errorMessage: null,
+      errorLoading: false,
+      hasErrorLicense: false,
+    };
+  }
+  onInputFileHandler = (file) => {
+    //const { wizardToken } = this.props;
 
-ButtonContainer.propTypes = {
-  t: PropTypes.func.isRequired,
-};
+    const { licenseUpload, setLicense } = this.props;
+    //if (licenseUpload) resetLicenseUploaded();
+    let fd = new FormData();
+    fd.append("files", file);
 
-export default ButtonContainer;
+    setLicense(null, fd).catch((e) =>
+      this.setState({
+        errorLoading: true,
+        errorMessage: e,
+        hasErrorLicense: true,
+      })
+    );
+  };
+  render() {
+    const { t, buyUrl } = this.props;
+    const { errorLoading, hasErrorLicense } = this.state;
+
+    return (
+      <StyledButtonContainer>
+        <Button
+          className="button-payments-enterprise button-buy"
+          label={t("Buy")}
+          value={`${buyUrl}`}
+          onClick={onButtonClickBuy}
+        />
+        {/* <Link
+          type="action"
+          color="black"
+          isBold={true}
+          onClick={this.onInputFileHandler}
+        >
+          {t("Upload")}
+        </Link> */}
+        {/* <Button
+          type="submit"
+          className="button-payments-enterprise button-upload"
+          label={t("Upload")}
+          onCLick={this.onInputFileHandler}
+        /> */}
+
+        <FileInput
+          tabIndex={3}
+          className="input"
+          placeholder={"Upload file"}
+          accept=".lic"
+          onInput={this.onInputFileHandler}
+        />
+      </StyledButtonContainer>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    buyUrl: state.payments.buyUrl,
+    wizardToken: state.payments.wizardToken,
+    licenseUpload: state.payments.licenseUpload,
+  };
+}
+
+export default connect(mapStateToProps, { setLicense, resetLicenseUploaded })(
+  withRouter(ButtonContainer)
+);
