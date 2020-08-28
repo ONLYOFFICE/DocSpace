@@ -1,5 +1,5 @@
 
-import { SET_USERS, SET_ADMINS, SET_OWNER, SET_OPTIONS, SET_FILTER, SET_LOGO_TEXT, SET_LOGO_SIZES, SET_LOGO_URLS } from "./actions";
+import { SET_USERS, SET_ADMINS, SET_OWNER, SET_OPTIONS, SET_FILTER, SET_LOGO_TEXT, SET_LOGO_SIZES, SET_LOGO_URLS, SET_CONSUMERS } from "./actions";
 import { api } from "asc-web-common";
 const { Filter } = api;
 
@@ -20,6 +20,9 @@ const initialState = {
       filter: Filter.getDefault()
     }
   },
+  integration: {
+    consumers: []
+  }
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -86,10 +89,18 @@ const peopleReducer = (state = initialState, action) => {
         }
       });
 
+    case SET_CONSUMERS:
+      return {
+        ...state,
+        integration: {
+          ...state.integration,
+          consumers: action.consumers
+        }
+      }
+
     default:
       return state;
   }
 };
-
 
 export default peopleReducer;
