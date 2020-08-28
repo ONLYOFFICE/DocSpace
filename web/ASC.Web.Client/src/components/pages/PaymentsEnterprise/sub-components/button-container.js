@@ -11,10 +11,6 @@ import { resetLicenseUploaded } from "../../../../store/wizard/actions";
 // const { getPortalSettings, setIsLoaded } = store.auth.actions;
 const { tablet, mobile } = utils.device;
 
-const onButtonClickBuy = (e) => {
-  window.open(e.target.value, "_blank");
-};
-
 const StyledButtonContainer = styled.div`
   position: static;
   background: #edf2f7;
@@ -91,7 +87,7 @@ class ButtonContainer extends React.Component {
       hasErrorLicense: false,
     };
   }
-  onInputFileHandler = (file) => {
+  onButtonClickUpload = (file) => {
     //const { wizardToken } = this.props;
 
     const { licenseUpload, setLicense } = this.props;
@@ -107,6 +103,9 @@ class ButtonContainer extends React.Component {
       })
     );
   };
+  onButtonClickBuy = (e) => {
+    window.open(e.target.value, "_blank");
+  };
   render() {
     const { t, buyUrl } = this.props;
     const { errorLoading, hasErrorLicense } = this.state;
@@ -117,20 +116,19 @@ class ButtonContainer extends React.Component {
           className="button-payments-enterprise button-buy"
           label={t("Buy")}
           value={`${buyUrl}`}
-          onClick={onButtonClickBuy}
+          onClick={this.onButtonClickBuy}
         />
         <FileInput
           type="file"
           className="button-payments-enterprise button-upload input"
           placeholder={"Upload file"}
           accept=".lic"
-          onInput={this.onInputFileHandler}
+          onInput={this.onButtonClickUpload}
         />
         <Button
           type="submit"
           className="button-payments-enterprise button-upload"
           label={t("Upload")}
-          onCLick={this.FileInput}
         />
       </StyledButtonContainer>
     );
