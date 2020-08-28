@@ -200,6 +200,14 @@ namespace ASC.Data.Storage
                     }
 
                     StepDone();
+
+                    CacheMigrationNotify.Publish(new MigrationProgress
+                    {
+                        TenantId = tenantId,
+                        Progress = Percentage,
+                        IsCompleted = IsCompleted
+                    },
+                     CacheNotifyAction.Insert);
                 }
 
                 settingsManager.Save(settings);

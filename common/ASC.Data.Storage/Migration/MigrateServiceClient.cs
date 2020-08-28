@@ -49,15 +49,17 @@ namespace ASC.Data.Storage.Migration
             ServiceProvider = serviceProvider;
         }
 
-        public void GetProgress()
+        public double GetProgress()
         {
+            var progress = 0.0;
+
             ProgressMigrationNotify.Subscribe(n =>
             {
-                using var scope = ServiceProvider.CreateScope();
-                var service = scope.ServiceProvider.GetService<ServiceClient>();
-                service.GetProgress(n.TenantId);
+                progress = n.Progress;       
             },
             CacheNotifyAction.Insert);
+
+            return progress;
         }
     }
 
@@ -111,13 +113,9 @@ namespace ASC.Data.Storage.Migration
 
         public double GetProgress(int tenant)
         {
-            ServiceClientListener.GetProgress();
-
             var cache = Cache.Get<MigrationProgress>(GetCacheKey(tenant));
 
-            var progress = (ProgressBase)StorageUploader.GetProgress(tenant) ?? StaticUploader.GetProgress(tenant);
-
-            return progress != null ? progress.Percentage : -1;
+            return ServiceClientListener.GetProgress();
         }
 
         private string GetCacheKey(int tenantId)
