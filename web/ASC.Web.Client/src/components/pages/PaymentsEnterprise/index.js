@@ -39,68 +39,6 @@ const StyledBody = styled.div`
   }
 `;
 
-// const Body = ({
-//   isLoaded,
-//   salesEmail,
-//   helpUrl,
-//   buyUrl,
-//   dateExpires,
-//   hasErrorLicense,
-//   licenseUpload,
-//   wizardToken,
-// }) => {
-//   const { t } = useTranslation("translation", { i18n });
-//   useEffect(() => {
-//     changeLanguage(i18n);
-//     document.title = `${t("Payments")}`;
-//   }, [t]);
-
-//   return !isLoaded ? (
-//     <Loader className="pageLoader" type="rombs" size="40px" />
-//   ) : (
-//     <StyledBody>
-//       <HeaderContainer t={t} dateExpires={dateExpires} />
-//       <AdvantagesContainer t={t} />
-//       <ButtonContainer
-//         t={t}
-//         buyUrl={buyUrl}
-//         hasErrorLicense={hasErrorLicense}
-//       />
-//       <ContactContainer t={t} salesEmail={salesEmail} helpUrl={helpUrl} />
-//     </StyledBody>
-//   );
-// };
-
-// const PaymentsEnterprise = (props) => (
-//   <PageLayout>
-//     <PageLayout.SectionBody>
-//       <Body {...props} />
-//     </PageLayout.SectionBody>
-//   </PageLayout>
-// );
-
-// PaymentsEnterprise.propTypes = {
-//   standAloneMode: PropTypes.bool,
-//   isLoaded: PropTypes.bool,
-// };
-
-// function mapStateToProps(state) {
-//   return {
-//     isLoaded: state.auth.isLoaded,
-//     salesEmail: state.payments.salesEmail,
-//     helpUrl: state.payments.helpUrl,
-//     buyUrl: state.payments.buyUrl,
-//     dateExpires: state.payments.dateExpires,
-//     licenseUpload: state.wizard.licenseUpload,
-//     wizardToken: state.payments.wizardToken,
-//     hasErrorLicense: state.payments.hasErrorLicense,
-//   };
-// }
-// export default connect(mapStateToProps, {
-//   setLicense,
-//   resetLicenseUploaded,
-// })(withRouter(PaymentsEnterprise));
-
 class Body extends React.PureComponent {
   constructor(props) {
     super(props);
