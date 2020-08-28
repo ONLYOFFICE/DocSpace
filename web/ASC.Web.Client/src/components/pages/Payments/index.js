@@ -6,14 +6,14 @@ import PaymentsEnterprise from "../PaymentsEnterprise";
 import PaymentsSaaS from "../PaymentsSaaS";
 class Payments extends React.Component {
   render() {
-    const { standAloneMode } = this.props;
-    return standAloneMode ? <PaymentsEnterprise /> : <PaymentsSaaS />;
+    const { standaloneMode } = this.props;
+    return standaloneMode ? <PaymentsEnterprise /> : <PaymentsSaaS />;
   }
 }
 
 function mapStateToProps(state) {
   return {
-    standAloneMode: state.payments.standAloneMode,
+    standaloneMode: state.payments.standaloneMode,
   };
 }
 

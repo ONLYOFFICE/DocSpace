@@ -1,5 +1,5 @@
 import React from "react";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import { Loader, utils as Utils } from "asc-web-components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
@@ -13,12 +13,14 @@ import ContactContainer from "./sub-components/contact-container";
 import ModalDialogContainer from "./sub-components/modal-dialog-container";
 import { setLicense } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
+import moment from "moment";
 
+import isEmpty from "lodash/isEmpty";
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
 });
-
+const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage } = utils;
 const { tablet, mobile } = Utils.device;
 
@@ -47,7 +49,18 @@ class Body extends React.PureComponent {
       visibleModalDialog: false,
     };
 
-    document.title = `${t("Payments")}`;
+    document.title = `${t("Payments")} – ${t("OrganizationName")}`;
+  }
+
+  componentDidMount() {
+    this.props.currentProductId !== "payments" &&
+      this.props.setCurrentProductId("payments");
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.currentProductId !== prevProps.currentProductId) {
+      this.fetchData(this.props.currentProductId);
+    }
   }
 
   onButtonClickUpload = (file) => {
@@ -82,7 +95,6 @@ class Body extends React.PureComponent {
       t,
       createPortals,
     } = this.props;
-
     const { hasErrorLicense, errorMessage, visibleModalDialog } = this.state;
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -141,4 +153,5 @@ function mapStateToProps(state) {
 }
 export default connect(mapStateToProps, {
   setLicense,
+  setCurrentProductId,
 })(withRouter(PaymentsEnterprise));

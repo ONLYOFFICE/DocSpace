@@ -14,5 +14,6 @@
   "Payments": "Платежи",
   "LoadingError": "Ошибка загрузки",
   "LicenseError": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
-  "createdPortals": " Порталы, созданные вами:"
+  "createdPortals": " Порталы, созданные вами:",
+  "OrganizationName": "ONLYOFFICE"
 }
