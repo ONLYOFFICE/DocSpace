@@ -147,7 +147,7 @@ const LicenseBlockStyle = styled.div`
     margin: 32px 612px 32px 155px;
   }
 `;
-const Body = ({ modules, match, standAloneMode, isLoaded }) => {
+const Body = ({ standAloneMode, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
 
   const onButtonClickBuy = (e) => {
@@ -193,21 +193,21 @@ const Body = ({ modules, match, standAloneMode, isLoaded }) => {
         </Text>
         <img
           className="payments-icon-enterprise"
-          src="images/payments_enterprise.png"
+          src="images/payments_enterprise.svg"
           width="222px"
           height="247px"
           alt="Icon"
         />
         <img
           className="payments-icon-enterprise first_icon"
-          src="images/payments_enterprise_icon_first.png"
+          src="images/payments_enterprise_icon_first.svg"
           width="24px"
           height="23px"
           alt="Icon"
         />
         <img
           className="payments-icon-enterprise second_icon"
-          src="images/payments_enterprise_icon_first.png"
+          src="images/payments_enterprise_icon_five.svg"
           width="24px"
           height="23px"
           alt="Icon"
@@ -216,7 +216,7 @@ const Body = ({ modules, match, standAloneMode, isLoaded }) => {
         <img
           className="payments-icon-enterprise 
           third_icon"
-          src="images/payments_enterprise_icon_four.png"
+          src="images/payments_enterprise_icon_four.svg"
           width="24px"
           height="23px"
           alt="Icon"
@@ -224,7 +224,7 @@ const Body = ({ modules, match, standAloneMode, isLoaded }) => {
         <img
           className="payments-icon-enterprise 
           four_icon"
-          src="images/payments_enterprise_icon_second.png"
+          src="images/payments_enterprise_icon_second.svg"
           width="24px"
           height="23px"
           alt="Icon"
@@ -232,7 +232,7 @@ const Body = ({ modules, match, standAloneMode, isLoaded }) => {
         <img
           className="payments-icon-enterprise 
           five_icon"
-          src="images/payments_enterprise_icon_third.png"
+          src="images/payments_enterprise_icon_third.svg"
           width="24px"
           height="23px"
           alt="Icon"
@@ -280,7 +280,6 @@ const PaymentsEnterprise = (props) => (
 );
 
 PaymentsEnterprise.propTypes = {
-  modules: PropTypes.array.isRequired,
   standAloneMode: PropTypes.bool,
   isLoaded: PropTypes.bool,
 };
@@ -288,7 +287,6 @@ PaymentsEnterprise.propTypes = {
 function mapStateToProps(state) {
   return {
     standAloneMode: state.auth.settings.standAloneMode,
-    modules: state.auth.modules,
     isLoaded: state.auth.isLoaded,
   };
 }

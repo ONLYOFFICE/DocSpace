@@ -11,9 +11,10 @@ import {
   Offline,
   ComingSoon,
 } from "asc-web-common";
-import About from "./components/pages/About";
 
-const Home = lazy(() => import("./components/pages/Home"));
+import Home from "./components/pages/Home";
+
+const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
