@@ -13,9 +13,7 @@ import ContactContainer from "./sub-components/contact-container";
 import ModalDialogContainer from "./sub-components/modal-dialog-container";
 import { setLicense } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
-import moment from "moment";
 
-import isEmpty from "lodash/isEmpty";
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
@@ -43,10 +41,9 @@ class Body extends React.PureComponent {
     super(props);
     const { t } = this.props;
     this.state = {
-      errorMessage: null,
-      license: false,
-      hasErrorLicense: false,
-      visibleModalDialog: false,
+      // errorMessage: null,
+      // isErrorLicense: false,
+      isVisible: false,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
@@ -70,9 +67,9 @@ class Body extends React.PureComponent {
 
     setLicense(null, fd).catch((e) =>
       this.setState({
-        errorMessage: e,
-        hasErrorLicense: true,
-        visibleModalDialog: true,
+        // errorMessage: e,
+        // isErrorLicense: true,
+        isVisible: true,
       })
     );
   };
@@ -81,8 +78,8 @@ class Body extends React.PureComponent {
   };
   onCloseModalDialog = () => {
     this.setState({
-      visibleModalDialog: false,
-      errorMessage: null,
+      isVisible: false,
+      // errorMessage: null,
     });
   };
   render() {
@@ -95,7 +92,7 @@ class Body extends React.PureComponent {
       t,
       createPortals,
     } = this.props;
-    const { hasErrorLicense, errorMessage, visibleModalDialog } = this.state;
+    const { isVisible } = this.state;
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -108,14 +105,12 @@ class Body extends React.PureComponent {
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
           t={t}
-          visibleModalDialog={visibleModalDialog}
-          errorMessage={errorMessage}
+          isVisible={isVisible}
           onCloseModalDialog={this.onCloseModalDialog}
         />
         <ButtonContainer
           t={t}
           buyUrl={buyUrl}
-          hasErrorLicense={hasErrorLicense}
           onButtonClickBuy={this.onButtonClickBuy}
           onButtonClickUpload={this.onButtonClickUpload}
         />

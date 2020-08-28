@@ -27,17 +27,13 @@ const StyledHeader = styled.div`
     margin-bottom: 17px;
   }
 `;
-const ModalDialogContainer = ({
-  t,
-  visibleModalDialog,
-  onCloseModalDialog,
-}) => {
+const ModalDialogContainer = ({ t, isVisible, onCloseModalDialog }) => {
   const header = <StyledHeader>{t("LoadingError")}</StyledHeader>;
   const body = <StyledBody>{t("LicenseError")}</StyledBody>;
   return (
     <ModalDialog
       bodyPadding="0px"
-      visible={visibleModalDialog}
+      visible={isVisible}
       displayType="auto"
       zIndex={310}
       headerContent={header}
