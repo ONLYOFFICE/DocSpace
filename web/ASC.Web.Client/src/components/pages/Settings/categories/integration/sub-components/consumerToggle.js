@@ -6,7 +6,7 @@ const StyledToggle = styled(ToggleButton)`
    position: relative;
 `;
 
-class ConsumerItemToggle extends React.Component {
+class ConsumerToggle extends React.Component {
 
     constructor(props) {
         super(props);
@@ -22,33 +22,32 @@ class ConsumerItemToggle extends React.Component {
             })
             // TODO: api -> service off -> toastr
         }
-
         // this.setState({
         //     toggleActive: true
         // });
         else {
             this.props.onToggleClick();
         }
-
     }
-
-
 
     render() {
 
-        const { name, onModalOpen } = this.props;
+        const { name, onModalOpen, canSet } = this.props;
         const { toggleActive } = this.state;
         const { onToggleClick } = this;
 
         return (
             <>
                 <Box marginProp="28px 0 0 0">
-                    <StyledToggle onChange={onToggleClick}
-                        isChecked={toggleActive} />
+                    <StyledToggle
+                        onChange={onToggleClick}
+                        isDisabled={!canSet}
+                        isChecked={!canSet ? true : toggleActive}
+                    />
                 </Box>
             </>
         );
     }
 }
 
-export default ConsumerItemToggle;
+export default ConsumerToggle;

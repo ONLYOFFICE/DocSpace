@@ -1,11 +1,12 @@
 import React from "react";
-import { consumers } from "./sub-components/consumers";
+import { connect } from "react-redux";
+import { getConsumers } from '../../../../../store/settings/actions';
+import { withTranslation } from 'react-i18next';
+import styled from "styled-components";
+
 import { Box, Text, Link } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
-import { withTranslation } from 'react-i18next';
-import { connect } from "react-redux";
-import ConsumerItemToggle from "./sub-components/consumerItemToggle";
-import styled from "styled-components";
+import ConsumerToggle from "./sub-components/consumerToggle";
 
 const RootContainer = styled(Box)`
 
@@ -31,10 +32,14 @@ class ThirdPartyServices extends React.Component {
         document.title = `${t("ThirdPartyAuthorization")} – ${t("OrganizationName")}`;
 
         this.state = {
-            consumers: consumers,
             selectedConsumer: "",
             dialogVisible: false
         }
+    }
+
+    componentDidMount() {
+        const { getConsumers } = this.props;
+        getConsumers();
     }
 
     onModalOpen = () => {
@@ -54,8 +59,8 @@ class ThirdPartyServices extends React.Component {
 
     render() {
 
-        const { t } = this.props;
-        const { consumers, selectedConsumer, dialogVisible } = this.state;
+        const { t, consumers } = this.props;
+        const { selectedConsumer, dialogVisible } = this.state;
         const { titleDescription, onModalOpen, onModalClose } = this;
 
         const consumerRefs = consumers.reduce((acc, consumer) => {
@@ -102,16 +107,17 @@ class ThirdPartyServices extends React.Component {
                                     <Box displayProp="flex" className="consumer-item-container">
                                         <ConsumerItem
                                             ref={el => (consumerRefs[i] = el)}
-                                            name={consumer.name}
-                                            description={consumer.description}
+                                            consumer={consumer}
                                             consumers={consumers}
+
                                             dialogVisible={dialogVisible}
                                             selectedConsumer={selectedConsumer}
                                             onModalClose={onModalClose}
                                         />
-                                        <ConsumerItemToggle
+                                        <ConsumerToggle
                                             ref={el => (toggleRefs[i] = el)}
                                             name={consumer.name}
+                                            canSet={consumer.canSet}
                                             onToggleClick={() => {
                                                 this.setState({ selectedConsumer: consumer.name })
                                                 onModalOpen()
@@ -127,4 +133,9 @@ class ThirdPartyServices extends React.Component {
     }
 }
 
-export default connect(null, null)(withTranslation()(ThirdPartyServices));
+const mapStateToProps = (state) => {
+    const { consumers } = state.settings.integration;
+    return { consumers }
+}
+
+export default connect(mapStateToProps, { getConsumers })(withTranslation()(ThirdPartyServices));

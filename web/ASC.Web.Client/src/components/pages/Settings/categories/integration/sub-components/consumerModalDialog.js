@@ -28,20 +28,20 @@ const ConsumerModalDialog = (props) => {
         return consumers.find((consumer) => consumer.name === selectedConsumer).name;
     }
     const getInnerDescription = () => {
-        return consumers.find((consumer) => consumer.name === selectedConsumer).innerDescription;
+        return consumers.find((consumer) => consumer.name === selectedConsumer).instruction;
     }
     const getInputFields = () => {
         return consumers
             .find((consumer) => consumer.name === selectedConsumer)
-            .tokens
-            .map((token, i) =>
+            .props
+            .map((prop, i) =>
                 <React.Fragment key={i}>
                     <Box displayProp="flex" flexDirection="column">
                         <Box>
-                            <Text isBold={true}>{token}:</Text>
+                            <Text isBold={true}>{prop.title}:</Text>
                         </Box>
                         <Box>
-                            <TextInput placeholder={token} isAutoFocussed={i === 0 && true} />
+                            <TextInput placeholder={prop.title} isAutoFocussed={i === 0 && true} />
                         </Box>
                     </Box>
                 </React.Fragment>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text, ToggleButton, Icons } from "asc-web-components";
-import ConsumerModalDialog from "./modal-dialog";
+import ConsumerModalDialog from "./consumerModalDialog";
 
 class ConsumerItem extends React.Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class ConsumerItem extends React.Component {
     }
 
     render() {
-        const { name, description, dialogVisible, consumers, onModalClose, onToggleClick, selectedConsumer } = this.props;
+        const { dialogVisible, consumer, consumers, onModalClose, selectedConsumer } = this.props;
         const { toggleActive } = this.state;
         const { onModalButtonClick } = this;
 
@@ -28,12 +28,13 @@ class ConsumerItem extends React.Component {
                 <Box displayProp="flex" flexDirection="column">
                     <Box displayProp="flex" justifyContent="space-between" widthProp="100%" marginProp="21px 0 0 0">
                         <div>
-                            {React.createElement(Icons[`${name}Icon`], { size: "scale" })}
+                            <Text>{consumer.name}</Text>
+                            {/* {React.createElement(Icons[`${name}Icon`], { size: "scale" })} */}
                         </div>
                     </Box>
                     <Box displayProp="flex" marginProp="21px 0 0 0">
                         <Text>
-                            {description}
+                            {consumer.instruction}
                         </Text>
                     </Box>
                 </Box>
