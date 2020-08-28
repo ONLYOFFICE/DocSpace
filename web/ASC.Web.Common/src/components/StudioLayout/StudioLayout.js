@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
 import PureStudioLayout from "./PureStudioLayout";
-import { changeLanguage } from '../../utils';
+import { changeLanguage } from "../../utils";
 import isEqual from "lodash/isEqual";
 
 const getSeparator = id => {
@@ -24,7 +24,7 @@ const toModuleWrapper = (item, iconName) => {
     iconUrl: item.iconUrl,
     notifications: 0,
     url: item.link,
-    onClick: (e) => {
+    onClick: e => {
       if (e) {
         window.open(item.link, "_self");
         e.preventDefault();
@@ -43,13 +43,21 @@ const getCustomModules = isAdmin => {
   const settingsModuleWrapper = toModuleWrapper(
     {
       id: "settings",
-      title: i18n.t('Settings'),
+      title: i18n.t("Settings"),
       link: "/settings"
     },
     "SettingsIcon"
   );
+  const paymentsModuleWrapper = toModuleWrapper(
+    {
+      id: "payments",
+      title: i18n.t("Payments"),
+      link: "/payments"
+    },
+    "PaymentsIcon"
+  );
 
-  return [separator, settingsModuleWrapper];
+  return [separator, settingsModuleWrapper, paymentsModuleWrapper];
 };
 
 const getAvailableModules = (modules, currentUser) => {
@@ -101,7 +109,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(withRouter(StudioLayout));
+export default connect(mapStateToProps, { logout })(withRouter(StudioLayout));
