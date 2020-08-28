@@ -49,9 +49,7 @@
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
     <Protobuf Include="protos\MigrationCache.proto" />
-    <Protobuf Include="protos\MigrationProgress.proto">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Protobuf>
+    <Protobuf Include="protos\MigrationProgress.proto" />
     <Protobuf Include="protos\MigrationUploadCdn.proto" />
   </ItemGroup>
   

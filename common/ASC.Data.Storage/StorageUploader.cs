@@ -201,13 +201,7 @@ namespace ASC.Data.Storage
 
                     StepDone();
 
-                    CacheMigrationNotify.Publish(new MigrationProgress
-                    {
-                        TenantId = tenantId,
-                        Progress = Percentage,
-                        IsCompleted = IsCompleted
-                    },
-                     CacheNotifyAction.Insert);
+                    MigrationPublish();
                 }
 
                 settingsManager.Save(settings);
@@ -220,6 +214,11 @@ namespace ASC.Data.Storage
                 Log.Error(e);
             }
 
+            MigrationPublish();
+        }
+
+        private void MigrationPublish()
+        {
             CacheMigrationNotify.Publish(new MigrationProgress
             {
                 TenantId = tenantId,
