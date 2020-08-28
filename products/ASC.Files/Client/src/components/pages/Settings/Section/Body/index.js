@@ -11,7 +11,8 @@ import {
   storeOriginal, 
   setThirdParty,
   changeDeleteConfirm, 
-  storeForceSave
+  storeForceSave,
+  setSelectedNode
 } from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
@@ -25,6 +26,7 @@ const StyledSettings = styled.div`
 
   .heading {
     margin-bottom: 0;
+    margin-top: 14px;
   }
 `;
 
@@ -46,9 +48,12 @@ class SectionBodyContent extends React.Component {
     onLoading(false);
   }
 
-  componentDidUpdate() {
-    const { setting, t } = this.props;
-    document.title = t(`${setting}`);
+  componentDidUpdate(prevProps) {
+    const { setting, t, setSelectedNode, selectedTreeNode } = this.props;
+    document.title = t(`${setting}`); 
+    if(prevProps.setting !== setting && setting !== selectedTreeNode[0]) {
+      setSelectedNode([ setting ])
+    }
   }
 
   componentWillUnmount() {
@@ -210,13 +215,14 @@ class SectionBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { settingsTree } = state.files;
+  const { settingsTree, selectedTreeNode } = state.files;
   const { isAdmin } = state.auth.user;
   const { thirdParty } = settingsTree;
 
   return { 
     thirdParty,
-    isAdmin
+    isAdmin,
+    selectedTreeNode
   }
 }
 
@@ -226,6 +232,7 @@ export default connect(
     storeOriginal, 
     setThirdParty,
     changeDeleteConfirm,
-    storeForceSave
+    storeForceSave,
+    setSelectedNode
   })
   (SectionBodyContent);
