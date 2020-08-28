@@ -19,10 +19,8 @@ const StyledHeader = styled.div`
     margin-bottom: 8px;
   }
   .payments-header-additional_support {
-    margin-top: 8px;
   }
   .payments-header-additional_portals {
-    margin-top: 13px;
   }
 
   @media ${tablet} {
@@ -51,12 +49,18 @@ const StyledHeader = styled.div`
       margin-top: 0px;
       height: 96px;
     }
+    .sd {
+      height: 70px;
+    }
     .payments-header-additional_support {
       width: 343px;
       line-height: 20px;
       color: #333333;
       font-style: normal;
       font-weight: normal;
+    }
+    .payments-header-additional_portals {
+      margin-top: 10px;
     }
   }
 `;

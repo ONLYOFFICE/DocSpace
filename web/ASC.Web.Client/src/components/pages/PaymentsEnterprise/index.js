@@ -20,7 +20,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-const { tablet } = Utils.device;
+const { tablet, mobile } = Utils.device;
 
 const StyledBody = styled.div`
   margin: 0 auto;
@@ -28,6 +28,10 @@ const StyledBody = styled.div`
 
   @media ${tablet} {
     width: 600px;
+    margin: 0 auto;
+  }
+  @media ${mobile} {
+    width: 343px;
     margin: 0 auto;
   }
 `;

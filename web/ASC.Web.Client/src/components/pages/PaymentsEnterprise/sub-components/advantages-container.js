@@ -83,7 +83,7 @@ const StyledBodyAdvantages = styled.div`
   @media ${mobile} {
     margin-top: 16px;
     width: 311px;
-    height: 333px;
+    height: 301px;
     .main_icon {
       display: none;
     }
@@ -92,8 +92,28 @@ const StyledBodyAdvantages = styled.div`
       height: 60px;
     }
     .payments-body {
+      width: 247px;
       margin-bottom: 20px;
       line-height: 16px;
+      font-weight: bold;
+    }
+    .four-advantages {
+      margin-bottom: 16px;
+    }
+    .first_icon {
+      margin: 93px 864px 193px 32px;
+    }
+    .second_icon {
+      margin: 133px 864px 193px 32px;
+    }
+    .third_icon {
+      margin: 182px 864px 193px 32px;
+    }
+    .four_icon {
+      margin: 220px 864px 193px 32px;
+    }
+    .five_icon {
+      margin: 269px 864px 193px 32px;
     }
   }
 `;

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Button, utils } from "asc-web-components";
 import { store, history } from "asc-web-common";
 const { getPortalSettings, setIsLoaded } = store.auth.actions;
-const { tablet } = utils.device;
+const { tablet, mobile } = utils.device;
 const onButtonClickBuy = (e) => {
   getPortalSettings(store.dispatch)
     .then(() => store.dispatch(setIsLoaded(true)))
@@ -47,6 +47,22 @@ const StyledButtonContainer = styled.div`
     }
     .button-upload {
       width: 536px;
+      margin: 0px 32px 32px 32px;
+
+      border-radius: 3px;
+    }
+  }
+  @media ${mobile} {
+    width: 343px;
+    height: 168px;
+    .button-buy {
+      width: 279px;
+
+      margin: 32px 32px 16px 32px;
+      border-radius: 3px;
+    }
+    .button-upload {
+      width: 279px;
       margin: 0px 32px 32px 32px;
 
       border-radius: 3px;

@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Text, Link } from "asc-web-components";
+import { Text, Link, utils } from "asc-web-components";
 const supportLinkPurchaseQuestions = "sales@onlyoffice.com";
 const supportLinkTechnicalIssues = "https://helpdesk.onlyoffice.com";
-
+const { tablet, mobile } = utils.device;
 const StyledContactContainer = styled.div`
   .contact-emails {
     position: static;
@@ -14,6 +14,13 @@ const StyledContactContainer = styled.div`
   }
   .contact-emails_link {
     color: #316daa;
+  }
+
+  @media ${mobile} {
+    width: 343px;
+    .contact-emails_link {
+      display: block;
+    }
   }
 `;
 
