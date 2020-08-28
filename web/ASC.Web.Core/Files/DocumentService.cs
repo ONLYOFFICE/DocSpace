@@ -435,16 +435,16 @@ namespace ASC.Web.Core.Files
         {
             public CommandMethod Command { get; set; }
 
-           
+
             public string C
             {
                 get { return Command.ToString().ToLower(CultureInfo.InvariantCulture); }
             }
-           
+
             public string Callback { get; set; }
-         
+
             public string Key { get; set; }
-          
+
             public MetaData Meta { get; set; }
 
             public string[] Users { get; set; }

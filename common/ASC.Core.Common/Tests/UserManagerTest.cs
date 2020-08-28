@@ -30,8 +30,11 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Diagnostics;
     using System.Threading;
+
     using ASC.Core.Users;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using NUnit.Framework;
 
     [TestFixture]

@@ -25,6 +25,7 @@
 
 
 using System;
+
 using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Tenants;
@@ -32,6 +33,7 @@ using ASC.Core.Users;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Core.SMS

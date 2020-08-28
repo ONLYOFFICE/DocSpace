@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Notify.Recipients;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Engine
