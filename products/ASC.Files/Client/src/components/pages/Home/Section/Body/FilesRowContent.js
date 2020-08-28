@@ -36,6 +36,11 @@ const SimpleFilesRowContent = styled(RowContent)`
   margin-top: -4px;
   padding-right: 8px;
 }
+
+.row_update-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 `;
 
 const okIcon = <Icons.CheckIcon
@@ -300,7 +305,8 @@ class FilesRowContent extends React.PureComponent {
       foldersCount,
       fileStatus,
       id,
-      versionGroup
+      versionGroup,
+      locked
     } = item;
 
     const titleWithoutExt = getTitleWithoutExst(item);
@@ -351,7 +357,7 @@ class FilesRowContent extends React.PureComponent {
               containerWidth='100%'
               type='page'
               title={titleWithoutExt}
-              fontWeight="bold"
+              fontWeight="600"
               fontSize='15px'
               {...linkStyles}
               color="#333"
@@ -399,7 +405,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#3B72A7'
                     />
                   }
-                  {fileStatus === 8 &&
+                  {locked &&
                     <Icons.FileActionsLockedIcon
                       className='badge'
                       size='small'
@@ -464,37 +470,36 @@ class FilesRowContent extends React.PureComponent {
               as="div"
               color="#333"
               fontSize='12px'
-              fontWeight={600}
+              fontWeight={400}
               title={fileOwner}
               truncate={true}
             >
               {fileOwner}
             </Text>
-            <Link
+            <Text
               containerMinWidth='190px'
               containerWidth='15%'
-              type='page'
               title={updatedDate}
               fontSize='12px'
               fontWeight={400}
               color="#333"
-              isTextOverflow={true}
+              className="row_update-text"
             >
               {updatedDate && updatedDate}
-            </Link>
+            </Text>
             <Text
               containerMinWidth='90px'
               containerWidth='8%'
               as="div"
               color="#333"
               fontSize='12px'
-              fontWeight={600}
+              fontWeight={400}
               title=''
               truncate={true}
             >
               {fileExst
                 ? contentLength
-                : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
+                : `${t("TitleDocuments")}: ${filesCount} | ${t("TitleSubfolders")}: ${foldersCount}`}
             </Text>
           </SimpleFilesRowContent>
         </>
@@ -503,7 +508,7 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems } = state.files;
+  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging } = state.files;
   const { settings } = state.auth;
   const indexOfTrash = 3;
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
@@ -519,7 +524,8 @@ function mapStateToProps(state) {
     newItems: selectedFolder.new,
     selectedFolder,
     folders,
-    newRowItems
+    newRowItems,
+    dragging
   }
 }
 

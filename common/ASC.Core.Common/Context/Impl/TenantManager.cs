@@ -44,12 +44,12 @@ namespace ASC.Core
 {
     class ConfigureTenantManager : IConfigureNamedOptions<TenantManager>
     {
-        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
-        public IOptionsSnapshot<TariffService> TariffService { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
+        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        private IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        private IOptionsSnapshot<TariffService> TariffService { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
 
         public ConfigureTenantManager(
             IOptionsSnapshot<CachedTenantService> tenantService,

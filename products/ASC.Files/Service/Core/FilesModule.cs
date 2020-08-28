@@ -28,11 +28,11 @@ namespace ASC.Files.Service.Core
 
         protected override string DbId => "files";
 
-        public IFileDao<int> FileDao { get; }
-        public IFolderDao<int> FolderDao { get; }
-        public UserManager UserManager { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileSecurity FileSecurity { get; }
+        private IFileDao<int> FileDao { get; }
+        private IFolderDao<int> FolderDao { get; }
+        private UserManager UserManager { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileSecurity FileSecurity { get; }
 
         public FilesModule(
             TenantManager tenantManager,

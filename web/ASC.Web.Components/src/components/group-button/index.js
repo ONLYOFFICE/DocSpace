@@ -85,7 +85,7 @@ const Caret = styled.div`
 
 const Separator = styled.div`
   vertical-align: middle;
-  border: 0.5px solid #ECEEF1;
+  border: 1px solid #ECEEF1;
   width: 0px;
   height: 24px;
   margin: 16px 11px 0 11px;

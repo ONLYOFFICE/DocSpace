@@ -68,7 +68,7 @@ namespace ASC.Core.Tenants
     public class TenantCookieSettingsHelper
     {
         public bool IsVisibleSettings { get; internal set; }
-        public SettingsManager SettingsManager { get; }
+        private SettingsManager SettingsManager { get; }
 
         public TenantCookieSettingsHelper(IConfiguration configuration, SettingsManager settingsManager)
         {

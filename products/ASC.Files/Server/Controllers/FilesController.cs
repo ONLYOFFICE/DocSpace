@@ -78,33 +78,33 @@ namespace ASC.Api.Documents
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
-        public FilesControllerHelper<string> FilesControllerHelperString { get; }
-        public FilesControllerHelper<int> FilesControllerHelperInt { get; }
-        public FileStorageService<int> FileStorageServiceInt { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public SecurityContext SecurityContext { get; }
-        public FolderWrapperHelper FolderWrapperHelper { get; }
-        public FileOperationWraperHelper FileOperationWraperHelper { get; }
-        public EntryManager EntryManager { get; }
-        public UserManager UserManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        public BoxLoginProvider BoxLoginProvider { get; }
-        public DropboxLoginProvider DropboxLoginProvider { get; }
-        public GoogleLoginProvider GoogleLoginProvider { get; }
-        public OneDriveLoginProvider OneDriveLoginProvider { get; }
-        public MessageService MessageService { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public FolderContentWrapperHelper FolderContentWrapperHelper { get; }
-        public WordpressToken WordpressToken { get; }
-        public WordpressHelper WordpressHelper { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public EasyBibHelper EasyBibHelper { get; }
-        public ProductEntryPoint ProductEntryPoint { get; }
+        private FilesControllerHelper<string> FilesControllerHelperString { get; }
+        private FilesControllerHelper<int> FilesControllerHelperInt { get; }
+        private FileStorageService<int> FileStorageServiceInt { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private SecurityContext SecurityContext { get; }
+        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private FileOperationWraperHelper FileOperationWraperHelper { get; }
+        private EntryManager EntryManager { get; }
+        private UserManager UserManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private BoxLoginProvider BoxLoginProvider { get; }
+        private DropboxLoginProvider DropboxLoginProvider { get; }
+        private GoogleLoginProvider GoogleLoginProvider { get; }
+        private OneDriveLoginProvider OneDriveLoginProvider { get; }
+        private MessageService MessageService { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
+        private WordpressToken WordpressToken { get; }
+        private WordpressHelper WordpressHelper { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private EasyBibHelper EasyBibHelper { get; }
+        private ProductEntryPoint ProductEntryPoint { get; }
 
         /// <summary>
         /// </summary>
@@ -1382,9 +1382,9 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeoriginal")]
-        public bool StoreOriginal(bool set)
+        public bool StoreOriginal(SettingsModel model)
         {
-            return FileStorageService.StoreOriginal(set);
+            return FileStorageService.StoreOriginal(model.Set);
         }
 
         /// <summary>
@@ -1396,8 +1396,10 @@ namespace ASC.Api.Documents
         [Update(@"hideconfirmconvert")]
         public bool HideConfirmConvert(bool save)
         {
+
             return FileStorageService.HideConfirmConvert(save);
         }
+
 
         /// <summary>
         /// 
@@ -1405,9 +1407,31 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"updateifexist")]
-        public bool UpdateIfExist(bool set)
+        public bool UpdateIfExist(SettingsModel model)
         {
-            return FileStorageService.UpdateIfExist(set);
+            return FileStorageService.UpdateIfExist(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"changedeleteconfrim")]
+        public bool ChangeDeleteConfrim(SettingsModel model)
+        {
+            return FileStorageService.HideConfirmConvert(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"storeforcesave")]
+        public bool StoreForcesave(SettingsModel model)
+        {
+            return FileStorageService.StoreForcesave(model.Set);
         }
 
         /// <summary>

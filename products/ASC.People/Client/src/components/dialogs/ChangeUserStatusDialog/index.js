@@ -14,10 +14,15 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
 import { utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { updateUserStatus } from "../../../store/people/actions";
+
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "ChangeUserStatusDialog",
+  localesPath: "dialogs/ChangeUserStatusDialog"
+});
 
 const { changeLanguage } = utils;
 
@@ -189,6 +194,7 @@ ChangeUserStatusDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default connect(null, { updateUserStatus })(
-  withRouter(ChangeUserStatusDialog)
-);
+export default connect(
+  null,
+  { updateUserStatus }
+)(withRouter(ChangeUserStatusDialog));

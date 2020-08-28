@@ -26,12 +26,12 @@ namespace ASC.Files.Service.Core
 
         public override Guid ProductID => WebItemManager.DocumentsProductID;
 
-        public UserManager UserManager { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileSecurity FileSecurity { get; }
+        private UserManager UserManager { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileSecurity FileSecurity { get; }
 
-        public IFileDao<int> FileDao { get; }
-        public IFolderDao<int> FolderDao { get; }
+        private IFileDao<int> FileDao { get; }
+        private IFolderDao<int> FolderDao { get; }
 
         public FoldersModule(
             TenantManager tenantManager,

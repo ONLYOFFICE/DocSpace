@@ -67,7 +67,7 @@ namespace ASC.Notify.Engine
 
         private readonly TimeSpan defaultSleep = TimeSpan.FromSeconds(10);
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
 

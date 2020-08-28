@@ -81,12 +81,12 @@ namespace ASC.ElasticSearch.Core
 
     public class SearchSettingsHelper
     {
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public FactoryIndexer FactoryIndexer { get; }
-        public ICacheNotify<ReIndexAction> CacheNotify { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private FactoryIndexer FactoryIndexer { get; }
+        private ICacheNotify<ReIndexAction> CacheNotify { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public SearchSettingsHelper(
             TenantManager tenantManager,

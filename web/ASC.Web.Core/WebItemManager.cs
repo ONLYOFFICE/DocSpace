@@ -106,7 +106,7 @@ namespace ASC.Web.Core
         }
 
         public ILifetimeScope Container { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public IWebItem this[Guid id]
         {
@@ -217,9 +217,9 @@ namespace ASC.Web.Core
 
     public class WebItemManagerSecurity
     {
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemManager WebItemManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private AuthContext AuthContext { get; }
+        private WebItemManager WebItemManager { get; }
 
         public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager)
         {

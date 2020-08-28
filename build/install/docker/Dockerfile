@@ -140,43 +140,45 @@ RUN cd /app/onlyoffice/src/ && \
     cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
+    dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config && \
+    dotnet build -r linux-x64 ASC.Web.sln && \
     cd products/ASC.People/Server && \
-    dotnet -d publish -o /var/www/products/ASC.People/server && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.People/server && \
     cd ../../../ && \
     cd products/ASC.Files/Server && \
-    dotnet -d publish -o /var/www/products/ASC.Files/server && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/server && \
     cp -avrf DocStore /var/www/products/ASC.Files/server/ && \
     cd ../../../ && \
     cd products/ASC.Files/Service && \
-    dotnet -d publish -o /var/www/products/ASC.Files/service && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/service && \
     cd ../../../ && \
     cd web/ASC.Web.Api && \
-    dotnet -d publish -o /var/www/studio/api && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/api && \
     cd ../../ && \
     cd web/ASC.Web.Studio && \
-    dotnet -d publish -o /var/www/studio/server && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/server && \
     cd ../../ && \
     cd common/services/ASC.Data.Backup && \
-    dotnet -d publish -o /var/www/services/backup && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/backup && \
     cd ../../../ && \
     cd common/services/ASC.Notify && \
-    dotnet -d publish -o /var/www/services/notify && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/notify && \
     cd ../../../ && \
     cd common/services/ASC.ApiSystem && \
-    dotnet -d publish -o /var/www/services/apisystem && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/apisystem && \
     cd ../../../ && \
     cd common/services/ASC.Thumbnails.Svc && \
-    dotnet -d publish -o /services/thumb/service && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/thumb/service && \
     cd ../../../ && \
     yarn install --cwd common/ASC.Thumbnails --frozen-lockfile && \
     mkdir -p /var/www/services/thumb/client && cp -Rf common/ASC.Thumbnails/* /var/www/services/thumb/client && \
     cd common/services/ASC.UrlShortener.Svc && \
-    dotnet -d publish -o /services/urlshortener/service && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/urlshortener/service && \
     cd ../../../ && \
     yarn install --cwd common/ASC.UrlShortener --frozen-lockfile && \
     mkdir -p /var/www/services/urlshortener/client && cp -Rf common/ASC.UrlShortener/* /var/www/services/urlshortener/client && \
     cd common/services/ASC.Studio.Notify && \
-    dotnet -d publish -o /var/www/services/studio.notify
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/studio.notify
 
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

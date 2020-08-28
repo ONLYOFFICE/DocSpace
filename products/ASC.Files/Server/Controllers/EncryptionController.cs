@@ -48,11 +48,11 @@ namespace ASC.Api.Documents
     [ApiController]
     public class EncryptionController : ControllerBase
     {
-        public PermissionContext PermissionContext { get; }
-        public AuthContext AuthContext { get; }
-        public EncryptionLoginProvider EncryptionLoginProvider { get; }
-        public EncryptionAddressHelper EncryptionAddressHelper { get; }
-        public EncryptedDataDao EncryptedDataDao { get; }
+        private PermissionContext PermissionContext { get; }
+        private AuthContext AuthContext { get; }
+        private EncryptionLoginProvider EncryptionLoginProvider { get; }
+        private EncryptionAddressHelper EncryptionAddressHelper { get; }
+        private EncryptedDataDao EncryptedDataDao { get; }
         public ILog Log { get; }
 
         public EncryptionController(

@@ -371,7 +371,22 @@ export function versionEditComment(fileId, comment, version) {
   return request({ method: "put", url: `/files/file/${fileId}/comment`, data });
 }
 
-export function versionRestore(fileId, version) {
-  const data = { version };
+export function versionRestore(fileId, lastversion) {
+  const data = { lastversion };
   return request({ method: "put", url: `/files/file/${fileId}`, data });
+}
+
+export function lockFile(fileId, lockFile) {
+  const data = { lockFile };
+  return request({ method: "put", url: `/files/file/${fileId}/lock`, data });
+}
+
+export function updateIfExist(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/updateifexist", data });
+}
+
+export function storeOriginal(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/storeoriginal.json", data });
 }

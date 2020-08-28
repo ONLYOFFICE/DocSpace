@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Text
-} from "asc-web-components";
+import { toastr, ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import { api, utils } from "asc-web-common";
+import { utils } from "asc-web-common";
+
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "ChangePhoneDialog",
+  localesPath: "dialogs/ChangePhoneDialog"
+});
+
 const { changeLanguage } = utils;
 
 class ChangePhoneDialogComponent extends React.Component {
@@ -31,8 +32,6 @@ class ChangePhoneDialogComponent extends React.Component {
     });
   };
 
-
-
   render() {
     console.log("ChangePhoneDialog render");
     const { t, visible, onClose } = this.props;
@@ -42,16 +41,12 @@ class ChangePhoneDialogComponent extends React.Component {
       <ModalDialog
         visible={visible}
         onClose={onClose}
-        headerContent={t('MobilePhoneChangeTitle')}
-        bodyContent={
-          <Text>
-            {t('MobilePhoneEraseDescription')}
-          </Text>
-        }
+        headerContent={t("MobilePhoneChangeTitle")}
+        bodyContent={<Text>{t("MobilePhoneEraseDescription")}</Text>}
         footerContent={
           <Button
             key="SendBtn"
-            label={t('SendButton')}
+            label={t("SendButton")}
             size="medium"
             primary={true}
             onClick={this.onChangePhone}
@@ -63,7 +58,9 @@ class ChangePhoneDialogComponent extends React.Component {
   }
 }
 
-const ChangePhoneDialogTranslated = withTranslation()(ChangePhoneDialogComponent);
+const ChangePhoneDialogTranslated = withTranslation()(
+  ChangePhoneDialogComponent
+);
 
 const ChangePhoneDialog = props => (
   <ChangePhoneDialogTranslated i18n={i18n} {...props} />
@@ -72,7 +69,7 @@ const ChangePhoneDialog = props => (
 ChangePhoneDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 export default ChangePhoneDialog;

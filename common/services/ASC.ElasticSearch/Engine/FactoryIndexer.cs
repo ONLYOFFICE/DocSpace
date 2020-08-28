@@ -82,11 +82,11 @@ namespace ASC.ElasticSearch
 
         public ILog Logger { get; }
 
-        public TenantManager TenantManager { get; }
-        public SearchSettingsHelper SearchSettingsHelper { get; }
-        public FactoryIndexer FactoryIndexerCommon { get; }
-        public BaseIndexer<T> Indexer { get; }
-        public IServiceProvider ServiceProvider { get; }
+        protected TenantManager TenantManager { get; }
+        private SearchSettingsHelper SearchSettingsHelper { get; }
+        private FactoryIndexer FactoryIndexerCommon { get; }
+        protected BaseIndexer<T> Indexer { get; }
+        private IServiceProvider ServiceProvider { get; }
         public string IndexName { get => Indexer.IndexName; }
 
         public ICache Cache { get; }
@@ -449,12 +449,12 @@ namespace ASC.ElasticSearch
     {
         private static ICache cache = AscCache.Memory;
 
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        private FactoryIndexerHelper FactoryIndexerHelper { get; }
         internal ILifetimeScope Builder { get; set; }
         internal static bool Init { get; set; }
         public ILog Log { get; }
-        public Client Client { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private Client Client { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public FactoryIndexer(
             ILifetimeScope container,

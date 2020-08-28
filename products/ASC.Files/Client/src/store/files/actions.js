@@ -39,6 +39,10 @@ export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
+export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
+export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
+export const SET_IS_LOADING = "SET_IS_LOADING";
+export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
 
 export function setFile(file) {
   return {
@@ -185,6 +189,34 @@ export function setNewRowItems(newRowItems) {
     type: SET_NEW_ROW_ITEMS,
     newRowItems
   };
+}
+
+export function setSelectedNode(node) {
+  return {
+    type: SET_SELECTED_NODE,
+    node
+  }
+}
+
+export function setExpandSettingsTree(setting) {
+  return {
+    type: SET_EXPAND_SETTINGS_TREE,
+    setting
+  }
+}
+
+export function setIsLoading(isLoading) {
+  return {
+    type: SET_IS_LOADING,
+    isLoading
+  }
+}
+
+export function setThirdParty(data) {
+  return {
+    type: SET_THIRD_PARTY,
+    data
+  }
 }
 
 export function setFilterUrl(filter) {
@@ -430,3 +462,15 @@ export function clearProgressData(dispatch) {
       });
   };
 }*/
+
+export function updateIfExist(data) {
+  return dispatch => {
+    return files.updateIfExist(data);
+  }
+}
+
+export function storeOriginal(data) {
+  return dispatch => {
+    return files.storeOriginal(data);
+  }
+}

@@ -99,6 +99,14 @@ namespace ASC.Api.Documents
 
         /// <summary>
         /// </summary>
+        public bool? Locked { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public string LockedBy { get; set; }
+
+        /// <summary>
+        /// </summary>
         /// <param name="file"></param>
         public FileWrapper()
         {
@@ -133,13 +141,13 @@ namespace ASC.Api.Documents
     }
     public class FileWrapperHelper : FileEntryWrapperHelper
     {
-        public AuthContext AuthContext { get; }
-        public IDaoFactory DaoFactory { get; }
-        public FileSecurity FileSecurity { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
+        private AuthContext AuthContext { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileUtility FileUtility { get; }
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -188,6 +196,9 @@ namespace ASC.Api.Documents
             result.PureContentLength = file.ContentLength.NullIfDefault();
             result.Comment = file.Comment;
             result.Encrypted = file.Encrypted.NullIfDefault();
+            result.Locked = file.Locked.NullIfDefault();
+            result.LockedBy = file.LockedBy;
+
             try
             {
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);

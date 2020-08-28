@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />

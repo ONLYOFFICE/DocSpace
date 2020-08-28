@@ -7,12 +7,30 @@ export const settingsTree = [
         icon: 'SettingsIcon',
         link: 'common',
         tKey: 'ManagementCategoryCommon',
+        isHeader: true,
         children: [
             {
                 key: '0-0',
                 icon: '',
                 link: 'customization',
                 tKey: 'Customization',
+                isCategory: true,
+                children: [
+                    {
+                        key: '0-0-0',
+                        icon: '',
+                        link: 'language-and-time-zone',
+                        tKey: 'StudioTimeLanguageSettings',
+
+                    },
+                    {
+                        key: '0-0-1',
+                        icon: '',
+                        link: 'custom-titles',
+                        tKey: 'CustomTitles',
+
+                    },
+                ],
             },
             // {
             //     key: '0-2',
@@ -24,15 +42,17 @@ export const settingsTree = [
     },
     {
         key: '1',
-        icon: 'SettingsIcon',
+        icon: 'SecurityIcon',
         link: 'security',
         tKey: 'ManagementCategorySecurity',
+        isHeader: true,
         children: [
             {
                 key: '1-0',
                 icon: '',
                 link: 'accessrights',
                 tKey: 'AccessRights',
+                isCategory: true,
             },
         ]
     },

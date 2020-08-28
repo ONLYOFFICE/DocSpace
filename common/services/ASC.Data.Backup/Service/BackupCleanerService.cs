@@ -41,8 +41,8 @@ namespace ASC.Data.Backup.Service
     {
         private readonly ILog log;
 
-        public BackupRepository BackupRepository { get; }
-        public BackupStorageFactory BackupStorageFactory { get; }
+        private BackupRepository BackupRepository { get; }
+        private BackupStorageFactory BackupStorageFactory { get; }
 
         public BackupCleanerHelperService(
             IOptionsMonitor<ILog> options,

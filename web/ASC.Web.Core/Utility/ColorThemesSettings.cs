@@ -63,7 +63,7 @@ namespace ASC.Web.Core.Utility
 
     public class ColorThemesSettingsHelper
     {
-        public SettingsManager SettingsManager { get; }
+        private SettingsManager SettingsManager { get; }
         public IHostEnvironment HostEnvironment { get; }
 
         public ColorThemesSettingsHelper(

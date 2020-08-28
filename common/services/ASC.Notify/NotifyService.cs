@@ -48,7 +48,7 @@ namespace ASC.Notify
 
         private readonly DbWorker db;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<ILog> options)
         {

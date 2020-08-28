@@ -126,7 +126,7 @@ class Row extends React.Component {
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton className="row_context-menu-wrapper" spacerWidth={contextButtonSpacerWidth}>
           {renderContext
-            ? (<ContextMenuButton onClick={selectItem} className="expandButton" directionX="right" getData={getOptions} />)
+            ? (<ContextMenuButton isFill color='#A3A9AE' hoverColor='#657077' onClick={selectItem} className="expandButton" directionX="right" getData={getOptions} />)
             : (<div className="expandButton">{' '}</div>)}
         </StyledOptionButton>
       </StyledRow>

@@ -80,16 +80,18 @@ class ProfileActions extends React.PureComponent {
           open={opened}
           clickOutsideAction={this.onClose}
         >
-          {this.props.userActions.map(action => (
-            <Link
-              noHover={true}
-              key={action.key}
-              href={action.url}
-              onClick={this.onClickItemLink}
-            >
-              <DropDownItem {...action} />
-            </Link>
-          ))}
+          <div style={{paddingTop: '8px'}}>
+            {this.props.userActions.map(action => (
+              <Link
+                noHover={true}
+                key={action.key}
+                href={action.url}
+                onClick={this.onClickItemLink}
+              >
+                <DropDownItem {...action} />
+              </Link>
+            ))}
+          </div>
         </ProfileMenu>
       </div>
     );

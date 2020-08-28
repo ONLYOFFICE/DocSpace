@@ -1,8 +1,15 @@
-import SharingPanel from "./SharingPanel/SharingPanel";
-import AddUsersPanel from "./AddUsersPanel/AddUsersPanel";
-import AddGroupsPanel from "./AddGroupsPanel/AddGroupsPanel";
-import EmbeddingPanel from "./EmbeddingPanel/EmbeddingPanel";
+import SharingPanel from "./SharingPanel";
+import AddUsersPanel from "./AddUsersPanel";
+import AddGroupsPanel from "./AddGroupsPanel";
+import EmbeddingPanel from "./EmbeddingPanel";
 import OperationsPanel from "./OperationsPanel";
 import NewFilesPanel from "./NewFilesPanel";
 
-export { SharingPanel, AddUsersPanel, AddGroupsPanel, EmbeddingPanel, OperationsPanel, NewFilesPanel }
+export {
+  SharingPanel,
+  AddUsersPanel,
+  AddGroupsPanel,
+  EmbeddingPanel,
+  OperationsPanel,
+  NewFilesPanel
+};

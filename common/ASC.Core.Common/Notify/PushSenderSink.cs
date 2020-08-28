@@ -48,7 +48,7 @@ namespace ASC.Core.Common.Notify
             _log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {

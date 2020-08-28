@@ -9,9 +9,15 @@ import {
   FieldContainer
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
+import ModalDialogContainer from "../ModalDialogContainer";
 import { api, utils } from "asc-web-common";
+
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "ChangeEmailDialog",
+  localesPath: "dialogs/ChangeEmailDialog"
+});
+
 const { sendInstructionsToChangeEmail } = api.people;
 const { changeLanguage } = utils;
 
@@ -27,7 +33,7 @@ class ChangeEmailDialogComponent extends React.Component {
       isRequestRunning: false,
       email,
       hasError: false,
-      errorMessage: '',
+      errorMessage: "",
       emailErrors: []
     };
 
@@ -50,7 +56,8 @@ class ChangeEmailDialogComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onValidateEmailInput = result => this.setState({ isEmailValid: result.isValid, emailErrors: result.errors });
+  onValidateEmailInput = result =>
+    this.setState({ isEmailValid: result.isValid, emailErrors: result.errors });
 
   onChangeEmailInput = e => {
     const { hasError } = this.state;
@@ -65,14 +72,16 @@ class ChangeEmailDialogComponent extends React.Component {
     const { id } = user;
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToChangeEmail(id, email)
-        .then((res) => {
+        .then(res => {
           toastr.success(res);
         })
-        .catch((error) => toastr.error(error))
+        .catch(error => toastr.error(error))
         .finally(() => {
-          this.setState({ isRequestRunning: false }, () => this.props.onClose());
+          this.setState({ isRequestRunning: false }, () =>
+            this.props.onClose()
+          );
         });
-    })
+    });
   };
 
   onValidateEmail = () => {
@@ -81,15 +90,13 @@ class ChangeEmailDialogComponent extends React.Component {
     if (isEmailValid) {
       const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
-        this.setState({ errorMessage: t('SameEmail'), hasError: true });
-      }
-      else {
-        this.setState({ errorMessage: '', hasError: false });
+        this.setState({ errorMessage: t("SameEmail"), hasError: true });
+      } else {
+        this.setState({ errorMessage: "", hasError: false });
         this.onSendEmailChangeInstructions();
       }
-    }
-    else {
-      const translatedErrors = emailErrors.map((errorKey => t(errorKey)));
+    } else {
+      const translatedErrors = emailErrors.map(errorKey => t(errorKey));
       const errorMessage = translatedErrors[0];
       this.setState({ errorMessage, hasError: true });
     }
@@ -102,7 +109,6 @@ class ChangeEmailDialogComponent extends React.Component {
     }
   };
 
-
   render() {
     console.log("ChangeEmailDialog render");
     const { t, visible, onClose } = this.props;
@@ -113,12 +119,12 @@ class ChangeEmailDialogComponent extends React.Component {
         <ModalDialog
           visible={visible}
           onClose={onClose}
-          headerContent={t('EmailChangeTitle')}
+          headerContent={t("EmailChangeTitle")}
           bodyContent={
             <>
               <FieldContainer
                 isVertical
-                labelText={t('EnterEmail')}
+                labelText={t("EnterEmail")}
                 errorMessage={errorMessage}
                 hasError={hasError}
               >
@@ -133,17 +139,15 @@ class ChangeEmailDialogComponent extends React.Component {
                   hasError={hasError}
                 />
               </FieldContainer>
-              <Text
-                className='text-dialog'
-              >
-                {t('EmailActivationDescription')}
+              <Text className="text-dialog">
+                {t("EmailActivationDescription")}
               </Text>
             </>
           }
           footerContent={
             <Button
               key="SendBtn"
-              label={t('SendButton')}
+              label={t("SendButton")}
               size="medium"
               primary={true}
               onClick={this.onValidateEmail}
@@ -156,7 +160,9 @@ class ChangeEmailDialogComponent extends React.Component {
   }
 }
 
-const ChangeEmailDialogTranslated = withTranslation()(ChangeEmailDialogComponent);
+const ChangeEmailDialogTranslated = withTranslation()(
+  ChangeEmailDialogComponent
+);
 
 const ChangeEmailDialog = props => (
   <ChangeEmailDialogTranslated i18n={i18n} {...props} />
@@ -167,6 +173,5 @@ ChangeEmailDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
-
 
 export default ChangeEmailDialog;

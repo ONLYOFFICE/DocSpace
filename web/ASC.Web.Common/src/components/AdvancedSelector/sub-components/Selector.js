@@ -79,6 +79,7 @@ const Selector = props => {
   const listGroupsRef = useRef(null);
 
   useEffect(() => {
+    currentGroup === "No groups" && setCurrentGroup(getCurrentGroup(convertGroups(groups)));
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
@@ -336,6 +337,7 @@ const Selector = props => {
                 className="row-option" 
                 {...tooltipProps}
                 onClick={onLinkClick}
+                noHover
               >
                 {option.label}
                 {displayType === "aside" && getOptionTooltipContent && (
@@ -510,6 +512,7 @@ const Selector = props => {
           title={label}
           style={style}
           className={`row-group${isSelected ? " selected" : ""}`}
+          noHover
         >
           {isMultiSelect && allowGroupSelection && (
             <Checkbox
@@ -593,7 +596,7 @@ const Selector = props => {
                 isDisabled={isDisabled}
                 options={getSelectorGroups(groups)}
                 selectedOption={currentGroup}
-                dropDownMaxHeight={200}
+                dropDownMaxHeight={220}
                 scaled={true}
                 scaledOptions={true}
                 size="content"
@@ -629,7 +632,7 @@ const Selector = props => {
                     className="options_list"
                     height={height}
                     itemCount={itemCount}
-                    itemSize={32}
+                    itemSize={36}
                     onItemsRendered={onItemsRendered}
                     ref={ref}
                     width={width + 8}

@@ -85,9 +85,9 @@ namespace ASC.Core.Billing
             get { return "Tariffs synchronizer"; }
         }
 
-        public IServiceProvider ServiceProvider { get; }
-        public IConfiguration Configuration { get; }
-        public DbQuotaService DbQuotaService { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IConfiguration Configuration { get; }
+        private DbQuotaService DbQuotaService { get; }
 
         public void Start()
         {
@@ -132,9 +132,9 @@ namespace ASC.Core.Billing
             DbQuotaService = dbQuotaService;
         }
 
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public DbQuotaService DbQuotaService { get; }
+        private TenantManager TenantManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private DbQuotaService DbQuotaService { get; }
 
         public void Sync()
         {

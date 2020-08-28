@@ -66,8 +66,8 @@ namespace ASC.Core.Notify
             get;
             private set;
         }
-        public UserManager UserManager { get; }
-        public SubscriptionManager SubscriptionManager { get; }
+        private UserManager UserManager { get; }
+        private SubscriptionManager SubscriptionManager { get; }
 
         public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
         {

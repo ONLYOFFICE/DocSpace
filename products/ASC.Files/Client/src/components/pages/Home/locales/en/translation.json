@@ -94,5 +94,6 @@
   "Convert": "Convert",
   "Duplicate": "Create a copy",
   "CopyOperation": "Copying",
-  "UnblockVersion": "Unblock/Check-in"
+  "UnblockVersion": "Unblock/Check-in",
+  "AddFilter": "Add filter"
 }

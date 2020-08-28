@@ -60,11 +60,11 @@ namespace ASC.Files.Core.Data
         private const string trash = "trash";
         private const string projects = "projects";
 
-        public FactoryIndexer<DbFolder> FactoryIndexer { get; }
-        public GlobalSpace GlobalSpace { get; }
-        public IDaoFactory DaoFactory { get; }
-        public ProviderFolderDao ProviderFolderDao { get; }
-        public CrossDao CrossDao { get; }
+        private FactoryIndexer<DbFolder> FactoryIndexer { get; }
+        private GlobalSpace GlobalSpace { get; }
+        private IDaoFactory DaoFactory { get; }
+        private ProviderFolderDao ProviderFolderDao { get; }
+        private CrossDao CrossDao { get; }
 
         public FolderDao(
             FactoryIndexer<DbFolder> factoryIndexer,

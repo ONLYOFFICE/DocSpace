@@ -44,7 +44,7 @@ namespace ASC.Data.Backup.Service
         private ILog Log { get; }
         private PaymentManager PaymentManager { get; }
         private BackupWorker BackupWorker { get; }
-        public BackupRepository BackupRepository { get; }
+        private BackupRepository BackupRepository { get; }
         private Schedule Schedule { get; }
 
         public BackupSchedulerServiceHelper(
@@ -102,7 +102,7 @@ namespace ASC.Data.Backup.Service
         internal bool IsStarted { get; set; }
         public TimeSpan Period { get; set; }
         private ILog Log { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public BackupSchedulerService(
             IOptionsMonitor<ILog> options,

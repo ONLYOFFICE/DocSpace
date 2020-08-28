@@ -54,9 +54,9 @@ namespace ASC.FederatedLogin
 
         private IWebHostEnvironment WebHostEnvironment { get; }
         private IMemoryCache MemoryCache { get; }
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public ProviderManager ProviderManager { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private ProviderManager ProviderManager { get; }
 
         public Login(
             IWebHostEnvironment webHostEnvironment,
@@ -225,8 +225,8 @@ namespace ASC.FederatedLogin
 
     public class LoginHandler
     {
-        public RequestDelegate Next { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private RequestDelegate Next { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public LoginHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {

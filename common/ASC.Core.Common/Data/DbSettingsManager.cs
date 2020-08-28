@@ -44,7 +44,7 @@ namespace ASC.Core.Data
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
-        public ICacheNotify<SettingsCacheItem> Notify { get; }
+        private ICacheNotify<SettingsCacheItem> Notify { get; }
 
         public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
         {

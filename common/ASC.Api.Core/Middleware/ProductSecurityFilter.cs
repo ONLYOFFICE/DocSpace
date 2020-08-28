@@ -22,10 +22,10 @@ namespace ASC.Api.Core.Middleware
         private static readonly IDictionary<string, Guid> products;
         private readonly ILog log;
 
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private AuthContext AuthContext { get; }
 
         static ProductSecurityFilter()
         {

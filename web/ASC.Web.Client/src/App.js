@@ -9,7 +9,7 @@ import {
   Error404,
   StudioLayout,
   Offline,
-  ComingSoon,
+  ComingSoon
 } from "asc-web-common";
 
 import Home from "./components/pages/Home";
@@ -18,7 +18,6 @@ const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
-const Payments = lazy(() => import("./components/pages/Payments"));
 
 const App = () => {
   return navigator.onLine ? (
@@ -34,7 +33,7 @@ const App = () => {
               path={[
                 "/login",
                 "/login/error=:error",
-                "/login/confirmed-email=:confirmedEmail",
+                "/login/confirmed-email=:confirmedEmail"
               ]}
               component={Login}
             />
@@ -46,7 +45,6 @@ const App = () => {
             />
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute restricted path="/settings" component={Settings} />
-            <PrivateRoute path="/payments" component={Payments} />
             <PrivateRoute
               exact
               path={["/coming-soon"]}

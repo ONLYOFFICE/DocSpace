@@ -163,24 +163,24 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class DocumentServiceTrackerHelper
     {
-        public SecurityContext SecurityContext { get; }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public SocketManager SocketManager { get; }
-        public GlobalStore GlobalStore { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public IDaoFactory DaoFactory { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public EntryManager EntryManager { get; }
-        public FileShareLink FileShareLink { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public EncryptionAddressHelper EncryptionAddressHelper { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public NotifyClient NotifyClient { get; }
-        public MailMergeTaskRunner MailMergeTaskRunner { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private SocketManager SocketManager { get; }
+        private GlobalStore GlobalStore { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private IDaoFactory DaoFactory { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private EntryManager EntryManager { get; }
+        private FileShareLink FileShareLink { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private EncryptionAddressHelper EncryptionAddressHelper { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private NotifyClient NotifyClient { get; }
+        private MailMergeTaskRunner MailMergeTaskRunner { get; }
         public ILog Logger { get; }
 
         public DocumentServiceTrackerHelper(

@@ -61,14 +61,14 @@ namespace ASC.Files.Core.Data
         public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
 
         private static readonly object syncRoot = new object();
-        public FactoryIndexer<DbFile> FactoryIndexer { get; }
-        public GlobalStore GlobalStore { get; }
-        public GlobalSpace GlobalSpace { get; }
-        public GlobalFolder GlobalFolder { get; }
-        public IDaoFactory DaoFactory { get; }
-        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
-        public ProviderFolderDao ProviderFolderDao { get; }
-        public CrossDao CrossDao { get; }
+        private FactoryIndexer<DbFile> FactoryIndexer { get; }
+        private GlobalStore GlobalStore { get; }
+        private GlobalSpace GlobalSpace { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private IDaoFactory DaoFactory { get; }
+        private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        private ProviderFolderDao ProviderFolderDao { get; }
+        private CrossDao CrossDao { get; }
 
         public FileDao(
             FactoryIndexer<DbFile> factoryIndexer,
@@ -535,7 +535,7 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 toUpdate = FilesDbContext.Files
-                    .Where(r => r.Id == file.ID && r.Version == file.Version)
+                    .Where(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID)
                     .FirstOrDefault();
 
                 toUpdate.Version = file.Version;
@@ -880,7 +880,7 @@ namespace ASC.Files.Core.Data
         {
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
-                .Where(r => r.Version >= fileVersion);
+                .Where(r => r.Version > fileVersion);
 
             foreach (var f in toUpdate)
             {
@@ -903,8 +903,8 @@ namespace ASC.Files.Core.Data
 
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
-                .Where(r => r.Version >= fileVersion)
-                .Where(r => r.VersionGroup >= versionGroup);
+                .Where(r => r.Version > fileVersion)
+                .Where(r => r.VersionGroup > versionGroup);
 
             foreach (var f in toUpdate)
             {
