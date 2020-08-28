@@ -9,7 +9,7 @@ const { tablet, mobile } = utils.device;
 const StyledHeader = styled.div`
   position: static;
   .payments-header {
-    margin-top: 50px;
+    margin-top: 46px;
     height: 32px;
     font-style: normal;
     font-weight: bold;
