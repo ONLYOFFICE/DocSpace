@@ -27,13 +27,17 @@ const StyledHeader = styled.div`
     margin-bottom: 17px;
   }
 `;
-const ModalDialogContainer = ({ t, isVisible, onCloseModalDialog }) => {
+const ModalDialogContainer = ({
+  t,
+  isVisibleModalDialog,
+  onCloseModalDialog,
+}) => {
   const header = <StyledHeader>{t("LoadingError")}</StyledHeader>;
   const body = <StyledBody>{t("LicenseError")}</StyledBody>;
   return (
     <ModalDialog
       bodyPadding="0px"
-      visible={isVisible}
+      visible={isVisibleModalDialog}
       displayType="auto"
       zIndex={310}
       headerContent={header}
@@ -43,7 +47,7 @@ const ModalDialogContainer = ({ t, isVisible, onCloseModalDialog }) => {
   );
 };
 ModalDialogContainer.propTypes = {
-  visibleModalDialog: PropTypes.bool.isRequired,
+  isVisibleModalDialog: PropTypes.bool.isRequired,
   onCloseModalDialog: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };

@@ -11,7 +11,9 @@ import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
 import ModalDialogContainer from "./sub-components/modal-dialog-container";
-import { setLicense, getPortalCultures } from "../../../store/payments/actions";
+import {
+  setLicense /*getPortalCultures*/,
+} from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 import moment from "moment";
 const i18n = createI18N({
@@ -43,7 +45,7 @@ class Body extends React.PureComponent {
     this.state = {
       // errorMessage: null,
       // isErrorLicense: false,
-      isVisible: false,
+      isVisibleModalDialog: false,
       languages: null,
       timezones: null,
     };
@@ -76,7 +78,7 @@ class Body extends React.PureComponent {
       this.setState({
         // errorMessage: e,
         // isErrorLicense: true,
-        isVisible: true,
+        isVisibleModalDialog: true,
       })
     );
   };
@@ -85,7 +87,7 @@ class Body extends React.PureComponent {
   };
   onCloseModalDialog = () => {
     this.setState({
-      isVisible: false,
+      isVisibleModalDialog: false,
       // errorMessage: null,
     });
   };
@@ -100,7 +102,12 @@ class Body extends React.PureComponent {
       createPortals,
       culture,
     } = this.props;
-    const { isVisible, languages, select, selectLanguage } = this.state;
+    const {
+      isVisibleModalDialog,
+      languages,
+      select,
+      selectLanguage,
+    } = this.state;
     // console.log(this.state.selectLanguage);
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -118,7 +125,7 @@ class Body extends React.PureComponent {
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
           t={t}
-          isVisible={isVisible}
+          isVisibleModalDialog={isVisibleModalDialog}
           onCloseModalDialog={this.onCloseModalDialog}
         />
         <ButtonContainer
@@ -163,5 +170,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   setLicense,
   setCurrentProductId,
-  getPortalCultures,
+  // getPortalCultures,
 })(withRouter(PaymentsEnterprise));
