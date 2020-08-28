@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
+import moment from "moment";
+// import moment "moment/min/moment-with-locales";
 import { Text, utils } from "asc-web-components";
 
 const { tablet } = utils.device;
@@ -66,7 +67,11 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({ t, dateExpires, createPortals }) => {
+const HeaderContainer = ({ t, dateExpires, createPortals, culture }) => {
+  const moment = require("moment");
+  require("moment/min/locales.min");
+  moment.locale(culture);
+  dateExpires = moment().format("LL");
   return (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>

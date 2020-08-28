@@ -5,7 +5,7 @@ const initialState = {
   helpUrl: "https://helpdesk.onlyoffice.com",
   buyUrl: "http://www.onlyoffice.com/post.ashx?type=buyenterprise",
   standaloneMode: true,
-  dateExpires: "1 марта 2020",
+  dateExpires: "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]",
   createPortals: "1/2",
 };
 

@@ -11,9 +11,9 @@ import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
 import ModalDialogContainer from "./sub-components/modal-dialog-container";
-import { setLicense } from "../../../store/payments/actions";
+import { setLicense, getPortalCultures } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
-
+import moment from "moment";
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
@@ -44,12 +44,19 @@ class Body extends React.PureComponent {
       // errorMessage: null,
       // isErrorLicense: false,
       isVisible: false,
+      languages: null,
+      timezones: null,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
   }
-
+  mapCulturesToArray = (cultures, t) => {
+    return cultures.map((culture) => {
+      return { key: culture, label: t(`Culture_${culture}`) };
+    });
+  };
   componentDidMount() {
+    const { getPortalCultures } = this.props;
     this.props.currentProductId !== "payments" &&
       this.props.setCurrentProductId("payments");
   }
@@ -91,8 +98,10 @@ class Body extends React.PureComponent {
       dateExpires,
       t,
       createPortals,
+      culture,
     } = this.props;
-    const { isVisible } = this.state;
+    const { isVisible, languages, select, selectLanguage } = this.state;
+    // console.log(this.state.selectLanguage);
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -100,7 +109,11 @@ class Body extends React.PureComponent {
         <HeaderContainer
           t={t}
           dateExpires={dateExpires}
+          languages={languages}
+          culture={culture}
+          select={select}
           createPortals={createPortals}
+          selectLanguage={selectLanguage}
         />
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
@@ -144,9 +157,11 @@ function mapStateToProps(state) {
     buyUrl: state.payments.buyUrl,
     dateExpires: state.payments.dateExpires,
     createPortals: state.payments.createPortals,
+    culture: state.auth.settings.culture,
   };
 }
 export default connect(mapStateToProps, {
   setLicense,
   setCurrentProductId,
+  getPortalCultures,
 })(withRouter(PaymentsEnterprise));
