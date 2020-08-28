@@ -40,6 +40,8 @@ namespace ASC.Data.Storage.Migration
     {
         public ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
         public IServiceProvider ServiceProvider { get; }
+        public ICache Cache { get; }
+        public double Progress { get; private set; }
 
         public ServiceClientListener(
             ICacheNotify<MigrationProgress> progressMigrationNotify,
@@ -47,19 +49,25 @@ namespace ASC.Data.Storage.Migration
         {
             ProgressMigrationNotify = progressMigrationNotify;
             ServiceProvider = serviceProvider;
+            Cache = AscCache.Memory;
+
+            ProgressListening();
         }
 
-        public double GetProgress()
+        private void ProgressListening()
         {
-            var progress = 0.0;
-
             ProgressMigrationNotify.Subscribe(n =>
             {
-                progress = n.Progress;       
-            },
-            CacheNotifyAction.Insert);
+                Progress = n.Progress;
 
-            return progress;
+                Cache.Insert(GetCacheKey(n.TenantId), Progress, DateTime.MaxValue);
+            },
+           CacheNotifyAction.Insert);
+        }
+
+        private string GetCacheKey(int tenantId)
+        {
+            return typeof(MigrationProgress).FullName + tenantId;
         }
     }
 
@@ -113,14 +121,7 @@ namespace ASC.Data.Storage.Migration
 
         public double GetProgress(int tenant)
         {
-            var cache = Cache.Get<MigrationProgress>(GetCacheKey(tenant));
-
-            return ServiceClientListener.GetProgress();
-        }
-
-        private string GetCacheKey(int tenantId)
-        {
-            return typeof(MigrationProgress).FullName + tenantId;
+            return ServiceClientListener.Progress;
         }
 
         public void StopMigrate()
