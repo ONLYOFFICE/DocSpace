@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { store, history } from "asc-web-common";
+import PropTypes from "prop-types";
 const { changeLanguage } = utils;
 const supportLinkPurchaseQuestions = "sales@onlyoffice.com";
 const supportLinkTechnicalIssues = "https://helpdesk.onlyoffice.com";
@@ -146,7 +147,7 @@ const LicenseBlockStyle = styled.div`
     margin: 32px 612px 32px 155px;
   }
 `;
-const Body = ({ standAloneMode, isLoaded }) => {
+const Body = ({ modules, match, standAloneMode, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
 
   const onButtonClickBuy = (e) => {
@@ -277,8 +278,16 @@ const PaymentsEnterprise = (props) => (
     </PageLayout.SectionBody>
   </PageLayout>
 );
+
+PaymentsEnterprise.propTypes = {
+  modules: PropTypes.array.isRequired,
+  standAloneMode: PropTypes.bool,
+  isLoaded: PropTypes.bool,
+};
+
 function mapStateToProps(state) {
   return {
+    standAloneMode: state.auth.settings.standAloneMode,
     modules: state.auth.modules,
     isLoaded: state.auth.isLoaded,
   };
