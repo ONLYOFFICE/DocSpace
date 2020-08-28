@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Text, utils } from "asc-web-components";
 const { tablet, mobile } = utils.device;
 const StyledBodyAdvantages = styled.div`
-  margin-top: 56px;
+  margin-top: 40px;
 
   display: flex;
   flex-direction: column;

@@ -17,8 +17,13 @@ const StyledContactContainer = styled.div`
 
   @media ${mobile} {
     width: 343px;
+
+    .contact-emails {
+      margin-bottom: 12px;
+    }
     .contact-emails_link {
       display: block;
+      margin-top: 3px;
     }
   }
 `;

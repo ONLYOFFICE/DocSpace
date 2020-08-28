@@ -72,7 +72,9 @@ const HeaderContainer = ({ t }) => {
       <Text className="payments-header">{t("Using")}</Text>
       <sd>
         <Text className="payments-header-additional_support">
-          {t("SubscriptionAndUpdatesExpires")}
+          {t("SubscriptionAndUpdatesExpires")} 1 march 2020
+          {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
+          марта 2021 года. */}
         </Text>
         <Text className="payments-header-additional_portals">
           Порталы, созданные вами: 1/2
