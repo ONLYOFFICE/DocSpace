@@ -157,3 +157,10 @@ export function getSettings() {
 
     return request(options);
   }
+
+  export function getConsumersList() {
+    return request({
+      method: "get",
+      url: `/settings/authservice`
+    });
+  }
