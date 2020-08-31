@@ -19,6 +19,7 @@ import {
 import { setSelected } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { createI18N } from "../../../helpers/i18n";
+import { isMobile } from "react-device-detect";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home"
@@ -108,7 +109,10 @@ class PureHome extends React.Component {
           fontSize="12px"
           fontColor={"#999"}
         />
-        <PageLayout withBodyScroll={true} withBodyAutoFocus={true}>
+        <PageLayout 
+        withBodyScroll={true} 
+        withBodyAutoFocus={!isMobile}
+        >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>

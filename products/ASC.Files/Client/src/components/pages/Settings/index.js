@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, Error403 } from "asc-web-common";
 import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
@@ -26,14 +26,9 @@ class PureSettings extends React.Component {
     super(props)
 
     this.state = {
-      intermediateVersion: false,
-      thirdParty: false,
-      originalCopy: false,
-      trash: false,
       recent: false,
       favorites: false,
       templates: false,
-      updateOrCreate: false,
       keepIntermediate: false
     }
   }
@@ -41,44 +36,37 @@ class PureSettings extends React.Component {
   render() {
     console.log('Settings render()');
     const { 
-      intermediateVersion,
-      thirdParty,
-      originalCopy,
-      trash,
       recent,
       favorites,
       templates,
-      updateOrCreate,
       keepIntermediate,
     } = this.state;
-    const { match, t, isLoading, setIsLoading } = this.props;
+    const { match, t, isLoading, setIsLoading, thirdParty, isAdmin } = this.props;
     const { setting } = match.params;
 
-    return (
-      <>
+    const settings = <>
       <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        />
+        visible={isLoading}
+        zIndex={256}
+        loaderSize="16px"
+        loaderColor={"#999"}
+        label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+        fontSize="12px"
+        fontColor={"#999"}
+      />
       <PageLayout>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>
 
         <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent onLoading={setIsLoading} />
+          <ArticleMainButtonContent isDisabled={true} />
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>
           <ArticleBodyContent 
             onLoading={setIsLoading}
             isLoading={isLoading}
-           
           />
         </PageLayout.ArticleBody>
 
@@ -89,24 +77,20 @@ class PureSettings extends React.Component {
         <PageLayout.SectionBody>
           <SectionBodyContent
             setting={setting}
-            thirdParty={thirdParty}
-            intermediateVersion={intermediateVersion}
-            originalCopy={originalCopy}
-            trash={trash}
             recent={recent}
             favorites={favorites}
             templates={templates}
-            updateOrCreate={updateOrCreate}
             keepIntermediate={keepIntermediate}
             t={t}
             onLoading={setIsLoading}
-            isCheckedThirdParty={this.isCheckedThirdParty}
-            isCheckedIntermediate={this.isCheckedIntermediate}
           />
         </PageLayout.SectionBody>
       </PageLayout>
-      </>
-    );
+    </>;
+
+    return (!thirdParty && setting === 'thirdParty') || (!isAdmin && setting === 'admin') 
+      ? <Error403 /> 
+      : settings;
   }
 } 
 
@@ -123,7 +107,9 @@ const Settings = props => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading
+    isLoading: state.files.isLoading,
+    thirdParty: state.files.settingsTree.thirdParty,
+    isAdmin: state.auth.user.isAdmin
   };
 }
 

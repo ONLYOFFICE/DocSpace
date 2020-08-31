@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { isMobile } from "react-device-detect";
 import { RequestLoader, Checkbox, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
@@ -354,7 +355,7 @@ class PureHome extends React.Component {
         />
         <PageLayout
           withBodyScroll
-          withBodyAutoFocus
+          withBodyAutoFocus={!isMobile}
           uploadFiles
           onDrop={this.onDrop}
           setSelections={this.setSelections}

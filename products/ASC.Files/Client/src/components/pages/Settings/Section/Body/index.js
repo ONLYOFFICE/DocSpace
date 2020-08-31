@@ -1,9 +1,19 @@
 import React from  'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { 
   Heading,
   ToggleButton 
 } from 'asc-web-components';
+
+import { 
+  updateIfExist, 
+  storeOriginal, 
+  setThirdParty,
+  changeDeleteConfirm, 
+  storeForceSave,
+  setSelectedNode
+} from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
   display: grid;
@@ -16,6 +26,7 @@ const StyledSettings = styled.div`
 
   .heading {
     margin-bottom: 0;
+    margin-top: 14px;
   }
 `;
 
@@ -23,6 +34,12 @@ class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = { 
+      originalCopy: true,
+      updateExist: true,
+      displayNotification: true,
+      intermediateVersion: true
+    }
   }
 
   componentDidMount() {
@@ -31,18 +48,35 @@ class SectionBodyContent extends React.Component {
     onLoading(false);
   }
 
-  componentDidUpdate() {
-    const { setting, t } = this.props;
-    document.title = t(`${setting}`);
+  componentDidUpdate(prevProps) {
+    const { setting, t, setSelectedNode, selectedTreeNode } = this.props;
+    document.title = t(`${setting}`); 
+    if(prevProps.setting !== setting && setting !== selectedTreeNode[0]) {
+      setSelectedNode([ setting ])
+    }
   }
 
   componentWillUnmount() {
     document.title = 'ASC.Files';
   }
 
+  onChangeStoreForceSave = () => {
+    const { intermediateVersion } = this.state;
+    const { storeForceSave } = this.props;
+
+    storeForceSave( !intermediateVersion );
+    this.setState({ intermediateVersion: !intermediateVersion });
+  }
+
+  onChangeThirdParty = () => {
+    const { thirdParty, setThirdParty } = this.props;
+    setThirdParty(!thirdParty);
+  }
+
   renderAdminSettings = () => {
+    const { intermediateVersion } = this.state;
+
     const {
-      intermediateVersion,
       thirdParty,
       t
     } = this.props;
@@ -50,50 +84,77 @@ class SectionBodyContent extends React.Component {
     return (
       <StyledSettings>
         <ToggleButton 
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('intermediateVersion')}
-          onChange={(e)=>console.log(e)}
+          onChange={this.onChangeStoreForceSave}
           isChecked={intermediateVersion}
         />
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('thirdPartyBtn')}
-          onChange={(e)=>console.log(e)}
+          onChange={this.onChangeThirdParty}
           isChecked={thirdParty}
         />
       </StyledSettings>
     )
   }
 
+  onChangeOriginalCopy = () => {
+    const { originalCopy } = this.state;
+    const { storeOriginal } = this.props;
+
+    storeOriginal( originalCopy );
+    this.setState({ originalCopy: !originalCopy });
+  }
+
+  onChangeUpdateIfExist = () => {
+    const { updateExist } = this.state;
+    const { updateIfExist } = this.props;
+
+    updateIfExist( !updateExist );
+    this.setState({ updateExist: !updateExist });
+  }
+
+  onChangeDeleteConfirm = () => {
+    const { displayNotification } = this.state;
+    const { changeDeleteConfirm } = this.props;
+
+    changeDeleteConfirm( !displayNotification );
+    this.setState({ displayNotification: !displayNotification });
+  }
+
   renderCommonSettings = () => {
     const {
-      originalCopy,
-      trash,
       recent,
       favorites,
       templates,
-      updateOrCreate,
       keepIntermediate,
       t
     } = this.props;
 
+    const { 
+      originalCopy,
+      updateExist,
+      displayNotification
+    } = this.state;
+
     return (
       <StyledSettings>
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('originalCopy')}
-          onChange={(e)=>console.log(e)}
+          onChange={this.onChangeOriginalCopy}
           isChecked={originalCopy}
         />
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('displayNotification')}
-          onChange={(e)=>console.log(e)}
-          isChecked={trash}
+          onChange={this.onChangeDeleteConfirm}
+          isChecked={displayNotification}
         />
         <ToggleButton
           isDisabled={true}
@@ -118,11 +179,11 @@ class SectionBodyContent extends React.Component {
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
-          isDisabled={true}
+          isDisabled={false}
           className="toggle-btn"
           label={t('updateOrCreate')}
-          onChange={(e)=>console.log(e)}
-          isChecked={updateOrCreate}
+          onChange={this.onChangeUpdateIfExist}
+          isChecked={updateExist}
         />
         <ToggleButton
           isDisabled={true}
@@ -136,24 +197,42 @@ class SectionBodyContent extends React.Component {
   }
 
   renderClouds = () => {
-
+    return (<></>)
   }
 
   render() {
-    const { setting } = this.props;
+    const { setting, thirdParty, isAdmin } = this.props;
     let content;
 
-    if(setting === 'admin')
+    if(setting === 'admin' && isAdmin)
       content = this.renderAdminSettings();
     if(setting === 'common') 
       content = this.renderCommonSettings();
-    if(setting === 'thirdParty')
-      content = this.renderAdminSettings();
-
-    return content;
+    if(setting === 'thirdParty' && thirdParty )
+      content = this.renderClouds();
+    return content; 
   }
-
-  
 }
 
-export default SectionBodyContent;
+function mapStateToProps(state) {
+  const { settingsTree, selectedTreeNode } = state.files;
+  const { isAdmin } = state.auth.user;
+  const { thirdParty } = settingsTree;
+
+  return { 
+    thirdParty,
+    isAdmin,
+    selectedTreeNode
+  }
+}
+
+export default connect(
+  mapStateToProps, { 
+    updateIfExist, 
+    storeOriginal, 
+    setThirdParty,
+    changeDeleteConfirm,
+    storeForceSave,
+    setSelectedNode
+  })
+  (SectionBodyContent);
