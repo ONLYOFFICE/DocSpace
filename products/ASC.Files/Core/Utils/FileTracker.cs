@@ -221,7 +221,7 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        
+
         internal class TrackInfo
         {
             public DateTime CheckRightTime;

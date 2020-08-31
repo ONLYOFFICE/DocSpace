@@ -60,7 +60,7 @@ namespace Textile
 
                     // Modify the line with our block modifiers.
                     if (CurrentState == null || CurrentState.ShouldFormatBlocks(tmp))
-                    {    
+                    {
                         foreach (var blockModifier in s_blockModifiers)
                         {
                             //TODO: if not disabled...

@@ -25,22 +25,22 @@
 
 
 using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ASC.Common;
 
-using ASC.Common.Utils;
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+
 using WebSocketSharp;
-using Microsoft.Extensions.Logging;
 
 namespace ASC.Socket.IO.Svc
 {
@@ -121,7 +121,7 @@ namespace ASC.Socket.IO.Svc
         private void StartNode()
         {
             StopNode();
-           Proc = Process.Start(StartInfo);
+            Proc = Process.Start(StartInfo);
 
             var task = new Task(StartPing, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
             task.Start(TaskScheduler.Default);

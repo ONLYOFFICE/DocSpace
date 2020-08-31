@@ -21,22 +21,22 @@ namespace Textile.States
     /// Formatting state for a bulleted list.
     /// </summary>
     [FormatterState(ListFormatterState.PatternBegin + @"\*+" + ListFormatterState.PatternEnd)]
-	public class UnorderedListFormatterState : ListFormatterState
-	{
-		public UnorderedListFormatterState(TextileFormatter formatter)
-			: base(formatter)
-		{
-		}
+    public class UnorderedListFormatterState : ListFormatterState
+    {
+        public UnorderedListFormatterState(TextileFormatter formatter)
+            : base(formatter)
+        {
+        }
 
-		protected override void WriteIndent()
-		{
-			Formatter.Output.WriteLine("<ul" + FormattedStylesAndAlignment("ul") + ">");
-		}
+        protected override void WriteIndent()
+        {
+            Formatter.Output.WriteLine("<ul" + FormattedStylesAndAlignment("ul") + ">");
+        }
 
         protected override void WriteOutdent()
-		{
-			Formatter.Output.WriteLine("</ul>");
-		}
+        {
+            Formatter.Output.WriteLine("</ul>");
+        }
 
         protected override bool IsMatchForMe(string input, int minNestingDepth, int maxNestingDepth)
         {

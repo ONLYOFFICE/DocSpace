@@ -24,9 +24,9 @@
 */
 
 
-using ASC.ApiSystem.Interfaces;
-
 using System.ComponentModel.DataAnnotations;
+
+using ASC.ApiSystem.Interfaces;
 
 namespace ASC.ApiSystem.Models
 {

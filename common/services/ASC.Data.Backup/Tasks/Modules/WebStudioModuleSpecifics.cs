@@ -35,8 +35,8 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class WebStudioModuleSpecifics : ModuleSpecificsBase
     {
-        public WebStudioModuleSpecifics(Helpers helpers) 
-        :base(helpers)
+        public WebStudioModuleSpecifics(Helpers helpers)
+        : base(helpers)
         { }
         private static readonly Guid CrmSettingsId = new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada");
 

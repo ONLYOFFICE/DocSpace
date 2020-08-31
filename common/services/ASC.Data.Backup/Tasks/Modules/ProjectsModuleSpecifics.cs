@@ -24,20 +24,20 @@
 */
 
 
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Backup.Utils;
-
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text.RegularExpressions;
+
+using ASC.Data.Backup.Tasks.Data;
+using ASC.Data.Backup.Utils;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class ProjectsModuleSpecifics : ModuleSpecificsBase
     {
         public ProjectsModuleSpecifics(Helpers helpers)
-        :base(helpers)
+        : base(helpers)
         {
 
         }
@@ -87,7 +87,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         private readonly RelationInfo[] _tableRelations = new[]
             {
-                new RelationInfo("projects_comments", "id", "projects_comments", "parent_id"), 
+                new RelationInfo("projects_comments", "id", "projects_comments", "parent_id"),
                 new RelationInfo("projects_messages", "id", "projects_comments", "target_uniq_id", x => Convert.ToString(x["target_uniq_id"]).StartsWith("Message_", StringComparison.InvariantCultureIgnoreCase)),
                 new RelationInfo("projects_tasks", "id", "projects_comments", "target_uniq_id", x => Convert.ToString(x["target_uniq_id"]).StartsWith("Task_", StringComparison.InvariantCultureIgnoreCase)),
                 new RelationInfo("projects_milestones", "id", "projects_comments", "target_uniq_id", x => Convert.ToString(x["target_uniq_id"]).StartsWith("Milestone_", StringComparison.InvariantCultureIgnoreCase)),
@@ -107,7 +107,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("projects_tasks", "id", "projects_tasks_links", "parent_id"),
                 new RelationInfo("projects_projects", "id", "projects_tasks_order", "project_id"),
                 new RelationInfo("projects_tasks", "id", "projects_tasks_order", "task_order"),
-                new RelationInfo("projects_milestones", "id", "projects_tasks_order", "task_order") 
+                new RelationInfo("projects_milestones", "id", "projects_tasks_order", "task_order")
             };
 
         public override ModuleName ModuleName
@@ -133,7 +133,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var fileId = columnMapper.GetMapping("files_file", "id", match.Groups["fileId"].Value);
                 if (fileId == null)
                 {
-                    if(!dump) return false;
+                    if (!dump) return false;
 
                     fileId = match.Groups["fileId"].Value;
                 }

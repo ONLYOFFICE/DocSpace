@@ -24,31 +24,124 @@
 */
 
 
-using ASC.Common.Module;
+using System;
+
+using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Data.Storage.Configuration;
+using ASC.Migration;
 
 namespace ASC.Data.Storage.Migration
 {
-    public class ServiceClient : BaseWcfClient<IService>, IService
+    public class ServiceClientListener
     {
+        public ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public ICache Cache { get; }
+
+        public ServiceClientListener(
+            ICacheNotify<MigrationProgress> progressMigrationNotify,
+            IServiceProvider serviceProvider)
+        {
+            ProgressMigrationNotify = progressMigrationNotify;
+            ServiceProvider = serviceProvider;
+            Cache = AscCache.Memory;
+
+            ProgressListening();
+        }
+
+        public MigrationProgress GetProgress(int tenantId)
+        {
+            return Cache.Get<MigrationProgress>(GetCacheKey(tenantId));
+        }
+
+        private void ProgressListening()
+        {
+            ProgressMigrationNotify.Subscribe(n =>
+            {
+                var migrationProgress = new MigrationProgress { 
+                    TenantId = n.TenantId,
+                    Progress = n.Progress,
+                    IsCompleted = n.IsCompleted,
+                    Error = n.Error };
+
+                Cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
+            },
+           CacheNotifyAction.Insert);
+        }
+
+        private string GetCacheKey(int tenantId)
+        {
+            return typeof(MigrationProgress).FullName + tenantId;
+        }
+    }
+
+    public class ServiceClient : IService
+    {
+        public ServiceClientListener ServiceClientListener { get; }
+        public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
+        public ICacheNotify<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public ServiceClient(
+            ServiceClientListener serviceClientListener,
+            ICacheNotify<MigrationCache> cacheMigrationNotify,
+            ICacheNotify<MigrationUploadCdn> uploadCdnMigrationNotify,
+            IServiceProvider serviceProvider)
+        {
+            ServiceClientListener = serviceClientListener;
+            CacheMigrationNotify = cacheMigrationNotify;
+            UploadCdnMigrationNotify = uploadCdnMigrationNotify;
+            ServiceProvider = serviceProvider;
+        }
+
         public void Migrate(int tenant, StorageSettings storageSettings)
         {
-            Channel.Migrate(tenant, storageSettings);
+            var storSettings = new StorSettings { ID = storageSettings.ID.ToString(), Module = storageSettings.Module };
+
+            CacheMigrationNotify.Publish(new MigrationCache
+            {
+                TenantId = tenant,
+                StorSettings = storSettings
+            },
+                CacheNotifyAction.Insert);
         }
 
         public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
         {
-            Channel.UploadCdn(tenantId, relativePath, mappedPath, settings);
+            var cdnStorSettings = new CdnStorSettings { ID = settings.ID.ToString(), Module = settings.Module };
+
+            UploadCdnMigrationNotify.Publish(new MigrationUploadCdn
+            {
+                Tenant = tenantId,
+                RelativePath = relativePath,
+                MappedPath = mappedPath,
+                CdnStorSettings = cdnStorSettings
+            },
+                CacheNotifyAction.Insert);
         }
 
         public double GetProgress(int tenant)
         {
-            return Channel.GetProgress(tenant);
+            var migrationProgress = ServiceClientListener.GetProgress(tenant);
+
+            return migrationProgress.Progress;
         }
 
         public void StopMigrate()
         {
-            Channel.StopMigrate();
+            CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
+        }
+    }
+
+    public static class ServiceClientExtension
+    {
+        public static DIHelper AddServiceClient(this DIHelper services)
+        {
+            services.TryAddScoped<ServiceClient>();
+            services.TryAddSingleton<ServiceClientListener>();
+
+            return services;
         }
     }
 }

@@ -30,7 +30,9 @@ using System;
 namespace ASC.Common.Tests.Security.Cryptography
 {
     using System.Security.Cryptography;
+
     using ASC.Security.Cryptography;
+
     using NUnit.Framework;
 
     [TestFixture]
