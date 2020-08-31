@@ -3103,7 +3103,7 @@ arrify@^1.0.1:
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.417"
+  version "1.0.423"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
@@ -3116,6 +3116,7 @@ arrify@^1.0.1:
     react-custom-scrollbars "^4.2.1"
     react-dropzone "^10.2.1"
     react-onclickoutside "^6.9.0"
+    react-resize-detector "^5.0.7"
     react-text-mask "^5.4.3"
     react-toastify "^5.5.0"
     react-tooltip "^3.11.2"
@@ -8298,7 +8299,7 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash-es@4.17.15:
+lodash-es@4.17.15, lodash-es@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
   integrity sha512-rlrc3yU3+JNOpZ9zj5pQtxnx2THmvRykwL4Xlxoa8I9lHBlVbbyPhgyPMioxVZ4NqyxaVVtaJnzsyOidQIhyyQ==
@@ -10261,6 +10262,11 @@ querystringify@^2.1.1:
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.2.0.tgz#3345941b4153cb9d082d8eee4cda2016a9aef7f6"
   integrity sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==
 
+raf-schd@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/raf-schd/-/raf-schd-4.0.2.tgz#bd44c708188f2e84c810bf55fcea9231bcaed8a0"
+  integrity sha512-VhlMZmGy6A6hrkJWHLNTGl5gtgMUm+xfGza6wbwnE914yeQ5Ybm18vgM734RZhMgfw4tacUrWseGZlpUrrakEQ==
+
 raf@^3.1.0, raf@^3.4.0, raf@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
@@ -10628,6 +10634,17 @@ react-redux@^7.0.2:
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
     react-is "^16.9.0"
+
+react-resize-detector@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-5.0.7.tgz#209e4ca786945f91b6266e16658d3aab76a62f94"
+  integrity sha512-h3AeP4FAr6IFwcIvGyaLw8tPYOSXXNGsP9UIlgc2/cRQZ8nwvyj5a+m1lhZa1fxBjfyVkUIHgGmXG+wkEjWVCQ==
+  dependencies:
+    lodash "^4.17.19"
+    lodash-es "^4.17.15"
+    prop-types "^15.7.2"
+    raf-schd "^4.0.2"
+    resize-observer-polyfill "^1.5.1"
 
 react-router-dom@5.1.2:
   version "5.1.2"

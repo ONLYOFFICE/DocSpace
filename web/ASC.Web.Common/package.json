@@ -33,6 +33,7 @@
     "react-hammerjs": "^1.0.1",
     "react-onclickoutside": "^6.9.0",
     "react-player": "^1.15.3",
+    "react-resize-detector": "^5.0.7",
     "react-svg": "^11.0.9",
     "react-viewer": "^3.2.1",
     "react-window-infinite-loader": "^1.0.5",
