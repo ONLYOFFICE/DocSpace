@@ -317,8 +317,7 @@ class PageLayoutComponent extends React.Component {
                               sectionBodyContent.props.children,
                               { widthProp: width }
                             )
-                          : //? sectionBodyContent.props.children
-                            null}
+                          : null}
                       </SubSectionBodyContent>
                       {isSectionPagingAvailable && (
                         <SubSectionPaging>

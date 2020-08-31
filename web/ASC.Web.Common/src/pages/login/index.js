@@ -442,8 +442,10 @@ const LoginForm = props => {
         <>
           <PageLayout>
             <PageLayout.SectionBody>
-              <FormWrapper i18n={i18n} {...props} />
-              {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+              <>
+                <FormWrapper i18n={i18n} {...props} />
+                {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+              </>
             </PageLayout.SectionBody>
           </PageLayout>
         </>
