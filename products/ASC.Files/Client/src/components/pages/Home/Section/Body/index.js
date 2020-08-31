@@ -595,7 +595,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { currentFolderType, title, t } = this.props;
+    const { currentFolderType, title, t, widthProp } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -667,6 +667,7 @@ class SectionBodyContent extends React.Component {
             descriptionText={myDescription}
             imageSrc="images/empty_screen.png"
             buttons={commonButtons}
+            widthProp={widthProp}
           />
         );
       case "Share":
@@ -676,6 +677,7 @@ class SectionBodyContent extends React.Component {
             subheadingText={subheadingText}
             descriptionText={shareDescription}
             imageSrc="images/empty_screen_forme.png"
+            widthProp={widthProp}
           />
         );
       case "Common":
@@ -686,6 +688,7 @@ class SectionBodyContent extends React.Component {
             descriptionText={commonDescription}
             imageSrc="images/empty_screen_corporate.png"
             buttons={commonButtons}
+            widthProp={widthProp}
           />
         );
       case "Trash":
@@ -696,6 +699,7 @@ class SectionBodyContent extends React.Component {
             descriptionText={trashDescription}
             imageSrc="images/empty_screen_trash.png"
             buttons={trashButtons}
+            widthProp={widthProp}
           />
         );
       default:
@@ -704,7 +708,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyFolderContainer = () => {
-    const { t } = this.props;
+    const { t, widthProp } = this.props;
     const buttons = (
       <>
         <div className="empty-folder_container-links">
@@ -763,12 +767,13 @@ class SectionBodyContent extends React.Component {
         headerText={t("EmptyFolderHeader")}
         imageSrc="images/empty_screen.png"
         buttons={buttons}
+        widthProp={widthProp}
       />
     );
   };
 
   renderEmptyFilterContainer = () => {
-    const { t } = this.props;
+    const { t, widthProp } = this.props;
     const subheadingText = t("EmptyFilterSubheadingText");
     const descriptionText = t("EmptyFilterDescriptionText");
 
@@ -795,6 +800,7 @@ class SectionBodyContent extends React.Component {
         descriptionText={descriptionText}
         imageSrc="images/empty_screen_filter.png"
         buttons={buttons}
+        widthProp={widthProp}
       />
     )
   }
