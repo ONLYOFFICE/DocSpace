@@ -33,7 +33,7 @@ namespace ASC.Data.Backup.Tasks.Data
     public class DataRowInfo
     {
         private readonly List<string> _columnNames = new List<string>();
-        private readonly List<object> _values = new List<object>(); 
+        private readonly List<object> _values = new List<object>();
 
         public string TableName { get; private set; }
 
@@ -79,9 +79,9 @@ namespace ASC.Data.Backup.Tasks.Data
         public override string ToString()
         {
             const int maxStrLength = 150;
-            
+
             var sb = new StringBuilder(maxStrLength);
-            
+
             var i = 0;
             while (i < _values.Count && sb.Length <= maxStrLength)
             {
@@ -89,7 +89,7 @@ namespace ASC.Data.Backup.Tasks.Data
                 sb.AppendFormat("\"{0}\", ", strVal);
                 i++;
             }
-            
+
             if (sb.Length > maxStrLength + 2)
             {
                 sb.Length = maxStrLength - 3;

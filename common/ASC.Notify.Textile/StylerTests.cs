@@ -30,7 +30,9 @@ namespace ASC.Notify.Textile
     using ASC.Core;
     using ASC.Notify.Messages;
     using ASC.Security.Cryptography;
+
     using Microsoft.Extensions.Configuration;
+
     using NUnit.Framework;
 
     [TestFixture]

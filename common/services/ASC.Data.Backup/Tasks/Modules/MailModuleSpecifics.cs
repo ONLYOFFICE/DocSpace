@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Data.Backup.Tasks.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,8 +32,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Logging;
+using ASC.Data.Backup.Tasks.Data;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks.Modules
@@ -43,7 +45,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
         private ILog log;
         private Helpers helpers;
-        public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) :base(helpers)
+        public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
             log = options.CurrentValue;
             this.helpers = helpers;
@@ -286,7 +288,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
             {
                 var data = streamReader.ReadToEnd();
-                data = Regex.Replace(data, @"(htmleditorfiles|aggregator)(\/0\/|\/[\d]+\/\d\d\/\d\d\/)([-\w]+(?=/))", 
+                data = Regex.Replace(data, @"(htmleditorfiles|aggregator)(\/0\/|\/[\d]+\/\d\d\/\d\d\/)([-\w]+(?=/))",
                     match => "/" + TenantPath.CreatePath(columnMapper.GetTenantMapping().ToString()) + "/" + columnMapper.GetUserMapping(match.Groups[3].Value));
 
                 var content = Encoding.UTF8.GetBytes(data);

@@ -29,14 +29,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ASC.Common.Utils;
-using ASC.Common.Logging;
 
+using ASC.Common;
+using ASC.Common.Logging;
+using ASC.Common.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using ASC.Common;
 
 namespace ASC.Thumbnails.Svc
 {
@@ -82,7 +82,7 @@ namespace ASC.Thumbnails.Svc
 
                 StartNode(cancellationToken);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Error("Start", e);
             }
@@ -103,7 +103,7 @@ namespace ASC.Thumbnails.Svc
                     Proc = null;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Error("Stop", e);
             }

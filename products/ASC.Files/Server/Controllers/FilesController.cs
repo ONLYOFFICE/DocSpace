@@ -1390,13 +1390,30 @@ namespace ASC.Api.Documents
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        [Read(@"settings")]
+        public object GetFilesSettings()
+        {
+            return new
+            {
+                FilesSettingsHelper.StoreOriginalFiles,
+                FilesSettingsHelper.ConfirmDelete,
+                FilesSettingsHelper.UpdateIfExist,
+                FilesSettingsHelper.Forcesave,
+                FilesSettingsHelper.StoreForcesave,
+                FilesSettingsHelper.EnableThirdParty
+            };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="save"></param>
         /// <visible>false</visible>
         /// <returns></returns>
         [Update(@"hideconfirmconvert")]
         public bool HideConfirmConvert(bool save)
         {
-
             return FileStorageService.HideConfirmConvert(save);
         }
 
@@ -1420,7 +1437,7 @@ namespace ASC.Api.Documents
         [Update(@"changedeleteconfrim")]
         public bool ChangeDeleteConfrim(SettingsModel model)
         {
-            return FileStorageService.HideConfirmConvert(model.Set);
+            return FileStorageService.ChangeDeleteConfrim(model.Set);
         }
 
         /// <summary>
@@ -1432,6 +1449,28 @@ namespace ASC.Api.Documents
         public bool StoreForcesave(SettingsModel model)
         {
             return FileStorageService.StoreForcesave(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"forcesave")]
+        public bool Forcesave(SettingsModel model)
+        {
+            return FileStorageService.Forcesave(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"thirdparty")]
+        public bool ChangeAccessToThirdparty(SettingsModel model)
+        {
+            return FileStorageService.ChangeAccessToThirdparty(model.Set);
         }
 
         /// <summary>

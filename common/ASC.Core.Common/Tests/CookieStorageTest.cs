@@ -28,7 +28,9 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
+
     using ASC.Core.Security.Authentication;
+
     using NUnit.Framework;
 
     [TestFixture]
