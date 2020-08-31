@@ -15,5 +15,6 @@
   "LoadingError": "Ошибка загрузки",
   "LicenseError": "Лицензия не действительна. Убедитесь что вы выбрали верный файл",
   "createdPortals": " Порталы, созданные вами:",
-  "OrganizationName": "ONLYOFFICE"
+  "OrganizationName": "ONLYOFFICE",
+  "SupportNotAvailable": "Техническая поддержка больше не доступна для вашей лицензии с "
 }

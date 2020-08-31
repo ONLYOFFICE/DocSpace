@@ -15,5 +15,6 @@
   "LoadingError": "Loading error",
   "LicenseError": "Licence  is not valid. Make sure you choose the right file",
   "createdPortals": "Number of portals you've created",
-  "OrganizationName": "ONLYOFFICE"
+  "OrganizationName": "ONLYOFFICE",
+  "SupportNotAvailable": "Support is no longer available for your license since "
 }
