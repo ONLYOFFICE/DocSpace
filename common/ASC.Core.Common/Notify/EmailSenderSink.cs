@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Notify.Senders;
@@ -95,15 +96,16 @@ namespace ASC.Core.Notify
             };
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+            
+            var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
+            (var tenantManager, var coreConfiguration, var options) = scopeClass;
 
             var tenant = tenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-            var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
+            var from = MailAddressUtils.Create(coreConfiguration.SmtpSettings.SenderAddress, coreConfiguration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
+            if ((coreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(coreConfiguration.SmtpSettings.SenderDisplayName)) &&
                 fromTag != null && fromTag.Value != null)
             {
                 try
@@ -147,6 +149,36 @@ namespace ASC.Core.Notify
             }
 
             return m;
+        }
+    }
+
+    public class EmailSenderSinkScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+
+        public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+            Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
+        {
+            tenantManager = TenantManager;
+            coreConfiguration = CoreConfiguration;
+            optionsMonitor = Options;
+        }
+    }
+
+    public static class EmailSenderSinkExtension
+    {
+        public static DIHelper AddEmailSenderSinkService(this DIHelper services)
+        {
+            services.TryAddScoped<EmailSenderSinkScope>();
+            return services;
         }
     }
 }
