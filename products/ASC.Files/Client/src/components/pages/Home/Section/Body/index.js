@@ -1081,7 +1081,8 @@ class SectionBodyContent extends React.Component {
       currentMediaFileId,
       viewAs,
       t,
-      loopFilesOperations
+      loopFilesOperations,
+      widthProp
     } = this.props;
 
     const { editingId, showSharingPanel, showMoveToPanel, showCopyPanel } = this.state;
@@ -1249,6 +1250,7 @@ class SectionBodyContent extends React.Component {
                         value={value}
                       >
                         <SimpleFilesRow
+                          widthProp={widthProp}
                           key={item.id}
                           data={item}
                           element={element}
@@ -1260,6 +1262,7 @@ class SectionBodyContent extends React.Component {
                           selectItem={this.onSelectItem.bind(this, item)}
                         >
                           <FilesRowContent
+                            widthProp={widthProp}
                             item={item}
                             viewer={viewer}
                             culture={settings.culture}
