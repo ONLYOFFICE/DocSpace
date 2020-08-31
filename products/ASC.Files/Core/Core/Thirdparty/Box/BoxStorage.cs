@@ -28,11 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+
 using ASC.FederatedLogin;
+
 using Box.V2;
 using Box.V2.Auth;
 using Box.V2.Config;
 using Box.V2.Models;
+
 using BoxSDK = Box.V2;
 
 namespace ASC.Files.Thirdparty.Box
@@ -47,7 +50,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public bool IsOpened { get; private set; }
 
-        public long MaxChunkedUploadFileSize = 250L*1024L*1024L;
+        public long MaxChunkedUploadFileSize = 250L * 1024L * 1024L;
 
         public void Open(OAuth20Token token)
         {
@@ -146,26 +149,26 @@ namespace ASC.Files.Thirdparty.Box
         public BoxFolder CreateFolder(string title, string parentId)
         {
             var boxFolderRequest = new BoxFolderRequest
+            {
+                Name = title,
+                Parent = new BoxRequestEntity
                 {
-                    Name = title,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = parentId
-                        }
-                };
+                    Id = parentId
+                }
+            };
             return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields).Result;
         }
 
         public BoxFile CreateFile(Stream fileStream, string title, string parentId)
         {
             var boxFileRequest = new BoxFileRequest
+            {
+                Name = title,
+                Parent = new BoxRequestEntity
                 {
-                    Name = title,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = parentId
-                        }
-                };
+                    Id = parentId
+                }
+            };
             return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false).Result;
         }
 
@@ -184,56 +187,56 @@ namespace ASC.Files.Thirdparty.Box
         public BoxFolder MoveFolder(string boxFolderId, string newFolderName, string toFolderId)
         {
             var boxFolderRequest = new BoxFolderRequest
+            {
+                Id = boxFolderId,
+                Name = newFolderName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFolderId,
-                    Name = newFolderName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields).Result;
         }
 
         public BoxFile MoveFile(string boxFileId, string newFileName, string toFolderId)
         {
             var boxFileRequest = new BoxFileRequest
+            {
+                Id = boxFileId,
+                Name = newFileName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFileId,
-                    Name = newFileName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields).Result;
         }
 
         public BoxFolder CopyFolder(string boxFolderId, string newFolderName, string toFolderId)
         {
             var boxFolderRequest = new BoxFolderRequest
+            {
+                Id = boxFolderId,
+                Name = newFolderName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFolderId,
-                    Name = newFolderName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields).Result;
         }
 
         public BoxFile CopyFile(string boxFileId, string newFileName, string toFolderId)
         {
             var boxFileRequest = new BoxFileRequest
+            {
+                Id = boxFileId,
+                Name = newFileName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFileId,
-                    Name = newFileName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields).Result;
         }
 

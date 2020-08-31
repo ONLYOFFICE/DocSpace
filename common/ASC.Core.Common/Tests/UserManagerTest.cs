@@ -30,11 +30,12 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Diagnostics;
     using System.Threading;
-    using ASC.Core.Users;
-    using Microsoft.Extensions.DependencyInjection;
-    using NUnit.Framework;
 
-    using Renci.SshNet;
+    using ASC.Core.Users;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    using NUnit.Framework;
 
     [TestFixture]
     public class UserManagerTest
@@ -45,8 +46,9 @@ namespace ASC.Core.Common.Tests
         public void SearchUsers()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
-            (var userManager, var tenantManager) = scopeClass;
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenant = tenantManager.SetCurrentTenant(0);
 
             var users = userManager.Search(null, EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
@@ -83,8 +85,8 @@ namespace ASC.Core.Common.Tests
         public void DepartmentManagers()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
-            (var userManager, var tenantManager) = scopeClass;
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(1024);
 
             var deps = userManager.GetDepartments();
@@ -112,8 +114,8 @@ namespace ASC.Core.Common.Tests
         public void UserGroupsPerformanceTest()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
-            (var userManager, var tenantManager) = scopeClass;
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(0);
 
             foreach (var u in userManager.GetUsers())
@@ -145,24 +147,6 @@ namespace ASC.Core.Common.Tests
             Assert.IsNotNull(visitors);
             Assert.IsNotNull(all);
             stopwatch.Stop();
-        }
-    }
-
-    public class UserManagerTestScope
-    {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
-
-        public UserManagerTestScope(UserManager userManager, TenantManager tenantManager)
-        {
-            UserManager = userManager;
-            TenantManager = tenantManager;
-        }
-
-        public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
-        {
-            userManager = UserManager;
-            tenantManager = TenantManager;
         }
     }
 }

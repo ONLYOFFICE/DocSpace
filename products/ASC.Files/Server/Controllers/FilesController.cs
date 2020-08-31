@@ -1387,9 +1387,9 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeoriginal")]
-        public bool StoreOriginal(bool set)
+        public bool StoreOriginal(SettingsModel model)
         {
-            return FileStorageService.StoreOriginal(set);
+            return FileStorageService.StoreOriginal(model.Set);
         }
 
         /// <summary>
@@ -1401,8 +1401,10 @@ namespace ASC.Api.Documents
         [Update(@"hideconfirmconvert")]
         public bool HideConfirmConvert(bool save)
         {
+
             return FileStorageService.HideConfirmConvert(save);
         }
+
 
         /// <summary>
         /// 
@@ -1410,9 +1412,31 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"updateifexist")]
-        public bool UpdateIfExist(bool set)
+        public bool UpdateIfExist(SettingsModel model)
         {
-            return FileStorageService.UpdateIfExist(set);
+            return FileStorageService.UpdateIfExist(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"changedeleteconfrim")]
+        public bool ChangeDeleteConfrim(SettingsModel model)
+        {
+            return FileStorageService.HideConfirmConvert(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"storeforcesave")]
+        public bool StoreForcesave(SettingsModel model)
+        {
+            return FileStorageService.StoreForcesave(model.Set);
         }
 
         /// <summary>

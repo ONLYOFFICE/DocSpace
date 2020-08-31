@@ -148,6 +148,7 @@ namespace ASC.Api.Settings
         private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
         private CoreSettings CoreSettings { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
+        private ServiceClient ServiceClient { get; }
         public ILog Log { get; set; }
 
         public SettingsController(
@@ -200,7 +201,8 @@ namespace ASC.Api.Settings
             ProviderManager providerManager,
             MobileDetector mobileDetector,
             IOptionsSnapshot<AccountLinker> accountLinker,
-            FirstTimeTenantSettings firstTimeTenantSettings)
+            FirstTimeTenantSettings firstTimeTenantSettings,
+            ServiceClient serviceClient)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -252,6 +254,7 @@ namespace ASC.Api.Settings
             StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
             CoreSettings = coreSettings;
             StorageSettingsHelper = storageSettingsHelper;
+            ServiceClient = serviceClient;
         }
 
         [Read("", Check = false)]
@@ -1370,7 +1373,7 @@ namespace ASC.Api.Settings
 
         [Create("license", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public object UploadLicense([FromForm]UploadLicenseModel model)
+        public object UploadLicense([FromForm] UploadLicenseModel model)
         {
             try
             {
@@ -1618,8 +1621,7 @@ namespace ASC.Api.Settings
 
             if (!CoreBaseSettings.Standalone) return -1;
 
-            using var migrateClient = new ServiceClient();
-            return migrateClient.GetProgress(Tenant.TenantId);
+            return ServiceClient.GetProgress(Tenant.TenantId);
         }
 
         [Update("storage")]
@@ -1702,8 +1704,7 @@ namespace ASC.Api.Settings
 
             try
             {
-                using var migrateClient = new ServiceClient();
-                migrateClient.UploadCdn(Tenant.TenantId, "/", WebHostEnvironment.ContentRootPath, settings);
+                ServiceClient.UploadCdn(Tenant.TenantId, "/", WebHostEnvironment.ContentRootPath, settings);
             }
             catch (Exception e)
             {
@@ -1746,10 +1747,7 @@ namespace ASC.Api.Settings
 
         private void StartMigrate(StorageSettings settings)
         {
-            using (var migrateClient = new ServiceClient())
-            {
-                migrateClient.Migrate(Tenant.TenantId, settings);
-            }
+            ServiceClient.Migrate(Tenant.TenantId, settings);
 
             Tenant.SetStatus(TenantStatus.Migrating);
             TenantManager.SaveTenant(Tenant);
@@ -1770,6 +1768,68 @@ namespace ASC.Api.Settings
             return new { Url = hubUrl };
         }
 
+
+        [Read("authservice")]
+        public IEnumerable<AuthServiceModel> GetAuthServices()
+        {
+            return ConsumerFactory.GetAll<Consumer>()
+                .Where(consumer => consumer.ManagedKeys.Any())
+                .OrderBy(services => services.Order)
+                .Select(r => new AuthServiceModel(r))
+                .ToList();
+        }
+
+        [Create("authservice")]
+        public bool SaveAuthKeys(AuthServiceModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
+                throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
+
+            var changed = false;
+            var consumer = ConsumerFactory.GetByKey<Consumer>(model.Name);
+
+            var validateKeyProvider = (IValidateKeysProvider)ConsumerFactory.GetAll<Consumer>().FirstOrDefault(r => r.Name == consumer.Name && r is IValidateKeysProvider);
+            if (validateKeyProvider != null)
+            {
+                try
+                {
+                    if (validateKeyProvider is TwilioProvider twilioLoginProvider)
+                    {
+                        twilioLoginProvider.ClearOldNumbers();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            }
+
+            if (model.Props.All(r => string.IsNullOrEmpty(r.Value)))
+            {
+                consumer.Clear();
+                changed = true;
+            }
+            else
+            {
+                foreach (var authKey in model.Props.Where(authKey => consumer[authKey.Name] != authKey.Value))
+                {
+                    consumer[authKey.Name] = authKey.Value;
+                    changed = true;
+                }
+            }
+
+            if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !consumer.All(r => string.IsNullOrEmpty(r.Value)))
+            {
+                consumer.Clear();
+                throw new ArgumentException(Resource.ErrorBadKeys);
+            }
+
+            if (changed)
+                MessageService.Send(MessageAction.AuthorizationKeysSetting);
+
+            return changed;
+        }
 
         private readonly int maxCount = 10;
         private readonly int expirationMinutes = 2;
@@ -1837,7 +1897,9 @@ namespace ASC.Api.Settings
                 .AddProviderManagerService()
                 .AddAccountLinker()
                 .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings();
+                .AddFirstTimeTenantSettings()
+                .AddServiceClient()
+                .AddTwilioProviderService();
         }
     }
 }

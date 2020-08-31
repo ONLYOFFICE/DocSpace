@@ -28,11 +28,12 @@
 using System;
 using System.Linq;
 
-using ASC.Common;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
@@ -54,13 +55,13 @@ namespace ASC.Core.Common.Tests
         private IRecipient testRec2;
         private NotifyAction nAction;
         private IServiceProvider serviceProvider;
-        
+
         [OneTimeSetUp]
         public void CreateProviders()
         {
             using var scope = serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<TopSubscriptionProviderTestScope>();
-            (var tenantManager, var subscriptionManager, var recipientProviderImpl) = scopeClass;
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var subscriptionManager = scope.ServiceProvider.GetService<SubscriptionManager>();
             tenantManager.SetCurrentTenant(tenant);
 
             tenant = new Tenants.Tenant(0, "teamlab");
@@ -71,8 +72,8 @@ namespace ASC.Core.Common.Tests
             testRec = new DirectRecipient("ff0c4e13-1831-43c2-91ce-7b7beb56179b", null); //Oliver Khan
             testRec2 = new DirectRecipient("0017794f-aeb7-49a5-8817-9e870e02bd3f", null); //Якутова Юлия
 
-            recProvider = recipientProviderImpl;
-            var directSubProvider = new DirectSubscriptionProvider(sourceId,subscriptionManager, recProvider);
+            recProvider = scope.ServiceProvider.GetService<RecipientProviderImpl>();
+            var directSubProvider = new DirectSubscriptionProvider(sourceId, subscriptionManager, recProvider);
             subProvider = new TopSubscriptionProvider(recProvider, directSubProvider);
         }
 
@@ -143,27 +144,6 @@ namespace ASC.Core.Common.Tests
                 subProvider.UnSubscribe(nAction, rndObj, otdel);
                 subProvider.UnSubscribe(nAction, rndObj2, everyone);
             }
-        }
-    }
-
-    public class TopSubscriptionProviderTestScope
-    {
-        private TenantManager TenantManager { get; }
-        private SubscriptionManager SubscriptionManager { get; }
-        private RecipientProviderImpl RecipientProviderImpl { get; }
-
-        public TopSubscriptionProviderTestScope(TenantManager tenantManager, SubscriptionManager subscriptionManager, RecipientProviderImpl recipientProviderImpl)
-        {
-            TenantManager = tenantManager;
-            SubscriptionManager = subscriptionManager;
-            RecipientProviderImpl = recipientProviderImpl;
-        }
-
-        public void Deconstruct(out TenantManager tenantManager, out SubscriptionManager subscriptionManager, out RecipientProviderImpl recipientProviderImpl)
-        {
-            tenantManager = TenantManager;
-            subscriptionManager = SubscriptionManager;
-            recipientProviderImpl = RecipientProviderImpl;
         }
     }
 }

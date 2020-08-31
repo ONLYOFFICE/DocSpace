@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
@@ -94,7 +95,7 @@ namespace ASC.Data.Backup
                         using (var fileStream = File.Create(fullPath))
                         using (var entryStream = reader.OpenEntryStream())
                         {
-                            entryStream.CopyTo(fileStream); 
+                            entryStream.CopyTo(fileStream);
                         }
                     }
                     else

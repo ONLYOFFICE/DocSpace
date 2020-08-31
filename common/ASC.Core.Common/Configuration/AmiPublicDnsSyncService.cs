@@ -30,8 +30,8 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 
-using ASC.Common;
 using ASC.Common.Module;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Configuration
@@ -48,16 +48,15 @@ namespace ASC.Core.Configuration
         {
 
         }
-        
+
         public static void Synchronize()
         {
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
-            (var tenantManager, var coreBaseSettings) = scopeClass;
-            
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             if (coreBaseSettings.Standalone)
             {
-                var tenants =tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
+                var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
                 if (tenants.Any())
                 {
                     var dnsname = GetAmiPublicDnsName();
@@ -94,24 +93,6 @@ namespace ASC.Core.Configuration
                 }
             }
             return null;
-        }   
-    }
-
-    public class AmiPublicDnsSyncServiceScope
-    {
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-
-        public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
-        {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-        }
-
-        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings)
-        {
-            tenantManager = TenantManager;
-            coreBaseSettings = CoreBaseSettings;
         }
     }
 }

@@ -62,11 +62,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files.Core", "products\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Socket.IO.Svc", "common\services\ASC.Socket.IO.Svc\ASC.Socket.IO.Svc.csproj", "{2DADEAD3-0FE9-4199-9817-41A32E6BF450}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Migration", "common\services\ASC.Data.Storage.Migration\ASC.Data.Storage.Migration.csproj", "{02356BD7-7E99-457B-BEFF-090CE4DF067D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
 		Debug|Any CPU = Debug|Any CPU
-		Release_Ubuntu|Any CPU = Release_Ubuntu|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -294,6 +294,10 @@ Global
 		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
 		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

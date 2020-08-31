@@ -32,13 +32,13 @@ namespace ASC.Data.Backup.Exceptions
     {
         public DbBackupException()
         {
-            
+
         }
 
         public DbBackupException(string message)
             : this(message, null)
         {
-            
+
         }
 
         public DbBackupException(string message, Exception innerException)

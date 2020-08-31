@@ -26,11 +26,11 @@
 
 using System;
 
-using ASC.Common;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Notify
@@ -54,8 +54,8 @@ namespace ASC.Core.Notify
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<JabberSenderSinkScope>();
-                (var userManager, var tenantManager) = scopeClass;
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var result = SendResult.OK;
                 var username = userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
                 if (string.IsNullOrEmpty(username))
@@ -85,33 +85,6 @@ namespace ASC.Core.Notify
             {
                 return new SendResponse(message, senderName, ex);
             }
-        }
-    }
-
-    public class JabberSenderSinkScope
-    {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
-
-        public JabberSenderSinkScope(UserManager userManager, TenantManager tenantManager)
-        {
-            TenantManager = tenantManager;
-            UserManager = userManager;
-        }
-
-        public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
-        {
-            userManager = UserManager;
-            tenantManager = TenantManager;
-        }
-    }
-
-    public static class JabberSenderSinkExtension
-    {
-        public static DIHelper AddJabberSenderSinkService(this DIHelper services)
-        {
-            services.TryAddScoped<JabberSenderSinkScope>();
-            return services;
         }
     }
 }

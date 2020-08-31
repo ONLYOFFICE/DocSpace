@@ -32,7 +32,7 @@ namespace ASC.Data.Backup.Utils
     {
         public static Configuration Open(string fileName)
         {
-            var fileMap = new ExeConfigurationFileMap {ExeConfigFilename = PathHelper.ToRootedConfigPath(fileName)};
+            var fileMap = new ExeConfigurationFileMap { ExeConfigFilename = PathHelper.ToRootedConfigPath(fileName) };
             return ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
         }
     }
