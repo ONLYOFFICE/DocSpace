@@ -98,19 +98,20 @@ namespace ASC.Data.Reassigns
         {
             using var scope = ServiceProvider.CreateScope();   
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
-            var logger = scopeClass.Options.Get("ASC.Web");
-            var tenant = scopeClass.TenantManager.SetCurrentTenant(_tenantId);
-            var userName = scopeClass.UserFormatter.GetUserName(User, DisplayUserNameFormat.Default);
+            (var tenantManager,  var coreBaseSettings, var messageService,  var studioNotifyService, var securityContext, var userManager, var messageTarget, var webItemManagerSecurity, var storageFactory, var userFormatter, var options) = scopeClass;
+            var logger = options.Get("ASC.Web");
+            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+            var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                scopeClass.SecurityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMe(_currentUserId);
 
                 long crmSpace;
-                GetUsageSpace(scopeClass.WebItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
+                GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", FromUser);
 
@@ -119,7 +120,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 25;
                 //_docService.DeleteStorage(_userId);
 
-                if (!scopeClass.CoreBaseSettings.CustomMode)
+                if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("deleting of data from crm");
 
@@ -144,9 +145,9 @@ namespace ASC.Data.Reassigns
                 logger.Info("deleting of data from talk");
 
                 Percentage = 99;
-                DeleteTalkStorage(scopeClass.StorageFactory);
+                DeleteTalkStorage(storageFactory);
 
-                SendSuccessNotify(scopeClass.StudioNotifyService, scopeClass.MessageService, scopeClass.MessageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
+                SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
@@ -156,7 +157,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(scopeClass.StudioNotifyService, ex.Message, userName);
+                SendErrorNotify(studioNotifyService, ex.Message, userName);
             }
             finally
             {
@@ -247,17 +248,17 @@ namespace ASC.Data.Reassigns
 
     public class RemoveProgressItemScope
     {
-        internal TenantManager TenantManager { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
-        internal MessageService MessageService { get; }
-        internal StudioNotifyService StudioNotifyService { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal UserManager UserManager { get; }
-        internal MessageTarget MessageTarget { get; }
-        internal WebItemManagerSecurity WebItemManagerSecurity { get; }
-        internal StorageFactory StorageFactory { get; }
-        internal UserFormatter UserFormatter { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private MessageService MessageService { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private MessageTarget MessageTarget { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private StorageFactory StorageFactory { get; }
+        private UserFormatter UserFormatter { get; }
+        private IOptionsMonitor<ILog> Options { get; }
 
         public RemoveProgressItemScope(TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
@@ -282,6 +283,31 @@ namespace ASC.Data.Reassigns
             StorageFactory = storageFactory;
             UserFormatter = userFormatter;
             Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out CoreBaseSettings coreBaseSettings,
+            out MessageService messageService, 
+            out StudioNotifyService studioNotifyService, 
+            out SecurityContext securityContext, 
+            out UserManager userManager, 
+            out MessageTarget messageTarget, 
+            out WebItemManagerSecurity webItemManagerSecurity,
+            out StorageFactory storageFactory, 
+            out UserFormatter userFormatter,
+            out IOptionsMonitor<ILog>  optionsMonitor )
+        {
+            tenantManager = TenantManager;
+            coreBaseSettings = CoreBaseSettings;
+            messageService = MessageService;
+            studioNotifyService = StudioNotifyService;
+            securityContext = SecurityContext;
+            userManager = UserManager;
+            messageTarget = MessageTarget;
+            webItemManagerSecurity = WebItemManagerSecurity;
+            storageFactory = StorageFactory;
+            userFormatter = UserFormatter;
+            optionsMonitor = Options;
         }
     }
 

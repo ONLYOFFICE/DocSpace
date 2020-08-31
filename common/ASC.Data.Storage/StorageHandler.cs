@@ -67,14 +67,15 @@ namespace ASC.Data.Storage.DiscStorage
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
+            (var tenantManager, var securityContext, var storageFactory, var emailValidationKeyProvider) = scopeClass;
 
-            if (_checkAuth && !scopeClass.SecurityContext.IsAuthenticated)
+            if (_checkAuth && !securityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
 
-            var storage = scopeClass.StorageFactory.GetStorage(scopeClass.TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
+            var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
             var path = Path.Combine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
@@ -86,7 +87,7 @@ namespace ASC.Data.Storage.DiscStorage
                 var expire = context.Request.Query[Constants.QUERY_EXPIRE];
                 if (string.IsNullOrEmpty(expire)) expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
-                var validateResult = scopeClass.EmailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
+                var validateResult = emailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -147,10 +148,10 @@ namespace ASC.Data.Storage.DiscStorage
 
     public class StorageHandlerScope
     {
-        internal TenantManager TenantManager { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal StorageFactory StorageFactory { get; }
-        internal EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private StorageFactory StorageFactory { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         public StorageHandlerScope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
         {
@@ -158,6 +159,13 @@ namespace ASC.Data.Storage.DiscStorage
             SecurityContext = securityContext;
             StorageFactory = storageFactory;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+        }
+        public void Deconstruct(out TenantManager tenantManager, out SecurityContext securityContext, out StorageFactory storageFactory, out EmailValidationKeyProvider emailValidationKeyProvider)
+        {
+            tenantManager = TenantManager;
+            securityContext = SecurityContext;
+            storageFactory = StorageFactory;
+            emailValidationKeyProvider = EmailValidationKeyProvider;
         }
     }
 

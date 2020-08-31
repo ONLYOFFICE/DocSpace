@@ -173,6 +173,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (folderIds.Count == 0) return needToMark;
 
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+            (var filesMessageService, var fileMarker, var fileUtility, var global, var entryManager) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -212,7 +213,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             else
                             {
                                 newFolder = FolderDao.CopyFolder(folder.ID, toFolderId, CancellationToken);
-                                scopeClass.FilesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
+                                filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
 
                                 if (isToFolder)
                                     needToMark.Add(newFolder);
@@ -253,7 +254,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         newFolder = FolderDao.CopyFolder(folder.ID, toFolderId, CancellationToken);
                                         newFolderId = newFolder.ID;
-                                        scopeClass.FilesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
+                                        filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
 
                                         if (isToFolder)
                                             needToMark.Add(newFolder);
@@ -273,18 +274,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     }
                                     else
                                     {
-                                        scopeClass.FileMarker.RemoveMarkAsNewForAll(folder);
+                                        fileMarker.RemoveMarkAsNewForAll(folder);
 
                                         newFolderId = FolderDao.MoveFolder(folder.ID, toFolderId, CancellationToken);
                                         newFolder = folderDao.GetFolder(newFolderId);
 
                                         if (folder.RootFolderType != FolderType.USER)
                                         {
-                                            scopeClass.FilesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
+                                            filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
                                         }
                                         else
                                         {
-                                            scopeClass.FilesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
+                                            filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
                                         }
 
                                         if (isToFolder)
@@ -310,18 +311,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             }
                             else
                             {
-                                scopeClass.FileMarker.RemoveMarkAsNewForAll(folder);
+                                fileMarker.RemoveMarkAsNewForAll(folder);
 
                                 var newFolderId = FolderDao.MoveFolder(folder.ID, toFolderId, CancellationToken);
                                 newFolder = folderDao.GetFolder(newFolderId);
 
                                 if (folder.RootFolderType != FolderType.USER)
                                 {
-                                    scopeClass.FilesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                                    filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
                                 }
                                 else
                                 {
-                                    scopeClass.FilesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                                    filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
                                 }
 
                                 if (isToFolder)
@@ -354,6 +355,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (fileIds.Count == 0) return needToMark;
 
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+            (var filesMessageService, var fileMarker, var fileUtility, var global, var entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -370,8 +372,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }
-                else if (scopeClass.Global.EnableUploadFilter
-                         && !scopeClass.FileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
+                else if (global.EnableUploadFilter
+                         && !fileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
                 {
                     Error = FilesCommonResource.ErrorMassage_NotSupportedFormat;
                 }
@@ -391,7 +393,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 try
                                 {
                                     newFile = FileDao.CopyFile(file.ID, toFolderId); //Stream copy will occur inside dao
-                                    scopeClass.FilesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
+                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
 
                                     if (Equals(newFile.FolderID.ToString(), DaoFolderId))
                                     {
@@ -420,18 +422,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 }
                                 else
                                 {
-                                    scopeClass.FileMarker.RemoveMarkAsNewForAll(file);
+                                    fileMarker.RemoveMarkAsNewForAll(file);
 
                                     var newFileId = FileDao.MoveFile(file.ID, toFolderId);
                                     newFile = fileDao.GetFile(newFileId);
 
                                     if (file.RootFolderType != FolderType.USER)
                                     {
-                                        scopeClass.FilesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
+                                        filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
                                     }
                                     else
                                     {
-                                        scopeClass.FilesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
+                                        filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
                                     }
 
                                     if (Equals(toFolderId.ToString(), DaoFolderId))
@@ -454,7 +456,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException;
                                 }
-                                else if (scopeClass.EntryManager.FileLockedForMe(conflict.ID))
+                                else if (entryManager.FileLockedForMe(conflict.ID))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_LockedFile;
                                 }
@@ -483,7 +485,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     if (copy)
                                     {
-                                        scopeClass.FilesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
+                                        filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
                                         if (ProcessedFile(fileId))
                                         {
                                             Status += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
@@ -510,11 +512,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                                 if (file.RootFolderType != FolderType.USER)
                                                 {
-                                                    scopeClass.FilesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
+                                                    filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                                 }
                                                 else
                                                 {
-                                                    scopeClass.FilesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
+                                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                                 }
 
                                                 if (ProcessedFile(fileId))
@@ -572,11 +574,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     public class FileMoveCopyOperationScope
     {
-        internal FilesMessageService FilesMessageService { get; }
-        internal FileMarker FileMarker { get; }
-        internal FileUtility FileUtility { get; }
-        internal Global Global { get; }
-        internal EntryManager EntryManager { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private FileMarker FileMarker { get; }
+        private FileUtility FileUtility { get; }
+        private Global Global { get; }
+        private EntryManager EntryManager { get; }
 
         public FileMoveCopyOperationScope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
         {
@@ -585,6 +587,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FileUtility = fileUtility;
             Global = global;
             EntryManager = entryManager;
+        }
+
+        public void Deconstruct(out FilesMessageService filesMessageService, out FileMarker fileMarker, out FileUtility fileUtility, out Global global, out EntryManager entryManager)
+        {
+            filesMessageService = FilesMessageService;
+            fileMarker = FileMarker;
+            fileUtility = FileUtility;
+            global = Global;
+            entryManager = EntryManager;
         }
     }
 }

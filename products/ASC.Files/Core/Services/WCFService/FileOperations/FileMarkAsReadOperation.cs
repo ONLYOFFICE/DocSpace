@@ -85,6 +85,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override void Do(IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
+            (var fileMarker, var globalFolder, var daoFactory) = scopeClass;
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
@@ -98,7 +99,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                scopeClass.FileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+                fileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
@@ -113,14 +114,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var rootIds = new List<int>
                 {
-                    scopeClass.GlobalFolder.GetFolderMy(scopeClass.FileMarker, scopeClass.DaoFactory),
-                    scopeClass.GlobalFolder.GetFolderCommon(scopeClass.FileMarker, scopeClass.DaoFactory),
-                    scopeClass.GlobalFolder.GetFolderShare(scopeClass.DaoFactory),
-                    scopeClass.GlobalFolder.GetFolderProjects(scopeClass.DaoFactory),
+                    globalFolder.GetFolderMy(fileMarker, daoFactory),
+                    globalFolder.GetFolderCommon(fileMarker, daoFactory),
+                    globalFolder.GetFolderShare(daoFactory),
+                    globalFolder.GetFolderProjects(daoFactory),
                 };
 
             var newrootfolder =
-                rootIds.Select(r => new KeyValuePair<int, int>(r, scopeClass.FileMarker.GetRootFoldersIdMarkedAsNew(r)))
+                rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
             Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
@@ -129,15 +130,22 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     public class FileMarkAsReadOperationScope
     {
-        internal FileMarker FileMarker { get; }
-        internal GlobalFolder GlobalFolder { get; }
-        internal IDaoFactory DaoFactory { get; }
+        private FileMarker FileMarker { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private IDaoFactory DaoFactory { get; }
 
         public FileMarkAsReadOperationScope(FileMarker fileMarker, GlobalFolder globalFolder, IDaoFactory daoFactory)
         {
             FileMarker = fileMarker;
             GlobalFolder = globalFolder;
             DaoFactory = daoFactory;
+        }
+
+        public void Deconstruct(out FileMarker fileMarker, out GlobalFolder globalFolder, out IDaoFactory daoFactory)
+        {
+            fileMarker = FileMarker;
+            globalFolder = GlobalFolder;
+            daoFactory = DaoFactory;
         }
     }
 }

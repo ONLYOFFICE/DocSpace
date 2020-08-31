@@ -100,8 +100,9 @@ namespace ASC.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
-            scopeClass.TenantManager.SetCurrentTenant(tenant);
-            scopeClass.TenantWhiteLabelSettingsHelper.Apply(scopeClass.SettingsManager.Load<TenantWhiteLabelSettings>(), tenant);
+            (var tenantManager, var tenantWhiteLabelSettingsHelper, var settingsManager) = scopeClass;
+            tenantManager.SetCurrentTenant(tenant);
+            tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);
         }
 
@@ -113,15 +114,22 @@ namespace ASC.Notify
 
     public class NotifyServiceScope
     {
-        internal TenantManager TenantManager { get; }
-        internal TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
-        internal SettingsManager SettingsManager { get; }
+        private TenantManager TenantManager { get; }
+        private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
 
         public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
         {
             TenantManager = tenantManager;
             TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
             SettingsManager = settingsManager;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, out SettingsManager settingsManager)
+        {
+            tenantManager = TenantManager;
+            tenantWhiteLabelSettingsHelper = TenantWhiteLabelSettingsHelper;
+            settingsManager = SettingsManager;
         }
     }
 

@@ -55,8 +55,9 @@ namespace ASC.Core.Notify
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<JabberSenderSinkScope>();
+                (var userManager, var tenantManager) = scopeClass;
                 var result = SendResult.OK;
-                var username = scopeClass.UserManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
+                var username = userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
                 if (string.IsNullOrEmpty(username))
                 {
                     result = SendResult.IncorrectRecipient;
@@ -73,7 +74,7 @@ namespace ASC.Core.Notify
                         CreationDate = DateTime.UtcNow.Ticks,
                     };
 
-                    var tenant = scopeClass.TenantManager.GetCurrentTenant(false);
+                    var tenant = tenantManager.GetCurrentTenant(false);
                     m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                     sender.Send(m);
@@ -89,13 +90,19 @@ namespace ASC.Core.Notify
 
     public class JabberSenderSinkScope
     {
-        internal UserManager UserManager { get; }
-        internal TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
 
         public JabberSenderSinkScope(UserManager userManager, TenantManager tenantManager)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
+        }
+
+        public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
+        {
+            userManager = UserManager;
+            tenantManager = TenantManager;
         }
     }
 

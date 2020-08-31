@@ -133,11 +133,12 @@ namespace ASC.Web.Studio.Core.Notify
                  (r, p, scope) =>
                  {
                      var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+                     (var tenantManager, var webItemSecurity, var userManager, var options, var tenantExtra, var webItemManagerSecurity, var webItemManager, var configuration, var tenantLogoManager, var additionalWhiteLabelSettingsHelper, var tenantUtil, var coreBaseSettings, var commonLinkUtility, var settingsManager, var studioNotifyHelper) = scopeClass;
                      try
                      {
                          // culture
                          var u = Constants.LostUser;
-                         var tenant = scopeClass.TenantManager.GetCurrentTenant();
+                         var tenant = tenantManager.GetCurrentTenant();
 
                          if (32 <= r.Recipient.ID.Length)
                          {
@@ -151,18 +152,18 @@ namespace ASC.Web.Studio.Core.Notify
 
                              if (guid != default)
                              {
-                                 u = scopeClass.UserManager.GetUsers(guid);
+                                 u = userManager.GetUsers(guid);
                              }
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = scopeClass.UserManager.GetUserByEmail(r.Recipient.ID);
+                             u = userManager.GetUserByEmail(r.Recipient.ID);
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = scopeClass.UserManager.GetUserByUserName(r.Recipient.ID);
+                             u = userManager.GetUserByUserName(r.Recipient.ID);
                          }
 
                          if (!Constants.LostUser.Equals(u))
@@ -185,7 +186,7 @@ namespace ASC.Web.Studio.Core.Notify
                              }
                              if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                              {
-                                 return !scopeClass.WebItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 return !webItemSecurity.IsAvailableForUser(productId, u.ID);
                              }
                          }
 
@@ -199,7 +200,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         scopeClass.Options.CurrentValue.Error(error);
+                         options.CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -261,38 +262,39 @@ namespace ASC.Web.Studio.Core.Notify
             }
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-            var log = scopeClass.Options.CurrentValue;
+            (var tenantManager, var webItemSecurity, var userMan, var options, var tenantExtra, var webItemManagerSecurity, var webItemManager, var configuration, var tenantLogoManager, var additionalWhiteLabelSettingsHelper, var tenantUtil, var coreBaseSettings, var commonLinkUtility, var settingsManager, var studioNotifyHelper) = scopeClass;
+            var log = options.CurrentValue;
 
-            scopeClass.CommonLinkUtility.GetLocationByRequest(out var product, out var module);
+            commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
-                product = scopeClass.WebItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
+                product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
             }
 
             var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if ((scopeClass.TenantExtra.Enterprise || scopeClass.CoreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(scopeClass.SettingsManager, scopeClass.Configuration))
+            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager, configuration))
             {
-                logoText = scopeClass.TenantLogoManager.GetLogoText();
+                logoText = tenantLogoManager.GetLogoText();
             }
 
             request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
             request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, scopeClass.CommonLinkUtility.GetFullAbsolutePath(scopeClass.CommonLinkUtility.GetUserProfile(aid))));
-            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, scopeClass.CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetUserProfile(aid))));
+            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
-            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, scopeClass.CommonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
-            request.Arguments.Add(new TagValue(CommonTags.DateTime, scopeClass.TenantUtil.DateTimeNow()));
+            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
+            request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
             request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
-            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, scopeClass.CommonLinkUtility.GetFullAbsolutePath(scopeClass.CommonLinkUtility.GetMyStaff())));
-            request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, scopeClass.CommonLinkUtility.GetMyStaff()));
-            request.Arguments.Add(new TagValue(CommonTags.HelpLink, scopeClass.CommonLinkUtility.GetHelpLink(scopeClass.SettingsManager, scopeClass.AdditionalWhiteLabelSettingsHelper, false)));
+            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
+            request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, commonLinkUtility.GetMyStaff()));
+            request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));
             request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(scopeClass.SettingsManager)));
+            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(settingsManager)));
             request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
-            request.Arguments.Add(new TagValue(CommonTags.ImagePath, scopeClass.StudioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
+            request.Arguments.Add(new TagValue(CommonTags.ImagePath, studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
-            AddLetterLogo(request, scopeClass.TenantExtra, scopeClass.TenantLogoManager, scopeClass.CoreBaseSettings, scopeClass.CommonLinkUtility, log);
+            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility, log);
         }
 
         private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility, ILog Log)
@@ -359,21 +361,21 @@ namespace ASC.Web.Studio.Core.Notify
 
     public class NotifyConfigurationScope
     {
-        internal TenantManager TenantManager { get; }
-        internal WebItemSecurity WebItemSecurity { get; }
-        internal UserManager UserManager { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
-        internal TenantExtra TenantExtra { get; }
-        internal WebItemManagerSecurity WebItemManagerSecurity { get; }
-        internal WebItemManager WebItemManager { get; }
-        internal IConfiguration Configuration { get; }
-        internal TenantLogoManager TenantLogoManager { get; }
-        internal AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
-        internal TenantUtil TenantUtil { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
-        internal CommonLinkUtility CommonLinkUtility { get; }
-        internal SettingsManager SettingsManager { get; }
-        internal StudioNotifyHelper StudioNotifyHelper { get; }
+        private TenantManager TenantManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private UserManager UserManager { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantExtra TenantExtra { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private WebItemManager WebItemManager { get; }
+        private IConfiguration Configuration { get; }
+        private TenantLogoManager TenantLogoManager { get; }
+        private AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private SettingsManager SettingsManager { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
 
         public NotifyConfigurationScope(TenantManager tenantManager,
             WebItemSecurity webItemSecurity,
@@ -407,6 +409,39 @@ namespace ASC.Web.Studio.Core.Notify
             CommonLinkUtility = commonLinkUtility;
             SettingsManager = settingsManager;
             StudioNotifyHelper = studioNotifyHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out WebItemSecurity webItemSecurity,
+            out UserManager userManager,
+            out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantExtra tenantExtra,
+            out WebItemManagerSecurity webItemManagerSecurity,
+            out WebItemManager webItemManager,
+            out IConfiguration configuration, 
+            out TenantLogoManager tenantLogoManager,
+            out AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            out TenantUtil tenantUtil, 
+            out CoreBaseSettings coreBaseSettings,
+            out CommonLinkUtility commonLinkUtility,
+            out SettingsManager settingsManager, 
+            out StudioNotifyHelper studioNotifyHelper)
+        {
+            tenantManager = TenantManager;
+            webItemSecurity = WebItemSecurity;
+            userManager = UserManager;
+            optionsMonitor = Options;
+            tenantExtra = TenantExtra;
+            webItemManagerSecurity = WebItemManagerSecurity;
+            webItemManager = WebItemManager;
+            configuration = Configuration;
+            tenantLogoManager = TenantLogoManager;
+            additionalWhiteLabelSettingsHelper = AdditionalWhiteLabelSettingsHelper;
+            tenantUtil = TenantUtil;
+            coreBaseSettings = CoreBaseSettings;
+            commonLinkUtility = CommonLinkUtility;
+            settingsManager = SettingsManager;
+            studioNotifyHelper = StudioNotifyHelper;       
         }
     }
 

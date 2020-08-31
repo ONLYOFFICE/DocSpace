@@ -130,12 +130,13 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<CrossDaoScope>();
-            scopeClass.TenantManager.SetCurrentTenant(TenantID);
+            var scopeClass = scope.ServiceProvider.GetService<ProviderDaoBaseScope>();
+            (var tenantManager, var folderDao, var fileDao) = scopeClass;
+            tenantManager.SetCurrentTenant(TenantID);
 
             return CrossDao.PerformCrossDaoFileCopy(
                 fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
-                toFolderId, scopeClass.FileDao, r => r,
+                toFolderId, fileDao, r => r,
                 deleteSourceFile);
         }
 
@@ -154,11 +155,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fromSelector = GetSelector(fromFolderId);
             using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<CrossDaoScope>();
-
+            var scopeClass = scope.ServiceProvider.GetService<ProviderDaoBaseScope>();
+            (var tenantManager, var folderDao, var fileDao) = scopeClass;
             return CrossDao.PerformCrossDaoFolderCopy(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
-                toRootFolderId, scopeClass.FolderDao, scopeClass.FileDao, r => r,
+                toRootFolderId, folderDao, fileDao, r => r,
                 deleteSourceFolder, cancellationToken);
         }
 
@@ -168,17 +169,24 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
     }
 
-    public class CrossDaoScope
+    public class ProviderDaoBaseScope
     {
-        internal TenantManager TenantManager { get; }
-        internal IFolderDao<int> FolderDao { get; }
-        internal IFileDao<int> FileDao { get; }
+        private TenantManager TenantManager { get; }
+        private IFolderDao<int> FolderDao { get; }
+        private IFileDao<int> FileDao { get; }
 
-        public CrossDaoScope(TenantManager tenantManager, IFolderDao<int> folderDao, IFileDao<int> fileDao)
+        public ProviderDaoBaseScope(TenantManager tenantManager, IFolderDao<int> folderDao, IFileDao<int> fileDao)
         {
             TenantManager = tenantManager;
             FolderDao = folderDao;
             FileDao = fileDao;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out IFolderDao<int> folderDao, out IFileDao<int> fileDao)
+        {
+            tenantManager = TenantManager;
+            folderDao = FolderDao;
+            fileDao = FileDao;
         }
     }
 
@@ -186,9 +194,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public static DIHelper AddProviderDaoBaseService(this DIHelper services)
         {
-            if (services.TryAddScoped<CrossDao>())
+            if (services.TryAddScoped<CrossDao>())//here
             {
-                services.TryAddScoped<CrossDaoScope>();
+                services.TryAddScoped<ProviderDaoBaseScope>();
                 return services
                     .AddSharpBoxDaoSelectorService()
                     .AddSharePointSelectorService()

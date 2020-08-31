@@ -144,8 +144,9 @@ namespace ASC.Web.Files.Utils
             if (Monitor.TryEnter(singleThread))
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<Scope>();
-                var logger = scopeClass.Options.CurrentValue;
+                var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
+                (var options, var tenantManager, var userManager, var securityContext, var daoFactory, var fileSecurity, var pathProvider, var setupInfo, var fileUtility, var documentServiceHelper, var documentServiceConnector, var entryManager, var fileConverter) = scopeClass;
+                var logger = options.CurrentValue;
 
                 try
                 {
@@ -211,33 +212,33 @@ namespace ASC.Web.Files.Utils
                                 cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
                             }
 
-                            scopeClass.TenantManager.SetCurrentTenant(tenantId);
+                            tenantManager.SetCurrentTenant(tenantId);
 
-                            scopeClass.SecurityContext.AuthenticateMe(account);
+                            securityContext.AuthenticateMe(account);
 
-                            var user = scopeClass.UserManager.GetUsers(account.ID);
-                            var culture = string.IsNullOrEmpty(user.CultureName) ? scopeClass.TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+                            var user = userManager.GetUsers(account.ID);
+                            var culture = string.IsNullOrEmpty(user.CultureName) ? tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
                             Thread.CurrentThread.CurrentCulture = culture;
                             Thread.CurrentThread.CurrentUICulture = culture;
 
-                            if (!scopeClass.FileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
+                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
                             {
                                 //No rights in CRM after upload before attach
                                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
                             }
-                            if (file.ContentLength > scopeClass.SetupInfo.AvailableFileSize)
+                            if (file.ContentLength > setupInfo.AvailableFileSize)
                             {
-                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(scopeClass.SetupInfo.AvailableFileSize)));
+                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize)));
                             }
 
-                            fileUri = scopeClass.PathProvider.GetFileStreamUrl(file);
+                            fileUri = pathProvider.GetFileStreamUrl(file);
 
-                            var toExtension = scopeClass.FileUtility.GetInternalExtension(file.Title);
+                            var toExtension = fileUtility.GetInternalExtension(file.Title);
                             var fileExtension = file.ConvertedExtension;
-                            var docKey = scopeClass.DocumentServiceHelper.GetDocKey(file);
+                            var docKey = documentServiceHelper.GetDocKey(file);
 
-                            fileUri = scopeClass.DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = scopeClass.DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                            fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
+                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
                         }
                         catch (Exception exception)
                         {
@@ -302,7 +303,7 @@ namespace ASC.Web.Files.Utils
 
                         try
                         {
-                            newFile = scopeClass.FileConverter.SaveConvertedFile(file, convertedFileUrl);
+                            newFile = fileConverter.SaveConvertedFile(file, convertedFileUrl);
                         }
                         catch (Exception e)
                         {
@@ -327,10 +328,10 @@ namespace ASC.Web.Files.Utils
                                     {
                                         if (newFile != null)
                                         {
-                                            var folderDao = scopeClass.DaoFactory.GetFolderDao<T>();
+                                            var folderDao = daoFactory.GetFolderDao<T>();
                                             var folder = folderDao.GetFolder(newFile.FolderID);
-                                            var folderTitle = scopeClass.FileSecurity.CanRead(folder) ? folder.Title : null;
-                                            operationResult.Result = FileJsonSerializer(scopeClass.EntryManager, newFile, folderTitle);
+                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
+                                            operationResult.Result = FileJsonSerializer(entryManager, newFile, folderTitle);
                                         }
 
                                         operationResult.Progress = 100;
@@ -399,23 +400,23 @@ namespace ASC.Web.Files.Utils
                                   }, options);
         }
 
-        class Scope
+        class FileConverterQueueScope
         {
-            internal IOptionsMonitor<ILog> Options { get; }
-            internal TenantManager TenantManager { get; }
-            internal UserManager UserManager { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal IDaoFactory DaoFactory { get; }
-            internal FileSecurity FileSecurity { get; }
-            internal PathProvider PathProvider { get; }
-            internal SetupInfo SetupInfo { get; }
-            internal FileUtility FileUtility { get; }
-            internal DocumentServiceHelper DocumentServiceHelper { get; }
-            internal DocumentServiceConnector DocumentServiceConnector { get; }
-            internal EntryManager EntryManager { get; }
-            internal FileConverter FileConverter { get; }
+            private IOptionsMonitor<ILog> Options { get; }
+            private TenantManager TenantManager { get; }
+            private UserManager UserManager { get; }
+            private SecurityContext SecurityContext { get; }
+            private IDaoFactory DaoFactory { get; }
+            private FileSecurity FileSecurity { get; }
+            private PathProvider PathProvider { get; }
+            private SetupInfo SetupInfo { get; }
+            private FileUtility FileUtility { get; }
+            private DocumentServiceHelper DocumentServiceHelper { get; }
+            private DocumentServiceConnector DocumentServiceConnector { get; }
+            private EntryManager EntryManager { get; }
+            private FileConverter FileConverter { get; }
 
-            public Scope(IOptionsMonitor<ILog> options,
+            public FileConverterQueueScope(IOptionsMonitor<ILog> options,
                 TenantManager tenantManager,
                 UserManager userManager,
                 SecurityContext securityContext,
@@ -443,6 +444,37 @@ namespace ASC.Web.Files.Utils
                 EntryManager = entryManager;
                 FileConverter = fileConverter;
             }
+
+
+            public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+                out TenantManager tenantManager,
+                out UserManager userManager, 
+                out SecurityContext securityContext,
+                out IDaoFactory daoFactory, 
+                out FileSecurity fileSecurity,
+                out PathProvider pathProvider,
+                out SetupInfo setupInfo, 
+                out FileUtility fileUtility, 
+                out DocumentServiceHelper documentServiceHelper,
+                out DocumentServiceConnector documentServiceConnector,
+                out EntryManager entryManager, 
+                out FileConverter fileConverter)
+            {
+                optionsMonitor = Options;
+                tenantManager = TenantManager;
+                userManager = UserManager;
+                securityContext = SecurityContext;
+                daoFactory = DaoFactory;
+                fileSecurity = FileSecurity;
+                pathProvider = PathProvider;
+                setupInfo = SetupInfo;
+                fileUtility = FileUtility;
+                documentServiceHelper = DocumentServiceHelper;
+                documentServiceConnector = DocumentServiceConnector;
+                entryManager = EntryManager;
+                fileConverter = FileConverter;
+            }
+
         }
     }
 

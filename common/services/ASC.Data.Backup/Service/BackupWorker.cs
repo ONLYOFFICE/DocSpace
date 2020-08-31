@@ -370,15 +370,15 @@ namespace ASC.Data.Backup.Service
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
+            (var tenantManager, var backupStorageFactory, var notifyHelper, var backupRepository, var backupWorker, var backupPortalTask, var restorePortalTask, var transferPortalTask) = scopeClass;
 
-
-            var tenant = scopeClass.TenantManager.GetTenant(TenantId);
+            var tenant = tenantManager.GetTenant(TenantId);
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenant.TenantAlias, DateTime.UtcNow, ArchiveFormat);
             var tempFile = Path.Combine(TempFolder, backupName);
             var storagePath = tempFile;
             try
             {
-                var backupTask = scopeClass.BackupPortalTask;
+                var backupTask = backupPortalTask;
 
                 backupTask.Init(TenantId, ConfigPaths[CurrentRegion], tempFile, Limit);
                 if (!BackupMail)
@@ -389,19 +389,19 @@ namespace ASC.Data.Backup.Service
                 backupTask.ProgressChanged += (sender, args) =>
                 {
                     Percentage = 0.9 * args.Progress;
-                    scopeClass.BackupWorker.PublishProgress(this);
+                    backupWorker.PublishProgress(this);
                 };
 
                 backupTask.RunJob();
 
-                var backupStorage = scopeClass.BackupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
+                var backupStorage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 if (backupStorage != null)
                 {
                     storagePath = backupStorage.Upload(StorageBasePath, tempFile, UserId);
                     Link = backupStorage.GetPublicLink(storagePath);
                 }
 
-                var repo = scopeClass.BackupRepository;
+                var repo = backupRepository;
                 repo.SaveBackupRecord(
                     new BackupRecord
                     {
@@ -421,11 +421,11 @@ namespace ASC.Data.Backup.Service
 
                 if (UserId != Guid.Empty && !IsScheduled)
                 {
-                    scopeClass.NotifyHelper.SendAboutBackupCompleted(UserId);
+                    notifyHelper.SendAboutBackupCompleted(UserId);
                 }
 
                 IsCompleted = true;
-                scopeClass.BackupWorker.PublishProgress(this);
+                backupWorker.PublishProgress(this);
             }
             catch (Exception error)
             {
@@ -437,7 +437,7 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    scopeClass.BackupWorker.PublishProgress(this);
+                    backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
                 {
@@ -502,31 +502,31 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-
+            (var tenantManager, var backupStorageFactory, var notifyHelper, var backupRepository, var backupWorker, var backupPortalTask, var restorePortalTask, var transferPortalTask) = scopeClass;
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
             {
-                tenant = scopeClass.TenantManager.GetTenant(TenantId);
-                scopeClass.NotifyHelper.SendAboutRestoreStarted(tenant, Notify);
-                var storage = scopeClass.BackupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
+                tenant = tenantManager.GetTenant(TenantId);
+                notifyHelper.SendAboutRestoreStarted(tenant, Notify);
+                var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
 
                 Percentage = 10;
 
                 tenant.SetStatus(TenantStatus.Restoring);
-                scopeClass.TenantManager.SaveTenant(tenant);
+                tenantManager.SaveTenant(tenant);
 
                 var columnMapper = new ColumnMapper();
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
                 columnMapper.Commit();
 
-                var restoreTask = scopeClass.RestorePortalTask;
+                var restoreTask = restorePortalTask;
                 restoreTask.Init(ConfigPaths[CurrentRegion], tempFile, TenantId, columnMapper, UpgradesPath);
                 restoreTask.ProgressChanged += (sender, args) =>
                 {
                     Percentage = Percentage = (10d + 0.65 * args.Progress);
-                    scopeClass.BackupWorker.PublishProgress(this);
+                    backupWorker.PublishProgress(this);
                 };
                 restoreTask.RunJob();
 
@@ -537,18 +537,18 @@ namespace ASC.Data.Backup.Service
                     if (Notify)
                     {
                         AscCacheNotify.OnClearCache();
-                        var tenants = scopeClass.TenantManager.GetTenants();
+                        var tenants = tenantManager.GetTenants();
                         foreach (var t in tenants)
                         {
-                            scopeClass.NotifyHelper.SendAboutRestoreCompleted(t, Notify);
+                            notifyHelper.SendAboutRestoreCompleted(t, Notify);
                         }
                     }
                 }
                 else
                 {
-                    scopeClass.TenantManager.RemoveTenant(tenant.TenantId);
+                    tenantManager.RemoveTenant(tenant.TenantId);
 
-                    restoredTenant = scopeClass.TenantManager.GetTenant(columnMapper.GetTenantMapping());
+                    restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
                     restoredTenant.SetStatus(TenantStatus.Active);
                     restoredTenant.TenantAlias = tenant.TenantAlias;
                     restoredTenant.PaymentId = string.Empty;
@@ -556,22 +556,22 @@ namespace ASC.Data.Backup.Service
                     {
                         restoredTenant.MappedDomain = tenant.MappedDomain;
                     }
-                    scopeClass.TenantManager.SaveTenant(restoredTenant);
+                    tenantManager.SaveTenant(restoredTenant);
 
                     // sleep until tenants cache expires
                     Thread.Sleep(TimeSpan.FromMinutes(2));
 
-                    scopeClass.NotifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
+                    notifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
                 }
 
                 Percentage = 75;
 
-                scopeClass.BackupWorker.PublishProgress(this);
+                backupWorker.PublishProgress(this);
 
                 File.Delete(tempFile);
 
                 Percentage = 100;
-                scopeClass.BackupWorker.PublishProgress(this);
+                backupWorker.PublishProgress(this);
             }
             catch (Exception error)
             {
@@ -581,14 +581,14 @@ namespace ASC.Data.Backup.Service
                 if (tenant != null)
                 {
                     tenant.SetStatus(TenantStatus.Active);
-                    scopeClass.TenantManager.SaveTenant(tenant);
+                    tenantManager.SaveTenant(tenant);
                 }
             }
             finally
             {
                 try
                 {
-                    scopeClass.BackupWorker.PublishProgress(this);
+                    backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
                 {
@@ -661,20 +661,20 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-
+            (var tenantManager, var backupStorageFactory, var notifyHelper, var backupRepository, var backupWorker, var backupPortalTask, var restorePortalTask, var transferPortalTask) = scopeClass;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
-            var tenant = scopeClass.TenantManager.GetTenant(TenantId);
+            var tenant = tenantManager.GetTenant(TenantId);
             var alias = tenant.TenantAlias;
 
             try
             {
-                scopeClass.NotifyHelper.SendAboutTransferStart(tenant, TargetRegion, Notify);
-                var transferProgressItem = scopeClass.TransferPortalTask;
+                notifyHelper.SendAboutTransferStart(tenant, TargetRegion, Notify);
+                var transferProgressItem = transferPortalTask;
                 transferProgressItem.Init(TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, TempFolder);
                 transferProgressItem.ProgressChanged += (sender, args) =>
                 {
                     Percentage = args.Progress;
-                    scopeClass.BackupWorker.PublishProgress(this);
+                    backupWorker.PublishProgress(this);
                 };
                 if (!TransferMail)
                 {
@@ -683,8 +683,8 @@ namespace ASC.Data.Backup.Service
                 transferProgressItem.RunJob();
 
                 Link = GetLink(alias, false);
-                scopeClass.NotifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
-                scopeClass.BackupWorker.PublishProgress(this);
+                notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
+                backupWorker.PublishProgress(this);
             }
             catch (Exception error)
             {
@@ -692,13 +692,13 @@ namespace ASC.Data.Backup.Service
                 Error = error;
 
                 Link = GetLink(alias, true);
-                scopeClass.NotifyHelper.SendAboutTransferError(tenant, TargetRegion, Link, !Notify);
+                notifyHelper.SendAboutTransferError(tenant, TargetRegion, Link, !Notify);
             }
             finally
             {
                 try
                 {
-                    scopeClass.BackupWorker.PublishProgress(this);
+                    backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
                 {
@@ -795,14 +795,14 @@ namespace ASC.Data.Backup.Service
 
     internal class BackupWorkerScope
     {
-        internal TenantManager TenantManager { get; }
-        internal BackupStorageFactory BackupStorageFactory { get; }
-        internal NotifyHelper NotifyHelper { get; }
-        internal BackupRepository BackupRepository { get; }
-        internal BackupWorker BackupWorker { get; }
-        internal BackupPortalTask BackupPortalTask { get; }
-        internal RestorePortalTask RestorePortalTask { get; }
-        internal TransferPortalTask TransferPortalTask { get; }
+        private TenantManager TenantManager { get; }
+        private BackupStorageFactory BackupStorageFactory { get; }
+        private NotifyHelper NotifyHelper { get; }
+        private BackupRepository BackupRepository { get; }
+        private BackupWorker BackupWorker { get; }
+        private BackupPortalTask BackupPortalTask { get; }
+        private RestorePortalTask RestorePortalTask { get; }
+        private TransferPortalTask TransferPortalTask { get; }
 
         public BackupWorkerScope(TenantManager tenantManager,
             BackupStorageFactory backupStorageFactory,
@@ -821,6 +821,25 @@ namespace ASC.Data.Backup.Service
             BackupPortalTask = backupPortalTask;
             RestorePortalTask = restorePortalTask;
             TransferPortalTask = transferPortalTask;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, 
+            out BackupStorageFactory backupStorageFactory,
+            out NotifyHelper notifyHelper, 
+            out BackupRepository backupRepository, 
+            out BackupWorker backupWorker,
+            out BackupPortalTask backupPortalTask,
+            out RestorePortalTask restorePortalTask, 
+            out TransferPortalTask transferPortalTask)
+        {
+            tenantManager = TenantManager;
+            backupStorageFactory = BackupStorageFactory;
+            notifyHelper = NotifyHelper;
+            backupRepository = BackupRepository;
+            backupWorker = BackupWorker;
+            backupPortalTask = BackupPortalTask;
+            restorePortalTask = RestorePortalTask;
+            transferPortalTask = TransferPortalTask;
         }
     }
 

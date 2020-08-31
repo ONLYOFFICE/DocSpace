@@ -83,42 +83,42 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyScope>();
-
-                    var tenant = scopeClass.TenantManager.GetTenant(tenantid);
+                    (var tenantManager, var paymentManager, var tenantUtil, var studioNotifyHelper, var userManager, var securityContext, var authContext, var authManager, var commonLinkUtility, var displayUserSettingsHelper, var feedAggregateDataProvider, var coreSettings) = scopeClass;
+                    var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
-                        !TimeToSendWhatsNew(scopeClass.TenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
-                        TariffState.NotPaid <= scopeClass.PaymentManager.GetTariff(tenantid).State)
+                        !TimeToSendWhatsNew(tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
+                        TariffState.NotPaid <= paymentManager.GetTariff(tenantid).State)
                     {
                         continue;
                     }
 
-                    scopeClass.TenantManager.SetCurrentTenant(tenant);
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
+                    tenantManager.SetCurrentTenant(tenant);
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
-                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(scopeClass.CoreSettings), tenantid);
-                    foreach (var user in scopeClass.UserManager.GetUsers())
+                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
+                    foreach (var user in userManager.GetUsers())
                     {
-                        if (!scopeClass.StudioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
+                        if (!studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
                         {
                             continue;
                         }
 
-                        scopeClass.SecurityContext.AuthenticateMe(scopeClass.AuthManager.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var feeds = scopeClass.FeedAggregateDataProvider.GetFeeds(new FeedApiFilter
+                        var feeds = feedAggregateDataProvider.GetFeeds(new FeedApiFilter
                         {
                             From = scheduleDate.Date.AddDays(-1),
                             To = scheduleDate.Date.AddSeconds(-1),
                             Max = 100,
                         });
 
-                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(scopeClass.UserManager));
+                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(userManager));
 
                         var feedMinGroupedWrappers = feedMinWrappers
                             .Where(f =>
@@ -137,10 +137,10 @@ namespace ASC.Web.Studio.Core.Notify
                             g => g.Select(f => new WhatsNewUserActivity
                             {
                                 Date = f.CreatedDate,
-                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(scopeClass.DisplayUserSettingsHelper) : string.Empty,
-                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? scopeClass.CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(scopeClass.CommonLinkUtility)) : string.Empty,
+                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
-                                URL = scopeClass.CommonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
+                                URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
                                 Action = getWhatsNewActionText(f)
                             }).ToList());
@@ -160,10 +160,10 @@ namespace ASC.Web.Studio.Core.Notify
                                         new WhatsNewUserActivity
                                         {
                                             Date = prawbc.CreatedDate,
-                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(scopeClass.DisplayUserSettingsHelper) : string.Empty,
-                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? scopeClass.CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(scopeClass.CommonLinkUtility)) : string.Empty,
+                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
-                                            URL = scopeClass.CommonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
+                                            URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
                                             Action = getWhatsNewActionText(prawbc)
                                         });
@@ -180,10 +180,10 @@ namespace ASC.Web.Studio.Core.Notify
                                     new WhatsNewUserActivity
                                     {
                                         Date = ls.CreatedDate,
-                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(scopeClass.DisplayUserSettingsHelper) : string.Empty,
-                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? scopeClass.CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(scopeClass.CommonLinkUtility)) : string.Empty,
+                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
-                                        URL = scopeClass.CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
+                                        URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
                                         Action = getWhatsNewActionText(ls)
                                     });
@@ -295,18 +295,18 @@ namespace ASC.Web.Studio.Core.Notify
 
     public class StudioWhatsNewNotifyScope
     {
-        internal TenantManager TenantManager { get; }
-        internal PaymentManager PaymentManager { get; }
-        internal TenantUtil TenantUtil { get; }
-        internal StudioNotifyHelper StudioNotifyHelper { get; }
-        internal UserManager UserManager { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal AuthContext AuthContext { get; }
-        internal AuthManager AuthManager { get; }
-        internal CommonLinkUtility CommonLinkUtility { get; }
-        internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        internal FeedAggregateDataProvider FeedAggregateDataProvider { get; }
-        internal CoreSettings CoreSettings { get; }
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private TenantUtil TenantUtil { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private AuthManager AuthManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+        private CoreSettings CoreSettings { get; }
 
         public StudioWhatsNewNotifyScope(TenantManager tenantManager,
             PaymentManager paymentManager,
@@ -333,6 +333,33 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             FeedAggregateDataProvider = feedAggregateDataProvider;
             CoreSettings = coreSettings;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out PaymentManager paymentManager,
+            out TenantUtil tenantUtil,
+            out StudioNotifyHelper studioNotifyHelper,
+            out UserManager userManager,
+            out SecurityContext securityContext, 
+            out AuthContext authContext,
+            out AuthManager authManager,
+            out CommonLinkUtility commonLinkUtility, 
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out FeedAggregateDataProvider feedAggregateDataProvider,
+            out CoreSettings coreSettings )
+        {
+            tenantManager = TenantManager;
+            paymentManager = PaymentManager;
+            tenantUtil = TenantUtil;
+            studioNotifyHelper = StudioNotifyHelper;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            authContext = AuthContext;
+            authManager = AuthManager;
+            commonLinkUtility = CommonLinkUtility;
+            displayUserSettingsHelper = DisplayUserSettingsHelper;
+            feedAggregateDataProvider = FeedAggregateDataProvider;
+            coreSettings = CoreSettings;
         }
     }
 

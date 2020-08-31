@@ -113,7 +113,8 @@ namespace ASC.Core.Notify.Senders
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
-            scopeClass.TenantManager.SetCurrentTenant(m.Tenant);
+            (var tenantManager, var coreConfiguration) = scopeClass;
+            tenantManager.SetCurrentTenant(m.Tenant);
 
             var smtpClient = GetSmtpClient();
             var result = NoticeSendResult.TryOnceAgain;
@@ -122,7 +123,7 @@ namespace ASC.Core.Notify.Senders
                 try
                 {
                     if (UseCoreSettings)
-                        InitUseCoreSettings(scopeClass.CoreConfiguration);
+                        InitUseCoreSettings(coreConfiguration);
 
                     var mail = BuildMailMessage(m);
 
@@ -323,13 +324,19 @@ namespace ASC.Core.Notify.Senders
 
     public class SmtpSenderScope
     {
-        internal TenantManager TenantManager { get; }
-        internal CoreConfiguration CoreConfiguration { get; }
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
 
         public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
         {
             TenantManager = tenantManager;
             CoreConfiguration = coreConfiguration;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
+        {
+            tenantManager = TenantManager;
+            coreConfiguration = CoreConfiguration;
         }
     }
 

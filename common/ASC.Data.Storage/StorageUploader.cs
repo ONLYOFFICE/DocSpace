@@ -148,19 +148,20 @@ namespace ASC.Data.Storage
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<StorageUploaderScope>();
-                var tenant = scopeClass.TenantManager.GetTenant(tenantId);
-                scopeClass.TenantManager.SetCurrentTenant(tenant);
+                var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
+                (var tenantManager, var securityContext, var storageFactory, var options, var storageSettingsHelper, var settingsManager) = scopeClass;
+                var tenant = tenantManager.GetTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenant);
 
-                scopeClass.SecurityContext.AuthenticateMe(tenant.OwnerId);
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
-                    var oldStore = scopeClass.StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = scopeClass.StorageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, scopeClass.StorageSettingsHelper.DataStoreConsumer(settings));
+                    var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
+                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(scopeClass.Options, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility (options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)
@@ -191,9 +192,9 @@ namespace ASC.Data.Storage
                     StepDone();
                 }
 
-                scopeClass.SettingsManager.Save(settings);
+                settingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
-                scopeClass.TenantManager.SaveTenant(tenant);
+                tenantManager.SaveTenant(tenant);
             }
             catch (Exception e)
             {
@@ -203,16 +204,21 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class StorageUploaderScope
+    public class MigrateOperationScope
     {
-        internal TenantManager TenantManager { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal StorageFactory StorageFactory { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
-        internal StorageSettingsHelper StorageSettingsHelper { get; }
-        internal SettingsManager SettingsManager { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private StorageFactory StorageFactory { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
 
-        public StorageUploaderScope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, IOptionsMonitor<ILog> options, StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager)
+        public MigrateOperationScope(TenantManager tenantManager,
+            SecurityContext securityContext,
+            StorageFactory storageFactory, 
+            IOptionsMonitor<ILog> options, 
+            StorageSettingsHelper storageSettingsHelper,
+            SettingsManager settingsManager)
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
@@ -220,6 +226,21 @@ namespace ASC.Data.Storage
             Options = options;
             StorageSettingsHelper = storageSettingsHelper;
             SettingsManager = settingsManager;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out SecurityContext securityContext,
+            out StorageFactory storageFactory, 
+            out IOptionsMonitor<ILog> options,
+            out StorageSettingsHelper storageSettingsHelper,
+            out SettingsManager settingsManager )
+        {
+            tenantManager = TenantManager;
+            securityContext = SecurityContext;
+            storageFactory = StorageFactory;
+            options = Options;
+            storageSettingsHelper = StorageSettingsHelper;
+            settingsManager = SettingsManager;
         }
     }
 }

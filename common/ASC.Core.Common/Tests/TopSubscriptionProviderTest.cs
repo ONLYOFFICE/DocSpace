@@ -60,7 +60,8 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<TopSubscriptionProviderTestScope>();
-            scopeClass.TenantManager.SetCurrentTenant(tenant);
+            (var tenantManager, var subscriptionManager, var recipientProviderImpl) = scopeClass;
+            tenantManager.SetCurrentTenant(tenant);
 
             tenant = new Tenants.Tenant(0, "teamlab");
             sourceId = "6045b68c-2c2e-42db-9e53-c272e814c4ad";
@@ -70,8 +71,8 @@ namespace ASC.Core.Common.Tests
             testRec = new DirectRecipient("ff0c4e13-1831-43c2-91ce-7b7beb56179b", null); //Oliver Khan
             testRec2 = new DirectRecipient("0017794f-aeb7-49a5-8817-9e870e02bd3f", null); //Якутова Юлия
 
-            recProvider = scopeClass.RecipientProviderImpl;
-            var directSubProvider = new DirectSubscriptionProvider(sourceId, scopeClass.SubscriptionManager, recProvider);
+            recProvider = recipientProviderImpl;
+            var directSubProvider = new DirectSubscriptionProvider(sourceId,subscriptionManager, recProvider);
             subProvider = new TopSubscriptionProvider(recProvider, directSubProvider);
         }
 
@@ -147,15 +148,22 @@ namespace ASC.Core.Common.Tests
 
     public class TopSubscriptionProviderTestScope
     {
-        internal TenantManager TenantManager { get; }
-        internal SubscriptionManager SubscriptionManager { get; }
-        internal RecipientProviderImpl RecipientProviderImpl { get; }
+        private TenantManager TenantManager { get; }
+        private SubscriptionManager SubscriptionManager { get; }
+        private RecipientProviderImpl RecipientProviderImpl { get; }
 
         public TopSubscriptionProviderTestScope(TenantManager tenantManager, SubscriptionManager subscriptionManager, RecipientProviderImpl recipientProviderImpl)
         {
             TenantManager = tenantManager;
             SubscriptionManager = subscriptionManager;
             RecipientProviderImpl = recipientProviderImpl;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out SubscriptionManager subscriptionManager, out RecipientProviderImpl recipientProviderImpl)
+        {
+            tenantManager = TenantManager;
+            subscriptionManager = SubscriptionManager;
+            recipientProviderImpl = RecipientProviderImpl;
         }
     }
 }

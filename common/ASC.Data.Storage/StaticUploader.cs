@@ -112,9 +112,9 @@ namespace ASC.Data.Storage
             var task = new Task<string>(() =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<UploadOperationScope>();
-                scopeClass.TenantManager.SetCurrentTenant(tenantId);
-                var staticUploader = scopeClass.StaticUploader;
+                var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
+                (var tenantManager, var staticUploader, var securityContext, var settingsManager, var storageSettingsHelper) = scopeClass;
+                tenantManager.SetCurrentTenant(tenantId);
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
@@ -208,12 +208,13 @@ namespace ASC.Data.Storage
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<UploadOperationScope>();
-                var tenant = scopeClass.TenantManager.GetTenant(tenantId);
-                scopeClass.TenantManager.SetCurrentTenant(tenant);
-                scopeClass.SecurityContext.AuthenticateMe(tenant.OwnerId);
+                var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
+                (var tenantManager, var staticUploader, var securityContext, var settingsManager, var storageSettingsHelper) = scopeClass;
+                var tenant = tenantManager.GetTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenant);
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
-                var dataStore = scopeClass.StorageSettingsHelper.DataStore(scopeClass.SettingsManager.Load<CdnStorageSettings>());
+                var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
 
                 if (File.Exists(mappedPath))
                 {
@@ -283,15 +284,15 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class UploadOperationScope
+    public class StaticUploaderScope
     {
-        internal TenantManager TenantManager { get; }
-        internal StaticUploader StaticUploader { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal SettingsManager SettingsManager { get; }
-        internal StorageSettingsHelper StorageSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
+        private StaticUploader StaticUploader { get; }
+        private SecurityContext SecurityContext { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
 
-        public UploadOperationScope(TenantManager tenantManager,
+        public StaticUploaderScope(TenantManager tenantManager,
             StaticUploader staticUploader,
             SecurityContext securityContext,
             SettingsManager settingsManager,
@@ -303,6 +304,15 @@ namespace ASC.Data.Storage
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
         }
+
+        public void Deconstruct(out TenantManager tenantManager, out StaticUploader staticUploader, out SecurityContext securityContext, out SettingsManager settingsManager, out StorageSettingsHelper storageSettingsHelper)
+        {
+            tenantManager = TenantManager;
+            staticUploader = StaticUploader;
+            securityContext = SecurityContext;
+            settingsManager = SettingsManager;
+            storageSettingsHelper = StorageSettingsHelper;
+        }
     }
 
     public static class StaticUploaderExtension
@@ -311,7 +321,7 @@ namespace ASC.Data.Storage
         {
             if (services.TryAddScoped<StaticUploader>())
             {
-                services.TryAddScoped<UploadOperationScope>();
+                services.TryAddScoped<StaticUploaderScope>();
                 return services
                     .AddTenantManagerService()
                     .AddCdnStorageSettingsService();

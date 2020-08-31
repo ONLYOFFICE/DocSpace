@@ -102,15 +102,16 @@ namespace ASC.Data.Reassigns
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
-            var logger = scopeClass.Options.Get("ASC.Web");
-            var tenant = scopeClass.TenantManager.SetCurrentTenant(_tenantId);
+            (var tenantManager, var coreBaseSettings,  var messageService, var studioNotifyService, var securityContext, var userManager, var userPhotoManager, var displayUserSettingsHelper, var messageTarget, var options) = scopeClass;
+            var logger = options.Get("ASC.Web");
+            var tenant = tenantManager.SetCurrentTenant(_tenantId);
 
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                scopeClass.SecurityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMe(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
@@ -124,7 +125,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
 
-                if (!scopeClass.CoreBaseSettings.CustomMode)
+                if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 
@@ -139,14 +140,14 @@ namespace ASC.Data.Reassigns
                     //}
                 }
 
-                SendSuccessNotify(scopeClass.UserManager, scopeClass.StudioNotifyService, scopeClass.MessageService, scopeClass.MessageTarget, scopeClass.DisplayUserSettingsHelper);
+                SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile(scopeClass.UserManager, scopeClass.UserPhotoManager, scopeClass.MessageService, scopeClass.MessageTarget, scopeClass.DisplayUserSettingsHelper);
+                    DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
                 }
             }
             catch (Exception ex)
@@ -154,7 +155,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(scopeClass.UserManager, scopeClass.StudioNotifyService, ex.Message);
+                SendErrorNotify(userManager, studioNotifyService, ex.Message);
             }
             finally
             {
@@ -210,16 +211,16 @@ namespace ASC.Data.Reassigns
 
     public class ReassignProgressItemScope
     {
-        internal TenantManager TenantManager { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
-        internal MessageService MessageService { get; }
-        internal StudioNotifyService StudioNotifyService { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal UserManager UserManager { get; }
-        internal UserPhotoManager UserPhotoManager { get; }
-        internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        internal MessageTarget MessageTarget { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private MessageService MessageService { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private MessageTarget MessageTarget { get; }
+        private IOptionsMonitor<ILog> Options { get; }
 
         public ReassignProgressItemScope(TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
@@ -242,6 +243,29 @@ namespace ASC.Data.Reassigns
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             MessageTarget = messageTarget;
             Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, 
+            out CoreBaseSettings coreBaseSettings,
+            out MessageService messageService,
+            out StudioNotifyService studioNotifyService,
+            out SecurityContext securityContext,
+            out UserManager userManager, 
+            out UserPhotoManager userPhotoManager,
+            out DisplayUserSettingsHelper displayUserSettingsHelper, 
+            out MessageTarget messageTarget, 
+            out IOptionsMonitor<ILog> optionsMonitor )
+        {
+            tenantManager = TenantManager;
+            coreBaseSettings = CoreBaseSettings;
+            messageService = MessageService;
+            studioNotifyService = StudioNotifyService;
+            securityContext = SecurityContext;
+            userManager = UserManager;
+            userPhotoManager = UserPhotoManager;
+            displayUserSettingsHelper = DisplayUserSettingsHelper;
+            messageTarget = MessageTarget;
+            optionsMonitor = Options;
         }
     }
 

@@ -34,6 +34,8 @@ namespace ASC.Core.Common.Tests
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
 
+    using Renci.SshNet;
+
     [TestFixture]
     public class UserManagerTest
     {
@@ -44,35 +46,36 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
+            (var userManager, var tenantManager) = scopeClass;
 
-            var users = scopeClass.UserManager.Search(null, EmployeeStatus.Active);
+            var users = userManager.Search(null, EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("", EmployeeStatus.Active);
+            users = userManager.Search("", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("  ", EmployeeStatus.Active);
+            users = userManager.Search("  ", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("АбРаМсКй", EmployeeStatus.Active);
+            users = userManager.Search("АбРаМсКй", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("АбРаМсКий", EmployeeStatus.Active);
+            users = userManager.Search("АбРаМсКий", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);//Абрамский уволился
 
-            users = scopeClass.UserManager.Search("АбРаМсКий", EmployeeStatus.All);
+            users = userManager.Search("АбРаМсКий", EmployeeStatus.All);
             Assert.AreNotEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("иванов николай", EmployeeStatus.Active);
+            users = userManager.Search("иванов николай", EmployeeStatus.Active);
             Assert.AreNotEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("ведущий програм", EmployeeStatus.Active);
+            users = userManager.Search("ведущий програм", EmployeeStatus.Active);
             Assert.AreNotEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("баннов лев", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
+            users = userManager.Search("баннов лев", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
             Assert.AreNotEqual(0, users.Length);
 
-            users = scopeClass.UserManager.Search("иванов николай", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
+            users = userManager.Search("иванов николай", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
             Assert.AreEqual(0, users);
         }
 
@@ -81,27 +84,28 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
-            var tenant = scopeClass.TenantManager.SetCurrentTenant(1024);
+            (var userManager, var tenantManager) = scopeClass;
+            var tenant = tenantManager.SetCurrentTenant(1024);
 
-            var deps = scopeClass.UserManager.GetDepartments();
-            var users = scopeClass.UserManager.GetUsers();
+            var deps = userManager.GetDepartments();
+            var users = userManager.GetUsers();
 
             var g1 = deps[0];
             var ceo = users[0];
             var u1 = users[1];
             var u2 = users[2];
-            _ = scopeClass.UserManager.GetCompanyCEO();
-            scopeClass.UserManager.SetCompanyCEO(ceo.ID);
-            var ceoTemp = scopeClass.UserManager.GetCompanyCEO();
+            _ = userManager.GetCompanyCEO();
+            userManager.SetCompanyCEO(ceo.ID);
+            var ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
 
             Thread.Sleep(TimeSpan.FromSeconds(6));
-            ceoTemp = scopeClass.UserManager.GetCompanyCEO();
+            ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
 
-            scopeClass.UserManager.SetDepartmentManager(g1.ID, u1.ID);
+            userManager.SetDepartmentManager(g1.ID, u1.ID);
 
-            scopeClass.UserManager.SetDepartmentManager(g1.ID, u2.ID);
+            userManager.SetDepartmentManager(g1.ID, u2.ID);
         }
 
         [Test]
@@ -109,33 +113,34 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
-            var tenant = scopeClass.TenantManager.SetCurrentTenant(0);
+            (var userManager, var tenantManager) = scopeClass;
+            var tenant = tenantManager.SetCurrentTenant(0);
 
-            foreach (var u in scopeClass.UserManager.GetUsers())
+            foreach (var u in userManager.GetUsers())
             {
-                var groups = scopeClass.UserManager.GetGroups(Guid.Empty);
+                var groups = userManager.GetGroups(Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in scopeClass.UserManager.GetUserGroups(u.ID))
+                foreach (var g in userManager.GetUserGroups(u.ID))
                 {
-                    var manager = scopeClass.UserManager.GetUsers(scopeClass.UserManager.GetDepartmentManager(g.ID)).UserName;
+                    var manager = userManager.GetUsers(userManager.GetDepartmentManager(g.ID)).UserName;
                 }
             }
             var stopwatch = Stopwatch.StartNew();
-            foreach (var u in scopeClass.UserManager.GetUsers())
+            foreach (var u in userManager.GetUsers())
             {
-                var groups = scopeClass.UserManager.GetGroups(Guid.Empty);
+                var groups = userManager.GetGroups(Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in scopeClass.UserManager.GetUserGroups(u.ID))
+                foreach (var g in userManager.GetUserGroups(u.ID))
                 {
-                    var manager = scopeClass.UserManager.GetUsers(scopeClass.UserManager.GetDepartmentManager(g.ID)).UserName;
+                    var manager = userManager.GetUsers(userManager.GetDepartmentManager(g.ID)).UserName;
                 }
             }
             stopwatch.Stop();
 
             stopwatch.Restart();
-            var users = scopeClass.UserManager.GetUsersByGroup(Constants.GroupUser.ID);
-            var visitors = scopeClass.UserManager.GetUsersByGroup(Constants.GroupVisitor.ID);
-            var all = scopeClass.UserManager.GetUsers();
+            var users = userManager.GetUsersByGroup(Constants.GroupUser.ID);
+            var visitors = userManager.GetUsersByGroup(Constants.GroupVisitor.ID);
+            var all = userManager.GetUsers();
             Assert.IsNotNull(users);
             Assert.IsNotNull(visitors);
             Assert.IsNotNull(all);
@@ -145,13 +150,19 @@ namespace ASC.Core.Common.Tests
 
     public class UserManagerTestScope
     {
-        internal UserManager UserManager { get; }
-        internal TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
 
         public UserManagerTestScope(UserManager userManager, TenantManager tenantManager)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
+        }
+
+        public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
+        {
+            userManager = UserManager;
+            tenantManager = TenantManager;
         }
     }
 }

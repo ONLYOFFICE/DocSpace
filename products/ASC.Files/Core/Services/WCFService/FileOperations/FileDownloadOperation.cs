@@ -82,7 +82,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-
+            (var globalStore, var filesLinkUtility, var setupInfo, var fileConverter, var filesMessageService) = scopeClass;
             using var stream = TempStream.Create();
             using (var zip = new ZipOutputStream(stream, true)
             {
@@ -99,14 +99,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 stream.Position = 0;
                 const string fileName = FileConstant.DownloadTitle + ".zip";
-                var store = scopeClass.GlobalStore.GetStore();
+                var store = globalStore.GetStore();
                 store.Save(
                     FileConstant.StorageDomainTmp,
                     string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                     stream,
                     "application/zip",
                     "attachment; filename=\"" + fileName + "\"");
-                Status = string.Format("{0}?{1}=bulk", scopeClass.FilesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+                Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
             }
 
             FillDistributedTask();
@@ -150,7 +150,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
 
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-
+            (var globalStore, var filesLinkUtility, var setupInfo, var fileConverter, var filesMessageService) = scopeClass;
             ReplaceLongPath(entriesPathId);
 
             if (Compress)
@@ -169,14 +169,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     stream.Position = 0;
                     const string fileName = FileConstant.DownloadTitle + ".zip";
-                    var store = scopeClass.GlobalStore.GetStore();
+                    var store = globalStore.GetStore();
                     store.Save(
                         FileConstant.StorageDomainTmp,
                         string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                         stream,
                         "application/zip",
                         "attachment; filename=\"" + fileName + "\"");
-                    Status = string.Format("{0}?{1}=bulk", scopeClass.FilesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+                    Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
                 }
             }
         }
@@ -263,6 +263,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
+            (var globalStore, var filesLinkUtility, var setupInfo, var fileConverter, var filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)
@@ -293,9 +294,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             continue;
                         }
 
-                        if (file.ContentLength > scopeClass.SetupInfo.AvailableFileSize)
+                        if (file.ContentLength > setupInfo.AvailableFileSize)
                         {
-                            Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(scopeClass.SetupInfo.AvailableFileSize));
+                            Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize));
                             continue;
                         }
 
@@ -329,25 +330,25 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         try
                         {
-                            if (scopeClass.FileConverter.EnableConvert(file, convertToExt))
+                            if (fileConverter.EnableConvert(file, convertToExt))
                             {
                                 //Take from converter
-                                using var readStream = scopeClass.FileConverter.Exec(file, convertToExt);
+                                using var readStream = fileConverter.Exec(file, convertToExt);
                                 readStream.CopyTo(zip);
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
-                                    scopeClass.FilesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
+                                    filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
                                 }
                                 else
                                 {
-                                    scopeClass.FilesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                    filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                                 }
                             }
                             else
                             {
                                 using var readStream = FileDao.GetFileStream(file);
                                 readStream.CopyTo(zip);
-                                scopeClass.FilesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                             }
                         }
                         catch (Exception ex)
@@ -437,11 +438,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     public class FileDownloadOperationScope
     {
-        internal GlobalStore GlobalStore { get; }
-        internal FilesLinkUtility FilesLinkUtility { get; }
-        internal SetupInfo SetupInfo { get; }
-        internal FileConverter FileConverter { get; }
-        internal FilesMessageService FilesMessageService { get; }
+        private GlobalStore GlobalStore { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileConverter FileConverter { get; }
+        private FilesMessageService FilesMessageService { get; }
 
         public FileDownloadOperationScope(GlobalStore globalStore, FilesLinkUtility filesLinkUtility, SetupInfo setupInfo, FileConverter fileConverter, FilesMessageService filesMessageService)
         {
@@ -450,6 +451,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             SetupInfo = setupInfo;
             FileConverter = fileConverter;
             FilesMessageService = filesMessageService;
+        }
+
+        public void Deconstruct(out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService)
+        {
+            globalStore = GlobalStore;
+            filesLinkUtility = FilesLinkUtility;
+            setupInfo = SetupInfo;
+            fileConverter = FileConverter;
+            filesMessageService = FilesMessageService;
         }
     }
 

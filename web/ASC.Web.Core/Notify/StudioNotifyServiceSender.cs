@@ -62,13 +62,13 @@ namespace ASC.Web.Studio.Core.Notify
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
-
-            scopeClass.TenantManager.SetCurrentTenant(item.TenantId);
+            (var tenantManager, var userManager, var securityContext, var authContext, var studioNotifyHelper, var displayUserSettings, var tenantExtra, var coreBaseSettings) = scopeClass;
+            tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(scopeClass.StudioNotifyHelper.NotifySource, scope);
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
-            var tenant = scopeClass.TenantManager.GetCurrentTenant(false);
+            var tenant = tenantManager.GetCurrentTenant(false);
 
             if (tenant != null)
             {
@@ -77,8 +77,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                scopeClass.SecurityContext.AuthenticateMe(Guid.Parse(item.UserId));
-                var user = scopeClass.UserManager.GetUsers(userId);
+                securityContext.AuthenticateMe(Guid.Parse(item.UserId));
+                var user = userManager.GetUsers(userId);
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {
                     culture = CultureInfo.GetCultureInfo(user.CultureName);
@@ -109,20 +109,20 @@ namespace ASC.Web.Studio.Core.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
-
+            (var tenantManager, var userManager, var securityContext, var authContext, var studioNotifyHelper, var displayUserSettings, var tenantExtra, var coreBaseSettings) = scopeClass;
             if (Configuration["core:notify:tariff"] != "false")
             {
-                if (scopeClass.TenantExtra.Enterprise)
+                if (tenantExtra.Enterprise)
                 {
                     WorkContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
                 }
-                else if (scopeClass.TenantExtra.Opensource)
+                else if (tenantExtra.Opensource)
                 {
                     WorkContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
                 }
-                else if (scopeClass.TenantExtra.Saas)
+                else if (tenantExtra.Saas)
                 {
-                    if (scopeClass.CoreBaseSettings.Personal)
+                    if (coreBaseSettings.Personal)
                     {
                         WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
                     }
@@ -133,7 +133,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-            if (!scopeClass.CoreBaseSettings.Personal)
+            if (!coreBaseSettings.Personal)
             {
                 WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
@@ -173,14 +173,14 @@ namespace ASC.Web.Studio.Core.Notify
 
     public class StudioNotifyServiceSenderScope
     {
-        internal TenantManager TenantManager { get; }
-        internal UserManager UserManager { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal AuthContext AuthContext { get; }
-        internal StudioNotifyHelper StudioNotifyHelper { get; }
-        internal DisplayUserSettings DisplayUserSettings { get; }
-        internal TenantExtra TenantExtra { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private DisplayUserSettings DisplayUserSettings { get; }
+        private TenantExtra TenantExtra { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public StudioNotifyServiceSenderScope(TenantManager tenantManager,
             UserManager userManager,
@@ -199,6 +199,25 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettings = displayUserSettings;
             TenantExtra = tenantExtra;
             CoreBaseSettings = coreBaseSettings;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out UserManager userManager,
+            out SecurityContext securityContext,
+            out AuthContext authContext, 
+            out StudioNotifyHelper studioNotifyHelper,
+            out DisplayUserSettings displayUserSettings, 
+            out TenantExtra tenantExtra, 
+            out CoreBaseSettings coreBaseSettings)
+        {
+            tenantManager = TenantManager;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            authContext = AuthContext;
+            studioNotifyHelper = StudioNotifyHelper;
+            displayUserSettings = DisplayUserSettings;
+            tenantExtra = TenantExtra;
+            coreBaseSettings = CoreBaseSettings;
         }
     }
 

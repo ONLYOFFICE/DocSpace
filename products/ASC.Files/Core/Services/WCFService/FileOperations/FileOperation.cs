@@ -285,20 +285,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
-                scopeClass.TenantManager.SetCurrentTenant(CurrentTenant);
+                (var tenantManager, var daoFactory, var fileSecurity, var options) = scopeClass;
+                tenantManager.SetCurrentTenant(CurrentTenant);
 
 
                 Thread.CurrentPrincipal = principal;
                 Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
-                FolderDao = scopeClass.DaoFactory.GetFolderDao<TId>();
-                FileDao = scopeClass.DaoFactory.GetFileDao<TId>();
-                TagDao = scopeClass.DaoFactory.GetTagDao<TId>();
-                ProviderDao = scopeClass.DaoFactory.ProviderDao;
-                FilesSecurity = scopeClass.FileSecurity;
+                FolderDao = daoFactory.GetFolderDao<TId>();
+                FileDao = daoFactory.GetFileDao<TId>();
+                TagDao = daoFactory.GetTagDao<TId>();
+                ProviderDao = daoFactory.ProviderDao;
+                FilesSecurity = fileSecurity;
 
-                Logger = scopeClass.Options.CurrentValue;
+                Logger = options.CurrentValue;
 
                 Do(scope);
             }
@@ -393,10 +394,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     public class FileOperationScope
     {
-        internal TenantManager TenantManager { get; }
-        internal IDaoFactory DaoFactory { get; }
-        internal FileSecurity FileSecurity { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private IOptionsMonitor<ILog> Options { get; }
 
         public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
         {
@@ -404,6 +405,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
             Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor )
+        {
+            tenantManager = TenantManager;
+            daoFactory = DaoFactory;
+            fileSecurity = FileSecurity;
+            optionsMonitor = Options;
         }
     }
 }

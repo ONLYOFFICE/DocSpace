@@ -52,16 +52,17 @@ namespace ASC.Web.Studio.Core.Quota
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
-            scopeClass.TenantManager.SetCurrentTenant(TenantId);
+            (var tenantManager, var storageFactoryConfig, var storageFactory) = scopeClass;
+            tenantManager.SetCurrentTenant(TenantId);
 
-            var storageModules = scopeClass.StorageFactoryConfig.GetModuleList(string.Empty).ToList();
+            var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();
 
             foreach (var module in storageModules)
             {
-                var storage = scopeClass.StorageFactory.GetStorage(TenantId.ToString(), module);
+                var storage = storageFactory.GetStorage(TenantId.ToString(), module);
                 storage.ResetQuota("");
 
-                var domains = scopeClass.StorageFactoryConfig.GetDomainList(string.Empty, module).ToList();
+                var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
                     storage.ResetQuota(domain);
@@ -79,15 +80,22 @@ namespace ASC.Web.Studio.Core.Quota
 
     class QuotaSyncScope
     {
-        internal TenantManager TenantManager { get; }
-        internal StorageFactoryConfig StorageFactoryConfig { get; }
-        internal StorageFactory StorageFactory { get; }
+        private TenantManager TenantManager { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private StorageFactory StorageFactory { get; }
 
         public QuotaSyncScope(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
         {
             TenantManager = tenantManager;
             StorageFactoryConfig = storageFactoryConfig;
             StorageFactory = storageFactory;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory )
+        {
+            tenantManager = TenantManager;
+            storageFactoryConfig = StorageFactoryConfig;
+            storageFactory = StorageFactory;
         }
     }
 }

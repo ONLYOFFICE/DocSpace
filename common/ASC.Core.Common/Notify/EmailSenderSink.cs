@@ -95,13 +95,13 @@ namespace ASC.Core.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
-
-            var tenant = scopeClass.TenantManager.GetCurrentTenant(false);
+            (var tenantManager, var coreConfiguration, var options) = scopeClass;
+            var tenant = tenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-            var from = MailAddressUtils.Create(scopeClass.CoreConfiguration.SmtpSettings.SenderAddress, scopeClass.CoreConfiguration.SmtpSettings.SenderDisplayName);
+            var from = MailAddressUtils.Create(coreConfiguration.SmtpSettings.SenderAddress, coreConfiguration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((scopeClass.CoreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(scopeClass.CoreConfiguration.SmtpSettings.SenderDisplayName)) &&
+            if ((coreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(coreConfiguration.SmtpSettings.SenderDisplayName)) &&
                 fromTag != null && fromTag.Value != null)
             {
                 try
@@ -128,7 +128,7 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    scopeClass.Options.Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                    options.Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
                 }
             }
 
@@ -150,15 +150,22 @@ namespace ASC.Core.Notify
 
     public class EmailSenderSinkScope
     {
-        internal TenantManager TenantManager { get; }
-        internal CoreConfiguration CoreConfiguration { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private IOptionsMonitor<ILog> Options { get; }
 
         public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
         {
             TenantManager = tenantManager;
             CoreConfiguration = coreConfiguration;
             Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor )
+        {
+            tenantManager = TenantManager;
+            coreConfiguration = CoreConfiguration;
+            optionsMonitor = Options;
         }
     }
 

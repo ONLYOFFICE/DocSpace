@@ -52,17 +52,19 @@ namespace ASC.Core.Configuration
         public static void Synchronize()
         {
             using var scope = ServiceProvider.CreateScope();
-            var ScopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
-            if (ScopeClass.CoreBaseSettings.Standalone)
+            var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
+            (var tenantManager, var coreBaseSettings) = scopeClass;
+            
+            if (coreBaseSettings.Standalone)
             {
-                var tenants = ScopeClass.TenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
+                var tenants =tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
                 if (tenants.Any())
                 {
                     var dnsname = GetAmiPublicDnsName();
                     foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                     {
                         tenant.MappedDomain = dnsname;
-                        ScopeClass.TenantManager.SaveTenant(tenant);
+                        tenantManager.SaveTenant(tenant);
                     }
                 }
             }
@@ -97,13 +99,19 @@ namespace ASC.Core.Configuration
 
     public class AmiPublicDnsSyncServiceScope
     {
-        internal TenantManager TenantManager { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings)
+        {
+            tenantManager = TenantManager;
+            coreBaseSettings = CoreBaseSettings;
         }
     }
 }

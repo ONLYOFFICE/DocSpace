@@ -155,10 +155,11 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
-            var logger = scopeClass.Options.CurrentValue;
+            (var options, var tenantManager, var authContext, var securityContext, var documentServiceConnector) = scopeClass;
+            var logger = options.CurrentValue;
             try
             {
-                scopeClass.TenantManager.SetCurrentTenant(TenantId);
+                tenantManager.SetCurrentTenant(TenantId);
 
                 Status = ReportStatus.Started;
                 PublishTaskInfo(logger);
@@ -170,10 +171,10 @@ namespace ASC.Web.Files.Services.DocumentService
                 //        new HttpResponse(new System.IO.StringWriter()));
                 //}
 
-                scopeClass.TenantManager.SetCurrentTenant(TenantId);
-                scopeClass.SecurityContext.AuthenticateMe(UserId);
+                tenantManager.SetCurrentTenant(TenantId);
+                securityContext.AuthenticateMe(UserId);
 
-                BuilderKey = scopeClass.DocumentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
+                BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
 
                 while (true)
                 {
@@ -183,7 +184,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
 
                     Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    var builderKey = scopeClass.DocumentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
+                    var builderKey = documentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
                     if (builderKey == null)
                         throw new NullReferenceException();
 
@@ -360,11 +361,11 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class ReportStateScope
     {
-        internal IOptionsMonitor<ILog> Options { get; }
-        internal TenantManager TenantManager { get; }
-        internal AuthContext AuthContext { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal DocumentServiceConnector DocumentServiceConnector { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
 
         public ReportStateScope(
             IOptionsMonitor<ILog> options,
@@ -378,6 +379,19 @@ namespace ASC.Web.Files.Services.DocumentService
             AuthContext = authContext;
             SecurityContext = securityContext;
             DocumentServiceConnector = documentServiceConnector;
+        }
+
+        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor, 
+            out TenantManager tenantManager, 
+            out AuthContext authContext, 
+            out SecurityContext securityContext,
+            out DocumentServiceConnector documentServiceConnector)
+        {
+            optionsMonitor = Options;
+            tenantManager = TenantManager;
+            authContext = AuthContext;
+            securityContext = SecurityContext;
+            documentServiceConnector = DocumentServiceConnector;
         }
     }
 }

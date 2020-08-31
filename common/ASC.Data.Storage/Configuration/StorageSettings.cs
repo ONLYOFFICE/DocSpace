@@ -50,17 +50,18 @@ namespace ASC.Data.Storage.Configuration
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var scopeClass = scope.ServiceProvider.GetService<StorageSettingsHelperScope>();
-                var settings = scopeClass.SettingsManager.LoadForTenant<StorageSettings>(i.TenantId);
+                var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
+                (var storageSettingsHelper, var settingsManager, var cdnStorageSettings) = scopeClass;
+                var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
-                    scopeClass.StorageSettingsHelper.Clear(settings);
+                    storageSettingsHelper.Clear(settings);
                 }
 
-                var cdnSettings = scopeClass.SettingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
+                var cdnSettings = settingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
-                    scopeClass.StorageSettingsHelper.Clear(cdnSettings);
+                    storageSettingsHelper.Clear(cdnSettings);
                 }
             }, CacheNotifyAction.Remove);
         }
@@ -209,17 +210,24 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public class StorageSettingsHelperScope
+    public class BaseStorageSettingsListenerScope
     {
-        internal StorageSettingsHelper StorageSettingsHelper { get; }
-        internal SettingsManager SettingsManager { get; }
-        internal CdnStorageSettings CdnStorageSettings { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private CdnStorageSettings CdnStorageSettings { get; }
 
-        public StorageSettingsHelperScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
+        public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
         {
             StorageSettingsHelper = storageSettingsHelper;
             SettingsManager = settingsManager;
             CdnStorageSettings = cdnStorageSettings;
+        }
+
+        public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager, out CdnStorageSettings cdnStorageSettings)
+        {
+            storageSettingsHelper = StorageSettingsHelper;
+            settingsManager = SettingsManager;
+            cdnStorageSettings = CdnStorageSettings;
         }
     }
 
@@ -229,7 +237,7 @@ namespace ASC.Data.Storage.Configuration
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<BaseStorageSettingsListener>();
-
+            services.TryAddScoped<BaseStorageSettingsListenerScope>();
             return services
                 .AddStorageFactoryConfigService()
                 .AddPathUtilsService()
@@ -241,7 +249,6 @@ namespace ASC.Data.Storage.Configuration
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
                 services.TryAddScoped<CdnStorageSettings>();
-                services.TryAddScoped<StorageSettingsHelperScope>();
                 return services
                     .AddSettingsManagerService()
                     .AddBaseStorageSettingsService()
@@ -256,7 +263,6 @@ namespace ASC.Data.Storage.Configuration
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
                 services.TryAddScoped<CdnStorageSettings>();
-                services.TryAddScoped<StorageSettingsHelperScope>();
                 return services
                     .AddSettingsManagerService()
                     .AddBaseStorageSettingsService()

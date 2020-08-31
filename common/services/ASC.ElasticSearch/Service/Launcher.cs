@@ -93,8 +93,8 @@ namespace ASC.ElasticSearch
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
-
-                while (!scopeClass.FactoryIndexer.CheckState(false))
+                (var factoryIndexer, var service) = scopeClass;
+                while (!factoryIndexer.CheckState(false))
                 {
                     if (CancellationTokenSource.IsCancellationRequested)
                     {
@@ -104,7 +104,7 @@ namespace ASC.ElasticSearch
                     await Task.Delay(10000);
                 }
 
-                scopeClass.Service.Subscribe();
+                service.Subscribe();
                 Timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
 
             }, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
@@ -182,13 +182,19 @@ namespace ASC.ElasticSearch
 
     public class ServiceLauncherScope
     {
-        internal FactoryIndexer FactoryIndexer { get; }
-        internal Service.Service Service { get; }
+        private FactoryIndexer FactoryIndexer { get; }
+        private Service.Service Service { get; }
 
         public ServiceLauncherScope(FactoryIndexer factoryIndexer, Service.Service service)
         {
             FactoryIndexer = factoryIndexer;
             Service = service;
+        }
+
+        public void Deconstruct(out FactoryIndexer factoryIndexer, out Service.Service service)
+        {
+            factoryIndexer = FactoryIndexer;
+            service = Service;
         }
     }
 

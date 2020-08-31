@@ -829,7 +829,8 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceScope>();
-                    scopeClass.TenantManager.SetCurrentTenant(tenant);
+                    (var tenantManager, var studioNotifyServiceHelper) = scopeClass;
+                    tenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {
@@ -837,7 +838,7 @@ namespace ASC.Web.Studio.Core.Notify
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        scopeClass.StudioNotifyServiceHelper.SendNoticeToAsync(
+                        studioNotifyServiceHelper.SendNoticeToAsync(
                             Actions.PortalRename,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
@@ -883,13 +884,19 @@ namespace ASC.Web.Studio.Core.Notify
 
     public class StudioNotifyServiceScope
     {
-        internal TenantManager TenantManager { get; }
-        internal StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
+        private TenantManager TenantManager { get; }
+        private StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
 
         public StudioNotifyServiceScope(TenantManager tenantManager, StudioNotifyServiceHelper studioNotifyServiceHelper)
         {
             TenantManager = tenantManager;
             StudioNotifyServiceHelper = studioNotifyServiceHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out StudioNotifyServiceHelper studioNotifyServiceHelper)
+        {
+            tenantManager = TenantManager;
+            studioNotifyServiceHelper = StudioNotifyServiceHelper;
         }
     }
 

@@ -122,7 +122,8 @@ namespace ASC.Feed.Aggregator
                 var cfg = FeedSettings.GetInstance(Configuration);
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
-                scopeClass.BaseCommonLinkUtility.Initialize(cfg.ServerRoot);
+                (var baseCommonLinkUtility, var tenantManager, var feedAggregateDataProvider, var userManager, var securityContext, var authManager) = scopeClass;
+                baseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
                 var start = DateTime.UtcNow;
                 Log.DebugFormat("Start of collecting feeds...");
@@ -134,7 +135,7 @@ namespace ASC.Feed.Aggregator
                 foreach (var module in modules)
                 {
                     var result = new List<FeedRow>();
-                    var fromTime = scopeClass.FeedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
+                    var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
                     if (fromTime == default) fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
                     var toTime = DateTime.UtcNow;
 
@@ -152,13 +153,13 @@ namespace ASC.Feed.Aggregator
 
                         try
                         {
-                            if (scopeClass.TenantManager.GetTenant(tenant) == null)
+                            if (tenantManager.GetTenant(tenant) == null)
                             {
                                 continue;
                             }
 
-                            scopeClass.TenantManager.SetCurrentTenant(tenant);
-                            var users = scopeClass.UserManager.GetUsers();
+                            tenantManager.SetCurrentTenant(tenant);
+                            var users = userManager.GetUsers();
 
                             var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
                             Log.DebugFormat("{0} feeds in {1} tenant.", feeds.Count, tenant);
@@ -179,7 +180,7 @@ namespace ASC.Feed.Aggregator
                                 {
                                     return;
                                 }
-                                if (!TryAuthenticate(scopeClass.SecurityContext, scopeClass.AuthManager, tenant1, u.ID))
+                                if (!TryAuthenticate(securityContext, authManager, tenant1, u.ID))
                                 {
                                     continue;
                                 }
@@ -195,7 +196,7 @@ namespace ASC.Feed.Aggregator
                         }
                     }
 
-                    scopeClass.FeedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime);
+                    feedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime);
 
                     foreach (var res in result)
                     {
@@ -289,12 +290,12 @@ namespace ASC.Feed.Aggregator
 
     public class FeedAggregatorServiceScope
         {
-            internal BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-            internal TenantManager TenantManager { get; }
-            internal FeedAggregateDataProvider FeedAggregateDataProvider { get; }
-            internal UserManager UserManager { get; }
-            internal SecurityContext SecurityContext { get; }
-            internal AuthManager AuthManager { get; }
+            private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+            private TenantManager TenantManager { get; }
+            private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+            private UserManager UserManager { get; }
+            private SecurityContext SecurityContext { get; }
+            private AuthManager AuthManager { get; }
 
             public FeedAggregatorServiceScope(BaseCommonLinkUtility baseCommonLinkUtility,
                 TenantManager tenantManager,
@@ -310,7 +311,22 @@ namespace ASC.Feed.Aggregator
                 SecurityContext = securityContext;
                 AuthManager = authManager;
             }
+
+        public void Deconstruct(out BaseCommonLinkUtility baseCommonLinkUtility,
+            out TenantManager tenantManager,
+            out FeedAggregateDataProvider feedAggregateDataProvider, 
+            out UserManager userManager, 
+            out SecurityContext securityContext, 
+            out AuthManager authManager)
+        {
+            baseCommonLinkUtility = BaseCommonLinkUtility;
+            tenantManager = TenantManager;
+            feedAggregateDataProvider = FeedAggregateDataProvider;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            authManager = AuthManager;
         }
+    }
 
     public static class FeedAggregatorServiceExtension
     {
