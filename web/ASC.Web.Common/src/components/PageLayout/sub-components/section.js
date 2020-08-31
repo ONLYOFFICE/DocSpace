@@ -19,7 +19,7 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  min-width: 360px;
+  min-width: 344px;
 
   .layout-progress-bar {
     position: sticky;
@@ -34,7 +34,7 @@ const StyledSection = styled.section`
       display: none;
     }
 
-  ${props => props.widthProp < 737 && tabletProps};
+  /*${props => props.widthProp < 738 && tabletProps};*/
 
   @media ${tablet} {
     padding: 0 0 0 16px;
