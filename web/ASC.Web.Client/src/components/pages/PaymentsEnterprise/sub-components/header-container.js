@@ -67,24 +67,43 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({ t, dateExpires, createPortals, culture }) => {
+const HeaderContainer = ({
+  t,
+  expiresDate,
+  createPortals,
+  culture,
+  timezone,
+  utcHoursOffset,
+}) => {
   const moment = require("moment");
   require("moment/min/locales.min");
   moment.locale(culture);
-  dateExpires = moment().format("LL");
-  return (
+
+  // alert(expiresDate.getDate());
+  const currentUserDate = moment().utcOffset(utcHoursOffset);
+
+  return moment(
+    expiresDate.set("hour", 0).set("minute", 0).set("second", 0)
+  ).isAfter(
+    currentUserDate.set("hour", 0).set("minute", 0).set("second", 0)
+  ) ? (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
-      <sd>
-        <Text className="payments-header-additional_support">
-          {t("SubscriptionAndUpdatesExpires")} {dateExpires}
-          {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
+      <Text className="payments-header-additional_support">
+        {t("SubscriptionAndUpdatesExpires")} {expiresDate.format("LLL")}
+        {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
           марта 2021 года. */}
-        </Text>
-        <Text className="payments-header-additional_portals">
+      </Text>
+      {/* <Text className="payments-header-additional_portals">
           {t("createdPortals")} {createPortals}
-        </Text>
-      </sd>
+        </Text> */}
+    </StyledHeader>
+  ) : (
+    <StyledHeader>
+      <Text className="payments-header">{t("Using")}</Text>
+      <Text className="payments-header-additional_support">
+        {t("SubscriptionAndUpdatesExpires")} {}
+      </Text>
     </StyledHeader>
   );
 };

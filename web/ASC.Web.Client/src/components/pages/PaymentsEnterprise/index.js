@@ -85,6 +85,7 @@ class Body extends React.PureComponent {
   onButtonClickBuy = (e) => {
     window.open(e.target.value, "_blank");
   };
+
   onCloseModalDialog = () => {
     this.setState({
       isVisibleModalDialog: false,
@@ -97,10 +98,12 @@ class Body extends React.PureComponent {
       salesEmail,
       helpUrl,
       buyUrl,
-      dateExpires,
+      expiresDate,
       t,
       createPortals,
       culture,
+      timezone,
+      utcHoursOffset,
     } = this.props;
     const {
       isVisibleModalDialog,
@@ -115,12 +118,15 @@ class Body extends React.PureComponent {
       <StyledBody>
         <HeaderContainer
           t={t}
-          dateExpires={dateExpires}
+          expiresDate={expiresDate}
           languages={languages}
           culture={culture}
+          timezone={timezone}
           select={select}
+          utcHoursOffset={utcHoursOffset}
           createPortals={createPortals}
           selectLanguage={selectLanguage}
+          getExpiresDate={this.getExpiresDate}
         />
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
@@ -162,9 +168,10 @@ function mapStateToProps(state) {
     salesEmail: state.payments.salesEmail,
     helpUrl: state.payments.helpUrl,
     buyUrl: state.payments.buyUrl,
-    dateExpires: state.payments.dateExpires,
-    createPortals: state.payments.createPortals,
+    expiresDate: state.payments.currentLicense.expiresDate,
     culture: state.auth.settings.culture,
+    timezone: state.auth.settings.timezone,
+    utcHoursOffset: state.auth.settings.utcHoursOffset,
   };
 }
 export default connect(mapStateToProps, {
