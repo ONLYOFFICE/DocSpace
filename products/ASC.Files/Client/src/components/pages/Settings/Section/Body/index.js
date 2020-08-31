@@ -69,33 +69,32 @@ class SectionBodyContent extends React.Component {
   }
 
   onChangeThirdParty = () => {
-    const { thirdParty, setThirdParty } = this.props;
-    setThirdParty(!thirdParty);
+    const { enableThirdParty, setThirdParty } = this.props;
+    setThirdParty(!enableThirdParty);
   }
 
   renderAdminSettings = () => {
     const { intermediateVersion } = this.state;
 
     const {
-      thirdParty,
+      enableThirdParty,
+      storeForceSave,
       t
     } = this.props;
 
     return (
       <StyledSettings>
         <ToggleButton 
-          isDisabled={false}
           className="toggle-btn"
           label={t('intermediateVersion')}
           onChange={this.onChangeStoreForceSave}
-          isChecked={intermediateVersion}
+          isChecked={storeForceSave}
         />
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('thirdPartyBtn')}
           onChange={this.onChangeThirdParty}
-          isChecked={thirdParty}
+          isChecked={enableThirdParty}
         />
       </StyledSettings>
     )
@@ -130,31 +129,26 @@ class SectionBodyContent extends React.Component {
       recent,
       favorites,
       templates,
-      keepIntermediate,
+      updateIfExist,
+      confirmDelete,
+      storeOriginalFiles,
+      forceSave,
       t
     } = this.props;
-
-    const { 
-      originalCopy,
-      updateExist,
-      displayNotification
-    } = this.state;
 
     return (
       <StyledSettings>
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('originalCopy')}
           onChange={this.onChangeOriginalCopy}
-          isChecked={originalCopy}
+          isChecked={storeOriginalFiles}
         />
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('displayNotification')}
           onChange={this.onChangeDeleteConfirm}
-          isChecked={displayNotification}
+          isChecked={confirmDelete}
         />
         <ToggleButton
           isDisabled={true}
@@ -179,18 +173,16 @@ class SectionBodyContent extends React.Component {
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('updateOrCreate')}
           onChange={this.onChangeUpdateIfExist}
-          isChecked={updateExist}
+          isChecked={updateIfExist}
         />
         <ToggleButton
-          isDisabled={true}
           className="toggle-btn"
           label={t('keepIntermediateVersion')}
           onChange={(e)=>console.log(e)}
-          isChecked={keepIntermediate}
+          isChecked={forceSave}
         />
       </StyledSettings>
     );
@@ -201,14 +193,14 @@ class SectionBodyContent extends React.Component {
   }
 
   render() {
-    const { setting, thirdParty, isAdmin } = this.props;
+    const { setting, enableThirdParty, isAdmin } = this.props;
     let content;
 
     if(setting === 'admin' && isAdmin)
       content = this.renderAdminSettings();
     if(setting === 'common') 
       content = this.renderCommonSettings();
-    if(setting === 'thirdParty' && thirdParty )
+    if(setting === 'thirdParty' && enableThirdParty )
       content = this.renderClouds();
     return content; 
   }
@@ -217,12 +209,24 @@ class SectionBodyContent extends React.Component {
 function mapStateToProps(state) {
   const { settingsTree, selectedTreeNode } = state.files;
   const { isAdmin } = state.auth.user;
-  const { thirdParty } = settingsTree;
+  const { 
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave,
+    storeForceSave,
+    enableThirdParty
+  } = settingsTree;
 
   return { 
-    thirdParty,
     isAdmin,
-    selectedTreeNode
+    selectedTreeNode,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave,
+    storeForceSave,
+    enableThirdParty
   }
 }
 

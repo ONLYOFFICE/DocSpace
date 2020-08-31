@@ -43,6 +43,7 @@ export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
+export const SET_FILES_SETTINGS = "SET_FILES_SETTINGS";
 
 export function setFile(file) {
   return {
@@ -216,6 +217,13 @@ export function setThirdParty(data) {
   return {
     type: SET_THIRD_PARTY,
     data
+  }
+}
+
+export function setFilesSettings(settings) {
+  return { 
+    type: SET_FILES_SETTINGS,
+    settings
   }
 }
 
@@ -484,5 +492,12 @@ export function changeDeleteConfirm(data) {
 export function storeForceSave(data) {
   return dispatch => {
     return files.storeForceSave(data);
+  }
+}
+
+export function getFilesSettings() {
+  return dispatch => {
+    return files.getSettingsFiles()
+      .then( settings => dispatch(setFilesSettings(settings)));
   }
 }

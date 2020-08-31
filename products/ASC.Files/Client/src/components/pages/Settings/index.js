@@ -9,7 +9,7 @@ import {
   ArticleMainButtonContent
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { setIsLoading } from '../../../store/files/actions';
+import { setIsLoading, getFilesSettings } from '../../../store/files/actions';
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -33,6 +33,11 @@ class PureSettings extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const { getFilesSettings } = this.props;
+    getFilesSettings();
+  }
+
   render() {
     console.log('Settings render()');
     const { 
@@ -41,7 +46,7 @@ class PureSettings extends React.Component {
       templates,
       keepIntermediate,
     } = this.state;
-    const { match, t, isLoading, setIsLoading, thirdParty, isAdmin } = this.props;
+    const { match, t, isLoading, setIsLoading, enableThirdParty, isAdmin } = this.props;
     const { setting } = match.params;
 
     const settings = <>
@@ -88,7 +93,7 @@ class PureSettings extends React.Component {
       </PageLayout>
     </>;
 
-    return (!thirdParty && setting === 'thirdParty') || (!isAdmin && setting === 'admin') 
+    return (!enableThirdParty && setting === 'thirdParty') || (!isAdmin && setting === 'admin') 
       ? <Error403 /> 
       : settings;
   }
@@ -108,7 +113,7 @@ const Settings = props => {
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
-    thirdParty: state.files.settingsTree.thirdParty,
+    enableThirdParty: state.files.settingsTree.enableThirdParty,
     isAdmin: state.auth.user.isAdmin
   };
 }
@@ -116,6 +121,7 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   {
-    setIsLoading
+    setIsLoading,
+    getFilesSettings
   }
   )(withRouter(Settings));

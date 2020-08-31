@@ -72,7 +72,7 @@ class PureTreeSettings extends React.Component {
   }
 
   renderTreeNode = () => {
-    const { t, thirdParty, isAdmin } = this.props;
+    const { t, enableThirdParty, isAdmin } = this.props;
     return (
       <TreeNode
         id="settings"
@@ -98,7 +98,7 @@ class PureTreeSettings extends React.Component {
             /> 
           : null
         }
-        { thirdParty 
+        { enableThirdParty 
           ? <TreeNode
               selectable={true}
               className="settings-node"
@@ -160,13 +160,13 @@ function mapStateToProps(state) {
 
    const {
     expandedSetting,
-    thirdParty
+    enableThirdParty
    } = settingsTree;
 
   return {
     selectedTreeNode,
     expandedSetting,
-    thirdParty,
+    enableThirdParty,
     isAdmin
   }
 }
