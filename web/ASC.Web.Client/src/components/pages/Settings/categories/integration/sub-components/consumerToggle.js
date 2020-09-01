@@ -15,28 +15,29 @@ class ConsumerToggle extends React.Component {
         }
     }
 
-    onToggleClick = () => {
+    toggleClick = () => {
         if (this.state.toggleActive) {
             this.setState({
                 toggleActive: false
             })
             // TODO: api -> service off -> toastr
         }
-        this.props.toggleClick();
-        
+        else {
+            this.props.onToggleClick();
+        }
     }
 
     render() {
 
         const { name, onModalOpen, consumer } = this.props;
         const { toggleActive } = this.state;
-        const { onToggleClick } = this;
+        const { toggleClick } = this;
 
         return (
             <>
                 <Box>
                     <StyledToggle
-                        onChange={onToggleClick}
+                        onChange={toggleClick}
                         isDisabled={!consumer.canSet}
                         isChecked={!consumer.canSet ? true : toggleActive}
                     />

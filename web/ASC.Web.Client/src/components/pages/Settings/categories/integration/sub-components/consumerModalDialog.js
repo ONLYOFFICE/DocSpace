@@ -6,7 +6,6 @@ class ConsumerModalDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        //this.newState = this.newState.bind(this)
     }
 
     mapTokenNameToState = () => {
@@ -28,7 +27,7 @@ class ConsumerModalDialog extends React.Component {
 
     onSendValues = () => {
 
-        this.props.onModalButtonClick();
+        this.props.onButtonClick();
 
         const prop = [];
         let i = 0;
@@ -52,7 +51,7 @@ class ConsumerModalDialog extends React.Component {
 
     render() {
 
-        const { consumers, selectedConsumer, onModalClose, dialogVisible, onModalButtonClick } = this.props;
+        const { consumers, selectedConsumer, onModalClose, dialogVisible } = this.props;
         const { onChangeHandler } = this;
 
         const bodyDescription = (
@@ -82,11 +81,6 @@ class ConsumerModalDialog extends React.Component {
         }
         const getInputFields = () => {
 
-            // const inputRefs = consumers.reduce((acc, consumer) => {
-            //     acc[consumer.name] = React.createRef();
-            //     return acc;
-            // }, []);
-
             return consumers
                 .find((consumer) => consumer.name === selectedConsumer)
                 .props
@@ -98,7 +92,6 @@ class ConsumerModalDialog extends React.Component {
                             </Box>
                             <Box>
                                 <TextInput
-                                    //ref={el => (inputRefs[i] = el)}
                                     name={prop.name}
                                     placeholder={prop.title}
                                     isAutoFocussed={i === 0 && true}

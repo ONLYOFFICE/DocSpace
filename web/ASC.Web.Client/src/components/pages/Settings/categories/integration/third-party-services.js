@@ -14,7 +14,7 @@ const RootContainer = styled(Box)`
     margin: 0;
     }
 `;
-const ConsumersContainer = styled(Box)`
+const StyledConsumer = styled(Box)`
 
   @media (max-width: 375px) {
     margin: 0;
@@ -55,11 +55,11 @@ class ThirdPartyServices extends React.Component {
         })
     }
 
-    toggleClick = () => {
+    onToggleClick = () => {
         this.onModalOpen();
     }
 
-    selectConsumer = (e) => {
+    setConsumer = (e) => {
         this.setState({
             selectedConsumer: e.currentTarget.dataset.consumer
         })
@@ -72,16 +72,6 @@ class ThirdPartyServices extends React.Component {
         const { t, consumers } = this.props;
         const { selectedConsumer, dialogVisible } = this.state;
         const { titleDescription, onModalClose } = this;
-
-        // const consumerRefs = consumers.reduce((acc, consumer) => {
-        //     acc[consumer.name] = React.createRef();
-        //     return acc;
-        // }, []);
-
-        // const toggleRefs = consumers.reduce((acc, consumer) => {
-        //     acc[consumer.name] = React.createRef();
-        //     return acc;
-        // }, []);
 
         return (
             <>
@@ -112,7 +102,7 @@ class ThirdPartyServices extends React.Component {
                     >
                         {consumers
                             .map((consumer, i) =>
-                                <ConsumersContainer
+                                <StyledConsumer
                                     key={i}
                                     widthProp="400px"
                                     marginProp="0 24px 24px 0"
@@ -120,22 +110,20 @@ class ThirdPartyServices extends React.Component {
                                     <Separator />
                                     <Box displayProp="flex" className="consumer-item-container">
                                         <ConsumerItem
-                                            //ref={el => (consumerRefs[i] = el)}
                                             consumer={consumer}
                                             consumers={consumers}
                                             dialogVisible={dialogVisible}
                                             selectedConsumer={selectedConsumer}
                                             onModalClose={onModalClose}
                                         />
-                                        <Box onClick={this.selectConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
+                                        <Box onClick={this.setConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
                                             <ConsumerToggle
-                                                //ref={el => (toggleRefs[i] = el)}
                                                 consumer={consumer}
-                                                toggleClick={this.toggleClick}
+                                                onToggleClick={this.onToggleClick}
                                             />
                                         </Box>
                                     </Box>
-                                </ConsumersContainer>
+                                </StyledConsumer>
                             )}
                     </Box>
                 </RootContainer>

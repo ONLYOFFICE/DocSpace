@@ -5,14 +5,11 @@ import ConsumerModalDialog from "./consumerModalDialog";
 class ConsumerItem extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            //toggleActive: false
-        }
+        this.state = {}
     }
 
-    onModalButtonClick = () => {
-        //TODO: input validate, api -> set tokens, 
+    onButtonClick = () => {
+        //TODO: api -> set tokens, 
         this.props.onModalClose();
         //this.setState({ toggleActive: true });
         console.log(this.props.selectedConsumer);
@@ -20,8 +17,7 @@ class ConsumerItem extends React.Component {
 
     render() {
         const { dialogVisible, consumer, consumers, onModalClose, selectedConsumer } = this.props;
-        const { toggleActive } = this.state;
-        const { onModalButtonClick } = this;
+        const { onButtonClick } = this;
 
         return (
             <>
@@ -43,9 +39,9 @@ class ConsumerItem extends React.Component {
                         dialogVisible={dialogVisible}
                         onModalClose={onModalClose}
                         consumers={consumers}
+                        consumer={consumer}
                         selectedConsumer={selectedConsumer}
-                        onModalButtonClick={onModalButtonClick}
-                        toggleActive={toggleActive}
+                        onButtonClick={onButtonClick}
                     />}
             </>
         );
