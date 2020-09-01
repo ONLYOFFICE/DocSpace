@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Loader from '../loader';
-import isEqual from "lodash/isEqual";
 
 const activeCss = css`
   background-color: ${props => (props.primary ? '#1F97CA' : '#ECEEF1')};
@@ -29,7 +28,7 @@ const hoverCss = css`
     `}
 `;
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, react/prop-types
 const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, innerRef, minWidth, ...props}) => <button ref={innerRef} type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import isEqual from "lodash/isEqual";
 
 import IconButton from '../icon-button';
@@ -113,7 +113,7 @@ class FileInput extends Component {
   }
 
   onInputFile = () => {
-    const { onInput, isDisabled } = this.props;
+    const { onInput } = this.props;
 
     if ( this.inputRef.current.files.length > 0 ) {
       this.setState({
@@ -123,7 +123,7 @@ class FileInput extends Component {
         if(onInput) { 
           this.inputRef.current.value = '';
           onInput(this.state.file);
-        };
+        }
       });
 
     } 
@@ -140,7 +140,7 @@ class FileInput extends Component {
       hasError,
       hasWarning,
       accept,
-      onInput,
+      onInput, // eslint-disable-line no-unused-vars
       ...rest 
     } = this.props;
 
