@@ -86,6 +86,20 @@ if ("function" === typeof importScripts) {
         cacheName: "translation-cache"
       })
     );
+
+    workbox.routing.registerRoute(
+      // Cache API Request
+      new RegExp("/api/2.0/(modules|people/@self|(.*)/info(.json|$))"),
+      workbox.strategies.staleWhileRevalidate({
+        cacheName: "api-cache",
+        plugins: [
+          new workbox.expiration.Plugin({
+            maxEntries: 100,
+            maxAgeSeconds: 30 * 60 // 30 Minutes
+          })
+        ]
+      })
+    );
   } else {
     console.log("Workbox could not be loaded. No Offline support");
   }
