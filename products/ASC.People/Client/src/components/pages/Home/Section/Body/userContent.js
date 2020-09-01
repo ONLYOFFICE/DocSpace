@@ -53,7 +53,7 @@ const getFormatedGroups = (user, status, selectGroup) => {
   }
 };
 
-const UserContent = ({ user, history, settings, selectGroup }) => {
+const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
   const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
   const groups = getFormatedGroups(user, status, selectGroup);
@@ -85,6 +85,7 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
 
   return (
     <RowContent
+      widthProp={widthProp}
       sideColor={sideInfoColor}
     >
       <Link
