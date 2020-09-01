@@ -16,5 +16,7 @@
   "LicenseError": "Licence  is not valid. Make sure you choose the right file",
   "createdPortals": "Number of portals you've created",
   "OrganizationName": "ONLYOFFICE",
-  "SupportNotAvailable": "Support is no longer available for your license since "
+  "SupportNotAvailable": "Support is no longer available for your license since ",
+  "ThanksToUser": "Thank you for having checked out ONLYOFFICE!",
+  "TrialPeriodExpired": "Free trial period has expired."
 }

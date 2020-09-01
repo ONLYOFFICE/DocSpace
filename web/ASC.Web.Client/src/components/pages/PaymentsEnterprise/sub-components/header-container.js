@@ -88,7 +88,7 @@ const HeaderContainer = ({
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
       <Text className="payments-header-additional_support">
-        {t("SubscriptionAndUpdatesExpires")}{" "}
+        {t("SubscriptionAndUpdatesExpires")}
         {moment.utc(expiresDate).format("LL")}
         {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
           марта 2021 года. */}
@@ -97,17 +97,21 @@ const HeaderContainer = ({
           {t("createdPortals")} {createPortals}
         </Text> */}
     </StyledHeader>
+  ) : !trialMode ? (
+    <StyledHeader>
+      <Text className="payments-header">{t("Using")}</Text>
+      <Text className="payments-header-additional_support">
+        {t("SupportNotAvailable")}
+        {moment.utc(expiresDate).startOf("day").format("dddd, MMMM D, YYYY")}
+      </Text>
+    </StyledHeader>
   ) : (
-    !trialMode && (
-      <StyledHeader>
-        <Error401> </Error401>
-        <Text className="payments-header">{t("Using")}</Text>
-        <Text className="payments-header-additional_support">
-          {t("SupportNotAvailable")}
-          {moment.utc(expiresDate).startOf("day").format("dddd, MMMM D, YYYY")}
-        </Text>
-      </StyledHeader>
-    )
+    <StyledHeader>
+      <Text className="payments-header">{t("ThanksToUser")}</Text>
+      <Text className="payments-header-additional_support">
+        {t("TrialPeriodExpired")}
+      </Text>
+    </StyledHeader>
   );
 };
 
