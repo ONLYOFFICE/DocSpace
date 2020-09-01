@@ -26,8 +26,10 @@
 
 #if DEBUG
 using System;
+
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
+
 using AzAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Common.Tests.Security.Authorizing

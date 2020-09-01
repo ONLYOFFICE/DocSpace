@@ -294,7 +294,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   render() {
-    const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
+    const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders, widthProp } = this.props;
     const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId, showConvertDialog } = this.state;
     const {
       contentLength,
@@ -349,6 +349,7 @@ class FilesRowContent extends React.PureComponent {
             />
           )}
           <SimpleFilesRowContent
+            widthProp={widthProp}
             sideColor="#333"
             isFile={fileExst}
             onClick={this.onMobileRowClick}

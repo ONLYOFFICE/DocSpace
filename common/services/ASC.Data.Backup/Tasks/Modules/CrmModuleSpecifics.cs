@@ -39,7 +39,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     public class CrmModuleSpecifics : ModuleSpecificsBase
     {
         public CrmModuleSpecifics(Helpers helpers)
-        :base(helpers)
+        : base(helpers)
         {
 
         }
@@ -97,10 +97,10 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 new RelationInfo("crm_contact", "id", "crm_contact", "company_id"),
                 new RelationInfo("crm_list_item", "id", "crm_contact", "status_id"),
-                new RelationInfo("crm_list_item", "id", "crm_contact", "contact_type_id"),  
+                new RelationInfo("crm_list_item", "id", "crm_contact", "contact_type_id"),
                 new RelationInfo("crm_contact", "id", "crm_contact_info", "contact_id"),
                 new RelationInfo("crm_deal_milestone", "id", "crm_deal", "deal_milestone_id"),
-                new RelationInfo("crm_contact", "id", "crm_deal", "contact_id"), 
+                new RelationInfo("crm_contact", "id", "crm_deal", "contact_id"),
                 new RelationInfo("projects_projects", "id", "crm_projects", "project_id", typeof(ProjectsModuleSpecifics)),
                 new RelationInfo("crm_contact", "id", "crm_projects", "contact_id"),
                 new RelationInfo("crm_contact", "id", "crm_task", "entity_id", x => ResolveRelation(x, 0, 4, 5)),
@@ -138,7 +138,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var contactId = columnMapper.GetMapping("crm_contact", "id", pathMatch.Groups["contactId"].Value);
                 if (contactId == null)
                 {
-                    if(!dump) return false;
+                    if (!dump) return false;
                     contactId = pathMatch.Groups["contactId"].Value;
                 }
 
@@ -200,7 +200,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("crm_relationship_event", "id", "crm_field_value", "entity_id", typeof(CrmModuleSpecifics), x => ResolveRelation(x, 2)),
                 new RelationInfo("crm_relationship_event", "id", "crm_entity_tag", "entity_id", typeof(CrmModuleSpecifics), x => ResolveRelation(x, 2)),
                 new RelationInfo("crm_relationship_event", "id", "crm_entity_contact", "entity_id", typeof(CrmModuleSpecifics), x => ResolveRelation(x, 2)),
-                new RelationInfo("mail_mail", "id", "crm_relationship_event", "content", typeof(MailModuleSpecifics), x => Convert.ToInt32(x["category_id"]) == -3), 
+                new RelationInfo("mail_mail", "id", "crm_relationship_event", "content", typeof(MailModuleSpecifics), x => Convert.ToInt32(x["category_id"]) == -3),
             };
 
         public override string ConnectionStringName
@@ -241,7 +241,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 var mappedMessageId = Convert.ToString(columnMapper.GetMapping("mail_mail", "id", match.Value));
 
-                if(dump && string.IsNullOrEmpty(mappedMessageId))
+                if (dump && string.IsNullOrEmpty(mappedMessageId))
                 {
                     mappedMessageId = match.Value;
                 }
@@ -359,23 +359,23 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (table.Name == "crm_invoice" && columnName == "json_data")
             {
                 var data = JObject.Parse((string)value);
-                
+
                 var oldValue = Convert.ToInt32(data["LogoBase64Id"]);
                 if (oldValue != 0)
                 {
-                    data["LogoBase64Id"] = Convert.ToInt32(columnMapper.GetMapping("crm_organisation_logo", "id", oldValue));                    
+                    data["LogoBase64Id"] = Convert.ToInt32(columnMapper.GetMapping("crm_organisation_logo", "id", oldValue));
                 }
 
                 oldValue = Convert.ToInt32(data["DeliveryAddressID"]);
                 if (oldValue != 0)
                 {
-                    data["DeliveryAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));                    
+                    data["DeliveryAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));
                 }
 
                 oldValue = Convert.ToInt32(data["BillingAddressID"]);
                 if (oldValue != 0)
                 {
-                    data["BillingAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));                    
+                    data["BillingAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));
                 }
 
                 value = data.ToString();

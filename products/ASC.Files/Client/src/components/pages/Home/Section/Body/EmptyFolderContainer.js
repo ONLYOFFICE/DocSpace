@@ -35,17 +35,26 @@ const EmptyFolderWrapper = styled.div`
 
 const EmptyFoldersContainer = props => {
   const imageAlt = "Empty folder image";
+  const {
+    imageSrc,
+    headerText,
+    subheadingText,
+    descriptionText,
+    buttons,
+    widthProp
+  } = props;
 
   return (
     <EmptyFolderWrapper>
       <EmptyScreenContainer
         className="empty-folder_container"
-        imageSrc={props.imageSrc}
+        imageSrc={imageSrc}
         imageAlt={imageAlt}
-        headerText={props.headerText}
-        subheadingText={props.subheadingText}
-        descriptionText={props.descriptionText}
-        buttons={props.buttons}
+        headerText={headerText}
+        subheadingText={subheadingText}
+        descriptionText={descriptionText}
+        buttons={buttons}
+        widthProp={widthProp}
       />
     </EmptyFolderWrapper>
   );

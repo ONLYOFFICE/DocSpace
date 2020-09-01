@@ -36,12 +36,12 @@ namespace ASC.Common.Threading.Progress
         protected int StepCount { get; set; }
 
         public object Id { get; set; }
-        
+
         public object Status { get; set; }
-        
+
         public object Error { get; set; }
 
-        
+
         public double Percentage
         {
             get { return Math.Min(100.0, Math.Max(0, _percentage)); }

@@ -26,13 +26,9 @@ class PureSettings extends React.Component {
     super(props)
 
     this.state = {
-      intermediateVersion: false,
-      originalCopy: false,
-      trash: false,
       recent: false,
       favorites: false,
       templates: false,
-      updateOrCreate: false,
       keepIntermediate: false
     }
   }
@@ -40,16 +36,12 @@ class PureSettings extends React.Component {
   render() {
     console.log('Settings render()');
     const { 
-      intermediateVersion,
-      originalCopy,
-      trash,
       recent,
       favorites,
       templates,
-      updateOrCreate,
       keepIntermediate,
     } = this.state;
-    const { match, t, isLoading, setIsLoading, thirdParty } = this.props;
+    const { match, t, isLoading, setIsLoading, thirdParty, isAdmin } = this.props;
     const { setting } = match.params;
 
     const settings = <>
@@ -75,7 +67,6 @@ class PureSettings extends React.Component {
           <ArticleBodyContent 
             onLoading={setIsLoading}
             isLoading={isLoading}
-          
           />
         </PageLayout.ArticleBody>
 
@@ -86,24 +77,20 @@ class PureSettings extends React.Component {
         <PageLayout.SectionBody>
           <SectionBodyContent
             setting={setting}
-            intermediateVersion={intermediateVersion}
-            originalCopy={originalCopy}
-            trash={trash}
             recent={recent}
             favorites={favorites}
             templates={templates}
-            updateOrCreate={updateOrCreate}
             keepIntermediate={keepIntermediate}
             t={t}
             onLoading={setIsLoading}
-            isCheckedThirdParty={this.isCheckedThirdParty}
-            isCheckedIntermediate={this.isCheckedIntermediate}
           />
         </PageLayout.SectionBody>
       </PageLayout>
     </>;
 
-    return !thirdParty && setting === 'thirdParty' ? <Error403 /> : settings;
+    return (!thirdParty && setting === 'thirdParty') || (!isAdmin && setting === 'admin') 
+      ? <Error403 /> 
+      : settings;
   }
 } 
 
@@ -121,7 +108,8 @@ const Settings = props => {
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
-    thirdParty: state.files.settingsTree.thirdParty
+    thirdParty: state.files.settingsTree.thirdParty,
+    isAdmin: state.auth.user.isAdmin
   };
 }
 

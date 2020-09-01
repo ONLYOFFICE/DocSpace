@@ -265,7 +265,6 @@ namespace ASC.Web.Files.Utils
                     var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
 
                     var projectLastModified = responseApi["response"].Value<string>();
-                    const string projectLastModifiedCacheKey = "documents/projectFolders/projectLastModified";
                     var projectListCacheKey = string.Format("documents/projectFolders/{0}", AuthContext.CurrentAccount.ID);
                     Dictionary<int, KeyValuePair<int, string>> folderIDProjectTitle = null;
 

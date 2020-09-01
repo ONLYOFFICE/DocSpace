@@ -72,7 +72,7 @@ class PureTreeSettings extends React.Component {
   }
 
   renderTreeNode = () => {
-    const { t, thirdParty } = this.props;
+    const { t, thirdParty, isAdmin } = this.props;
     return (
       <TreeNode
         id="settings"
@@ -88,14 +88,17 @@ class PureTreeSettings extends React.Component {
           isLeaf={true}
           title={t('treeSettingsCommonSettings')}
         />
-        <TreeNode
-          className="settings-node"
-          id='admin-settings'
-          key='admin'
-          isLeaf={true}
-          title={t('treeSettingsAdminSettings')}
-        /> 
-        {thirdParty 
+        { isAdmin 
+          ? <TreeNode
+              className="settings-node"
+              id='admin-settings'
+              key='admin'
+              isLeaf={true}
+              title={t('treeSettingsAdminSettings')}
+            /> 
+          : null
+        }
+        { thirdParty 
           ? <TreeNode
               selectable={true}
               className="settings-node"
@@ -152,6 +155,10 @@ function mapStateToProps(state) {
    } = state.files;
 
    const {
+     isAdmin
+   } = state.auth.user
+
+   const {
     expandedSetting,
     thirdParty
    } = settingsTree;
@@ -159,7 +166,8 @@ function mapStateToProps(state) {
   return {
     selectedTreeNode,
     expandedSetting,
-    thirdParty
+    thirdParty,
+    isAdmin
   }
 }
 
