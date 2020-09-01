@@ -23,7 +23,9 @@ import {
   SET_SELECTED_NODE,
   SET_EXPAND_SETTINGS_TREE,
   SET_IS_LOADING,
-  SET_THIRD_PARTY
+  SET_THIRD_PARTY,
+  SET_FILES_SETTINGS,
+  SET_FILES_SETTING
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -171,6 +173,33 @@ const filesReducer = (state = initialState, action) => {
     case SET_THIRD_PARTY:
       return Object.assign({}, state, {
         settingsTree: { ...state.settingsTree, thirdParty: action.data }
+      })
+    case SET_FILES_SETTINGS:
+      const { 
+        storeOriginalFiles,
+        confirmDelete,
+        updateIfExist,
+        forcesave,
+        storeForcesave,
+        enableThirdParty
+      } = action.settings
+      return Object.assign({}, state, {
+        settingsTree: { ...state.settingsTree, 
+          storeOriginalFiles,
+          confirmDelete,
+          updateIfExist,
+          forceSave: forcesave,
+          storeForceSave: storeForcesave,
+          enableThirdParty
+        }
+      })
+    case SET_FILES_SETTING:
+      const { setting, val } = action;
+      return Object.assign({}, state, {
+        settingsTree: { 
+          ...state.settingsTree, 
+          [setting]: val
+        }
       })
     default:
       return state;

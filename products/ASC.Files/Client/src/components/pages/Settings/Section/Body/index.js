@@ -7,12 +7,13 @@ import {
 } from 'asc-web-components';
 
 import { 
-  updateIfExist, 
-  storeOriginal, 
-  setThirdParty,
-  changeDeleteConfirm, 
-  storeForceSave,
-  setSelectedNode
+  setUpdateIfExist, 
+  setStoreOriginal, 
+  setEnableThirdParty,
+  setConfirmDelete, 
+  setStoreForceSave,
+  setSelectedNode,
+  setForceSave
 } from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
@@ -37,8 +38,7 @@ class SectionBodyContent extends React.Component {
     this.state = { 
       originalCopy: true,
       updateExist: true,
-      displayNotification: true,
-      intermediateVersion: true
+      displayNotification: true
     }
   }
 
@@ -61,68 +61,59 @@ class SectionBodyContent extends React.Component {
   }
 
   onChangeStoreForceSave = () => {
-    const { intermediateVersion } = this.state;
-    const { storeForceSave } = this.props;
-
-    storeForceSave( !intermediateVersion );
-    this.setState({ intermediateVersion: !intermediateVersion });
+    const { storeForceSave, setStoreForceSave } = this.props;
+    setStoreForceSave( !storeForceSave, "storeForceSave" );
   }
 
   onChangeThirdParty = () => {
-    const { thirdParty, setThirdParty } = this.props;
-    setThirdParty(!thirdParty);
+    const { enableThirdParty, setEnableThirdParty } = this.props;
+    setEnableThirdParty(!enableThirdParty, "enableThirdParty");
   }
 
   renderAdminSettings = () => {
-    const { intermediateVersion } = this.state;
 
     const {
-      thirdParty,
+      enableThirdParty,
+      storeForceSave,
       t
     } = this.props;
 
     return (
       <StyledSettings>
         <ToggleButton 
-          isDisabled={false}
           className="toggle-btn"
           label={t('intermediateVersion')}
           onChange={this.onChangeStoreForceSave}
-          isChecked={intermediateVersion}
+          isChecked={storeForceSave}
         />
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('thirdPartyBtn')}
           onChange={this.onChangeThirdParty}
-          isChecked={thirdParty}
+          isChecked={enableThirdParty}
         />
       </StyledSettings>
     )
   }
 
   onChangeOriginalCopy = () => {
-    const { originalCopy } = this.state;
-    const { storeOriginal } = this.props;
-
-    storeOriginal( originalCopy );
-    this.setState({ originalCopy: !originalCopy });
-  }
-
-  onChangeUpdateIfExist = () => {
-    const { updateExist } = this.state;
-    const { updateIfExist } = this.props;
-
-    updateIfExist( !updateExist );
-    this.setState({ updateExist: !updateExist });
+    const { storeOriginalFiles, setStoreOriginal } = this.props;
+    setStoreOriginal( !storeOriginalFiles, "storeOriginalFiles" );
   }
 
   onChangeDeleteConfirm = () => {
-    const { displayNotification } = this.state;
-    const { changeDeleteConfirm } = this.props;
+    const { confirmDelete, setConfirmDelete } = this.props;
+    setConfirmDelete( !confirmDelete, "confirmDelete" );
+  }
 
-    changeDeleteConfirm( !displayNotification );
-    this.setState({ displayNotification: !displayNotification });
+  onChangeUpdateIfExist = () => {
+    const { updateIfExist, setUpdateIfExist } = this.props;
+    setUpdateIfExist( !updateIfExist, "updateIfExist" );
+  }
+
+  onChangeForceSave = () => {
+    const { forceSave, setForceSave } = this.props;
+    setForceSave( !forceSave, "forceSave" );
   }
 
   renderCommonSettings = () => {
@@ -130,31 +121,26 @@ class SectionBodyContent extends React.Component {
       recent,
       favorites,
       templates,
-      keepIntermediate,
+      updateIfExist,
+      confirmDelete,
+      storeOriginalFiles,
+      forceSave,
       t
     } = this.props;
-
-    const { 
-      originalCopy,
-      updateExist,
-      displayNotification
-    } = this.state;
 
     return (
       <StyledSettings>
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('originalCopy')}
           onChange={this.onChangeOriginalCopy}
-          isChecked={originalCopy}
+          isChecked={storeOriginalFiles}
         />
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('displayNotification')}
           onChange={this.onChangeDeleteConfirm}
-          isChecked={displayNotification}
+          isChecked={confirmDelete}
         />
         <ToggleButton
           isDisabled={true}
@@ -179,18 +165,16 @@ class SectionBodyContent extends React.Component {
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('updateOrCreate')}
           onChange={this.onChangeUpdateIfExist}
-          isChecked={updateExist}
+          isChecked={updateIfExist}
         />
         <ToggleButton
-          isDisabled={true}
           className="toggle-btn"
           label={t('keepIntermediateVersion')}
-          onChange={(e)=>console.log(e)}
-          isChecked={keepIntermediate}
+          onChange={this.onChangeForceSave}
+          isChecked={forceSave}
         />
       </StyledSettings>
     );
@@ -201,14 +185,14 @@ class SectionBodyContent extends React.Component {
   }
 
   render() {
-    const { setting, thirdParty, isAdmin } = this.props;
+    const { setting, enableThirdParty, isAdmin } = this.props;
     let content;
 
     if(setting === 'admin' && isAdmin)
       content = this.renderAdminSettings();
     if(setting === 'common') 
       content = this.renderCommonSettings();
-    if(setting === 'thirdParty' && thirdParty )
+    if(setting === 'thirdParty' && enableThirdParty )
       content = this.renderClouds();
     return content; 
   }
@@ -217,22 +201,35 @@ class SectionBodyContent extends React.Component {
 function mapStateToProps(state) {
   const { settingsTree, selectedTreeNode } = state.files;
   const { isAdmin } = state.auth.user;
-  const { thirdParty } = settingsTree;
+  const { 
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave,
+    storeForceSave,
+    enableThirdParty
+  } = settingsTree;
 
   return { 
-    thirdParty,
     isAdmin,
-    selectedTreeNode
+    selectedTreeNode,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave,
+    storeForceSave,
+    enableThirdParty
   }
 }
 
 export default connect(
   mapStateToProps, { 
-    updateIfExist, 
-    storeOriginal, 
-    setThirdParty,
-    changeDeleteConfirm,
-    storeForceSave,
-    setSelectedNode
+    setUpdateIfExist, 
+    setStoreOriginal, 
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setSelectedNode,
+    setForceSave
   })
   (SectionBodyContent);
