@@ -13,10 +13,10 @@ if ("function" === typeof importScripts) {
     // to force update an exiting service worker.
     // Since we're using `injectManifest` to build SW,
     // manually overriding the skipWaiting();
-    // self.addEventListener("install", event => {
-    //   self.skipWaiting();
-    //   window.location.reload();
-    // });
+    self.addEventListener("install", event => {
+      self.skipWaiting();
+      window.location.reload();
+    });
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
