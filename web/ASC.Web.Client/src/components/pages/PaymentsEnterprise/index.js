@@ -104,6 +104,7 @@ class Body extends React.PureComponent {
       culture,
       timezone,
       utcHoursOffset,
+      trialMode,
     } = this.props;
     const {
       isVisibleModalDialog,
@@ -119,6 +120,7 @@ class Body extends React.PureComponent {
         <HeaderContainer
           t={t}
           expiresDate={expiresDate}
+          trialMode={trialMode}
           languages={languages}
           culture={culture}
           timezone={timezone}
@@ -169,6 +171,7 @@ function mapStateToProps(state) {
     helpUrl: state.payments.helpUrl,
     buyUrl: state.payments.buyUrl,
     expiresDate: state.payments.currentLicense.expiresDate,
+    trialMode: state.payments.trialLicense.trialMode,
     culture: state.auth.settings.culture,
     timezone: state.auth.settings.timezone,
     utcHoursOffset: state.auth.settings.utcHoursOffset,
