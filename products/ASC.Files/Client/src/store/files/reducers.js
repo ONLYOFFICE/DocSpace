@@ -53,8 +53,13 @@ const initialState = {
   selectedTreeNode: [],
   isLoading: false,
   settingsTree: {
-    thirdParty: false,
-    expandedSetting: []
+    expandedSetting: [],
+    storeOriginalFiles: false,
+    confirmDelete: false,
+    updateIfExist: false,
+    forceSave: false,
+    storeForceSave: false,
+    enableThirdParty: false,
   }
   
 };

@@ -1,4 +1,4 @@
-import React from  'react';
+import React, { useEffect } from  'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { 
@@ -31,115 +31,99 @@ const StyledSettings = styled.div`
   }
 `;
 
-class SectionBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { 
-      originalCopy: true,
-      updateExist: true,
-      displayNotification: true
-    }
-  }
-
-  componentDidMount() {
-    const { setting, onLoading, t } = this.props;
+function SectionBodyContent(props) {
+  useEffect(() => {
+    const { setting, t } = props;
     document.title = t(`${setting}`);
-    onLoading(false);
-  }
+    return function setTitle() {
+      document.title = 'ASC.Files';
+    }
+  }, [props.setting])
 
-  componentDidUpdate(prevProps) {
-    const { setting, t, setSelectedNode, selectedTreeNode } = this.props;
-    document.title = t(`${setting}`); 
-    if(prevProps.setting !== setting && setting !== selectedTreeNode[0]) {
+  useEffect(() => {
+    const { setting, selectedTreeNode, setSelectedNode } = props;
+    if( setting !== selectedTreeNode[0] ) {
       setSelectedNode([ setting ])
     }
-  }
+  }, [props.setting]);
 
-  componentWillUnmount() {
-    document.title = 'ASC.Files';
-  }
-
-  onChangeStoreForceSave = () => {
-    const { storeForceSave, setStoreForceSave } = this.props;
+  const onChangeStoreForceSave = () => {
+    const { storeForceSave, setStoreForceSave } = props;
     setStoreForceSave( !storeForceSave, "storeForceSave" );
   }
 
-  onChangeThirdParty = () => {
-    const { enableThirdParty, setEnableThirdParty } = this.props;
+  const onChangeThirdParty = () => {
+    const { enableThirdParty, setEnableThirdParty } = props;
     setEnableThirdParty(!enableThirdParty, "enableThirdParty");
   }
 
-  renderAdminSettings = () => {
+  const renderAdminSettings = () => {
 
     const {
       enableThirdParty,
       storeForceSave,
       t
-    } = this.props;
+    } = props;
 
     return (
       <StyledSettings>
         <ToggleButton 
           className="toggle-btn"
           label={t('intermediateVersion')}
-          onChange={this.onChangeStoreForceSave}
+          onChange={onChangeStoreForceSave}
           isChecked={storeForceSave}
         />
         <ToggleButton
           className="toggle-btn"
           label={t('thirdPartyBtn')}
-          onChange={this.onChangeThirdParty}
+          onChange={onChangeThirdParty}
           isChecked={enableThirdParty}
         />
       </StyledSettings>
     )
   }
 
-  onChangeOriginalCopy = () => {
-    const { storeOriginalFiles, setStoreOriginal } = this.props;
+  const onChangeOriginalCopy = () => {
+    const { storeOriginalFiles, setStoreOriginal } = props;
     setStoreOriginal( !storeOriginalFiles, "storeOriginalFiles" );
   }
 
-  onChangeDeleteConfirm = () => {
-    const { confirmDelete, setConfirmDelete } = this.props;
+  const onChangeDeleteConfirm = () => {
+    const { confirmDelete, setConfirmDelete } = props;
     setConfirmDelete( !confirmDelete, "confirmDelete" );
   }
 
-  onChangeUpdateIfExist = () => {
-    const { updateIfExist, setUpdateIfExist } = this.props;
+  const onChangeUpdateIfExist = () => {
+    const { updateIfExist, setUpdateIfExist } = props;
     setUpdateIfExist( !updateIfExist, "updateIfExist" );
   }
 
-  onChangeForceSave = () => {
-    const { forceSave, setForceSave } = this.props;
+  const onChangeForceSave = () => {
+    const { forceSave, setForceSave } = props;
     setForceSave( !forceSave, "forceSave" );
   }
 
-  renderCommonSettings = () => {
+  const renderCommonSettings = () => {
     const {
-      recent,
-      favorites,
-      templates,
       updateIfExist,
       confirmDelete,
       storeOriginalFiles,
       forceSave,
       t
-    } = this.props;
+    } = props;
 
     return (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
           label={t('originalCopy')}
-          onChange={this.onChangeOriginalCopy}
+          onChange={onChangeOriginalCopy}
           isChecked={storeOriginalFiles}
         />
         <ToggleButton
           className="toggle-btn"
           label={t('displayNotification')}
-          onChange={this.onChangeDeleteConfirm}
+          onChange={onChangeDeleteConfirm}
           isChecked={confirmDelete}
         />
         <ToggleButton
@@ -147,55 +131,52 @@ class SectionBodyContent extends React.Component {
           className="toggle-btn"
           label={t('displayRecent')}
           onChange={(e)=>console.log(e)}
-          isChecked={recent}
+          isChecked={false}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
           label={t('displayFavorites')}
           onChange={(e)=>console.log(e)}
-          isChecked={favorites}
+          isChecked={false}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
           label={t('displayTemplates')}
           onChange={(e)=>console.log(e)}
-          isChecked={templates}
+          isChecked={false}
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
           className="toggle-btn"
           label={t('updateOrCreate')}
-          onChange={this.onChangeUpdateIfExist}
+          onChange={onChangeUpdateIfExist}
           isChecked={updateIfExist}
         />
         <ToggleButton
           className="toggle-btn"
           label={t('keepIntermediateVersion')}
-          onChange={this.onChangeForceSave}
+          onChange={onChangeForceSave}
           isChecked={forceSave}
         />
       </StyledSettings>
     );
   }
 
-  renderClouds = () => {
+  const renderClouds = () => {
     return (<></>)
   }
 
-  render() {
-    const { setting, enableThirdParty, isAdmin } = this.props;
-    let content;
-
-    if(setting === 'admin' && isAdmin)
-      content = this.renderAdminSettings();
-    if(setting === 'common') 
-      content = this.renderCommonSettings();
-    if(setting === 'thirdParty' && enableThirdParty )
-      content = this.renderClouds();
-    return content; 
-  }
+  const { setting, enableThirdParty, isAdmin } = props;
+  let content;
+  if(setting === 'admin' && isAdmin)
+    content = renderAdminSettings();
+  if(setting === 'common') 
+    content = renderCommonSettings();
+  if(setting === 'thirdParty' && enableThirdParty )
+    content = renderClouds();
+  return content; 
 }
 
 function mapStateToProps(state) {
@@ -231,5 +212,4 @@ export default connect(
     setStoreForceSave,
     setSelectedNode,
     setForceSave
-  })
-  (SectionBodyContent);
+  })(SectionBodyContent);

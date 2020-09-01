@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
@@ -28,20 +28,16 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 `;
 
-class PureTreeSettings extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    const { match, setSelectedNode, setExpandSettingsTree } = this.props;
+const PureTreeSettings = (props) => {
+  useEffect(() => {
+    const { match, setSelectedNode, setExpandSettingsTree } = props;
     const { setting } = match.params;
     setSelectedNode([setting]);
     if (setting)
       setExpandSettingsTree(['settings']);
-  }
+  }, [props.match.setting])
 
-  switcherIcon = (obj) => {
+  const switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -52,8 +48,8 @@ class PureTreeSettings extends React.Component {
     }
   }
 
-  onSelect = (section) => {
-    const { setSelectedNode, setExpandSettingsTree } = this.props;
+  const onSelect = (section) => {
+    const { setSelectedNode, setExpandSettingsTree } = props;
     const path = section[0];
 
     if(path === 'settings') {
@@ -66,13 +62,13 @@ class PureTreeSettings extends React.Component {
     return history.push(`/products/files/settings/${path}`);    
   }
 
-  onExpand = (data) => {
-    const { setExpandSettingsTree } = this.props;
+  const onExpand = (data) => {
+    const { setExpandSettingsTree } = props;
     setExpandSettingsTree(data);
   }
 
-  renderTreeNode = () => {
-    const { t, enableThirdParty, isAdmin } = this.props;
+  const renderTreeNode = () => {
+    const { t, enableThirdParty, isAdmin } = props;
     return (
       <TreeNode
         id="settings"
@@ -112,29 +108,27 @@ class PureTreeSettings extends React.Component {
       </TreeNode>
     );
   }
+  
+  const { 
+    selectedTreeNode,
+    expandedSetting
+  } = props;
+  const nodes = renderTreeNode();
 
-  render() {
-    const { 
-      selectedTreeNode,
-      expandedSetting
-    } = this.props;
-    const nodes = this.renderTreeNode();
-
-    return (
-      <StyledTreeMenu
-        expandedKeys={expandedSetting}
-        selectedKeys={selectedTreeNode}
-        defaultExpandParent={false}
-        className="settings-tree-menu"
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
-        showIcon={true}
-        onExpand={this.onExpand}
-      >
-        {nodes}
-      </StyledTreeMenu>
-    );
-  }
+  return (
+    <StyledTreeMenu
+      expandedKeys={expandedSetting}
+      selectedKeys={selectedTreeNode}
+      defaultExpandParent={false}
+      className="settings-tree-menu"
+      switcherIcon={switcherIcon}
+      onSelect={onSelect}
+      showIcon={true}
+      onExpand={onExpand}
+    >
+      {nodes}
+    </StyledTreeMenu>
+  );
 }
 
 const TreeSettingsContainer = withTranslation()(PureTreeSettings);
