@@ -7,12 +7,13 @@ import {
 } from 'asc-web-components';
 
 import { 
-  updateIfExist, 
-  storeOriginal, 
-  setThirdParty,
-  changeDeleteConfirm, 
-  storeForceSave,
-  setSelectedNode
+  setUpdateIfExist, 
+  setStoreOriginal, 
+  setEnableThirdParty,
+  setConfirmDelete, 
+  setStoreForceSave,
+  setSelectedNode,
+  setForceSave
 } from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
@@ -37,8 +38,7 @@ class SectionBodyContent extends React.Component {
     this.state = { 
       originalCopy: true,
       updateExist: true,
-      displayNotification: true,
-      intermediateVersion: true
+      displayNotification: true
     }
   }
 
@@ -61,20 +61,16 @@ class SectionBodyContent extends React.Component {
   }
 
   onChangeStoreForceSave = () => {
-    const { intermediateVersion } = this.state;
-    const { storeForceSave } = this.props;
-
-    storeForceSave( !intermediateVersion );
-    this.setState({ intermediateVersion: !intermediateVersion });
+    const { storeForceSave, setStoreForceSave } = this.props;
+    setStoreForceSave( !storeForceSave, "storeForceSave" );
   }
 
   onChangeThirdParty = () => {
-    const { enableThirdParty, setThirdParty } = this.props;
-    setThirdParty(!enableThirdParty);
+    const { enableThirdParty, setEnableThirdParty } = this.props;
+    setEnableThirdParty(!enableThirdParty, "enableThirdParty");
   }
 
   renderAdminSettings = () => {
-    const { intermediateVersion } = this.state;
 
     const {
       enableThirdParty,
@@ -101,27 +97,23 @@ class SectionBodyContent extends React.Component {
   }
 
   onChangeOriginalCopy = () => {
-    const { originalCopy } = this.state;
-    const { storeOriginal } = this.props;
-
-    storeOriginal( originalCopy );
-    this.setState({ originalCopy: !originalCopy });
-  }
-
-  onChangeUpdateIfExist = () => {
-    const { updateExist } = this.state;
-    const { updateIfExist } = this.props;
-
-    updateIfExist( !updateExist );
-    this.setState({ updateExist: !updateExist });
+    const { storeOriginalFiles, setStoreOriginal } = this.props;
+    setStoreOriginal( !storeOriginalFiles, "storeOriginalFiles" );
   }
 
   onChangeDeleteConfirm = () => {
-    const { displayNotification } = this.state;
-    const { changeDeleteConfirm } = this.props;
+    const { confirmDelete, setConfirmDelete } = this.props;
+    setConfirmDelete( !confirmDelete, "confirmDelete" );
+  }
 
-    changeDeleteConfirm( !displayNotification );
-    this.setState({ displayNotification: !displayNotification });
+  onChangeUpdateIfExist = () => {
+    const { updateIfExist, setUpdateIfExist } = this.props;
+    setUpdateIfExist( !updateIfExist, "updateIfExist" );
+  }
+
+  onChangeForceSave = () => {
+    const { forceSave, setForceSave } = this.props;
+    setForceSave( !forceSave, "forceSave" );
   }
 
   renderCommonSettings = () => {
@@ -181,7 +173,7 @@ class SectionBodyContent extends React.Component {
         <ToggleButton
           className="toggle-btn"
           label={t('keepIntermediateVersion')}
-          onChange={(e)=>console.log(e)}
+          onChange={this.onChangeForceSave}
           isChecked={forceSave}
         />
       </StyledSettings>
@@ -232,11 +224,12 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps, { 
-    updateIfExist, 
-    storeOriginal, 
-    setThirdParty,
-    changeDeleteConfirm,
-    storeForceSave,
-    setSelectedNode
+    setUpdateIfExist, 
+    setStoreOriginal, 
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setSelectedNode,
+    setForceSave
   })
   (SectionBodyContent);
