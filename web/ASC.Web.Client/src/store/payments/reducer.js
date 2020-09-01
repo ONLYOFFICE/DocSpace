@@ -8,6 +8,9 @@ const initialState = {
   currentLicense: {
     expiresDate: new Date("2020-08-31T23:59:59.000Z"),
   },
+  trialLicense: {
+    trialMode: false,
+  },
 };
 
 const paymentsReducer = (state = initialState, action) => {
