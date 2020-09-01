@@ -82,34 +82,33 @@ const HeaderContainer = ({
   const currentUserDate = moment().utcOffset(utcHoursOffset);
   return moment(
     moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
-  ).isAfter(currentUserDate.set("hour", 0).set("minute", 0).set("second", 0))
-    ? !trialMode && (
-        <StyledHeader>
-          <Text className="payments-header">{t("Using")}</Text>
-          <Text className="payments-header-additional_support">
-            {t("SubscriptionAndUpdatesExpires")}{" "}
-            {moment.utc(expiresDate).format("LL")}
-            {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
+  ).isAfter(
+    currentUserDate.set("hour", 0).set("minute", 0).set("second", 0)
+  ) ? (
+    <StyledHeader>
+      <Text className="payments-header">{t("Using")}</Text>
+      <Text className="payments-header-additional_support">
+        {t("SubscriptionAndUpdatesExpires")}{" "}
+        {moment.utc(expiresDate).format("LL")}
+        {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
           марта 2021 года. */}
-          </Text>
-          {/* <Text className="payments-header-additional_portals">
+      </Text>
+      {/* <Text className="payments-header-additional_portals">
           {t("createdPortals")} {createPortals}
         </Text> */}
-        </StyledHeader>
-      )
-    : !trialMode && (
-        <StyledHeader>
-          <Error401> </Error401>
-          <Text className="payments-header">{t("Using")}</Text>
-          <Text className="payments-header-additional_support">
-            {t("SupportNotAvailable")}
-            {moment
-              .utc(expiresDate)
-              .startOf("day")
-              .format("dddd, MMMM D, YYYY")}
-          </Text>
-        </StyledHeader>
-      );
+    </StyledHeader>
+  ) : (
+    !trialMode && (
+      <StyledHeader>
+        <Error401> </Error401>
+        <Text className="payments-header">{t("Using")}</Text>
+        <Text className="payments-header-additional_support">
+          {t("SupportNotAvailable")}
+          {moment.utc(expiresDate).startOf("day").format("dddd, MMMM D, YYYY")}
+        </Text>
+      </StyledHeader>
+    )
+  );
 };
 
 HeaderContainer.propTypes = {
