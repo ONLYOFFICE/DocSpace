@@ -62,9 +62,10 @@ class Link extends React.Component {
 }
 
 Link.propTypes = {
-  color: PropTypes.string,
   children: PropTypes.any,
-  isOpen: PropTypes.bool
+  color: PropTypes.string,
+  isOpen: PropTypes.bool,
+  showIcon: PropTypes.bool
 };
 
 Link.displayName = "Link";

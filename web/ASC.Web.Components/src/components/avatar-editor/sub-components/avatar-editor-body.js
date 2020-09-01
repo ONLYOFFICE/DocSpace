@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
 import Text from '../../text'
-import IconButton from '../../icon-button'
 import { tablet } from '../../../utils/device';
 import resizeImage from 'resize-image'
 const StyledErrorContainer = styled.div`

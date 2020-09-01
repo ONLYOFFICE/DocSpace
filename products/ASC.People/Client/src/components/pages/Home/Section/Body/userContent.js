@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
+import { RowContent, Link, LinkWithDropdown, Icons, Text, Box } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 
@@ -53,7 +53,7 @@ const getFormatedGroups = (user, status, selectGroup) => {
   }
 };
 
-const UserContent = ({ user, history, settings, selectGroup }) => {
+const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
   const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
   const groups = getFormatedGroups(user, status, selectGroup);
@@ -79,12 +79,9 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
   const nameColor = "#333";
   const sideInfoColor = "#333";
 
-  const headDepartmentStyle = {
-    width: '28%'
-  }
-
   return (
     <RowContent
+      widthProp={widthProp}
       sideColor={sideInfoColor}
     >
       <Link
@@ -109,7 +106,6 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
         <Text
           containerMinWidth='120px'
           containerWidth='20%'
-          //style={headDepartmentStyle}
           as="div"
           color={sideInfoColor}
           fontSize='12px'
@@ -119,11 +115,10 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
         >
           {title}
         </Text>
-        : <div 
+        : <Box 
           containerMinWidth='120px' 
           containerWidth='20%' 
-          //style={headDepartmentStyle}
-        ></div>
+        ></Box>
       }
       {groups}
       <Link

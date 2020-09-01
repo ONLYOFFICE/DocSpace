@@ -14,6 +14,7 @@ var checkboxIcon,
     checkboxCheckedHoverIcon,
     checkboxIndeterminateDisabledIcon,
     checkboxIndeterminateHoverIcon,
+    // eslint-disable-next-line no-unused-vars
     treeIcon;
 
 (function(){

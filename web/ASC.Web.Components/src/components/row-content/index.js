@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { tablet } from '../../utils/device';
+import { tablet, size } from '../../utils/device';
 
 const truncateCss = css`
   white-space: nowrap;
@@ -17,16 +17,46 @@ const commonCss = css`
   font-weight: 600;
 `;
 
+const containerTabletStyle = css`
+  display: block;
+  height: 56px;
+`;
+
+const mainWrapperTabletStyle = css`
+  min-width: 140px;
+  margin-right: 8px;
+  margin-top: 8px;
+  width: 95%;
+`;
+
+const mainContainerTabletStyle = css`
+  ${truncateCss};
+  max-width: 100%;
+`;
+
+const sideInfoTabletStyle = css`
+  display: block;
+  min-width: 160px;
+  margin: 0 8px;
+  ${commonCss};
+  color: ${props => props.color && props.color};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const StyledRowContent = styled.div`
   width: 100%;
   display: inline-flex;
 
-  ${props => !props.disableSideInfo && `
-    @media ${tablet} {
-      display: block;
-      height: 56px;
-    }
-  `};
+  ${props => !props.disableSideInfo
+    && (props.widthProp && (props.widthProp < size.tablet))
+    ? `${containerTabletStyle}`
+    : `
+      @media ${tablet} {
+        ${containerTabletStyle}
+      }
+    `}
 `;
 
 const MainContainerWrapper = styled.div`
@@ -38,16 +68,15 @@ const MainContainerWrapper = styled.div`
 
   width: ${props => props.mainContainerWidth ? props.mainContainerWidth : '140px'};
   min-width: 140px;
-  
 
-  ${props => !props.disableSideInfo && `
-    @media ${tablet} {
-      min-width: 140px;
-      margin-right: 8px;
-      margin-top: 8px;
-      width: 95%;
-    }
-  `};
+  ${props => !props.disableSideInfo
+    && (props.widthProp && (props.widthProp < size.tablet))
+    ? `${mainWrapperTabletStyle}`
+    : `
+      @media ${tablet} {
+        ${mainWrapperTabletStyle}
+      }
+    `}
 `;
 
 const MainContainer = styled.div`
@@ -55,11 +84,13 @@ const MainContainer = styled.div`
   margin-right: 8px;
   max-width: 86%;
 
-  @media ${tablet} {
-    ${truncateCss};
-    max-width: 100%;
-  }
-
+  ${props => props.widthProp && (props.widthProp < size.tablet)
+    ? `${mainContainerTabletStyle}`
+    : `
+      @media ${tablet} {
+        ${mainContainerTabletStyle}
+      }
+    `}
 `;
 
 const MainIcons = styled.div`
@@ -70,9 +101,13 @@ const MainIcons = styled.div`
 const SideContainerWrapper = styled.div`
   ${commonCss};
 
-  @media ${tablet} {
-    ${truncateCss};
-  }
+  ${props => props.widthProp && (props.widthProp < size.tablet)
+    ? `${truncateCss}`
+    : `
+      @media ${tablet} {
+        ${truncateCss}
+      }
+    `}
 
   align-self: center;
   align-items: center;
@@ -85,25 +120,26 @@ const SideContainerWrapper = styled.div`
   min-width: ${props => props.containerMinWidth ? props.containerMinWidth : '40px'};
   color: ${props => props.color && props.color};
 
-  ${props => !props.disableSideInfo && `
-    @media ${tablet} {
-      display: none;
-    }
-  `};
+${props => !props.disableSideInfo
+    && (props.widthProp && (props.widthProp < size.tablet))
+    ? `display: none;`
+    : `
+      @media ${tablet} {
+        display: none;
+      }
+    `}
 `;
 
 const TabletSideInfo = styled.div`
   display: none;
 
-  @media ${tablet} {
-    display: block;
-    min-width: 160px;
-    margin: 0 8px;
-    color: ${props => props.color && props.color};
-
-    ${commonCss};
-    ${truncateCss};
-  }
+  ${props => props.widthProp && (props.widthProp < size.tablet)
+    ? `${sideInfoTabletStyle}`
+    : `
+      @media ${tablet} {
+        ${sideInfoTabletStyle}
+      }
+    `}
 `;
 
 const getSideInfo = content => {
@@ -124,24 +160,34 @@ const getSideInfo = content => {
 
 const RowContent = props => {
   //console.log("RowContent render");
-  const { children, disableSideInfo, id, className, style, sideColor, onClick } = props;
+  const { children, disableSideInfo, id, className, style, sideColor, onClick, widthProp } = props;
 
   const sideInfo = getSideInfo(children);
+  const mainContainerWidth = children[0].props && children[0].props.containerWidth;
 
   return (
     <StyledRowContent
+      className={className}
       disableSideInfo={disableSideInfo}
       id={id}
-      className={className}
+      onClick={onClick}
       style={style}
-      onClick={onClick}>
+      widthProp={widthProp}
+    >
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
-        mainContainerWidth={children[0].props && children[0].props.containerWidth}>
-        <MainContainer className="rowMainContainer">
+        mainContainerWidth={mainContainerWidth}
+        widthProp={widthProp}
+      >
+        <MainContainer
+          className="rowMainContainer"
+          widthProp={widthProp}
+        >
           {children[0]}
         </MainContainer>
-        <MainIcons className="mainIcons">
+        <MainIcons
+          className="mainIcons"
+        >
           {children[1]}
         </MainIcons>
       </MainContainerWrapper>
@@ -152,14 +198,19 @@ const RowContent = props => {
               disableSideInfo={disableSideInfo}
               key={'side-' + index}
               containerWidth={element.props && element.props.containerWidth}
-              containerMinWidth={element.props && element.props.containerMinWidth} >
+              containerMinWidth={element.props && element.props.containerMinWidth}
+              widthProp={widthProp}
+            >
               {element}
             </SideContainerWrapper>
           );
         }
       })}
       {!disableSideInfo &&
-        <TabletSideInfo color={sideColor}>
+        <TabletSideInfo
+          color={sideColor}
+          widthProp={widthProp}
+        >
           {sideInfo}
         </TabletSideInfo>
       }
@@ -174,7 +225,8 @@ RowContent.propTypes = {
   id: PropTypes.string,
   onClick: PropTypes.func,
   sideColor: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  widthProp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 RowContent.defaultProps = {

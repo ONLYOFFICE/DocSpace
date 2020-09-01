@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { Icons } from '../icons'
 
+// eslint-disable-next-line react/prop-types
 const Icon = ({ type }) => (
   type === "success"
     ? <Icons.CheckIcon color="#ffffff" isfill={true} />

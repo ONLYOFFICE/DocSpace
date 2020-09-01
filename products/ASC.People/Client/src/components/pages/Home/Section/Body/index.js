@@ -385,8 +385,10 @@ class SectionBodyContent extends React.PureComponent {
                 {...checkedProps}
                 {...contextOptionsProps}
                 needForUpdate={this.needForUpdate}
+                widthProp={widthProp}
               >
                 <UserContent
+                  widthProp={widthProp}
                   user={user}
                   history={history}
                   settings={settings}

@@ -13,6 +13,7 @@ const TextInputWrapper = ({
   onValidateInput,
   isValidEmail,
   emailSettings,
+  customValidate,
   ...props
 }) => <TextInput {...props}></TextInput>;
 /* eslint-enable react/prop-types */
