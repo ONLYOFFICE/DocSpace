@@ -274,7 +274,7 @@ class PageLayoutComponent extends React.Component {
           </Article>
         )}
         {isSectionAvailable && (
-          <ReactResizeDetector onResize={this.onResize} skipOnMount>
+          <ReactResizeDetector onResize={this.onResize}>
             {({ width }) => (
               <Section widthProp={width}>
                 {isSectionHeaderAvailable && (
