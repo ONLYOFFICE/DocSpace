@@ -1,11 +1,11 @@
-const size = {
-  mobile: "375px",
-  tablet: "1024px",
-  desktop: "1025px"
+export const size = {
+  mobile: 375,
+  tablet: 1024,
+  desktop: 1025
 };
 
-export const mobile = `(max-width: ${size.mobile})`;
+export const mobile = `(max-width: ${size.mobile}px)`;
 
-export const tablet = `(max-width: ${size.tablet})`;
+export const tablet = `(max-width: ${size.tablet}px)`;
 
-export const desktop = `(min-width: ${size.desktop})`;
+export const desktop = `(min-width: ${size.desktop}px)`;
