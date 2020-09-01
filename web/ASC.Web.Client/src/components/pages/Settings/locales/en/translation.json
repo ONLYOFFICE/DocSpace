@@ -72,6 +72,8 @@
     "LearnMore": "Learn more...",
     "AccessRightsChangeOwnerButtonText": "Change portal owner",
 
+    "ThirdPartyTitleDescription": "Authorization keys is the option which allows you to connect your portal with the third-party services like Twitter, Facebook, DropBox etc. Connect your portal with Facebook, Twitter or Linkedin if you don't want to introduce your portal credentials every time you enter it. Link it up with such services like DropBox, OneDrive, etc. to transfer the documents from all those storages to Documents module.",
+
 
     "ProjectsUserCapabilityView": "View projects and take part in discussions",
     "ProjectsUserCapabilityCreate": "Create and edit milestones, tasks, discussions, documents",

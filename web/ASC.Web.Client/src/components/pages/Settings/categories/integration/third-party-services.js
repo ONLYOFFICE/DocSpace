@@ -65,20 +65,18 @@ class ThirdPartyServices extends React.Component {
         })
     }
 
-    titleDescription = "Ключи авторизации позволяют подключить портал ONLYOFFICE к сторонним сервисам, таким как Twitter, Facebook, Dropbox и т.д. Подключите портал к Facebook, Twitter или Linkedin, если Вы не хотите каждый раз при входе вводить свои учетные данные на портале. Привяжите портал к таким сервисам, как Dropbox, OneDrive и т.д. чтобы перенести документы из всех этих хранилищ в модуль Документы ONLYOFFICE."
-
     render() {
 
         const { t, consumers } = this.props;
         const { selectedConsumer, dialogVisible } = this.state;
-        const { titleDescription, onModalClose } = this;
+        const { onModalClose } = this;
 
         return (
             <>
                 <RootContainer displayProp="flex" flexDirection="column" marginProp="0 88px 0 0">
                     <Box className="title-description-container">
                         <Text>
-                            {titleDescription}
+                            {t("ThirdPartyTitleDescription")}
                         </Text>
                         <Box marginProp="16px 0 0 0">
                             <Link
