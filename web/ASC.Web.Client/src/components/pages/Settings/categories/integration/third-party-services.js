@@ -44,7 +44,7 @@ class ThirdPartyServices extends React.Component {
 
     onModalOpen = () => {
         this.setState({
-            dialogVisible: true,
+            dialogVisible: true
         })
     }
 
@@ -55,23 +55,33 @@ class ThirdPartyServices extends React.Component {
         })
     }
 
+    toggleClick = () => {
+        this.onModalOpen();
+    }
+
+    selectConsumer = (e) => {
+        this.setState({
+            selectedConsumer: e.currentTarget.dataset.consumer
+        })
+    }
+
     titleDescription = "Ключи авторизации позволяют подключить портал ONLYOFFICE к сторонним сервисам, таким как Twitter, Facebook, Dropbox и т.д. Подключите портал к Facebook, Twitter или Linkedin, если Вы не хотите каждый раз при входе вводить свои учетные данные на портале. Привяжите портал к таким сервисам, как Dropbox, OneDrive и т.д. чтобы перенести документы из всех этих хранилищ в модуль Документы ONLYOFFICE."
 
     render() {
 
         const { t, consumers } = this.props;
         const { selectedConsumer, dialogVisible } = this.state;
-        const { titleDescription, onModalOpen, onModalClose } = this;
+        const { titleDescription, onModalClose } = this;
 
-        const consumerRefs = consumers.reduce((acc, consumer) => {
-            acc[consumer.name] = React.createRef();
-            return acc;
-        }, []);
+        // const consumerRefs = consumers.reduce((acc, consumer) => {
+        //     acc[consumer.name] = React.createRef();
+        //     return acc;
+        // }, []);
 
-        const toggleRefs = consumers.reduce((acc, consumer) => {
-            acc[consumer.name] = React.createRef();
-            return acc;
-        }, []);
+        // const toggleRefs = consumers.reduce((acc, consumer) => {
+        //     acc[consumer.name] = React.createRef();
+        //     return acc;
+        // }, []);
 
         return (
             <>
@@ -102,27 +112,28 @@ class ThirdPartyServices extends React.Component {
                     >
                         {consumers
                             .map((consumer, i) =>
-                                <ConsumersContainer key={i} widthProp="400px" marginProp="0 24px 24px 0">
+                                <ConsumersContainer
+                                    key={i}
+                                    widthProp="400px"
+                                    marginProp="0 24px 24px 0"
+                                >
                                     <Separator />
                                     <Box displayProp="flex" className="consumer-item-container">
                                         <ConsumerItem
-                                            ref={el => (consumerRefs[i] = el)}
+                                            //ref={el => (consumerRefs[i] = el)}
                                             consumer={consumer}
                                             consumers={consumers}
-
                                             dialogVisible={dialogVisible}
                                             selectedConsumer={selectedConsumer}
                                             onModalClose={onModalClose}
                                         />
-                                        <ConsumerToggle
-                                            ref={el => (toggleRefs[i] = el)}
-                                            name={consumer.name}
-                                            canSet={consumer.canSet}
-                                            onToggleClick={() => {
-                                                this.setState({ selectedConsumer: consumer.name })
-                                                onModalOpen()
-                                            }}
-                                        />
+                                        <Box onClick={this.selectConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
+                                            <ConsumerToggle
+                                                //ref={el => (toggleRefs[i] = el)}
+                                                consumer={consumer}
+                                                toggleClick={this.toggleClick}
+                                            />
+                                        </Box>
                                     </Box>
                                 </ConsumersContainer>
                             )}
