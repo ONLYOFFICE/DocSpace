@@ -90,10 +90,10 @@ if ("function" === typeof importScripts) {
     workbox.routing.registerRoute(
       // Cache API Request
       new RegExp("/api/2.0/(modules|people/@self|(.*)/info(.json|$))"),
-      workbox.strategies.staleWhileRevalidate({
+      new workbox.strategies.StaleWhileRevalidate({
         cacheName: "api-cache",
         plugins: [
-          new workbox.expiration.Plugin({
+          new workbox.expiration.ExpirationPlugin({
             maxEntries: 100,
             maxAgeSeconds: 30 * 60 // 30 Minutes
           })
