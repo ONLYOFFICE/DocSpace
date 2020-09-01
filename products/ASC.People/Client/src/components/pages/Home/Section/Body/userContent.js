@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
+import { RowContent, Link, LinkWithDropdown, Icons, Text, Box } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 
@@ -79,10 +79,6 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
   const nameColor = "#333";
   const sideInfoColor = "#333";
 
-  const headDepartmentStyle = {
-    width: '28%'
-  }
-
   return (
     <RowContent
       widthProp={widthProp}
@@ -110,7 +106,6 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
         <Text
           containerMinWidth='120px'
           containerWidth='20%'
-          //style={headDepartmentStyle}
           as="div"
           color={sideInfoColor}
           fontSize='12px'
@@ -120,11 +115,10 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
         >
           {title}
         </Text>
-        : <div 
+        : <Box 
           containerMinWidth='120px' 
           containerWidth='20%' 
-          //style={headDepartmentStyle}
-        ></div>
+        ></Box>
       }
       {groups}
       <Link
