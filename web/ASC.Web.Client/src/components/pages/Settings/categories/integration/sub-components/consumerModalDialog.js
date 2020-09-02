@@ -27,7 +27,7 @@ class ConsumerModalDialog extends React.Component {
     }
 
     onSendValues = () => {
-        this.props.onModalButtonClick();
+        this.props.onModalClose();
 
         const prop = [];
         let i = 0;

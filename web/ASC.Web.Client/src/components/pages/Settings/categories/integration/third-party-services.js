@@ -66,7 +66,7 @@ class ThirdPartyServices extends React.Component {
 
     onModalButtonClick = () => {
         //TODO: api -> set tokens, 
-        this.onModalClose();
+        //this.onModalClose();
         //this.setState({ toggleActive: true });
         console.log(this.state.selectedConsumer);
     }
