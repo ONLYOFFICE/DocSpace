@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Text, ToggleButton, Icons } from "asc-web-components";
-import ConsumerModalDialog from "./consumerModalDialog";
+import { Box, Text, Icons } from "asc-web-components";
 import ConsumerToggle from "./consumerToggle";
 
 class ConsumerItem extends React.Component {
@@ -9,17 +8,9 @@ class ConsumerItem extends React.Component {
         this.state = {}
     }
 
-    // onButtonClick = () => {
-    //     //TODO: api -> set tokens, 
-    //     this.props.onModalClose();
-    //     //this.setState({ toggleActive: true });
-    //     console.log(this.props.selectedConsumer);
-    // }
-
     render() {
 
-        const { dialogVisible, consumer, consumers, onModalClose, selectedConsumer, onToggleClick, setConsumer } = this.props;
-        const { onButtonClick } = this;
+        const { consumer, onToggleClick, setConsumer } = this.props;
 
         return (
             <>
@@ -28,7 +19,6 @@ class ConsumerItem extends React.Component {
                         justifyContent="space-between"
                         alignItems="center"
                         widthProp="100%"
-                        //marginProp="21px 0 0 0"
                     >
                         <Box>
                             <Text>{consumer.name}</Text>
@@ -40,7 +30,6 @@ class ConsumerItem extends React.Component {
                                 onToggleClick={onToggleClick}
                             />
                         </Box>
-
                     </Box>
                     <Box displayProp="flex" marginProp="21px 0 0 0">
                         <Text>
@@ -48,15 +37,6 @@ class ConsumerItem extends React.Component {
                         </Text>
                     </Box>
                 </Box>
-                {/* {dialogVisible &&
-                    <ConsumerModalDialog
-                        dialogVisible={dialogVisible}
-                        onModalClose={onModalClose}
-                        consumers={consumers}
-                        consumer={consumer}
-                        selectedConsumer={selectedConsumer}
-                        onButtonClick={onButtonClick}
-                    />} */}
             </>
         );
     }

@@ -6,7 +6,6 @@ import styled from "styled-components";
 
 import { Box, Text, Link } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
-import ConsumerToggle from "./sub-components/consumerToggle";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 
 const RootContainer = styled(Box)`
@@ -111,8 +110,6 @@ class ThirdPartyServices extends React.Component {
                         widthProp="100%"
                         displayProp="flex"
                         flexWrap="wrap"
-                        //alignItems="stretch"
-                        //alignContent="stretch"
                         marginProp="32px 176px 40px 0"
                     >
                         {consumers
@@ -134,12 +131,6 @@ class ThirdPartyServices extends React.Component {
                                             onToggleClick={onToggleClick}
                                             setConsumer={setConsumer}
                                         />
-                                        {/* <Box onClick={this.setConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
-                                            <ConsumerToggle
-                                                consumer={consumer}
-                                                onToggleClick={this.onToggleClick}
-                                            />
-                                        </Box> */}
                                     </Box>
                                 </StyledConsumer>
                             )}
