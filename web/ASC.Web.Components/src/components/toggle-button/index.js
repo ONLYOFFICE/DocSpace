@@ -7,14 +7,17 @@ import Text from "../text";
 const ToggleButtonContainer = styled.label`
   position: absolute;
   -webkit-appearance: none;
-  display: flex;
-  align-items: center;
+  align-items: start;
   outline: none;
 
   user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
   -webkit-user-select: none;
+
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-gap: 8px;
 
   ${props =>
     props.isDisabled
@@ -36,7 +39,7 @@ const ToggleButtonContainer = styled.label`
   }
 
   .toggleText {
-    margin-left: 8px;
+    margin-top: 2px;
   }
 `;
 
