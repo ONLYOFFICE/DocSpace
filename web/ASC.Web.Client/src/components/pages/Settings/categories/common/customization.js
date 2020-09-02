@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
-import { store, utils, api } from "asc-web-common";
+import { store, utils } from "asc-web-common";
 import {
   setLanguageAndTime,
   getPortalTimezones
@@ -102,8 +101,6 @@ class Customization extends React.Component {
     const timezones = mapTimezonesToArray(rawTimezones);
 
     document.title = `${t("Customization")} – ${t("OrganizationName")}`;
-
-    changeLanguage(props.i18n);
 
     this.state = {
       isLoadedData: false,
@@ -235,10 +232,11 @@ class Customization extends React.Component {
                 color="#333333"
               />
             </div>
-            <Text className="category-item-subheader" truncate={true}>
-              {" "}
-              {language.label} / {timezone.label}{" "}
-            </Text>
+            {language && language.label && timezone && timezone.label && (
+              <Text className="category-item-subheader" truncate={true}>
+                {`${language.label} / ${timezone.label}`}
+              </Text>
+            )}
             <Text className="category-item-description">
               {t("LanguageAndTimeZoneSettingsDescription")}
             </Text>
@@ -273,8 +271,8 @@ function mapStateToProps(state) {
   return {
     portalLanguage: state.auth.settings.culture,
     portalTimeZoneId: state.auth.settings.timezone,
-    language: state.auth.user.cultureName ||
-      state.auth.settings.culture || { label: "en-US" },
+    language:
+      state.auth.user.cultureName || state.auth.settings.culture || "en-US",
     rawTimezones: state.auth.settings.timezones,
     rawCultures: state.auth.settings.cultures,
     nameSchemaId: state.auth.settings.nameSchemaId
