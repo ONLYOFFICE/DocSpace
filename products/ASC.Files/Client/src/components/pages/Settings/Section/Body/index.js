@@ -21,13 +21,12 @@ const StyledSettings = styled.div`
   grid-gap: 10px;
 
   .toggle-btn {
-    display: block;
     position: relative;
   }
 
   .heading {
     margin-bottom: 0;
-    margin-top: 14px;
+    margin-top: 22px;
   }
 `;
 
