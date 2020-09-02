@@ -8,11 +8,11 @@ const { i18nBaseSettings } = constants;
  * @param {object} object with method,url,data etc.
  */
 export const createI18N = function(options) {
-  const { page, localesPath } = options;
+  const { page, localesPath, forceBackend } = options;
 
   const newInstance = i18n.createInstance();
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" || forceBackend) {
     newInstance.use(Backend).init({
       ...i18nBaseSettings,
       backend: {
