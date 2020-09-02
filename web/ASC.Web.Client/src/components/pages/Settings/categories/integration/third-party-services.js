@@ -147,6 +147,8 @@ class ThirdPartyServices extends React.Component {
                 </RootContainer>
                 {dialogVisible &&
                     <ConsumerModalDialog
+                        t={t}
+                        i18n={this.props.i18n}
                         dialogVisible={dialogVisible}
                         consumers={consumers}
                         selectedConsumer={selectedConsumer}

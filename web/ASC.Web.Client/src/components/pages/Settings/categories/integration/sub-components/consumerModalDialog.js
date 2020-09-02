@@ -1,5 +1,6 @@
 import React from "react";
 import { ModalDialog, Text, Button, TextInput, Box, Link } from "asc-web-components";
+import { Trans } from 'react-i18next';
 
 class ConsumerModalDialog extends React.Component {
 
@@ -27,7 +28,7 @@ class ConsumerModalDialog extends React.Component {
 
     onSendValues = () => {
         this.props.onModalButtonClick();
-        
+
         const prop = [];
         let i = 0;
         let stateLength = Object.keys(this.state).length;
@@ -50,26 +51,30 @@ class ConsumerModalDialog extends React.Component {
 
     render() {
 
-        const { consumers, selectedConsumer, onModalClose, dialogVisible } = this.props;
+        const { consumers, selectedConsumer, onModalClose, dialogVisible, t, i18n } = this.props;
         const { onChangeHandler } = this;
 
         const bodyDescription = (
             <>
-                <Text isBold={true}>Как это работает?</Text>
-                <Text>Для получения подробных инструкций по подключению этого сервиса, пожалуйста, перейдите в наш Справочный центр, где приводится вся необходимая информация.</Text>
+                <Text isBold={true}>{t("ThirdPartyHowItWorks")}</Text>
+                <Text>{t("ThirdPartyBodyDescription")}</Text>
+            </>
+        );
+        const supportTeamLink = (
+            <>
+                <Link
+                    color="#316DAA"
+                    isHovered={false}
+                    target="_blank"
+                    href="http://support.onlyoffice.com/ru">
+                    Support Team
+        </Link>
             </>
         );
         const bottomDescription = (
-            <>
-                <Text>
-                    Если у вас остались вопросы по подключению этого сервиса или вам требуется помощь, вы всегда можете обратиться в нашу
-                {" "}
-                    <Link
-                        isHovered={true}
-                        target="_blank"
-                        href="http://support.onlyoffice.com/ru">
-                        Службу техподдержки
-                            </Link>.</Text></>
+            <Trans i18nKey="ThirdPartyBottomDescription" i18n={i18n}>
+                <Text>If you still have some questions on how to connect this service or need technical assistance, please feel free to contact our <Text isBold={true}>Support Team</Text></Text>
+            </Trans>
         );
 
         const getConsumerName = () => {
@@ -116,7 +121,7 @@ class ConsumerModalDialog extends React.Component {
                     <Button
                         primary
                         size="medium"
-                        label="Включить"
+                        label={t("ThirdPartyEnableButton")}
                         onClick={this.onSendValues} />,
                     <Text>{bottomDescription}</Text>
                 ]}
