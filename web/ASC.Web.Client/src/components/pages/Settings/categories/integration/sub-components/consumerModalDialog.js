@@ -55,21 +55,23 @@ class ConsumerModalDialog extends React.Component {
         const { onChangeHandler } = this;
 
         const bodyDescription = (
-            <>
-                <Text isBold={true}>{t("ThirdPartyHowItWorks")}</Text>
+            <Box marginProp="44px 0 16px 0">
+                <Box marginProp="0 0 16px 0">
+                    <Text isBold={true} fontSize="15px">
+                        {t("ThirdPartyHowItWorks")}
+                    </Text>
+                </Box>
                 <Text>{t("ThirdPartyBodyDescription")}</Text>
-            </>
+            </Box>
         );
         const supportTeamLink = (
-            <>
-                <Link
-                    color="#316DAA"
-                    isHovered={false}
-                    target="_blank"
-                    href="http://support.onlyoffice.com/ru">
-                    Support Team
-        </Link>
-            </>
+            <Link
+                color="#316DAA"
+                isHovered={false}
+                target="_blank"
+                href="http://support.onlyoffice.com/ru">
+                Support Team
+            </Link>
         );
         const bottomDescription = (
             <Trans i18nKey="ThirdPartyBottomDescription" i18n={i18n}>
@@ -90,15 +92,17 @@ class ConsumerModalDialog extends React.Component {
                 .props
                 .map((prop, i) =>
                     <React.Fragment key={i}>
-                        <Box displayProp="flex" flexDirection="column">
-                            <Box>
+                        <Box displayProp="flex" flexDirection="column" marginProp="0 0 16px 0">
+                            <Box marginProp="0 0 4px 0">
                                 <Text isBold={true}>{prop.title}:</Text>
                             </Box>
                             <Box>
                                 <TextInput
+                                    scale
                                     name={prop.name}
                                     placeholder={prop.title}
                                     isAutoFocussed={i === 0 && true}
+                                    tabIndex={1}
                                     value={Object.values(this.state)[i]}
                                     onChange={onChangeHandler}
                                 />
@@ -115,15 +119,16 @@ class ConsumerModalDialog extends React.Component {
                 bodyContent={[
                     <Text>{getInnerDescription()}</Text>,
                     <Text>{bodyDescription}</Text>,
-                    <React.Fragment>{getInputFields()}</React.Fragment>
+                    <React.Fragment>{getInputFields()}</React.Fragment>,
+                    <Text>{bottomDescription}</Text>
                 ]}
                 footerContent={[
                     <Button
                         primary
-                        size="medium"
+                        size="big"
                         label={t("ThirdPartyEnableButton")}
-                        onClick={this.onSendValues} />,
-                    <Text>{bottomDescription}</Text>
+                        tabIndex={1}
+                        onClick={this.onSendValues} />
                 ]}
                 onClose={onModalClose}
             />
