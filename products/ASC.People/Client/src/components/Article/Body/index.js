@@ -166,9 +166,10 @@ const BodyContent = props => {
 
 function mapStateToProps(state) {
   const groups = state.people.groups;
+  const { groupsCaption } = state.auth.settings.customNames;
 
   return {
-    data: getTreeGroups(groups, state.auth.settings.customNames.groupsCaption),
+    data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
