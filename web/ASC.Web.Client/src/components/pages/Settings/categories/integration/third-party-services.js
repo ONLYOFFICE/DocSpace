@@ -7,15 +7,25 @@ import styled from "styled-components";
 import { Box, Text, Link } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerToggle from "./sub-components/consumerToggle";
+import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 
 const RootContainer = styled(Box)`
 
   @media (max-width: 768px) {
     margin: 0;
+
+    .consumers-list-container {
+        margin: 32px 0 40px 0;
+        }
     }
 `;
 const StyledConsumer = styled(Box)`
 
+  @media (max-width: 768px) {
+    .consumer-item-wrapper {
+        width: 496px;
+        }
+    }
   @media (max-width: 375px) {
     margin: 0;
     }
@@ -55,6 +65,13 @@ class ThirdPartyServices extends React.Component {
         })
     }
 
+    onModalButtonClick = () => {
+        //TODO: api -> set tokens, 
+        this.onModalClose();
+        //this.setState({ toggleActive: true });
+        console.log(this.state.selectedConsumer);
+    }
+
     onToggleClick = () => {
         this.onModalOpen();
     }
@@ -69,7 +86,7 @@ class ThirdPartyServices extends React.Component {
 
         const { t, consumers } = this.props;
         const { selectedConsumer, dialogVisible } = this.state;
-        const { onModalClose } = this;
+        const { onModalClose, onToggleClick, setConsumer, onModalButtonClick } = this;
 
         return (
             <>
@@ -94,13 +111,14 @@ class ThirdPartyServices extends React.Component {
                         widthProp="100%"
                         displayProp="flex"
                         flexWrap="wrap"
-                        alignItems="stretch"
-                        alignContent="stretch"
+                        //alignItems="stretch"
+                        //alignContent="stretch"
                         marginProp="32px 176px 40px 0"
                     >
                         {consumers
                             .map((consumer, i) =>
                                 <StyledConsumer
+                                    className="consumer-item-wrapper"
                                     key={i}
                                     widthProp="400px"
                                     marginProp="0 24px 24px 0"
@@ -113,18 +131,28 @@ class ThirdPartyServices extends React.Component {
                                             dialogVisible={dialogVisible}
                                             selectedConsumer={selectedConsumer}
                                             onModalClose={onModalClose}
+                                            onToggleClick={onToggleClick}
+                                            setConsumer={setConsumer}
                                         />
-                                        <Box onClick={this.setConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
+                                        {/* <Box onClick={this.setConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
                                             <ConsumerToggle
                                                 consumer={consumer}
                                                 onToggleClick={this.onToggleClick}
                                             />
-                                        </Box>
+                                        </Box> */}
                                     </Box>
                                 </StyledConsumer>
                             )}
                     </Box>
                 </RootContainer>
+                {dialogVisible &&
+                    <ConsumerModalDialog
+                        dialogVisible={dialogVisible}
+                        consumers={consumers}
+                        selectedConsumer={selectedConsumer}
+                        onModalClose={onModalClose}
+                        onModalButtonClick={onModalButtonClick}
+                    />}
             </>
         )
     }

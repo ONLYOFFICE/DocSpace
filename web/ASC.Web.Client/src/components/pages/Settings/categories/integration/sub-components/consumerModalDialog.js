@@ -26,9 +26,8 @@ class ConsumerModalDialog extends React.Component {
     }
 
     onSendValues = () => {
-
-        this.props.onButtonClick();
-
+        this.props.onModalButtonClick();
+        
         const prop = [];
         let i = 0;
         let stateLength = Object.keys(this.state).length;

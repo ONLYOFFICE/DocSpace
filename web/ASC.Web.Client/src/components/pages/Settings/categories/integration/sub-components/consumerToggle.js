@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, ToggleButton, Icons } from "asc-web-components";
+import { Box, ToggleButton, Icons } from "asc-web-components";
 import styled from "styled-components";
 
 const StyledToggle = styled(ToggleButton)`
@@ -29,7 +29,7 @@ class ConsumerToggle extends React.Component {
 
     render() {
 
-        const { name, onModalOpen, consumer } = this.props;
+        const { consumer } = this.props;
         const { toggleActive } = this.state;
         const { toggleClick } = this;
 
