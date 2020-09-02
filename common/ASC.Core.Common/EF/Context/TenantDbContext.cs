@@ -1,4 +1,5 @@
-﻿using ASC.Common;
+﻿
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
@@ -20,20 +21,16 @@ namespace ASC.Core.Common.EF.Context
         public TenantDbContext(DbContextOptions<TenantDbContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.MySqlAddUser();
-            modelBuilder.MySqlAddCoreSettings();
-            modelBuilder.MySqlAddDbTenant();
-            modelBuilder.MySqlAddUserSecurity();
-            modelBuilder.MySqlAddDbTenantForbiden();
-            modelBuilder.MySqlAddTenantIpRestrictions();
-            modelBuilder.MySqlAddDbTenantPartner();
-            modelBuilder.MySqlAddDbTenantVersion();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddUser()
+                .Finish();
 
-            modelBuilder.PgSqlAddUser();
             modelBuilder.PgSqlAddCoreSettings();
             modelBuilder.PgSqlAddDbTenant();
             modelBuilder.PgSqlAddUserSecurity();
@@ -44,6 +41,7 @@ namespace ASC.Core.Common.EF.Context
 
             OnModelCreatingPartial(modelBuilder);
         }
+
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 

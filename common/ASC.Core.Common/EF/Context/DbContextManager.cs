@@ -26,7 +26,13 @@ namespace ASC.Core.Common.EF
         {
             if (!Pairs.ContainsKey(name))
             {
-                Pairs.Add(name, base.Get(name));
+                var t = base.Get(name);
+                Pairs.Add(name, t);
+
+                if (t is BaseDbContext dbContext)
+                {
+                    dbContext.Database.EnsureCreated();
+                }
             }
 
             return Pairs[name];
@@ -78,7 +84,6 @@ namespace ASC.Core.Common.EF
                 services.TryAddScoped<MultiRegionalDbContextManager<T>>();
                 services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
                 services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
-
                 return services.AddLoggerService();
             }
             return services;

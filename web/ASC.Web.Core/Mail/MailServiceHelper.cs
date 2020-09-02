@@ -165,7 +165,7 @@ namespace ASC.Web.Core.Mail
 
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
             var options = dbContextOptionsBuilder
-                .UseMySql(connectionString)
+                //.UseMySql(connectionString)
                 .UseNpgsql(connectionString)
                 .UseLoggerFactory(LoggerFactory)
                 .Options;
@@ -185,7 +185,7 @@ namespace ASC.Web.Core.Mail
 
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
             var options = dbContextOptionsBuilder
-                .UseMySql(connectionString)
+                //.UseMySql(connectionString)
                 .UseNpgsql(connectionString)
                 .UseLoggerFactory(LoggerFactory)
                 .Options;
