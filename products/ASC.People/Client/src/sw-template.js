@@ -23,7 +23,9 @@ if ("function" === typeof importScripts) {
     // Image caching
     workbox.routing.registerRoute(
       // Cache image files.
-      ({ request }) => request.destination === "image",
+      ({ request, url }) =>
+        request.destination === "image" &&
+        url.pathname.indexOf("userPhotos/temp") === -1,
       // Use the cache if it's available.
       new workbox.strategies.CacheFirst({
         // Use a custom cache name.
