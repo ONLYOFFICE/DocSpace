@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
 //import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -121,7 +121,9 @@ class PureAccessRights extends Component {
 const AccessRightsContainer = withTranslation()(PureAccessRights);
 
 const AccessRights = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
     <I18nextProvider i18n={i18n}>

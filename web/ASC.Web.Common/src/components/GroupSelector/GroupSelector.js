@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
-import { changeLanguage } from '../../utils';
+import { changeLanguage } from "../../utils";
 
 class GroupSelector extends React.Component {
   constructor(props) {
@@ -113,7 +113,9 @@ class GroupSelector extends React.Component {
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
-        searchPlaceHolderLabel={searchPlaceHolderLabel || t("SearchPlaceholder")}
+        searchPlaceHolderLabel={
+          searchPlaceHolderLabel || t("SearchPlaceholder")
+        }
         selectButtonLabel={t("AddDepartmentsButtonLabel")}
         selectAllLabel={t("SelectAllLabel")}
         emptySearchOptionsLabel={t("EmptySearchOptionsLabel")}
@@ -156,7 +158,9 @@ GroupSelector.defaultProps = {
 const ExtendedGroupSelector = withTranslation()(GroupSelector);
 
 const GroupSelectorWithI18n = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return <ExtendedGroupSelector i18n={i18n} {...props} />;
 };

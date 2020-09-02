@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
@@ -25,7 +25,9 @@ const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 
 const Confirm = ({ match }) => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   //console.log("Confirm render");
   return (
