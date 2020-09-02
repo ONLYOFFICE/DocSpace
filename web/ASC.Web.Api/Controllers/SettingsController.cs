@@ -79,6 +79,7 @@ using ASC.Web.Studio.UserControls.CustomNavigation;
 using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+using ASC.Data.Storage.Encryption;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -148,6 +149,7 @@ namespace ASC.Api.Settings
         private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
         private CoreSettings CoreSettings { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
+        private EncryptionServiceClient EncryptionServiceClient { get; }
         public ILog Log { get; set; }
 
         public SettingsController(
@@ -200,6 +202,7 @@ namespace ASC.Api.Settings
             ProviderManager providerManager,
             MobileDetector mobileDetector,
             IOptionsSnapshot<AccountLinker> accountLinker,
+            EncryptionServiceClient encryptionServiceClient,
             FirstTimeTenantSettings firstTimeTenantSettings)
         {
             Log = option.Get("ASC.Api");
@@ -252,6 +255,7 @@ namespace ASC.Api.Settings
             StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
             CoreSettings = coreSettings;
             StorageSettingsHelper = storageSettingsHelper;
+            EncryptionServiceClient = encryptionServiceClient;
         }
 
         [Read("", Check = false)]
@@ -1650,6 +1654,25 @@ namespace ASC.Api.Settings
             }
         }
 
+        [Read("encryption")]
+        public void StartEncryption(EncryptionSettingsModel settings)
+          {
+            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
+            {
+                NotifyUsers = settings.NotifyUsers,
+                Password = settings.Password,
+                Status = settings.Status
+            };
+            EncryptionServiceClient.Start(encryptionSettingsProto);
+            EncryptionServiceClient.Get();
+        }
+
+        [Read("encryptionStop")]
+        public void StopEncryption()
+        {
+            EncryptionServiceClient.Stop();
+        }
+
         [Delete("storage")]
         public void ResetStorageToDefault()
         {
@@ -1754,6 +1777,7 @@ namespace ASC.Api.Settings
             Tenant.SetStatus(TenantStatus.Migrating);
             TenantManager.SaveTenant(Tenant);
         }
+        
 
         [Read("socket")]
         public object GetSocketSettings()
@@ -1837,7 +1861,8 @@ namespace ASC.Api.Settings
                 .AddProviderManagerService()
                 .AddAccountLinker()
                 .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings();
+                .AddFirstTimeTenantSettings()
+                .AddEEncryptionServiceClient();
         }
     }
 }

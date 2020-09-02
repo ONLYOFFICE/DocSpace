@@ -62,11 +62,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files.Core", "products\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Socket.IO.Svc", "common\services\ASC.Socket.IO.Svc\ASC.Socket.IO.Svc.csproj", "{2DADEAD3-0FE9-4199-9817-41A32E6BF450}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Encryption", "common\services\ASC.Data.Storage.Encryption\ASC.Data.Storage.Encryption.csproj", "{A5A5335B-559A-4B9B-8EE6-F740602CF912}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
 		Debug|Any CPU = Debug|Any CPU
-		Release_Ubuntu|Any CPU = Release_Ubuntu|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -182,6 +182,10 @@ Global
 		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A5335B-559A-4B9B-8EE6-F740602CF912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A5335B-559A-4B9B-8EE6-F740602CF912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A5335B-559A-4B9B-8EE6-F740602CF912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A5335B-559A-4B9B-8EE6-F740602CF912}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

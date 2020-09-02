@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -40,7 +39,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using WebSocketSharp;
-using Microsoft.Extensions.Logging;
 
 namespace ASC.Socket.IO.Svc
 {

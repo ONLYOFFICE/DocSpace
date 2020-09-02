@@ -632,6 +632,14 @@ namespace ASC.Data.Storage.DiscStorage
             return File.Open(target, FileMode.Create);
         }
 
+        public Stream GetWriteStream(string domain, string path, FileMode mode)
+        {
+            if (path == null) throw new ArgumentNullException("path");
+            var target = GetTarget(domain, path);
+            CreateDirectory(target);
+            return File.Open(target, mode);
+        }
+
         private static void CreateDirectory(string target)
         {
             var targetDirectory = Path.GetDirectoryName(target);
@@ -657,6 +665,38 @@ namespace ASC.Data.Storage.DiscStorage
             {
                 //Throw
                 throw new ArgumentException("bad path");
+            }
+        }
+
+        public void Encrypt(string domain, string path)
+        {
+            if (path == null) throw new ArgumentNullException("path");
+
+            var target = GetTarget(domain, path);
+
+            if (File.Exists(target))
+            {
+                new FileInfo(target).Encrypt();
+            }
+            else
+            {
+                throw new FileNotFoundException("file not found", target);
+            }
+        }
+
+        public void Decrypt(string domain, string path)
+        {
+            if (path == null) throw new ArgumentNullException("path");
+
+            var target = GetTarget(domain, path);
+
+            if (File.Exists(target))
+            {
+                new FileInfo(target).Decrypt();
+            }
+            else
+            {
+                throw new FileNotFoundException("file not found", target);
             }
         }
     }
