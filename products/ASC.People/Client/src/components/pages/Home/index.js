@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -109,10 +109,7 @@ class PureHome extends React.Component {
           fontSize="12px"
           fontColor={"#999"}
         />
-        <PageLayout 
-        withBodyScroll={true} 
-        withBodyAutoFocus={!isMobile}
-        >
+        <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
@@ -161,7 +158,10 @@ class PureHome extends React.Component {
 const HomeContainer = withTranslation()(PureHome);
 
 const Home = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+
   return (
     <I18nextProvider i18n={i18n}>
       <HomeContainer {...props} />

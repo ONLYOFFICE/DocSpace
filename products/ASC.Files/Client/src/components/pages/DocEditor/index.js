@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -65,7 +65,9 @@ class PureEditor extends React.Component {
 const EditorContainer = withTranslation()(PureEditor);
 
 const DocEditor = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
       <EditorContainer {...props} />

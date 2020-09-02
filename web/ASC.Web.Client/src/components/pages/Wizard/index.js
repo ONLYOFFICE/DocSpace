@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
@@ -508,7 +508,9 @@ const WizardWrapper = withTranslation()(Body);
 const WizardPage = props => {
   const { isLoaded } = props;
 
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
     <>

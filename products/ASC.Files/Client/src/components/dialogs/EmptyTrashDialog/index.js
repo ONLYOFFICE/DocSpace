@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { toastr, ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
@@ -26,7 +26,9 @@ const EmptyTrashDialogComponent = props => {
     isLoading
   } = props;
 
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   const loopEmptyTrash = useCallback(
     id => {

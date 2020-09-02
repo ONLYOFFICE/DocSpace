@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
 import { history } from "asc-web-common";
@@ -156,7 +156,10 @@ const getTreeGroups = (groups, departments) => {
 const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
 
 const BodyContent = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+
   return (
     <I18nextProvider i18n={i18n}>
       <ArticleBodyContentWrapper {...props} />
@@ -166,9 +169,10 @@ const BodyContent = props => {
 
 function mapStateToProps(state) {
   const groups = state.people.groups;
+  const { groupsCaption } = state.auth.settings.customNames;
 
   return {
-    data: getTreeGroups(groups, state.auth.settings.customNames.groupsCaption),
+    data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
