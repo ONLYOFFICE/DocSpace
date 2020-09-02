@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
 import moment from "moment";
 // import moment "moment/min/moment-with-locales";
 import { Text, utils } from "asc-web-components";
-import { Error401 } from "asc-web-common";
+import { history } from "asc-web-common";
 const { tablet } = utils.device;
 
 const StyledHeader = styled.div`
@@ -67,6 +68,12 @@ const StyledHeader = styled.div`
   }
 `;
 
+const onRedirect = () => {
+  history.push("/settings");
+  alert("yes");
+  // window.location.href = "https://about";
+};
+
 const HeaderContainer = ({
   t,
   expiresDate,
@@ -80,6 +87,14 @@ const HeaderContainer = ({
   require("moment/min/locales.min");
   moment.locale(culture);
   const currentUserDate = moment().utcOffset(utcHoursOffset);
+
+  // onError = (e) => {
+  //   alert("onError", e);
+  // };
+  let error = new Error();
+  error.message = "Not Found";
+  error.status = 402;
+
   return moment(
     moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
   ).isAfter(
@@ -107,9 +122,9 @@ const HeaderContainer = ({
     </StyledHeader>
   ) : (
     <StyledHeader>
-      <Text className="payments-header">{t("ThanksToUser")}</Text>
+      <Text className="payments-header">{t("TrialPeriodExpired")}</Text>
       <Text className="payments-header-additional_support">
-        {t("TrialPeriodExpired")}
+        {t("ThanksToUser")}
       </Text>
     </StyledHeader>
   );
