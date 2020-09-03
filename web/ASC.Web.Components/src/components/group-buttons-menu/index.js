@@ -16,7 +16,7 @@ const StyledGroupButtonsMenu = styled.div`
     height: 57px;
     list-style: none;
     padding: 0 18px 19px 0;
-    width: ${props => props.width ? props.width + 'px' : '100%'};;
+    width: ${props => props.containerWidth ? props.containerWidth + 'px' : '100%'};;
     white-space: nowrap;
     display: ${props => props.visible ? 'block' : 'none'};
     z-index: 195;
@@ -179,7 +179,7 @@ class GroupButtonsMenu extends React.PureComponent {
     const { priorityItems, moreItems, visible, width } = this.state;
 
     return (
-      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible} width={width} >
+      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible} containerWidth={width} >
         <GroupMenuWrapper id="groupMenu">
           {priorityItems.map((item, i) =>
             <GroupButton

@@ -1,5 +1,6 @@
 import React from "react";
-import { Trans } from 'react-i18next';
+import { Trans } from "react-i18next";
+import axios from "axios";
 import {
   Text,
   IconButton,
@@ -8,7 +9,7 @@ import {
   ComboBox,
   HelpButton
 } from "asc-web-components";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { history, api, store as commonStore } from "asc-web-common";
 import { connect } from "react-redux";
 import store from "../../../../../../store/store";
@@ -59,41 +60,45 @@ const InfoItemValue = styled.div`
   }
   .help-icon {
     display: inline-flex;
-    
-    @media(min-width: 1025px) {
+
+    @media (min-width: 1025px) {
       margin-top: 6px;
     }
-    @media(max-width: 1024px) {
+    @media (max-width: 1024px) {
       padding: 6px 24px 8px 8px;
       margin-left: -8px;
-    }  
+    }
   }
 `;
 
 const IconButtonWrapper = styled.div`
-  ${props => props.isBefore
-    ? `margin-right: 8px;`
-    : `margin-left: 8px;`
-  }
+  ${props => (props.isBefore ? `margin-right: 8px;` : `margin-left: 8px;`)}
 
   display: inline-flex;
 
   :hover {
     & > div > svg > path {
-      fill: #3B72A7;
+      fill: #3b72a7;
     }
   }
 `;
 
-const onGroupClick = (department) => {
-  history.push(`/products/people/filter?group=${department.id}`)
+const onGroupClick = e => {
+  const id = e.currentTarget.dataset.id;
+  history.push(`/products/people/filter?group=${id}`);
 };
 
 const getFormattedDepartments = departments => {
   const formattedDepartments = departments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="page" fontSize='13px' isHovered={true} onClick={onGroupClick.bind(this, department)}>
+        <Link
+          type="page"
+          fontSize="13px"
+          isHovered={true}
+          data-id={department.id}
+          onClick={onGroupClick}
+        >
           {department.name}
         </Link>
         {departments.length - 1 !== index ? ", " : ""}
@@ -114,9 +119,9 @@ class ProfileInfo extends React.PureComponent {
     this.state = this.mapPropsToState(props);
   }
 
-  mapPropsToState = (props) => {
+  mapPropsToState = props => {
     const newState = {
-      profile: props.profile,
+      profile: props.profile
     };
 
     return newState;
@@ -128,35 +133,64 @@ class ProfileInfo extends React.PureComponent {
       .catch(error => toastr.error(error));
   };
 
-  onEmailClick = (e, email) => {
-    if (e.target.title)
-      window.open("mailto:" + email);
-  }
+  onEmailClick = e => {
+    const email = e.currentTarget.dataset.email;
+    if (e.target.title) window.open("mailto:" + email);
+  };
 
-  onLanguageSelect = (language) => {
+  onLanguageSelect = language => {
     console.log("onLanguageSelect", language);
     const { profile, updateProfileCulture, nameSchemaId } = this.props;
 
     if (profile.cultureName === language.key) return;
 
     updateProfileCulture(profile.id, language.key)
-      .then(() => getModules(store.dispatch))
-      .then(() => getCurrentCustomSchema(store.dispatch, nameSchemaId));
-  }
+      .then(() => {
+        if (!nameSchemaId) return;
+
+        return axios.all([
+          getModules(store.dispatch),
+          getCurrentCustomSchema(store.dispatch, nameSchemaId)
+        ]);
+      })
+      .catch(err => console.log(err));
+  };
 
   getLanguages = () => {
     const { cultures, t } = this.props;
 
-    return cultures.map((culture) => {
+    return cultures.map(culture => {
       return { key: culture, label: t(`Culture_${culture}`) };
     });
-  }
+  };
 
   render() {
-    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = this.props.profile;
+    const {
+      isVisitor,
+      email,
+      activationStatus,
+      department,
+      groups,
+      title,
+      mobilePhone,
+      sex,
+      workFrom,
+      birthday,
+      location,
+      cultureName,
+      currentCulture
+    } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
-    const { t, i18n, userPostCaption, regDateCaption, groupCaption, userCaption, guestCaption } = this.props;
+    const {
+      t,
+      i18n,
+      userPostCaption,
+      regDateCaption,
+      groupCaption,
+      userCaption,
+      guestCaption
+    } = this.props;
     const type = isVisitor ? guestCaption : userCaption;
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
@@ -166,134 +200,105 @@ class ProfileInfo extends React.PureComponent {
     const formatedSex = capitalizeFirstLetter(sex);
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
-    const tooltipLanguage =
-      <Text fontSize='13px'>
+    const tooltipLanguage = (
+      <Text fontSize="13px">
         <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
-          "In case you cannot find your language in the list of the
-          available ones, feel free to write to us at
+          "In case you cannot find your language in the list of the available
+          ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
             {{ supportEmail }}
-          </Link> to take part in the translation and get up to 1 year free of
-          charge."
-        </Trans>
-        {" "}
-        <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
+          </Link>{" "}
+          to take part in the translation and get up to 1 year free of charge."
+        </Trans>{" "}
+        <Link
+          isHovered={true}
+          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+        >
+          {t("LearnMore")}
+        </Link>
       </Text>
+    );
 
     return (
       <InfoContainer>
         <InfoItem>
-          <InfoItemLabel>
-            {t('UserType')}:
-          </InfoItemLabel>
-          <InfoItemValue>
-            {type}
-          </InfoItemValue>
+          <InfoItemLabel>{t("UserType")}:</InfoItemLabel>
+          <InfoItemValue>{type}</InfoItemValue>
         </InfoItem>
-        {email &&
+        {email && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('Email')}:
-            </InfoItemLabel>
+            <InfoItemLabel>{t("Email")}:</InfoItemLabel>
             <InfoItemValue>
               <>
-                {activationStatus === 2 && (isAdmin || isSelf) &&
-                  <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
+                {activationStatus === 2 && (isAdmin || isSelf) && (
+                  <IconButtonWrapper isBefore={true} title={t("PendingTitle")}>
                     <IconButton
-                      color='#C96C27'
+                      color="#C96C27"
                       size={16}
-                      iconName='DangerIcon'
-                      isFill={true} />
+                      iconName="DangerIcon"
+                      isFill={true}
+                    />
                   </IconButtonWrapper>
-                }
+                )}
                 <Link
                   type="page"
-                  fontSize='13px'
+                  fontSize="13px"
                   isHovered={true}
                   title={email}
-                  onClick={this.onEmailClick.bind(email)}
+                  data-email={email}
+                  onClick={this.onEmailClick}
                 >
                   {email}
                 </Link>
               </>
             </InfoItemValue>
           </InfoItem>
-        }
-        {(mobilePhone) &&
+        )}
+        {mobilePhone && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('PhoneLbl')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {mobilePhone}
-            </InfoItemValue>
+            <InfoItemLabel>{t("PhoneLbl")}:</InfoItemLabel>
+            <InfoItemValue>{mobilePhone}</InfoItemValue>
           </InfoItem>
-        }
-        {sex &&
+        )}
+        {sex && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('Sex')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {formatedSex}
-            </InfoItemValue>
+            <InfoItemLabel>{t("Sex")}:</InfoItemLabel>
+            <InfoItemValue>{formatedSex}</InfoItemValue>
           </InfoItem>
-        }
-        {birthday &&
+        )}
+        {birthday && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('Birthdate')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {birthDayDate}
-            </InfoItemValue>
+            <InfoItemLabel>{t("Birthdate")}:</InfoItemLabel>
+            <InfoItemValue>{birthDayDate}</InfoItemValue>
           </InfoItem>
-        }
-        {title &&
+        )}
+        {title && (
           <InfoItem>
-            <InfoItemLabel>
-              {userPostCaption}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {title}
-            </InfoItemValue>
+            <InfoItemLabel>{userPostCaption}:</InfoItemLabel>
+            <InfoItemValue>{title}</InfoItemValue>
           </InfoItem>
-        }
-        {department &&
+        )}
+        {department && (
           <InfoItem>
-            <InfoItemLabel>
-              {groupCaption}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {formatedDepartments}
-            </InfoItemValue>
+            <InfoItemLabel>{groupCaption}:</InfoItemLabel>
+            <InfoItemValue>{formatedDepartments}</InfoItemValue>
           </InfoItem>
-        }
-        {location &&
+        )}
+        {location && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('Location')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {location}
-            </InfoItemValue>
+            <InfoItemLabel>{t("Location")}:</InfoItemLabel>
+            <InfoItemValue>{location}</InfoItemValue>
           </InfoItem>
-        }
-        {workFrom &&
+        )}
+        {workFrom && (
           <InfoItem>
-            <InfoItemLabel>
-              {regDateCaption}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {workFromDate}
-            </InfoItemValue>
+            <InfoItemLabel>{regDateCaption}:</InfoItemLabel>
+            <InfoItemValue>{workFromDate}</InfoItemValue>
           </InfoItem>
-        }
-        {isSelf &&
+        )}
+        {isSelf && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('Language')}:
-            </InfoItemLabel>
+            <InfoItemLabel>{t("Language")}:</InfoItemLabel>
             <InfoItemValue>
               <ComboBox
                 options={languages}
@@ -303,35 +308,43 @@ class ProfileInfo extends React.PureComponent {
                 noBorder={true}
                 scaled={false}
                 scaledOptions={false}
-                size='content'
-                className='language-combo'
+                size="content"
+                className="language-combo"
               />
               <HelpButton
                 place="bottom"
                 offsetLeft={50}
                 offsetRight={0}
                 tooltipContent={tooltipLanguage}
-                helpButtonHeaderContent={t('Language')}
+                helpButtonHeaderContent={t("Language")}
                 className="help-icon"
               />
             </InfoItemValue>
-
           </InfoItem>
-        }
+        )}
       </InfoContainer>
     );
   }
-};
+}
 
 function mapStateToProps(state) {
+  const { customNames, nameSchemaId } = state.auth.settings;
+  const {
+    groupCaption,
+    regDateCaption,
+    userPostCaption,
+    userCaption,
+    guestCaption
+  } = customNames;
+
   return {
-    groupCaption: state.auth.settings.customNames.groupCaption,
-    regDateCaption: state.auth.settings.customNames.regDateCaption,
-    userPostCaption: state.auth.settings.customNames.userPostCaption,
-    userCaption: state.auth.settings.customNames.userCaption,
-    guestCaption: state.auth.settings.customNames.guestCaption,
-    nameSchemaId: state.auth.settings.nameSchemaId
-  }
+    groupCaption,
+    regDateCaption,
+    userPostCaption,
+    userCaption,
+    guestCaption,
+    nameSchemaId
+  };
 }
 
 export default connect(mapStateToProps)(ProfileInfo);

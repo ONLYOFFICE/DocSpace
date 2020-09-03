@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+
 using ASC.Data.Backup.Extensions;
 
 namespace ASC.Data.Backup.Tasks.Data
@@ -41,10 +42,10 @@ namespace ASC.Data.Backup.Tasks.Data
         public static IEnumerable<DataRowInfo> ReadFromStream(Stream stream)
         {
             var readerSettings = new XmlReaderSettings
-                {
-                    CheckCharacters = false,
-                    CloseInput = false
-                };
+            {
+                CheckCharacters = false,
+                CloseInput = false
+            };
 
             using (var xmlReader = XmlReader.Create(stream, readerSettings))
             {

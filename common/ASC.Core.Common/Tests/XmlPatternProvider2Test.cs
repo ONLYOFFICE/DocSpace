@@ -26,8 +26,10 @@
 
 #if (DEBUG)
 using System;
+
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
+
 using NUnit.Framework;
 
 namespace ASC.Common.Tests.Notify

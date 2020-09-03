@@ -24,10 +24,10 @@
 */
 
 
-using ASC.ApiSystem.Interfaces;
-
 using System;
 using System.ComponentModel.DataAnnotations;
+
+using ASC.ApiSystem.Interfaces;
 
 namespace ASC.ApiSystem.Models
 {

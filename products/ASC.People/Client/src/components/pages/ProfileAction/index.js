@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
@@ -29,6 +29,8 @@ class ProfileAction extends React.Component {
 
     document.title = `${t("ProfileAction")} – ${t("People")}`;
 
+    changeLanguage(i18n);
+
     if (userId) {
       fetchProfile(userId);
     }
@@ -50,8 +52,6 @@ class ProfileAction extends React.Component {
     let loaded = false;
     const { profile, isVisitor, match } = this.props;
     const { userId, type } = match.params;
-
-    changeLanguage(i18n);
 
     if (type) {
       loaded = true;
@@ -110,7 +110,9 @@ ProfileAction.propTypes = {
 const ProfileActionTranslate = withTranslation()(ProfileAction);
 
 const ProfileActionContainer = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
     <I18nextProvider i18n={i18n}>

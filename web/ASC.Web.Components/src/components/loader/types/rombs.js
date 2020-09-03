@@ -76,6 +76,7 @@ Romb.protoTypes = {
     height: PropTypes.string.isRequired
 };
 
+// eslint-disable-next-line react/prop-types
 const Rombs = ({ size }) => (
     <>
         <Romb color="blue" size={size} />

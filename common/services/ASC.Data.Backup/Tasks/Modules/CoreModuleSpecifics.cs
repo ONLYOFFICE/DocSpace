@@ -55,7 +55,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
         private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
 
-        
+
         private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("core_acl", "tenant") {InsertMethod = InsertMethod.Ignore},
@@ -77,7 +77,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new TableInfo("feed_users") {InsertMethod = InsertMethod.None},
                 new TableInfo("backup_backup", "tenant_id", "id", IdType.Guid),
                 new TableInfo("backup_schedule", "tenant_id"),
-                new TableInfo("core_settings", "tenant") 
+                new TableInfo("core_settings", "tenant")
             };
 
         private readonly RelationInfo[] _tableRelations;
@@ -176,7 +176,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
         {
-            
+
             if (table.Name == "feed_users")
                 return "inner join core_user t1 on t1.id = t.user_id where t1.tenant = " + tenantId;
 

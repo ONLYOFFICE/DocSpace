@@ -27,8 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Core;
 using ASC.Core.Tenants;
+
 using Twilio.TwiML;
 
 namespace ASC.VoipService.Twilio
@@ -43,10 +45,10 @@ namespace ASC.VoipService.Twilio
         private SecurityContext SecurityContext { get; }
 
         public TwilioResponseHelper(
-            VoipSettings settings, 
-            string baseUrl, 
-            AuthContext authContext, 
-            TenantUtil tenantUtil, 
+            VoipSettings settings,
+            string baseUrl,
+            AuthContext authContext,
+            TenantUtil tenantUtil,
             SecurityContext securityContext)
         {
             this.settings = settings;

@@ -17,10 +17,10 @@ module.exports = {
       '<rootDir>/test/transform-file.js'
   },
   coverageReporters: [
-	  "json", 
-	  "lcov", 
-	  "text", 
-	  "clover",
-	  "cobertura"
+    "json",
+    "lcov",
+    "text",
+    "clover",
+    "cobertura"
   ]
 };

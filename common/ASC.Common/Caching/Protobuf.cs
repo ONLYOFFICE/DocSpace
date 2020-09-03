@@ -1,5 +1,7 @@
 ﻿using System;
+
 using Confluent.Kafka;
+
 using Google.Protobuf;
 
 namespace ASC.Common.Caching
