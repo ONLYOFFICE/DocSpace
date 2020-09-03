@@ -560,21 +560,11 @@ namespace ASC.Api.Settings
 
             foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
             {
-                var displayName = tz.DisplayName;
-                if (!displayName.StartsWith("(UTC") && !displayName.StartsWith("UTC"))
+                listOfTimezones.Add(new TimezonesModel
                 {
-                    if (tz.BaseUtcOffset != TimeSpan.Zero)
-                    {
-                        displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+", tz.BaseUtcOffset.ToString(@"hh\:mm")) + displayName;
-                    }
-                    else
-                    {
-                        displayName = "(UTC) " + displayName;
-                    }
-                }
-
-                listOfTimezones.Add(new TimezonesModel { Id = tz.Id, DisplayName = displayName });
-
+                    Id = tz.Id,
+                    DisplayName = TimeZoneConverter.GetTimeZoneDisplayName(tz)
+                });
             }
 
             return listOfTimezones;
