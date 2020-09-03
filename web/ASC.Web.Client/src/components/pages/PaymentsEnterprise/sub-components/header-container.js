@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
+
 import moment from "moment";
 // import moment "moment/min/moment-with-locales";
 import { Text, utils } from "asc-web-components";
-import { history } from "asc-web-common";
+import { history, store } from "asc-web-common";
 const { tablet } = utils.device;
 
 const StyledHeader = styled.div`
@@ -69,17 +71,17 @@ const StyledHeader = styled.div`
 `;
 
 const onRedirect = () => {
-  history.push("/settings");
+  // this.props.history.push("/back")
   alert("yes");
   // window.location.href = "https://about";
 };
-
+const { setCurrentError } = store.auth.actions;
 const HeaderContainer = ({
   t,
   expiresDate,
-  createPortals,
+
   culture,
-  timezone,
+
   utcHoursOffset,
   trialMode,
 }) => {
@@ -87,14 +89,9 @@ const HeaderContainer = ({
   require("moment/min/locales.min");
   moment.locale(culture);
   const currentUserDate = moment().utcOffset(utcHoursOffset);
-
-  // onError = (e) => {
-  //   alert("onError", e);
-  // };
-  let error = new Error();
-  error.message = "Not Found";
-  error.status = 402;
-
+  // this.props.error !== true && this.props.setCurrentError(true);
+  // eslint-disable-next-line no-debugger
+  debugger;
   return moment(
     moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
   ).isAfter(
@@ -135,5 +132,10 @@ HeaderContainer.propTypes = {
   createPortals: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
-
-export default HeaderContainer;
+function mapStateToProps(state) {
+  return {
+    settings: state.auth.settings,
+    modules: state.auth.modules,
+  };
+}
+export default connect(mapStateToProps, { setCurrentError })(HeaderContainer);

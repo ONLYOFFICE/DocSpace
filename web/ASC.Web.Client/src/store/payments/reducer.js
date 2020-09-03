@@ -6,10 +6,8 @@ const initialState = {
   buyUrl: "http://www.onlyoffice.com/post.ashx?type=buyenterprise",
   standaloneMode: true,
   currentLicense: {
-    expiresDate: new Date("2020-08-31T23:59:59.000Z"),
-  },
-  trialLicense: {
-    trialMode: false,
+    expiresDate: new Date("2021-09-01T23:59:59.000Z"),
+    trialMode: true,
   },
 };
 

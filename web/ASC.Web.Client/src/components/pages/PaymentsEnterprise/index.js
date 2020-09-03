@@ -46,19 +46,12 @@ class Body extends React.PureComponent {
       // errorMessage: null,
       // isErrorLicense: false,
       isVisibleModalDialog: false,
-      languages: null,
-      timezones: null,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
   }
-  mapCulturesToArray = (cultures, t) => {
-    return cultures.map((culture) => {
-      return { key: culture, label: t(`Culture_${culture}`) };
-    });
-  };
+
   componentDidMount() {
-    const { getPortalCultures } = this.props;
     this.props.currentProductId !== "payments" &&
       this.props.setCurrentProductId("payments");
   }
@@ -92,6 +85,7 @@ class Body extends React.PureComponent {
       // errorMessage: null,
     });
   };
+
   render() {
     const {
       isLoaded,
@@ -100,9 +94,7 @@ class Body extends React.PureComponent {
       buyUrl,
       expiresDate,
       t,
-      createPortals,
       culture,
-      timezone,
       utcHoursOffset,
       trialMode,
     } = this.props;
@@ -112,23 +104,26 @@ class Body extends React.PureComponent {
       select,
       selectLanguage,
     } = this.state;
+    const { history } = this.props;
     // console.log(this.state.selectLanguage);
+    // eslint-disable-next-line no-debugger
+    debugger;
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledBody>
         <HeaderContainer
           t={t}
+          onError={this.onError}
           expiresDate={expiresDate}
           trialMode={trialMode}
           languages={languages}
           culture={culture}
-          timezone={timezone}
           select={select}
           utcHoursOffset={utcHoursOffset}
-          createPortals={createPortals}
           selectLanguage={selectLanguage}
           getExpiresDate={this.getExpiresDate}
+          history={history}
         />
         <AdvantagesContainer t={t} />
         <ModalDialogContainer
@@ -171,9 +166,8 @@ function mapStateToProps(state) {
     helpUrl: state.payments.helpUrl,
     buyUrl: state.payments.buyUrl,
     expiresDate: state.payments.currentLicense.expiresDate,
-    trialMode: state.payments.trialLicense.trialMode,
+    trialMode: state.payments.trialMode,
     culture: state.auth.settings.culture,
-    timezone: state.auth.settings.timezone,
     utcHoursOffset: state.auth.settings.utcHoursOffset,
   };
 }
