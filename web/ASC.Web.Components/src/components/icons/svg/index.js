@@ -175,11 +175,28 @@ import OrigLockIcon from './lock.react.svg';
 import OrigDownloadAsIcon from './download-as.react.svg';
 import OrigRenameIcon from './rename.react.svg';
 
-import OrigAmazonIcon from './amazon.react.svg';
-import OrigMailRuIcon from './mail.ru.react.svg';
-import OrigTelegramIcon from './telegram.react.svg';
-import OrigBitlyIcon from './bitly.react.svg';
+import OrigDocuSignIcon from './docusign.react.svg';
+import OrigDropBoxIcon from './dropbox.react.svg';
+import OrigEasyBibIcon from './easybib.react.svg';
+import OrigTwitterIcon from './twitter.react.svg';
+import OrigVKIcon from './vk.react.svg';
+import OrigYandexIcon from './yandex.react.svg';
 import OrigBoxIcon from './box.react.svg';
+import OrigSkyDriveIcon from './skydrive.react.svg';
+
+import OrigFacebookIcon from './facebook.react.svg';
+import OrigLinkedInIcon from './linkedin.react.svg';
+import OrigTwilioIcon from './twilio.react.svg';
+import OrigClickatellIcon from './clickatell.react.svg';
+import OrigSmscIcon from './smsc.react.svg';
+import OrigFirebaseIcon from './firebase.react.svg';
+import OrigBitlyIcon from './bitly.react.svg';
+
+import OrigWordpressIcon from './wordpress.react.svg';
+import OrigS3Icon from './s3.react.svg';
+import OrigGoogleCloudIcon from './googlecloud.react.svg';
+import OrigRackspaceIcon from './rackspace.react.svg';
+import OrigSelectelIcon from './selectel.react.svg';
 
 
 export const AZSortingIcon = createStyledIcon(
@@ -859,22 +876,82 @@ export const RenameIcon = createStyledIcon(
   OrigRenameIcon,
   'RenameIcon'
 );
-export const AmazonIcon = createStyledIcon(
-  OrigAmazonIcon,
-  'AmazonIcon'
+export const DocuSignIcon = createStyledIcon(
+  OrigDocuSignIcon,
+  'DocuSignIcon'
 );
-export const MailRuIcon = createStyledIcon(
-  OrigMailRuIcon,
-  'MailRuIcon'
+  export const DropBoxIcon = createStyledIcon(
+  OrigDropBoxIcon,
+  'DropBoxIcon'
 );
-export const TelegramIcon = createStyledIcon(
-  OrigTelegramIcon,
-  'TelegramIcon'
+  export const EasyBibIcon = createStyledIcon(
+  OrigEasyBibIcon,
+  'EasyBibIcon'
 );
-export const BitlyIcon = createStyledIcon(
+  export const TwitterIcon = createStyledIcon(
+  OrigTwitterIcon,
+  'TwitterIcon'
+);
+  export const VKIcon = createStyledIcon(
+  OrigVKIcon,
+  'VKIcon'
+);
+  export const YandexIcon = createStyledIcon(
+  OrigYandexIcon,
+  'YandexIcon'
+);
+  export const BoxIcon = createStyledIcon(
+  OrigBoxIcon,
+  'BoxIcon'
+);
+  export const SkyDriveIcon = createStyledIcon(
+  OrigSkyDriveIcon,
+  'SkyDriveIcon'
+);
+  export const FacebookIcon = createStyledIcon(
+  OrigFacebookIcon,
+  'FacebookIcon'
+);
+  export const LinkedInIcon = createStyledIcon(
+  OrigLinkedInIcon,
+  'LinkedInIcon'
+);
+  export const TwilioIcon = createStyledIcon(
+  OrigTwilioIcon,
+  'TwilioIcon'
+);
+  export const ClickatellIcon = createStyledIcon(
+  OrigClickatellIcon,
+  'ClickatellIcon'
+);
+  export const SmscIcon = createStyledIcon(
+  OrigSmscIcon,
+  'SmscIcon'
+);
+  export const FirebaseIcon = createStyledIcon(
+  OrigFirebaseIcon,
+  'FirebaseIcon'
+);
+  export const BitlyIcon = createStyledIcon(
   OrigBitlyIcon,
   'BitlyIcon'
 );
-export const BoxIcon = createStyledIcon(
-  OrigBoxIcon,
-  'BoxIcon');
+  export const WordpressIcon = createStyledIcon(
+  OrigWordpressIcon,
+  'WordpressIcon'
+);
+  export const S3Icon = createStyledIcon(
+  OrigS3Icon,
+  'S3Icon');
+  export const GoogleCloudIcon = createStyledIcon(
+  OrigGoogleCloudIcon,
+  'GoogleCloudIcon'
+);
+  export const RackspaceIcon = createStyledIcon(
+  OrigRackspaceIcon,
+  'RackspaceIcon'
+);
+  export const SelectelIcon = createStyledIcon(
+  OrigSelectelIcon,
+  'SelectelIcon'
+);
