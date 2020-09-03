@@ -1664,7 +1664,6 @@ namespace ASC.Api.Settings
                 Status = settings.Status
             };
             EncryptionServiceClient.Start(encryptionSettingsProto);
-            EncryptionServiceClient.Get();
         }
 
         [Read("encryptionStop")]

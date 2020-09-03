@@ -45,11 +45,11 @@ namespace ASC.Data.Storage.Encryption
         public void Start(EncryptionSettingsProto encryptionSettings)
         {
             if (TokenSource.Token.IsCancellationRequested) return;
-            var encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings);
+            EncryptionOperation encryptionOperation;
             lock (Locker)
             {
                 if (Cache.Get<EncryptionOperation>(GetCacheKey()) != null) return;
-                
+                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings);
                 Cache.Insert(GetCacheKey(), encryptionOperation, DateTime.MaxValue);
             }
 

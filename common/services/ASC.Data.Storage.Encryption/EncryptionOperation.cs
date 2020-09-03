@@ -72,7 +72,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 if (!coreBaseSettings.Standalone)
                 {
-                    //throw new NotSupportedException();
+                    throw new NotSupportedException();
                 }
 
                 if (EncryptionSettings.Status == EncryprtionStatus.Encrypted || EncryptionSettings.Status == EncryprtionStatus.Decrypted)
@@ -334,6 +334,7 @@ namespace ASC.Data.Storage.Encryption
         private StorageFactoryConfig StorageFactoryConfig { get; set; }
         private StorageFactory StorageFactory { get; set; }
         private ICacheNotify<ProgressEncryption> ProgressEncryption { get; }
+        private IConfiguration Configuration { get; }
 
         public EncryptionOperationScope(IOptionsMonitor<ILog> options,
            StorageFactoryConfig storageFactoryConfig,
@@ -342,6 +343,7 @@ namespace ASC.Data.Storage.Encryption
            CoreBaseSettings coreBaseSettings,
            NotifyHelper notifyHelper,
            EncryptionSettingsHelper encryptionSettingsHelper,
+           IConfiguration configuration,
            ICacheNotify<ProgressEncryption> progressEncryption)
         {
             Log = options.CurrentValue;
@@ -352,6 +354,7 @@ namespace ASC.Data.Storage.Encryption
             NotifyHelper = notifyHelper;
             EncryptionSettingsHelper = encryptionSettingsHelper;
             ProgressEncryption = progressEncryption;
+            Configuration = configuration;
         }
 
         public void Deconstruct( out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out ICacheNotify<ProgressEncryption> progressEncryption, out IConfiguration configuration)
@@ -372,7 +375,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionOperationService(this DIHelper services)
         {
-            services.TryAddTransient<EncryptionOperation>();
+            services.TryAddSingleton<EncryptionOperation>();
             services.TryAddScoped<EncryptionOperationScope>();
             return services
                 .AddStorageFactoryConfigService()

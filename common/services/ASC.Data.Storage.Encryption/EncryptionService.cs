@@ -51,7 +51,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionService(this DIHelper services)
         {
-            services.TryAddTransient<EncryptionService>();
+            services.TryAddScoped<EncryptionService>();
             return services.AddEncryptionWorkerService();
         }
     }

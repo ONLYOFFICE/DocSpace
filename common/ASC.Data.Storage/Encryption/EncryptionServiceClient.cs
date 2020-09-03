@@ -28,14 +28,12 @@ namespace ASC.Data.Storage.Encryption
 
         private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
         private ICacheNotify<EncryptionStop> NotifyStop { get; }
-        private ICacheNotify<ProgressEncryption> ProgressEncryption { get; }
 
         public EncryptionServiceClient(
-            ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<ProgressEncryption> progressEncryption, ICacheNotify<EncryptionStop> notifyStop)
+            ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
         {
             NotifySetting = notifySetting;
             NotifyStop = notifyStop;
-            ProgressEncryption = progressEncryption;
         }
 
         public void Start(EncryptionSettingsProto encryptionSettingsProto)
@@ -48,12 +46,6 @@ namespace ASC.Data.Storage.Encryption
             NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
         }
 
-        public void Get()
-        {
-            ProgressEncryption.Subscribe((n) => { 
-                var k = n.Proggress;
-            },CacheNotifyAction.Insert);
-        }
     }
 
     public static class EncryptionServiceClientExtension
