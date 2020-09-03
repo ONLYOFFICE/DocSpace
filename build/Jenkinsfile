@@ -29,7 +29,7 @@ pipeline {
 					}
 				}
 				stage('Windows') {
-					agent { label 'master' }
+					agent { label 'win-core' }
 					stages {
 						stage('Components') {
 							steps {
