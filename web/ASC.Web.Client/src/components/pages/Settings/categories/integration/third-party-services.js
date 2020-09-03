@@ -19,15 +19,15 @@ const RootContainer = styled(Box)`
     }
 `;
 const StyledConsumer = styled(Box)`
+  width: 400px;
 
   @media (max-width: 768px) {
-    .consumer-item-wrapper {
-        width: 496px;
-        }
-    }
+    width: 496px;
+  }
+
   @media (max-width: 375px) {
     margin: 0;
-    }
+  }
 `;
 const Separator = styled.div`
  border: 1px solid #ECEEF1;
@@ -117,7 +117,6 @@ class ThirdPartyServices extends React.Component {
                                 <StyledConsumer
                                     className="consumer-item-wrapper"
                                     key={i}
-                                    widthProp="400px"
                                     marginProp="0 24px 24px 0"
                                 >
                                     <Separator />

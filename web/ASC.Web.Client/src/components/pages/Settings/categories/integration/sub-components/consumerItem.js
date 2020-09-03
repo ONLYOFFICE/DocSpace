@@ -24,7 +24,7 @@ class ConsumerItem extends React.Component {
                             <Text>{consumer.name}</Text>
                             {/* {React.createElement(Icons[`${name}Icon`], { size: "scale" })} */}
                         </Box>
-                        <Box onClick={setConsumer} data-consumer={consumer.name} marginProp="28px 0 0 0">
+                        <Box onClick={setConsumer} data-consumer={consumer.name}>
                             <ConsumerToggle
                                 consumer={consumer}
                                 onToggleClick={onToggleClick}
