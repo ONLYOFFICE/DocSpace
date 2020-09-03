@@ -1,198 +1,214 @@
-import React from  'react';
+import React, { useEffect } from  'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { 
   Heading,
   ToggleButton 
 } from 'asc-web-components';
-import { history } from "asc-web-common";
 
-import { updateIfExist, storeOriginal, setThirdParty } from '../../../../../store/files/actions';
+import { 
+  setUpdateIfExist, 
+  setStoreOriginal, 
+  setEnableThirdParty,
+  setConfirmDelete, 
+  setStoreForceSave,
+  setSelectedNode,
+  setForceSave
+} from '../../../../../store/files/actions';
 
 const StyledSettings = styled.div`
   display: grid;
   grid-gap: 10px;
 
   .toggle-btn {
-    display: block;
     position: relative;
   }
 
   .heading {
     margin-bottom: 0;
+    margin-top: 22px;
   }
 `;
 
-class SectionBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { 
-      originalCopy: true,
-      updateExist: true
+function SectionBodyContent(props) {
+  useEffect(() => {
+    const { setting, t } = props;
+    document.title = t(`${setting}`);
+    return function setTitle() {
+      document.title = 'ASC.Files';
     }
+  }, [props.setting])
+
+  useEffect(() => {
+    const { setting, selectedTreeNode, setSelectedNode } = props;
+    if( setting !== selectedTreeNode[0] ) {
+      setSelectedNode([ setting ])
+    }
+  }, [props.setting]);
+
+  const onChangeStoreForceSave = () => {
+    const { storeForceSave, setStoreForceSave } = props;
+    setStoreForceSave( !storeForceSave, "storeForceSave" );
   }
 
-  componentDidMount() {
-    const { setting, onLoading, t } = this.props;
-    document.title = t(`${setting}`);
-    onLoading(false);
+  const onChangeThirdParty = () => {
+    const { enableThirdParty, setEnableThirdParty } = props;
+    setEnableThirdParty(!enableThirdParty, "enableThirdParty");
   }
 
-  componentDidUpdate() {
-    const { setting, t } = this.props;
-    document.title = t(`${setting}`);
-  }
+  const renderAdminSettings = () => {
 
-  componentWillUnmount() {
-    document.title = 'ASC.Files';
-  }
-
-  onChangeThirdParty = () => {
-    const { thirdParty, setThirdParty } = this.props;
-    setThirdParty(!thirdParty);
-  }
-
-  renderAdminSettings = () => {
     const {
-      intermediateVersion,
-      thirdParty,
+      enableThirdParty,
+      storeForceSave,
       t
-    } = this.props;
+    } = props;
 
     return (
       <StyledSettings>
         <ToggleButton 
-          isDisabled={true}
           className="toggle-btn"
           label={t('intermediateVersion')}
-          onChange={(e)=>console.log(e)}
-          isChecked={intermediateVersion}
+          onChange={onChangeStoreForceSave}
+          isChecked={storeForceSave}
         />
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('thirdPartyBtn')}
-          onChange={this.onChangeThirdParty}
-          isChecked={thirdParty}
+          onChange={onChangeThirdParty}
+          isChecked={enableThirdParty}
         />
       </StyledSettings>
     )
   }
 
-  onChangeOriginalCopy = () => {
-    const { originalCopy } = this.state;
-    const { storeOriginal } = this.props;
-
-    storeOriginal( originalCopy );
-    this.setState({ originalCopy: !originalCopy });
+  const onChangeOriginalCopy = () => {
+    const { storeOriginalFiles, setStoreOriginal } = props;
+    setStoreOriginal( !storeOriginalFiles, "storeOriginalFiles" );
   }
 
-  onChangeUpdateIfExist = () => {
-    const { updateExist } = this.state;
-    const { updateIfExist } = this.props;
-
-    updateIfExist( !updateExist );
-    this.setState({ updateExist: !updateExist });
+  const onChangeDeleteConfirm = () => {
+    const { confirmDelete, setConfirmDelete } = props;
+    setConfirmDelete( !confirmDelete, "confirmDelete" );
   }
 
-  renderCommonSettings = () => {
+  const onChangeUpdateIfExist = () => {
+    const { updateIfExist, setUpdateIfExist } = props;
+    setUpdateIfExist( !updateIfExist, "updateIfExist" );
+  }
+
+  const onChangeForceSave = () => {
+    const { forceSave, setForceSave } = props;
+    setForceSave( !forceSave, "forceSave" );
+  }
+
+  const renderCommonSettings = () => {
     const {
-      trash,
-      recent,
-      favorites,
-      templates,
-      keepIntermediate,
+      updateIfExist,
+      confirmDelete,
+      storeOriginalFiles,
+      forceSave,
       t
-    } = this.props;
-
-    const { 
-      originalCopy,
-      updateExist
-    } = this.state;
+    } = props;
 
     return (
       <StyledSettings>
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('originalCopy')}
-          onChange={this.onChangeOriginalCopy}
-          isChecked={originalCopy}
+          onChange={onChangeOriginalCopy}
+          isChecked={storeOriginalFiles}
         />
         <ToggleButton
-          isDisabled={true}
           className="toggle-btn"
           label={t('displayNotification')}
-          onChange={(e)=>console.log(e)}
-          isChecked={trash}
+          onChange={onChangeDeleteConfirm}
+          isChecked={confirmDelete}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
           label={t('displayRecent')}
           onChange={(e)=>console.log(e)}
-          isChecked={recent}
+          isChecked={false}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
           label={t('displayFavorites')}
           onChange={(e)=>console.log(e)}
-          isChecked={favorites}
+          isChecked={false}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
           label={t('displayTemplates')}
           onChange={(e)=>console.log(e)}
-          isChecked={templates}
+          isChecked={false}
         />
         <Heading className="heading" level={2} size="small">{t('storingFileVersion')}</Heading>
         <ToggleButton
-          isDisabled={false}
           className="toggle-btn"
           label={t('updateOrCreate')}
-          onChange={this.onChangeUpdateIfExist}
-          isChecked={updateExist}
+          onChange={onChangeUpdateIfExist}
+          isChecked={updateIfExist}
         />
         <ToggleButton
-          isDisabled={true}
           className="toggle-btn"
           label={t('keepIntermediateVersion')}
-          onChange={(e)=>console.log(e)}
-          isChecked={keepIntermediate}
+          onChange={onChangeForceSave}
+          isChecked={forceSave}
         />
       </StyledSettings>
     );
   }
 
-  renderClouds = () => {
+  const renderClouds = () => {
     return (<></>)
   }
 
-  render() {
-    const { setting, thirdParty } = this.props;
-    let content;
-
-    if(setting === 'admin')
-      content = this.renderAdminSettings();
-    if(setting === 'common') 
-      content = this.renderCommonSettings();
-    if(setting === 'thirdParty' && thirdParty )
-      content = this.renderClouds();
-
-    return content;
-  }
+  const { setting, enableThirdParty, isAdmin } = props;
+  let content;
+  if(setting === 'admin' && isAdmin)
+    content = renderAdminSettings();
+  if(setting === 'common') 
+    content = renderCommonSettings();
+  if(setting === 'thirdParty' && enableThirdParty )
+    content = renderClouds();
+  return content; 
 }
 
 function mapStateToProps(state) {
-  const { settingsTree } = state.files;
-  const { thirdParty } = settingsTree;
+  const { settingsTree, selectedTreeNode } = state.files;
+  const { isAdmin } = state.auth.user;
+  const { 
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave,
+    storeForceSave,
+    enableThirdParty
+  } = settingsTree;
 
   return { 
-    thirdParty
+    isAdmin,
+    selectedTreeNode,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave,
+    storeForceSave,
+    enableThirdParty
   }
 }
 
-export default connect(mapStateToProps, { updateIfExist, storeOriginal, setThirdParty })(SectionBodyContent);
+export default connect(
+  mapStateToProps, { 
+    setUpdateIfExist, 
+    setStoreOriginal, 
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setSelectedNode,
+    setForceSave
+  })(SectionBodyContent);

@@ -346,7 +346,8 @@ class SectionBodyContent extends React.PureComponent {
       history,
       settings,
       t,
-      filter
+      filter,
+      widthProp
     } = this.props;
     const { dialogsVisible, user } = this.state;
 
@@ -384,8 +385,10 @@ class SectionBodyContent extends React.PureComponent {
                 {...checkedProps}
                 {...contextOptionsProps}
                 needForUpdate={this.needForUpdate}
+                widthProp={widthProp}
               >
                 <UserContent
+                  widthProp={widthProp}
                   user={user}
                   history={history}
                   settings={settings}
@@ -436,6 +439,7 @@ class SectionBodyContent extends React.PureComponent {
         imageAlt="Empty Screen Filter image"
         headerText={t("NotFoundTitle")}
         descriptionText={t("NotFoundDescription")}
+        widthProp={widthProp}
         buttons={
           <>
             <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />

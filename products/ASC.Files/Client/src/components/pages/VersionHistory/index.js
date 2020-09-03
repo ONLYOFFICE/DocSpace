@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -125,7 +125,9 @@ class PureVersionHistory extends React.Component {
 const VersionHistoryContainer = withTranslation()(PureVersionHistory);
 
 const VersionHistory = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
       <VersionHistoryContainer {...props} />
@@ -146,4 +148,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setIsLoading })(withRouter(VersionHistory));
+export default connect(
+  mapStateToProps,
+  { setIsLoading }
+)(withRouter(VersionHistory));

@@ -161,7 +161,7 @@ class SectionBodyContent extends React.Component {
       return true;
     }
 
-    if(showMoveToPanel !== nextState.showMoveToPanel || showCopyPanel !== nextState.showCopyPanel) {
+    if (showMoveToPanel !== nextState.showMoveToPanel || showCopyPanel !== nextState.showCopyPanel) {
       return true;
     }
 
@@ -218,7 +218,7 @@ class SectionBodyContent extends React.Component {
 
   onDeleteFile = (fileId, currentFolderId) => {
     const { deleteFile, t, setProgressBarData } = this.props;
-    setProgressBarData({ visible: true, percent: 0, label: t("DeleteOperation")});
+    setProgressBarData({ visible: true, percent: 0, label: t("DeleteOperation") });
     deleteFile(fileId)
       .then(res => {
         const id = res[0] && res[0].id ? res[0].id : null;
@@ -256,7 +256,7 @@ class SectionBodyContent extends React.Component {
           toastr.error(err);
           clearProgressData(store.dispatch);
         })
-        .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
+          .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
       }
     })
   }
@@ -276,7 +276,7 @@ class SectionBodyContent extends React.Component {
       })
   }
 
-  onClickShare = () => this.setState({showSharingPanel: !this.state.showSharingPanel});
+  onClickShare = () => this.setState({ showSharingPanel: !this.state.showSharingPanel });
 
   onClickLinkForPortal = () => {
     const { settings, selection } = this.props;
@@ -337,12 +337,12 @@ class SectionBodyContent extends React.Component {
     onLoading(true);
 
     api.files.finalizeVersion(fileId, 0, false)
-      .then((data) => { 
+      .then((data) => {
         //console.log("api.files.finalizeVersion", data);
         return fetchFiles(selectedFolderId, filter, store.dispatch)
-            .catch(err =>
-          toastr.error(err)
-        );
+          .catch(err =>
+            toastr.error(err)
+          );
       })
       .finally(() => onLoading(false));
   }
@@ -357,7 +357,7 @@ class SectionBodyContent extends React.Component {
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = false;
 
-    setProgressBarData({ visible: true, percent: 0, label: t("CopyOperation")});
+    setProgressBarData({ visible: true, percent: 0, label: t("CopyOperation") });
     this.copyTo(selectedFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
   }
 
@@ -386,8 +386,8 @@ class SectionBodyContent extends React.Component {
           icon: 'HistoryFinalizedIcon',
           onClick: this.finalizeVersion,
           disabled: false,
-            "data-id": item.id,
-            "data-version": item.version
+          "data-id": item.id,
+          "data-version": item.version
         },
         {
           key: "block-unblock-version",
@@ -510,6 +510,9 @@ class SectionBodyContent extends React.Component {
   };
 
   needForUpdate = (currentProps, nextProps) => {
+    if (currentProps.widthProp !== nextProps.widthProp) {
+      return true;
+    }
     if (currentProps.checked !== nextProps.checked) {
       return true;
     }
@@ -519,7 +522,7 @@ class SectionBodyContent extends React.Component {
     if (!isEqual(currentProps.data, nextProps.data)) {
       return true;
     }
-    if(currentProps.viewAs !== nextProps.viewAs){
+    if (currentProps.viewAs !== nextProps.viewAs) {
       return true;
     }
     return false;
@@ -541,7 +544,7 @@ class SectionBodyContent extends React.Component {
 
   getItemIcon = (item, isEdit) => {
     const { fileAction } = this.props;
-    
+
     const actionExtension = fileAction.extension && `.${fileAction.extension}`;
     const extension = isEdit ? actionExtension : item.fileExst;
     const icon = extension
@@ -595,7 +598,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { currentFolderType, title, t } = this.props;
+    const { currentFolderType, title, t, widthProp } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -667,6 +670,7 @@ class SectionBodyContent extends React.Component {
             descriptionText={myDescription}
             imageSrc="images/empty_screen.png"
             buttons={commonButtons}
+            widthProp={widthProp}
           />
         );
       case "Share":
@@ -676,6 +680,7 @@ class SectionBodyContent extends React.Component {
             subheadingText={subheadingText}
             descriptionText={shareDescription}
             imageSrc="images/empty_screen_forme.png"
+            widthProp={widthProp}
           />
         );
       case "Common":
@@ -686,6 +691,7 @@ class SectionBodyContent extends React.Component {
             descriptionText={commonDescription}
             imageSrc="images/empty_screen_corporate.png"
             buttons={commonButtons}
+            widthProp={widthProp}
           />
         );
       case "Trash":
@@ -696,6 +702,7 @@ class SectionBodyContent extends React.Component {
             descriptionText={trashDescription}
             imageSrc="images/empty_screen_trash.png"
             buttons={trashButtons}
+            widthProp={widthProp}
           />
         );
       default:
@@ -704,7 +711,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyFolderContainer = () => {
-    const { t } = this.props;
+    const { t, widthProp } = this.props;
     const buttons = (
       <>
         <div className="empty-folder_container-links">
@@ -763,12 +770,13 @@ class SectionBodyContent extends React.Component {
         headerText={t("EmptyFolderHeader")}
         imageSrc="images/empty_screen.png"
         buttons={buttons}
+        widthProp={widthProp}
       />
     );
   };
 
   renderEmptyFilterContainer = () => {
-    const { t } = this.props;
+    const { t, widthProp } = this.props;
     const subheadingText = t("EmptyFilterSubheadingText");
     const descriptionText = t("EmptyFilterDescriptionText");
 
@@ -795,6 +803,7 @@ class SectionBodyContent extends React.Component {
         descriptionText={descriptionText}
         imageSrc="images/empty_screen_filter.png"
         buttons={buttons}
+        widthProp={widthProp}
       />
     )
   }
@@ -804,7 +813,7 @@ class SectionBodyContent extends React.Component {
     this.props.setMediaViewerData(item);
   }
   onMediaFileClick = (id) => {
-    const itemId = typeof(id) !== "object" ? id : this.props.selection[0].id;
+    const itemId = typeof (id) !== "object" ? id : this.props.selection[0].id;
     const item = { visible: true, id: itemId };
     this.props.setMediaViewerData(item);
   }
@@ -849,7 +858,7 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseDown = e => {
-    if(window.innerWidth < 1025 || e.target.tagName === "rect" || e.target.tagName === "path") {
+    if (window.innerWidth < 1025 || e.target.tagName === "rect" || e.target.tagName === "path") {
       return;
     }
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
@@ -967,7 +976,7 @@ class SectionBodyContent extends React.Component {
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
 
-    setProgressBarData({ visible: true, percent: 0, label: t("MoveToOperation")});
+    setProgressBarData({ visible: true, percent: 0, label: t("MoveToOperation") });
     for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id)
@@ -1081,7 +1090,8 @@ class SectionBodyContent extends React.Component {
       currentMediaFileId,
       viewAs,
       t,
-      loopFilesOperations
+      loopFilesOperations,
+      widthProp
     } = this.props;
 
     const { editingId, showSharingPanel, showMoveToPanel, showCopyPanel } = this.state;
@@ -1146,17 +1156,17 @@ class SectionBodyContent extends React.Component {
             )}
             <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
 
-              {viewAs === "tile" 
-                ? 
-                  <TileContainer 
-                    className="tileContainer" 
-                    draggable 
-                    useReactWindow={false}
-                    headingFolders={t("Folders")}
-                    headingFiles={t("Files")}
-                  >
-                  {items.map((item) => {
-                    const isEdit =
+            {viewAs === "tile"
+              ?
+              <TileContainer
+                className="tileContainer"
+                draggable
+                useReactWindow={false}
+                headingFolders={t("Folders")}
+                headingFiles={t("Files")}
+              >
+                {items.map((item) => {
+                  const isEdit =
                     !!fileAction.type &&
                     editingId === item.id &&
                     item.fileExst === fileAction.extension;
@@ -1177,103 +1187,105 @@ class SectionBodyContent extends React.Component {
                   value += draggable ? "_draggable" : "";
                   const classNameProp = isFolder && item.access < 2 ? { className: " dropable" } : {};
 
-                    return (
-                      <DragAndDrop
-                        {...classNameProp}
-                        onDrop={this.onDrop.bind(this, item)}
-                        onMouseDown={this.onMouseDown}
-                        dragging={dragging && isFolder && item.access < 2}
-                        key={`dnd-key_${item.id}`}
-                        {...contextOptionsProps}
-                        value={value}
+                  return (
+                    <DragAndDrop
+                      {...classNameProp}
+                      onDrop={this.onDrop.bind(this, item)}
+                      onMouseDown={this.onMouseDown}
+                      dragging={dragging && isFolder && item.access < 2}
+                      key={`dnd-key_${item.id}`}
+                      {...contextOptionsProps}
+                      value={value}
+                      isFolder={!item.fileExst}
+                    >
+                      <Tile
+                        key={item.id}
+                        item={item}
                         isFolder={!item.fileExst}
-                      >
-                        <Tile
-                          key={item.id}
-                          item={item}
-                          isFolder={!item.fileExst}
-                          element={element}
-                          onSelect={this.onContentRowSelect}
-                          editing={editingId}
-                          viewAs={viewAs}
-                          {...checkedProps}
-                          {...contextOptionsProps}
-                          needForUpdate={this.needForUpdate}
-                        >
-                          <FilesTileContent
-                            item={item}
-                            viewer={viewer}
-                            culture={settings.culture}
-                            onEditComplete={this.onEditComplete}
-                            onLoading={onLoading}
-                            onMediaFileClick={this.onMediaFileClick}
-                            isLoading={isLoading}
-                          />
-                        </Tile>
-                      </DragAndDrop>
-                    );
-                  })}       
-                </TileContainer>
-              : 
-                <RowContainer draggable useReactWindow={false}>
-                  {items.map((item) => {
-                    const isEdit =
-                      !!fileAction.type &&
-                      editingId === item.id &&
-                      item.fileExst === fileAction.extension;
-                    const contextOptions = this.getFilesContextOptions(
-                      item,
-                      viewer
-                    ).filter((o) => o);
-                    const contextOptionsProps =
-                      !contextOptions.length || isEdit ? {} : { contextOptions };
-                    const checked = isFileSelected(selection, item.id, item.parentId);
-                    const checkedProps = (isEdit || item.id <= 0) ? {} : { checked };
-                    const element = this.getItemIcon(item, (isEdit || item.id <= 0));
-
-                    const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
-                    const isFolder = selectedItem ? false : item.fileExst ? false : true;
-                    const draggable = selectedItem && currentFolderType !== "Trash";
-                    let value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
-                    value += draggable ? "_draggable" : "";
-                    const classNameProp = isFolder && item.access < 2 ? { className: " dropable" } : {};
-
-                    return (
-                      <DragAndDrop
-                        {...classNameProp}
-                        onDrop={this.onDrop.bind(this, item)}
-                        onMouseDown={this.onMouseDown}
-                        dragging={dragging && isFolder && item.access < 2}
-                        key={`dnd-key_${item.id}`}
+                        element={element}
+                        onSelect={this.onContentRowSelect}
+                        editing={editingId}
+                        viewAs={viewAs}
+                        {...checkedProps}
                         {...contextOptionsProps}
-                        value={value}
+                        needForUpdate={this.needForUpdate}
                       >
-                        <SimpleFilesRow
-                          key={item.id}
-                          data={item}
-                          element={element}
-                          onSelect={this.onContentRowSelect}
-                          editing={editingId}
-                          {...checkedProps}
-                          {...contextOptionsProps}
-                          needForUpdate={this.needForUpdate}
-                          selectItem={this.onSelectItem.bind(this, item)}
-                        >
-                          <FilesRowContent
-                            item={item}
-                            viewer={viewer}
-                            culture={settings.culture}
-                            onEditComplete={this.onEditComplete}
-                            onLoading={onLoading}
-                            onMediaFileClick={this.onMediaFileClick}
-                            isLoading={isLoading}
-                          />
-                        </SimpleFilesRow>
-                      </DragAndDrop>
-                    );
-                  })}
-                </RowContainer>
-              }
+                        <FilesTileContent
+                          item={item}
+                          viewer={viewer}
+                          culture={settings.culture}
+                          onEditComplete={this.onEditComplete}
+                          onLoading={onLoading}
+                          onMediaFileClick={this.onMediaFileClick}
+                          isLoading={isLoading}
+                        />
+                      </Tile>
+                    </DragAndDrop>
+                  );
+                })}
+              </TileContainer>
+              :
+              <RowContainer draggable useReactWindow={false}>
+                {items.map((item) => {
+                  const isEdit =
+                    !!fileAction.type &&
+                    editingId === item.id &&
+                    item.fileExst === fileAction.extension;
+                  const contextOptions = this.getFilesContextOptions(
+                    item,
+                    viewer
+                  ).filter((o) => o);
+                  const contextOptionsProps =
+                    !contextOptions.length || isEdit ? {} : { contextOptions };
+                  const checked = isFileSelected(selection, item.id, item.parentId);
+                  const checkedProps = (isEdit || item.id <= 0) ? {} : { checked };
+                  const element = this.getItemIcon(item, (isEdit || item.id <= 0));
+
+                  const selectedItem = selection.find(x => x.id === item.id && x.fileExst === item.fileExst);
+                  const isFolder = selectedItem ? false : item.fileExst ? false : true;
+                  const draggable = selectedItem && currentFolderType !== "Trash";
+                  let value = item.fileExst ? `file_${item.id}` : `folder_${item.id}`;
+                  value += draggable ? "_draggable" : "";
+                  const classNameProp = isFolder && item.access < 2 ? { className: " dropable" } : {};
+
+                  return (
+                    <DragAndDrop
+                      {...classNameProp}
+                      onDrop={this.onDrop.bind(this, item)}
+                      onMouseDown={this.onMouseDown}
+                      dragging={dragging && isFolder && item.access < 2}
+                      key={`dnd-key_${item.id}`}
+                      {...contextOptionsProps}
+                      value={value}
+                    >
+                      <SimpleFilesRow
+                        widthProp={widthProp}
+                        key={item.id}
+                        data={item}
+                        element={element}
+                        onSelect={this.onContentRowSelect}
+                        editing={editingId}
+                        {...checkedProps}
+                        {...contextOptionsProps}
+                        needForUpdate={this.needForUpdate}
+                        selectItem={this.onSelectItem.bind(this, item)}
+                      >
+                        <FilesRowContent
+                          widthProp={widthProp}
+                          item={item}
+                          viewer={viewer}
+                          culture={settings.culture}
+                          onEditComplete={this.onEditComplete}
+                          onLoading={onLoading}
+                          onMediaFileClick={this.onMediaFileClick}
+                          isLoading={isLoading}
+                        />
+                      </SimpleFilesRow>
+                    </DragAndDrop>
+                  );
+                })}
+              </RowContainer>
+            }
             {playlist.length > 0 && mediaViewerVisible &&
               <MediaViewer
                 currentFileId={currentMediaFileId}

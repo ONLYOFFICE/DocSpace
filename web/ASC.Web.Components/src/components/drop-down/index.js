@@ -43,6 +43,7 @@ const StyledDropdown = styled.div`
 // eslint-disable-next-line react/display-name, react/prop-types
 const Row = memo(({ data, index, style }) => {
   const option = data[index];
+  // eslint-disable-next-line react/prop-types
   const separator = option.props.isSeparator ? { width: `calc(100% - 32px)`, height: `1px` } : {}
   const newStyle = {...style, ...separator};
 

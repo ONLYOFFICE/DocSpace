@@ -4,7 +4,7 @@ import { PageLayout } from "asc-web-common";
 import { I18nextProvider } from "react-i18next";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent } from "./Section";
-import { store } from "asc-web-common";
+import { store, utils } from "asc-web-common";
 
 import { createI18N } from "../../../../helpers/i18n";
 
@@ -14,6 +14,7 @@ const i18n = createI18N({
 });
 
 const { setCurrentProductId } = store.auth.actions;
+const { changeLanguage } = utils;
 
 const Layout = ({
   currentProductId,
@@ -23,7 +24,7 @@ const Layout = ({
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }, [language, currentProductId, setCurrentProductId]);
 
   return (

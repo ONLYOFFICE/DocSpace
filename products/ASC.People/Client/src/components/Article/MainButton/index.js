@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -114,7 +114,9 @@ const ArticleMainButtonContentContainer = withTranslation()(
 );
 
 const ArticleMainButtonContent = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
       <ArticleMainButtonContentContainer {...props} />

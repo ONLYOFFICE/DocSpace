@@ -31,9 +31,9 @@ namespace Textile.Blocks
                                     Globals.BlockModifiersPattern +			// attributes
                                     "(?<text>[\\w\\W]+?)" +					// text
                                     @"\s?" +
-									@"(?:\((?<title>[^)]+)\)(?=""))?" +		// title
+                                    @"(?:\((?<title>[^)]+)\)(?=""))?" +		// title
                                     "\":" +
-                                    string.Format(@"""(?<url>\S+[^""]+)""",Regex.Escape(@"a-zA-Z:/.-{}?&_%#+=@")) +						// url
+                                    string.Format(@"""(?<url>\S+[^""]+)""", Regex.Escape(@"a-zA-Z:/.-{}?&_%#+=@")) +						// url
                                     @"(?<slash>\/)?" +						// slash
                                     @"(?<post>[^\w\/;]*)" +					// post
                                     @"(?=\s|$)",
@@ -50,12 +50,12 @@ namespace Textile.Blocks
             var linkText = m.Groups["text"].Value.Trim(' ');
 
             var str = m.Groups["pre"].Value + "<a ";
-			if (!string.IsNullOrEmpty(m_rel))
-				str += "ref=\"" + m_rel + "\" ";
-			str += "href=\"" +
-				  m.Groups["url"].Value + m.Groups["slash"].Value + "\"" +
-				  atts +
-				  ">" + linkText + "</a>" + m.Groups["post"].Value;
+            if (!string.IsNullOrEmpty(m_rel))
+                str += "ref=\"" + m_rel + "\" ";
+            str += "href=\"" +
+                  m.Groups["url"].Value + m.Groups["slash"].Value + "\"" +
+                  atts +
+                  ">" + linkText + "</a>" + m.Groups["post"].Value;
             return str;
         }
     }

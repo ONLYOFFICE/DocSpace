@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader, toastr } from "asc-web-components";
@@ -103,7 +103,9 @@ class PureProfile extends React.Component {
 const ProfileContainer = withTranslation()(PureProfile);
 
 const Profile = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
     <I18nextProvider i18n={i18n}>

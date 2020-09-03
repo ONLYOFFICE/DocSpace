@@ -59,8 +59,12 @@ const StyledOptionButton = styled.div`
 `;
 
 class Row extends React.Component {
+  constructor(props){
+    super(props);
 
-  rowRef = React.createRef();
+    this.rowRef = React.createRef();
+  }
+
   shouldComponentUpdate(nextProps) {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
@@ -146,6 +150,7 @@ Row.propTypes = {
   indeterminate: PropTypes.bool,
   needForUpdate: PropTypes.func,
   onSelect: PropTypes.func,
+  selectItem: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 

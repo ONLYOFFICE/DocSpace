@@ -898,20 +898,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
-        /// </summary>
-        public static string ConsumersSelectelCloudInstruction {
-            get {
-                return ResourceManager.GetString("ConsumersSelectelCloudInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Connect Selectel Cloud Storage service to backup and store data from your portal..
         /// </summary>
         public static string ConsumersSelectelDescription {
             get {
                 return ResourceManager.GetString("ConsumersSelectelDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        /// </summary>
+        public static string ConsumersSelectelInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelInstruction", resourceCulture);
             }
         }
         

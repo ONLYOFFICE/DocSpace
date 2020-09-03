@@ -1,7 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Text from '../text';
+
+const phoneSize = 464;
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
@@ -39,6 +41,14 @@ const EmptyContentBody = styled.div`
     grid-area: button; 
     padding-top: 10px;
   }
+
+  ${props =>
+    props.widthProp <= phoneSize &&
+    css`
+      .ec-image {
+        display: none;
+      }
+  `}
 
   @media (orientation: portrait) {
     @media (max-width: 700px) {

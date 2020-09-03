@@ -26,15 +26,16 @@ const StyledChildrenBlock = styled.div`
   padding: 2px 0px 2px 2px;
 `;
 
-// eslint-disable-next-line react/prop-types, no-unused-vars
+/* eslint-disable react/prop-types, no-unused-vars */
 const CustomInputGroup = ({
-  isIconFill,
+  isIconFill, 
   hasError,
   hasWarning,
   isDisabled,
-  scale,
+  scale, 
   ...props
 }) => <div {...props}></div>;
+/* eslint-enable react/prop-types, no-unused-vars */
 const StyledInputGroup = styled(CustomInputGroup)`
   display: flex;
 

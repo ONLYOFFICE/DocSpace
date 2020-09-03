@@ -28,7 +28,9 @@
 namespace ASC.Common.Tests.Utils
 {
     using System.IO;
+
     using ASC.Common.Utils;
+
     using NUnit.Framework;
 
     [TestFixture]

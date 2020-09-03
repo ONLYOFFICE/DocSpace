@@ -27,10 +27,13 @@
 #if DEBUG
 using System;
 using System.Linq;
+
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests

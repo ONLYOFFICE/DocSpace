@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
-import Text from '../text'
 import { tablet } from '../../utils/device'
 
 const itemTruncate = css`
