@@ -198,6 +198,8 @@ import OrigGoogleCloudIcon from './googlecloud.react.svg';
 import OrigRackspaceIcon from './rackspace.react.svg';
 import OrigSelectelIcon from './selectel.react.svg';
 
+import OrigIntegrationIcon from './integration.react.svg';
+
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -954,4 +956,8 @@ export const DocuSignIcon = createStyledIcon(
   export const SelectelIcon = createStyledIcon(
   OrigSelectelIcon,
   'SelectelIcon'
+);
+  export const IntegrationIcon = createStyledIcon(
+  OrigIntegrationIcon,
+  'IntegrationIcon'
 );

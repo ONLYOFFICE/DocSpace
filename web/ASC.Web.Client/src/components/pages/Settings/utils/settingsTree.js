@@ -58,7 +58,7 @@ export const settingsTree = [
     },
     {
         key: '3',
-        icon: 'SettingsIcon',
+        icon: 'IntegrationIcon',
         link: 'integration',
         tKey: 'ManagementCategoryIntegration',
         children: [
