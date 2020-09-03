@@ -21,8 +21,7 @@ class ConsumerItem extends React.Component {
                         widthProp="100%"
                     >
                         <Box>
-                            <Text>{consumer.name}</Text>
-                            {/* {React.createElement(Icons[`${name}Icon`], { size: "scale" })} */}
+                            {React.createElement(Icons[`${consumer.name}Icon`], { size: "scale" })}
                         </Box>
                         <Box onClick={setConsumer} data-consumer={consumer.name}>
                             <ConsumerToggle
