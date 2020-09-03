@@ -33,7 +33,7 @@ class ConsumerItem extends React.Component {
                     </Box>
                     <Box displayProp="flex" marginProp="21px 0 0 0">
                         <Text>
-                            {consumer.instruction}
+                            {consumer.description}
                         </Text>
                     </Box>
                 </Box>
