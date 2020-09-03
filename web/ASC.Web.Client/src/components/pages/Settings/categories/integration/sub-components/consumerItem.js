@@ -19,6 +19,7 @@ class ConsumerItem extends React.Component {
                         justifyContent="space-between"
                         alignItems="center"
                         widthProp="100%"
+                        heightProp="56px"
                     >
                         <Box>
                             {React.createElement(Icons[`${consumer.name}Icon`], { size: "scale" })}
