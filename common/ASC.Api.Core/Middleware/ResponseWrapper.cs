@@ -9,7 +9,18 @@ namespace ASC.Api.Core.Middleware
     {
         public override void OnException(ExceptionContext context)
         {
-            context.Result = new ObjectResult(new ErrorApiResponse((HttpStatusCode)context.HttpContext.Response.StatusCode, context.Exception));
+            var status = (HttpStatusCode)context.HttpContext.Response.StatusCode;
+            if (status == HttpStatusCode.OK)
+            {
+                status = HttpStatusCode.InternalServerError;
+            }
+
+            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception))
+            {
+                StatusCode = (int)status
+            };
+
+            context.Result = result; ;
         }
     }
 
