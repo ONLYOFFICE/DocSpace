@@ -248,7 +248,6 @@ namespace ASC.Data.Storage.Configuration
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
-                services.TryAddScoped<CdnStorageSettings>();
                 return services
                     .AddSettingsManagerService()
                     .AddBaseStorageSettingsService()
@@ -262,7 +261,6 @@ namespace ASC.Data.Storage.Configuration
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
-                services.TryAddScoped<CdnStorageSettings>();
                 return services
                     .AddSettingsManagerService()
                     .AddBaseStorageSettingsService()

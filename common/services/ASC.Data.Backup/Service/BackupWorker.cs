@@ -726,19 +726,11 @@ namespace ASC.Data.Backup.Service
 
     public class FactoryProgressItem
     {
-        public BackupProgressItem BackupProgressItem { get; set; }
-        public RestoreProgressItem RestoreProgressItem { get; set; }
-        public TransferProgressItem TransferProgressItem { get; set; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public FactoryProgressItem(
-            BackupProgressItem backupProgressItem,
-            RestoreProgressItem restoreProgressItem,
-            TransferProgressItem transferProgressItem
-            )
+        public FactoryProgressItem(IServiceProvider serviceProvider)
         {
-            BackupProgressItem = backupProgressItem;
-            RestoreProgressItem = restoreProgressItem;
-            TransferProgressItem = transferProgressItem;
+            ServiceProvider = serviceProvider;
         }
 
         public BackupProgressItem CreateBackupProgressItem(
@@ -749,8 +741,9 @@ namespace ASC.Data.Backup.Service
             string currentRegion,
             Dictionary<string, string> configPaths)
         {
-            BackupProgressItem.Init(request, isScheduled, tempFolder, limit, currentRegion, configPaths);
-            return BackupProgressItem;
+            var item = ServiceProvider.GetService<BackupProgressItem>();
+            item.Init(request, isScheduled, tempFolder, limit, currentRegion, configPaths);
+            return item;
         }
 
         public BackupProgressItem CreateBackupProgressItem(
@@ -762,9 +755,11 @@ namespace ASC.Data.Backup.Service
             Dictionary<string, string> configPaths
             )
         {
-            BackupProgressItem.Init(schedule, isScheduled, tempFolder, limit, currentRegion, configPaths);
-            return BackupProgressItem;
+            var item = ServiceProvider.GetService<BackupProgressItem>();
+            item.Init(schedule, isScheduled, tempFolder, limit, currentRegion, configPaths);
+            return item;
         }
+
         public RestoreProgressItem CreateRestoreProgressItem(
             StartRestoreRequest request,
             string tempFolder,
@@ -773,8 +768,9 @@ namespace ASC.Data.Backup.Service
             Dictionary<string, string> configPaths
             )
         {
-            RestoreProgressItem.Init(request, tempFolder, upgradesPath, currentRegion, configPaths);
-            return RestoreProgressItem;
+            var item = ServiceProvider.GetService<RestoreProgressItem>();
+            item.Init(request, tempFolder, upgradesPath, currentRegion, configPaths);
+            return item;
         }
 
         public TransferProgressItem CreateTransferProgressItem(
@@ -788,8 +784,9 @@ namespace ASC.Data.Backup.Service
             Dictionary<string, string> configPaths
             )
         {
-            TransferProgressItem.Init(targetRegion, transferMail, tenantId, tempFolder, limit, notify, currentRegion, configPaths);
-            return TransferProgressItem;
+            var item = ServiceProvider.GetService<TransferProgressItem>();
+            item.Init(targetRegion, transferMail, tenantId, tempFolder, limit, notify, currentRegion, configPaths);
+            return item;
         }
     }
 
@@ -823,13 +820,13 @@ namespace ASC.Data.Backup.Service
             TransferPortalTask = transferPortalTask;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, 
+        public void Deconstruct(out TenantManager tenantManager,
             out BackupStorageFactory backupStorageFactory,
-            out NotifyHelper notifyHelper, 
-            out BackupRepository backupRepository, 
+            out NotifyHelper notifyHelper,
+            out BackupRepository backupRepository,
             out BackupWorker backupWorker,
             out BackupPortalTask backupPortalTask,
-            out RestorePortalTask restorePortalTask, 
+            out RestorePortalTask restorePortalTask,
             out TransferPortalTask transferPortalTask)
         {
             tenantManager = TenantManager;
