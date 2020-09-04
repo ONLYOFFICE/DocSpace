@@ -41,7 +41,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
-    public class TagDao<T> : AbstractDao, ITagDao<T>
+    internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         private static readonly object syncRoot = new object();
 

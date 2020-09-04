@@ -45,7 +45,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
-    public class ProviderDaoBase : IDisposable
+    internal class ProviderDaoBase : IDisposable
     {
         private readonly List<IDaoSelector> Selectors;
 
@@ -125,7 +125,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 deleteSourceFile);
         }
-        
+
         protected File<int> PerformCrossDaoFileCopy(string fromFileId, int toFolderId, bool deleteSourceFile)
         {
             var fromSelector = GetSelector(fromFileId);
@@ -169,7 +169,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
     }
 
-    public class ProviderDaoBaseScope
+    internal class ProviderDaoBaseScope
     {
         private TenantManager TenantManager { get; }
         private IFolderDao<int> FolderDao { get; }
@@ -194,7 +194,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public static DIHelper AddProviderDaoBaseService(this DIHelper services)
         {
-            if (services.TryAddScoped<CrossDao>())//here
+            if (services.TryAddScoped<CrossDao>())
             {
                 services.TryAddScoped<ProviderDaoBaseScope>();
                 return services
@@ -203,8 +203,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                     .AddOneDriveSelectorService()
                     .AddGoogleDriveSelectorService()
                     .AddDropboxDaoSelectorService()
-                    .AddBoxDaoSelectorService()
-                    .AddFolderDaoService();
+                    .AddBoxDaoSelectorService();
             }
 
             return services;

@@ -82,7 +82,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            (var globalStore, var filesLinkUtility, var setupInfo, var fileConverter, var filesMessageService) = scopeClass;
+            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             using var stream = TempStream.Create();
             using (var zip = new ZipOutputStream(stream, true)
             {
@@ -150,7 +150,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
 
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            (var globalStore, var filesLinkUtility, var setupInfo, var fileConverter, var filesMessageService) = scopeClass;
+            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             ReplaceLongPath(entriesPathId);
 
             if (Compress)
@@ -263,7 +263,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            (var globalStore, var filesLinkUtility, var setupInfo, var fileConverter, var filesMessageService) = scopeClass;
+            var (_, _, setupInfo, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)

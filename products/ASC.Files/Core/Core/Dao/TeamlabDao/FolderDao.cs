@@ -52,7 +52,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
-    public class FolderDao : AbstractDao, IFolderDao<int>
+    internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         private const string my = "my";
         private const string common = "common";

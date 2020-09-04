@@ -31,7 +31,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty
 {
-    public interface IDaoSelector : IDisposable
+    internal interface IDaoSelector : IDisposable
     {
         bool IsMatch(string id);
         IFileDao<string> GetFileDao(string id);

@@ -130,7 +130,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Do(scope, ThirdpartyFolderId);
             }
         }
-        
+
         private void Do<TTo>(IServiceScope scope, TTo tto)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
@@ -165,7 +165,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
         }
-        
+
         private List<FileEntry<TTo>> MoveOrCopyFolders<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
         {
             var needToMark = new List<FileEntry<TTo>>();
@@ -173,7 +173,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (folderIds.Count == 0) return needToMark;
 
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
-            (var filesMessageService, var fileMarker, var fileUtility, var global, var entryManager) = scopeClass;
+            var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
             var toFolderId = toFolder.ID;

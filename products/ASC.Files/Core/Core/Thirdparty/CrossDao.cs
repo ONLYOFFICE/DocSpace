@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Thirdparty
 {
-    public class CrossDao
+    internal class CrossDao
     {
         private IServiceProvider ServiceProvider { get; }
         private SetupInfo SetupInfo { get; }
