@@ -41,7 +41,7 @@ const initialState = {
   treeFolders: [],
   selected: "none",
   viewAs: "row",
-  selectedFolder: null,
+  selectedFolder: {},
   selection: [],
   dragging: false,
   dragItem: null,
