@@ -6,33 +6,77 @@ import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 
-import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline } from "asc-web-common";
+import {
+  history,
+  PrivateRoute,
+  PublicRoute,
+  Login,
+  Error404,
+  Error520,
+  StudioLayout,
+  Offline
+} from "asc-web-common";
 
-const VersionHistory = React.lazy(() => import('./components/pages/VersionHistory'));
+const VersionHistory = React.lazy(() =>
+  import("./components/pages/VersionHistory")
+);
 
-const withStudioLayout = Component => props => <StudioLayout><Component {...props} /></StudioLayout>;
+const withStudioLayout = Component => props => (
+  <StudioLayout>
+    <Component {...props} />
+  </StudioLayout>
+);
 
 const App = ({ settings }) => {
   const { homepage } = settings;
-  
-  return (
-    navigator.onLine ? 
+
+  return navigator.onLine ? (
     <Router history={history}>
-        <Suspense
-          fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
-        >
-          <Switch>
-            <Redirect exact from="/" to={`${homepage}`} />
-            <PrivateRoute exact path={[homepage, `${homepage}/filter`]} component={withStudioLayout(Home)} />
-            <PrivateRoute exact path={`${homepage}/settings/:setting`} component={withStudioLayout(Settings)} />
-            <PrivateRoute exact path={`${homepage}/doceditor`} component={DocEditor} />
-            <PrivateRoute exact path={`${homepage}/:fileId/history`} component={withStudioLayout(VersionHistory)} />
-            <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={withStudioLayout(Login)} />
-            <PrivateRoute component={withStudioLayout(Error404)} />
-          </Switch>
-        </Suspense>
+      <Suspense
+        fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
+      >
+        <Switch>
+          <Redirect exact from="/" to={`${homepage}`} />
+          <PrivateRoute
+            exact
+            path={[homepage, `${homepage}/filter`]}
+            component={withStudioLayout(Home)}
+          />
+          <PrivateRoute
+            exact
+            path={`${homepage}/settings/:setting`}
+            component={withStudioLayout(Settings)}
+          />
+          <PrivateRoute
+            exact
+            path={`${homepage}/doceditor`}
+            component={DocEditor}
+          />
+          <PrivateRoute
+            exact
+            path={`${homepage}/:fileId/history`}
+            component={withStudioLayout(VersionHistory)}
+          />
+          <PublicRoute
+            exact
+            path={[
+              "/login",
+              "/login/error=:error",
+              "/login/confirmed-email=:confirmedEmail"
+            ]}
+            component={withStudioLayout(Login)}
+          />
+          <PrivateRoute
+            exact
+            path={`/error=:error`}
+            component={withStudioLayout(Error520)}
+          />
+          <PrivateRoute component={withStudioLayout(Error404)} />
+        </Switch>
+      </Suspense>
     </Router>
-    : <Offline/>
+  ) : (
+    <Offline />
   );
 };
 
