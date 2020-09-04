@@ -73,7 +73,7 @@ namespace ASC.Data.Storage.Encryption
             TokenSource.Cancel();
         }
 
-        private string GetCacheKey()
+        public string GetCacheKey()
         {
             return typeof(EncryptionOperation).FullName;
         }

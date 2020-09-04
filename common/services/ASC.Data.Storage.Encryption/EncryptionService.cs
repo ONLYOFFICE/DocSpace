@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
-*/
+
 
 
 using System;
@@ -26,23 +26,19 @@ namespace ASC.Data.Storage.Encryption
     class EncryptionService : IEncryptionService
     {
         private EncryptionWorker EncryptionWorker { get; }
-        private ICacheNotify<EncryptionStop> NotifyStop { get; }
 
-        public EncryptionService(EncryptionWorker encryptionWorker, ICacheNotify<EncryptionStop> notifyStop)
+        public EncryptionService(EncryptionWorker encryptionWorker)
         {
             EncryptionWorker = encryptionWorker;
-            NotifyStop = notifyStop;
         }
 
         public void Start(EncryptionSettingsProto encryptionSettingsProto)
         {
-            NotifyStop.Subscribe((n) => Stop(), CacheNotifyAction.Insert);
             EncryptionWorker.Start(encryptionSettingsProto);
         }
 
         public void Stop()
         {
-            NotifyStop.Unsubscribe(CacheNotifyAction.Insert);
             EncryptionWorker.Stop();
         }
     }
@@ -56,3 +52,4 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 }
+*/
