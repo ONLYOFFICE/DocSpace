@@ -175,7 +175,7 @@ export const StyledFilterItem = styled.div`
   display:  ${props => props.block ? 'flex' : 'inline-block'};
   margin-bottom: ${props => props.block ? '8px' : '0'};
   position: relative;
-  height: 100%;
+  height: 24px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;
