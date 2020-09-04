@@ -1,6 +1,6 @@
 import React from "react";
 import { PageLayout, utils, store } from "asc-web-common";
-import { Loader, utils as Utils } from "asc-web-components";
+import { Loader, utils as Utils, toastr } from "asc-web-components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
@@ -10,7 +10,6 @@ import HeaderContainer from "./sub-components/header-container";
 import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
-import ModalDialogContainer from "./sub-components/modal-dialog-container";
 import {
   setLicense /*getPortalCultures*/,
 } from "../../../store/payments/actions";
@@ -43,9 +42,8 @@ class Body extends React.PureComponent {
     super(props);
     const { t } = this.props;
     this.state = {
-      // errorMessage: null,
-      // isErrorLicense: false,
-      isVisibleModalDialog: false,
+      errorMessage: null,
+      isErrorLicense: false,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
@@ -63,17 +61,21 @@ class Body extends React.PureComponent {
   }
 
   onButtonClickUpload = (file) => {
-    const { setLicense } = this.props;
+    const { setLicense, t } = this.props;
     let fd = new FormData();
     fd.append("files", file);
 
-    setLicense(null, fd).catch((e) =>
-      this.setState({
-        // errorMessage: e,
-        // isErrorLicense: true,
-        isVisibleModalDialog: true,
+    setLicense(null, fd)
+      .then(() => {
+        toastr.success(t("LoadingLicenseSuccess"), "", 0, true);
       })
-    );
+      .catch((error) => {
+        toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);
+        this.setState({
+          errorMessage: error,
+          isErrorLicense: true,
+        });
+      });
   };
   onButtonClickBuy = (e) => {
     window.open(e.target.value, "_blank");
@@ -98,15 +100,10 @@ class Body extends React.PureComponent {
       utcHoursOffset,
       trialMode,
     } = this.props;
-    const {
-      isVisibleModalDialog,
-      languages,
-      select,
-      selectLanguage,
-    } = this.state;
+    const { languages, select, selectLanguage } = this.state;
     const { history } = this.props;
     // console.log(this.state.selectLanguage);
-    
+
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -125,11 +122,7 @@ class Body extends React.PureComponent {
           history={history}
         />
         <AdvantagesContainer t={t} />
-        <ModalDialogContainer
-          t={t}
-          isVisibleModalDialog={isVisibleModalDialog}
-          onCloseModalDialog={this.onCloseModalDialog}
-        />
+
         <ButtonContainer
           t={t}
           buyUrl={buyUrl}
