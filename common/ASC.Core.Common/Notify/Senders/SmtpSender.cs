@@ -65,7 +65,7 @@ namespace ASC.Core.Notify.Senders
         private int Port { get; set; }
         private bool Ssl { get; set; }
         private ICredentials Credentials { get; set; }
-        protected bool UseCoreSettings { get; set; }
+        protected bool _useCoreSettings { get; set; }
         const int NETWORK_TIMEOUT = 30000;
 
         public SmtpSender(
@@ -81,7 +81,7 @@ namespace ASC.Core.Notify.Senders
         {
             if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
             {
-                UseCoreSettings = true;
+                _useCoreSettings = true;
             }
             else
             {
@@ -113,7 +113,7 @@ namespace ASC.Core.Notify.Senders
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
-            (var tenantManager, var coreConfiguration) = scopeClass;
+            var (tenantManager, configuration) = scopeClass;
             tenantManager.SetCurrentTenant(m.Tenant);
 
             var smtpClient = GetSmtpClient();
@@ -122,8 +122,8 @@ namespace ASC.Core.Notify.Senders
             {
                 try
                 {
-                    if (UseCoreSettings)
-                        InitUseCoreSettings(coreConfiguration);
+                    if (_useCoreSettings)
+                        InitUseCoreSettings(configuration);
 
                     var mail = BuildMailMessage(m);
 
@@ -334,10 +334,7 @@ namespace ASC.Core.Notify.Senders
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-        {
-            tenantManager = TenantManager;
-            coreConfiguration = CoreConfiguration;
-        }
+            => (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
     }
 
     public static class SmtpSenderExtension

@@ -81,14 +81,14 @@ namespace ASC.Core.Notify.Senders
                     Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
-                    (var tenantManager, var coreConfiguration) = scopeClass;
+                    var (tenantManager, configuration) = scopeClass;
                     tenantManager.SetCurrentTenant(m.Tenant);
 
-                    if (!coreConfiguration.SmtpSettings.IsDefaultSettings)
+                    if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
-                        UseCoreSettings = true;
+                        _useCoreSettings = true;
                         result = base.Send(m);
-                        UseCoreSettings = false;
+                        _useCoreSettings = false;
                     }
                     else
                     {
@@ -227,7 +227,7 @@ namespace ASC.Core.Notify.Senders
         private bool IsRefreshNeeded()
         {
             return quota == null || (DateTime.UtcNow - lastRefresh) > refreshTimeout;
-        }       
+        }
     }
 
     public class AWSSenderScope
@@ -242,10 +242,7 @@ namespace ASC.Core.Notify.Senders
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-        {
-            tenantManager = TenantManager;
-            coreConfiguration = CoreConfiguration;
-        }
+            => (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
     }
 
     public static class AWSSenderExtension

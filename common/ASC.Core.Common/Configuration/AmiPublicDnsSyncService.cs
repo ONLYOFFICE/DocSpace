@@ -53,7 +53,7 @@ namespace ASC.Core.Configuration
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
-            (var tenantManager, var coreBaseSettings) = scopeClass;
+            var (tenantManager, coreBaseSettings) = scopeClass;
             if (coreBaseSettings.Standalone)
             {
                 var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
@@ -107,10 +107,7 @@ namespace ASC.Core.Configuration
             CoreBaseSettings = coreBaseSettings;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings)
-        {
-            tenantManager = TenantManager;
-            coreBaseSettings = CoreBaseSettings;
-        }
+        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings) =>
+            (tenantManager, coreBaseSettings) = (TenantManager, CoreBaseSettings);
     }
 }

@@ -96,16 +96,16 @@ namespace ASC.Core.Notify
             };
 
             using var scope = ServiceProvider.CreateScope();
-            
+
             var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
-            (var tenantManager, var coreConfiguration, var options) = scopeClass;
+            var (tenantManager, configuration, options) = scopeClass;
 
             var tenant = tenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-            var from = MailAddressUtils.Create(coreConfiguration.SmtpSettings.SenderAddress, coreConfiguration.SmtpSettings.SenderDisplayName);
+            var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((coreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(coreConfiguration.SmtpSettings.SenderDisplayName)) &&
+            if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
                 fromTag != null && fromTag.Value != null)
             {
                 try
@@ -166,11 +166,7 @@ namespace ASC.Core.Notify
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
-        {
-            tenantManager = TenantManager;
-            coreConfiguration = CoreConfiguration;
-            optionsMonitor = Options;
-        }
+            => (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
     }
 
     public static class EmailSenderSinkExtension
