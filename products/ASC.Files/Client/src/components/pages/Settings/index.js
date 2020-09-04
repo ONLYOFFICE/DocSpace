@@ -1,7 +1,7 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { PageLayout, utils, Error403 } from "asc-web-common";
+import { PageLayout, utils, Error403, Error520 } from "asc-web-common";
 import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
@@ -9,7 +9,7 @@ import {
   ArticleMainButtonContent
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { setIsLoading } from '../../../store/files/actions';
+import { setIsLoading, getFilesSettings } from "../../../store/files/actions";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -17,34 +17,37 @@ import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings"
-})
+});
 
 const { changeLanguage } = utils;
 
-class PureSettings extends React.Component {
-  constructor(props) {
-    super(props)
+const PureSettings = props => {
+  const [errorLoading, setErrorLoading] = useState(false);
 
-    this.state = {
-      recent: false,
-      favorites: false,
-      templates: false,
-      keepIntermediate: false
-    }
-  }
+  useEffect(() => {
+    const { getFilesSettings, setIsLoading } = props;
+    setIsLoading(true);
+    getFilesSettings()
+      .then(() => setIsLoading(false))
+      .catch(e => {
+        setErrorLoading(true);
+        setIsLoading(false);
+      });
+  }, []);
 
-  render() {
-    console.log('Settings render()');
-    const { 
-      recent,
-      favorites,
-      templates,
-      keepIntermediate,
-    } = this.state;
-    const { match, t, isLoading, setIsLoading, thirdParty, isAdmin } = this.props;
-    const { setting } = match.params;
+  console.log("Settings render()");
+  const {
+    match,
+    t,
+    isLoading,
+    setIsLoading,
+    enableThirdParty,
+    isAdmin
+  } = props;
+  const { setting } = match.params;
 
-    const settings = <>
+  const settings = (
+    <>
       <RequestLoader
         visible={isLoading}
         zIndex={256}
@@ -64,51 +67,47 @@ class PureSettings extends React.Component {
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>
-          <ArticleBodyContent 
-            onLoading={setIsLoading}
-            isLoading={isLoading}
-          />
+          <ArticleBodyContent onLoading={setIsLoading} isLoading={isLoading} />
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent title={t(`${setting}`)}/>
+          <SectionHeaderContent title={t(`${setting}`)} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent
-            setting={setting}
-            recent={recent}
-            favorites={favorites}
-            templates={templates}
-            keepIntermediate={keepIntermediate}
-            t={t}
-            onLoading={setIsLoading}
-          />
+          <SectionBodyContent setting={setting} t={t} />
         </PageLayout.SectionBody>
       </PageLayout>
-    </>;
+    </>
+  );
 
-    return (!thirdParty && setting === 'thirdParty') || (!isAdmin && setting === 'admin') 
-      ? <Error403 /> 
-      : settings;
-  }
-} 
+  return (!enableThirdParty && setting === "thirdParty") ||
+    (!isAdmin && setting === "admin") ? (
+    <Error403 />
+  ) : errorLoading ? (
+    <Error520 />
+  ) : (
+    settings
+  );
+};
 
 const SettingsContainer = withTranslation()(PureSettings);
 
 const Settings = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
       <SettingsContainer {...props} />
     </I18nextProvider>
   );
-}
+};
 
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
-    thirdParty: state.files.settingsTree.thirdParty,
+    enableThirdParty: state.files.settingsTree.enableThirdParty,
     isAdmin: state.auth.user.isAdmin
   };
 }
@@ -116,6 +115,7 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   {
-    setIsLoading
+    setIsLoading,
+    getFilesSettings
   }
-  )(withRouter(Settings));
+)(withRouter(Settings));

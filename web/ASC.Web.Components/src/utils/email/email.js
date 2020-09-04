@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape, no-control-regex */
 import emailAddresses from "email-addresses";
 import punycode from "punycode";
 import { parseErrorTypes, errorKeys } from "./../constants";

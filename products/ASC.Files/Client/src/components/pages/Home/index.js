@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -313,7 +313,14 @@ class PureHome extends React.Component {
       uploadOriginalFormatSetting,
       hideWindowSetting
     } = this.state;
-    const { t, progressData, viewAs, isLoading, convertDialogVisible, setIsLoading } = this.props;
+    const {
+      t,
+      progressData,
+      viewAs,
+      isLoading,
+      convertDialogVisible,
+      setIsLoading
+    } = this.props;
 
     const progressBarContent = (
       <div>
@@ -381,38 +388,38 @@ class PureHome extends React.Component {
               onTreeDrop={this.onDrop}
             />
           </PageLayout.ArticleBody>
-            <PageLayout.SectionHeader>
-              <SectionHeaderContent
-                isHeaderVisible={isHeaderVisible}
-                isHeaderIndeterminate={isHeaderIndeterminate}
-                isHeaderChecked={isHeaderChecked}
-                onCheck={this.onSectionHeaderContentCheck}
-                onSelect={this.onSectionHeaderContentSelect}
-                onClose={this.onClose}
-                onLoading={setIsLoading}
-                isLoading={isLoading}
-                loopFilesOperations={this.loopFilesOperations}
-              />
-            </PageLayout.SectionHeader>
+          <PageLayout.SectionHeader>
+            <SectionHeaderContent
+              isHeaderVisible={isHeaderVisible}
+              isHeaderIndeterminate={isHeaderIndeterminate}
+              isHeaderChecked={isHeaderChecked}
+              onCheck={this.onSectionHeaderContentCheck}
+              onSelect={this.onSectionHeaderContentSelect}
+              onClose={this.onClose}
+              onLoading={setIsLoading}
+              isLoading={isLoading}
+              loopFilesOperations={this.loopFilesOperations}
+            />
+          </PageLayout.SectionHeader>
 
-            <PageLayout.SectionFilter>
-              <SectionFilterContent onLoading={setIsLoading} />
-            </PageLayout.SectionFilter>
-            
-            <PageLayout.SectionBody>
-              <SectionBodyContent
-                selected={selected}
-                isLoading={isLoading}
-                onLoading={setIsLoading}
-                onChange={this.onRowChange}
-                loopFilesOperations={this.loopFilesOperations}
-                onDropZoneUpload={this.onDrop}
-              />
-            </PageLayout.SectionBody>
+          <PageLayout.SectionFilter>
+            <SectionFilterContent onLoading={setIsLoading} />
+          </PageLayout.SectionFilter>
 
-            <PageLayout.SectionPaging>
-              <SectionPagingContent onLoading={setIsLoading} />
-            </PageLayout.SectionPaging>
+          <PageLayout.SectionBody>
+            <SectionBodyContent
+              selected={selected}
+              isLoading={isLoading}
+              onLoading={setIsLoading}
+              onChange={this.onRowChange}
+              loopFilesOperations={this.loopFilesOperations}
+              onDropZoneUpload={this.onDrop}
+            />
+          </PageLayout.SectionBody>
+
+          <PageLayout.SectionPaging>
+            <SectionPagingContent onLoading={setIsLoading} />
+          </PageLayout.SectionPaging>
         </PageLayout>
       </>
     );
@@ -422,7 +429,9 @@ class PureHome extends React.Component {
 const HomeContainer = withTranslation()(PureHome);
 
 const Home = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
       <HomeContainer {...props} />
@@ -467,7 +476,7 @@ function mapStateToProps(state) {
     selected,
     selection,
     treeFolders,
-    viewAs, 
+    viewAs,
     isLoading
   };
 }

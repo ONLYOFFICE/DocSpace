@@ -13,10 +13,9 @@ if ("function" === typeof importScripts) {
     // to force update an exiting service worker.
     // Since we're using `injectManifest` to build SW,
     // manually overriding the skipWaiting();
-    // self.addEventListener("install", event => {
-    //   self.skipWaiting();
-    //   window.location.reload();
-    // });
+    self.addEventListener("install", event => {
+      self.skipWaiting();
+    });
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
@@ -24,7 +23,9 @@ if ("function" === typeof importScripts) {
     // Image caching
     workbox.routing.registerRoute(
       // Cache image files.
-      ({ request }) => request.destination === "image",
+      ({ request, url }) =>
+        request.destination === "image" &&
+        url.pathname.indexOf("userPhotos/temp") === -1,
       // Use the cache if it's available.
       new workbox.strategies.CacheFirst({
         // Use a custom cache name.
@@ -85,6 +86,20 @@ if ("function" === typeof importScripts) {
       new workbox.strategies.StaleWhileRevalidate({
         // Use a custom cache name.
         cacheName: "translation-cache"
+      })
+    );
+
+    workbox.routing.registerRoute(
+      // Cache API Request
+      new RegExp("/api/2.0/(modules|people/@self|(.*)/info(.json|$))"),
+      new workbox.strategies.StaleWhileRevalidate({
+        cacheName: "api-cache",
+        plugins: [
+          new workbox.expiration.ExpirationPlugin({
+            maxEntries: 100,
+            maxAgeSeconds: 30 * 60 // 30 Minutes
+          })
+        ]
       })
     );
   } else {

@@ -7,6 +7,7 @@ function addNameSpace( data ) {
 }
 function encodeSVG( data ) {
 
+    // eslint-disable-next-line no-useless-escape
     var symbols = /[\r\n%#()<>?\[\\\]^`{|}]/g;
 
     data = data.replace( /"/g, '\'' );

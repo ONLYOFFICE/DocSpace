@@ -43,6 +43,8 @@ export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
+export const SET_FILES_SETTINGS = "SET_FILES_SETTINGS";
+export const SET_FILES_SETTING = "SET_FILES_SETTING";
 
 export function setFile(file) {
   return {
@@ -212,10 +214,17 @@ export function setIsLoading(isLoading) {
   }
 }
 
-export function setThirdParty(data) {
+export function setFilesSettings(settings) {
+  return { 
+    type: SET_FILES_SETTINGS,
+    settings
+  }
+}
+
+export function setFilesSetting(setting, val) {
   return {
-    type: SET_THIRD_PARTY,
-    data
+    type: SET_FILES_SETTING,
+    setting, val
   }
 }
 
@@ -463,26 +472,52 @@ export function clearProgressData(dispatch) {
   };
 }*/
 
-export function updateIfExist(data) {
+export function setUpdateIfExist(data, setting) {
   return dispatch => {
-    return files.updateIfExist(data);
+    return files.updateIfExist(data)
+      .then( res => dispatch(setFilesSetting(setting, res)));
   }
 }
 
-export function storeOriginal(data) {
+export function setStoreOriginal(data, setting) {
   return dispatch => {
-    return files.storeOriginal(data);
+    return files.storeOriginal(data)
+      .then( res => dispatch(setFilesSetting(setting, res)));
   }
 }
 
-export function changeDeleteConfirm(data) {
+export function setConfirmDelete(data, setting) {
   return dispatch => {
-    return files.changeDeleteConfirm(data);
+    return files.changeDeleteConfirm(data)
+      .then( res => dispatch(setFilesSetting(setting, res)));
   }
 }
 
-export function storeForceSave(data) {
+export function setStoreForceSave(data, setting) {
   return dispatch => {
-    return files.storeForceSave(data);
+    return files.storeForceSave(data)
+      .then( res => dispatch(setFilesSetting(setting, res)));
+  }
+}
+
+export function setEnableThirdParty(data, setting) {
+  return dispatch => {
+    return files.thirdParty(data)
+      .then( res => dispatch(setFilesSetting(setting, res)));
+  }
+}
+
+export function setForceSave(data, setting) {
+  console.log( data , setting)
+  return dispatch => {
+    return files.forceSave(data)
+      .then( res => dispatch(setFilesSetting(setting, res)));
+  }
+}
+
+export function getFilesSettings() {
+  return dispatch => {
+    return files.getSettingsFiles()
+      .then( settings => dispatch(setFilesSettings(settings)));
   }
 }

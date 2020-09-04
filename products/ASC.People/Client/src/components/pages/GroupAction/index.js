@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
@@ -24,6 +24,8 @@ class GroupAction extends React.Component {
 
     document.title = `${t("GroupAction")} – ${t("People")}`;
 
+    changeLanguage(i18n);
+
     if (groupId) {
       fetchGroup(groupId);
     }
@@ -43,8 +45,6 @@ class GroupAction extends React.Component {
     console.log("GroupAction render");
 
     const { group, match } = this.props;
-
-    changeLanguage(i18n);
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -97,7 +97,9 @@ class GroupAction extends React.Component {
 const GroupActionWrapper = withTranslation()(GroupAction);
 
 const GroupActionContainer = props => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
       <GroupActionWrapper {...props} />

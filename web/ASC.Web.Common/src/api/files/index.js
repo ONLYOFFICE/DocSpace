@@ -400,3 +400,17 @@ export function storeForceSave(val) {
   const data = { set: val };
   return request({ method: "put", url: "files/storeforcesave", data });
 }
+
+export function forceSave(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/forcesave", data });
+} 
+
+export function thirdParty(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/thirdparty", data });
+}
+
+export function getSettingsFiles() {
+  return request({ method: "get", url: `/files/settings` }); 
+}

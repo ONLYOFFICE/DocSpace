@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
@@ -7,7 +7,6 @@ import IconButton from '../icon-button'
 import Backdrop from '../backdrop'
 import Aside from '../aside'
 import Heading from '../heading'
-import Text from '../text'
 import Link from '../link'
 import { desktop } from '../../utils/device'
 import throttle from "lodash/throttle";
@@ -123,7 +122,7 @@ class ContextMenuButton extends React.Component {
     this.setState({
       data: this.props.getData(),
       isOpen: !this.state.isOpen
-    }, () => !this.props.isDisabled && this.state.isOpen && this.props.onClick && this.props.onClick());
+    }, () => !this.props.isDisabled && this.state.isOpen && this.props.onClick && this.props.onClick()); // eslint-disable-line react/prop-types
   }
 
   clickOutsideAction = (e) => {
@@ -167,8 +166,8 @@ class ContextMenuButton extends React.Component {
       onMouseOver,
       size,
       style,
-      isFill,
-      asideHeader
+      isFill, // eslint-disable-line react/prop-types
+      asideHeader // eslint-disable-line react/prop-types
     } = this.props;
 
     const { isOpen, displayType } = this.state;
