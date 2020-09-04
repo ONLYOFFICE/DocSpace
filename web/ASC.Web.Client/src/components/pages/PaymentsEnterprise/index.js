@@ -106,8 +106,7 @@ class Body extends React.PureComponent {
     } = this.state;
     const { history } = this.props;
     // console.log(this.state.selectLanguage);
-    // eslint-disable-next-line no-debugger
-    debugger;
+    
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
