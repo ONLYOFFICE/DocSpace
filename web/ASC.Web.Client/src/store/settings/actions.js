@@ -200,3 +200,11 @@ export function getConsumers() {
     )
   }
 }
+
+export function sendConsumerNewProps(NewProps) {
+  return dispatch => {
+    return api.settings.updateConsumerProps(NewProps).then(() =>
+      dispatch(getConsumers())
+    )
+  }
+}

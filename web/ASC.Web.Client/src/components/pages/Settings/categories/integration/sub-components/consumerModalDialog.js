@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalDialog, Text, Button, TextInput, Box, Link } from "asc-web-components";
+import { ModalDialog, Text, Button, TextInput, Box, Link, toastr } from "asc-web-components";
 import { Trans } from 'react-i18next';
 
 class ConsumerModalDialog extends React.Component {
@@ -26,10 +26,11 @@ class ConsumerModalDialog extends React.Component {
         })
     }
 
-    onSendValues = () => {
-        this.props.onModalClose();
+    updateConsumerValues = () => {
+        this.props.onChangeLoading(true);
 
         const prop = [];
+
         let i = 0;
         let stateLength = Object.keys(this.state).length;
         for (i = 0; i < stateLength; i++) {
@@ -38,20 +39,29 @@ class ConsumerModalDialog extends React.Component {
                 value: Object.values(this.state)[i]
             })
         }
-
-        console.log([{
+        const data = {
             name: this.props.selectedConsumer,
             props: prop
-        }]);
+        };
+        this.props.sendNewConsumerProps(data)
+            .then(() => {
+                this.props.onChangeLoading(false);
+                toastr.success("Consumer properties successfully update")
+            })
+            .catch((error) => {
+                this.props.onChangeLoading(false);
+                toastr.error(error)
+            })
+            .finally(this.props.onModalClose())
     }
 
     componentDidMount() {
-        this.mapTokenNameToState()
+        this.mapTokenNameToState();
     }
 
     render() {
 
-        const { consumers, selectedConsumer, onModalClose, dialogVisible, t, i18n } = this.props;
+        const { consumers, selectedConsumer, onModalClose, dialogVisible, isLoading, t, i18n } = this.props;
         const { onChangeHandler } = this;
 
         const bodyDescription = (
@@ -104,6 +114,7 @@ class ConsumerModalDialog extends React.Component {
                                     isAutoFocussed={i === 0 && true}
                                     tabIndex={1}
                                     value={Object.values(this.state)[i]}
+                                    isDisabled={isLoading}
                                     onChange={onChangeHandler}
                                 />
                             </Box>
@@ -126,9 +137,11 @@ class ConsumerModalDialog extends React.Component {
                     <Button
                         primary
                         size="big"
-                        label={t("ThirdPartyEnableButton")}
+                        label={isLoading ? "Sending..." : t("ThirdPartyEnableButton")}
                         tabIndex={1}
-                        onClick={this.onSendValues} />
+                        isLoading={isLoading}
+                        isDisabled={isLoading}
+                        onClick={this.updateConsumerValues} />
                 ]}
                 onClose={onModalClose}
             />

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getConsumers } from '../../../../../store/settings/actions';
+import { getConsumers, sendConsumerNewProps } from '../../../../../store/settings/actions';
 import { withTranslation } from 'react-i18next';
 import styled from "styled-components";
 
@@ -42,13 +42,21 @@ class ThirdPartyServices extends React.Component {
 
         this.state = {
             selectedConsumer: "",
-            dialogVisible: false
+            dialogVisible: false,
+            isLoading: false,
+            updateValuesData: []
         }
     }
 
     componentDidMount() {
         const { getConsumers } = this.props;
         getConsumers();
+    }
+
+    onChangeLoading = (status) => {
+        this.setState({
+            isLoading: status
+        })
     }
 
     onModalOpen = () => {
@@ -83,9 +91,9 @@ class ThirdPartyServices extends React.Component {
 
     render() {
 
-        const { t, consumers } = this.props;
-        const { selectedConsumer, dialogVisible } = this.state;
-        const { onModalClose, onToggleClick, setConsumer, onModalButtonClick } = this;
+        const { t, consumers, sendConsumerNewProps } = this.props;
+        const { selectedConsumer, dialogVisible, isLoading } = this.state;
+        const { onModalClose, onToggleClick, setConsumer, onModalButtonClick, onChangeLoading } = this;
 
         return (
             <>
@@ -126,6 +134,7 @@ class ThirdPartyServices extends React.Component {
                                             consumers={consumers}
                                             dialogVisible={dialogVisible}
                                             selectedConsumer={selectedConsumer}
+                                            isLoading={isLoading}
                                             onModalClose={onModalClose}
                                             onToggleClick={onToggleClick}
                                             setConsumer={setConsumer}
@@ -142,8 +151,11 @@ class ThirdPartyServices extends React.Component {
                         dialogVisible={dialogVisible}
                         consumers={consumers}
                         selectedConsumer={selectedConsumer}
+                        isLoading={isLoading}
                         onModalClose={onModalClose}
                         onModalButtonClick={onModalButtonClick}
+                        onChangeLoading={onChangeLoading}
+                        sendConsumerNewProps={sendConsumerNewProps}
                     />}
             </>
         )
@@ -155,4 +167,4 @@ const mapStateToProps = (state) => {
     return { consumers }
 }
 
-export default connect(mapStateToProps, { getConsumers })(withTranslation()(ThirdPartyServices));
+export default connect(mapStateToProps, { getConsumers, sendConsumerNewProps })(withTranslation()(ThirdPartyServices));
