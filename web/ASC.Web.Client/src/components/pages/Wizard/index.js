@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import {
-  PageLayout,
   ErrorContainer,
   history,
   constants,
@@ -515,9 +514,7 @@ const WizardPage = props => {
   return (
     <>
       {isLoaded && (
-        <PageLayout
-          sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />}
-        />
+        <WizardWrapper i18n={i18n} {...props} />
       )}
     </>
   );
