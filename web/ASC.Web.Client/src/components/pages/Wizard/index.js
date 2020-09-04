@@ -6,9 +6,9 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import {
+  PageLayout,
   ErrorContainer,
   history,
-  constants,
   utils as commonUtils
 } from "asc-web-common";
 import { Loader, utils } from "asc-web-components";
@@ -117,7 +117,6 @@ class Body extends Component {
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
-    localStorage.setItem(constants.WIZARD_KEY, true);
 
     if (!wizardToken) {
       history.push("/");
@@ -175,7 +174,6 @@ class Body extends Component {
 
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPressHandler);
-    localStorage.removeItem(constants.WIZARD_KEY);
   }
 
   mapTimezonesToArray = timezones => {
@@ -512,11 +510,13 @@ const WizardPage = props => {
   }, []);
 
   return (
-    <>
-      {isLoaded && (
-        <WizardWrapper i18n={i18n} {...props} />
-      )}
-    </>
+    isLoaded && (
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <WizardWrapper i18n={i18n} {...props} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+    )
   );
 };
 
