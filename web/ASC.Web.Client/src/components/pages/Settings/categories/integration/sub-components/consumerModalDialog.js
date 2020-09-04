@@ -43,7 +43,7 @@ class ConsumerModalDialog extends React.Component {
             name: this.props.selectedConsumer,
             props: prop
         };
-        this.props.sendNewConsumerProps(data)
+        this.props.sendConsumerNewProps(data)
             .then(() => {
                 this.props.onChangeLoading(false);
                 toastr.success("Consumer properties successfully update")
