@@ -29,14 +29,13 @@ namespace ASC.Data.Storage.Encryption
 {
     public class EncryptionWorker
     {
-        private CancellationTokenSource TokenSource { get; }
+        private CancellationTokenSource TokenSource { get; set; }
         private ICache Cache { get; }
         private object Locker { get; }
         private FactoryOperation FactoryOperation { get; }
 
         public EncryptionWorker(FactoryOperation factoryOperation)
         {
-            TokenSource = new CancellationTokenSource();
             Cache = AscCache.Memory;
             Locker = new object();
             FactoryOperation = factoryOperation;
@@ -44,11 +43,11 @@ namespace ASC.Data.Storage.Encryption
 
         public void Start(EncryptionSettingsProto encryptionSettings)
         {
-            if (TokenSource.Token.IsCancellationRequested) return;
             EncryptionOperation encryptionOperation;
             lock (Locker)
             {
                 if (Cache.Get<EncryptionOperation>(GetCacheKey()) != null) return;
+                TokenSource = new CancellationTokenSource();
                 encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings);
                 Cache.Insert(GetCacheKey(), encryptionOperation, DateTime.MaxValue);
             }

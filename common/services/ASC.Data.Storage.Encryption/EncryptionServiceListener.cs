@@ -13,16 +13,15 @@ namespace ASC.Data.Storage.Encryption
     {
         private ICacheNotify<EncryptionSettingsProto> NotifySettings { get; }
         private ICacheNotify<EncryptionStop> NotifyStop { get; }
+        private EncryptionWorker EncryptionWorker { get; }
         private IServiceProvider ServiceProvider { get; }
-        private ICache Cache { get; }
-        private string Key { get; set; }
 
-        public EncryptionServiceListener(IServiceProvider serviceProvider, ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop)
+        public EncryptionServiceListener(IServiceProvider serviceProvider, ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop, EncryptionWorker encryptionWorker)
         {
             NotifySettings = notifySettings;
             ServiceProvider = serviceProvider;
             NotifyStop = notifyStop;
-            Cache = AscCache.Memory;
+            EncryptionWorker = encryptionWorker;
         }
 
         public void Start()
@@ -39,16 +38,12 @@ namespace ASC.Data.Storage.Encryption
 
         public void StartEncryption(EncryptionSettingsProto encryptionSettings)
         {
-            using var scope = ServiceProvider.CreateScope();
-            var encryptionWorker = scope.ServiceProvider.GetService<EncryptionWorker>();
-            Key = encryptionWorker.GetCacheKey();
-            encryptionWorker.Start(encryptionSettings);
+            EncryptionWorker.Start(encryptionSettings);
         }
 
         public void StopEncryption()
         {
-            var encryptionWorker = Cache.Get<EncryptionWorker>(Key);
-            if(encryptionWorker != null)  encryptionWorker.Stop();
+            EncryptionWorker.Stop();
         }
     }
 
