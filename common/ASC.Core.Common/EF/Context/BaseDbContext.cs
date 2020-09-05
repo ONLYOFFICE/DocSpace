@@ -22,11 +22,10 @@ namespace ASC.Core.Common.EF
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            if (baseName == "default")
-            {
-                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
-            }
-            else optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+            
+               //optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+            
+            optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
         }
     }
 

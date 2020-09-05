@@ -10,14 +10,11 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<FilesConverts> FilesConverts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (baseName == "default")
-            {
+            /*
                 modelBuilder.MySqlAddFilesConverts();
-            }
-            else
-            {
+           */
                 modelBuilder.PgSqlAddFilesConverts();
-            }
+            
 
             OnModelCreatingPartial(modelBuilder);
         }

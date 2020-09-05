@@ -24,8 +24,7 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (baseName == "default")
-            {
+            /*
                 modelBuilder.MySqlAddUser();
                 modelBuilder.MySqlAddCoreSettings();
                 modelBuilder.MySqlAddDbTenant();
@@ -34,9 +33,7 @@ namespace ASC.Core.Common.EF.Context
                 modelBuilder.MySqlAddTenantIpRestrictions();
                 modelBuilder.MySqlAddDbTenantPartner();
                 modelBuilder.MySqlAddDbTenantVersion();
-            }
-            else
-            {
+            */
                 modelBuilder.PgSqlAddUser();
                 modelBuilder.PgSqlAddCoreSettings();
                 modelBuilder.PgSqlAddDbTenant();
@@ -45,7 +42,7 @@ namespace ASC.Core.Common.EF.Context
                 modelBuilder.PgSqlAddTenantIpRestrictions();
                 modelBuilder.PgSqlAddDbTenantPartner();
                 modelBuilder.PgSqlAddDbTenantVersion();
-            }
+            
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

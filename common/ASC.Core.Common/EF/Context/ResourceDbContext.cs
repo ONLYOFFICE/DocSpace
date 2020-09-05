@@ -17,8 +17,7 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (baseName == "default")
-            {
+            /*
                 modelBuilder
                 .MySqlAddResAuthorsLang()
                 .MySqlAddResAuthorsFile()
@@ -26,9 +25,8 @@ namespace ASC.Core.Common.EF.Context
                 .MySqlAddResCultures()
                 .MySqlAddResData()
                 .MySqlAddResFiles();
-            }
-            else
-            {
+            
+            */
                 modelBuilder
                    .PgSqlAddResAuthorsLang()
                    .PgSqlAddResAuthorsFile()
@@ -36,7 +34,7 @@ namespace ASC.Core.Common.EF.Context
                    .PgSqlAddResCultures()
                    .PgSqlAddResData()
                    .PgSqlAddResFiles();
-            }
+            
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -12,18 +12,15 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (baseName == "default")
-            {
+            /*
                 modelBuilder
                 .MySqlAddNotifyInfo()
                 .MySqlAddNotifyQueue();
-            }
-            else
-            {
+            */
                 modelBuilder
                     .PgSqlAddNotifyInfo()
                     .PgSqlAddNotifyQueue(); ;
-            }
+            
             OnModelCreatingPartial(modelBuilder);
         }
 

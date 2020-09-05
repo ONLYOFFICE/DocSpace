@@ -13,20 +13,17 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (baseName == "default")
-            {
+            /*
                 modelBuilder
                 .MySqlAddWebstudioSettings()
                 .MySqlAddWebstudioUserVisit()
                 .MySqlAddDbWebstudioIndex();
-            }
-            else
-            {
+            */
                 modelBuilder
                     .PgSqlAddWebstudioSettings()
                     .PgSqlAddWebstudioUserVisit()
                     .PgSqlAddDbWebstudioIndex();
-            }
+            
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
