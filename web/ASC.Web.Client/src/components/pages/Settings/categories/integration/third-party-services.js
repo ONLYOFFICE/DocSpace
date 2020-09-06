@@ -44,7 +44,6 @@ class ThirdPartyServices extends React.Component {
             selectedConsumer: "",
             dialogVisible: false,
             isLoading: false,
-            updateValuesData: []
         }
     }
 
@@ -79,9 +78,9 @@ class ThirdPartyServices extends React.Component {
         console.log(this.state.selectedConsumer);
     }
 
-    onToggleClick = () => {
-        this.onModalOpen();
-    }
+    // onToggleClick = () => {
+    //     this.onModalOpen();
+    // }
 
     setConsumer = (e) => {
         this.setState({
@@ -93,7 +92,7 @@ class ThirdPartyServices extends React.Component {
 
         const { t, consumers, sendConsumerNewProps } = this.props;
         const { selectedConsumer, dialogVisible, isLoading } = this.state;
-        const { onModalClose, onToggleClick, setConsumer, onModalButtonClick, onChangeLoading } = this;
+        const { onModalClose, onModalOpen, onToggleClick, setConsumer, onModalButtonClick, onChangeLoading } = this;
 
         return (
             <>
@@ -136,8 +135,10 @@ class ThirdPartyServices extends React.Component {
                                             selectedConsumer={selectedConsumer}
                                             isLoading={isLoading}
                                             onModalClose={onModalClose}
+                                            onModalOpen={onModalOpen}
                                             onToggleClick={onToggleClick}
                                             setConsumer={setConsumer}
+                                            sendConsumerNewProps={sendConsumerNewProps}
                                         />
                                     </Box>
                                 </StyledConsumer>

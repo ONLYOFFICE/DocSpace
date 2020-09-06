@@ -1,6 +1,7 @@
 import React from "react";
-import { Box, ToggleButton, Icons } from "asc-web-components";
+import { Box, ToggleButton, Icons, toastr } from "asc-web-components";
 import styled from "styled-components";
+import omit from "lodash/omit";
 
 const StyledToggle = styled(ToggleButton)`
    position: relative;
@@ -15,31 +16,51 @@ class ConsumerToggle extends React.Component {
         }
     }
 
-    toggleClick = () => {
-        if (this.state.toggleActive) {
-            this.setState({
-                toggleActive: false
-            })
-            // TODO: api -> service off -> toastr
+    onToggleClick = (e) => {
+        const { toggleActive } = this.state;
+
+        if (e.currentTarget.checked) {
+            this.props.onModalOpen();
         }
         else {
-            this.props.onToggleClick();
+            this.setState({
+                toggleActive: !toggleActive
+            })
+
+
+
+            this.props.sendConsumerNewProps()
+                .then(() => toastr.info("Settings canceled"))
+                .catch((error) => toastr.error(error))
         }
     }
+    checkActiveToggle = (e) => {
+        let obj;
+        obj = (this.props.consumers
+            .find((consumer) => consumer.name === e.currentTarget.dataset.toggle))
+        obj = omit(obj, ["title", "description", "instruction", "canSet"])
+        
+
+        console.log(obj);
+        return obj;
+    }
+
 
     render() {
 
         const { consumer } = this.props;
         const { toggleActive } = this.state;
-        const { toggleClick } = this;
+        const { onToggleClick } = this;
+
+
 
         return (
             <>
-                <Box>
+                <Box data-toggle={consumer.name} onClick={this.checkActiveToggle}>
                     <StyledToggle
-                        onChange={toggleClick}
+                        onChange={onToggleClick}
                         isDisabled={!consumer.canSet}
-                        isChecked={!consumer.canSet ? true : toggleActive}
+                        isChecked={!consumer.canSet || (consumer.props.find(p => p.value)) ? true : toggleActive}
                     />
                 </Box>
             </>

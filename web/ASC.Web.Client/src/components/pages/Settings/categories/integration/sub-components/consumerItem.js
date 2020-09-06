@@ -10,7 +10,7 @@ class ConsumerItem extends React.Component {
 
     render() {
 
-        const { consumer, onToggleClick, setConsumer } = this.props;
+        const { consumer, consumers, onModalOpen, setConsumer, sendConsumerNewProps } = this.props;
 
         return (
             <>
@@ -26,8 +26,10 @@ class ConsumerItem extends React.Component {
                         </Box>
                         <Box onClick={setConsumer} data-consumer={consumer.name}>
                             <ConsumerToggle
+                                consumers={consumers}
                                 consumer={consumer}
-                                onToggleClick={onToggleClick}
+                                onModalOpen={onModalOpen}
+                                sendConsumerNewProps={sendConsumerNewProps}
                             />
                         </Box>
                     </Box>
