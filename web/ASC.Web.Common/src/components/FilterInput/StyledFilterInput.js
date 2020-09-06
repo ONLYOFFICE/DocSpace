@@ -17,9 +17,9 @@ const StyledFilterInput = styled.div`
     .styled-search-input {
       display: block;
       float: left;
-      width: ${props => props.viewAs ? "calc(100% - 212px)" : "calc(100% - 140px)"};
+      width: ${props => props.viewAs ? "calc(100% - 216px)" : "calc(100% - 144px)"};
       @media (max-width: 460px) {
-        ${props => props.viewAs && "width: calc(100% - 140px);"}
+        ${props => props.viewAs && "width: calc(100% - 144px);"}
       }
       @media ${mobile} {
           width: calc(100% - 58px);
@@ -111,7 +111,7 @@ const StyledFilterInput = styled.div`
     .styled-sort-combobox {
       display: block;
       float: left;
-      width: 132px;
+      width: 136px;
       margin-left: 8px;
 
       @media ${mobile} {
@@ -175,7 +175,7 @@ export const StyledFilterItem = styled.div`
   display:  ${props => props.block ? 'flex' : 'inline-block'};
   margin-bottom: ${props => props.block ? '8px' : '0'};
   position: relative;
-  height: 100%;
+  height: 24px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;

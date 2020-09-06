@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AUTH_KEY, WIZARD_KEY } from "../constants";
+import { AUTH_KEY } from "../constants";
+import history from "../history";
 
 const PREFIX = "api";
 const VERSION = "2.0";
@@ -22,21 +23,24 @@ client.interceptors.response.use(
     return response;
   },
   error => {
-    if (localStorage.getItem(WIZARD_KEY)) return;
-
-    if (error.response.status === 401) {
-      setAuthorizationToken();
-      window.location.href = "/login/error=unauthorized";
+    switch (true) {
+      case error.response.status === 401:
+        setAuthorizationToken();
+        window.location.href = "/login";
+        break;
+      case error.response.status === 402:
+        if (!window.location.pathname.includes("payments")) {
+          window.location.href = "/payments";
+        }
+        break;
+      case error.response.status >= 500:
+        history.push(`/error=${error.message}`);
+        break;
+      default:
+        break;
     }
-    if (error.response.status === 402) {
-      window.location.href = "/payments";
-    }
 
-    if (error.response.status === 502) {
-      // window.location.href = `/error/${error.response.status}`;
-    }
-
-    return error;
+    return Promise.reject(error);
   }
 );
 
@@ -65,7 +69,6 @@ const checkResponseError = res => {
 
   if (res.isAxiosError && res.message) {
     console.error(res.message);
-    //toastr.error(res.message);
     throw new Error(res.message);
   }
 };
