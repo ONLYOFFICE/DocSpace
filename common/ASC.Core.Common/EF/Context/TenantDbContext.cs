@@ -26,20 +26,18 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddUser()
+                .AddDbTenant()
+                .AddCoreSettings()
+                .AddUserSecurity()
+                .AddDbTenantForbiden()
+                .AddTenantIpRestrictions()
+                .AddDbTenantPartner()
+                .AddDbTenantVersion()
                 .Finish();
-
-            modelBuilder.PgSqlAddCoreSettings();
-            modelBuilder.PgSqlAddDbTenant();
-            modelBuilder.PgSqlAddUserSecurity();
-            modelBuilder.PgSqlAddDbTenantForbiden();
-            modelBuilder.PgSqlAddTenantIpRestrictions();
-            modelBuilder.PgSqlAddDbTenantPartner();
-            modelBuilder.PgSqlAddDbTenantVersion();
-
+      
             OnModelCreatingPartial(modelBuilder);
         }
 

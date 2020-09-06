@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -21,7 +21,14 @@ namespace ASC.Core.Common.EF
 
     public static class SubscriptionMethodExtension
     {
-        public static ModelBuilder MySqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddSubscriptionMethod(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddSubscriptionMethod, Provider.MySql)
+                .Add(PgSqlAddSubscriptionMethod, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbSubscriptionMethod>(entity =>
             {
@@ -57,9 +64,8 @@ namespace ASC.Core.Common.EF
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
+        public static void PgSqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbSubscriptionMethod>(entity =>
             {
@@ -87,7 +93,6 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("sender")
                     .HasMaxLength(1024);
             });
-            return modelBuilder;
         }
     }
 }

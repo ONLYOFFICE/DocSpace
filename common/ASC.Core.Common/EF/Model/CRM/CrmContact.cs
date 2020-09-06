@@ -57,7 +57,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class CrmContactExtension
     {
-        public static ModelBuilder MySqlAddCrmContact(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddCrmContact(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddCrmContact, Provider.MySql)
+                .Add(PgSqlAddCrmContact, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddCrmContact(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CrmContact>(entity =>
             {
@@ -158,10 +165,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddCrmContact(this ModelBuilder modelBuilder)
+        public static void PgSqlAddCrmContact(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CrmContact>(entity =>
             {
@@ -227,11 +232,11 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.LastModifedBy)
                     .HasColumnName("last_modifed_by")
                     .HasMaxLength(38)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.LastModifedOn)
                     .HasColumnName("last_modifed_on")
-                    .HasDefaultValueSql("NULL::bpchar");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.LastName)
                     .HasColumnName("last_name")
@@ -249,7 +254,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL::character varying");
             });
-            return modelBuilder;
         }
     }
 }

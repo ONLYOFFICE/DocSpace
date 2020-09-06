@@ -10,7 +10,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class LoginEventsExtension
     {
-        public static ModelBuilder MySqlAddLoginEvents(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddLoginEvents(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddLoginEvents, Provider.MySql)
+                .Add(PgSqlAddLoginEvents, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginEvents>(entity =>
             {
@@ -75,9 +82,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddLoginEvents(this ModelBuilder modelBuilder)
+        public static void PgSqlAddLoginEvents(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginEvents>(entity =>
             {
@@ -135,7 +141,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(38)
                     .IsFixedLength();
             });
-            return modelBuilder;
         }
     }
 }

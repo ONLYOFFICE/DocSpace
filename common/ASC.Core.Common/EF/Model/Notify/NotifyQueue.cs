@@ -34,7 +34,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class NotifyQueueExtension
     {
-        public static ModelBuilder MySqlAddNotifyQueue(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddNotifyQueue(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddNotifyQueue, Provider.MySql)
+                .Add(PgSqlAddNotifyQueue, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddNotifyQueue(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyQueue>(entity =>
             {
@@ -99,9 +106,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddNotifyQueue(this ModelBuilder modelBuilder)
+        public static void PgSqlAddNotifyQueue(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyQueue>(entity =>
             {
@@ -152,7 +158,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
-            return modelBuilder;
         }
     }
 }

@@ -13,7 +13,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class FilesConvertsExtension
     {
-        public static ModelBuilder MySqlAddFilesConverts(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddFilesConverts(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddFilesConverts, Provider.MySql)
+                .Add(PgSqlAddFilesConverts, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddFilesConverts(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FilesConverts>(entity =>
             {
@@ -34,9 +41,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddFilesConverts(this ModelBuilder modelBuilder)
+        public static void PgSqlAddFilesConverts(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FilesConverts>(entity =>
             {
@@ -53,7 +59,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("output")
                     .HasMaxLength(50);
             });
-            return modelBuilder;
         }
     }
 }

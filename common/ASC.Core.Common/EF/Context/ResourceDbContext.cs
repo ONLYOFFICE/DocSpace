@@ -1,4 +1,5 @@
 ﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF.Model.Resource;
 
 using Microsoft.EntityFrameworkCore;
@@ -17,24 +18,17 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder
-                .MySqlAddResAuthorsLang()
-                .MySqlAddResAuthorsFile()
-                .MySqlAddResAuthors()
-                .MySqlAddResCultures()
-                .MySqlAddResData()
-                .MySqlAddResFiles();
-            
-            */
-                modelBuilder
-                   .PgSqlAddResAuthorsLang()
-                   .PgSqlAddResAuthorsFile()
-                   .PgSqlAddResAuthors()
-                   .PgSqlAddResCultures()
-                   .PgSqlAddResData()
-                   .PgSqlAddResFiles();
-            
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddResAuthorsLang()
+                .AddResAuthorsFile()
+                .AddResCultures()
+                .AddResFiles()
+                .AddResData()
+                .AddResAuthors()
+                .AddResReserve()
+                .Finish();
+          
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

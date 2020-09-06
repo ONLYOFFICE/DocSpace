@@ -19,7 +19,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class FeedUsersExtension
     {
-        public static ModelBuilder MySqlAddFeedUsers(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddFeedUsers, Provider.MySql)
+                .Add(PgSqlAddFeedUsers, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedUsers>(entity =>
             {
@@ -43,10 +50,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
+        public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedUsers>(entity =>
             {
@@ -67,8 +72,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(38)
                     .IsFixedLength();
             });
-
-            return modelBuilder;
         }
     }
 }

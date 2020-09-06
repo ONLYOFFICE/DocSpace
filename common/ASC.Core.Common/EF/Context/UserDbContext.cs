@@ -26,22 +26,18 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder
-                .PgSqlAddAcl()
-                .PgSqlAddSubscription()
-                .PgSqlAddSubscriptionMethod();
-
             ModelBuilderWrapper
             .From(modelBuilder, Provider)
+            .AddSubscriptionMethod()
             .AddUser()
+            .AddAcl()
+            .AddUserSecurity()
+            .AddUserPhoto()
+            .AddDbGroup()
+            .AddUserGroup()
+            .AddSubscription()
             .Finish();
-
-            modelBuilder.AddDbGroup();
-            modelBuilder.PgSqlAddUserSecurity();
-            modelBuilder.PgSqlAddUserGroup();
-            modelBuilder.PgSqlAddUserPhoto();
-
+           
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

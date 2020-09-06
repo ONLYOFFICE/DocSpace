@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Common.Security.Authorizing;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -24,7 +24,14 @@ namespace ASC.Core.Common.EF
 
     public static class AclExtension
     {
-        public static ModelBuilder MySqlAddAcl(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddAcl(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddAcl, Provider.MySql)
+                .Add(PgSqlAddAcl, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddAcl(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Acl>(entity =>
             {
@@ -56,10 +63,8 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.AceType).HasColumnName("acetype");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddAcl(this ModelBuilder modelBuilder)
+        public static void PgSqlAddAcl(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Acl>(entity =>
             {
@@ -85,8 +90,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.AceType).HasColumnName("acetype");
             });
-
-            return modelBuilder;
         }
     }
 }

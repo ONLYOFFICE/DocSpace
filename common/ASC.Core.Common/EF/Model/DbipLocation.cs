@@ -44,7 +44,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class DbipLocationExtension
     {
-        public static ModelBuilder MySqlAddDbipLocation(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbipLocation(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbipLocation, Provider.MySql)
+                .Add(PgSqlAddDbipLocation, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbipLocation(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbipLocation>(entity =>
             {
@@ -128,9 +135,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCollation("utf8_general_ci");
             });
 
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbipLocation(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbipLocation(this ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum("onlyoffice", "add_type", new[] { "ipv4", "ipv6" });
             modelBuilder.Entity<DbipLocation>(entity =>
@@ -200,8 +206,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL::character varying");
             });
-
-            return modelBuilder;
         }
     }
 }

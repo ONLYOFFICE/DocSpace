@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -30,6 +30,13 @@ namespace ASC.Core.Common.EF
 
     public static class DbUserGroupExtension
     {
+        public static ModelBuilderWrapper AddUserGroup(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddUserGroup, Provider.MySql)
+                .Add(PgSqlAddUserGroup, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddUserGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserGroup>(entity =>

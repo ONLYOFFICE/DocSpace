@@ -1,4 +1,5 @@
 ﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF.Model.Mail;
 
 using Microsoft.EntityFrameworkCore;
@@ -21,20 +22,12 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder
-                .MySqlAddMailbox()
-                .MySqlAddMailboxProvider()
-                .MySqlAddMailboxServer()
-                .MySqlAddServerServer();
-            */
-
-            
-                modelBuilder
-                  .PgSqlAddMailbox()
-                  .PgSqlAddMailboxProvider()
-                  .PgSqlAddMailboxServer()
-                  .PgSqlAddServerServer();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddMailbox()
+                .AddMailboxProvider()
+                .AddServerServer()
+                .Finish();
             
             OnModelCreatingPartial(modelBuilder);
         }

@@ -18,7 +18,14 @@ namespace ASC.Core.Common.EF.Model.Mail
     }
     public static class MailboxProviderExtension
     {
-        public static ModelBuilder MySqlAddMailboxProvider(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddMailboxProvider(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddMailboxProvider, Provider.MySql)
+                .Add(PgSqlAddMailboxProvider, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddMailboxProvider(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MailboxProvider>(entity =>
             {
@@ -51,10 +58,8 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddMailboxProvider(this ModelBuilder modelBuilder)
+        public static void PgSqlAddMailboxProvider(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MailboxProvider>(entity =>
             {
@@ -84,8 +89,6 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("name")
                     .HasMaxLength(255);
             });
-
-            return modelBuilder;
         }
     }
 }

@@ -34,7 +34,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class FeedAggregateExtension
     {
-        public static ModelBuilder MySqlAddFeedAggregate(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddFeedAggregate(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddFeedAggregate, Provider.MySql)
+                .Add(PgSqlAddFeedAggregate, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddFeedAggregate(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedAggregate>(entity =>
             {
@@ -116,10 +123,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddFeedAggregate(this ModelBuilder modelBuilder)
+        public static void PgSqlAddFeedAggregate(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedAggregate>(entity =>
             {
@@ -179,8 +184,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
-
-            return modelBuilder;
         }
     }
 }

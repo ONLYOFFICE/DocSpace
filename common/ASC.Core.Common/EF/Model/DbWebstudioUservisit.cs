@@ -19,7 +19,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class WebstudioUserVisitExtension
     {
-        public static ModelBuilder MySqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddWebstudioUserVisit(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddWebstudioUserVisit, Provider.MySql)
+                .Add(PgSqlAddWebstudioUserVisit, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioUserVisit>(entity =>
             {
@@ -59,9 +66,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.VisitCount).HasColumnName("visitcount");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)
+        public static void PgSqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioUserVisit>(entity =>
             {
@@ -91,7 +97,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.VisitCount).HasColumnName("visitcount");
             });
-            return modelBuilder;
         }
     }
 }

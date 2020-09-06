@@ -22,7 +22,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class AccountLinksExtension
     {
-        public static ModelBuilder MySqlAddAccountLinks(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddAccountLinks(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddAccountLinks, Provider.MySql)
+                .Add(PgSqlAddAccountLinks, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddAccountLinks(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccountLinks>(entity =>
             {
@@ -63,9 +70,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddAccountLinks(this ModelBuilder modelBuilder)
+        public static void PgSqlAddAccountLinks(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccountLinks>(entity =>
             {
@@ -97,7 +103,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(60)
                     .IsFixedLength();
             });
-            return modelBuilder;
         }
     }
 }

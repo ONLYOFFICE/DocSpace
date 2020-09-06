@@ -14,7 +14,14 @@ namespace ASC.Core.Common.EF.Model.Resource
 
     public static class ResAuthorsFileExtension
     {
-        public static ModelBuilder MySqlAddResAuthorsFile(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResAuthorsFile(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResAuthorsFile, Provider.MySql)
+                .Add(PgSqlAddResAuthorsFile, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsFile>(entity =>
             {
@@ -36,10 +43,8 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResAuthorsFile(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsFile>(entity =>
             {
@@ -59,8 +64,6 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
             });
-
-            return modelBuilder;
         }
     }
 }

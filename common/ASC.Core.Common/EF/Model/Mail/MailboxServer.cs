@@ -24,7 +24,14 @@ namespace ASC.Core.Common.EF.Model.Mail
     }
     public static class MailboxServerExtension
     {
-        public static ModelBuilder MySqlAddMailboxServer(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddMailboxServer(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddMailboxServer, Provider.MySql)
+                .Add(PgSqlAddMailboxServer, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddMailboxServer(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MailboxServer>(entity =>
             {
@@ -75,10 +82,8 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddMailboxServer(this ModelBuilder modelBuilder)
+        public static void PgSqlAddMailboxServer(this ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum("onlyoffice", "en", new[] { "plain", "SSL", "STARTTLS" })
                 .HasPostgresEnum("onlyoffice", "enum", new[] { "pop3", "imap", "smtp" });
@@ -128,8 +133,6 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL::character varying");
             });
-
-            return modelBuilder;
         }
     }
 }

@@ -23,7 +23,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class MobileAppInstallExtension
     {
-        public static ModelBuilder MySqlAddMobileAppInstall(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddMobileAppInstall(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddMobileAppInstall, Provider.MySql)
+                .Add(PgSqlAddMobileAppInstall, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddMobileAppInstall(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MobileAppInstall>(entity =>
             {
@@ -48,9 +55,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("registered_on")
                     .HasColumnType("datetime");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddMobileAppInstall(this ModelBuilder modelBuilder)
+        public static void PgSqlAddMobileAppInstall(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MobileAppInstall>(entity =>
             {
@@ -69,7 +75,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.RegisteredOn).HasColumnName("registered_on");
             });
-            return modelBuilder;
         }
     }
 }

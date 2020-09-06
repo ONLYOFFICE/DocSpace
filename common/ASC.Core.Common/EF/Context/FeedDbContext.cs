@@ -14,20 +14,14 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder
-                .MySqlAddFeedUsers()
-                .MySqlAddFeedReaded()
-                .MySqlAddFeedAggregate()
-                .MySqlAddFeedLast();
-            
-           */
-                modelBuilder
-                  .PgSqlAddFeedUsers()
-                  .PgSqlAddFeedReaded()
-                  .PgSqlAddFeedAggregate()
-                  .PgSqlAddFeedLast();
-            
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddFeedUsers()
+                .AddFeedReaded()
+                .AddFeedAggregate()
+                .AddFeedLast()
+                .Finish();
+       
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

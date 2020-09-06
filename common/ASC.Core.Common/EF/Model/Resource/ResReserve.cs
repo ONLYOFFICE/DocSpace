@@ -15,7 +15,14 @@ namespace ASC.Core.Common.EF.Model.Resource
     }
     public static class ResReserveExtension
     {
-        public static ModelBuilder MySqlAddResReserve(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResReserve(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResReserve, Provider.MySql)
+                .Add(PgSqlAddResReserve, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResReserve(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResReserve>(entity =>
             {
@@ -57,10 +64,8 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResReserve(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResReserve(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResReserve>(entity =>
             {
@@ -85,8 +90,6 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 entity.Property(e => e.TextValue).HasColumnName("textValue");
             });
-
-            return modelBuilder;
         }
     }
 }

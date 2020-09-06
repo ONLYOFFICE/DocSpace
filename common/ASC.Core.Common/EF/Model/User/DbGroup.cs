@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -26,14 +26,13 @@ namespace ASC.Core.Common.EF
     }
     public static class DbGroupExtension
     {
-        public static ModelBuilder AddDbGroup(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbGroup(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder.MySqlAddDbGroup();
-            modelBuilder.PgSqlAddDbGroup();
-
+            modelBuilder
+                .Add(MySqlAddDbGroup, Provider.MySql)
+                .Add(PgSqlAddDbGroup, Provider.Postrge);
             return modelBuilder;
         }
-
         private static void MySqlAddDbGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbGroup>(entity =>
@@ -106,7 +105,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.CategoryId)
                     .HasColumnName("categoryid")
                     .HasMaxLength(38)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
@@ -121,7 +120,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.ParentId)
                     .HasColumnName("parentid")
                     .HasMaxLength(38)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Removed).HasColumnName("removed");
 

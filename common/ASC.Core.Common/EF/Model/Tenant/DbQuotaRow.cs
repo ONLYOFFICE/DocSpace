@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -24,7 +24,14 @@ namespace ASC.Core.Common.EF
 
     public static class DbQuotaRowExtension
     {
-        public static ModelBuilder MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbQuotaRow(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbQuotaRow, Provider.MySql)
+                .Add(PgSqlAddDbQuotaRow, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuotaRow>(entity =>
             {
@@ -57,9 +64,8 @@ namespace ASC.Core.Common.EF
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbQuotaRow(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbQuotaRow(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuotaRow>(entity =>
             {
@@ -90,7 +96,6 @@ namespace ASC.Core.Common.EF
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("'0'::character varying");
             });
-            return modelBuilder;
         }
     }
 }

@@ -19,7 +19,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class DbWebstudioIndexExtension
     {
-        public static ModelBuilder MySqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbWebstudioIndex(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbWebstudioIndex, Provider.MySql)
+                .Add(PgSqlAddDbWebstudioIndex, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioIndex>(entity =>
             {
@@ -40,9 +47,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioIndex>(entity =>
             {
@@ -59,7 +65,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("last_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
-            return modelBuilder;
         }
     }
 }

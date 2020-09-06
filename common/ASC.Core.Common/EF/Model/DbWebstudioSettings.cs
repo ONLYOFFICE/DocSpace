@@ -21,7 +21,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class WebstudioSettingsExtension
     {
-        public static ModelBuilder MySqlAddWebstudioSettings(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddWebstudioSettings, Provider.MySql)
+                .Add(PgSqlAddWebstudioSettings, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddWebstudioSettings(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioSettings>(entity =>
             {
@@ -53,9 +60,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddWebstudioSettings(this ModelBuilder modelBuilder)
+        public static void PgSqlAddWebstudioSettings(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioSettings>(entity =>
             {
@@ -79,7 +85,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Data).IsRequired();
             });
-            return modelBuilder;
         }
     }
 }

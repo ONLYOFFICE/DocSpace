@@ -13,7 +13,14 @@ namespace ASC.Core.Common.EF.Model.Resource
 
     public static class ResAuthorsLangExtension
     {
-        public static ModelBuilder MySqlAddResAuthorsLang(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResAuthorsLang(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResAuthorsLang, Provider.MySql)
+                .Add(PgSqlAddResAuthorsLang, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsLang>(entity =>
             {
@@ -37,9 +44,8 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResAuthorsLang(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsLang>(entity =>
             {
@@ -59,7 +65,6 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("cultureTitle")
                     .HasMaxLength(50);
             });
-            return modelBuilder;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ASC.Core.Common.EF.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +23,14 @@ namespace ASC.Core.Common.EF
     }
     public static class DbTariffExtension
     {
-        public static ModelBuilder MySqlAddDbTariff(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbTariff(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbTariff, Provider.MySql)
+                .Add(PgSqlAddDbTariff, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbTariff(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTariff>(entity =>
             {
@@ -59,10 +67,8 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbTariff(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbTariff(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTariff>(entity =>
             {
@@ -95,8 +101,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
-
-            return modelBuilder;
         }
     }
 }

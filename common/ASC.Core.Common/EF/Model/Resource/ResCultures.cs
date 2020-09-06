@@ -16,7 +16,14 @@ namespace ASC.Core.Common.EF.Model.Resource
     }
     public static class ResCulturesExtension
     {
-        public static ModelBuilder MySqlAddResCultures(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResCultures(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResCultures, Provider.MySql)
+                .Add(PgSqlAddResCultures, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResCultures(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResCultures>(entity =>
             {
@@ -45,10 +52,8 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResCultures(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResCultures(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResCultures>(entity =>
             {
@@ -63,7 +68,7 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 entity.Property(e => e.Available)
                     .HasColumnName("available")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("creationDate")
@@ -74,8 +79,6 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("value")
                     .HasColumnType("character varying");
             });
-
-            return modelBuilder;
         }
     }
 }

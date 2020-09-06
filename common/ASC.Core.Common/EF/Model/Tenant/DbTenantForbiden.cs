@@ -12,6 +12,13 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class DbTenantForbidenExtension
     {
+        public static ModelBuilderWrapper AddDbTenantForbiden(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbTenantForbiden, Provider.MySql)
+                .Add(PgSqlAddDbTenantForbiden, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddDbTenantForbiden(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantForbiden>(entity =>

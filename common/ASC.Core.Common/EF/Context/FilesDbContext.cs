@@ -1,6 +1,7 @@
 ﻿using ASC.Common;
 using ASC.Core.Common.EF.Model;
-
+using ASC.Core.Common.EF.Model.Mail;
+using ASC.Core.Common.EF.Model.Resource;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
@@ -10,12 +11,11 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<FilesConverts> FilesConverts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder.MySqlAddFilesConverts();
-           */
-                modelBuilder.PgSqlAddFilesConverts();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddFilesConverts()
+                .Finish();
             
-
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

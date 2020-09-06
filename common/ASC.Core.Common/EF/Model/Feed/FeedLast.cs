@@ -19,7 +19,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class FeedLastExtension
     {
-        public static ModelBuilder MySqlAddFeedLast(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddFeedLast(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddFeedLast, Provider.MySql)
+                .Add(PgSqlAddFeedLast, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddFeedLast(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedLast>(entity =>
             {
@@ -38,10 +45,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("last_date")
                     .HasColumnType("datetime");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddFeedLast(this ModelBuilder modelBuilder)
+        public static void PgSqlAddFeedLast(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedLast>(entity =>
             {
@@ -56,8 +61,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.LastDate).HasColumnName("last_date");
             });
-
-            return modelBuilder;
         }
     }
 }

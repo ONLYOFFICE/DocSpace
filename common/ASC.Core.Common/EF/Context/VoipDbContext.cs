@@ -12,15 +12,13 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<CrmContact> CrmContact { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder.MySqlAddVoipNumber()
-                .MySqlAddDbVoipCall()
-                .MySqlAddCrmContact();
-            */
-                modelBuilder.PgSqlAddVoipNumber()
-                    .PgSqlAddDbVoipCall()
-                    .PgSqlAddCrmContact();
-            
+            ModelBuilderWrapper
+           .From(modelBuilder, Provider)
+           .AddVoipNumber()
+           .AddDbVoipCall()
+           .AddCrmContact()
+           .Finish();
+           
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

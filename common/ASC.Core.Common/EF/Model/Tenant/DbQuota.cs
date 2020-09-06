@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ASC.Core.Common.EF.Model;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -36,7 +37,14 @@ namespace ASC.Core.Common.EF
     }
     public static class DbQuotaExtension
     {
-        public static ModelBuilder MySqlAddDbQuota(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbQuota(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbQuota, Provider.MySql)
+                .Add(PgSqlAddDbQuota, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbQuota(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuota>(entity =>
             {
@@ -87,10 +95,8 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbQuota(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbQuota(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuota>(entity =>
             {
@@ -137,8 +143,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });
-
-            return modelBuilder;
         }
     }
 }

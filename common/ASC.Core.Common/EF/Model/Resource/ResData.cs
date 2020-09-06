@@ -21,7 +21,14 @@ namespace ASC.Core.Common.EF.Model.Resource
     }
     public static class ResDataExtension
     {
-        public static ModelBuilder MySqlAddResData(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResData(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResData, Provider.MySql)
+                .Add(PgSqlAddResData, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResData>(entity =>
             {
@@ -98,10 +105,8 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResData(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResData>(entity =>
             {
@@ -158,8 +163,6 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("timeChanges")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
-
-            return modelBuilder;
         }
     }
 }

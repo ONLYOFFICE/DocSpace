@@ -53,6 +53,13 @@ namespace ASC.Core.Common.EF.Model
 
     public static class DbTenantExtension
     {
+        public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbTenant, Provider.MySql)
+                .Add(PgSqlAddDbTenant, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddDbTenant(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenant>()
@@ -208,7 +215,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Calls)
                     .HasColumnName("calls")
-                    .HasDefaultValueSql("1");
+                    .HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.CreationDateTime).HasColumnName("creationdatetime");
 
@@ -238,7 +245,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.OwnerId)
                     .HasColumnName("owner_id")
                     .HasMaxLength(38)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.PaymentId)
                     .HasColumnName("payment_id")
@@ -254,7 +261,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Spam)
                     .HasColumnName("spam")
-                    .HasDefaultValueSql("1");
+                    .HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Status).HasColumnName("status");
 

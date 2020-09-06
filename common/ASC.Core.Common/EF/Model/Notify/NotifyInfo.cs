@@ -20,7 +20,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class NotifyInfoExtension
     {
-        public static ModelBuilder MySqlAddNotifyInfo(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddNotifyInfo(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddNotifyInfo, Provider.MySql)
+                .Add(PgSqlAddNotifyInfo, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddNotifyInfo(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyInfo>(entity =>
             {
@@ -44,9 +51,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.State).HasColumnName("state");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddNotifyInfo(this ModelBuilder modelBuilder)
+        public static void PgSqlAddNotifyInfo(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyInfo>(entity =>
             {
@@ -70,7 +76,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.State).HasColumnName("state");
             });
-            return modelBuilder;
         }
     }
 }

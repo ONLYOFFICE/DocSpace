@@ -1,6 +1,6 @@
 ﻿
 using ASC.Common;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -15,22 +15,14 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder
-                .MySqlAddAcl()
-                .MySqlAddDbButton()
-                .MySqlAddDbQuotaRow()
-                .MySqlAddDbQuota()
-                .MySqlAddDbTariff();
-            
-            */
-                modelBuilder
-                .PgSqlAddAcl()
-                .PgSqlAddDbButton()
-                .PgSqlAddDbQuotaRow()
-                .PgSqlAddDbQuota()
-                .PgSqlAddDbTariff();
-            
+            ModelBuilderWrapper
+                  .From(modelBuilder, Provider)
+                  .AddAcl()
+                  .AddDbButton()
+                  .AddDbQuotaRow()
+                  .AddDbQuota()
+                  .AddDbTariff()
+                  .Finish();
 
             OnModelCreatingPartial(modelBuilder);
         }

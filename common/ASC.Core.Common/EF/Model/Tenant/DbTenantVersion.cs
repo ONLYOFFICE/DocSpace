@@ -16,6 +16,13 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class DbTenantVersionExtension
     {
+        public static ModelBuilderWrapper AddDbTenantVersion(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbTenantVersion, Provider.MySql)
+                .Add(PgSqlAddDbTenantVersion, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantVersion>(entity =>

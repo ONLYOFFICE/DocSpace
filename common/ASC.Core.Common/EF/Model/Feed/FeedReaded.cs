@@ -24,7 +24,14 @@ namespace ASC.Core.Common.EF.Model
 
     public static class FeedReadedExtension
     {
-        public static ModelBuilder MySqlAddFeedReaded(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddFeedReaded(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddFeedReaded, Provider.MySql)
+                .Add(PgSqlAddFeedReaded, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedReaded>(entity =>
             {
@@ -51,9 +58,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("timestamp")
                     .HasColumnType("datetime");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddFeedReaded(this ModelBuilder modelBuilder)
+        public static void PgSqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedReaded>(entity =>
             {
@@ -74,7 +80,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.TimeStamp).HasColumnName("timestamp");
             });
-            return modelBuilder;
         }
     }
 }

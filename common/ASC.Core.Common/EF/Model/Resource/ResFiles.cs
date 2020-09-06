@@ -17,7 +17,14 @@ namespace ASC.Core.Common.EF.Model.Resource
     }
     public static class ResFilesExtension
     {
-        public static ModelBuilder MySqlAddResFiles(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResFiles(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResFiles, Provider.MySql)
+                .Add(PgSqlAddResFiles, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResFiles(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResFiles>(entity =>
             {
@@ -63,10 +70,8 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResFiles(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResFiles(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResFiles>(entity =>
             {
@@ -86,7 +91,7 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 entity.Property(e => e.IsLock)
                     .HasColumnName("isLock")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.LastUpdate)
                     .HasColumnName("lastUpdate")
@@ -107,8 +112,6 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("resName")
                     .HasMaxLength(50);
             });
-
-            return modelBuilder;
         }
     }
 }

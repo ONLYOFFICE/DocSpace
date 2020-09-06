@@ -25,7 +25,14 @@ namespace ASC.Core.Common.EF.Model.Mail
     }
     public static class ServerServerExtension
     {
-        public static ModelBuilder MySqlAddServerServer(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddServerServer(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddServerServer, Provider.MySql)
+                .Add(PgSqlAddServerServer, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddServerServer(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ServerServer>(entity =>
             {
@@ -57,10 +64,8 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.SmtpSettingsId).HasColumnName("smtp_settings_id");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddServerServer(this ModelBuilder modelBuilder)
+        public static void PgSqlAddServerServer(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ServerServer>(entity =>
             {
@@ -89,8 +94,6 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.SmtpSettingsId).HasColumnName("smtp_settings_id");
             });
-
-            return modelBuilder;
         }
     }
 }

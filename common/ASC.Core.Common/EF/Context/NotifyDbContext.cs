@@ -12,14 +12,11 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder
-                .MySqlAddNotifyInfo()
-                .MySqlAddNotifyQueue();
-            */
-                modelBuilder
-                    .PgSqlAddNotifyInfo()
-                    .PgSqlAddNotifyQueue(); ;
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddNotifyInfo()
+                .AddNotifyQueue()
+                .Finish();
             
             OnModelCreatingPartial(modelBuilder);
         }

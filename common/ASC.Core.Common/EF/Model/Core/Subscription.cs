@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -22,7 +22,14 @@ namespace ASC.Core.Common.EF
 
     public static class SubscriptionExtension
     {
-        public static ModelBuilder MySqlAddSubscription(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddSubscription(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddSubscription, Provider.MySql)
+                .Add(PgSqlAddSubscription, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddSubscription(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Subscription>(entity =>
             {
@@ -59,9 +66,8 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddSubscription(this ModelBuilder modelBuilder)
+        public static void PgSqlAddSubscription(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Subscription>(entity =>
             {
@@ -90,7 +96,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
             });
-            return modelBuilder;
         }
     }
 }

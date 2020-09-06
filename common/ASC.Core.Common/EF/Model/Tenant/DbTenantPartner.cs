@@ -24,6 +24,13 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class DbTenantPartnerExtension
     {
+        public static ModelBuilderWrapper AddDbTenantPartner(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbTenantPartner, Provider.MySql)
+                .Add(PgSqlAddDbTenantPartner, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddDbTenantPartner(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantPartner>(entity =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ASC.Core.Common.EF.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,6 +25,13 @@ namespace ASC.Core.Common.EF
     }
     public static class UserSecurityExtension
     {
+        public static ModelBuilderWrapper AddUserSecurity(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddUserSecurity, Provider.MySql)
+                .Add(PgSqlAddUserSecurity, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddUserSecurity(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserSecurity>(entity =>

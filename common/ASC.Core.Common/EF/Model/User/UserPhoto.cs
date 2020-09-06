@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ASC.Core.Common.EF.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,6 +23,13 @@ namespace ASC.Core.Common.EF
     }
     public static class UserPhotoExtension
     {
+        public static ModelBuilderWrapper AddUserPhoto(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddUserPhoto, Provider.MySql)
+                .Add(PgSqlAddUserPhoto, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddUserPhoto(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserPhoto>(entity =>

@@ -13,16 +13,13 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder
-                .MySqlAddWebstudioSettings()
-                .MySqlAddWebstudioUserVisit()
-                .MySqlAddDbWebstudioIndex();
-            */
-                modelBuilder
-                    .PgSqlAddWebstudioSettings()
-                    .PgSqlAddWebstudioUserVisit()
-                    .PgSqlAddDbWebstudioIndex();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddWebstudioSettings()
+                .AddWebstudioUserVisit()
+                .AddDbWebstudioIndex()
+                .Finish();
+           
             
             OnModelCreatingPartial(modelBuilder);
         }

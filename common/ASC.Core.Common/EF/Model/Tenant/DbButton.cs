@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-
+using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -24,7 +24,14 @@ namespace ASC.Core.Common.EF
 
     public static class DbButtonExtension
     {
-        public static ModelBuilder MySqlAddDbButton(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbButton(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbButton, Provider.MySql)
+                .Add(PgSqlAddDbButton, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbButton(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbButton>(entity =>
             {
@@ -48,9 +55,8 @@ namespace ASC.Core.Common.EF
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbButton(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbButton(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbButton>(entity =>
             {
@@ -69,7 +75,6 @@ namespace ASC.Core.Common.EF
                     .IsRequired()
                     .HasColumnName("button_url");
             });
-            return modelBuilder;
         }
     }
 }

@@ -93,7 +93,14 @@ namespace ASC.Core.Common.EF.Model.Mail
     }
     public static class MailboxExtension
     {
-        public static ModelBuilder MySqlAddMailbox(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddMailbox(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddMailbox, Provider.MySql)
+                .Add(PgSqlAddMailbox, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddMailbox(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Mailbox>(entity =>
             {
@@ -232,11 +239,9 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.UserOnline).HasColumnName("user_online");
             });
-
-            return modelBuilder;
         }
 
-        public static ModelBuilder PgSqlAddMailbox(this ModelBuilder modelBuilder)
+        public static void PgSqlAddMailbox(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Mailbox>(entity =>
             {
@@ -288,7 +293,7 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.Enabled)
                     .HasColumnName("enabled")
-                    .HasDefaultValueSql("'1'::smallint");
+                    .HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.IdInServer).HasColumnName("id_in_server");
 
@@ -301,25 +306,25 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.Imap)
                     .HasColumnName("imap")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.ImapIntervals).HasColumnName("imap_intervals");
 
                 entity.Property(e => e.IsDefault)
                     .HasColumnName("is_default")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.IsProcessed)
                     .HasColumnName("is_processed")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.IsRemoved)
                     .HasColumnName("is_removed")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.IsServerMailbox)
                     .HasColumnName("is_server_mailbox")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.LoginDelay)
                     .HasColumnName("login_delay")
@@ -339,7 +344,7 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.QuotaError)
                     .HasColumnName("quota_error")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.SizeLast).HasColumnName("size_last");
 
@@ -358,9 +363,8 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.UserOnline)
                     .HasColumnName("user_online")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
             });
-            return modelBuilder;
         }
     }
 }

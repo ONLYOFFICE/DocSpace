@@ -52,7 +52,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class DbVoipCallExtension
     {
-        public static ModelBuilder MySqlAddDbVoipCall(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbVoipCall(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbVoipCall, Provider.MySql)
+                .Add(PgSqlAddDbVoipCall, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbVoipCall(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbVoipCall>(entity =>
             {
@@ -133,10 +140,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
-
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddDbVoipCall(this ModelBuilder modelBuilder)
+        public static void PgSqlAddDbVoipCall(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbVoipCall>(entity =>
             {
@@ -156,7 +161,7 @@ namespace ASC.Core.Common.EF.Model
                     .IsRequired()
                     .HasColumnName("answered_by")
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'::character varying");
+                    .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'");
 
                 entity.Property(e => e.ContactId).HasColumnName("contact_id");
 
@@ -201,8 +206,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
-
-            return modelBuilder;
         }
     }
 }

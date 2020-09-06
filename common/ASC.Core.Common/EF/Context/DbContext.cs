@@ -21,13 +21,11 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-                modelBuilder.MySqlAddMobileAppInstall()
-                    .MySqlAddDbipLocation();
-            
-            */
-                modelBuilder.PgSqlAddMobileAppInstall() 
-                    .PgSqlAddDbipLocation();
+            ModelBuilderWrapper
+                   .From(modelBuilder, Provider)
+                   .AddMobileAppInstall()
+                   .AddDbipLocation()
+                   .Finish();
             
             OnModelCreatingPartial(modelBuilder);
         }

@@ -12,6 +12,13 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class TenantIpRestrictionsExtension
     {
+        public static ModelBuilderWrapper AddTenantIpRestrictions(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddTenantIpRestrictions, Provider.MySql)
+                .Add(PgSqlAddTenantIpRestrictions, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddTenantIpRestrictions(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TenantIpRestrictions>(entity =>

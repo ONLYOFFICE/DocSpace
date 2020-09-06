@@ -17,7 +17,14 @@ namespace ASC.Core.Common.EF.Model.Resource
     }
     public static class ResAuthorsExtension
     {
-        public static ModelBuilder MySqlAddResAuthors(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddResAuthors(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddResAuthors, Provider.MySql)
+                .Add(PgSqlAddResAuthors, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddResAuthors(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthors>(entity =>
             {
@@ -47,9 +54,8 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddResAuthors(this ModelBuilder modelBuilder)
+        public static void PgSqlAddResAuthors(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthors>(entity =>
             {
@@ -73,7 +79,6 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("password")
                     .HasMaxLength(50);
             });
-            return modelBuilder;
         }
     }
 }

@@ -22,6 +22,13 @@ namespace ASC.Core.Common.EF.Model
 
     public static class CoreSettingsExtension
     {
+        public static ModelBuilderWrapper AddCoreSettings(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddCoreSettings, Provider.MySql)
+                .Add(PgSqlAddCoreSettings, Provider.Postrge);
+            return modelBuilder;
+        }
         public static void MySqlAddCoreSettings(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbCoreSettings>(entity =>

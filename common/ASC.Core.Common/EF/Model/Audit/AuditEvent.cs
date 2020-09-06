@@ -11,7 +11,14 @@ namespace ASC.Core.Common.EF.Model
     }
     public static class AuditEventExtension
     {
-        public static ModelBuilder MySqlAddAuditEvent(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddAuditEvent(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddAuditEvent, Provider.MySql)
+                .Add(PgSqlAddAuditEvent, Provider.Postrge);
+            return modelBuilder;
+        }
+        public static void MySqlAddAuditEvent(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuditEvent>(entity =>
             {
@@ -78,9 +85,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-            return modelBuilder;
         }
-        public static ModelBuilder PgSqlAddAuditEvent(this ModelBuilder modelBuilder)
+        public static void PgSqlAddAuditEvent(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuditEvent>(entity =>
             {
@@ -132,7 +138,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(38)
                     .IsFixedLength();
             });
-            return modelBuilder;
         }
     }
 }
