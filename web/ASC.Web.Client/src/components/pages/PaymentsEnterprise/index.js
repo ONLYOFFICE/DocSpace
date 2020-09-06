@@ -41,6 +41,7 @@ class Body extends React.PureComponent {
   constructor(props) {
     super(props);
     const { t } = this.props;
+
     this.state = {
       errorMessage: null,
       isErrorLicense: false,
@@ -62,12 +63,13 @@ class Body extends React.PureComponent {
 
   onButtonClickUpload = (file) => {
     const { setLicense, t } = this.props;
+
     let fd = new FormData();
     fd.append("files", file);
 
     setLicense(null, fd)
       .then(() => {
-        toastr.success(t("LoadingLicenseSuccess"), "", 0, true);
+        toastr.success(t("LoadingLicenseSuccess"), "", 5000, true);
       })
       .catch((error) => {
         toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);

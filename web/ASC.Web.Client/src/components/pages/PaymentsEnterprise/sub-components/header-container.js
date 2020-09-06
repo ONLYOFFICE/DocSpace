@@ -70,11 +70,6 @@ const StyledHeader = styled.div`
   }
 `;
 
-const onRedirect = () => {
-  // this.props.history.push("/back")
-  alert("yes");
-  // window.location.href = "https://about";
-};
 const { setCurrentError } = store.auth.actions;
 const HeaderContainer = ({
   t,
@@ -90,8 +85,7 @@ const HeaderContainer = ({
   moment.locale(culture);
   const currentUserDate = moment().utcOffset(utcHoursOffset);
   // this.props.error !== true && this.props.setCurrentError(true);
-  // eslint-disable-next-line no-debugger
-  debugger;
+
   return moment(
     moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
   ).isAfter(
