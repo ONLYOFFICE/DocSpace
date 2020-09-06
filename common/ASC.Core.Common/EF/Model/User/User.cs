@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Users;
 
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,15 @@ namespace ASC.Core.Common.EF
 
     public static class DbUserExtension
     {
-        public static void MySqlAddUser(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddUser(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddUser, Provider.MySql)
+                .Add(PgSqlAddUser, Provider.Postrge);
+            return modelBuilder;
+        }
+
+        private static void MySqlAddUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.MySqlAddUserGroup();
             modelBuilder.Entity<User>(entity =>
@@ -219,7 +228,8 @@ namespace ASC.Core.Common.EF
                     .HasColumnType("datetime");
             });
         }
-        public static void PgSqlAddUser(this ModelBuilder modelBuilder)
+
+        private static void PgSqlAddUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.PgSqlAddUserGroup();
             modelBuilder.Entity<User>(entity =>

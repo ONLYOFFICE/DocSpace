@@ -225,7 +225,7 @@ namespace ASC.Core
                 {
                     var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>();
                     var options = dbContextOptionsBuilder
-                        .UseMySql(cs.ConnectionString)
+                        //.UseMySql(cs.ConnectionString)
                         .UseNpgsql(cs.ConnectionString)
                         .UseLoggerFactory(LoggerFactory)
                         .Options;
@@ -255,7 +255,7 @@ namespace ASC.Core
                         {
                             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>();
                             var options = dbContextOptionsBuilder
-                                .UseMySql(connectionString.ConnectionString)
+                                //.UseMySql(connectionString.ConnectionString)
                                 .UseNpgsql(connectionString.ConnectionString)
                                 .UseLoggerFactory(LoggerFactory)
                                 .Options;

@@ -9,23 +9,40 @@ using Microsoft.Extensions.Logging;
 
 namespace ASC.Core.Common.EF
 {
+    public enum Provider
+    {
+        Postrge,
+        MySql
+    }
+
     public class BaseDbContext : DbContext
     {
         public string baseName;
         public BaseDbContext() { }
-        public BaseDbContext(DbContextOptions options) : base(options) => Database.EnsureCreated();
+        public BaseDbContext(DbContextOptions options) : base(options)
+        {
+        }
 
         internal ILoggerFactory LoggerFactory { get; set; }
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
+        internal Provider Provider { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            
-               //optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
-            
-            optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+
+            switch (ConnectionStringSettings.ProviderName)
+            {
+                case "MySql.Data.MySqlClient":
+                    Provider = Provider.MySql;
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+                    break;
+                case "Npgsql":
+                    Provider = Provider.Postrge;
+                    optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                    break;
+            }
         }
     }
 

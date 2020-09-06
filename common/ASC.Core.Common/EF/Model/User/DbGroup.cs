@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -25,7 +26,15 @@ namespace ASC.Core.Common.EF
     }
     public static class DbGroupExtension
     {
-        public static void MySqlAddDbGroup(this ModelBuilder modelBuilder)
+        public static ModelBuilder AddDbGroup(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.MySqlAddDbGroup();
+            modelBuilder.PgSqlAddDbGroup();
+
+            return modelBuilder;
+        }
+
+        private static void MySqlAddDbGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbGroup>(entity =>
             {
@@ -78,7 +87,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
-        public static void PgSqlAddDbGroup(this ModelBuilder modelBuilder)
+        private static void PgSqlAddDbGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbGroup>(entity =>
             {

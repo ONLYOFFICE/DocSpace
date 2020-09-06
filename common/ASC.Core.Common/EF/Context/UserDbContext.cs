@@ -1,4 +1,5 @@
 ﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -25,27 +26,22 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           /*
-                modelBuilder
-                .MySqlAddAcl()
-                .MySqlAddSubscription()
-                .MySqlAddSubscriptionMethod()
-                .MySqlAddUser();
-                modelBuilder.MySqlAddDbGroup();
-                modelBuilder.MySqlAddUserSecurity();
-                modelBuilder.MySqlAddUserGroup();
-                modelBuilder.MySqlAddUserPhoto();
-           */
-                modelBuilder
-                  .PgSqlAddAcl()
-                  .PgSqlAddSubscription()
-                  .PgSqlAddSubscriptionMethod()
-                  .PgSqlAddUser();
-                modelBuilder.PgSqlAddDbGroup();
-                modelBuilder.PgSqlAddUserSecurity();
-                modelBuilder.PgSqlAddUserGroup();
-                modelBuilder.PgSqlAddUserPhoto();
-            
+
+            modelBuilder
+                .PgSqlAddAcl()
+                .PgSqlAddSubscription()
+                .PgSqlAddSubscriptionMethod();
+
+            ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddUser()
+            .Finish();
+
+            modelBuilder.AddDbGroup();
+            modelBuilder.PgSqlAddUserSecurity();
+            modelBuilder.PgSqlAddUserGroup();
+            modelBuilder.PgSqlAddUserPhoto();
+
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
