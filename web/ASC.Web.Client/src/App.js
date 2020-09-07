@@ -9,7 +9,7 @@ import {
   Error404,
   StudioLayout,
   Offline,
-  ComingSoon
+  ComingSoon,
 } from "asc-web-common";
 
 import Home from "./components/pages/Home";
@@ -33,7 +33,7 @@ const App = () => {
               path={[
                 "/login",
                 "/login/error=:error",
-                "/login/confirmed-email=:confirmedEmail"
+                "/login/confirmed-email=:confirmedEmail",
               ]}
               component={Login}
             />
@@ -56,8 +56,8 @@ const App = () => {
       </StudioLayout>
     </Router>
   ) : (
-    <Offline />
-  );
+      <Offline />
+    );
 };
 
 export default App;

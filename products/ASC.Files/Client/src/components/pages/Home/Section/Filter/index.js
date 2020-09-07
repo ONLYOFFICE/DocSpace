@@ -9,6 +9,7 @@ import { getFilterByLocation } from "../../../../../helpers/converters";
 import { constants, FilterInput } from 'asc-web-common';
 import store from "../../../../../store/store";
 import isEqual from "lodash/isEqual";
+import { isMobile } from 'react-device-detect';
 
 const { FilterType } = constants;
 
@@ -290,6 +291,7 @@ class SectionFilterContent extends React.Component {
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("AddFilter")}
+        isMobile={isMobile}
       />
     );
   }
