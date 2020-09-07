@@ -7,6 +7,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { store, FilterInput } from 'asc-web-common';
+import { isMobile } from 'react-device-detect';
 const { isAdmin } = store.auth.selectors;
 
 const getEmployeeStatus = filterValues => {
@@ -254,6 +255,7 @@ class SectionFilterContent extends React.Component {
         needForUpdate={this.needForUpdate}
         language={i18n.language}
         contextMenuHeader={t("AddFilter")}
+        isMobile={isMobile}
       />
     );
   }
