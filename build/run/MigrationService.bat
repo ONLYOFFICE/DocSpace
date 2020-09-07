@@ -1,0 +1,2 @@
+echo "RUN ASC.Migration"
+call dotnet run --project ..\..\common\services\ASC.Data.Storage.Migration\ASC.Data.Storage.Migration.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=migration

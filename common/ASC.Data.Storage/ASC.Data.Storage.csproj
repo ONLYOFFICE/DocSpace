@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="protos\EncryptionSettingsProto.proto" />
-    <None Remove="protos\EncryptionStop.proto" />
-    <None Remove="protos\ProgressEncryption.proto" />
+    <None Remove="protos\MigrationCache.proto" />
+    <None Remove="protos\MigrationProgress.proto" />
+    <None Remove="protos\MigrationUploadCdn.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,9 +48,9 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
-    <Protobuf Include="protos\ProgressEncryption.proto" />
-    <Protobuf Include="protos\EncryptionStop.proto" />
-    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
+    <Protobuf Include="protos\MigrationCache.proto" />
+    <Protobuf Include="protos\MigrationProgress.proto" />
+    <Protobuf Include="protos\MigrationUploadCdn.proto" />
   </ItemGroup>
   
 </Project>

@@ -46,31 +46,31 @@ namespace ASC.Data.Backup.Tasks.Data
         public Type ParentModule { get; private set; }
         public RelationImportance Importance { get; private set; }
 
-        public Func<DataRowInfo, bool> CollisionResolver { get; private set; } 
+        public Func<DataRowInfo, bool> CollisionResolver { get; private set; }
 
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn)
             : this(parentTable, parentColumn, childTable, childColumn, null, null)
         {
-            
+
         }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Func<DataRowInfo, bool> collisionResolver)
             : this(parentTable, parentColumn, childTable, childColumn, null, collisionResolver)
         {
-            
+
         }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Type parentModule)
             : this(parentTable, parentColumn, childTable, childColumn, parentModule, null)
         {
-            
+
         }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Type parentModule, Func<DataRowInfo, bool> collisionResolver)
             : this(parentTable, parentColumn, childTable, childColumn, parentModule, collisionResolver, RelationImportance.Normal)
         {
-            
+
         }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Type parentModule, Func<DataRowInfo, bool> collisionResolver, RelationImportance importance)

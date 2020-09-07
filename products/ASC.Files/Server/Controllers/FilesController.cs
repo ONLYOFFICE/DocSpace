@@ -1387,9 +1387,27 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeoriginal")]
-        public bool StoreOriginal(bool set)
+        public bool StoreOriginal(SettingsModel model)
         {
-            return FileStorageService.StoreOriginal(set);
+            return FileStorageService.StoreOriginal(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Read(@"settings")]
+        public object GetFilesSettings()
+        {
+            return new
+            {
+                FilesSettingsHelper.StoreOriginalFiles,
+                FilesSettingsHelper.ConfirmDelete,
+                FilesSettingsHelper.UpdateIfExist,
+                FilesSettingsHelper.Forcesave,
+                FilesSettingsHelper.StoreForcesave,
+                FilesSettingsHelper.EnableThirdParty
+            };
         }
 
         /// <summary>
@@ -1404,15 +1422,60 @@ namespace ASC.Api.Documents
             return FileStorageService.HideConfirmConvert(save);
         }
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"updateifexist")]
-        public bool UpdateIfExist(bool set)
+        public bool UpdateIfExist(SettingsModel model)
         {
-            return FileStorageService.UpdateIfExist(set);
+            return FileStorageService.UpdateIfExist(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"changedeleteconfrim")]
+        public bool ChangeDeleteConfrim(SettingsModel model)
+        {
+            return FileStorageService.ChangeDeleteConfrim(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"storeforcesave")]
+        public bool StoreForcesave(SettingsModel model)
+        {
+            return FileStorageService.StoreForcesave(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"forcesave")]
+        public bool Forcesave(SettingsModel model)
+        {
+            return FileStorageService.Forcesave(model.Set);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <returns></returns>
+        [Update(@"thirdparty")]
+        public bool ChangeAccessToThirdparty(SettingsModel model)
+        {
+            return FileStorageService.ChangeAccessToThirdparty(model.Set);
         }
 
         /// <summary>

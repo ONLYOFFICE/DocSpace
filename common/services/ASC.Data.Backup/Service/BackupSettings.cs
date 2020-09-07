@@ -46,7 +46,7 @@ namespace ASC.Data.Backup.Service
             {
                 get
                 {
-                    if(Elements == null)
+                    if (Elements == null)
                     {
                         Elements = new List<WebConfigElement>();
                     }
@@ -65,9 +65,9 @@ namespace ASC.Data.Backup.Service
             public string GetPath(string region)
             {
 
-                foreach(var el in Elements)
+                foreach (var el in Elements)
                 {
-                    if(el.Region == region)
+                    if (el.Region == region)
                     {
                         return el.Path;
                     }

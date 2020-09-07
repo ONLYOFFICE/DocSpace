@@ -30,6 +30,7 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
+
 using ASC.Data.Backup.Exceptions;
 using ASC.Data.Backup.Tasks.Data;
 
@@ -44,7 +45,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             get { return _connectionStringName ?? (_connectionStringName = ModuleName.ToString().ToLower()); }
         }
-        
+
         public abstract IEnumerable<TableInfo> Tables { get; }
         public abstract IEnumerable<RelationInfo> TableRelations { get; }
         private Helpers helpers;
@@ -125,7 +126,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             command.CommandText = insertCommantText;
             foreach (var parameter in valuesForInsert)
             {
-                AddParameter(command,parameter.Key, parameter.Value);
+                AddParameter(command, parameter.Key, parameter.Value);
             }
             return command;
         }

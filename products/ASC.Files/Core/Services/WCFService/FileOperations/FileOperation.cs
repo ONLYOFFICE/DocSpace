@@ -40,8 +40,8 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
