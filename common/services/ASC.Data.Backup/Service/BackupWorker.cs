@@ -370,7 +370,7 @@ namespace ASC.Data.Backup.Service
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            (var tenantManager, var backupStorageFactory, var notifyHelper, var backupRepository, var backupWorker, var backupPortalTask, var restorePortalTask, var transferPortalTask) = scopeClass;
+            var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _) = scopeClass;
 
             var tenant = tenantManager.GetTenant(TenantId);
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenant.TenantAlias, DateTime.UtcNow, ArchiveFormat);
@@ -502,7 +502,7 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            (var tenantManager, var backupStorageFactory, var notifyHelper, var backupRepository, var backupWorker, var backupPortalTask, var restorePortalTask, var transferPortalTask) = scopeClass;
+            var (tenantManager, backupStorageFactory, notifyHelper, _, backupWorker, _, restorePortalTask, _) = scopeClass;
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
@@ -661,7 +661,7 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            (var tenantManager, var backupStorageFactory, var notifyHelper, var backupRepository, var backupWorker, var backupPortalTask, var restorePortalTask, var transferPortalTask) = scopeClass;
+            var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask) = scopeClass;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             var tenant = tenantManager.GetTenant(TenantId);
             var alias = tenant.TenantAlias;

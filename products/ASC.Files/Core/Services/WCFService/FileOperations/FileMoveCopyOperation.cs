@@ -355,7 +355,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (fileIds.Count == 0) return needToMark;
 
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
-            (var filesMessageService, var fileMarker, var fileUtility, var global, var entryManager) = scopeClass;
+            var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
 
             var toFolderId = toFolder.ID;

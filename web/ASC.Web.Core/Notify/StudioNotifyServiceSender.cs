@@ -62,7 +62,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
-            (var tenantManager, var userManager, var securityContext, var authContext, var studioNotifyHelper, var displayUserSettings, var tenantExtra, var coreBaseSettings) = scopeClass;
+            var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
             tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
@@ -109,7 +109,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
-            (var tenantManager, var userManager, var securityContext, var authContext, var studioNotifyHelper, var displayUserSettings, var tenantExtra, var coreBaseSettings) = scopeClass;
+            var (_, _, _,  _,  tenantExtra, coreBaseSettings) = scopeClass;
             if (Configuration["core:notify:tariff"] != "false")
             {
                 if (tenantExtra.Enterprise)
@@ -176,27 +176,21 @@ namespace ASC.Web.Studio.Core.Notify
         private TenantManager TenantManager { get; }
         private UserManager UserManager { get; }
         private SecurityContext SecurityContext { get; }
-        private AuthContext AuthContext { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
-        private DisplayUserSettings DisplayUserSettings { get; }
         private TenantExtra TenantExtra { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
 
         public StudioNotifyServiceSenderScope(TenantManager tenantManager,
             UserManager userManager,
             SecurityContext securityContext,
-            AuthContext authContext,
             StudioNotifyHelper studioNotifyHelper,
-            DisplayUserSettings displayUserSettings,
             TenantExtra tenantExtra,
             CoreBaseSettings coreBaseSettings)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
             SecurityContext = securityContext;
-            AuthContext = authContext;
             StudioNotifyHelper = studioNotifyHelper;
-            DisplayUserSettings = displayUserSettings;
             TenantExtra = tenantExtra;
             CoreBaseSettings = coreBaseSettings;
         }
@@ -204,18 +198,14 @@ namespace ASC.Web.Studio.Core.Notify
         public void Deconstruct(out TenantManager tenantManager,
             out UserManager userManager,
             out SecurityContext securityContext,
-            out AuthContext authContext, 
             out StudioNotifyHelper studioNotifyHelper,
-            out DisplayUserSettings displayUserSettings, 
             out TenantExtra tenantExtra, 
             out CoreBaseSettings coreBaseSettings)
         {
             tenantManager = TenantManager;
             userManager = UserManager;
             securityContext = SecurityContext;
-            authContext = AuthContext;
             studioNotifyHelper = StudioNotifyHelper;
-            displayUserSettings = DisplayUserSettings;
             tenantExtra = TenantExtra;
             coreBaseSettings = CoreBaseSettings;
         }

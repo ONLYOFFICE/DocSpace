@@ -829,7 +829,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceScope>();
-                    (var tenantManager, var studioNotifyServiceHelper) = scopeClass;
+                    var (tenantManager, studioNotifyServiceHelper) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)

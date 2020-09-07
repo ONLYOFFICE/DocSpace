@@ -131,7 +131,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ProviderDaoBaseScope>();
-            (var tenantManager, var folderDao, var fileDao) = scopeClass;
+            var (tenantManager, _, fileDao) = scopeClass;
             tenantManager.SetCurrentTenant(TenantID);
 
             return CrossDao.PerformCrossDaoFileCopy(
@@ -156,7 +156,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fromSelector = GetSelector(fromFolderId);
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ProviderDaoBaseScope>();
-            (var tenantManager, var folderDao, var fileDao) = scopeClass;
+            var (_, folderDao, fileDao) = scopeClass;
             return CrossDao.PerformCrossDaoFolderCopy(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
                 toRootFolderId, folderDao, fileDao, r => r,

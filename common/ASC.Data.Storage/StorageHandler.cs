@@ -67,7 +67,7 @@ namespace ASC.Data.Storage.DiscStorage
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
-            (var tenantManager, var securityContext, var storageFactory, var emailValidationKeyProvider) = scopeClass;
+            var (tenantManager, securityContext, storageFactory, emailValidationKeyProvider) = scopeClass;
 
             if (_checkAuth && !securityContext.IsAuthenticated)
             {

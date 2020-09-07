@@ -83,7 +83,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyScope>();
-                    (var tenantManager, var paymentManager, var tenantUtil, var studioNotifyHelper, var userManager, var securityContext, var authContext, var authManager, var commonLinkUtility, var displayUserSettingsHelper, var feedAggregateDataProvider, var coreSettings) = scopeClass;
+                    var (tenantManager, paymentManager, tenantUtil, studioNotifyHelper, userManager, securityContext, authContext, authManager, commonLinkUtility, displayUserSettingsHelper, feedAggregateDataProvider, coreSettings) = scopeClass;
                     var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||

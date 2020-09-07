@@ -54,7 +54,7 @@ namespace ASC.Web.Studio.Core.Quota
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
-            (var tenantManager, var storageFactoryConfig, var storageFactory) = scopeClass;
+            var (tenantManager, storageFactoryConfig, storageFactory) = scopeClass;
             tenantManager.SetCurrentTenant(TenantId);
 
             var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();

@@ -85,7 +85,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override void Do(IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
-            (var fileMarker, var globalFolder, var daoFactory) = scopeClass;
+            var (fileMarker, globalFolder, daoFactory) = scopeClass;
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {

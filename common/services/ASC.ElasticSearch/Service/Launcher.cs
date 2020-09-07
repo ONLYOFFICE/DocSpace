@@ -93,7 +93,7 @@ namespace ASC.ElasticSearch
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
-                (var factoryIndexer, var service) = scopeClass;
+                var (factoryIndexer, service) = scopeClass;
                 while (!factoryIndexer.CheckState(false))
                 {
                     if (CancellationTokenSource.IsCancellationRequested)

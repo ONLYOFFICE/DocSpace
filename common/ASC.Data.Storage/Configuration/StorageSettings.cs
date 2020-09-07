@@ -51,7 +51,7 @@ namespace ASC.Data.Storage.Configuration
                 using var scope = ServiceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
-                (var storageSettingsHelper, var settingsManager, var cdnStorageSettings) = scopeClass;
+                var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
                 var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
@@ -238,6 +238,7 @@ namespace ASC.Data.Storage.Configuration
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<BaseStorageSettingsListener>();
             services.TryAddScoped<BaseStorageSettingsListenerScope>();
+            services.TryAddScoped<CdnStorageSettings>();
             return services
                 .AddStorageFactoryConfigService()
                 .AddPathUtilsService()

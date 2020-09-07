@@ -98,7 +98,7 @@ namespace ASC.Data.Reassigns
         {
             using var scope = ServiceProvider.CreateScope();   
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
-            (var tenantManager,  var coreBaseSettings, var messageService,  var studioNotifyService, var securityContext, var userManager, var messageTarget, var webItemManagerSecurity, var storageFactory, var userFormatter, var options) = scopeClass;
+            var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
             var tenant = tenantManager.SetCurrentTenant(_tenantId);
             var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);

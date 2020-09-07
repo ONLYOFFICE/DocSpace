@@ -122,7 +122,7 @@ namespace ASC.Feed.Aggregator
                 var cfg = FeedSettings.GetInstance(Configuration);
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
-                (var baseCommonLinkUtility, var tenantManager, var feedAggregateDataProvider, var userManager, var securityContext, var authManager) = scopeClass;
+                var (baseCommonLinkUtility, tenantManager, feedAggregateDataProvider, userManager, securityContext, authManager) = scopeClass;
                 baseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
                 var start = DateTime.UtcNow;

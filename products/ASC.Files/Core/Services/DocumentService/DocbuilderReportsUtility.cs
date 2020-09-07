@@ -155,7 +155,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
-            (var options, var tenantManager, var authContext, var securityContext, var documentServiceConnector) = scopeClass;
+            var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
             var logger = options.CurrentValue;
             try
             {

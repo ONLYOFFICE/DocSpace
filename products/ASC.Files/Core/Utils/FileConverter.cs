@@ -145,7 +145,7 @@ namespace ASC.Web.Files.Utils
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
-                (var options, var tenantManager, var userManager, var securityContext, var daoFactory, var fileSecurity, var pathProvider, var setupInfo, var fileUtility, var documentServiceHelper, var documentServiceConnector, var entryManager, var fileConverter) = scopeClass;
+                var (options, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
                 var logger = options.CurrentValue;
 
                 try

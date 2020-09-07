@@ -133,7 +133,7 @@ namespace ASC.Web.Studio.Core.Notify
                  (r, p, scope) =>
                  {
                      var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-                     (var tenantManager, var webItemSecurity, var userManager, var options, var tenantExtra, var webItemManagerSecurity, var webItemManager, var configuration, var tenantLogoManager, var additionalWhiteLabelSettingsHelper, var tenantUtil, var coreBaseSettings, var commonLinkUtility, var settingsManager, var studioNotifyHelper) = scopeClass;
+                     var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
                      try
                      {
                          // culture
@@ -262,7 +262,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-            (var tenantManager, var webItemSecurity, var userMan, var options, var tenantExtra, var webItemManagerSecurity, var webItemManager, var configuration, var tenantLogoManager, var additionalWhiteLabelSettingsHelper, var tenantUtil, var coreBaseSettings, var commonLinkUtility, var settingsManager, var studioNotifyHelper) = scopeClass;
+            var (_, webItemSecurity, _, options, tenantExtra, _, webItemManager, configuration, tenantLogoManager, additionalWhiteLabelSettingsHelper, tenantUtil, coreBaseSettings, commonLinkUtility, settingsManager, studioNotifyHelper) = scopeClass;
             var log = options.CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);

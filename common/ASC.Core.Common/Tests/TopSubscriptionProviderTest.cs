@@ -61,7 +61,7 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<TopSubscriptionProviderTestScope>();
-            (var tenantManager, var subscriptionManager, var recipientProviderImpl) = scopeClass;
+            var (tenantManager, subscriptionManager, recipientProviderImpl) = scopeClass;
             tenant = new Tenants.Tenant(0, "teamlab");
             sourceId = "6045b68c-2c2e-42db-9e53-c272e814c4ad";
             actionId = "NewCommentForTask";

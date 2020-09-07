@@ -113,7 +113,7 @@ namespace ASC.Data.Storage
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-                (var tenantManager, var staticUploader, var securityContext, var settingsManager, var storageSettingsHelper) = scopeClass;
+                var(tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
@@ -209,7 +209,7 @@ namespace ASC.Data.Storage
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-                (var tenantManager, var staticUploader, var securityContext, var settingsManager, var storageSettingsHelper) = scopeClass;
+                var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
                 securityContext.AuthenticateMe(tenant.OwnerId);

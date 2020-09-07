@@ -100,7 +100,7 @@ namespace ASC.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
-            (var tenantManager, var tenantWhiteLabelSettingsHelper, var settingsManager) = scopeClass;
+            var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
             tenantManager.SetCurrentTenant(tenant);
             tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);

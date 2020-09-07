@@ -70,7 +70,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            (var userManager, var studioNotifyHelper, var studioNotifySource, var displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             client.SendNoticeToAsync(
@@ -103,7 +103,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            (var userManager, var studioNotifyHelper, var studioNotifySource, var displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var owner = userManager.GetUsers(tenant.OwnerId);
@@ -124,7 +124,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            (var userManager, var studioNotifyHelper, var studioNotifySource, var displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var users = userManager.GetUsers()

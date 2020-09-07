@@ -285,7 +285,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
-                (var tenantManager, var daoFactory, var fileSecurity, var options) = scopeClass;
+                var (tenantManager, daoFactory, fileSecurity, options) = scopeClass;
                 tenantManager.SetCurrentTenant(CurrentTenant);
 
 

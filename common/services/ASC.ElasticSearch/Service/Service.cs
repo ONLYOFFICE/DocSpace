@@ -88,7 +88,7 @@ namespace ASC.ElasticSearch.Service
                 using var scope = ServiceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<ServiceScope>();
-                (var tenantManager, var settingsManager) = scopeClass;
+                var (tenantManager, settingsManager) = scopeClass;
                 tenantManager.SetCurrentTenant(tenant);
                 settingsManager.ClearCache<SearchSettings>();
             });

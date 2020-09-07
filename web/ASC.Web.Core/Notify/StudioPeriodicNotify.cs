@@ -94,7 +94,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    (var tenantManager, var userManager, var studioNotifyHelper, var paymentManager, var tenantExtra, var authContext, var commonLinkUtility, var apiSystemHelper, var setupInfo, var dbContextManager, var couponManager, var configuration, var settingsManager, var coreBaseSettings, var displayUserSettingsHelper, var authManager, var securityContext) = scopeClass;
+                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, _, _, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
@@ -543,7 +543,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    (var tenantManager, var userManager, var studioNotifyHelper, var paymentManager, var tenantExtra, var authContext, var commonLinkUtility, var apiSystemHelper, var setupInfo, var dbContextManager, var couponManager, var configuration, var settingsManager, var coreBaseSettings, var displayUserSettingsHelper, var authManager, var securityContext) = scopeClass;
+                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, configuration, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
                     tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
@@ -930,7 +930,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    (var tenantManager, var userManager, var studioNotifyHelper, var paymentManager, var tenantExtra, var authContext, var commonLinkUtility, var apiSystemHelper, var setupInfo, var dbContextManager, var couponManager, var configuration, var settingsManager, var coreBaseSettings, var displayUserSettingsHelper, var authManager, var securityContext) = scopeClass;
+                    var (tenantManager, _, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
@@ -1113,7 +1113,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    (var tenantManager, var userManager, var studioNotifyHelper, var paymentManager, var tenantExtra, var authContext, var commonLinkUtility, var apiSystemHelper, var setupInfo, var dbContextManager, var couponManager, var configuration, var settingsManager, var coreBaseSettings, var displayUserSettingsHelper, var authManager, var securityContext) = scopeClass;
+                    var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, coreBaseSettings, _, authManager, securityContext) = scopeClass;
 
                     tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);

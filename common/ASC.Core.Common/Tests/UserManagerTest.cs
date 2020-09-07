@@ -86,7 +86,7 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
-            (var userManager, var tenantManager) = scopeClass;
+            var (userManager, tenantManager) = scopeClass;
             var tenant = tenantManager.SetCurrentTenant(1024);
 
             var deps = userManager.GetDepartments();

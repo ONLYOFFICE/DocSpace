@@ -154,7 +154,7 @@ namespace ASC.Data.Storage
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
-                (var tenantManager, var securityContext, var storageFactory, var options, var storageSettingsHelper, var settingsManager) = scopeClass;
+                var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
 
