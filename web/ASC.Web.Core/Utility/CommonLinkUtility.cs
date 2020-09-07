@@ -488,7 +488,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetHelpLink(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
         {
-            if (!AdditionalWhiteLabelSettings.Instance(settingsManager).HelpCenterEnabled)
+            if (!settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().HelpCenterEnabled)
                 return string.Empty;
 
             var url = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl;

@@ -29,7 +29,7 @@ pipeline {
 					}
 				}
 				stage('Windows') {
-					agent { label 'master' }
+					agent { label 'win-core' }
 					stages {
 						stage('Components') {
 							steps {
@@ -79,7 +79,7 @@ pipeline {
 					}
 				}
 				stage('Windows') {
-					agent { label 'master' }
+					agent { label 'win-core' }
 					steps {
 						bat "sh build\\scripts\\components.sh && cd ${env.WORKSPACE}\\web\\ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 					}
