@@ -23,20 +23,17 @@ const StyledButtonContainer = styled.div`
     line-height: 20px;
   }
   .button-buy {
-    /* width: 107px; */
     margin: 32px 14px 32px 32px;
   }
 
   .button-upload {
-    /* width: 153px; */
     margin: 32px 0px 32px 0px;
-    /* z-index: 8; */
   }
 
   @media ${tablet} {
     width: 600px;
     height: 168px;
-
+    display: block;
     .button-buy {
       width: 536px;
 
@@ -48,10 +45,6 @@ const StyledButtonContainer = styled.div`
       margin: 0px 32px 32px 32px;
 
       border-radius: 3px;
-    }
-    .input {
-      bottom: 0px;
-      left: 0px;
     }
   }
   @media (max-width: 632px) {
