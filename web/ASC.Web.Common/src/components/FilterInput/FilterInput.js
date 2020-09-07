@@ -525,7 +525,7 @@ class FilterInput extends React.Component {
         const { className, id, style, size,
             isDisabled, scale, getFilterData, placeholder,
             getSortData, directionAscLabel, directionDescLabel,
-            filterColumnCount, viewAs, contextMenuHeader } = this.props;
+            filterColumnCount, viewAs, contextMenuHeader, isMobile } = this.props;
         /* eslint-enable react/prop-types */
 
         const { searchText, filterValues, openFilterItems,
@@ -546,7 +546,7 @@ class FilterInput extends React.Component {
                 break;
         }
         return (
-            <StyledFilterInput viewAs={viewAs} className={className} id={id} style={style}>
+            <StyledFilterInput isMobile={isMobile} viewAs={viewAs} className={className} id={id} style={style}>
                 <div className='styled-search-input' ref={this.searchWrapper}>
                     <SearchInput
                         id={id}
