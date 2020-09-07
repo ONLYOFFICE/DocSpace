@@ -13,6 +13,7 @@ import {
   PublicRoute,
   Login,
   Error404,
+  Error520,
   StudioLayout,
   Offline
 } from "asc-web-common";
@@ -75,6 +76,7 @@ const App = ({ settings }) => {
               ]}
               component={Login}
             />
+            <PrivateRoute exact path={`/error=:error`} component={Error520} />
             <PrivateRoute component={Error404} />
           </Switch>
         </Suspense>
