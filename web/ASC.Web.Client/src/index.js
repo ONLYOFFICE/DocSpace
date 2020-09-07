@@ -6,12 +6,7 @@ import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import {
-  store as commonStore,
-  constants,
-  history,
-  ErrorBoundary
-} from "asc-web-common";
+import { store as commonStore, constants, ErrorBoundary } from "asc-web-common";
 
 const {
   getUser,
@@ -24,21 +19,23 @@ const { AUTH_KEY } = constants;
 
 const token = localStorage.getItem(AUTH_KEY);
 
-if (!token) {
-  getPortalSettings(store.dispatch)
-    .then(() => store.dispatch(setIsLoaded(true)))
-    .catch(e => history.push(`/login/error=${e}`));
-} else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-  const requests = [
-    getUser(store.dispatch),
-    getPortalSettings(store.dispatch),
-    getModules(store.dispatch)
-  ];
+const requests = [];
 
+if (!token) {
+  requests.push(getPortalSettings(store.dispatch));
+} else if (!window.location.pathname.includes("confirm/EmailActivation")) {
+  requests.push(getUser(store.dispatch));
+  requests.push(getPortalSettings(store.dispatch));
+  requests.push(getModules(store.dispatch));
+}
+
+if (requests.length > 0) {
   axios
     .all(requests)
-    .then(() => store.dispatch(setIsLoaded(true)))
-    .catch(e => history.push(`/login/error=${e}`));
+    .catch(e => {
+      console.log("INIT REQUESTS FAILED", e);
+    })
+    .finally(() => store.dispatch(setIsLoaded(true)));
 }
 
 ReactDOM.render(

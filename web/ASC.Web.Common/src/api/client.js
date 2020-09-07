@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AUTH_KEY, WIZARD_KEY } from "../constants";
+import { AUTH_KEY } from "../constants";
+import history from "../history";
 
 const PREFIX = "api";
 const VERSION = "2.0";
@@ -22,19 +23,24 @@ client.interceptors.response.use(
     return response;
   },
   error => {
-    if(localStorage.getItem(WIZARD_KEY)) 
-      return;
-
-    if (error.response.status === 401) {
-      setAuthorizationToken();
-      window.location.href = "/login/error=unauthorized";
+    switch (true) {
+      case error.response.status === 401:
+        setAuthorizationToken();
+        window.location.href = "/login";
+        break;
+      case error.response.status === 402:
+        if (!window.location.pathname.includes("payments")) {
+          window.location.href = "/payments";
+        }
+        break;
+      case error.response.status >= 500:
+        history.push(`/error=${error.message}`);
+        break;
+      default:
+        break;
     }
 
-    if (error.response.status === 502) {
-      // window.location.href = `/error/${error.response.status}`;
-    }
-
-    return error;
+    return Promise.reject(error);
   }
 );
 
@@ -48,23 +54,21 @@ export function setAuthorizationToken(token) {
 }
 
 export function setClientBasePath(path) {
-  if (!path)
-    return;
+  if (!path) return;
 
   client.defaults.baseURL = path;
 }
 
 const checkResponseError = res => {
-  if(!res) return;
+  if (!res) return;
 
   if (res.data && res.data.error) {
     console.error(res.data.error);
     throw new Error(res.data.error.message);
   }
 
-  if(res.isAxiosError && res.message) {
+  if (res.isAxiosError && res.message) {
     console.error(res.message);
-    //toastr.error(res.message);
     throw new Error(res.message);
   }
 };
@@ -76,15 +80,15 @@ const checkResponseError = res => {
 export const request = function(options) {
   const onSuccess = function(response) {
     checkResponseError(response);
-    
-    if(!response || !response.data || response.isAxiosError)
-      return null;
 
-    if(response.data.hasOwnProperty("total"))
+    if (!response || !response.data || response.isAxiosError) return null;
+
+    if (response.data.hasOwnProperty("total"))
       return { total: +response.data.total, items: response.data.response };
 
     return response.data.response;
   };
+
   const onError = function(error) {
     console.error("Request Failed:", error.config);
     if (error.response) {

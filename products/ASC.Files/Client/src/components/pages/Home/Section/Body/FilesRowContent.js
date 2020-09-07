@@ -518,7 +518,7 @@ function mapStateToProps(state) {
     filter,
     fileAction,
     parentFolder: selectedFolder.id,
-    isTrashFolder: treeFolders[indexOfTrash].id === selectedFolder.id,
+    isTrashFolder: treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id,
     settings,
     treeFolders,
     rootFolderId,

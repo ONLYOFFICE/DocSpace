@@ -48,6 +48,7 @@ namespace ASC.Common.Utils
         private IEnumerable<MapZone> _mapZones;
 
         private bool _customMode;
+        private bool _isMono;
 
         private Dictionary<string, string> _translations;
 
@@ -86,6 +87,26 @@ namespace ASC.Common.Utils
                 _mapZones = new MapZone[0];
                 Log.Error(error);
             }
+        }
+
+        public string GetTimeZoneDisplayName(TimeZoneInfo tz)
+        {
+            var displayName = GetTimeZoneName(tz);
+            if (!displayName.StartsWith("(UTC") && !displayName.StartsWith("UTC"))
+            {
+                if (tz.BaseUtcOffset != TimeSpan.Zero)
+                {
+                    var offSet = tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+";
+                    var name = tz.BaseUtcOffset.ToString(@"hh\:mm");
+                    displayName = $"(UTC{offSet}{name}) {displayName}";
+                }
+                else
+                {
+                    displayName = "(UTC) " + displayName;
+                }
+            }
+
+            return displayName;
         }
 
         public string OlsonTzId2WindowsTzId(string olsonTimeZoneId, bool defaultIfNoMatch = true)
@@ -231,7 +252,7 @@ namespace ASC.Common.Utils
         public string GetTimeZoneName(TimeZoneInfo timeZone)
         {
             if (!_customMode)
-                return timeZone.DisplayName;
+                return _isMono ? timeZone.Id : timeZone.DisplayName;
 
             return _translations.ContainsKey(timeZone.Id) ? _translations[timeZone.Id] : timeZone.DisplayName;
         }
@@ -254,6 +275,7 @@ namespace ASC.Common.Utils
                             var id = string.Empty;
                             if (File.Exists("/etc/timezone"))
                             {
+                                _isMono = true;
                                 id = File.ReadAllText("/etc/timezone").Trim();
                             }
 
