@@ -144,7 +144,7 @@ namespace ASC.Web.Studio.Core.Notify
             if (string.IsNullOrEmpty(site)) throw new ArgumentNullException("site");
             message = (message ?? "").Trim();
 
-            var salesEmail = AdditionalWhiteLabelSettings.Instance(SettingsManager).SalesEmail ?? SetupInfo.SalesEmail;
+            var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
 
             var recipient = (IRecipient)(new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false));
 

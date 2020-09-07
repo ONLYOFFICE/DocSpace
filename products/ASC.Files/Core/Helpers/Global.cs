@@ -417,7 +417,7 @@ namespace ASC.Web.Files.Classes
                 id = my ? folderDao.GetFolderIDUser(true) : folderDao.GetFolderIDCommon(true);
 
                 //Copy start document
-                if (AdditionalWhiteLabelSettings.Instance(SettingsManager).StartDocsEnabled)
+                if (SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
                 {
                     try
                     {
