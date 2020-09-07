@@ -51,6 +51,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
+using ASC.Data.Storage.Encryption;
 using ASC.Data.Storage.Migration;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
@@ -149,6 +150,7 @@ namespace ASC.Api.Settings
         private CoreSettings CoreSettings { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
         private ServiceClient ServiceClient { get; }
+        private EncryptionServiceClient EncryptionServiceClient { get; }
         public ILog Log { get; set; }
 
         public SettingsController(
@@ -202,7 +204,8 @@ namespace ASC.Api.Settings
             MobileDetector mobileDetector,
             IOptionsSnapshot<AccountLinker> accountLinker,
             FirstTimeTenantSettings firstTimeTenantSettings,
-            ServiceClient serviceClient)
+            ServiceClient serviceClient,
+            EncryptionServiceClient encryptionServiceClient)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -255,6 +258,7 @@ namespace ASC.Api.Settings
             CoreSettings = coreSettings;
             StorageSettingsHelper = storageSettingsHelper;
             ServiceClient = serviceClient;
+            EncryptionServiceClient = encryptionServiceClient;
         }
 
         [Read("", Check = false)]
@@ -1614,6 +1618,24 @@ namespace ASC.Api.Settings
             return ServiceClient.GetProgress(Tenant.TenantId);
         }
 
+        [Read("encryption")]
+        public void StartEncryption(EncryptionSettingsModel settings)
+        {
+            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
+            {
+                NotifyUsers = settings.NotifyUsers,
+                Password = settings.Password,
+                Status = settings.Status
+            };
+            EncryptionServiceClient.Start(encryptionSettingsProto);
+        }
+
+        [Read("encryptionStop")]
+        public void StopEncryption()
+        {
+            EncryptionServiceClient.Stop();
+        }
+
         [Update("storage")]
         public StorageSettings UpdateStorage(StorageModel model)
         {
@@ -1889,7 +1911,8 @@ namespace ASC.Api.Settings
                 .AddMobileDetectorService()
                 .AddFirstTimeTenantSettings()
                 .AddServiceClient()
-                .AddTwilioProviderService();
+                .AddTwilioProviderService()
+                .AddEEncryptionServiceClient();
         }
     }
 }

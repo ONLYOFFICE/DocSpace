@@ -72,7 +72,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 if (!coreBaseSettings.Standalone)
                 {
-                    //throw new NotSupportedException();
+                    throw new NotSupportedException();
                 }
 
                 if (EncryptionSettings.Status == EncryprtionStatus.Encrypted || EncryptionSettings.Status == EncryprtionStatus.Decrypted)
