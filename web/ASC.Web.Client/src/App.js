@@ -57,8 +57,8 @@ const App = () => {
       </StudioLayout>
     </Router>
   ) : (
-    <Offline />
-  );
+      <Offline />
+    );
 };
 
 export default App;

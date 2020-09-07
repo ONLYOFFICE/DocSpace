@@ -158,9 +158,9 @@ function mapStateToProps(state) {
   const shareFolderIndex = 1;
   const commonFolderIndex = 2;
 
-  const myId = treeFolders[myFolderIndex].id;
-  const shareId = treeFolders[shareFolderIndex].id;
-  const commonId = treeFolders[commonFolderIndex].id;
+  const myId = treeFolders.length && treeFolders[myFolderIndex].id;
+  const shareId = treeFolders.length && treeFolders[shareFolderIndex].id;
+  const commonId = treeFolders.length && treeFolders[commonFolderIndex].id;
 
   const isMy = selectedFolder && 
     selectedFolder.pathParts && 

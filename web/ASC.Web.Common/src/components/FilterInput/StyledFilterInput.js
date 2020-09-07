@@ -6,6 +6,7 @@ const { mobile } = utils.device;
 const StyledFilterInput = styled.div`
     width: 100%;
     min-width: 255px;
+    display: flex;
     &:after {
         content: " ";
         display: block;
@@ -16,14 +17,7 @@ const StyledFilterInput = styled.div`
 
     .styled-search-input {
       display: block;
-      float: left;
-      width: ${props => props.viewAs ? "calc(100% - 216px)" : "calc(100% - 144px)"};
-      @media (max-width: 460px) {
-        ${props => props.viewAs && "width: calc(100% - 144px);"}
-      }
-      @media ${mobile} {
-          width: calc(100% - 58px);
-      }
+      width: 100%;
 
       .search-input-block {
           & > input { 
@@ -110,16 +104,15 @@ const StyledFilterInput = styled.div`
 
     .styled-sort-combobox {
       display: block;
-      float: left;
-      width: 136px;
+      width: fit-content;
       margin-left: 8px;
 
-      @media ${mobile} {
+      ${props => props.isMobile && `
           width: 50px;
           .optionalBlock ~ div:first-child{
               opacity: 0
           }
-      }
+      `}
 
       .combo-button-label {
           color: #333;

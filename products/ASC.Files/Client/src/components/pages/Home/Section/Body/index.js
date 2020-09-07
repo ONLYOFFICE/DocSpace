@@ -1327,7 +1327,7 @@ const mapStateToProps = state => {
   const shareFolderIndex = 1;
   const commonFolderIndex = 2;
   const currentFolderCount = filesCount + foldersCount;
-  const myDocumentsId = treeFolders[myFolderIndex].id;
+  const myDocumentsId = treeFolders.length && treeFolders[myFolderIndex].id;
   const isShare = pathParts && pathParts[0] === treeFolders[shareFolderIndex].id;
   const isCommon = pathParts && pathParts[0] === treeFolders[commonFolderIndex].id;
 

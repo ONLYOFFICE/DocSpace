@@ -33,9 +33,6 @@ client.interceptors.response.use(
           window.location.href = "/payments";
     }
         break;
-      case error.response.status >= 500:
-        history.push(`/error=${error.message}`);
-        break;
       default:
         break;
     }

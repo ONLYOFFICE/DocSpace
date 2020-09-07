@@ -390,7 +390,7 @@ export const getFileIcon = (extension, size = 32) => {
 }
 
 export const checkFolderType = (id, index, treeFolders) => {
-  return treeFolders[index].id === id;
+  return treeFolders.length && treeFolders[index].id === id;
 }
 
 export const getFolderType = (id, treeFolders) => {
