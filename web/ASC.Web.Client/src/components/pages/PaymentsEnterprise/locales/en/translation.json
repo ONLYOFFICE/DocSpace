@@ -1,7 +1,7 @@
 {
   "PurchaseQuestions": "For any purchase questions, contact us at ",
   "TechnicalIssues": "For for solving technical issues, use",
-  "SubscriptionAndUpdatesExpires": "Your subscription for support and updates expires on",
+  "SubscriptionAndUpdatesExpires": "Your subscription for support and updates expires on ",
   "OnlyOfficeEditor": "ONLYOFFICE editors with pro features",
   "PrivateRooom": "Private Rooom for encrypted collaboretion",
   "WebEditors": "Mobile web editors",
@@ -15,7 +15,6 @@
   "LicenseIsNotValid": "Licence  is not valid",
   "LoadingLicenseError": "Make sure you choose the right file",
   "LoadingLicenseSuccess": "License activated successfully",
-  "createdPortals": "Number of portals you've created",
   "OrganizationName": "ONLYOFFICE",
   "SupportNotAvailable": "Support is no longer available for your license since ",
   "ThanksToUser": "Thank you for having checked out ONLYOFFICE!",
