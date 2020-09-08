@@ -28,7 +28,7 @@ const StyledConsumer = styled(Box)`
   }
 
   @media (max-width: 375px) {
-    margin: 0;
+    width: 343px;
   }
 `;
 const Separator = styled.div`

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Icons } from "asc-web-components";
+import { Box, Text } from "asc-web-components";
 import ConsumerToggle from "./consumerToggle";
 
 class ConsumerItem extends React.Component {
@@ -16,7 +16,7 @@ class ConsumerItem extends React.Component {
 
     return (
       <>
-        <Box displayProp="flex" flexDirection="column">
+        <Box displayProp="flex" flexDirection="column" widthProp="100%">
           <Box
             displayProp="flex"
             justifyContent="space-between"
