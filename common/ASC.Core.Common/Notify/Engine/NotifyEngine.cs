@@ -283,7 +283,7 @@ namespace ASC.Notify.Engine
         {
             if (request.Recipient is IDirectRecipient)
             {
-                var subscriptionSource = request.NotifySource.GetSubscriptionProvider();
+                var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
                 if (!request.IsNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
                 {
                     var directresponses = new List<SendResponse>(1);
@@ -309,7 +309,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        var recipientProvider = request.NotifySource.GetRecipientsProvider();
+                        var recipientProvider = request.GetRecipientsProvider(serviceScope);
 
                         try
                         {
@@ -358,9 +358,9 @@ namespace ASC.Notify.Engine
 
             try
             {
-                PrepareRequestFillSenders(request);
-                PrepareRequestFillPatterns(request);
-                PrepareRequestFillTags(request);
+                PrepareRequestFillSenders(request, serviceScope);
+                PrepareRequestFillPatterns(request, serviceScope);
+                PrepareRequestFillTags(request, serviceScope);
             }
             catch (Exception ex)
             {
@@ -421,7 +421,7 @@ namespace ASC.Notify.Engine
         {
             if (request == null) throw new ArgumentNullException("request");
 
-            var recipientProvider = request.NotifySource.GetRecipientsProvider();
+            var recipientProvider = request.GetRecipientsProvider(serviceScope);
             var recipient = request.Recipient as IDirectRecipient;
 
             var addresses = recipient.Addresses;
@@ -450,7 +450,7 @@ namespace ASC.Notify.Engine
             noticeMessage.Pattern = pattern;
             noticeMessage.ContentType = pattern.ContentType;
             noticeMessage.AddArgument(request.Arguments.ToArray());
-            var patternProvider = request.NotifySource.GetPatternProvider();
+            var patternProvider = request.GetPatternProvider(serviceScope);
 
             var formatter = patternProvider.GetFormatter(pattern);
             try
@@ -500,11 +500,11 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillSenders(NotifyRequest request)
+        private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
         {
             if (request.SenderNames == null)
             {
-                var subscriptionProvider = request.NotifySource.GetSubscriptionProvider();
+                var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
                 var senderNames = new List<string>();
                 senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
@@ -514,14 +514,14 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillPatterns(NotifyRequest request)
+        private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
         {
             if (request.Patterns == null)
             {
                 request.Patterns = new IPattern[request.SenderNames.Length];
                 if (request.Patterns.Length == 0) return;
 
-                var apProvider = request.NotifySource.GetPatternProvider();
+                var apProvider = request.GetPatternProvider(serviceScope);
                 for (var i = 0; i < request.SenderNames.Length; i++)
                 {
                     var senderName = request.SenderNames[i];
@@ -540,9 +540,9 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillTags(NotifyRequest request)
+        private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
         {
-            var patternProvider = request.NotifySource.GetPatternProvider();
+            var patternProvider = request.GetPatternProvider(serviceScope);
             foreach (var pattern in request.Patterns)
             {
                 IPatternFormatter formatter;
