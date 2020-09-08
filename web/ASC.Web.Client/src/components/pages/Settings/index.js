@@ -12,7 +12,9 @@ const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/language-and-time-zone")
 );
 const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
-const IntegrationSettings = lazy(() => import("./categories/integration/third-party-services"));
+const ThirdPartyServices = lazy(() =>
+  import("./categories/integration/third-party-services")
+);
 
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 
@@ -30,7 +32,7 @@ const Settings = () => {
             path={[
               `${basePath}/common/customization`,
               `${basePath}/common`,
-              basePath
+              basePath,
             ]}
             component={CustomizationSettings}
           />
@@ -53,11 +55,11 @@ const Settings = () => {
           <Route
             exact
             path={`${basePath}/integration/third-party-services`}
-            component={IntegrationSettings}
+            component={ThirdPartyServices}
           />
           <Redirect
             to={{
-              pathname: "/error/404"
+              pathname: "/error/404",
             }}
           />
         </Switch>
