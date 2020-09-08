@@ -12,6 +12,10 @@ import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
 import {
   setLicense /*getPortalCultures*/,
+  getSalesEmail,
+  getHelpUrl,
+  getBuyUrl,
+  getCurrentLicense,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 import moment from "moment";
@@ -51,8 +55,17 @@ class Body extends React.PureComponent {
   }
 
   componentDidMount() {
+    const {
+      getSalesEmail,
+      getHelpUrl,
+      getBuyUrl,
+      getCurrentLicense,
+    } = this.props;
     this.props.currentProductId !== "payments" &&
       this.props.setCurrentProductId("payments");
+    getSalesEmail();
+    getHelpUrl();
+    getBuyUrl();
   }
 
   componentDidUpdate(prevProps) {
@@ -169,4 +182,8 @@ export default connect(mapStateToProps, {
   setLicense,
   setCurrentProductId,
   // getPortalCultures,
+  getSalesEmail,
+  getHelpUrl,
+  getBuyUrl,
+  getCurrentLicense,
 })(withRouter(PaymentsEnterprise));
