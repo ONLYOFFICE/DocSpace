@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, ToggleButton, toastr } from "asc-web-components";
+import { ToggleButton, toastr } from "asc-web-components";
 import styled from "styled-components";
 
 const StyledToggle = styled(ToggleButton)`

@@ -8,26 +8,36 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { Box, Text, Link } from "asc-web-components";
+import { utils } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 
+const tablet = utils.device.tablet;
+const mobile = utils.device.mobile;
+
 const RootContainer = styled(Box)`
-  @media (max-width: 768px) {
+  @media ${tablet} {
     margin: 0;
 
     .consumers-list-container {
       margin: 32px 0 40px 0;
     }
   }
+
+  @media ${tablet} {
+    .consumer-item-wrapper {
+      margin: 0 0 24px 0;
+    }
+  }
 `;
 const StyledConsumer = styled(Box)`
   width: 400px;
 
-  @media (max-width: 768px) {
+  @media ${tablet} {
     width: 496px;
   }
 
-  @media (max-width: 375px) {
+  @media ${mobile} {
     width: 343px;
   }
 `;

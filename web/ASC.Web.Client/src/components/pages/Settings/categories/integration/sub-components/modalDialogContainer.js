@@ -5,12 +5,12 @@ const tablet = utils.device.tablet;
 
 const ModalDialogContainer = styled.div`
   .modal-dialog-aside-footer {
-    @media (max-width: 1024px) {
+    @media ${tablet} {
       width: 90%;
     }
   }
   .modal-dialog-button {
-    @media (max-width: 1024px) {
+    @media ${tablet} {
       width: 100%;
     }
   }
