@@ -8,6 +8,7 @@ import {
   Link,
   toastr,
 } from "asc-web-components";
+import ModalDialogContainer from "./modalDialogContainer";
 import { Trans } from "react-i18next";
 
 class ConsumerModalDialog extends React.Component {
@@ -148,28 +149,31 @@ class ConsumerModalDialog extends React.Component {
     };
 
     return (
-      <ModalDialog
-        visible={dialogVisible}
-        headerContent={`${getConsumerName()}`}
-        bodyContent={[
-          <Text>{getInnerDescription()}</Text>,
-          <Text>{bodyDescription}</Text>,
-          <React.Fragment>{getInputFields()}</React.Fragment>,
-          <Text>{bottomDescription}</Text>,
-        ]}
-        footerContent={[
-          <Button
-            primary
-            size="big"
-            label={isLoading ? "Sending..." : t("ThirdPartyEnableButton")}
-            tabIndex={1}
-            isLoading={isLoading}
-            isDisabled={isLoading}
-            onClick={this.updateConsumerValues}
-          />,
-        ]}
-        onClose={onModalClose}
-      />
+      <ModalDialogContainer>
+        <ModalDialog
+          visible={dialogVisible}
+          headerContent={`${getConsumerName()}`}
+          bodyContent={[
+            <Text>{getInnerDescription()}</Text>,
+            <Text>{bodyDescription}</Text>,
+            <React.Fragment>{getInputFields()}</React.Fragment>,
+            <Text>{bottomDescription}</Text>,
+          ]}
+          footerContent={[
+            <Button
+              className="modal-dialog-button"
+              primary
+              size="big"
+              label={isLoading ? "Sending..." : t("ThirdPartyEnableButton")}
+              tabIndex={1}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+              onClick={this.updateConsumerValues}
+            />,
+          ]}
+          onClose={onModalClose}
+        />
+      </ModalDialogContainer>
     );
   }
 }

@@ -42,7 +42,7 @@ class ConsumerToggle extends React.Component {
 
       sendConsumerNewProps(data)
         .then(() => {
-          toastr.info("Consumer successfully deactivated");
+          toastr.success("Consumer successfully deactivated");
         })
         .catch((error) => {
           toastr.error(error);
