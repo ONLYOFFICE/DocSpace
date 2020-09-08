@@ -12,6 +12,8 @@ class ConsumerItem extends React.Component {
       sendConsumerNewProps,
     } = this.props;
 
+    const logo = `/images/thirdparties/${consumer.name.toLowerCase()}.svg`;
+
     return (
       <>
         <Box displayProp="flex" flexDirection="column">
@@ -23,9 +25,7 @@ class ConsumerItem extends React.Component {
             heightProp="56px"
           >
             <Box>
-              {React.createElement(Icons[`${consumer.name}Icon`], {
-                size: "scale",
-              })}
+              <img src={logo} />
             </Box>
             <Box onClick={setConsumer} data-consumer={consumer.name}>
               <ConsumerToggle
