@@ -33,9 +33,9 @@ namespace ASC.Data.Storage.Encryption
         private NotifyServiceClient NotifyServiceClient { get; set; }
         private ILog Log { get; set; }
 
-        public NotifyHelper( IOptionsMonitor<ILog> option)
+        public NotifyHelper( IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
         {
-           // NotifyServiceClient = notifyServiceClient;
+            NotifyServiceClient = notifyServiceClient;
             Log = option.CurrentValue;
         }
 
@@ -78,7 +78,7 @@ namespace ASC.Data.Storage.Encryption
         {
             try
             {
-            //    NotifyServiceClient.InvokeSendMethod(NotifyService, method, tenantId, ServerRootPath);
+                NotifyServiceClient.InvokeSendMethod(NotifyService, method, tenantId, ServerRootPath);
             }
             catch (Exception error)
             {

@@ -19,13 +19,10 @@ using System.ServiceModel;
 
 namespace ASC.Data.Storage.Encryption
 {
-    [ServiceContract]
     public interface IEncryptionService
     {
-        [OperationContract]
         void Start(EncryptionSettingsProto encryptionSettingsProto);
 
-        [OperationContract]
         void Stop();
     }
 }

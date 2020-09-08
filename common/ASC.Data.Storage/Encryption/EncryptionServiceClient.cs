@@ -50,7 +50,7 @@ namespace ASC.Data.Storage.Encryption
 
     public static class EncryptionServiceClientExtension
     {
-        public static DIHelper AddEEncryptionServiceClient(this DIHelper services)
+        public static DIHelper AddEncryptionServiceClient(this DIHelper services)
         {
             services.TryAddScoped<EncryptionServiceClient>();
             return services;

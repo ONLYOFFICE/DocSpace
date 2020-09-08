@@ -25,24 +25,19 @@ using ASC.Core;
 
 namespace ASC.Data.Storage.Encryption
 {
-    [Serializable]
-    [DataContract]
     public class EncryptionSettings
     {
 
         internal string password;
 
-        [DataMember]
         public string Password
         {
             get { return password; }
             set { password = (value ?? string.Empty).Replace('#', '_'); }
         }
 
-        [DataMember]
         public EncryprtionStatus Status { get; set; }
 
-        [DataMember]
         public bool NotifyUsers { get; set; }
 
         public EncryptionSettings(EncryptionSettingsProto encryptionSettingsProto)

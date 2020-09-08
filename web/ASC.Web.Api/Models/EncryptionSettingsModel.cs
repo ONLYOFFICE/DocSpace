@@ -9,5 +9,7 @@ namespace ASC.Web.Api.Models
         public EncryprtionStatus Status { get; set; }
 
         public bool NotifyUsers { get; set; }
+
+        public string ServerRootPath { get; set; }
     }
 }

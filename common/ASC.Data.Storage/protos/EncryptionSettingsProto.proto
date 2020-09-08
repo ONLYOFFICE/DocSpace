@@ -6,6 +6,7 @@ message EncryptionSettingsProto {
     string password = 1;
     EncryprtionStatus Status = 2;
     bool NotifyUsers = 3;
+    string ServerRootPath = 4;
 }
 
 enum EncryprtionStatus {

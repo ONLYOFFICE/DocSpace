@@ -44,6 +44,7 @@ namespace ASC.Data.Storage.Encryption
         private bool UseProgressFile { get; set; }
         private IEnumerable<string> Modules { get; set; }
         private IEnumerable<Tenant> Tenants { get; set; }
+        private string ServerRootPath { get; set; }
 
         public EncryptionOperation(IServiceProvider serviceProvider)
         {
@@ -54,14 +55,15 @@ namespace ASC.Data.Storage.Encryption
         {
             EncryptionSettings = new EncryptionSettings(encryptionSettingsProto);
             IsEncryption = EncryptionSettings.Status == EncryprtionStatus.EncryptionStarted;
+            ServerRootPath = encryptionSettingsProto.ServerRootPath;
         }
 
         protected override void DoJob()
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
-            (var log, var encryptionSettingsHelper, var tenantManager, var notifyHelper, var coreBaseSettings, var storageFactoryConfig, var storageFactory, var progressEncryption, var configuration) = scopeClass;
-
+            var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, progressEncryption, configuration) = scopeClass;
+            notifyHelper.Init(ServerRootPath);
             Tenants = tenantManager.GetTenants(false);
             Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             UseProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");

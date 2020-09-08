@@ -1625,7 +1625,8 @@ namespace ASC.Api.Settings
             {
                 NotifyUsers = settings.NotifyUsers,
                 Password = settings.Password,
-                Status = settings.Status
+                Status = settings.Status,
+                ServerRootPath = settings.ServerRootPath
             };
             EncryptionServiceClient.Start(encryptionSettingsProto);
         }
@@ -1912,7 +1913,7 @@ namespace ASC.Api.Settings
                 .AddFirstTimeTenantSettings()
                 .AddServiceClient()
                 .AddTwilioProviderService()
-                .AddEEncryptionServiceClient();
+                .AddEncryptionServiceClient();
         }
     }
 }
