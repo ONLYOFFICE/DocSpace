@@ -104,8 +104,10 @@ namespace ASC.Web.Files.Configuration
                     CanNotBeDisabled = true,
                 };
 
-            NotifyConfiguration.Configure(ServiceProvider);
-
+            if (ServiceProvider != null)
+            {
+                NotifyConfiguration.Configure(ServiceProvider);
+            }
             //SearchHandlerManager.Registry(new SearchHandler());
         }
 
