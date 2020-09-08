@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { ToggleButton, toastr } from "asc-web-components";
 import styled from "styled-components";
 
@@ -72,3 +73,9 @@ class ConsumerToggle extends React.Component {
 }
 
 export default ConsumerToggle;
+
+ConsumerToggle.propTypes = {
+  consumer: PropTypes.object.isRequired,
+  onModalOpen: PropTypes.func.isRequired,
+  sendConsumerNewProps: PropTypes.func.isRequired
+}

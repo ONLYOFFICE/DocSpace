@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   getConsumers,
@@ -84,17 +85,6 @@ class ThirdPartyServices extends React.Component {
     });
   };
 
-  onModalButtonClick = () => {
-    //TODO: api -> set tokens,
-    //this.onModalClose();
-    //this.setState({ toggleActive: true });
-    console.log(this.state.selectedConsumer);
-  };
-
-  // onToggleClick = () => {
-  //     this.onModalOpen();
-  // }
-
   setConsumer = (e) => {
     this.setState({
       selectedConsumer: e.currentTarget.dataset.consumer,
@@ -102,14 +92,13 @@ class ThirdPartyServices extends React.Component {
   };
 
   render() {
-    const { t, consumers, sendConsumerNewProps } = this.props;
+    const { t, i18n, consumers, sendConsumerNewProps } = this.props;
     const { selectedConsumer, dialogVisible, isLoading } = this.state;
     const {
       onModalClose,
       onModalOpen,
       onToggleClick,
       setConsumer,
-      onModalButtonClick,
       onChangeLoading,
     } = this;
 
@@ -169,13 +158,12 @@ class ThirdPartyServices extends React.Component {
         {dialogVisible && (
           <ConsumerModalDialog
             t={t}
-            i18n={this.props.i18n}
+            i18n={i18n}
             dialogVisible={dialogVisible}
             consumers={consumers}
             selectedConsumer={selectedConsumer}
             isLoading={isLoading}
             onModalClose={onModalClose}
-            onModalButtonClick={onModalButtonClick}
             onChangeLoading={onChangeLoading}
             sendConsumerNewProps={sendConsumerNewProps}
           />
@@ -183,6 +171,13 @@ class ThirdPartyServices extends React.Component {
       </>
     );
   }
+}
+
+ThirdPartyServices.propTypes = {
+  t: PropTypes.func.isRequired,
+  i18n: PropTypes.object.isRequired,
+  consumers: PropTypes.array.isRequired,
+  sendConsumerNewProps: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => {

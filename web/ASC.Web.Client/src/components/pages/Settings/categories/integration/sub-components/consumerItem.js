@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Box, Text } from "asc-web-components";
 import ConsumerToggle from "./consumerToggle";
 
@@ -29,7 +30,6 @@ class ConsumerItem extends React.Component {
             </Box>
             <Box onClick={setConsumer} data-consumer={consumer.name}>
               <ConsumerToggle
-                consumers={consumers}
                 consumer={consumer}
                 onModalOpen={onModalOpen}
                 sendConsumerNewProps={sendConsumerNewProps}
@@ -46,3 +46,11 @@ class ConsumerItem extends React.Component {
 }
 
 export default ConsumerItem;
+
+ConsumerItem.propTypes = {
+  consumer: PropTypes.object.isRequired,
+  consumers: PropTypes.array.isRequired,
+  onModalOpen: PropTypes.func.isRequired,
+  setConsumer: PropTypes.func.isRequired,
+  sendConsumerNewProps: PropTypes.func.isRequired
+}
