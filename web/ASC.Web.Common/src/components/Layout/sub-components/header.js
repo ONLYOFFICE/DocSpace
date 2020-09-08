@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import { utils } from "asc-web-components";
@@ -30,7 +31,7 @@ const Header = styled.header`
   .header-logo-min_icon {
     display: none;
     cursor: pointer;
-    
+
     width: 24px;
     height: 24px;
     @media (max-width: 620px) {
@@ -52,6 +53,7 @@ const Header = styled.header`
 `;
 
 const HeaderComponent = React.memo(props => {
+  const { homepage } = props;
   //console.log("Header render");
   const currentModule = props.currentModule && props.currentModule.title;
   return (
@@ -62,7 +64,7 @@ const HeaderComponent = React.memo(props => {
         onClick={props.onClick}
         noHover={true}
       />
-      <a className="header-logo-wrapper" href="/">
+      <a className="header-logo-wrapper" href={homepage}>
         <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
         <img
           className="header-logo-icon"
@@ -85,4 +87,11 @@ HeaderComponent.propTypes = {
   currentModule: PropTypes.object
 };
 
-export default HeaderComponent;
+function mapStateToProps(state) {
+  const { homepage } = state.auth.settings;
+  return {
+    homepage
+  };
+}
+
+export default connect(mapStateToProps)(HeaderComponent);

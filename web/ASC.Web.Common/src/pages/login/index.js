@@ -177,7 +177,10 @@ class Form extends Component {
     } else {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
-        .then(res => toastr.success(res), message => toastr.error(message))
+        .then(
+          res => toastr.success(res),
+          message => toastr.error(message)
+        )
         .finally(this.onDialogClose());
     }
   };
@@ -194,7 +197,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history } = this.props;
+    const { login, setIsLoaded, history, homepage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -216,11 +219,11 @@ class Form extends Component {
     if (hasError) return false;
 
     this.setState({ isLoading: true });
-
     login(userName, pass)
       .then(() => {
         setIsLoaded(true);
-        history.push("/");
+        //history.push(homepage);
+        window.open(homepage, "_self");
       })
       .catch(error => {
         this.setState({ errorText: error, isLoading: false });
@@ -465,11 +468,11 @@ function mapStateToProps(state) {
     isLoaded: state.auth.isLoaded,
     language: state.auth.user.cultureName || state.auth.settings.culture,
     greetingTitle: state.auth.settings.greetingSettings,
-    enabledJoin: state.auth.settings.enabledJoin
+    enabledJoin: state.auth.settings.enabledJoin,
+    homepage: state.auth.settings.homepage
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { login, setIsLoaded }
-)(withRouter(LoginForm));
+export default connect(mapStateToProps, { login, setIsLoaded })(
+  withRouter(LoginForm)
+);

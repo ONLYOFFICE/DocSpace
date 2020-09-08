@@ -33,7 +33,7 @@ const initialState = {
     timezones: [],
     utcOffset: "00:00:00",
     utcHoursOffset: 0,
-    homepage: "", //config.homepage,
+    homepage: "/products/files/", //config.homepage,
     datePattern: "M/d/yyyy",
     datePatternJQ: "00/00/0000",
     dateTimePattern: "dddd, MMMM d, yyyy h:mm:ss tt",
