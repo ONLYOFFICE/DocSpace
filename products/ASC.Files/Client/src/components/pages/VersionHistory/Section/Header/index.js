@@ -15,6 +15,7 @@ const StyledContainer = styled.div`
 
   .arrow-button {
     margin-right: 16px;
+    min-width: 17px;
 
     @media (max-width: 1024px) {
       padding: 8px 0 8px 8px;
