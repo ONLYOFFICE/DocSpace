@@ -20,6 +20,7 @@ using System;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Notify;
+using ASC.Notify.Messages;
 
 using Microsoft.Extensions.Options;
 
@@ -76,9 +77,16 @@ namespace ASC.Data.Storage.Encryption
 
         private void SendStorageEncryptionNotification(string method, int tenantId)
         {
+            var notifyInvoke = new NotifyInvoke()
+            {
+                Service = NotifyService,
+                Method = method,
+                Tenant = tenantId
+            };
+            notifyInvoke.Parameters.Add(ServerRootPath);
             try
             {
-                NotifyServiceClient.InvokeSendMethod(NotifyService, method, tenantId, ServerRootPath);
+                NotifyServiceClient.InvokeSendMethod(notifyInvoke);
             }
             catch (Exception error)
             {
@@ -91,7 +99,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddNotifyHelperService(this DIHelper services)
         {
-            services.TryAddSingleton<NotifyHelper>();
+            services.TryAddScoped<NotifyHelper>();
+            services.TryAddScoped<NotifyServiceClient>();
             return services;
 
         }

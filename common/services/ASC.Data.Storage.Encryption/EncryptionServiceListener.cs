@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ASC.Data.Storage.Encryption;
-
+﻿
 using ASC.Common.Caching;
-using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
 
 namespace ASC.Data.Storage.Encryption
@@ -14,12 +9,10 @@ namespace ASC.Data.Storage.Encryption
         private ICacheNotify<EncryptionSettingsProto> NotifySettings { get; }
         private ICacheNotify<EncryptionStop> NotifyStop { get; }
         private EncryptionWorker EncryptionWorker { get; }
-        private IServiceProvider ServiceProvider { get; }
 
-        public EncryptionServiceListener(IServiceProvider serviceProvider, ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop, EncryptionWorker encryptionWorker)
+        public EncryptionServiceListener( ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop, EncryptionWorker encryptionWorker)
         {
             NotifySettings = notifySettings;
-            ServiceProvider = serviceProvider;
             NotifyStop = notifyStop;
             EncryptionWorker = encryptionWorker;
         }

@@ -14,9 +14,6 @@
  *
 */
 
-
-using System.ServiceModel;
-
 namespace ASC.Data.Storage.Encryption
 {
     public interface IEncryptionService

@@ -29,7 +29,6 @@ using Microsoft.Extensions.Options;
 using ASC.Common;
 using Microsoft.Extensions.Configuration;
 using ASC.Common.Caching;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace ASC.Data.Storage.Encryption
 {
@@ -74,7 +73,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 if (!coreBaseSettings.Standalone)
                 {
-                    throw new NotSupportedException();
+                   // throw new NotSupportedException();
                 }
 
                 if (EncryptionSettings.Status == EncryprtionStatus.Encrypted || EncryptionSettings.Status == EncryprtionStatus.Decrypted)
