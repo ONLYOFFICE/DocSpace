@@ -99,7 +99,7 @@ class ConsumerModalDialog extends React.Component {
           color="#316DAA"
           isHovered={false}
           target="_blank"
-          href={"http://support.onlyoffice.com/ru"}
+          href={"http://support.onlyoffice.com/"}
         >
           Support Team
         </Link>
