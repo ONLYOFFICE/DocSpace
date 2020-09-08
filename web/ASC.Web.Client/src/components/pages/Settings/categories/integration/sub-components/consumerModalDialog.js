@@ -90,23 +90,19 @@ class ConsumerModalDialog extends React.Component {
         <Text>{t("ThirdPartyBodyDescription")}</Text>
       </Box>
     );
-    const supportTeamLink = (
-      <Link
-        color="#316DAA"
-        isHovered={false}
-        target="_blank"
-        href="http://support.onlyoffice.com/ru"
-      >
-        Support Team
-      </Link>
-    );
+
     const bottomDescription = (
       <Trans i18nKey="ThirdPartyBottomDescription" i18n={i18n}>
-        <Text>
-          If you still have some questions on how to connect this service or
-          need technical assistance, please feel free to contact our{" "}
-          <Text isBold={true}>Support Team</Text>
-        </Text>
+        If you still have some questions on how to connect this service or need
+        technical assistance, please feel free to contact our{" "}
+        <Link
+          color="#316DAA"
+          isHovered={false}
+          target="_blank"
+          href={"http://support.onlyoffice.com/ru"}
+        >
+          Support Team
+        </Link>
       </Trans>
     );
 
@@ -164,7 +160,11 @@ class ConsumerModalDialog extends React.Component {
               className="modal-dialog-button"
               primary
               size="big"
-              label={isLoading ? "Sending..." : t("ThirdPartyEnableButton")}
+              label={
+                isLoading
+                  ? t("ThirdPartyProcessSending")
+                  : t("ThirdPartyEnableButton")
+              }
               tabIndex={1}
               isLoading={isLoading}
               isDisabled={isLoading}
