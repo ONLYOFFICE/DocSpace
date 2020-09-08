@@ -200,10 +200,12 @@ namespace ASC.Files.Core.Data
                 var linksToRemove = Query(FilesDbContext.TagLink)
                     .Where(r => r.TagId == row.Link.TagId)
                     .Where(r => r.EntryId == row.Link.EntryId)
-                    .Where(r => r.EntryType == row.Link.EntryType);
+                    .Where(r => r.EntryType == row.Link.EntryType)
+                    .ToList();
                 FilesDbContext.TagLink.RemoveRange(linksToRemove);
-                FilesDbContext.SaveChanges();
             }
+
+            FilesDbContext.SaveChanges();
 
             var tagsToRemove = Query(FilesDbContext.Tag)
                 .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
