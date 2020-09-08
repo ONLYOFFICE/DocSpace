@@ -48,8 +48,15 @@ class ConsumerItem extends React.Component {
 export default ConsumerItem;
 
 ConsumerItem.propTypes = {
-  consumer: PropTypes.object.isRequired,
-  consumers: PropTypes.array.isRequired,
+  consumer: PropTypes.shape({
+    name: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    instruction: PropTypes.string,
+    canSet: PropTypes.bool,
+    props: PropTypes.arrayOf(PropTypes.object)
+  }).isRequired,
+  consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
   onModalOpen: PropTypes.func.isRequired,
   setConsumer: PropTypes.func.isRequired,
   sendConsumerNewProps: PropTypes.func.isRequired

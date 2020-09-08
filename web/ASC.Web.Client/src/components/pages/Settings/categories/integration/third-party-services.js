@@ -176,7 +176,7 @@ class ThirdPartyServices extends React.Component {
 ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
-  consumers: PropTypes.array.isRequired,
+  consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
   sendConsumerNewProps: PropTypes.func.isRequired,
 }
 

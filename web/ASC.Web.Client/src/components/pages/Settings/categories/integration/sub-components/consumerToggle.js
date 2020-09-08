@@ -75,7 +75,14 @@ class ConsumerToggle extends React.Component {
 export default ConsumerToggle;
 
 ConsumerToggle.propTypes = {
-  consumer: PropTypes.object.isRequired,
+  consumer: PropTypes.shape({
+    name: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    instruction: PropTypes.string,
+    canSet: PropTypes.bool,
+    props: PropTypes.arrayOf(PropTypes.object)
+  }).isRequired,
   onModalOpen: PropTypes.func.isRequired,
   sendConsumerNewProps: PropTypes.func.isRequired
 }
