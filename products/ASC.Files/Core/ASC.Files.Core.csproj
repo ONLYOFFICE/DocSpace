@@ -71,6 +71,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Services\NotifyService\FilesPatternResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FilesPatternResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Services\NotifyService\patterns.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\NotifyService\patterns.xml" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <EmbeddedResource Update="Resources\FilesCommonResource.de.resx">
       <DependentUpon>FilesCommonResource.resx</DependentUpon>
     </EmbeddedResource>
