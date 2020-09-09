@@ -139,7 +139,6 @@ class ThirdPartyServices extends React.Component {
                 <Box displayProp="flex" className="consumer-item-container">
                   <ConsumerItem
                     consumer={consumer}
-                    consumers={consumers}
                     dialogVisible={dialogVisible}
                     selectedConsumer={selectedConsumer}
                     isLoading={isLoading}

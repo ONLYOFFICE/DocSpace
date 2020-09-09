@@ -7,7 +7,6 @@ class ConsumerItem extends React.Component {
   render() {
     const {
       consumer,
-      consumers,
       onModalOpen,
       setConsumer,
       sendConsumerNewProps,
@@ -17,7 +16,9 @@ class ConsumerItem extends React.Component {
 
     return (
       <>
-        <Box displayProp="flex" flexDirection="column" widthProp="100%">
+        <Box displayProp="flex"
+          flexDirection="column"
+          widthProp="100%">
           <Box
             displayProp="flex"
             justifyContent="space-between"
@@ -37,7 +38,9 @@ class ConsumerItem extends React.Component {
             </Box>
           </Box>
           <Box displayProp="flex" marginProp="21px 0 0 0">
-            <Text>{consumer.description}</Text>
+            <Text>
+              {consumer.description}
+            </Text>
           </Box>
         </Box>
       </>
@@ -56,7 +59,6 @@ ConsumerItem.propTypes = {
     canSet: PropTypes.bool,
     props: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
-  consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
   onModalOpen: PropTypes.func.isRequired,
   setConsumer: PropTypes.func.isRequired,
   sendConsumerNewProps: PropTypes.func.isRequired

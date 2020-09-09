@@ -36,7 +36,9 @@ class ConsumerModalDialog extends React.Component {
     };
 
     updateConsumerValues = () => {
-        this.props.onChangeLoading(true);
+        const { onChangeLoading, selectedConsumer, sendConsumerNewProps, onModalClose } = this.props;
+
+        onChangeLoading(true);
 
         const prop = [];
 
@@ -49,20 +51,19 @@ class ConsumerModalDialog extends React.Component {
             });
         }
         const data = {
-            name: this.props.selectedConsumer,
+            name: selectedConsumer,
             props: prop,
         };
-        this.props
-            .sendConsumerNewProps(data)
+        sendConsumerNewProps(data)
             .then(() => {
-                this.props.onChangeLoading(false);
+                onChangeLoading(false);
                 toastr.success("Consumer properties successfully update");
             })
             .catch((error) => {
-                this.props.onChangeLoading(false);
+                onChangeLoading(false);
                 toastr.error(error);
             })
-            .finally(this.props.onModalClose());
+            .finally(onModalClose());
     };
 
     componentDidMount() {
@@ -79,7 +80,7 @@ class ConsumerModalDialog extends React.Component {
             t,
             i18n,
         } = this.props;
-        const { onChangeHandler } = this;
+        const { onChangeHandler, updateConsumerValues } = this;
 
         const bodyDescription = (
             <Box marginProp="44px 0 16px 0">
@@ -88,7 +89,9 @@ class ConsumerModalDialog extends React.Component {
                         {t("ThirdPartyHowItWorks")}
                     </Text>
                 </Box>
-                <Text>{t("ThirdPartyBodyDescription")}</Text>
+                <Text>
+                    {t("ThirdPartyBodyDescription")}
+                </Text>
             </Box>
         );
 
@@ -107,18 +110,26 @@ class ConsumerModalDialog extends React.Component {
             </Trans>
         );
 
+        const getConsumerData = (key) => {
+            return consumers
+                .find((consumer) => consumer.name === selectedConsumer)[key];
+        }
+
         const getConsumerName = () => {
-            return consumers.find((consumer) => consumer.name === selectedConsumer)
+            return consumers
+                .find((consumer) => consumer.name === selectedConsumer)
                 .name;
         };
         const getInnerDescription = () => {
-            return consumers.find((consumer) => consumer.name === selectedConsumer)
+            return consumers
+                .find((consumer) => consumer.name === selectedConsumer)
                 .instruction;
         };
         const getInputFields = () => {
             return consumers
                 .find((consumer) => consumer.name === selectedConsumer)
-                .props.map((prop, i) => (
+                .props
+                .map((prop, i) => (
                     <React.Fragment key={i}>
                         <Box
                             displayProp="flex"
@@ -126,7 +137,9 @@ class ConsumerModalDialog extends React.Component {
                             marginProp="0 0 16px 0"
                         >
                             <Box marginProp="0 0 4px 0">
-                                <Text isBold={true}>{prop.title}:</Text>
+                                <Text isBold={true}>
+                                    {prop.title}:
+                                    </Text>
                             </Box>
                             <Box>
                                 <TextInput
@@ -169,7 +182,7 @@ class ConsumerModalDialog extends React.Component {
                             tabIndex={1}
                             isLoading={isLoading}
                             isDisabled={isLoading}
-                            onClick={this.updateConsumerValues}
+                            onClick={updateConsumerValues}
                         />,
                     ]}
                     onClose={onModalClose}
