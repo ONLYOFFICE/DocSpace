@@ -39,7 +39,7 @@ const convertGroup = group => {
 };
 
 const getCurrentGroup = items => {
-  const currentGroup = items.length > 0 ? items[0] : "No groups";
+  const currentGroup = items.length > 0 ? items[0] : {};
   return currentGroup;
 };
 
@@ -79,7 +79,7 @@ const Selector = props => {
   const listGroupsRef = useRef(null);
 
   useEffect(() => {
-    currentGroup === "No groups" && setCurrentGroup(getCurrentGroup(convertGroups(groups)));
+    Object.keys(currentGroup).length === 0 && setCurrentGroup(getCurrentGroup(convertGroups(groups)));
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
@@ -300,64 +300,64 @@ const Selector = props => {
   const renderOptionItem = useCallback(
     (index, style, option, isChecked, tooltipProps) => {
       return isMultiSelect ? (
-              <div style={style} className="row-option" {...tooltipProps}>
-                <Checkbox
-                  id={option.key}
-                  value={`${index}`}
-                  label={option.label}
-                  isChecked={isChecked}
-                  className="option_checkbox"
-                  truncate={true}
-                  title={option.label}
-                  onChange={onOptionChange}
-                />
-                {displayType === "aside" && getOptionTooltipContent && (
-                  <HelpButton
-                    id={`info-${option.key}`}
-                    className="option-info"
-                    iconName="InfoIcon"
-                    color="#D8D8D8"
-                    getContent={getOptionTooltipContent}
-                    place="top"
-                    offsetLeft={150}
-                    offsetRight={0}
-                    offsetTop={60}
-                    offsetBottom={0}
-                    dataTip={`${index}`}
-                    displayType="dropdown"
-                  />
-                )}
-              </div>
-            ) : (
-              <Link
-                key={option.key}
-                data-index={index}
-                isTextOverflow={true}
-                style={style} 
-                className="row-option" 
-                {...tooltipProps}
-                onClick={onLinkClick}
-                noHover
-              >
-                {option.label}
-                {displayType === "aside" && getOptionTooltipContent && (
-                  <HelpButton
-                    id={`info-${option.key}`}
-                    className="option-info"
-                    iconName="InfoIcon"
-                    color="#D8D8D8"
-                    getContent={getOptionTooltipContent}
-                    place="top"
-                    offsetLeft={150}
-                    offsetRight={0}
-                    offsetTop={60}
-                    offsetBottom={0}
-                    dataTip={`${index}`}
-                    displayType="dropdown"
-                  />
-                )}
-              </Link>
-            );
+        <div style={style} className="row-option" {...tooltipProps}>
+          <Checkbox
+            id={option.key}
+            value={`${index}`}
+            label={option.label}
+            isChecked={isChecked}
+            className="option_checkbox"
+            truncate={true}
+            title={option.label}
+            onChange={onOptionChange}
+          />
+          {displayType === "aside" && getOptionTooltipContent && (
+            <HelpButton
+              id={`info-${option.key}`}
+              className="option-info"
+              iconName="InfoIcon"
+              color="#D8D8D8"
+              getContent={getOptionTooltipContent}
+              place="top"
+              offsetLeft={150}
+              offsetRight={0}
+              offsetTop={60}
+              offsetBottom={0}
+              dataTip={`${index}`}
+              displayType="dropdown"
+            />
+          )}
+        </div>
+      ) : (
+          <Link
+            key={option.key}
+            data-index={index}
+            isTextOverflow={true}
+            style={style}
+            className="row-option"
+            {...tooltipProps}
+            onClick={onLinkClick}
+            noHover
+          >
+            {option.label}
+            {displayType === "aside" && getOptionTooltipContent && (
+              <HelpButton
+                id={`info-${option.key}`}
+                className="option-info"
+                iconName="InfoIcon"
+                color="#D8D8D8"
+                getContent={getOptionTooltipContent}
+                place="top"
+                offsetLeft={150}
+                offsetRight={0}
+                offsetTop={60}
+                offsetBottom={0}
+                dataTip={`${index}`}
+                displayType="dropdown"
+              />
+            )}
+          </Link>
+        );
     },
     [
       isMultiSelect,
@@ -451,8 +451,8 @@ const Selector = props => {
       return isGroupIndeterminate(group)
         ? selectedGroup.selected
         : isGroupChecked(group)
-        ? group.total
-        : 0;
+          ? group.total
+          : 0;
     },
     [selectedGroupList]
   );
@@ -525,7 +525,7 @@ const Selector = props => {
               onChange={onGroupChange}
             />
           )}
-            {label}
+          {label}
         </Link>
       );
     },
