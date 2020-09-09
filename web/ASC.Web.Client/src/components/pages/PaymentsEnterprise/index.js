@@ -16,6 +16,8 @@ import {
   getHelpUrl,
   getBuyUrl,
   getCurrentLicense,
+  getSettings,
+  getStandalone,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 import moment from "moment";
@@ -49,6 +51,8 @@ class Body extends React.PureComponent {
     this.state = {
       errorMessage: null,
       isErrorLicense: false,
+      expiresDate: this.props.expiresDate,
+      standAloneMode: this.props.standAloneMode,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
@@ -60,17 +64,29 @@ class Body extends React.PureComponent {
       getHelpUrl,
       getBuyUrl,
       getCurrentLicense,
+      getSettings,
+      getStandalone,
     } = this.props;
     this.props.currentProductId !== "payments" &&
       this.props.setCurrentProductId("payments");
-    getSalesEmail();
-    getHelpUrl();
-    getBuyUrl();
+    getSettings();
+    // getStandalone();
+    getCurrentLicense().then(() => {
+      this.setState({ expiresDate: this.props.expiresDate });
+    });
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.currentProductId !== prevProps.currentProductId) {
       this.fetchData(this.props.currentProductId);
+    }
+    if (this.state.curr) {
+      // this.props.getStandalone().then(() => {
+      //   this.setState({ standAloneMode: this.props.standAloneMode });
+      // });
+      this.props.getCurrentLicense().then(() => {
+        this.setState({ curr: false, expiresDate: this.props.expiresDate });
+      });
     }
   }
 
@@ -82,7 +98,7 @@ class Body extends React.PureComponent {
 
     setLicense(null, fd)
       .then(() => {
-        toastr.success(t("LoadingLicenseSuccess"), "", 5000, true);
+        toastr.success(t("LoadingLicenseSuccess"), "", 8000, true);
       })
       .catch((error) => {
         toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);
@@ -90,7 +106,12 @@ class Body extends React.PureComponent {
           errorMessage: error,
           isErrorLicense: true,
         });
-      });
+      })
+      .then(() =>
+        this.setState({
+          curr: true,
+        })
+      );
   };
   onButtonClickBuy = (e) => {
     window.open(e.target.value, "_blank");
@@ -109,13 +130,13 @@ class Body extends React.PureComponent {
       salesEmail,
       helpUrl,
       buyUrl,
-      expiresDate,
+      // expiresDate,
       t,
       culture,
       utcHoursOffset,
       trialMode,
     } = this.props;
-    const { languages, select, selectLanguage } = this.state;
+    const { languages, select, selectLanguage, expiresDate } = this.state;
     const { history } = this.props;
     // console.log(this.state.selectLanguage);
 
@@ -186,4 +207,6 @@ export default connect(mapStateToProps, {
   getHelpUrl,
   getBuyUrl,
   getCurrentLicense,
+  getSettings,
+  getStandalone,
 })(withRouter(PaymentsEnterprise));

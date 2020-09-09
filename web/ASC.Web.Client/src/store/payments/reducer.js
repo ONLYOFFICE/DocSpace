@@ -3,16 +3,18 @@ import {
   SET_HELP_URL,
   SET_BUY_URL,
   SET_CURRENT_LICENSE,
+  SET_SETTINGS,
+  SET_STANDALONE,
 } from "./actions";
 
 const initialState = {
-  salesEmail: "sgsg",
-  helpUrl: "34",
+  salesEmail: "",
+  helpUrl: "",
   buyUrl: "",
   standaloneMode: true,
   currentLicense: {
     expiresDate: new Date("2021-09-01T23:59:59.000Z"),
-    trialMode: true,
+    trialMode: false,
   },
 };
 
@@ -37,6 +39,16 @@ const paymentsReducer = (state = initialState, action) => {
           expiresDate: action.currentLicense.date,
           trialMode: action.currentLicense.trial,
         },
+      });
+    case SET_STANDALONE:
+      return Object.assign({}, state, {
+        standaloneMode: action.standalone,
+      });
+    case SET_SETTINGS:
+      return Object.assign({}, state, {
+        salesEmail: action.settings.salesEmail,
+        helpUrl: action.settings.feedbackAndSupportUrl,
+        buyUrl: action.settings.buyUrl,
       });
     default:
       return state;
