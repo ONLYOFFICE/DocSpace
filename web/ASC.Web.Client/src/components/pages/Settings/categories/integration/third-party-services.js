@@ -92,25 +92,27 @@ class ThirdPartyServices extends React.Component {
   };
 
   updateConsumerValues = (obj, isFill) => {
-    this.onChangeLoading(true);
+    isFill && this.onChangeLoading(true);
 
     const prop = [];
-
     let i = 0;
-    let objLength = Object.keys(obj.props).length;
+    let objLength = Object.keys(isFill ? obj : obj.props).length;
+
     for (i = 0; i < objLength; i++) {
       prop.push({
         name: isFill ? Object.keys(obj)[i] : obj.props[i].name,
         value: isFill ? Object.values(obj)[i] : ""
       });
     }
+
     const data = {
       name: isFill ? this.state.selectedConsumer : obj.name,
       props: prop,
     };
+
     this.props.sendConsumerNewProps(data)
       .then(() => {
-        this.onChangeLoading(false);
+        isFill && this.onChangeLoading(false);
         isFill
           ?
           toastr.success("Consumer properties successfully update")
@@ -118,7 +120,7 @@ class ThirdPartyServices extends React.Component {
           toastr.success("Consumer successfully deactivated")
       })
       .catch((error) => {
-        this.onChangeLoading(false);
+        isFill && this.onChangeLoading(false);
         toastr.error(error);
       })
       .finally(isFill && this.onModalClose());
