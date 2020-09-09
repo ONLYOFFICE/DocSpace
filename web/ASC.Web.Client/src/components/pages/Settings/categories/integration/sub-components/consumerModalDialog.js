@@ -103,70 +103,59 @@ class ConsumerModalDialog extends React.Component {
                     color="#316DAA"
                     isHovered={false}
                     target="_blank"
-                    href={"http://support.onlyoffice.com/"}
+                    href="http://support.onlyoffice.com/"
                 >
                     Support Team
         </Link>
             </Trans>
         );
 
-        const getConsumerData = (key) => {
-            return consumers
-                .find((consumer) => consumer.name === selectedConsumer)[key];
-        }
-
-        const getConsumerName = () => {
-            return consumers
-                .find((consumer) => consumer.name === selectedConsumer)
-                .name;
-        };
-        const getInnerDescription = () => {
-            return consumers
-                .find((consumer) => consumer.name === selectedConsumer)
-                .instruction;
-        };
-        const getInputFields = () => {
-            return consumers
-                .find((consumer) => consumer.name === selectedConsumer)
-                .props
-                .map((prop, i) => (
-                    <React.Fragment key={i}>
-                        <Box
-                            displayProp="flex"
-                            flexDirection="column"
-                            marginProp="0 0 16px 0"
-                        >
-                            <Box marginProp="0 0 4px 0">
-                                <Text isBold={true}>
-                                    {prop.title}:
+        const setConsumerData = (key) => {
+            return key === "props"
+                ?
+                consumers
+                    .find((consumer) => consumer.name === selectedConsumer)[key]
+                    .map((prop, i) => (
+                        <React.Fragment key={i}>
+                            <Box
+                                displayProp="flex"
+                                flexDirection="column"
+                                marginProp="0 0 16px 0"
+                            >
+                                <Box marginProp="0 0 4px 0">
+                                    <Text isBold={true}>
+                                        {prop.title}:
                                     </Text>
+                                </Box>
+                                <Box>
+                                    <TextInput
+                                        scale
+                                        name={prop.name}
+                                        placeholder={prop.title}
+                                        isAutoFocussed={i === 0 && true}
+                                        tabIndex={1}
+                                        value={Object.values(this.state)[i]}
+                                        isDisabled={isLoading}
+                                        onChange={onChangeHandler}
+                                    />
+                                </Box>
                             </Box>
-                            <Box>
-                                <TextInput
-                                    scale
-                                    name={prop.name}
-                                    placeholder={prop.title}
-                                    isAutoFocussed={i === 0 && true}
-                                    tabIndex={1}
-                                    value={Object.values(this.state)[i]}
-                                    isDisabled={isLoading}
-                                    onChange={onChangeHandler}
-                                />
-                            </Box>
-                        </Box>
-                    </React.Fragment>
-                ));
+                        </React.Fragment>
+                    ))
+                :
+                consumers
+                    .find((consumer) => consumer.name === selectedConsumer)[key]
         };
 
         return (
             <ModalDialogContainer>
                 <ModalDialog
                     visible={dialogVisible}
-                    headerContent={`${getConsumerName()}`}
+                    headerContent={`${setConsumerData("name")}`}
                     bodyContent={[
-                        <Text>{getInnerDescription()}</Text>,
+                        <Text>{setConsumerData("instruction")}</Text>,
                         <Text>{bodyDescription}</Text>,
-                        <React.Fragment>{getInputFields()}</React.Fragment>,
+                        <React.Fragment>{setConsumerData("props")}</React.Fragment>,
                         <Text>{bottomDescription}</Text>,
                     ]}
                     footerContent={[

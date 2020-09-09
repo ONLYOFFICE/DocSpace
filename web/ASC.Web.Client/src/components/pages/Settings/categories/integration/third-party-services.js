@@ -8,7 +8,7 @@ import {
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { Box, Text, Link } from "asc-web-components";
+import { Box, Text, Link, toastr } from "asc-web-components";
 import { utils } from "asc-web-components";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
@@ -91,13 +91,45 @@ class ThirdPartyServices extends React.Component {
     });
   };
 
+  updateConsumerValues = (obj, isFill) => {
+    this.onChangeLoading(true);
+
+    const prop = [];
+
+    let i = 0;
+    let objLength = Object.keys(obj.props).length;
+    for (i = 0; i < objLength; i++) {
+      prop.push({
+        name: isFill ? Object.keys(obj)[i] : obj.props[i].name,
+        value: isFill ? Object.values(obj)[i] : ""
+      });
+    }
+    const data = {
+      name: isFill ? this.state.selectedConsumer : obj.name,
+      props: prop,
+    };
+    this.props.sendConsumerNewProps(data)
+      .then(() => {
+        this.onChangeLoading(false);
+        isFill
+          ?
+          toastr.success("Consumer properties successfully update")
+          :
+          toastr.success("Consumer successfully deactivated")
+      })
+      .catch((error) => {
+        this.onChangeLoading(false);
+        toastr.error(error);
+      })
+      .finally(isFill && this.onModalClose());
+  }
+
   render() {
     const { t, i18n, consumers, sendConsumerNewProps } = this.props;
     const { selectedConsumer, dialogVisible, isLoading } = this.state;
     const {
       onModalClose,
       onModalOpen,
-      onToggleClick,
       setConsumer,
       onChangeLoading,
     } = this;
@@ -145,7 +177,6 @@ class ThirdPartyServices extends React.Component {
                     onChangeLoading={onChangeLoading}
                     onModalClose={onModalClose}
                     onModalOpen={onModalOpen}
-                    onToggleClick={onToggleClick}
                     setConsumer={setConsumer}
                     sendConsumerNewProps={sendConsumerNewProps}
                   />
