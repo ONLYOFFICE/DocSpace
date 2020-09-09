@@ -39,7 +39,7 @@ using ASC.Files.Core.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.NotifyService;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Builder;
