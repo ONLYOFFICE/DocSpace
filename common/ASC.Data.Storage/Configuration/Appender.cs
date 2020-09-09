@@ -72,42 +72,11 @@ namespace ASC.Data.Storage.Configuration
         public ACL Acl { get; set; }
         public string VirtualPath { get; set; }
         public TimeSpan Expires { get; set; }
-        public IEnumerable<Module> Domain { get; set; }
-
-        [ConfigurationProperty("visible", DefaultValue = true)]
-        public bool Visible
-        {
-            get { return (bool)this["visible"]; }
-            set { this["visible"] = value; }
-        }
-
-        [ConfigurationProperty("appendTenantId", DefaultValue = true)]
-        public bool AppendTenantId
-        {
-            get { return (bool)this["appendTenantId"]; }
-            set { this["appendTenantId"] = value; }
-        }
-
-        [ConfigurationProperty("public", DefaultValue = true)]
-        public bool Public
-        {
-            get { return (bool)this["public"]; }
-            set { this["public"] = value; }
-        }
-
-        [ConfigurationProperty("disableMigrate", DefaultValue = true)]
-        public bool DisableMigrate
-        {
-            get { return (bool)this["disableMigrate"]; }
-            set { this["disableMigrate"] = value; }
-        }
-
-        [ConfigurationProperty("count", DefaultValue = true)]
-        public bool Count
-        {
-            get { return (bool)this["count"]; }
-            set { this["count"] = value; }
-        }
+        public bool Visible { get; set; } = true;
+        public bool AppendTenantId { get; set; } = true;
+        public bool Public { get; set; } = true;
+        public bool DisableMigrate { get; set; } = true;
+        public bool Count { get; set; } = true;
     }
 }
 
