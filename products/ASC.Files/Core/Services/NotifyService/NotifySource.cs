@@ -35,7 +35,7 @@ using ASC.Notify.Recipients;
 
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
-namespace ASC.Web.Files.Services.NotifyService
+namespace ASC.Files.Core.Services.NotifyService
 {
     public class NotifySource : NotifySourceBase
     {

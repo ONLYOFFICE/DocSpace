@@ -60,7 +60,7 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.NotifyService;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
