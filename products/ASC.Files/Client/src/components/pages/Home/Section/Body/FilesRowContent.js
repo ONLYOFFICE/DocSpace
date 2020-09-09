@@ -478,7 +478,7 @@ class FilesRowContent extends React.PureComponent {
               {fileOwner}
             </Text>
             <Text
-              containerMinWidth='190px'
+              containerMinWidth='200px'
               containerWidth='15%'
               title={updatedDate}
               fontSize='12px'
