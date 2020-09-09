@@ -172,10 +172,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
     internal class ProviderDaoBaseScope
     {
         private TenantManager TenantManager { get; }
-        private IFolderDao<int> FolderDao { get; }
+        private FolderDao FolderDao { get; }
         private IFileDao<int> FileDao { get; }
 
-        public ProviderDaoBaseScope(TenantManager tenantManager, IFolderDao<int> folderDao, IFileDao<int> fileDao)
+        public ProviderDaoBaseScope(TenantManager tenantManager, FolderDao folderDao, IFileDao<int> fileDao)
         {
             TenantManager = tenantManager;
             FolderDao = folderDao;
