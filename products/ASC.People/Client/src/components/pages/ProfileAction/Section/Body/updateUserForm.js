@@ -209,7 +209,9 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    this.props.history.goBack();
+    const { profile, history, settings } = this.props;
+    !profile ? history.push(settings.homepage) : history.push(`/products/people/view/${profile.userName}`);
+    //this.props.history.goBack();
   }
 
   onContactsItemAdd(item) {
