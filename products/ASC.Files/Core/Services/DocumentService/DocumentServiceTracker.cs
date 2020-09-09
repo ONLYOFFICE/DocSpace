@@ -52,7 +52,7 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core;
 using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.NotifyService;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 

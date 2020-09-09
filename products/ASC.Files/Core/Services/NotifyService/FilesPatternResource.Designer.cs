@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASC.Web.Files.Services.NotifyService {
+namespace ASC.Files.Core.Services.NotifyService {
     using System;
     
     
@@ -147,10 +147,10 @@ namespace ASC.Web.Files.Services.NotifyService {
         ///  &lt;formatter type=&quot;ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Core.Common&quot; /&gt;
         ///
         ///  &lt;pattern id=&quot;DocuSignComplete&quot; sender=&quot;email.sender&quot;&gt;
-        ///    &lt;subject resource=&quot;|subject_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
-        ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
+        ///    &lt;subject resource=&quot;|subject_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
+        ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
         ///  &lt;/pattern&gt;
-        ///  &lt;pattern id=&quot;DocuSignComplete&quot; send [rest of string was truncated]&quot;;.
+        ///  &lt;pattern id=&quot;DocuSignComplete&quot; se [rest of string was truncated]&quot;;.
         /// </summary>
         public static string patterns {
             get {

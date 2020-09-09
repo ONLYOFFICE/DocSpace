@@ -32,7 +32,7 @@ using ASC.Core;
 using ASC.Files.Core.Resources;
 using ASC.Notify.Model;
 using ASC.Web.Core.Subscriptions;
-using ASC.Web.Files.Services.NotifyService;
+using ASC.Files.Core.Services.NotifyService;
 
 namespace ASC.Web.Files.Classes
 {
