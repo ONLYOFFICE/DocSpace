@@ -594,12 +594,13 @@ namespace ASC.Web.Files.Services.DocumentService
             get
             {
                 if (CoreBaseSettings.Standalone) return null;
-                if (!AdditionalWhiteLabelSettings.Instance(SettingsManager).FeedbackAndSupportEnabled) return null;
+                var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+                if (!settings.FeedbackAndSupportEnabled) return null;
 
                 return new FeedbackConfig
                 {
                     Url = BaseCommonLinkUtility.GetRegionalUrl(
-                            AdditionalWhiteLabelSettings.Instance(SettingsManager).FeedbackAndSupportUrl,
+                            settings.FeedbackAndSupportUrl,
                             CultureInfo.CurrentCulture.TwoLetterISOLanguageName),
                 };
             }

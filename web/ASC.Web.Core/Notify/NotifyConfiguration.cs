@@ -242,14 +242,14 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
-            var tenant = serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
-            var authContext = serviceScope.ServiceProvider.GetService<AuthContext>();
-            var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
-            var displayUserSettingsHelper = serviceScope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var tenant = scope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
+            var authContext = scope.ServiceProvider.GetService<AuthContext>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
 
             if (authContext.IsAuthenticated)
             {
@@ -262,9 +262,7 @@ namespace ASC.Web.Studio.Core.Notify
                         .Replace("<", "&#60");
                 }
             }
-            using var scope = ServiceProvider.CreateScope();
             var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
             var webItemManager = scope.ServiceProvider.GetService<WebItemManager>();
             var configuration = scope.ServiceProvider.GetService<IConfiguration>();
             var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
@@ -390,7 +388,8 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddCoreBaseSettingsService()
                 .AddAdditionalWhiteLabelSettingsService()
                 .AddCommonLinkUtilityService()
-                .AddMailWhiteLabelSettingsService();
+                .AddMailWhiteLabelSettingsService()
+                .AddStudioNotifyHelperService();
         }
     }
 }
