@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 
 using ASC.Common;
@@ -62,7 +63,7 @@ namespace ASC.Data.Storage.Configuration
         public string Value { get; set; }
     }
 
-    public class Module
+    public class Module : ConfigurationElement
     {
         public string Name { get; set; }
         public string Data { get; set; }
@@ -71,13 +72,42 @@ namespace ASC.Data.Storage.Configuration
         public ACL Acl { get; set; }
         public string VirtualPath { get; set; }
         public TimeSpan Expires { get; set; }
-        public bool Visible { get; set; }
-        public bool AppendTenantId { get; set; }
-        public bool Public { get; set; }
-        public bool DisableMigrate { get; set; }
-        public bool Count { get; set; }
-
         public IEnumerable<Module> Domain { get; set; }
+
+        [ConfigurationProperty("visible", DefaultValue = true)]
+        public bool Visible
+        {
+            get { return (bool)this["visible"]; }
+            set { this["visible"] = value; }
+        }
+
+        [ConfigurationProperty("appendTenantId", DefaultValue = true)]
+        public bool AppendTenantId
+        {
+            get { return (bool)this["appendTenantId"]; }
+            set { this["appendTenantId"] = value; }
+        }
+
+        [ConfigurationProperty("public", DefaultValue = true)]
+        public bool Public
+        {
+            get { return (bool)this["public"]; }
+            set { this["public"] = value; }
+        }
+
+        [ConfigurationProperty("disableMigrate", DefaultValue = true)]
+        public bool DisableMigrate
+        {
+            get { return (bool)this["disableMigrate"]; }
+            set { this["disableMigrate"] = value; }
+        }
+
+        [ConfigurationProperty("count", DefaultValue = true)]
+        public bool Count
+        {
+            get { return (bool)this["count"]; }
+            set { this["count"] = value; }
+        }
     }
 }
 
