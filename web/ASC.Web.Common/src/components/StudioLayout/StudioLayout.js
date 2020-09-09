@@ -39,17 +39,18 @@ const getCustomModules = isAdmin => {
     return [];
   }
 
-  const separator = getSeparator("nav-modules-separator");
-  const settingsModuleWrapper = toModuleWrapper(
-    {
-      id: "settings",
-      title: i18n.t('Settings'),
-      link: "/settings"
-    },
-    "SettingsIcon"
-  );
-
-  return [separator, settingsModuleWrapper];
+  /*  const separator = getSeparator("nav-modules-separator");
+    const settingsModuleWrapper = toModuleWrapper(
+      {
+        id: "settings",
+        title: i18n.t('Settings'),
+        link: "/settings"
+      },
+      "SettingsIcon"
+    );
+  
+    return [separator, settingsModuleWrapper];*/   // Temporarily hiding the settings module
+  return [];
 };
 
 const getAvailableModules = (modules, currentUser) => {
