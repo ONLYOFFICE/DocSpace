@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.Configuration
         public string Value { get; set; }
     }
 
-    public class Module : ConfigurationElement
+    public class Module
     {
         public string Name { get; set; }
         public string Data { get; set; }
@@ -77,6 +77,9 @@ namespace ASC.Data.Storage.Configuration
         public bool Public { get; set; } = true;
         public bool DisableMigrate { get; set; } = true;
         public bool Count { get; set; } = true;
+
+        public IEnumerable<Module> Domain { get; set; }
+
     }
 }
 
