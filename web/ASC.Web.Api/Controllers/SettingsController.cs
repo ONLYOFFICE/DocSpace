@@ -1821,6 +1821,28 @@ namespace ASC.Api.Settings
             return changed;
         }
 
+        [Read("payment")]
+        public object PaymentSettings()
+        {
+            var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+            var currentQuota = TenantExtra.GetTenantQuota();
+            var currentTariff = TenantExtra.GetCurrentTariff();
+
+            return
+                new
+                {
+                    settings.SalesEmail,
+                    settings.FeedbackAndSupportUrl,
+                    settings.BuyUrl,
+                    CoreBaseSettings.Standalone,
+                    currentLicense = new
+                    {
+                        currentQuota.Trial,
+                        currentTariff.DueDate.Date
+                    }
+                };
+        }
+
         private readonly int maxCount = 10;
         private readonly int expirationMinutes = 2;
         private void CheckCache(string basekey)

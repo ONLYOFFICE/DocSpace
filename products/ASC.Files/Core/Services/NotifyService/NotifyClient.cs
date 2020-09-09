@@ -41,7 +41,7 @@ using ASC.Web.Files.Classes;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ASC.Web.Files.Services.NotifyService
+namespace ASC.Files.Core.Services.NotifyService
 {
     public class NotifyClient
     {
