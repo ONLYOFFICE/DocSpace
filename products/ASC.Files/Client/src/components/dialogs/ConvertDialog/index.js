@@ -52,15 +52,14 @@ class ConvertDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("ConversionTitle")}
-          bodyContent={
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("ConversionTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
             <div className="convert_dialog_content">
               <img
                 className="convert_dialog_image"
                 src="images/convert_alert.png"
+                alt="convert alert image"
               />
               <div className="convert_dialog-content">
                 <Text>{t("ConversionMessage")}</Text>
@@ -78,8 +77,8 @@ class ConvertDialogComponent extends React.Component {
                 />
               </div>
             </div>
-          }
-          footerContent={
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
             <div className="convert_dialog_footer">
               <Button
                 className="convert_dialog_button-accept"
@@ -97,8 +96,8 @@ class ConvertDialogComponent extends React.Component {
                 onClick={onClose}
               />
             </div>
-          }
-        />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

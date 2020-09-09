@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button, TextInput, Text, ModalDialog, Textarea, FieldContainer } from "asc-web-components";
+import {
+  Button,
+  TextInput,
+  Text,
+  ModalDialog,
+  Textarea,
+  FieldContainer
+} from "asc-web-components";
 import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`
   .modal-dialog-aside-footer {
-
-    @media(max-width: 1024px) {
+    @media (max-width: 1024px) {
       width: 90%;
     }
   }
 
   .recover-button-dialog {
-
-    @media(max-width: 1024px) {
+    @media (max-width: 1024px) {
       width: 100%;
     }
   }
@@ -36,7 +41,6 @@ const RecoverAccessModalDialog = ({
   onRecoverModalClose,
   onSendRecoverRequest
 }) => {
-
   const [width, setWidth] = useState(window.innerWidth);
 
   React.useEffect(() => {
@@ -48,26 +52,30 @@ const RecoverAccessModalDialog = ({
       <ModalDialog
         visible={visible}
         bodyPadding="16px 0 0 0"
-        headerContent={
-          <Text isBold={true} fontSize='21px'>
+        onClose={onRecoverModalClose}
+      >
+        <ModalDialog.Header>
+          <Text isBold={true} fontSize="21px">
             {t("RecoverTitle")}
           </Text>
-        }
-        bodyContent={[
+        </ModalDialog.Header>
+        <ModalDialog.Body>
           <Text
             key="text-body"
             className="text-body"
             isBold={false}
-            fontSize='13px'
+            fontSize="13px"
           >
             {t("RecoverTextBody")}
-          </Text>,
+          </Text>
+          ,
           <FieldContainer
             key="e-mail"
             isVertical={true}
             labelVisible={false}
             hasError={emailErr}
-            errorMessage={t("RecoverErrorMessage")}>
+            errorMessage={t("RecoverErrorMessage")}
+          >
             <TextInput
               hasError={emailErr}
               id="e-mail"
@@ -82,13 +90,15 @@ const RecoverAccessModalDialog = ({
               value={email}
               onChange={onChangeEmail}
             />
-          </FieldContainer>,
+          </FieldContainer>
+          ,
           <FieldContainer
             key="text-description"
             isVertical={true}
             hasError={descErr}
             labelVisible={false}
-            errorMessage={t("RecoverErrorMessage")}>
+            errorMessage={t("RecoverErrorMessage")}
+          >
             <Textarea
               heightScale={width > 1024 ? false : true}
               hasError={descErr}
@@ -99,12 +109,14 @@ const RecoverAccessModalDialog = ({
               isDisabled={loading}
             />
           </FieldContainer>
-        ]}
-        footerContent={[
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
           <Button
             className="recover-button-dialog"
             key="SendBtn"
-            label={loading ? t("RecoverProcessSending") : t("RecoverSendButton")}
+            label={
+              loading ? t("RecoverProcessSending") : t("RecoverSendButton")
+            }
             size="big"
             primary={true}
             onClick={onSendRecoverRequest}
@@ -112,12 +124,11 @@ const RecoverAccessModalDialog = ({
             isDisabled={loading}
             tabIndex={3}
           />
-        ]}
-        onClose={onRecoverModalClose}
-      />
+        </ModalDialog.Footer>
+      </ModalDialog>
     </ModalDialogContainer>
   );
-}
+};
 
 RecoverAccessModalDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

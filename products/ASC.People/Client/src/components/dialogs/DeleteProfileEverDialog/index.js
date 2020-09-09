@@ -54,46 +54,40 @@ class DeleteProfileEverDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("Confirmation")}
-          bodyContent={
-            <>
-              <Text>
-                <Trans i18nKey="DeleteUserConfirmation" i18n={i18n}>
-                  {{ userCaption }}{" "}
-                  <strong>{{ user: user.displayName }}</strong> will be deleted.
-                </Trans>
-              </Text>
-              <Text>{t("NotBeUndone")}</Text>
-              <Text color="#c30" fontSize="18px" className="warning-text">
-                {t("Warning")}
-              </Text>
-              <Text>{t("DeleteUserDataConfirmation")}</Text>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                key="OKBtn"
-                label={t("OKButton")}
-                size="medium"
-                primary={true}
-                onClick={this.onDeleteProfileEver}
-                isLoading={isRequestRunning}
-              />
-              <Button
-                className="button-dialog"
-                key="ReassignBtn"
-                label={t("ReassignData")}
-                size="medium"
-                onClick={this.onReassignDataClick}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>
+              <Trans i18nKey="DeleteUserConfirmation" i18n={i18n}>
+                {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
+                will be deleted.
+              </Trans>
+            </Text>
+            <Text>{t("NotBeUndone")}</Text>
+            <Text color="#c30" fontSize="18px" className="warning-text">
+              {t("Warning")}
+            </Text>
+            <Text>{t("DeleteUserDataConfirmation")}</Text>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              key="OKBtn"
+              label={t("OKButton")}
+              size="medium"
+              primary={true}
+              onClick={this.onDeleteProfileEver}
+              isLoading={isRequestRunning}
+            />
+            <Button
+              className="button-dialog"
+              key="ReassignBtn"
+              label={t("ReassignData")}
+              size="medium"
+              onClick={this.onReassignDataClick}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

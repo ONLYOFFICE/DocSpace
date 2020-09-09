@@ -122,50 +122,46 @@ class DeleteGroupUsersDialogComponent extends React.Component {
     //console.log("DeleteGroupUsersDialog render");
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("DeleteGroupUsersMessageHeader")}
-          bodyContent={
-            <>
-              <Text>{t("DeleteGroupUsersMessage")}</Text>
-              <Text>{t("NotBeUndone")}</Text>
-              <br />
-              <Text color="#c30" fontSize="18px">
-                {t("Warning")}
-              </Text>
-              <br />
-              <Text>{t("DeleteUserDataConfirmation")}</Text>
-              <ToggleContent
-                className="toggle-content-dialog"
-                label={t("ShowUsersList")}
-              >
-                <div style={containerStyles} className="modal-dialog-content">
-                  <AutoSizer>{renderList}</AutoSizer>
-                </div>
-              </ToggleContent>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                label={t("OKButton")}
-                size="medium"
-                primary
-                onClick={this.onDeleteGroupUsers}
-                isLoading={isRequestRunning}
-                isDisabled={!userIds.length}
-              />
-              <Button
-                className="button-dialog"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>
+            {t("DeleteGroupUsersMessageHeader")}
+          </ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>{t("DeleteGroupUsersMessage")}</Text>
+            <Text>{t("NotBeUndone")}</Text>
+            <br />
+            <Text color="#c30" fontSize="18px">
+              {t("Warning")}
+            </Text>
+            <br />
+            <Text>{t("DeleteUserDataConfirmation")}</Text>
+            <ToggleContent
+              className="toggle-content-dialog"
+              label={t("ShowUsersList")}
+            >
+              <div style={containerStyles} className="modal-dialog-content">
+                <AutoSizer>{renderList}</AutoSizer>
+              </div>
+            </ToggleContent>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              label={t("OKButton")}
+              size="medium"
+              primary
+              onClick={this.onDeleteGroupUsers}
+              isLoading={isRequestRunning}
+              isDisabled={!userIds.length}
+            />
+            <Button
+              className="button-dialog"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

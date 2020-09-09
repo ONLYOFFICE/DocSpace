@@ -43,11 +43,9 @@ class ChangePasswordDialogComponent extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog
-        visible={visible}
-        onClose={onClose}
-        headerContent={t("PasswordChangeTitle")}
-        bodyContent={
+      <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
           <Text fontSize="13px">
             <Trans
               i18nKey="MessageSendPasswordChangeInstructionsOnEmail"
@@ -66,8 +64,8 @@ class ChangePasswordDialogComponent extends React.Component {
               email address
             </Trans>
           </Text>
-        }
-        footerContent={
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label={t("SendButton")}
@@ -76,8 +74,8 @@ class ChangePasswordDialogComponent extends React.Component {
             onClick={this.onSendPasswordChangeInstructions}
             isLoading={isRequestRunning}
           />
-        }
-      />
+        </ModalDialog.Footer>
+      </ModalDialog>
     );
   }
 }

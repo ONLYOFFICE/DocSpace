@@ -38,12 +38,12 @@ class ChangePhoneDialogComponent extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog
-        visible={visible}
-        onClose={onClose}
-        headerContent={t("MobilePhoneChangeTitle")}
-        bodyContent={<Text>{t("MobilePhoneEraseDescription")}</Text>}
-        footerContent={
+      <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("MobilePhoneChangeTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("MobilePhoneEraseDescription")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label={t("SendButton")}
@@ -52,8 +52,8 @@ class ChangePhoneDialogComponent extends React.Component {
             onClick={this.onChangePhone}
             isLoading={isRequestRunning}
           />
-        }
-      />
+        </ModalDialog.Footer>
+      </ModalDialog>
     );
   }
 }

@@ -121,44 +121,38 @@ class SendInviteDialogComponent extends React.Component {
     //console.log("SendInviteDialog render");
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("SendInviteAgain")}
-          bodyContent={
-            <>
-              <Text>{t("SendInviteAgainDialog")}</Text>
-              <Text>{t("SendInviteAgainDialogMessage")}</Text>
-              <ToggleContent
-                className="toggle-content-dialog"
-                label={t("ShowUsersList")}
-              >
-                <div style={containerStyles} className="modal-dialog-content">
-                  <AutoSizer>{renderList}</AutoSizer>
-                </div>
-              </ToggleContent>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                label={t("OKButton")}
-                size="medium"
-                primary
-                onClick={this.onSendInvite}
-                isLoading={isRequestRunning}
-                isDisabled={!userIds.length}
-              />
-              <Button
-                className="button-dialog"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("SendInviteAgain")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>{t("SendInviteAgainDialog")}</Text>
+            <Text>{t("SendInviteAgainDialogMessage")}</Text>
+            <ToggleContent
+              className="toggle-content-dialog"
+              label={t("ShowUsersList")}
+            >
+              <div style={containerStyles} className="modal-dialog-content">
+                <AutoSizer>{renderList}</AutoSizer>
+              </div>
+            </ToggleContent>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              label={t("OKButton")}
+              size="medium"
+              primary
+              onClick={this.onSendInvite}
+              isLoading={isRequestRunning}
+              isDisabled={!userIds.length}
+            />
+            <Button
+              className="button-dialog"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

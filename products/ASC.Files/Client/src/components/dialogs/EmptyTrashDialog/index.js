@@ -91,38 +91,32 @@ const EmptyTrashDialogComponent = props => {
 
   return (
     <ModalDialogContainer>
-      <ModalDialog
-        visible={visible}
-        onClose={onClose}
-        headerContent={t("ConfirmationTitle")}
-        bodyContent={
-          <>
-            <Text>{t("EmptyTrashDialogQuestion")}</Text>
-            <Text>{t("EmptyTrashDialogMessage")}</Text>
-            <Text>{t("EmptyTrashDialogWarning")}</Text>
-          </>
-        }
-        footerContent={
-          <>
-            <Button
-              key="OkButton"
-              label={t("OKButton")}
-              size="medium"
-              primary
-              onClick={onEmptyTrash}
-              isLoading={isLoading}
-            />
-            <Button
-              className="button-dialog"
-              key="CancelButton"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={onClose}
-              isLoading={isLoading}
-            />
-          </>
-        }
-      />
+      <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("EmptyTrashDialogQuestion")}</Text>
+          <Text>{t("EmptyTrashDialogMessage")}</Text>
+          <Text>{t("EmptyTrashDialogWarning")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="OkButton"
+            label={t("OKButton")}
+            size="medium"
+            primary
+            onClick={onEmptyTrash}
+            isLoading={isLoading}
+          />
+          <Button
+            className="button-dialog"
+            key="CancelButton"
+            label={t("CancelButton")}
+            size="medium"
+            onClick={onClose}
+            isLoading={isLoading}
+          />
+        </ModalDialog.Footer>
+      </ModalDialog>
     </ModalDialogContainer>
   );
 };
