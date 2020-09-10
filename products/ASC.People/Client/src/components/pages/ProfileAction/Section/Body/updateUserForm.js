@@ -288,6 +288,7 @@ class UpdateUserForm extends React.Component {
             defaultHeight: img.height
           }
           _this.setState(stateCopy);
+          _this.setState({ isLoading: false });
           if (typeof callback === 'function') callback();
         };
         img.src = response.data;
@@ -299,6 +300,7 @@ class UpdateUserForm extends React.Component {
   }
 
   onSaveAvatar(isUpdate, result) {
+    this.setState({ isLoading: false })
     if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
         x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
