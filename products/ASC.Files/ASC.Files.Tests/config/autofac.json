@@ -1,0 +1,12 @@
+{
+  "components": [
+    {
+      "type": "ASC.Common.Logging.LogNLog, ASC.Common",
+      "services": [
+        {
+          "type": "ASC.Common.Logging.ILog, ASC.Common"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+    <PackageReference Include="Moq" Version="4.14.5" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ASC.Api.Core">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Api.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.Common">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.Core.Common">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Core.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.Data.Storage">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Data.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.ElasticSearch">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.ElasticSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.FederatedLogin">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.FederatedLogin.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.Files">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Files.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.Files.Core">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Files.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.MessagingSystem">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.MessagingSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.People">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.People.dll</HintPath>
+    </Reference>
+    <Reference Include="ASC.Web.Core">
+      <HintPath>bin\Debug\netcoreapp3.1\ASC.Web.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
