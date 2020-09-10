@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 import { TextInput, Button } from "asc-web-components";
 
@@ -39,22 +39,18 @@ const EditingWrapper = styled.div`
 `;
 
 const EditingWrapperComponent = props => {
-    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem } = props;
-    const [loading, setLoading] = useState(false);
+    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem, isLoading } = props;
 
     const onUpdate = () => {
-      setLoading(true);
       onClickUpdateItem();
     }
 
     const onCancel = (e) => {
-      setLoading(true);
       cancelUpdateItem(e);
     }
 
     const onKeyUpUpdateItem = e => {
       if (e.keyCode === 13) {
-        setLoading(true);
         onClickUpdateItem();
       }
   
@@ -73,19 +69,19 @@ const EditingWrapperComponent = props => {
           isAutoFocussed={true}
           onChange={renameTitle}
           onKeyUp={onKeyUpUpdateItem}
-          isDisabled={loading}
+          isDisabled={isLoading}
         />
         <Button
           className='edit-button'
           size='medium'
-          isDisabled={loading}
+          isDisabled={isLoading}
           onClick={onUpdate}
           icon={okIcon}
         />
         <Button
           className='edit-button'
           size='medium'
-          isDisabled={loading}
+          isDisabled={isLoading}
           onClick={onCancel}
           icon={cancelIcon}
           data-itemid={itemId}
