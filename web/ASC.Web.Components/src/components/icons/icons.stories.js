@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { withKnobs, select, color, boolean } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
-import {Icons} from '.';
+import { Icons } from '.';
 
 const IconList = styled.div`
   display: grid;
@@ -35,16 +35,16 @@ storiesOf('Components|Icons', module)
         const sizeValue = select('size', ['small', 'medium', 'big', 'scale'], 'big');
 
         let isFill = boolean('isfill', false);
-        let iconColor = isFill ? {color: `${color('color', "dimgray")}`} : {};
+        let iconColor = isFill ? { color: `${color('color', "dimgray")}` } : {};
 
         let isStroke = boolean('isStroke', false);
-        let iconStroke = isStroke ? {stroke: `${color('stroke', "dimgray")}`} : {};
+        let iconStroke = isStroke ? { stroke: `${color('stroke', "dimgray")}` } : {};
 
         const containerWidth =
           sizeValue === 'scale'
             ? {
-                width: `${select('container width', ['100', '200', '300', '400'], '100')}px`,
-              }
+              width: `${select('container width', ['100', '200', '300', '400'], '100')}px`,
+            }
             : {};
         return (
           <IconItem key={index}>
