@@ -209,9 +209,7 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    const { profile, history, settings } = this.props;
-    !profile ? history.push(settings.homepage) : history.push(`/products/people/view/${profile.userName}`);
-    //this.props.history.goBack();
+    this.props.history.goBack();
   }
 
   onContactsItemAdd(item) {
@@ -273,6 +271,7 @@ class UpdateUserForm extends React.Component {
   }
 
   onLoadFileAvatar(file, callback) {
+    this.setState({ isLoading: true });
     let data = new FormData();
     let _this = this;
     data.append("file", file);
@@ -293,7 +292,10 @@ class UpdateUserForm extends React.Component {
         };
         img.src = response.data;
       })
-      .catch((error) => toastr.error(error));
+      .catch((error) => {
+        toastr.error(error);
+        this.setState({ isLoading: false });
+      });
   }
 
   onSaveAvatar(isUpdate, result) {
@@ -311,9 +313,13 @@ class UpdateUserForm extends React.Component {
           stateCopy.avatar.tmpFile = '';
           stateCopy.profile.avatarMax = response.max + '?_=' + Math.floor(Math.random() * Math.floor(10000));
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
+          this.setState({ isLoading: false });
           this.setState(stateCopy);
         })
-        .catch(error => toastr.error(error))
+        .catch(error => {
+          toastr.error(error);
+          this.setState({ isLoading: false });
+        })
         .then(() => this.props.updateProfile(this.props.profile))
         .then(() => this.props.fetchProfile(this.state.profile.id))
     } else {
@@ -476,7 +482,8 @@ class UpdateUserForm extends React.Component {
               unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
               unknownError={t("Error")}
-              saveButtonLabel={t('SaveButton')}
+              saveButtonLabel={this.state.isLoading ? t("UpdatingProcess") : t('SaveButton')}
+              saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
