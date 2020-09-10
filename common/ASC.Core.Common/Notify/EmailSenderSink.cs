@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Notify.Senders;
@@ -95,8 +96,9 @@ namespace ASC.Core.Notify
             };
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+
+            var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
+            var (tenantManager, configuration, options) = scopeClass;
 
             var tenant = tenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
@@ -147,6 +149,32 @@ namespace ASC.Core.Notify
             }
 
             return m;
+        }
+    }
+
+    public class EmailSenderSinkScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+
+        public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+            Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
+            => (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+    }
+
+    public static class EmailSenderSinkExtension
+    {
+        public static DIHelper AddEmailSenderSinkService(this DIHelper services)
+        {
+            services.TryAddScoped<EmailSenderSinkScope>();
+            return services;
         }
     }
 }

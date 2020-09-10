@@ -1278,7 +1278,6 @@ class SectionBodyContent extends React.Component {
                           onEditComplete={this.onEditComplete}
                           onLoading={onLoading}
                           onMediaFileClick={this.onMediaFileClick}
-                          isLoading={isLoading}
                         />
                       </SimpleFilesRow>
                     </DragAndDrop>

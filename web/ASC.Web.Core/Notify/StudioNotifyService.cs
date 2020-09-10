@@ -828,10 +828,9 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    TenantManager.SetCurrentTenant(tenant);
-
-                    var client = scope.ServiceProvider.GetService<StudioNotifyServiceHelper>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceScope>();
+                    var (tenantManager, studioNotifyServiceHelper) = scopeClass;
+                    tenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {
@@ -839,7 +838,7 @@ namespace ASC.Web.Studio.Core.Notify
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        client.SendNoticeToAsync(
+                        studioNotifyServiceHelper.SendNoticeToAsync(
                             Actions.PortalRename,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
@@ -880,8 +879,25 @@ namespace ASC.Web.Studio.Core.Notify
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
-
         #endregion
+    }
+
+    public class StudioNotifyServiceScope
+    {
+        private TenantManager TenantManager { get; }
+        private StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
+
+        public StudioNotifyServiceScope(TenantManager tenantManager, StudioNotifyServiceHelper studioNotifyServiceHelper)
+        {
+            TenantManager = tenantManager;
+            StudioNotifyServiceHelper = studioNotifyServiceHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out StudioNotifyServiceHelper studioNotifyServiceHelper)
+        {
+            tenantManager = TenantManager;
+            studioNotifyServiceHelper = StudioNotifyServiceHelper;
+        }
     }
 
     public static class StudioNotifyServiceExtension
@@ -890,7 +906,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             if (services.TryAddScoped<StudioNotifyService>())
             {
-
+                services.TryAddScoped<StudioNotifyServiceScope>();
                 return services
                     .AddDisplayUserSettingsService()
                     .AddMailWhiteLabelSettingsService()

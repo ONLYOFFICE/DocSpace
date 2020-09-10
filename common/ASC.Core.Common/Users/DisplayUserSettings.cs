@@ -97,11 +97,14 @@ namespace ASC.Web.Core.Users
     {
         public static DIHelper AddDisplayUserSettingsService(this DIHelper services)
         {
-            services.TryAddScoped<DisplayUserSettingsHelper>();
+            if (services.TryAddScoped<DisplayUserSettingsHelper>())
+            {
+                return services
+                    .AddUserFormatter()
+                    .AddUserManagerService();
+            }
 
-            return services
-                .AddUserFormatter()
-                .AddUserManagerService();
+            return services;
         }
     }
 }

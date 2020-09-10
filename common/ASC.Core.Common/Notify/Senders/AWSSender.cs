@@ -71,7 +71,6 @@ namespace ASC.Core.Notify.Senders
             lastRefresh = DateTime.UtcNow - refreshTimeout; //set to refresh on first send
         }
 
-
         public override NoticeSendResult Send(NotifyMessage m)
         {
             NoticeSendResult result;
@@ -81,9 +80,9 @@ namespace ASC.Core.Notify.Senders
                 {
                     Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
+                    var (tenantManager, configuration) = scopeClass;
                     tenantManager.SetCurrentTenant(m.Tenant);
-                    var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
                     if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
@@ -231,11 +230,27 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
+    public class AWSSenderScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+
+        public AWSSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
+        {
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
+            => (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+    }
+
     public static class AWSSenderExtension
     {
         public static DIHelper AddAWSSenderService(this DIHelper services)
         {
             services.TryAddSingleton<AWSSender>();
+            services.TryAddScoped<AWSSenderScope>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

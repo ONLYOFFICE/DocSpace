@@ -84,7 +84,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
+            var (fileMarker, globalFolder, daoFactory) = scopeClass;
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
@@ -111,8 +112,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 ProgressStep();
             });
 
-            var globalFolder = scope.ServiceProvider.GetService<GlobalFolder>();
-            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
             var rootIds = new List<int>
                 {
                     globalFolder.GetFolderMy(fileMarker, daoFactory),
@@ -126,6 +125,27 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
             Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+        }
+    }
+
+    public class FileMarkAsReadOperationScope
+    {
+        private FileMarker FileMarker { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private IDaoFactory DaoFactory { get; }
+
+        public FileMarkAsReadOperationScope(FileMarker fileMarker, GlobalFolder globalFolder, IDaoFactory daoFactory)
+        {
+            FileMarker = fileMarker;
+            GlobalFolder = globalFolder;
+            DaoFactory = daoFactory;
+        }
+
+        public void Deconstruct(out FileMarker fileMarker, out GlobalFolder globalFolder, out IDaoFactory daoFactory)
+        {
+            fileMarker = FileMarker;
+            globalFolder = GlobalFolder;
+            daoFactory = DaoFactory;
         }
     }
 }
