@@ -155,7 +155,7 @@ namespace ASC.Web.Files.Configuration
                         {
                             Name = f.Title ?? string.Empty,
                             Description = string.Empty,
-                            URL = PathProvider.GetFolderUrl(f.ID),
+                            URL = PathProvider.GetFolderUrl(f),
                             Date = f.ModifiedOn,
                             Additional = new Dictionary<string, object>
                                     {

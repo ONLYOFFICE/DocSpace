@@ -646,7 +646,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         {
                             return new GobackConfig
                             {
-                                Url = PathProvider.GetFolderUrl(GlobalFolderHelper.FolderShare),
+                                Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderShare),
                             };
                         }
                         return null;
@@ -654,7 +654,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     return new GobackConfig
                     {
-                        Url = PathProvider.GetFolderUrl(parent.ID),
+                        Url = PathProvider.GetFolderUrl(parent),
                     };
                 }
                 catch (Exception)

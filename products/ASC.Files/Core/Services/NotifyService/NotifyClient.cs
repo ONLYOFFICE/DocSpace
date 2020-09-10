@@ -121,7 +121,7 @@ namespace ASC.Files.Core.Services.NotifyService
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl(fileEntry.ID);
+                          : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 
