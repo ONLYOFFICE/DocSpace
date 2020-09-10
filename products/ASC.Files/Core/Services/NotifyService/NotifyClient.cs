@@ -31,7 +31,6 @@ using System.Globalization;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
-using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
@@ -51,7 +50,7 @@ namespace ASC.Files.Core.Services.NotifyService
         {
             ServiceProvider = serviceProvider;
         }
- 
+
         public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
         {
             using var scope = ServiceProvider.CreateScope();
@@ -114,7 +113,7 @@ namespace ASC.Files.Core.Services.NotifyService
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
-            var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass; 
+            var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var folderDao = daoFactory.GetFolderDao<T>();
@@ -122,7 +121,7 @@ namespace ASC.Files.Core.Services.NotifyService
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl(((Folder<T>)fileEntry));
+                          : pathProvider.GetFolderUrl(fileEntry.ID);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 
@@ -156,7 +155,7 @@ namespace ASC.Files.Core.Services.NotifyService
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
-            var (notifySource, _, _, _, baseCommonLinkUtility, _, _, userManager, _) = scopeClass; 
+            var (notifySource, _, _, _, baseCommonLinkUtility, _, _, userManager, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
@@ -232,15 +231,15 @@ namespace ASC.Files.Core.Services.NotifyService
             TenantManager = tenantManager;
         }
 
-        public void Deconstruct(out NotifySource notifySource, 
+        public void Deconstruct(out NotifySource notifySource,
             out SecurityContext securityContext,
-            out FilesLinkUtility filesLinkUtility, 
-            out FileUtility fileUtility, 
+            out FilesLinkUtility filesLinkUtility,
+            out FileUtility fileUtility,
             out BaseCommonLinkUtility baseCommonLinkUtility,
             out IDaoFactory daoFactory,
-            out PathProvider pathProvider, 
-            out UserManager userManager, 
-            out TenantManager tenantManager )
+            out PathProvider pathProvider,
+            out UserManager userManager,
+            out TenantManager tenantManager)
         {
             notifySource = NotifySource;
             securityContext = SecurityContext;
