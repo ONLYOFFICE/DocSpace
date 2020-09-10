@@ -1,13 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
 
-import moment from "moment";
-// import moment "moment/min/moment-with-locales";
 import { Text, utils } from "asc-web-components";
-import { history, store } from "asc-web-common";
+
 const { tablet } = utils.device;
 
 const StyledHeader = styled.div`
@@ -70,7 +67,6 @@ const StyledHeader = styled.div`
   }
 `;
 
-const { setCurrentError } = store.auth.actions;
 const HeaderContainer = ({
   t,
   expiresDate,
@@ -84,7 +80,6 @@ const HeaderContainer = ({
   require("moment/min/locales.min");
   moment.locale(culture);
   const currentUserDate = moment().utcOffset(utcHoursOffset);
-  // this.props.error !== true && this.props.setCurrentError(true);
 
   return moment(
     moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
@@ -123,10 +118,5 @@ HeaderContainer.propTypes = {
   createPortals: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
-function mapStateToProps(state) {
-  return {
-    settings: state.auth.settings,
-    modules: state.auth.modules,
-  };
-}
-export default connect(mapStateToProps, { setCurrentError })(HeaderContainer);
+
+export default HeaderContainer;

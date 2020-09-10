@@ -11,7 +11,7 @@ import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
 import {
-  setLicense /*getPortalCultures*/,
+  setLicense,
   getSalesEmail,
   getHelpUrl,
   getBuyUrl,
@@ -20,7 +20,7 @@ import {
   getStandalone,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
-import moment from "moment";
+
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
@@ -51,8 +51,7 @@ class Body extends React.PureComponent {
     this.state = {
       errorMessage: null,
       isErrorLicense: false,
-      expiresDate: this.props.expiresDate,
-      standAloneMode: this.props.standAloneMode,
+      isLicenseSet: false,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
@@ -66,26 +65,27 @@ class Body extends React.PureComponent {
       getCurrentLicense,
       getSettings,
       getStandalone,
+      currentProductId,
+      setCurrentProductId,
     } = this.props;
-    this.props.currentProductId !== "payments" &&
-      this.props.setCurrentProductId("payments");
+    currentProductId !== "payments" && setCurrentProductId("payments");
     getSettings();
     // getStandalone();
-    getCurrentLicense().then(() => {
-      this.setState({ expiresDate: this.props.expiresDate });
-    });
+    getCurrentLicense();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.currentProductId !== prevProps.currentProductId) {
-      this.fetchData(this.props.currentProductId);
+    const { currentProductId, getCurrentLicense } = this.props;
+    const { isLicenseSet } = this.state;
+    if (currentProductId !== prevProps.currentProductId) {
+      this.fetchData(currentProductId);
     }
-    if (this.state.curr) {
+    if (isLicenseSet) {
       // this.props.getStandalone().then(() => {
       //   this.setState({ standAloneMode: this.props.standAloneMode });
       // });
-      this.props.getCurrentLicense().then(() => {
-        this.setState({ curr: false, expiresDate: this.props.expiresDate });
+      getCurrentLicense().then(() => {
+        this.setState({ isLicenseSet: false });
       });
     }
   }
@@ -109,7 +109,7 @@ class Body extends React.PureComponent {
       })
       .then(() =>
         this.setState({
-          curr: true,
+          isLicenseSet: true,
         })
       );
   };
@@ -130,15 +130,12 @@ class Body extends React.PureComponent {
       salesEmail,
       helpUrl,
       buyUrl,
-      // expiresDate,
+      expiresDate,
       t,
       culture,
       utcHoursOffset,
       trialMode,
     } = this.props;
-    const { languages, select, selectLanguage, expiresDate } = this.state;
-    const { history } = this.props;
-    // console.log(this.state.selectLanguage);
 
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -149,13 +146,9 @@ class Body extends React.PureComponent {
           onError={this.onError}
           expiresDate={expiresDate}
           trialMode={trialMode}
-          languages={languages}
           culture={culture}
-          select={select}
           utcHoursOffset={utcHoursOffset}
-          selectLanguage={selectLanguage}
           getExpiresDate={this.getExpiresDate}
-          history={history}
         />
         <AdvantagesContainer t={t} />
 
