@@ -654,7 +654,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     return new GobackConfig
                     {
-                        Url = PathProvider.GetFolderUrl(parent),
+                        Url = PathProvider.GetFolderUrl(parent.ID),
                     };
                 }
                 catch (Exception)
