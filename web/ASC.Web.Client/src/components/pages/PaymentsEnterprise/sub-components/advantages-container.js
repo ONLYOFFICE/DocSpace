@@ -88,7 +88,8 @@ const StyledBodyAdvantages = styled.div`
   @media ${tablet} {
     width: 560px;
     height: 100%;
-    grid-template-columns: 2.7% 98.3%;
+    margin-right: 32px;
+    grid-template-columns: 2.7% 90.3%;
     grid-template-rows: min-content min-content;
     grid-auto-rows: min-content;
     grid-row-gap: 12px;
