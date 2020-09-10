@@ -383,8 +383,6 @@ class PureHome extends React.Component {
 
           <PageLayout.ArticleBody>
             <ArticleBodyContent
-              onLoading={setIsLoading}
-              isLoading={isLoading}
               onTreeDrop={this.onDrop}
             />
           </PageLayout.ArticleBody>

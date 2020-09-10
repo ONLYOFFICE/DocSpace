@@ -79,10 +79,7 @@ class PureVersionHistory extends React.Component {
             </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>
-              <ArticleBodyContent
-                onLoading={setIsLoading}
-                isLoading={isLoading}
-              />
+              <ArticleBodyContent />
             </PageLayout.ArticleBody>
 
             <PageLayout.SectionHeader>
@@ -99,24 +96,24 @@ class PureVersionHistory extends React.Component {
             </PageLayout.SectionBody>
           </PageLayout>
         ) : (
-          <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+            <PageLayout>
+              <PageLayout.ArticleHeader>
+                <ArticleHeaderContent />
+              </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+              <PageLayout.ArticleBody>
+                <ArticleBodyContent />
+              </PageLayout.ArticleBody>
 
-            <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        )}
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
+          )}
       </>
     );
   }
