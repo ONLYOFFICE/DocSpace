@@ -1,9 +1,7 @@
-import { api, store } from "asc-web-common";
+import { api } from "asc-web-common";
 // const { setLicenseUpload } = store.wizard.actions;
 // const { setIsConfirmLoaded } = store.confirm.actions;
 import { setLicenseUpload } from "../wizard/actions";
-import { SET_IS_MACHINE_NAME } from "./actions";
-const { setTimezones, setPortalCultures } = store.auth.actions;
 
 export const SET_SALES_EMAIL = "SET_SALES_EMAIL";
 export const SET_HELP_URL = "SET_HELP_URL";
@@ -97,6 +95,7 @@ export function getStandalone() {
 export function getCurrentLicense() {
   return (dispatch) => {
     return api.settings.getPaymentSettings().then((settings) => {
+      console.log(settings);
       dispatch(setCurrentLicense(settings.currentLicense));
     });
   };
