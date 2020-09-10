@@ -208,7 +208,6 @@ class LinkWithDropdown extends React.Component {
           open={this.state.isOpen}
           withArrow={false}
           clickOutsideAction={this.onClose}
-          maxHeight={200}
           {...rest}
         >
           {data.map(item => (
