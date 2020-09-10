@@ -87,14 +87,12 @@ namespace ASC.ElasticSearch.Service
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<ServiceScope>();
+                var (tenantManager, settingsManager) = scopeClass;
                 tenantManager.SetCurrentTenant(tenant);
-
-                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
                 settingsManager.ClearCache<SearchSettings>();
             });
         }
-
         //public State GetState()
         //{
         //    return new State
@@ -103,5 +101,23 @@ namespace ASC.ElasticSearch.Service
         //        LastIndexed = Launcher.LastIndexed
         //    };
         //}
+    }
+
+    public class ServiceScope
+    {
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+
+        public ServiceScope(TenantManager tenantManager, SettingsManager settingsManager)
+        {
+            TenantManager = tenantManager;
+            SettingsManager = settingsManager;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out SettingsManager settingsManager)
+        {
+            tenantManager = TenantManager;
+            settingsManager = SettingsManager;
+        }
     }
 }

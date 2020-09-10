@@ -150,7 +150,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         ///    &lt;subject resource=&quot;|subject_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
         ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
         ///  &lt;/pattern&gt;
-        ///  &lt;pattern id=&quot;DocuSignComplete&quot; se [rest of string was truncated]&quot;;.
+        ///  &lt;pattern id=&quot;DocuSignComplete&quot;  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string patterns {
             get {

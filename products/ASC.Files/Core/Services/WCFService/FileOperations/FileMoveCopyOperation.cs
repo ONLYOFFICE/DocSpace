@@ -172,8 +172,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (folderIds.Count == 0) return needToMark;
 
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+            var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -354,11 +354,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (fileIds.Count == 0) return needToMark;
 
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var fileUtility = scope.ServiceProvider.GetService<FileUtility>();
-            var global = scope.ServiceProvider.GetService<Global>();
-            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+            var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -572,6 +569,33 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
             }
             return false;
+        }
+    }
+
+    public class FileMoveCopyOperationScope
+    {
+        private FilesMessageService FilesMessageService { get; }
+        private FileMarker FileMarker { get; }
+        private FileUtility FileUtility { get; }
+        private Global Global { get; }
+        private EntryManager EntryManager { get; }
+
+        public FileMoveCopyOperationScope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
+        {
+            FilesMessageService = filesMessageService;
+            FileMarker = fileMarker;
+            FileUtility = fileUtility;
+            Global = global;
+            EntryManager = entryManager;
+        }
+
+        public void Deconstruct(out FilesMessageService filesMessageService, out FileMarker fileMarker, out FileUtility fileUtility, out Global global, out EntryManager entryManager)
+        {
+            filesMessageService = FilesMessageService;
+            fileMarker = FileMarker;
+            fileUtility = FileUtility;
+            global = Global;
+            entryManager = EntryManager;
         }
     }
 }
