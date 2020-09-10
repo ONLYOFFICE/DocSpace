@@ -10,7 +10,6 @@ const { tablet } = utils.device;
 const StyledHeader = styled.div`
   .payments-header {
     margin-top: 46px;
-    height: 32px;
     font-style: normal;
     font-weight: bold;
     font-size: 27px;
@@ -19,9 +18,10 @@ const StyledHeader = styled.div`
     margin-bottom: 8px;
   }
   .payments-header-additional_support {
-  }
-  .payments-header-additional_portals {
-    margin-top: 13px;
+    margin-bottom: 40px;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 20px;
   }
 
   @media ${tablet} {
@@ -33,15 +33,6 @@ const StyledHeader = styled.div`
       font-size: 27px;
       line-height: 32px;
     }
-    .payments-header-additional_support {
-      font-weight: 600;
-      line-height: 20px;
-      color: #c96c27;
-    }
-    .payments-header-additional_portals {
-      line-height: 20px;
-      margin-top: 10px;
-    }
   }
 
   @media (max-width: 632px) {
@@ -50,18 +41,9 @@ const StyledHeader = styled.div`
       margin-top: 0px;
       height: 96px;
     }
-    .sd {
-      height: 70px;
-    }
+
     .payments-header-additional_support {
-      width: 343px;
-      line-height: 20px;
-      color: #333333;
-      font-style: normal;
-      font-weight: normal;
-    }
-    .payments-header-additional_portals {
-      margin-top: 10px;
+      margin-bottom: 16px;
     }
   }
 `;
@@ -90,8 +72,6 @@ const HeaderContainer = ({
       <Text className="payments-header-additional_support">
         {t("SubscriptionAndUpdatesExpires")}
         {moment.utc(expiresDate).format("LL")}
-        {/* Техническая поддержка и обновления недоступны для вашей лицензии с 1
-          марта 2021 года. */}
       </Text>
     </StyledHeader>
   ) : !trialMode ? (
