@@ -300,7 +300,7 @@ class UpdateUserForm extends React.Component {
   }
 
   onSaveAvatar(isUpdate, result) {
-    this.setState({ isLoading: false })
+    this.setState({ isLoading: true })
     if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
         x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
