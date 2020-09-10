@@ -138,7 +138,7 @@ namespace ASC.Web.Files.Utils
             var result = cache.Get<ConvertFileOperationResult>(GetKey(file));
             return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
         }
-        
+
         private void CheckConvertFilesStatus(object _)
         {
             if (Monitor.TryEnter(singleThread))
@@ -399,83 +399,83 @@ namespace ASC.Web.Files.Utils
                                       FileJson = JsonSerializer.Serialize(file, options)
                                   }, options);
         }
+    }
 
-        class FileConverterQueueScope
+    public class FileConverterQueueScope
+    {
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private PathProvider PathProvider { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileUtility FileUtility { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private EntryManager EntryManager { get; }
+        private FileConverter FileConverter { get; }
+
+        public FileConverterQueueScope(IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            UserManager userManager,
+            SecurityContext securityContext,
+            IDaoFactory daoFactory,
+            FileSecurity fileSecurity,
+            PathProvider pathProvider,
+            SetupInfo setupInfo,
+            FileUtility fileUtility,
+            DocumentServiceHelper documentServiceHelper,
+            DocumentServiceConnector documentServiceConnector,
+            EntryManager entryManager,
+            FileConverter fileConverter)
         {
-            private IOptionsMonitor<ILog> Options { get; }
-            private TenantManager TenantManager { get; }
-            private UserManager UserManager { get; }
-            private SecurityContext SecurityContext { get; }
-            private IDaoFactory DaoFactory { get; }
-            private FileSecurity FileSecurity { get; }
-            private PathProvider PathProvider { get; }
-            private SetupInfo SetupInfo { get; }
-            private FileUtility FileUtility { get; }
-            private DocumentServiceHelper DocumentServiceHelper { get; }
-            private DocumentServiceConnector DocumentServiceConnector { get; }
-            private EntryManager EntryManager { get; }
-            private FileConverter FileConverter { get; }
-
-            public FileConverterQueueScope(IOptionsMonitor<ILog> options,
-                TenantManager tenantManager,
-                UserManager userManager,
-                SecurityContext securityContext,
-                IDaoFactory daoFactory,
-                FileSecurity fileSecurity,
-                PathProvider pathProvider,
-                SetupInfo setupInfo,
-                FileUtility fileUtility,
-                DocumentServiceHelper documentServiceHelper,
-                DocumentServiceConnector documentServiceConnector,
-                EntryManager entryManager,
-                FileConverter fileConverter)
-            {
-                Options = options;
-                TenantManager = tenantManager;
-                UserManager = userManager;
-                SecurityContext = securityContext;
-                DaoFactory = daoFactory;
-                FileSecurity = fileSecurity;
-                PathProvider = pathProvider;
-                SetupInfo = setupInfo;
-                FileUtility = fileUtility;
-                DocumentServiceHelper = documentServiceHelper;
-                DocumentServiceConnector = documentServiceConnector;
-                EntryManager = entryManager;
-                FileConverter = fileConverter;
-            }
-
-
-            public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
-                out TenantManager tenantManager,
-                out UserManager userManager, 
-                out SecurityContext securityContext,
-                out IDaoFactory daoFactory, 
-                out FileSecurity fileSecurity,
-                out PathProvider pathProvider,
-                out SetupInfo setupInfo, 
-                out FileUtility fileUtility, 
-                out DocumentServiceHelper documentServiceHelper,
-                out DocumentServiceConnector documentServiceConnector,
-                out EntryManager entryManager, 
-                out FileConverter fileConverter)
-            {
-                optionsMonitor = Options;
-                tenantManager = TenantManager;
-                userManager = UserManager;
-                securityContext = SecurityContext;
-                daoFactory = DaoFactory;
-                fileSecurity = FileSecurity;
-                pathProvider = PathProvider;
-                setupInfo = SetupInfo;
-                fileUtility = FileUtility;
-                documentServiceHelper = DocumentServiceHelper;
-                documentServiceConnector = DocumentServiceConnector;
-                entryManager = EntryManager;
-                fileConverter = FileConverter;
-            }
-
+            Options = options;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            DaoFactory = daoFactory;
+            FileSecurity = fileSecurity;
+            PathProvider = pathProvider;
+            SetupInfo = setupInfo;
+            FileUtility = fileUtility;
+            DocumentServiceHelper = documentServiceHelper;
+            DocumentServiceConnector = documentServiceConnector;
+            EntryManager = entryManager;
+            FileConverter = fileConverter;
         }
+
+
+        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantManager tenantManager,
+            out UserManager userManager,
+            out SecurityContext securityContext,
+            out IDaoFactory daoFactory,
+            out FileSecurity fileSecurity,
+            out PathProvider pathProvider,
+            out SetupInfo setupInfo,
+            out FileUtility fileUtility,
+            out DocumentServiceHelper documentServiceHelper,
+            out DocumentServiceConnector documentServiceConnector,
+            out EntryManager entryManager,
+            out FileConverter fileConverter)
+        {
+            optionsMonitor = Options;
+            tenantManager = TenantManager;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            daoFactory = DaoFactory;
+            fileSecurity = FileSecurity;
+            pathProvider = PathProvider;
+            setupInfo = SetupInfo;
+            fileUtility = FileUtility;
+            documentServiceHelper = DocumentServiceHelper;
+            documentServiceConnector = DocumentServiceConnector;
+            entryManager = EntryManager;
+            fileConverter = FileConverter;
+        }
+
     }
 
     public class FileJsonSerializerData<T>
@@ -848,6 +848,8 @@ namespace ASC.Web.Files.Utils
             {
                 services.TryAddSingleton<FileConverterQueue<string>>();
                 services.TryAddSingleton<FileConverterQueue<int>>();
+                services.TryAddScoped<FileConverterQueueScope>();
+
                 return services
                     .AddFilesLinkUtilityService()
                     .AddFileUtilityService()
