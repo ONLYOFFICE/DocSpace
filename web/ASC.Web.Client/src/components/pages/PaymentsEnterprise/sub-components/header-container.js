@@ -8,7 +8,6 @@ import { Text, utils } from "asc-web-components";
 const { tablet } = utils.device;
 
 const StyledHeader = styled.div`
-  position: static;
   .payments-header {
     margin-top: 46px;
     height: 32px;

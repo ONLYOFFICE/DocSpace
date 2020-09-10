@@ -7,7 +7,6 @@ import { Text, Link, utils } from "asc-web-components";
 const StyledContactContainer = styled.div`
   .contact-emails {
     position: static;
-    width: 920px;
     margin-bottom: 11px;
   }
   .contact-emails_link {

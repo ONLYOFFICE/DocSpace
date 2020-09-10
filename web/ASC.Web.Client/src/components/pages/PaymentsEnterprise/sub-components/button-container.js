@@ -6,7 +6,6 @@ import { Button, utils, FileInput } from "asc-web-components";
 const { tablet } = utils.device;
 
 const StyledButtonContainer = styled.div`
-  position: static;
   background: #edf2f7;
   height: 108px;
   margin-bottom: 17px;
