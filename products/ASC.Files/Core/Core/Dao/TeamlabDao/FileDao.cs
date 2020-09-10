@@ -388,7 +388,7 @@ namespace ASC.Files.Core.Data
 
                 if (file.ID == default)
                 {
-                    file.ID = FilesDbContext.Files.Max(r => r.Id) + 1;
+                    file.ID = FilesDbContext.Files.Any() ? FilesDbContext.Files.Max(r => r.Id) + 1 : 1;
                     file.Version = 1;
                     file.VersionGroup = 1;
                     isNew = true;
