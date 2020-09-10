@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 
 import { Text, utils } from "asc-web-components";
 
@@ -51,9 +50,7 @@ const StyledHeader = styled.div`
 const HeaderContainer = ({
   t,
   expiresDate,
-
   culture,
-
   utcHoursOffset,
   trialMode,
 }) => {
@@ -63,9 +60,9 @@ const HeaderContainer = ({
   const currentUserDate = moment().utcOffset(utcHoursOffset);
 
   return moment(
-    moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
-  ).isAfter(
     currentUserDate.set("hour", 0).set("minute", 0).set("second", 0)
+  ).isAfter(
+    moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
   ) ? (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
@@ -77,9 +74,12 @@ const HeaderContainer = ({
   ) : !trialMode ? (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
+
       <Text className="payments-header-additional_support">
-        {t("SupportNotAvailable")}
+        {t("SupportNotAvailable")}{" "}
         {moment.utc(expiresDate).startOf("day").format("dddd, MMMM D, YYYY")}
+        {". "}
+        {t("LicenseRenewal")}
       </Text>
     </StyledHeader>
   ) : (
