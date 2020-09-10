@@ -7,9 +7,10 @@ import Readme from './README.md';
 import AvatarEditor from '.';
 import Avatar from '../avatar';
 import Section from '../../../.storybook/decorators/section';
+import { boolean } from '@storybook/addon-knobs';
 
 const displayType = ['auto', 'modal', 'aside'];
-class AvatarEditorStory extends React.Component  {
+class AvatarEditorStory extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,46 +26,46 @@ class AvatarEditorStory extends React.Component  {
     this.onImageChange = this.onImageChange.bind(this)
     this.onDeleteImage = this.onDeleteImage.bind(this)
     this.onLoadFile = this.onLoadFile.bind(this)
-    
+
   }
-  onDeleteImage(){
+  onDeleteImage() {
     action('onDeleteImage');
   }
-  onImageChange(img){
+  onImageChange(img) {
     action('onLoadFile');
     this.setState({
       userImage: img
     })
   }
-  onLoadFile(file){
+  onLoadFile(file) {
     action('onLoadFile')(file);
   }
-  onSave(isUpdate, data){
+  onSave(isUpdate, data) {
     action('onSave')(isUpdate, data);
     this.setState({
       isOpen: false
     })
   }
-  openEditor(){
+  openEditor() {
     this.setState({
       isOpen: true
     })
   }
-  onClose(){
+  onClose() {
     action('onClose');
     this.setState({
       isOpen: false
     })
   }
-  render(){
-    return(
+  render() {
+    return (
       <div>
         <Avatar
-            size='max'
-            role='user'
-            source={this.state.userImage }
-            editing={true}
-            editAction={this.openEditor}
+          size='max'
+          role='user'
+          source={this.state.userImage}
+          editing={true}
+          editAction={this.openEditor}
         />
         <AvatarEditor
           visible={this.state.isOpen}
@@ -73,15 +74,16 @@ class AvatarEditorStory extends React.Component  {
           onDeleteImage={this.onDeleteImage}
           onImageChange={this.onImageChange}
           onLoadFile={this.onLoadFile}
-          headerLabel      ={text('headerLabel', 'Edit Photo')}
-          chooseFileLabel  ={text('chooseFileLabel', 'Drop files here, or click to select files')}
+          headerLabel={text('headerLabel', 'Edit Photo')}
+          chooseFileLabel={text('chooseFileLabel', 'Drop files here, or click to select files')}
           chooseMobileFileLabel={text('chooseMobileFileLabel', 'Click to select files')}
-          saveButtonLabel  ={text('saveButtonLabel', 'Save')}
-          maxSizeFileError ={text('maxSizeFileError', 'Maximum file size exceeded')}
-          unknownTypeError ={text('unknownTypeError', 'Unknown image file type')}
-          unknownError     ={text('unknownError', 'Error')}
-          displayType      ={select('displayType', displayType, 'auto')}
-          />
+          saveButtonLabel={text('saveButtonLabel', 'Save')}
+          saveButtonLoading={boolean('saveButtonLoading', false)}
+          maxSizeFileError={text('maxSizeFileError', 'Maximum file size exceeded')}
+          unknownTypeError={text('unknownTypeError', 'Unknown image file type')}
+          unknownError={text('unknownError', 'Error')}
+          displayType={select('displayType', displayType, 'auto')}
+        />
       </div>
     )
   }
@@ -91,10 +93,10 @@ storiesOf('Components|AvatarEditor', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('base', () => {
-   
+
     return (
       <Section>
         <AvatarEditorStory />
-    </Section>
+      </Section>
     );
   });
