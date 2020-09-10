@@ -103,7 +103,10 @@ namespace ASC.Web.Core.Notify
                 item.SenderNames.AddRange(senderNames);
             }
 
-            item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+            if (args != null)
+            {
+                item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+            }
 
             Cache.Publish(item, CacheNotifyAction.Any);
         }
