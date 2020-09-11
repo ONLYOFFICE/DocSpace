@@ -29,6 +29,12 @@ const StyledTreeMenu = styled(TreeMenu)`
   .settings-node {
     margin-left: 8px !important;
   }
+
+  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
+  .rc-tree-treenode-disabled > a,
+  .rc-tree-treenode-disabled > a span {
+    cursor: wait;
+  }
 `;
 
 const PureTreeSettings = props => {
