@@ -304,6 +304,37 @@
 		  }
 	  }
     },
+		{
+      "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Mailru",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Mailru",
+		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Mailru",
+		  "order": "4",
+		  "props": {
+			"mailRuClientId": "",
+			"mailRuClientSecret": ""
+		  },
+		  "additional": {
+			"mailRuRedirectUrl" : ""
+		  }
+	  }
+    },
 	{
       "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -461,6 +492,37 @@
 	  }
     },
 	{
+      "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Vk",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Vk",
+		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Vk",
+		  "order": "14",
+		  "props": {
+			"vkClientId": "",
+			"vkClientSecret": ""
+		  },
+		  "additional": {
+			"vkRedirectUrl" : ""
+		  }
+	  }
+    },
+	{
       "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin",
       "services": [
         {
@@ -488,6 +550,37 @@
 		  },
 		  "additional": {
 			"wpRedirectUrl" : ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Yandex",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Yandex",
+		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Yandex",
+		  "order": "15",
+		  "props": {
+			"yandexClientId": "",
+			"yandexClientSecret": ""
+		  },
+		  "additional": {
+			"yandexRedirectUrl" : ""
 		  }
 	  }
     },

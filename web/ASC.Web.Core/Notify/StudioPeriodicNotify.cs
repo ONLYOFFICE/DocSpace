@@ -94,7 +94,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, _, _, _, _) = scopeClass;
+                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, coreBaseSettings, _, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
@@ -224,8 +224,12 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+
+                            if (!coreBaseSettings.CustomMode)
+                            {
+                                tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                                tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+                            }
 
                             tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
@@ -514,7 +518,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("End SendSaasTariffLetters");
         }
-        
+
         public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
         {
             var nowDate = scheduleDate.Date;
@@ -705,8 +709,12 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+
+                            if (!coreBaseSettings.CustomMode)
+                            {
+                                tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                                tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+                            }
 
                             tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
@@ -1283,15 +1291,15 @@ namespace ASC.Web.Studio.Core.Notify
         public void Deconstruct(out TenantManager tenantManager,
             out UserManager userManager,
             out StudioNotifyHelper studioNotifyHelper,
-            out PaymentManager paymentManager, 
-            out TenantExtra tenantExtra, 
-            out AuthContext authContext, 
+            out PaymentManager paymentManager,
+            out TenantExtra tenantExtra,
+            out AuthContext authContext,
             out CommonLinkUtility commonLinkUtility,
-            out ApiSystemHelper apiSystemHelper, 
+            out ApiSystemHelper apiSystemHelper,
             out SetupInfo setupInfo,
             out DbContextManager<FeedDbContext> dbContextManager,
             out CouponManager couponManager,
-            out IConfiguration configuration, 
+            out IConfiguration configuration,
             out SettingsManager settingsManager,
             out CoreBaseSettings coreBaseSettings,
             out DisplayUserSettingsHelper displayUserSettingsHelper,
