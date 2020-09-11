@@ -75,7 +75,7 @@ const HeaderContainer = ({
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
 
-      <Text className="payments-header-additional_support">
+      <Text className="payments-header-additional_support" color="#C96C27">
         {t("SupportNotAvailable")}{" "}
         {moment.utc(expiresDate).startOf("day").format("dddd, MMMM D, YYYY")}
         {". "}
