@@ -5,8 +5,7 @@ import { history } from "asc-web-common";
 import { selectGroup } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
-
+import { utils as commonUtils, store as initStore } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "Article",
@@ -14,6 +13,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
+const { getCurrentModule } = initStore.auth.selectors;
 
 const getItems = data => {
   return data.map(item => {
@@ -43,6 +43,22 @@ const getItems = data => {
 };
 
 class ArticleBodyContent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const {
+      organizationName,
+      groups,
+      selectedGroup,
+      currentModuleName
+    } = props;
+
+    const currentGroup = getSelectedGroup(groups, selectedGroup);
+    document.title = currentGroup
+      ? `${currentGroup.name} – ${currentModuleName}`
+      : `${currentModuleName} – ${organizationName}`;
+  }
+
   shouldComponentUpdate(nextProps) {
     if (
       !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
@@ -58,12 +74,18 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectGroup, groups, t, organizationName } = this.props;
+    const {
+      currentModuleName,
+      selectGroup,
+      groups,
+      organizationName
+    } = this.props;
 
     const currentGroup = getSelectedGroup(groups, data[0]);
     document.title = currentGroup
-      ? `${currentGroup.name} – ${t("People")}`
-      : `${t("People")} – ${organizationName}`;
+      ? `${currentGroup.name} – ${currentModuleName}`
+      : `${currentModuleName} – ${organizationName}`;
+
     selectGroup(
       data && data.length === 1 && data[0] !== "root" ? data[0] : null
     );
@@ -168,6 +190,11 @@ const BodyContent = props => {
 };
 
 function mapStateToProps(state) {
+  const currentModule = getCurrentModule(
+    state.auth.modules,
+    state.auth.settings.currentProductId
+  );
+
   const groups = state.people.groups;
   const { customNames, organizationName } = state.auth.settings;
   const { groupsCaption } = customNames;
@@ -178,7 +205,8 @@ function mapStateToProps(state) {
       ? [state.people.selectedGroup]
       : ["root"],
     groups,
-    organizationName
+    organizationName,
+    currentModuleName: (currentModule && currentModule.title) || ""
   };
 }
 

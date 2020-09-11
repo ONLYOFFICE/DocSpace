@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
+import { store as initStore } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
-import TreeSettings from './TreeSettings';
+import TreeSettings from "./TreeSettings";
 import {
   setFilter,
   fetchFiles,
@@ -16,19 +17,30 @@ import {
 import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
 import { NewFilesPanel } from "../../panels";
+const { getCurrentModule } = initStore.auth.selectors;
 
 class ArticleBodyContent extends React.Component {
-  state = {
-    expandedKeys: this.props.filter.treeFolders,
-    data: this.props.data,
-    showNewFilesPanel: false
-  };
+  constructor(props) {
+    super(props);
+
+    const { organizationName, selectedFolderTitle, currentModuleName } = props;
+
+    document.title = selectedFolderTitle
+      ? `${selectedFolderTitle} – ${currentModuleName}`
+      : `${currentModuleName} – ${organizationName}`;
+
+    this.state = {
+      expandedKeys: this.props.filter.treeFolders,
+      data: this.props.data,
+      showNewFilesPanel: false
+    };
+  }
 
   componentDidUpdate(prevProps) {
     const { filter, data } = this.props;
+
     if (
-      filter.treeFolders.length !==
-      prevProps.filter.treeFolders.length ||
+      filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
       this.state.expandedKeys.length !== filter.treeFolders.length
     ) {
       this.setState({ expandedKeys: filter.treeFolders });
@@ -43,7 +55,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.props.updateTreeNew) {
+    if (this.props.updateTreeNew) {
       this.props.setNewTreeFilesBadge(false);
       return true;
     }
@@ -55,14 +67,29 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
 
-  onSelect = data => {
-    const { filter, setIsLoading, selectedTreeNode, setSelectedNode } = this.props;
+  onSelect = (data, e) => {
+    const {
+      filter,
+      setIsLoading,
+      selectedTreeNode,
+      setSelectedNode,
+      currentModuleName,
+      organizationName
+    } = this.props;
+
     if (selectedTreeNode[0] !== data[0]) {
-      setSelectedNode(data)
+      setSelectedNode(data);
       setIsLoading(true);
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
+
+      const selectedFolderTitle =
+        (e.node && e.node.props && e.node.props.title) || null;
+
+      document.title = selectedFolderTitle
+        ? `${selectedFolderTitle} – ${currentModuleName}`
+        : `${currentModuleName} – ${organizationName}`;
 
       fetchFiles(data[0], newFilter, store.dispatch)
         .catch(err => toastr.error(err))
@@ -70,9 +97,12 @@ class ArticleBodyContent extends React.Component {
     }
   };
 
-  onShowNewFilesPanel = (folderId) => {
+  onShowNewFilesPanel = folderId => {
     const { showNewFilesPanel } = this.state;
-    this.setState({showNewFilesPanel: !showNewFilesPanel, newFolderId: [folderId]});
+    this.setState({
+      showNewFilesPanel: !showNewFilesPanel,
+      newFolderId: [folderId]
+    });
   };
 
   setNewFilesCount = (folderPath, filesCount) => {
@@ -80,7 +110,7 @@ class ArticleBodyContent extends React.Component {
     const dataItem = data.find(x => x.id === folderPath[0]);
     dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
     this.setState({ data });
-  }
+  };
 
   render() {
     const {
@@ -152,7 +182,22 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew, isLoading, selectedTreeNode } = state.files;
+  const currentModule = getCurrentModule(
+    state.auth.modules,
+    state.auth.settings.currentProductId
+  );
+
+  const {
+    treeFolders,
+    selectedFolder,
+    filter,
+    selection,
+    dragging,
+    updateTreeNew,
+    isLoading,
+    selectedTreeNode
+  } = state.files;
+
   const currentFolderId = selectedFolder.id.toString();
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
@@ -162,19 +207,25 @@ function mapStateToProps(state) {
   const shareId = treeFolders.length && treeFolders[shareFolderIndex].id;
   const commonId = treeFolders.length && treeFolders[commonFolderIndex].id;
 
-  const isMy = selectedFolder && 
-    selectedFolder.pathParts && 
+  const isMy =
+    selectedFolder &&
+    selectedFolder.pathParts &&
     selectedFolder.pathParts[0] === myId;
 
-  const isShare = selectedFolder && 
-    selectedFolder.pathParts && 
+  const isShare =
+    selectedFolder &&
+    selectedFolder.pathParts &&
     selectedFolder.pathParts[0] === shareId;
 
-  const isCommon = selectedFolder && 
-    selectedFolder.pathParts && 
+  const isCommon =
+    selectedFolder &&
+    selectedFolder.pathParts &&
     selectedFolder.pathParts[0] === commonId;
 
-  const selected = selectedTreeNode.length>0 ? selectedTreeNode : [ selectedFolder.id.toString() ];
+  const selected =
+    selectedTreeNode.length > 0
+      ? selectedTreeNode
+      : [selectedFolder.id.toString()];
 
   return {
     data: treeFolders,
@@ -191,10 +242,21 @@ function mapStateToProps(state) {
     dragging,
     updateTreeNew,
     isLoading,
-    selectedTreeNode: selected
+    selectedTreeNode: selected,
+    currentModuleName: (currentModule && currentModule.title) || "",
+    selectedFolderTitle: (selectedFolder && selectedFolder.title) || ""
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setTreeFolders, setDragItem, setDragging, setNewTreeFilesBadge, setIsLoading, setSelectedNode })(
-  ArticleBodyContent
-);
+export default connect(
+  mapStateToProps,
+  {
+    setFilter,
+    setTreeFolders,
+    setDragItem,
+    setDragging,
+    setNewTreeFilesBadge,
+    setIsLoading,
+    setSelectedNode
+  }
+)(ArticleBodyContent);

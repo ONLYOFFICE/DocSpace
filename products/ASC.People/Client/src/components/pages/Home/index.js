@@ -17,7 +17,6 @@ import {
   SectionPagingContent
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
-import { getSelectedGroup } from "../../../store/people/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
 const i18n = createI18N({
@@ -29,13 +28,6 @@ const { changeLanguage } = utils;
 class PureHome extends React.Component {
   constructor(props) {
     super(props);
-
-    const { t, organizationName, groups, selectedGroup } = props;
-
-    const currentGroup = getSelectedGroup(groups, selectedGroup);
-    document.title = currentGroup
-      ? `${currentGroup.name} – ${t("People")}`
-      : `${t("People")} – ${organizationName}`;
 
     this.state = {
       isHeaderVisible: false,
