@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { TextInput, Button } from "asc-web-components";
 
 const EditingWrapper = styled.div`
@@ -91,11 +90,4 @@ const EditingWrapperComponent = props => {
   )
 }
 
-function mapStateToProps(state) {
-  const { isLoading } = state.files;
-  return {
-    isLoading
-  }
-}
-
-export default connect(mapStateToProps)(memo(EditingWrapperComponent));
+export default memo(EditingWrapperComponent);

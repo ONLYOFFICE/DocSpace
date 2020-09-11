@@ -91,7 +91,8 @@ class SectionBodyContent extends React.Component {
       editingId: null,
       showSharingPanel: false,
       showMoveToPanel: false,
-      showCopyPanel: false
+      showCopyPanel: false,
+      isDrag: false
     };
 
     this.tooltipRef = React.createRef();
@@ -149,7 +150,7 @@ class SectionBodyContent extends React.Component {
   } */
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { showMoveToPanel, showCopyPanel } = this.state;
+    const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
@@ -163,6 +164,10 @@ class SectionBodyContent extends React.Component {
     }
 
     if (showMoveToPanel !== nextState.showMoveToPanel || showCopyPanel !== nextState.showCopyPanel) {
+      return true;
+    }
+
+    if (isDrag !== nextState.isDrag) {
       return true;
     }
 
@@ -867,7 +872,7 @@ class SectionBodyContent extends React.Component {
     if (mouseButton || e.currentTarget.tagName !== "DIV" || label) { return; }
     document.addEventListener("mousemove", this.onMouseMove);
     this.setTooltipPosition(e);
-    const { selection, setDragging } = this.props;
+    const { selection } = this.props;
 
     const elem = e.currentTarget.closest('.draggable');
     if (!elem) {
@@ -885,12 +890,13 @@ class SectionBodyContent extends React.Component {
       item = selection.find(x => x.id === Number(splitValue[1]) && x.fileExst);
     }
     if (item) {
-      setDragging(true);
+      this.setState({isDrag: true});
     }
   }
 
   onMouseUp = e => {
     const { selection, dragging, setDragging, dragItem, setDragItem } = this.props;
+    this.state.isDrag && this.setState({isDrag: false});
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     if (mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
@@ -930,7 +936,8 @@ class SectionBodyContent extends React.Component {
   }
 
   onMouseMove = e => {
-    if (this.props.dragging) {
+    if (this.state.isDrag) {
+      !this.props.dragging && this.props.setDragging(true);
       const tooltip = this.tooltipRef.current;
       tooltip.style.display = "block";
       this.setTooltipPosition(e);

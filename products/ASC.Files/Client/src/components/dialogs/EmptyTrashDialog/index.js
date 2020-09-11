@@ -6,7 +6,6 @@ import { api, utils } from "asc-web-common";
 import { fetchFiles, clearProgressData } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
-import { connect } from "react-redux";
 
 const i18n = createI18N({
   page: "EmptyTrashDialog",
@@ -131,11 +130,4 @@ const EmptyTrashDialog = props => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-function mapStateToProps(state) {
-  const { isLoading } = state.files;
-  return {
-    isLoading
-  }
-}
-
-export default connect(mapStateToProps)(EmptyTrashDialog);
+export default EmptyTrashDialog;

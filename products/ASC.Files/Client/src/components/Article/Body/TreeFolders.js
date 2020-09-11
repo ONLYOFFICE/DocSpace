@@ -2,8 +2,6 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils, Badge } from "asc-web-components";
 import styled from "styled-components";
 import { api, constants } from "asc-web-common";
-import { setIsLoading } from "../../../store/files/actions";
-import { connect } from "react-redux";
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
 
@@ -363,11 +361,4 @@ TreeFolders.defaultProps = {
   needUpdate: true
 };
 
-function mapStateToProps(state) {
-  const { isLoading } = state.files;
-  return {
-    isLoading
-  }
-}
-
-export default connect(mapStateToProps, { setIsLoading })(TreeFolders);
+export default TreeFolders;

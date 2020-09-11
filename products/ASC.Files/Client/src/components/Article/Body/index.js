@@ -99,7 +99,8 @@ class ArticleBodyContent extends React.Component {
       isShare,
       setDragging,
       onTreeDrop,
-      selectedTreeNode
+      selectedTreeNode,
+      setIsLoading
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -115,7 +116,7 @@ class ArticleBodyContent extends React.Component {
             folderId={newFolderId}
             treeFolders={data}
             setTreeFolders={setTreeFolders}
-
+            setIsLoading={setIsLoading}
           //setNewItems={this.setNewItems}
           />
         )}
