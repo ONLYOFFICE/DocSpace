@@ -2,7 +2,9 @@
 using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Tenants;
 using ASC.Files;
+using ASC.Files.Core;
 using ASC.Files.Helpers;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
@@ -33,14 +35,18 @@ namespace ASC.Tests.ASC.Files.Tests
     {
         private FilesController FilesController { get; set; }
         private TestServer TestServer { get; set; }
+        private GlobalFolder GlobalFolder { get; set; }
+        private Tenant CurrentTenant { get; set; }
 
         [SetUp]
         public void SetUp()
         {
-            TestServer = new TestServer(new WebHostBuilder().UseStartup<Startup>().ConfigureAppConfiguration((hostingContext, config) =>
-            {
-                Configure(hostingContext, config);
-            }));
+            TestServer = new TestServer(new WebHostBuilder()
+                .UseStartup<Startup>()
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    Configure(hostingContext, config);
+                }));
 
             var apiContext = TestServer.Services.GetService<ApiContext>();
             var filesControllerHelperString = TestServer.Services.GetService<FilesControllerHelper<string>>();
@@ -94,19 +100,25 @@ namespace ASC.Tests.ASC.Files.Tests
                 consumerFactory,
                 easyBibHelper,
                 productEntryPoint);
+
+            GlobalFolder = TestServer.Services.GetService<GlobalFolder>();
         }
 
         [TestCase(1, "test")]
         public void CreateFileReturnsFileWrapperTest(int id, string fileTitle)
         {
-            FilesController.CreateFolder(id.ToString(), "testFolder");
-            FilesController.CreateFolder(id, "testFolder");
+            CurrentTenant = SetAndGetCurrentTenant();
 
-            var fileWrapperString = FilesController.CreateFile(id.ToString(), fileTitle);
-            var fileWrapperInt = FilesController.CreateFile(id, fileTitle);
+            var fileMarker = TestServer.Services.GetService<FileMarker>();
+            var daoFactory = TestServer.Services.GetService<IDaoFactory>();
+            var folder = FilesController.CreateFolder(GlobalFolder.GetFolderMy(fileMarker, daoFactory), "testFolder");
+            Assert.IsNotNull(folder);
 
-            Assert.IsNotNull(fileWrapperInt);
-            Assert.AreEqual(fileTitle, fileWrapperInt.Title);
+
+            //var fileWrapperInt = FilesController.CreateFile(id, fileTitle);
+
+            //Assert.IsNotNull(fileWrapperInt);
+            //Assert.AreEqual(fileTitle, fileWrapperInt.Title);
         }
 
         [TestCase(1, false, true)]
@@ -155,6 +167,21 @@ namespace ASC.Tests.ASC.Files.Tests
                 .AddJsonFile("kafka.json")
                 .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
+        }
+
+        private Tenant SetAndGetCurrentTenant()
+        {
+            var tenant = GetTenant();
+
+            var tenantManager = TestServer.Services.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(tenant);
+
+            return tenantManager.CurrentTenant;
+        }
+
+        private Tenant GetTenant()
+        {
+            return new Tenant();
         }
 
         [TearDown]
