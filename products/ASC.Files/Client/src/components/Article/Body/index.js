@@ -43,7 +43,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.props.updateTreeNew) {
+    if (this.props.updateTreeNew) {
       this.props.setNewTreeFilesBadge(false);
       return true;
     }
@@ -72,7 +72,7 @@ class ArticleBodyContent extends React.Component {
 
   onShowNewFilesPanel = (folderId) => {
     const { showNewFilesPanel } = this.state;
-    this.setState({showNewFilesPanel: !showNewFilesPanel, newFolderId: [folderId]});
+    this.setState({ showNewFilesPanel: !showNewFilesPanel, newFolderId: [folderId] });
   };
 
   setNewFilesCount = (folderPath, filesCount) => {
@@ -88,8 +88,6 @@ class ArticleBodyContent extends React.Component {
       filter,
       setFilter,
       setTreeFolders,
-      setIsLoading,
-      isLoading,
       dragging,
       setDragItem,
       isMy,
@@ -114,12 +112,11 @@ class ArticleBodyContent extends React.Component {
             visible={showNewFilesPanel}
             onClose={this.onShowNewFilesPanel}
             setNewFilesCount={this.setNewFilesCount}
-            onLoading={setIsLoading}
             folderId={newFolderId}
             treeFolders={data}
             setTreeFolders={setTreeFolders}
 
-            //setNewItems={this.setNewItems}
+          //setNewItems={this.setNewItems}
           />
         )}
         <TreeFolders
@@ -130,8 +127,6 @@ class ArticleBodyContent extends React.Component {
           setFilter={setFilter}
           setTreeFolders={setTreeFolders}
           expandedKeys={expandedKeys}
-          onLoading={setIsLoading}
-          isLoading={isLoading}
           dragging={dragging}
           setDragging={setDragging}
           setDragItem={setDragItem}
@@ -152,7 +147,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew, isLoading, selectedTreeNode } = state.files;
+  const { treeFolders, selectedFolder, filter, selection, dragging, updateTreeNew, selectedTreeNode } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
@@ -162,19 +157,19 @@ function mapStateToProps(state) {
   const shareId = treeFolders.length && treeFolders[shareFolderIndex].id;
   const commonId = treeFolders.length && treeFolders[commonFolderIndex].id;
 
-  const isMy = selectedFolder && 
-    selectedFolder.pathParts && 
+  const isMy = selectedFolder &&
+    selectedFolder.pathParts &&
     selectedFolder.pathParts[0] === myId;
 
-  const isShare = selectedFolder && 
-    selectedFolder.pathParts && 
+  const isShare = selectedFolder &&
+    selectedFolder.pathParts &&
     selectedFolder.pathParts[0] === shareId;
 
-  const isCommon = selectedFolder && 
-    selectedFolder.pathParts && 
+  const isCommon = selectedFolder &&
+    selectedFolder.pathParts &&
     selectedFolder.pathParts[0] === commonId;
 
-  const selected = selectedTreeNode.length>0 ? selectedTreeNode : [ selectedFolder.id.toString() ];
+  const selected = selectedTreeNode.length > 0 ? selectedTreeNode : [selectedFolder.id.toString()];
 
   return {
     data: treeFolders,
@@ -190,7 +185,6 @@ function mapStateToProps(state) {
     selection,
     dragging,
     updateTreeNew,
-    isLoading,
     selectedTreeNode: selected
   };
 }

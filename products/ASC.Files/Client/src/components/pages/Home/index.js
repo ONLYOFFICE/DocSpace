@@ -29,8 +29,7 @@ import {
   setNewTreeFilesBadge,
   setProgressBarData,
   setSelected,
-  setTreeFolders,
-  setIsLoading
+  setTreeFolders
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
@@ -318,8 +317,7 @@ class PureHome extends React.Component {
       progressData,
       viewAs,
       isLoading,
-      convertDialogVisible,
-      setIsLoading
+      convertDialogVisible
     } = this.props;
 
     const progressBarContent = (
@@ -378,7 +376,7 @@ class PureHome extends React.Component {
           </PageLayout.ArticleHeader>
 
           <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent onLoading={setIsLoading} />
+            <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
 
           <PageLayout.ArticleBody>
@@ -394,21 +392,17 @@ class PureHome extends React.Component {
               onCheck={this.onSectionHeaderContentCheck}
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
-              onLoading={setIsLoading}
-              isLoading={isLoading}
               loopFilesOperations={this.loopFilesOperations}
             />
           </PageLayout.SectionHeader>
 
           <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={setIsLoading} />
+            <SectionFilterContent />
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
             <SectionBodyContent
               selected={selected}
-              isLoading={isLoading}
-              onLoading={setIsLoading}
               onChange={this.onRowChange}
               loopFilesOperations={this.loopFilesOperations}
               onDropZoneUpload={this.onDrop}
@@ -416,7 +410,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={setIsLoading} />
+            <SectionPagingContent />
           </PageLayout.SectionPaging>
         </PageLayout>
       </>
@@ -492,7 +486,6 @@ export default connect(
     setProgressBarData,
     setSelected,
     setTreeFolders,
-    startUpload,
-    setIsLoading
+    startUpload
   }
 )(withRouter(Home));

@@ -40,7 +40,8 @@ import {
   clearProgressData,
   setSelection,
   setSelected,
-  setNewTreeFilesBadge
+  setNewTreeFilesBadge,
+  setIsLoading
 } from '../../../../../store/files/actions';
 import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -183,13 +184,13 @@ class SectionBodyContent extends React.Component {
   };
 
   onEditComplete = (e) => {
-    const { folderId, fileAction, filter, folders, files, treeFolders, setTreeFolders, onLoading } = this.props;
+    const { folderId, fileAction, filter, folders, files, treeFolders, setTreeFolders, setIsLoading } = this.props;
     const items = [...folders, ...files];
     const itemId = e && e.currentTarget.dataset.itemid;
     const item = items.filter(o => o.id === itemId);
 
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
-      onLoading(true);
+      setIsLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
         const newItem = item.id === -1 ? null : item;
         if (!item.fileExst) {
@@ -199,7 +200,7 @@ class SectionBodyContent extends React.Component {
           loopTreeFolders(path, newTreeFolders, folders, null, newItem);
           setTreeFolders(newTreeFolders);
         }
-      }).finally(() => onLoading(false))
+      }).finally(() => setIsLoading(false))
     }
 
     this.setState({ editingId: null }, () => {
@@ -312,7 +313,7 @@ class SectionBodyContent extends React.Component {
   }
 
   lockFile = () => {
-    const { selection, /*files,*/ selectedFolderId, filter, onLoading } = this.props;
+    const { selection, /*files,*/ selectedFolderId, filter, setIsLoading } = this.props;
     const file = selection[0];
 
     api.files.lockFile(file.id, !file.locked)
@@ -320,21 +321,21 @@ class SectionBodyContent extends React.Component {
         /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
-        onLoading(true);
+        setIsLoading(true);
         fetchFiles(selectedFolderId, filter, store.dispatch)
           .catch(err => toastr.error(err))
-          .finally(() => onLoading(false));
+          .finally(() => setIsLoading(false));
       })
   }
 
   finalizeVersion = (e) => {
-    const { selectedFolderId, filter, onLoading } = this.props;
+    const { selectedFolderId, filter, setIsLoading } = this.props;
 
     const fileId = e.currentTarget.dataset.id;
     //const version = (e.currentTarget.dataset.version)++;
 
 
-    onLoading(true);
+    setIsLoading(true);
 
     api.files.finalizeVersion(fileId, 0, false)
       .then((data) => {
@@ -344,7 +345,7 @@ class SectionBodyContent extends React.Component {
             toastr.error(err)
           );
       })
-      .finally(() => onLoading(false));
+      .finally(() => setIsLoading(false));
   }
 
   onMoveAction = () => this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
@@ -571,29 +572,29 @@ class SectionBodyContent extends React.Component {
   };
 
   onResetFilter = () => {
-    const { selectedFolderId, onLoading } = this.props;
-    onLoading(true);
+    const { selectedFolderId, setIsLoading } = this.props;
+    setIsLoading(true);
     const newFilter = FilesFilter.getDefault();
     fetchFiles(selectedFolderId, newFilter, store.dispatch).catch(err =>
       toastr.error(err)
-    ).finally(() => onLoading(false));
+    ).finally(() => setIsLoading(false));
   }
 
   onGoToMyDocuments = () => {
-    const { filter, myDocumentsId, onLoading } = this.props;
+    const { filter, myDocumentsId, setIsLoading } = this.props;
     const newFilter = filter.clone();
-    onLoading(true);
+    setIsLoading(true);
     fetchFiles(myDocumentsId, newFilter, store.dispatch).finally(() =>
-      onLoading(false)
+      setIsLoading(false)
     );
   };
 
   onBackToParentFolder = () => {
-    const { filter, parentId, onLoading } = this.props;
+    const { filter, parentId, setIsLoading } = this.props;
     const newFilter = filter.clone();
-    onLoading(true);
+    setIsLoading(true);
     fetchFiles(parentId, newFilter, store.dispatch).finally(() =>
-      onLoading(false)
+      setIsLoading(false)
     );
   };
 
@@ -1081,7 +1082,7 @@ class SectionBodyContent extends React.Component {
       settings,
       selection,
       fileAction,
-      onLoading,
+      setIsLoading,
       isLoading,
       currentFolderCount,
       currentFolderType,
@@ -1095,7 +1096,7 @@ class SectionBodyContent extends React.Component {
     } = this.props;
 
     const { editingId, showSharingPanel, showMoveToPanel, showCopyPanel } = this.state;
-    const operationsPanelProps = { onLoading, isLoading, loopFilesOperations };
+    const operationsPanelProps = { setIsLoading, isLoading, loopFilesOperations };
 
     let items = [...folders, ...files];
 
@@ -1215,9 +1216,7 @@ class SectionBodyContent extends React.Component {
                           viewer={viewer}
                           culture={settings.culture}
                           onEditComplete={this.onEditComplete}
-                          onLoading={onLoading}
                           onMediaFileClick={this.onMediaFileClick}
-                          isLoading={isLoading}
                         />
                       </Tile>
                     </DragAndDrop>
@@ -1276,7 +1275,6 @@ class SectionBodyContent extends React.Component {
                           viewer={viewer}
                           culture={settings.culture}
                           onEditComplete={this.onEditComplete}
-                          onLoading={onLoading}
                           onMediaFileClick={this.onMediaFileClick}
                         />
                       </SimpleFilesRow>
@@ -1303,7 +1301,6 @@ class SectionBodyContent extends React.Component {
             }
             {showSharingPanel && (
               <SharingPanel
-                onLoading={onLoading}
                 onClose={this.onClickShare}
                 visible={showSharingPanel}
               />
@@ -1318,7 +1315,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData, dragging } = state.files;
+  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData, dragging, isLoading } = state.files;
   const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -1355,6 +1352,7 @@ const mapStateToProps = state => {
     mediaViewerVisible: mediaViewerData.visible,
     currentMediaFileId: mediaViewerData.id,
     dragging,
+    isLoading
   };
 };
 
@@ -1378,6 +1376,7 @@ export default connect(
     setProgressBarData,
     setSelection,
     setSelected,
-    setNewTreeFilesBadge
+    setNewTreeFilesBadge,
+    setIsLoading
   }
 )(withRouter(withTranslation()(SectionBodyContent)));

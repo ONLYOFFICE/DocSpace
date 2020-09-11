@@ -263,11 +263,12 @@ const DeleteDialog = props => (
 );
 
 const mapStateToProps = state => {
-  const { selectedFolder, filter, treeFolders } = state.files;
+  const { selectedFolder, filter, treeFolders, isLoading } = state.files;
   return {
     currentFolderId: selectedFolder.id,
     filter,
-    treeFolders
+    treeFolders,
+    isLoading
   };
 };
 

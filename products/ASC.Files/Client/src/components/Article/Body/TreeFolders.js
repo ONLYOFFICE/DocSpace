@@ -2,6 +2,8 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils, Badge } from "asc-web-components";
 import styled from "styled-components";
 import { api, constants } from "asc-web-common";
+import { setIsLoading } from "../../../store/files/actions";
+import { connect } from "react-redux";
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
 
@@ -33,7 +35,7 @@ class TreeFolders extends React.Component {
 
   getFolderIcon = item => {
     const showItem = item.newItems ? item.newItems > 0 && this.props.needUpdate : false;
-    const style = {position: "absolute", right: 1, top: 2}
+    const style = { position: "absolute", right: 1, top: 2 }
     const badgeProps = {
       label: item.newItems,
       backgroundColor: "#ED7309",
@@ -230,7 +232,7 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = treeNode => {
-    this.props.onLoading(true);
+    this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
 
     return this.generateTreeNodes(treeNode)
@@ -245,7 +247,7 @@ class TreeFolders extends React.Component {
         this.setState({ treeData });
       })
       .catch(err => toastr.error(err))
-      .finally(() => this.props.onLoading(false));
+      .finally(() => this.props.setIsLoading(false));
   };
 
   onExpand = (data, treeNode) => {
@@ -280,7 +282,7 @@ class TreeFolders extends React.Component {
 
   onMouseEnter = (data) => {
     if (this.props.dragging) {
-      if(data.node.props.dragging) {
+      if (data.node.props.dragging) {
         this.props.setDragItem(data.node.props.id);
       }
     }
@@ -296,8 +298,8 @@ class TreeFolders extends React.Component {
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains("rc-tree-node-content-wrapper");
 
-    if(existElement) {
-      if(data.node.props.dragging) {
+    if (existElement) {
+      if (data.node.props.dragging) {
         parentElement.style.background = backgroundDragColor;
       }
     }
@@ -307,8 +309,8 @@ class TreeFolders extends React.Component {
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains("rc-tree-node-content-wrapper");
 
-    if(existElement) {
-      if(data.node.props.dragging) {
+    if (existElement) {
+      if (data.node.props.dragging) {
         parentElement.style.background = backgroundDragEnterColor;
       }
     }
@@ -318,7 +320,7 @@ class TreeFolders extends React.Component {
     const { setDragging, onTreeDrop } = this.props;
     const { dragging, id } = data.node.props;
     setDragging(false);
-    if(dragging) {
+    if (dragging) {
       onTreeDrop(data.event, id);
     }
   }
@@ -361,4 +363,11 @@ TreeFolders.defaultProps = {
   needUpdate: true
 };
 
-export default TreeFolders;
+function mapStateToProps(state) {
+  const { isLoading } = state.files;
+  return {
+    isLoading
+  }
+}
+
+export default connect(mapStateToProps, { setIsLoading })(TreeFolders);

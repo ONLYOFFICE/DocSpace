@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, setNewRowItems } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
@@ -84,46 +84,46 @@ class FilesRowContent extends React.PureComponent {
   }
 
   updateItem = (e) => {
-    const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
+    const { fileAction, updateFile, renameFolder, item, setIsLoading } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
-    onLoading(true);
+    setIsLoading(true);
     if (originalTitle === itemTitle)
       return this.completeAction(e);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false));
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false));
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, onLoading } = this.props;
+    const { createFile, createFolder, item, setIsLoading } = this.props;
     const { itemTitle } = this.state;
 
-    onLoading(true);
+    setIsLoading(true);
 
     if (itemTitle.trim() === '')
       return this.completeAction(e);
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
   }
 
   componentDidUpdate(prevProps) {
     const { fileAction, item, newRowItems, setNewRowItems } = this.props;
     const itemId = item.id.toString();
 
-    if(newRowItems.length && newRowItems.includes(itemId)) {
+    if (newRowItems.length && newRowItems.includes(itemId)) {
       const rowItems = newRowItems.filter(x => x !== itemId)
-      if(this.state.newItems !== 0) {
-        this.setState({newItems: 0}, () => setNewRowItems(rowItems));
+      if (this.state.newItems !== 0) {
+        this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
       }
     }
 
@@ -151,9 +151,9 @@ class FilesRowContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, onLoading, onMediaFileClick } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick } = this.props;
     if (!fileExst) {
-      onLoading(true);
+      setIsLoading(true);
       const newFilter = filter.clone();
       if (!newFilter.treeFolders.includes(parentFolder.toString())) {
         newFilter.treeFolders.push(parentFolder.toString());
@@ -162,9 +162,9 @@ class FilesRowContent extends React.PureComponent {
       fetchFiles(id, newFilter, store.dispatch)
         .catch(err => {
           toastr.error(err);
-          onLoading(false);
+          setIsLoading(false);
         })
-        .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit(fileExst)) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
@@ -260,22 +260,22 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ showConvertDialog: !this.state.showConvertDialog });
 
   getConvertProgress = fileId => {
-    const { selectedFolder, filter, onLoading, setProgressBarData, t } = this.props;
+    const { selectedFolder, filter, setIsLoading, setProgressBarData, t } = this.props;
     api.files.getConvertFile(fileId).then(res => {
       if (res && res[0] && res[0].progress !== 100) {
-        setProgressBarData({ visible: true, percent: res[0].progress, label: t("Convert")});
+        setProgressBarData({ visible: true, percent: res[0].progress, label: t("Convert") });
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
         if (res[0].error) {
           toastr.error(res[0].error);
           clearProgressData(store.dispatch);
         } else {
-          setProgressBarData({ visible: true, percent: 100, label: t("Convert")});
+          setProgressBarData({ visible: true, percent: 100, label: t("Convert") });
           setTimeout(() => clearProgressData(), 5000)
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter, store.dispatch)
             .catch(err => toastr.error(err))
-            .finally(() => onLoading(false));
+            .finally(() => setIsLoading(false));
         }
       }
     });
@@ -283,7 +283,7 @@ class FilesRowContent extends React.PureComponent {
 
   onConvert = () => {
     const { item, t, setProgressBarData } = this.props;
-    setProgressBarData({ visible: true, percent: 0, label: t("Convert")});
+    setProgressBarData({ visible: true, percent: 0, label: t("Convert") });
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then(convertRes => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
@@ -294,7 +294,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   render() {
-    const { t, item, fileAction, isLoading, isTrashFolder, onLoading, folders, widthProp } = this.props;
+    const { t, item, fileAction, isTrashFolder, folders, widthProp } = this.props;
     const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId, showConvertDialog } = this.state;
     const {
       contentLength,
@@ -321,7 +321,6 @@ class FilesRowContent extends React.PureComponent {
 
     return isEdit
       ? <EditingWrapperComponent
-        isLoading={isLoading}
         itemTitle={itemTitle}
         okIcon={okIcon}
         cancelIcon={cancelIcon}
@@ -343,7 +342,6 @@ class FilesRowContent extends React.PureComponent {
             <NewFilesPanel
               visible={showNewFilesPanel}
               onClose={this.onShowNewFilesPanel}
-              onLoading={onLoading}
               folderId={newFolderId}
               folders={folders}
             />
@@ -509,7 +507,7 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging, isLoading } = state.files;
+  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging } = state.files;
   const { settings } = state.auth;
   const indexOfTrash = 3;
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
@@ -526,11 +524,10 @@ function mapStateToProps(state) {
     selectedFolder,
     folders,
     newRowItems,
-    dragging,
-    isLoading
+    dragging
   }
 }
 
-export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setProgressBarData, setNewTreeFilesBadge, setNewRowItems })(
+export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setProgressBarData, setNewTreeFilesBadge, setNewRowItems, setIsLoading })(
   withRouter(withTranslation()(FilesRowContent))
 );

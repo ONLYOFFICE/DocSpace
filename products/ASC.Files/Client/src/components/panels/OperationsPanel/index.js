@@ -107,8 +107,6 @@ class OperationsPanelComponent extends React.Component {
     //console.log("Operations panel render");
     const {
       t,
-      onLoading,
-      isLoading,
       filter,
       treeFolders,
       isCopy,
@@ -136,8 +134,6 @@ class OperationsPanelComponent extends React.Component {
               expandedKeys={expandedKeys}
               data={data}
               filter={filter}
-              onLoading={onLoading}
-              isLoading={isLoading}
               onSelect={this.onSelect}
               needUpdate={false}
             />

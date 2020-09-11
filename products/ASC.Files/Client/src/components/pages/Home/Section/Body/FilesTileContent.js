@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Link, Text, Icons, Badge, toastr } from "asc-web-components";
 import { constants, api } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setIsLoading } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
@@ -99,36 +99,36 @@ class FilesTileContent extends React.PureComponent {
   }
 
   updateItem = (e) => {
-    const { fileAction, updateFile, renameFolder, item, onLoading } = this.props;
+    const { fileAction, updateFile, renameFolder, item, setIsLoading } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
-    onLoading(true);
+    setIsLoading(true);
     if (originalTitle === itemTitle)
       return this.completeAction(e);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false));
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false));
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, onLoading } = this.props;
+    const { createFile, createFolder, item, setIsLoading } = this.props;
     const { itemTitle } = this.state;
 
-    onLoading(true);
+    setIsLoading(true);
 
     if (itemTitle.trim() === '')
       return this.completeAction();
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction(e)).finally(() => onLoading(false))
+        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
   }
 
   componentDidUpdate(prevProps) {
@@ -168,9 +168,9 @@ class FilesTileContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, onLoading, onMediaFileClick } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick } = this.props;
     if (!fileExst) {
-      onLoading(true);
+      setIsLoading(true);
       const newFilter = filter.clone();
       if (!newFilter.treeFolders.includes(parentFolder.toString())) {
         newFilter.treeFolders.push(parentFolder.toString());
@@ -179,9 +179,9 @@ class FilesTileContent extends React.PureComponent {
       fetchFiles(id, newFilter, store.dispatch)
         .catch(err => {
           toastr.error("Something went wrong", err);
-          onLoading(false);
+          setIsLoading(false);
         })
-        .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit(fileExst)) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
@@ -248,15 +248,15 @@ class FilesTileContent extends React.PureComponent {
     const { item, treeFolders, setTreeFolders, rootFolderId, newItems, filter } = this.props;
     if (item.fileExst) {
       api.files
-      .markAsRead([], [item.id])
-      .then(() => {
-        const data = treeFolders;
-        const dataItem = data.find((x) => x.id === rootFolderId);
-        dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
-        setTreeFolders(data);
-        fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
-      })
-      .catch((err) => toastr.error(err))
+        .markAsRead([], [item.id])
+        .then(() => {
+          const data = treeFolders;
+          const dataItem = data.find((x) => x.id === rootFolderId);
+          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;//////newItems
+          setTreeFolders(data);
+          fetchFiles(this.props.selectedFolder.id, filter.clone(), store.dispatch);
+        })
+        .catch((err) => toastr.error(err))
     } else {
       const newFolderId = this.props.selectedFolder.pathParts;
       newFolderId.push(item.id);
@@ -269,12 +269,12 @@ class FilesTileContent extends React.PureComponent {
 
   onShowNewFilesPanel = () => {
     const { showNewFilesPanel } = this.state;
-    this.setState({showNewFilesPanel: !showNewFilesPanel});
+    this.setState({ showNewFilesPanel: !showNewFilesPanel });
   };
 
   render() {
-    
-    const { item, fileAction, isLoading, isTrashFolder, onLoading, folders } = this.props;
+
+    const { item, fileAction, isTrashFolder, folders } = this.props;
     const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId } = this.state;
     const {
       fileExst,
@@ -289,7 +289,6 @@ class FilesTileContent extends React.PureComponent {
 
     return isEdit
       ? <EditingWrapperComponent
-        isLoading={isLoading}
         itemTitle={itemTitle}
         okIcon={okIcon}
         cancelIcon={cancelIcon}
@@ -300,70 +299,69 @@ class FilesTileContent extends React.PureComponent {
         itemId={id}
       />
       : (
-      <>
-        {showNewFilesPanel && (
-          <NewFilesPanel
-            visible={showNewFilesPanel}
-            onClose={this.onShowNewFilesPanel}
-            onLoading={onLoading}
-            folderId={newFolderId}
-            folders={folders}
-          />
-        )}
-        <SimpleFilesTileContent
-          sideColor="#333"
-          isFile={fileExst}
-          onClick={this.onMobileRowClick}
-          disableSideInfo
-        >
-          <Link
-            containerWidth='100%'
-            type='page'
-            title={titleWithoutExt}
-            fontWeight="bold"
-            fontSize='15px'
-            {...linkStyles}
-            color="#333"
-            isTextOverflow
+        <>
+          {showNewFilesPanel && (
+            <NewFilesPanel
+              visible={showNewFilesPanel}
+              onClose={this.onShowNewFilesPanel}
+              folderId={newFolderId}
+              folders={folders}
+            />
+          )}
+          <SimpleFilesTileContent
+            sideColor="#333"
+            isFile={fileExst}
+            onClick={this.onMobileRowClick}
+            disableSideInfo
           >
-            {titleWithoutExt}
-          </Link>
-          <>
-            {fileExst ?
-              <div className='badges'>
-                <Text
-                  className='badge-ext'
-                  as="span"
-                  color="#A3A9AE"
-                  fontSize='15px'
-                  fontWeight={600}
-                  title={fileExst}
-                  truncate={true}
-                >
-                  {fileExst}
-                </Text>
-              </div>
-              :
-              <div className='badges'>
-                { !!showNew &&
-                  <Badge
-                    className='badge-version'
-                    backgroundColor="#ED7309"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={newItems}
-                    maxWidth="50px"
-                    onClick={this.onBadgeClick}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                }
-              </div>
-            }
-          </>
-        </SimpleFilesTileContent>
+            <Link
+              containerWidth='100%'
+              type='page'
+              title={titleWithoutExt}
+              fontWeight="bold"
+              fontSize='15px'
+              {...linkStyles}
+              color="#333"
+              isTextOverflow
+            >
+              {titleWithoutExt}
+            </Link>
+            <>
+              {fileExst ?
+                <div className='badges'>
+                  <Text
+                    className='badge-ext'
+                    as="span"
+                    color="#A3A9AE"
+                    fontSize='15px'
+                    fontWeight={600}
+                    title={fileExst}
+                    truncate={true}
+                  >
+                    {fileExst}
+                  </Text>
+                </div>
+                :
+                <div className='badges'>
+                  {!!showNew &&
+                    <Badge
+                      className='badge-version'
+                      backgroundColor="#ED7309"
+                      borderRadius="11px"
+                      color="#FFFFFF"
+                      fontSize="10px"
+                      fontWeight={800}
+                      label={newItems}
+                      maxWidth="50px"
+                      onClick={this.onBadgeClick}
+                      padding="0 5px"
+                      data-id={id}
+                    />
+                  }
+                </div>
+              }
+            </>
+          </SimpleFilesTileContent>
         </>
       )
   }
@@ -388,6 +386,6 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders })(
+export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setIsLoading })(
   withRouter(withTranslation()(FilesTileContent))
 );

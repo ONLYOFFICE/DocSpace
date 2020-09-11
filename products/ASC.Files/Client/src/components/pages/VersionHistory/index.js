@@ -10,7 +10,6 @@ import {
   ArticleBodyContent,
   ArticleMainButtonContent
 } from "../../Article";
-import { setIsLoading } from "../../../store/files/actions";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -73,7 +72,6 @@ class PureVersionHistory extends React.Component {
 
             <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent
-                onLoading={setIsLoading}
                 startUpload={this.startUpload}
               />
             </PageLayout.ArticleMainButton>
@@ -89,7 +87,6 @@ class PureVersionHistory extends React.Component {
             <PageLayout.SectionBody>
               <SectionBodyContent
                 getFileVersions={this.getFileVersions}
-                onLoading={setIsLoading}
                 versions={versions}
                 culture={settings.culture}
               />
@@ -147,5 +144,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { setIsLoading }
+  {}
 )(withRouter(VersionHistory));

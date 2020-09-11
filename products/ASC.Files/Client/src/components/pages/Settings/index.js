@@ -40,7 +40,6 @@ const PureSettings = props => {
     match,
     t,
     isLoading,
-    setIsLoading,
     enableThirdParty,
     isAdmin
   } = props;

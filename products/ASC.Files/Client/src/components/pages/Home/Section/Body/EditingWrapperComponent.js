@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import { TextInput, Button } from "asc-web-components";
 
 const EditingWrapper = styled.div`
@@ -39,55 +40,62 @@ const EditingWrapper = styled.div`
 `;
 
 const EditingWrapperComponent = props => {
-    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem, isLoading } = props;
+  const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem, isLoading } = props;
 
-    const onUpdate = () => {
+  const onUpdate = () => {
+    onClickUpdateItem();
+  }
+
+  const onCancel = (e) => {
+    cancelUpdateItem(e);
+  }
+
+  const onKeyUpUpdateItem = e => {
+    if (e.keyCode === 13) {
       onClickUpdateItem();
     }
 
-    const onCancel = (e) => {
-      cancelUpdateItem(e);
-    }
+    if (e.keyCode === 27)
+      return cancelUpdateItem();
+  }
 
-    const onKeyUpUpdateItem = e => {
-      if (e.keyCode === 13) {
-        onClickUpdateItem();
-      }
-  
-      if (e.keyCode === 27)
-        return cancelUpdateItem();
-    }
-
-    return(
-      <EditingWrapper>
-        <TextInput
-          className='edit-text'
-          name='title'
-          scale={true}
-          value={itemTitle}
-          tabIndex={1}
-          isAutoFocussed={true}
-          onChange={renameTitle}
-          onKeyUp={onKeyUpUpdateItem}
-          isDisabled={isLoading}
-        />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={isLoading}
-          onClick={onUpdate}
-          icon={okIcon}
-        />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={isLoading}
-          onClick={onCancel}
-          icon={cancelIcon}
-          data-itemid={itemId}
-        />
-      </EditingWrapper>
-    )
+  return (
+    <EditingWrapper>
+      <TextInput
+        className='edit-text'
+        name='title'
+        scale={true}
+        value={itemTitle}
+        tabIndex={1}
+        isAutoFocussed={true}
+        onChange={renameTitle}
+        onKeyUp={onKeyUpUpdateItem}
+        isDisabled={isLoading}
+      />
+      <Button
+        className='edit-button'
+        size='medium'
+        isDisabled={isLoading}
+        onClick={onUpdate}
+        icon={okIcon}
+      />
+      <Button
+        className='edit-button'
+        size='medium'
+        isDisabled={isLoading}
+        onClick={onCancel}
+        icon={cancelIcon}
+        data-itemid={itemId}
+      />
+    </EditingWrapper>
+  )
 }
 
-export default memo(EditingWrapperComponent);
+function mapStateToProps(state) {
+  const { isLoading } = state.files;
+  return {
+    isLoading
+  }
+}
+
+export default connect(mapStateToProps)(memo(EditingWrapperComponent));
