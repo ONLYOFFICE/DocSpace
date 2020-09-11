@@ -35,7 +35,7 @@ namespace ASC.Tests.ASC.Files.Tests
     {
         private FilesController FilesController { get; set; }
         private TestServer TestServer { get; set; }
-        private GlobalFolder GlobalFolder { get; set; }
+        private GlobalFolderHelper GlobalFolderHelper { get; set; }
         private Tenant CurrentTenant { get; set; }
 
         [SetUp]
@@ -101,24 +101,20 @@ namespace ASC.Tests.ASC.Files.Tests
                 easyBibHelper,
                 productEntryPoint);
 
-            GlobalFolder = TestServer.Services.GetService<GlobalFolder>();
+            GlobalFolderHelper = TestServer.Services.GetService<GlobalFolderHelper>();
+            CurrentTenant = SetAndGetCurrentTenant();
         }
 
-        [TestCase(1, "test")]
-        public void CreateFileReturnsFileWrapperTest(int id, string fileTitle)
+        [TestCase("test")]
+        public void CreateFileReturnsFileWrapperTest(string fileTitle)
         {
-            CurrentTenant = SetAndGetCurrentTenant();
-
-            var fileMarker = TestServer.Services.GetService<FileMarker>();
-            var daoFactory = TestServer.Services.GetService<IDaoFactory>();
-            var folder = FilesController.CreateFolder(GlobalFolder.GetFolderMy(fileMarker, daoFactory), "testFolder");
+            var folder = FilesController.CreateFolder(GlobalFolderHelper.FolderMy, "folder");
             Assert.IsNotNull(folder);
 
+            var fileWrapper = FilesController.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
 
-            //var fileWrapperInt = FilesController.CreateFile(id, fileTitle);
-
-            //Assert.IsNotNull(fileWrapperInt);
-            //Assert.AreEqual(fileTitle, fileWrapperInt.Title);
+            Assert.IsNotNull(fileWrapper);
+            Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
         [TestCase(1, false, true)]
