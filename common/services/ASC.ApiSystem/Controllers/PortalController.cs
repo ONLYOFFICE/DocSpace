@@ -36,6 +36,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -289,6 +290,27 @@ namespace ASC.ApiSystem.Controllers
                     stacktrace = e.StackTrace
                 });
             }
+
+            var trialQuota = Configuration["trial-quota"];
+            if (!string.IsNullOrEmpty(trialQuota))
+            {
+                if (int.TryParse(trialQuota, out var trialQuotaId))
+                {
+                    var dueDate = DateTime.MaxValue;
+                    if (int.TryParse(Configuration["trial-due"], out var dueTrial))
+                    {
+                        dueDate = DateTime.UtcNow.AddDays(dueTrial);
+                    }
+
+                    var tariff = new Tariff
+                    {
+                        QuotaId = trialQuotaId,
+                        DueDate = dueDate
+                    };
+                    HostedSolution.SetTariff(t.TenantId, tariff);
+                }
+            }
+
 
             var isFirst = true;
             string sendCongratulationsAddress = null;

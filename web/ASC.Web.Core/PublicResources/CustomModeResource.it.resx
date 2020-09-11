@@ -203,6 +203,16 @@ La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" �
 
 ^ Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"$ {__VirtualRootPath}".^</value>
   </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Il nuovo portale è stato registrato
+
+# URL del portale: "${__VirtualRootPath}":"$ {__VirtualRootPath}"
+# Nome: $UserName
+# Cognome: $UserLastName
+# Email: $UserEmail
+# Telefono: $Phone
+# Data di creazione: $Date</value>
+  </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
     <value>Fare lo stesso che un utente|Collegare Dropbox, Box e altri account nella section 'Documenti comuni'|Impostare i diritti di accesso ai documenti e alle cartelle nella sezione 'Documenti comuni'</value>
   </data>

@@ -141,7 +141,7 @@ namespace ASC.Web.Studio.Core.Notify
             csize = (csize ?? "").Trim();
             if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException("csize");
             site = (site ?? "").Trim();
-            if (string.IsNullOrEmpty(site)) throw new ArgumentNullException("site");
+            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("site");
             message = (message ?? "").Trim();
 
             var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
@@ -879,6 +879,41 @@ namespace ASC.Web.Studio.Core.Notify
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
+
+
+        public void SendRegData(UserInfo u)
+        {
+            try
+            {
+                if (!TenantExtra.Saas || !CoreBaseSettings.CustomMode) return;
+
+                var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+                var salesEmail = settings.SalesEmail ?? SetupInfo.SalesEmail;
+
+                if (string.IsNullOrEmpty(salesEmail)) return;
+
+                var recipient = new DirectRecipient(salesEmail, null, new[] { salesEmail }, false);
+
+                client.SendNoticeToAsync(
+                    Actions.SaasCustomModeRegData,
+                    null,
+                    new IRecipient[] { recipient },
+                    new[] { EMailSenderName },
+                    null,
+                    new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.UserLastName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.UserEmail, u.Email.HtmlEncode()),
+                    new TagValue(Tags.Phone, u.MobilePhone != null ? u.MobilePhone.HtmlEncode() : "-"),
+                    new TagValue(Tags.Date, u.CreateDate.ToShortDateString() + " " + u.CreateDate.ToShortTimeString()),
+                    new TagValue(CommonTags.Footer, null),
+                    TagValues.WithoutUnsubscribe());
+            }
+            catch (Exception error)
+            {
+                Log.Error(error);
+            }
+        }
+
         #endregion
     }
 
