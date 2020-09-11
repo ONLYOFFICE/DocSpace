@@ -51,8 +51,8 @@ const LoginContainer = styled.div`
   }
 
   .auth-form-container {
-    margin: 32px 22.5% 0 22.5%;
-    width: 32.4%;
+    margin: 32px 213px 0 213px;
+    width: 311px;
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;

@@ -265,7 +265,7 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = treeNode => {
-    this.props.onLoading(true);
+    this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
 
     return this.generateTreeNodes(treeNode)
@@ -280,7 +280,7 @@ class TreeFolders extends React.Component {
         this.setState({ treeData });
       })
       .catch(err => toastr.error(err))
-      .finally(() => this.props.onLoading(false));
+      .finally(() => this.props.setIsLoading(false));
   };
 
   onExpand = (data, treeNode) => {

@@ -109,7 +109,7 @@ const PureTreeSettings = props => {
     );
   };
 
-  const { selectedTreeNode, expandedSetting } = props;
+  const { selectedTreeNode, expandedSetting, isLoading } = props;
   const nodes = renderTreeNode();
 
   return (
@@ -117,6 +117,7 @@ const PureTreeSettings = props => {
       expandedKeys={expandedSetting}
       selectedKeys={selectedTreeNode}
       defaultExpandParent={false}
+      disabled={isLoading}
       className="settings-tree-menu"
       switcherIcon={switcherIcon}
       onSelect={onSelect}
@@ -142,7 +143,7 @@ const TreeSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const { selectedTreeNode, settingsTree } = state.files;
+  const { selectedTreeNode, settingsTree, isLoading } = state.files;
 
   const { isAdmin } = state.auth.user;
 
@@ -152,7 +153,8 @@ function mapStateToProps(state) {
     selectedTreeNode,
     expandedSetting,
     enableThirdParty,
-    isAdmin
+    isAdmin,
+    isLoading
   };
 }
 

@@ -26,8 +26,8 @@ class ArticleBodyContent extends React.Component {
     const { organizationName, selectedFolderTitle, currentModuleName } = props;
 
     document.title = selectedFolderTitle
-      ? `${selectedFolderTitle} â€“ ${currentModuleName}`
-      : `${currentModuleName} â€“ ${organizationName}`;
+      ? `${selectedFolderTitle} – ${currentModuleName}`
+      : `${currentModuleName} – ${organizationName}`;
 
     this.state = {
       expandedKeys: this.props.filter.treeFolders,
@@ -88,8 +88,8 @@ class ArticleBodyContent extends React.Component {
         (e.node && e.node.props && e.node.props.title) || null;
 
       document.title = selectedFolderTitle
-        ? `${selectedFolderTitle} â€“ ${currentModuleName}`
-        : `${currentModuleName} â€“ ${organizationName}`;
+        ? `${selectedFolderTitle} – ${currentModuleName}`
+        : `${currentModuleName} – ${organizationName}`;
 
       fetchFiles(data[0], newFilter, store.dispatch)
         .catch(err => toastr.error(err))
@@ -118,8 +118,6 @@ class ArticleBodyContent extends React.Component {
       filter,
       setFilter,
       setTreeFolders,
-      setIsLoading,
-      isLoading,
       dragging,
       setDragItem,
       isMy,
@@ -131,7 +129,8 @@ class ArticleBodyContent extends React.Component {
       isShare,
       setDragging,
       onTreeDrop,
-      selectedTreeNode
+      selectedTreeNode,
+      setIsLoading
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -144,11 +143,10 @@ class ArticleBodyContent extends React.Component {
             visible={showNewFilesPanel}
             onClose={this.onShowNewFilesPanel}
             setNewFilesCount={this.setNewFilesCount}
-            onLoading={setIsLoading}
             folderId={newFolderId}
             treeFolders={data}
             setTreeFolders={setTreeFolders}
-
+            setIsLoading={setIsLoading}
             //setNewItems={this.setNewItems}
           />
         )}
@@ -160,8 +158,6 @@ class ArticleBodyContent extends React.Component {
           setFilter={setFilter}
           setTreeFolders={setTreeFolders}
           expandedKeys={expandedKeys}
-          onLoading={setIsLoading}
-          isLoading={isLoading}
           dragging={dragging}
           setDragging={setDragging}
           setDragItem={setDragItem}
@@ -194,7 +190,6 @@ function mapStateToProps(state) {
     selection,
     dragging,
     updateTreeNew,
-    isLoading,
     selectedTreeNode
   } = state.files;
 
@@ -241,7 +236,6 @@ function mapStateToProps(state) {
     selection,
     dragging,
     updateTreeNew,
-    isLoading,
     selectedTreeNode: selected,
     currentModuleName: (currentModule && currentModule.title) || "",
     selectedFolderTitle: (selectedFolder && selectedFolder.title) || ""

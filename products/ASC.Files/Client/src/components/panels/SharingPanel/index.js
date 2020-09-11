@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, constants } from "asc-web-common";
-import { getShareUsers, setShareFiles } from "../../../store/files/actions";
+import { getShareUsers, setShareFiles, setIsLoading } from "../../../store/files/actions";
 import { getAccessOption } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -391,7 +391,7 @@ class SharingPanelComponent extends React.Component {
 
     this.setState(
       { baseShareData, shareDataItems: arrayItems, accessOptions },
-      () => this.props.onLoading(false)
+      () => this.props.setIsLoading(false)
     );
   };
 
@@ -434,7 +434,7 @@ class SharingPanelComponent extends React.Component {
           this.getShareDataItems(res);
         })
         .catch(err => {
-          this.props.onLoading(false);
+          this.props.setIsLoading(false);
           error = err;
           toastr.error(err);
         })
@@ -461,7 +461,7 @@ class SharingPanelComponent extends React.Component {
   onClose = () => this.setState({ showPanel: false });
 
   componentDidMount() {
-    this.props.onLoading(true);
+    this.props.setIsLoading(true);
     this.getShareData();
 
     document.addEventListener("keyup", this.onKeyPress);
@@ -576,7 +576,7 @@ class SharingPanelComponent extends React.Component {
         className="panel_combo-box"
         scaled={false}
         directionX="right"
-        //isDisabled={isDisabled}
+      //isDisabled={isDisabled}
       >
         {React.createElement(Icons[accessRight.icon], {
           size: "medium"
@@ -739,4 +739,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withRouter(SharingPanel));
+export default connect(mapStateToProps, { setIsLoading })(withRouter(SharingPanel));

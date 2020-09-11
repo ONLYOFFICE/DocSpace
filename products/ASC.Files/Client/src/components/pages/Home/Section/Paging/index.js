@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
-import { fetchFiles } from "../../../../../store/files/actions";
+import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
 import { Paging } from "asc-web-components";
 import { useTranslation } from 'react-i18next';
 import store from "../../../../../store/store";
 
 const SectionPagingContent = ({
   filter,
-  onLoading,
+  setIsLoading,
   selectedCount,
   selectedFolderId
 }) => {
@@ -23,11 +23,11 @@ const SectionPagingContent = ({
       const newFilter = filter.clone();
       newFilter.page++;
 
-      onLoading(true);
+      setIsLoading(true);
       fetchFiles(selectedFolderId, newFilter, store.dispatch)
-        .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, onLoading]
+    [filter, selectedFolderId, setIsLoading]
   );
 
   const onPrevClick = useCallback(
@@ -42,11 +42,11 @@ const SectionPagingContent = ({
       const newFilter = filter.clone();
       newFilter.page--;
 
-      onLoading(true);
+      setIsLoading(true);
       fetchFiles(selectedFolderId, newFilter, store.dispatch)
-        .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, onLoading]
+    [filter, selectedFolderId, setIsLoading]
   );
 
   const onChangePageSize = useCallback(
@@ -57,11 +57,11 @@ const SectionPagingContent = ({
       newFilter.page = 0;
       newFilter.pageCount = pageItem.key;
 
-      onLoading(true);
+      setIsLoading(true);
       fetchFiles(selectedFolderId, newFilter, store.dispatch)
-        .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, onLoading]
+    [filter, selectedFolderId, setIsLoading]
   );
 
   const onChangePage = useCallback(
@@ -71,11 +71,11 @@ const SectionPagingContent = ({
       const newFilter = filter.clone();
       newFilter.page = pageItem.key;
 
-      onLoading(true);
+      setIsLoading(true);
       fetchFiles(selectedFolderId, newFilter, store.dispatch)
-      .finally(() => onLoading(false));
+        .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, onLoading]
+    [filter, selectedFolderId, setIsLoading]
   );
 
   const countItems = useMemo(
@@ -152,5 +152,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { fetchFiles }
+  { fetchFiles, setIsLoading }
 )(SectionPagingContent);

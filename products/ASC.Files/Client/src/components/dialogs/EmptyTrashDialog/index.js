@@ -6,6 +6,7 @@ import { api, utils } from "asc-web-common";
 import { fetchFiles, clearProgressData } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
+
 const i18n = createI18N({
   page: "EmptyTrashDialog",
   localesPath: "dialogs/EmptyTrashDialog"

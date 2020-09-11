@@ -88,6 +88,7 @@ const StyledDropdownItem = styled.div`
 `;
 
 const IconWrapper = styled.div`
+    display:flex;
     width: 16px;
     margin-right: 8px;
     line-height: 14px;

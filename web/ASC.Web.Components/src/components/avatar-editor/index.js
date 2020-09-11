@@ -66,15 +66,15 @@ class AvatarEditor extends React.Component {
   saveAvatar = () => {
     this.state.isContainsFile
       ? this.props.onSave(
-          this.state.isContainsFile,
-          {
-            x: this.state.x,
-            y: this.state.y,
-            width: this.state.width,
-            height: this.state.height
-          },
-          this.state.croppedImage
-        )
+        this.state.isContainsFile,
+        {
+          x: this.state.x,
+          y: this.state.y,
+          width: this.state.width,
+          height: this.state.height
+        },
+        this.state.croppedImage
+      )
       : this.props.onSave(this.state.isContainsFile);
   };
   onClickRotateLeft = e => {
@@ -130,6 +130,7 @@ class AvatarEditor extends React.Component {
           <Button
             key="SaveBtn"
             label={this.props.saveButtonLabel}
+            isLoading={this.props.saveButtonLoading}
             primary={true}
             size="medium"
             onClick={this.onSaveButtonClick}
@@ -156,6 +157,7 @@ AvatarEditor.propTypes = {
   chooseFileLabel: PropTypes.string,
   chooseMobileFileLabel: PropTypes.string,
   saveButtonLabel: PropTypes.string,
+  saveButtonLoading: PropTypes.bool,
   maxSizeFileError: PropTypes.string,
   image: PropTypes.string,
   maxSize: PropTypes.number,

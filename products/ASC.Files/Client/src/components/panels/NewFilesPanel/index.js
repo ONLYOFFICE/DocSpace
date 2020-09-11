@@ -37,7 +37,8 @@ import {
   setMediaViewerData,
   setTreeFolders,
   setNewTreeFilesBadge,
-  setNewRowItems
+  setNewRowItems,
+  setIsLoading
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
@@ -58,13 +59,13 @@ class NewFilesPanelComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { folderId, onLoading } = this.props;
-    onLoading(true);
+    const { folderId, setIsLoading } = this.props;
+    setIsLoading(true);
     api.files
       .getNewFiles(folderId[folderId.length - 1])
       .then(files => this.setState({ files }))
       .catch(err => toastr.error(err))
-      .finally(() => onLoading(false));
+      .finally(() => setIsLoading(false));
   }
 
   getItemIcon = (item, isEdit) => {
@@ -114,7 +115,7 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onNewFilesClick = item => {
-    const { onClose, /*onLoading,*/ folderId } = this.props;
+    const { onClose, /*setIsLoading,*/ folderId } = this.props;
     const folderIds = [];
     const fileId = [];
     const isFile = item.fileExst;
@@ -297,5 +298,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems }
+  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems, setIsLoading }
 )(withRouter(NewFilesPanel));

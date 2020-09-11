@@ -10,7 +10,6 @@ import {
   ArticleBodyContent,
   ArticleMainButtonContent
 } from "../../Article";
-import { setIsLoading } from "../../../store/files/actions";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -73,16 +72,12 @@ class PureVersionHistory extends React.Component {
 
             <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent
-                onLoading={setIsLoading}
                 startUpload={this.startUpload}
               />
             </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>
-              <ArticleBodyContent
-                onLoading={setIsLoading}
-                isLoading={isLoading}
-              />
+              <ArticleBodyContent />
             </PageLayout.ArticleBody>
 
             <PageLayout.SectionHeader>
@@ -92,31 +87,30 @@ class PureVersionHistory extends React.Component {
             <PageLayout.SectionBody>
               <SectionBodyContent
                 getFileVersions={this.getFileVersions}
-                onLoading={setIsLoading}
                 versions={versions}
                 culture={settings.culture}
               />
             </PageLayout.SectionBody>
           </PageLayout>
         ) : (
-          <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+            <PageLayout>
+              <PageLayout.ArticleHeader>
+                <ArticleHeaderContent />
+              </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+              <PageLayout.ArticleBody>
+                <ArticleBodyContent />
+              </PageLayout.ArticleBody>
 
-            <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        )}
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
+          )}
       </>
     );
   }
@@ -150,5 +144,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { setIsLoading }
+  {}
 )(withRouter(VersionHistory));

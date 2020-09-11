@@ -40,7 +40,6 @@ const PureSettings = props => {
     match,
     t,
     isLoading,
-    setIsLoading,
     enableThirdParty,
     isAdmin
   } = props;
@@ -67,7 +66,7 @@ const PureSettings = props => {
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>
-          <ArticleBodyContent onLoading={setIsLoading} isLoading={isLoading} />
+          <ArticleBodyContent />
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
@@ -83,12 +82,12 @@ const PureSettings = props => {
 
   return (!enableThirdParty && setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
-    <Error403 />
-  ) : errorLoading ? (
-    <Error520 />
-  ) : (
-    settings
-  );
+      <Error403 />
+    ) : errorLoading ? (
+      <Error520 />
+    ) : (
+        settings
+      );
 };
 
 const SettingsContainer = withTranslation()(PureSettings);

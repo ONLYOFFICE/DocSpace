@@ -15,7 +15,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { api } from "asc-web-common";
-import { fetchFiles } from "../../../../../store/files/actions";
+import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
 
 const { tablet } = utils.device;
@@ -115,7 +115,7 @@ const VersionRow = props => {
     culture,
     selectedFolderId,
     filter,
-    onLoading,
+    setIsLoading,
     isVersion,
     t,
     getFileVersions
@@ -151,7 +151,7 @@ const VersionRow = props => {
 
   const title = `${new Date(info.created).toLocaleString(culture)} ${
     info.createdBy.displayName
-  }`;
+    }`;
 
   const linkStyles = { isHovered: true, type: "action" };
 
@@ -175,21 +175,21 @@ const VersionRow = props => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    onLoading(true);
+    setIsLoading(true);
     api.files
       .versionRestore(info.id, info.version)
       .then(() => getFileVersions(info.id))
       .catch(err => toastr.error(err))
-      .finally(() => onLoading(false));
+      .finally(() => setIsLoading(false));
   };
 
   const onVersionClick = () => {
-    onLoading(true);
+    setIsLoading(true);
     api.files
       .markAsVersion(info.id, isVersion, info.version)
       .then(() => getFileVersions(info.id))
       .catch(err => toastr.error(err))
-      .finally(() => onLoading(false));
+      .finally(() => setIsLoading(false));
   };
 
   const contextOptions = [
@@ -317,5 +317,7 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  {}
+  {
+    setIsLoading
+  }
 )(withRouter(withTranslation()(VersionRow)));
