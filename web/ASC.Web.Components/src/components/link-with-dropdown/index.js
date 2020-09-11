@@ -104,8 +104,12 @@ const StyledText = styled(SimpleText)`
 const StyledSpan = styled.span`
   position: relative;
 
+  .drop-down-item{
+    display:block;
+  }
+
   .fixed-max-width {
-    max-width: 260px;
+    max-width: 300px;
   }
 `;
 class LinkWithDropdown extends React.Component {
@@ -212,6 +216,7 @@ class LinkWithDropdown extends React.Component {
         >
           {data.map(item => (
             <DropDownItem
+              className="drop-down-item"
               key={item.key}
               {...item}
               onClick={this.onClickDropDownItem.bind(this.props, item)}
