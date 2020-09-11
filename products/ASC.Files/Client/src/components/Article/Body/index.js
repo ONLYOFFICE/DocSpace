@@ -26,8 +26,8 @@ class ArticleBodyContent extends React.Component {
     const { organizationName, selectedFolderTitle, currentModuleName } = props;
 
     document.title = selectedFolderTitle
-      ? `${selectedFolderTitle} – ${currentModuleName}`
-      : `${currentModuleName} – ${organizationName}`;
+      ? `${selectedFolderTitle} - ${currentModuleName}`
+      : `${currentModuleName} - ${organizationName}`;
 
     this.state = {
       expandedKeys: this.props.filter.treeFolders,
@@ -88,8 +88,8 @@ class ArticleBodyContent extends React.Component {
         (e.node && e.node.props && e.node.props.title) || null;
 
       document.title = selectedFolderTitle
-        ? `${selectedFolderTitle} – ${currentModuleName}`
-        : `${currentModuleName} – ${organizationName}`;
+        ? `${selectedFolderTitle} - ${currentModuleName}`
+        : `${currentModuleName} - ${organizationName}`;
 
       fetchFiles(data[0], newFilter, store.dispatch)
         .catch(err => toastr.error(err))
