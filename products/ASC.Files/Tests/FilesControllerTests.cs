@@ -25,7 +25,8 @@ using NUnit.Framework;
 
 using System.Collections.Generic;
 using System.IO;
-namespace ASC.Tests.ASC.Files
+
+namespace ASC.Tests.ASC.Files.Tests
 {
     [TestFixture]
     public class FilesControllerTests
@@ -109,6 +110,7 @@ namespace ASC.Tests.ASC.Files
         }
 
         [TestCase(1, false, true)]
+        [Ignore("")]
         public void DeleteFileTest(int field, bool deleteAfter, bool immediately)
         {
             FilesController.DeleteFile(field, deleteAfter, immediately);
