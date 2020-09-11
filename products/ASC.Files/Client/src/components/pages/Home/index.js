@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import { RequestLoader, Checkbox, toastr } from "asc-web-components";
+import { RequestLoader, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
@@ -308,10 +308,10 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      selected,
-      overwriteSetting,
-      uploadOriginalFormatSetting,
-      hideWindowSetting
+      selected
+      // overwriteSetting,
+      // uploadOriginalFormatSetting,
+      // hideWindowSetting
     } = this.state;
     const {
       t,
@@ -322,25 +322,25 @@ class PureHome extends React.Component {
       setIsLoading
     } = this.props;
 
-    const progressBarContent = (
-      <div>
-        <Checkbox
-          onChange={this.onChangeOverwrite}
-          isChecked={overwriteSetting}
-          label={t("OverwriteSetting")}
-        />
-        <Checkbox
-          onChange={this.onChangeOriginalFormat}
-          isChecked={uploadOriginalFormatSetting}
-          label={t("UploadOriginalFormatSetting")}
-        />
-        <Checkbox
-          onChange={this.onChangeWindowVisible}
-          isChecked={hideWindowSetting}
-          label={t("HideWindowSetting")}
-        />
-      </div>
-    );
+    // const progressBarContent = (
+    //   <div>
+    //     <Checkbox
+    //       onChange={this.onChangeOverwrite}
+    //       isChecked={overwriteSetting}
+    //       label={t("OverwriteSetting")}
+    //     />
+    //     <Checkbox
+    //       onChange={this.onChangeOriginalFormat}
+    //       isChecked={uploadOriginalFormatSetting}
+    //       label={t("UploadOriginalFormatSetting")}
+    //     />
+    //     <Checkbox
+    //       onChange={this.onChangeWindowVisible}
+    //       isChecked={hideWindowSetting}
+    //       label={t("HideWindowSetting")}
+    //     />
+    //   </div>
+    // );
 
     return (
       <>
