@@ -30,10 +30,12 @@ class PureHome extends React.Component {
   constructor(props) {
     super(props);
 
-    const currentGroup = getSelectedGroup(props.groups, props.selectedGroup);
+    const { t, organizationName, groups, selectedGroup } = props;
+
+    const currentGroup = getSelectedGroup(groups, selectedGroup);
     document.title = currentGroup
-      ? `${currentGroup.name} – ${props.t("People")}`
-      : `${props.t("People")} – ${props.t("OrganizationName")}`;
+      ? `${currentGroup.name} – ${t("People")}`
+      : `${t("People")} – ${organizationName}`;
 
     this.state = {
       isHeaderVisible: false,
@@ -176,13 +178,15 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
-    users: state.people.users,
-    selection: state.people.selection,
-    selected: state.people.selected,
+    users,
+    selection,
+    selected,
+    selectedGroup,
+    groups,
     isLoaded: state.auth.isLoaded,
-    selectedGroup: state.people.selectedGroup,
-    groups: state.people.groups
+    organizationName: state.auth.settings.organizationName
   };
 }
 

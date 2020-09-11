@@ -58,12 +58,12 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectGroup, groups, t } = this.props;
+    const { selectGroup, groups, t, organizationName } = this.props;
 
     const currentGroup = getSelectedGroup(groups, data[0]);
     document.title = currentGroup
       ? `${currentGroup.name} – ${t("People")}`
-      : `${t("People")} – ${t("OrganizationName")}`;
+      : `${t("People")} – ${organizationName}`;
     selectGroup(
       data && data.length === 1 && data[0] !== "root" ? data[0] : null
     );
@@ -169,14 +169,16 @@ const BodyContent = props => {
 
 function mapStateToProps(state) {
   const groups = state.people.groups;
-  const { groupsCaption } = state.auth.settings.customNames;
+  const { customNames, organizationName } = state.auth.settings;
+  const { groupsCaption } = customNames;
 
   return {
     data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
-    groups
+    groups,
+    organizationName
   };
 }
 
