@@ -1,22 +1,11 @@
-﻿using ASC.Api.Core;
-using ASC.Api.Documents;
+﻿using ASC.Api.Documents;
+using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Core.Common.Configuration;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files;
-using ASC.Files.Core;
-using ASC.Files.Helpers;
-using ASC.MessagingSystem;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -25,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NUnit.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -37,6 +27,9 @@ namespace ASC.Tests.ASC.Files.Tests
         private TestServer TestServer { get; set; }
         private GlobalFolderHelper GlobalFolderHelper { get; set; }
         private Tenant CurrentTenant { get; set; }
+        private User User { get; set; }
+        private IAccount Account { get; set; }
+        private SecurityContext SecurityContext { get; set; }
 
         [SetUp]
         public void SetUp()
@@ -48,61 +41,14 @@ namespace ASC.Tests.ASC.Files.Tests
                     Configure(hostingContext, config);
                 }));
 
-            var apiContext = TestServer.Services.GetService<ApiContext>();
-            var filesControllerHelperString = TestServer.Services.GetService<FilesControllerHelper<string>>();
-            var filesControllerHelperInt = TestServer.Services.GetService<FilesControllerHelper<int>>();
-            var fileStorageService = TestServer.Services.GetService<FileStorageService<string>>();
-            var fileStorageServiceInt = TestServer.Services.GetService<FileStorageService<int>>();
-            var globalFolderHelper = TestServer.Services.GetService<GlobalFolderHelper>();
-            var filesSettingsHelper = TestServer.Services.GetService<FilesSettingsHelper>();
-            var filesLinkUtility = TestServer.Services.GetService<FilesLinkUtility>();
-            var securityContext = TestServer.Services.GetService<SecurityContext>();
-            var folderWrapperHelper = TestServer.Services.GetService<FolderWrapperHelper>();
-            var fileOperationWraperHelper = TestServer.Services.GetService<FileOperationWraperHelper>();
-            var entryManager = TestServer.Services.GetService<EntryManager>();
-            var userManager = TestServer.Services.GetService<UserManager>();
-            var webItemSecurity = TestServer.Services.GetService<WebItemSecurity>();
-            var coreBaseSettings = TestServer.Services.GetService<CoreBaseSettings>();
-            var thirdpartyConfiguration = TestServer.Services.GetService<ThirdpartyConfiguration>();
-            var messageService = TestServer.Services.GetService<MessageService>();
-            var commonLinkUtility = TestServer.Services.GetService<CommonLinkUtility>();
-            var documentServiceConnector = TestServer.Services.GetService<DocumentServiceConnector>();
-            var folderContentWrapperHelper = TestServer.Services.GetService<FolderContentWrapperHelper>();
-            var wordpressToken = TestServer.Services.GetService<WordpressToken>();
-            var wordpressHelper = TestServer.Services.GetService<WordpressHelper>();
-            var consumerFactory = TestServer.Services.GetService<ConsumerFactory>();
-            var easyBibHelper = TestServer.Services.GetService<EasyBibHelper>();
-            var productEntryPoint = TestServer.Services.GetService<ProductEntryPoint>();
-
-            FilesController = new FilesController(
-                apiContext,
-                filesControllerHelperString,
-                filesControllerHelperInt,
-                fileStorageService,
-                fileStorageServiceInt,
-                globalFolderHelper,
-                filesSettingsHelper,
-                filesLinkUtility,
-                securityContext,
-                folderWrapperHelper,
-                fileOperationWraperHelper,
-                entryManager,
-                userManager,
-                webItemSecurity,
-                coreBaseSettings,
-                thirdpartyConfiguration,
-                messageService,
-                commonLinkUtility,
-                documentServiceConnector,
-                folderContentWrapperHelper,
-                wordpressToken,
-                wordpressHelper,
-                consumerFactory,
-                easyBibHelper,
-                productEntryPoint);
-
+            FilesController = TestServer.Services.GetService<FilesController>();
             GlobalFolderHelper = TestServer.Services.GetService<GlobalFolderHelper>();
+            SecurityContext = TestServer.Services.GetService<SecurityContext>();
+            User = GetUser();
+            Account = GetAccount();
             CurrentTenant = SetAndGetCurrentTenant();
+
+            SecurityContext.AuthenticateMe(Account);
         }
 
         [TestCase("test")]
@@ -178,6 +124,16 @@ namespace ASC.Tests.ASC.Files.Tests
         private Tenant GetTenant()
         {
             return new Tenant();
+        }
+
+        private User GetUser()
+        {
+            return new User { Id = Guid.NewGuid() };
+        }
+
+        private IAccount GetAccount()
+        {
+            return new Account(User.Id, "maks", true);
         }
 
         [TearDown]
