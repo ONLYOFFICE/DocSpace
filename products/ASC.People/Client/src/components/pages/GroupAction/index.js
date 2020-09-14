@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -16,6 +16,7 @@ const i18n = createI18N({
   localesPath: "pages/GroupAction"
 });
 const { changeLanguage } = utils;
+const { isAdmin } = store.auth.selectors;
 
 class GroupAction extends React.Component {
   componentDidMount() {
@@ -44,7 +45,7 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render");
 
-    const { group, match } = this.props;
+    const { group, match, isAdmin } = this.props;
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -54,9 +55,11 @@ class GroupAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+            {isAdmin && (
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
+            )}
 
             <PageLayout.ArticleBody>
               <ArticleBodyContent />
@@ -71,24 +74,26 @@ class GroupAction extends React.Component {
             </PageLayout.SectionBody>
           </PageLayout>
         ) : (
-          <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+            <PageLayout>
+              <PageLayout.ArticleHeader>
+                <ArticleHeaderContent />
+              </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+              {isAdmin && (
+                <PageLayout.ArticleMainButton>
+                  <ArticleMainButtonContent />
+                </PageLayout.ArticleMainButton>
+              )}
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+              <PageLayout.ArticleBody>
+                <ArticleBodyContent />
+              </PageLayout.ArticleBody>
 
-            <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        )}
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
+          )}
       </I18nextProvider>
     );
   }
@@ -110,7 +115,8 @@ const GroupActionContainer = props => {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    group: state.group.targetGroup
+    group: state.group.targetGroup,
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 

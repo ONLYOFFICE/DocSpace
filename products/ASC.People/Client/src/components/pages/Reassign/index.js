@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 // import PropTypes from "prop-types";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -16,6 +16,7 @@ const i18n = createI18N({
   page: "Reassign",
   localesPath: "pages/Reassign"
 });
+const { isAdmin } = store.auth.selectors;
 
 class Reassign extends React.Component {
   componentDidMount() {
@@ -36,6 +37,7 @@ class Reassign extends React.Component {
   }
 
   render() {
+    const { isAdmin } = this.props;
     console.log("Reassign render");
 
     // let loaded = false;
@@ -55,9 +57,11 @@ class Reassign extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
 
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
+          {isAdmin && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
 
           <PageLayout.ArticleBody>
             <ArticleBodyContent />
@@ -84,6 +88,7 @@ Reassign.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    isAdmin: isAdmin(state.auth.user)
     // profile: state.profile.targetUser
   };
 }
