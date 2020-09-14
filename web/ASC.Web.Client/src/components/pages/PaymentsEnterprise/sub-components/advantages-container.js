@@ -20,7 +20,7 @@ const StyledBodyAdvantages = styled.div`
     "fiveI five";
 
   grid-template-columns: 2.7% 98.3%;
-  grid-template-rows: 11.6% 2.9% 2.8% 2.8% 2.8% 77.1%;
+  grid-template-rows: 11.6% 2.9% 2.8% 2.8% 2.8% 1.1%;
   grid-row-gap: 32px;
   grid-column-gap: 5px;
 
@@ -44,7 +44,7 @@ const StyledBodyAdvantages = styled.div`
   .first-advantages {
     grid-area: first;
     z-index: 1;
-    padding: 3px;
+    /* padding: 3px; */
   }
   .first_icon {
     grid-area: firstI;
@@ -103,6 +103,7 @@ const StyledBodyAdvantages = styled.div`
     .first-advantages {
       padding-left: 11px;
       margin-bottom: 6px;
+      padding-top: 3px;
     }
     .four-advantages {
       padding-left: 5px;
@@ -151,6 +152,7 @@ const StyledBodyAdvantages = styled.div`
     .first-advantages {
       padding-left: 5px;
       margin-bottom: 4px;
+      /* padding-top: 0; */
     }
     .four-advantages {
       padding-left: 5px;

@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import { Button, utils, FileInput } from "asc-web-components";
 
 const { tablet } = utils.device;
@@ -95,9 +97,14 @@ class ButtonContainer extends React.Component {
 }
 
 ButtonContainer.propTypes = {
-  buyUrl: PropTypes.string.isRequired,
+  buyUrl: PropTypes.string,
   t: PropTypes.func.isRequired,
   onButtonClickUpload: PropTypes.func.isRequired,
   onButtonClickBuy: PropTypes.func.isRequired,
 };
-export default ButtonContainer;
+function mapStateToProps(state) {
+  return {
+    buyUrl: state.payments.buyUrl,
+  };
+}
+export default connect(mapStateToProps)(withRouter(ButtonContainer));

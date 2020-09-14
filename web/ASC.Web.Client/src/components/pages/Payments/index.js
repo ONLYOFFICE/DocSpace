@@ -7,7 +7,7 @@ import PaymentsSaaS from "../PaymentsSaaS";
 class Payments extends React.Component {
   render() {
     const { standaloneMode } = this.props;
-    return standaloneMode ? <PaymentsEnterprise /> : <PaymentsSaaS />;
+    return standaloneMode ? <PaymentsEnterprise /> : <PaymentsEnterprise />;
   }
 }
 

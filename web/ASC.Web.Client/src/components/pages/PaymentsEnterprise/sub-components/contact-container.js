@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
-import { Text, Link, utils } from "asc-web-components";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { Text, Link } from "asc-web-components";
 
 const StyledContactContainer = styled.div`
   .contact-emails {
@@ -38,7 +39,7 @@ const ContactContainer = ({ t, salesEmail, helpUrl }) => {
       <Text className="contact-emails">
         {t("TechnicalIssues")}{" "}
         <Link
-          target="\_blank"
+          target="_blank"
           className="contact-emails_link"
           href={`${helpUrl}`}
         >
@@ -50,9 +51,15 @@ const ContactContainer = ({ t, salesEmail, helpUrl }) => {
 };
 
 ContactContainer.propTypes = {
-  salesEmail: PropTypes.string.isRequired,
-  help: PropTypes.string.isRequired,
+  salesEmail: PropTypes.string,
+  helpUrl: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
 
-export default ContactContainer;
+function mapStateToProps(state) {
+  return {
+    salesEmail: state.payments.salesEmail,
+    helpUrl: state.payments.helpUrl,
+  };
+}
+export default connect(mapStateToProps)(withRouter(ContactContainer));

@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import { Text, utils } from "asc-web-components";
 
 const { tablet } = utils.device;
@@ -58,17 +59,18 @@ const HeaderContainer = ({
   require("moment/min/locales.min");
   moment.locale(culture);
   const currentUserDate = moment().utcOffset(utcHoursOffset);
-
+  console.log(typeof expiresDate);
   return moment(
-    currentUserDate.set("hour", 0).set("minute", 0).set("second", 0)
-  ).isAfter(
     moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
+  ).isAfter(
+    currentUserDate.set("hour", 0).set("minute", 0).set("second", 0)
   ) ? (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
       <Text className="payments-header-additional_support">
-        {t("SubscriptionAndUpdatesExpires")}
+        {t("SubscriptionAndUpdatesExpires")}{" "}
         {moment.utc(expiresDate).format("LL")}
+        {"."}
       </Text>
     </StyledHeader>
   ) : !trialMode ? (
@@ -77,7 +79,7 @@ const HeaderContainer = ({
 
       <Text className="payments-header-additional_support" color="#C96C27">
         {t("SupportNotAvailable")}{" "}
-        {moment.utc(expiresDate).startOf("day").format("dddd, MMMM D, YYYY")}
+        {moment.utc(expiresDate).startOf("day").format("ddd, D MMMM , YYYY")}
         {". "}
         {t("LicenseRenewal")}
       </Text>
@@ -93,9 +95,18 @@ const HeaderContainer = ({
 };
 
 HeaderContainer.propTypes = {
-  dateExpires: PropTypes.string.isRequired,
-  createPortals: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
+  culture: PropTypes.string,
+  utcHoursOffset: PropTypes.number,
+  expiresDate: PropTypes.object,
+  trialMode: PropTypes.bool,
 };
-
-export default HeaderContainer;
+function mapStateToProps(state) {
+  return {
+    culture: state.auth.settings.culture,
+    utcHoursOffset: state.auth.settings.utcHoursOffset,
+    expiresDate: state.payments.currentLicense.expiresDate,
+    trialMode: state.payments.trialMode,
+  };
+}
+export default connect(mapStateToProps)(withRouter(HeaderContainer));
