@@ -21,11 +21,18 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
-const PureSettings = props => {
+const PureSettings = ({
+  match,
+  t,
+  isLoading,
+  enableThirdParty,
+  isAdmin,
+  getFilesSettings, 
+  setIsLoading
+}) => {
   const [errorLoading, setErrorLoading] = useState(false);
 
   useEffect(() => {
-    const { getFilesSettings, setIsLoading } = props;
     setIsLoading(true);
     getFilesSettings()
       .then(() => setIsLoading(false))
@@ -35,14 +42,7 @@ const PureSettings = props => {
       });
   }, []);
 
-  console.log("Settings render()");
-  const {
-    match,
-    t,
-    isLoading,
-    enableThirdParty,
-    isAdmin
-  } = props;
+  //console.log("Settings render()");
   const { setting } = match.params;
 
   const settings = (
