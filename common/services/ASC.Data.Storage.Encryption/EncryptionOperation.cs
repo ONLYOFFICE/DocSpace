@@ -29,6 +29,7 @@ using Microsoft.Extensions.Options;
 using ASC.Common;
 using Microsoft.Extensions.Configuration;
 using ASC.Common.Caching;
+using System.Threading.Tasks;
 
 namespace ASC.Data.Storage.Encryption
 {
@@ -73,7 +74,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 if (!coreBaseSettings.Standalone)
                 {
-                    throw new NotSupportedException();
+                  //  throw new NotSupportedException();
                 }
 
                 if (EncryptionSettings.Status == EncryprtionStatus.Encrypted || EncryptionSettings.Status == EncryprtionStatus.Decrypted)
@@ -85,10 +86,15 @@ namespace ASC.Data.Storage.Encryption
                 GetProgress(progressEncryption);
                 foreach (var tenant in Tenants)
                 {
+                    Queue<DiscDataStore> queue = new Queue<DiscDataStore>();
                     foreach (var module in Modules)
                     {
-                        EncryptStore(tenant, module, storageFactory, storageFactoryConfig, log);
+                        queue.Enqueue((DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
                     }
+                    Parallel.ForEach(Modules, (module) =>
+                    {
+                        EncryptStore(tenant, module, queue.Dequeue(), storageFactoryConfig, log);
+                    });
                 }
                 Percentage = 70;
                 GetProgress(progressEncryption);
@@ -109,9 +115,9 @@ namespace ASC.Data.Storage.Encryption
         }
 
 
-        private void EncryptStore(Tenant tenant, string module, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ILog log)
+        private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
         {
-            var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+           // var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
 
             var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
