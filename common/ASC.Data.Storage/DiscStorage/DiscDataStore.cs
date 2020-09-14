@@ -32,6 +32,7 @@ using System.Linq;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Data.Storage.Encryption;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,9 @@ namespace ASC.Data.Storage.DiscStorage
     public class DiscDataStore : BaseStorage
     {
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
+        private ICrypt Crypt { get; set; }
+        private EncryptionSettingsHelper EncryptionSettingsHelper { get; set; }
+        private EncryptionFactory EncryptionFactory { get; set; }
 
         public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
@@ -62,6 +66,9 @@ namespace ASC.Data.Storage.DiscStorage
                     ToDictionary(x => x.Name,
                                  y => y.Expires);
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+            var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : EncryptionSettingsHelper.Load();
+            Crypt = EncryptionFactory.GetCrypt(moduleConfig.Name, settings);
+
             return this;
         }
 
@@ -70,9 +77,13 @@ namespace ASC.Data.Storage.DiscStorage
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            EncryptionSettingsHelper encryptionSettingsHelper,
+            EncryptionFactory encryptionFactory)
             : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
+            EncryptionSettingsHelper = encryptionSettingsHelper;
+            EncryptionFactory = encryptionFactory;
         }
 
         public string GetPhysicalPath(string domain, string path)
@@ -676,7 +687,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                new FileInfo(target).Encrypt();
+                Crypt.EncryptFile(target);
             }
             else
             {
@@ -692,7 +703,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                new FileInfo(target).Decrypt();
+                Crypt.DecryptFile(target);
             }
             else
             {

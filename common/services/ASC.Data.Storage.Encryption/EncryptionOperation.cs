@@ -376,8 +376,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionOperationService(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionOperation>();
-            services.TryAddScoped<EncryptionOperationScope>();
+            services.TryAddTransient<EncryptionOperation>();
+            services.TryAddTransient<EncryptionOperationScope>();
             return services
                 .AddStorageFactoryConfigService()
                 .AddStorageFactoryService()
