@@ -53,7 +53,7 @@ const getFormatedGroups = (user, status, selectGroup) => {
   }
 };
 
-const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
+const UserContent = ({ user, history, settings, selectGroup, widthProp, isMobile }) => {
   const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
   const groups = getFormatedGroups(user, status, selectGroup);
@@ -82,6 +82,7 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
   return (
     <RowContent
       widthProp={widthProp}
+      isMobile={isMobile}
       sideColor={sideInfoColor}
     >
       <Link
@@ -115,15 +116,15 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
         >
           {title}
         </Text>
-        : <Box 
-          containerMinWidth='120px' 
-          containerWidth='20%' 
+        : <Box
+          containerMinWidth='120px'
+          containerWidth='20%'
         ></Box>
       }
       {groups}
       <Link
-        containerMinWidth='60px' 
-        containerWidth='15%' 
+        containerMinWidth='60px'
+        containerWidth='15%'
         type='page'
         title={mobilePhone}
         fontSize='12px'
@@ -135,8 +136,8 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp }) => {
         {mobilePhone}
       </Link>
       <Link
-        containerMinWidth='140px' 
-        containerWidth='15%' 
+        containerMinWidth='140px'
+        containerWidth='15%'
         type='page'
         title={email}
         fontSize='12px'

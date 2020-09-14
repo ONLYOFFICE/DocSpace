@@ -134,6 +134,7 @@ class PureHome extends React.Component {
 
           <PageLayout.SectionBody>
             <SectionBodyContent
+              isMobile={isMobile}
               selected={selected}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
