@@ -1,44 +1,56 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { history } from "asc-web-common";
 import { selectGroup } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils as commonUtils, store as initStore } from "asc-web-common";
+import { history, utils as commonUtils, store as initStore } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article"
 });
 
 const { changeLanguage } = commonUtils;
-const { getCurrentModule } = initStore.auth.selectors;
+const { getCurrentModule, isAdmin } = initStore.auth.selectors;
 
 const getItems = data => {
   return data.map(item => {
-    if (item.children && item.children.length) {
+    if (item.children) {
       return (
         <TreeNode
+          className="root-folder"
           title={item.title}
           key={item.key}
           icon={
             item.root ? (
-              <Icons.CatalogDepartmentsIcon
+              <Icons.DepartmentsGroupIcon
                 size="scale"
                 isfill={true}
                 color="#657077"
               />
             ) : (
-              ""
-            )
+                ""
+              )
           }
         >
           {getItems(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode key={item.key} title={item.title} />;
+    return <TreeNode
+      className='inner-folder'
+      key={item.key}
+      title={item.title}
+      icon={
+        <Icons.CatalogFolderIcon
+          size="scale"
+          isfill={true}
+          color="#657077"
+        />
+      }
+    />;
   });
 };
 
@@ -206,7 +218,8 @@ function mapStateToProps(state) {
       : ["root"],
     groups,
     organizationName,
-    currentModuleName: (currentModule && currentModule.title) || ""
+    currentModuleName: (currentModule && currentModule.title) || "",
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 
