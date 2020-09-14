@@ -21,7 +21,7 @@ const Dialog = styled.div`
 
 const Content = styled.div`
   position: relative;
-  width: 100%;
+  /* width: 100%; */
   background-color: #fff;
   padding: 0 16px 16px;
   box-sizing: border-box;
@@ -144,6 +144,9 @@ class ModalDialog extends React.Component {
       onClose,
       zIndex,
       bodyPadding,
+      className,
+      id,
+      style,
       children
     } = this.props;
 
@@ -172,7 +175,7 @@ class ModalDialog extends React.Component {
 
     return this.state.displayType === "modal" ? (
       <Backdrop visible={visible} zIndex={zIndex}>
-        <Dialog>
+        <Dialog className={className} id={id} style={style}>
           <Content>
             <StyledHeader>
               <Heading className="heading" size="medium" truncate={true}>
@@ -188,11 +191,7 @@ class ModalDialog extends React.Component {
         </Dialog>
       </Backdrop>
     ) : (
-      <Box
-        className={this.props.className}
-        id={this.props.id}
-        style={this.props.style}
-      >
+      <Box className={className} id={id} style={style}>
         <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
         <Aside
           visible={visible}

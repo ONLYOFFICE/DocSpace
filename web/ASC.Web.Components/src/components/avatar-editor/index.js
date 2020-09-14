@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import ModalDialog from "../modal-dialog";
 import Button from "../button";
-import IconButton from "../icon-button";
 import AvatarEditorBody from "./sub-components/avatar-editor-body";
 
 class AvatarEditor extends React.Component {
@@ -19,71 +18,59 @@ class AvatarEditor extends React.Component {
       height: 0,
       croppedImage: ""
     };
-
-    this.onClose = this.onClose.bind(this);
-    this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
-    this.onImageChange = this.onImageChange.bind(this);
-    this.onLoadFileError = this.onLoadFileError.bind(this);
-    this.onLoadFile = this.onLoadFile.bind(this);
-    this.onPositionChange = this.onPositionChange.bind(this);
-    this.onSizeChange = this.onSizeChange.bind(this);
-
-    this.onDeleteImage = this.onDeleteImage.bind(this);
   }
 
-  onImageChange(file) {
+  onImageChange = file => {
     this.setState({
       croppedImage: file
     });
     if (typeof this.props.onImageChange === "function")
       this.props.onImageChange(file);
-  }
-  onDeleteImage() {
+  };
+  onDeleteImage = () => {
     this.setState({
       isContainsFile: false
     });
     if (typeof this.props.onDeleteImage === "function")
       this.props.onDeleteImage();
-  }
-  onSizeChange(data) {
+  };
+  onSizeChange = data => {
     this.setState(data);
-  }
-  onPositionChange(data) {
+  };
+  onPositionChange = data => {
     this.setState(data);
-  }
-  onLoadFileError(error) {
+  };
+  onLoadFileError = error => {
     if (typeof this.props.onLoadFileError === "function")
       this.props.onLoadFileError(error);
-  }
-  onLoadFile(file, callback) {
+  };
+  onLoadFile = (file, callback) => {
     if (typeof this.props.onLoadFile === "function")
       this.props.onLoadFile(file, callback);
     if (!this.state.isContainsFile) this.setState({ isContainsFile: true });
-  }
-  onSaveButtonClick() {
+  };
+  onSaveButtonClick = () => {
     this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
-  }
+  };
   saveAvatar = () => {
     this.state.isContainsFile
       ? this.props.onSave(
-        this.state.isContainsFile,
-        {
-          x: this.state.x,
-          y: this.state.y,
-          width: this.state.width,
-          height: this.state.height
-        },
-        this.state.croppedImage
-      )
+          this.state.isContainsFile,
+          {
+            x: this.state.x,
+            y: this.state.y,
+            width: this.state.width,
+            height: this.state.height
+          },
+          this.state.croppedImage
+        )
       : this.props.onSave(this.state.isContainsFile);
   };
-  onClickRotateLeft = e => {
-    this.avatarEditorBodyRef.current.rotateLeft(e);
-  };
-  onClose() {
+
+  onClose = () => {
     this.setState({ visible: false });
     this.props.onClose();
-  }
+  };
   componentDidUpdate(prevProps) {
     if (this.props.visible !== prevProps.visible) {
       this.setState({ visible: this.props.visible });
@@ -94,56 +81,64 @@ class AvatarEditor extends React.Component {
   }
 
   render() {
+    const {
+      displayType,
+      className,
+      id,
+      style,
+      headerLabel,
+      maxSize,
+      accept,
+      image,
+      chooseFileLabel,
+      chooseMobileFileLabel,
+      unknownTypeError,
+      maxSizeFileError,
+      unknownError,
+      saveButtonLabel,
+      saveButtonLoading
+    } = this.props;
+
     return (
       <ModalDialog
         visible={this.state.visible}
-        displayType={this.props.displayType}
+        displayType={displayType}
         scale={true}
         onClose={this.onClose}
-        className={this.props.className}
-        id={this.props.id}
-        style={this.props.style}
+        className={className}
+        id={id}
+        style={style}
       >
-        <ModalDialog.Header>{this.props.headerLabel}</ModalDialog.Header>
+        <ModalDialog.Header>{headerLabel}</ModalDialog.Header>
         <ModalDialog.Body>
           <AvatarEditorBody
-            onImageChange={this.onImageChange}
+            ref={this.avatarEditorBodyRef}
             visible={this.state.visible}
+            onImageChange={this.onImageChange}
             onPositionChange={this.onPositionChange}
             onSizeChange={this.onSizeChange}
             onLoadFileError={this.onLoadFileError}
             onLoadFile={this.onLoadFile}
             deleteImage={this.onDeleteImage}
             saveAvatar={this.saveAvatar}
-            maxSize={this.props.maxSize * 1000000} // megabytes to bytes
-            accept={this.props.accept}
-            image={this.props.image}
-            chooseFileLabel={this.props.chooseFileLabel}
-            chooseMobileFileLabel={this.props.chooseMobileFileLabel}
-            unknownTypeError={this.props.unknownTypeError}
-            maxSizeFileError={this.props.maxSizeFileError}
-            unknownError={this.props.unknownError}
-            ref={this.avatarEditorBodyRef}
+            maxSize={maxSize * 1000000} // megabytes to bytes
+            accept={accept}
+            image={image}
+            chooseFileLabel={chooseFileLabel}
+            chooseMobileFileLabel={chooseMobileFileLabel}
+            unknownTypeError={unknownTypeError}
+            maxSizeFileError={maxSizeFileError}
+            unknownError={unknownError}
           />
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SaveBtn"
-            label={this.props.saveButtonLabel}
-            isLoading={this.props.saveButtonLoading}
+            label={saveButtonLabel}
+            isLoading={saveButtonLoading}
             primary={true}
-            size="medium"
+            size="big"
             onClick={this.onSaveButtonClick}
-          />
-          <IconButton
-            key="RotateBtn"
-            iconName="RotateIcon"
-            color="#A3A9AE"
-            size="25"
-            hoverColor="#657077"
-            isFill={true}
-            onClick={this.onClickRotateLeft}
-            style={{ display: "inline-block", marginLeft: "8px" }}
           />
         </ModalDialog.Footer>
       </ModalDialog>
