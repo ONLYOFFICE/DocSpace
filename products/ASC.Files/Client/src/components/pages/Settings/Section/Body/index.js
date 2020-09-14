@@ -27,32 +27,38 @@ const StyledSettings = styled.div`
   }
 `;
 
-function SectionBodyContent(props) {
-  useEffect(() => {
-    const { setting, t } = props;
-    document.title = t(`${setting}`);
-  }, [props.setting]);
+const SectionBodyContent = ({
+  setting,
+  selectedTreeNode, setSelectedNode,
+  storeForceSave, setStoreForceSave ,
+  enableThirdParty, setEnableThirdParty,
+  storeOriginalFiles, setStoreOriginal,
+  confirmDelete, setConfirmDelete,
+  updateIfExist, setUpdateIfExist,
+  forceSave, setForceSave,
+  isAdmin,
+  t
+}) => {
 
   useEffect(() => {
-    const { setting, selectedTreeNode, setSelectedNode } = props;
+    document.title = t(`${setting}`);
+  }, [setting]);
+
+  useEffect(() => {
     if (setting !== selectedTreeNode[0]) {
       setSelectedNode([setting]);
     }
-  }, [props.setting]);
+  }, [setting]);
 
   const onChangeStoreForceSave = () => {
-    const { storeForceSave, setStoreForceSave } = props;
     setStoreForceSave(!storeForceSave, "storeForceSave");
   };
 
   const onChangeThirdParty = () => {
-    const { enableThirdParty, setEnableThirdParty } = props;
     setEnableThirdParty(!enableThirdParty, "enableThirdParty");
   };
 
   const renderAdminSettings = () => {
-    const { enableThirdParty, storeForceSave, t } = props;
-
     return (
       <StyledSettings>
         <ToggleButton
@@ -72,34 +78,22 @@ function SectionBodyContent(props) {
   };
 
   const onChangeOriginalCopy = () => {
-    const { storeOriginalFiles, setStoreOriginal } = props;
     setStoreOriginal(!storeOriginalFiles, "storeOriginalFiles");
   };
 
   const onChangeDeleteConfirm = () => {
-    const { confirmDelete, setConfirmDelete } = props;
     setConfirmDelete(!confirmDelete, "confirmDelete");
   };
 
   const onChangeUpdateIfExist = () => {
-    const { updateIfExist, setUpdateIfExist } = props;
     setUpdateIfExist(!updateIfExist, "updateIfExist");
   };
 
   const onChangeForceSave = () => {
-    const { forceSave, setForceSave } = props;
     setForceSave(!forceSave, "forceSave");
   };
 
   const renderCommonSettings = () => {
-    const {
-      updateIfExist,
-      confirmDelete,
-      storeOriginalFiles,
-      forceSave,
-      t
-    } = props;
-
     return (
       <StyledSettings>
         <ToggleButton
@@ -158,7 +152,6 @@ function SectionBodyContent(props) {
     return <></>;
   };
 
-  const { setting, enableThirdParty, isAdmin } = props;
   let content;
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();

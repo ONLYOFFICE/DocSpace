@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -24,6 +24,7 @@ const i18n = createI18N({
   localesPath: "pages/Home"
 });
 const { changeLanguage } = utils;
+const { isAdmin } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -91,7 +92,7 @@ class PureHome extends React.Component {
       isHeaderChecked,
       selected
     } = this.state;
-    const { t } = this.props;
+    const { t, isAdmin } = this.props;
     return (
       <>
         <RequestLoader
@@ -108,9 +109,11 @@ class PureHome extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
 
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
+          {isAdmin && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
 
           <PageLayout.ArticleBody>
             <ArticleBodyContent />
@@ -167,7 +170,8 @@ const Home = props => {
 Home.propTypes = {
   users: PropTypes.array,
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
+  isAdmin: PropTypes.bool
 };
 
 function mapStateToProps(state) {
@@ -179,7 +183,8 @@ function mapStateToProps(state) {
     selectedGroup,
     groups,
     isLoaded: state.auth.isLoaded,
-    organizationName: state.auth.settings.organizationName
+    organizationName: state.auth.settings.organizationName,
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 

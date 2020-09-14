@@ -508,7 +508,6 @@ export function setEnableThirdParty(data, setting) {
 }
 
 export function setForceSave(data, setting) {
-  console.log( data , setting)
   return dispatch => {
     return files.forceSave(data)
       .then( res => dispatch(setFilesSetting(setting, res)));

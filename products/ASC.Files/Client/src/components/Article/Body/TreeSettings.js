@@ -37,13 +37,22 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 `;
 
-const PureTreeSettings = props => {
+const PureTreeSettings = ({
+  match,
+  enableThirdParty, 
+  isAdmin,
+  selectedTreeNode, 
+  expandedSetting,
+  isLoading,
+  setSelectedNode,
+  setExpandSettingsTree,
+  t
+}) => {
   useEffect(() => {
-    const { match, setSelectedNode, setExpandSettingsTree } = props;
     const { setting } = match.params;
     setSelectedNode([setting]);
     if (setting) setExpandSettingsTree(["settings"]);
-  }, [props.match.setting]);
+  }, [match]);
 
   const switcherIcon = obj => {
     if (obj.isLeaf) {
@@ -57,7 +66,6 @@ const PureTreeSettings = props => {
   };
 
   const onSelect = section => {
-    const { setSelectedNode, setExpandSettingsTree } = props;
     const path = section[0];
 
     if (path === "settings") {
@@ -71,12 +79,10 @@ const PureTreeSettings = props => {
   };
 
   const onExpand = data => {
-    const { setExpandSettingsTree } = props;
     setExpandSettingsTree(data);
   };
 
   const renderTreeNode = () => {
-    const { t, enableThirdParty, isAdmin } = props;
     return (
       <TreeNode
         id="settings"
@@ -115,7 +121,6 @@ const PureTreeSettings = props => {
     );
   };
 
-  const { selectedTreeNode, expandedSetting, isLoading } = props;
   const nodes = renderTreeNode();
 
   return (

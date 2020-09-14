@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { MainButton, DropDownItem, toastr } from "asc-web-components";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { store, utils } from "asc-web-common";
+import { utils } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -14,7 +14,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
@@ -52,10 +51,10 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     console.log("People ArticleMainButtonContent render");
-    const { isAdmin, settings, t } = this.props;
+    const { settings, t } = this.props;
     const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;
-    return isAdmin ? (
+    return (
       <>
         <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
           <DropDownItem
@@ -103,8 +102,6 @@ class PureArticleMainButtonContent extends React.Component {
           />
         )}
       </>
-    ) : (
-      <></>
     );
   }
 }
@@ -125,13 +122,11 @@ const ArticleMainButtonContent = props => {
 };
 
 ArticleMainButtonContent.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
   return {
-    isAdmin: isAdmin(state.auth.user),
     settings: state.auth.settings
   };
 };

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader, toastr } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -17,6 +17,7 @@ const i18n = createI18N({
   localesPath: "pages/Profile"
 });
 const { changeLanguage } = utils;
+const { isAdmin } = store.auth.selectors;
 
 class PureProfile extends React.Component {
   constructor(props) {
@@ -62,7 +63,7 @@ class PureProfile extends React.Component {
 
   render() {
     //console.log("Profile render")
-    const { profile, isVisitor } = this.props;
+    const { profile, isVisitor, isAdmin } = this.props;
 
     return (
       <PageLayout withBodyAutoFocus={true}>
@@ -71,7 +72,7 @@ class PureProfile extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
         )}
-        {!isVisitor && (
+        {(!isVisitor && isAdmin) && (
           <PageLayout.ArticleMainButton>
             <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
@@ -92,8 +93,8 @@ class PureProfile extends React.Component {
           {profile ? (
             <SectionBodyContent />
           ) : (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          )}
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            )}
         </PageLayout.SectionBody>
       </PageLayout>
     );
@@ -119,13 +120,15 @@ Profile.propTypes = {
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool,
   match: PropTypes.object.isRequired,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  isAdmin: PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser
+    profile: state.profile.targetUser,
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 
