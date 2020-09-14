@@ -74,7 +74,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 if (!coreBaseSettings.Standalone)
                 {
-                  //  throw new NotSupportedException();
+                    throw new NotSupportedException();
                 }
 
                 if (EncryptionSettings.Status == EncryprtionStatus.Encrypted || EncryptionSettings.Status == EncryprtionStatus.Decrypted)
@@ -86,14 +86,14 @@ namespace ASC.Data.Storage.Encryption
                 GetProgress(progressEncryption);
                 foreach (var tenant in Tenants)
                 {
-                    Queue<DiscDataStore> queue = new Queue<DiscDataStore>();
+                    Dictionary<string, DiscDataStore> dictionary = new Dictionary<string, DiscDataStore>();
                     foreach (var module in Modules)
                     {
-                        queue.Enqueue((DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
+                        dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
                     }
-                    Parallel.ForEach(Modules, (module) =>
+                    Parallel.ForEach(dictionary, (elem) =>
                     {
-                        EncryptStore(tenant, module, queue.Dequeue(), storageFactoryConfig, log);
+                        EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                     });
                 }
                 Percentage = 70;
