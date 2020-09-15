@@ -50,13 +50,13 @@ namespace ASC.Common.Logging
         bool IsFatalEnabled { get; }
         bool IsTraceEnabled { get; }
 
-        void Trace(object message);
+        void Trace<T>(T message);
         void TraceFormat(string message, object arg0);
 
         void DebugWithProps(string message, params KeyValuePair<string, object>[] props);
         void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3);
-        void Debug(object message);
-        void Debug(object message, Exception exception);
+        void Debug<T>(T message);
+        void Debug<T>(T message, Exception exception);
         void DebugFormat(string format, params object[] args);
         void DebugFormat(string format, object arg0);
         void DebugFormat(string format, object arg0, object arg1);
@@ -64,7 +64,7 @@ namespace ASC.Common.Logging
         void DebugFormat(IFormatProvider provider, string format, params object[] args);
 
 
-        void Info(object message);
+        void Info<T>(T message);
         void Info(string message, Exception exception);
         void InfoFormat(string format, params object[] args);
         void InfoFormat(string format, object arg0);
@@ -72,23 +72,23 @@ namespace ASC.Common.Logging
         void InfoFormat(string format, object arg0, object arg1, object arg2);
         void InfoFormat(IFormatProvider provider, string format, params object[] args);
 
-        void Warn(object message);
-        void Warn(object message, Exception exception);
+        void Warn<T>(T message);
+        void Warn<T>(T message, Exception exception);
         void WarnFormat(string format, params object[] args);
         void WarnFormat(string format, object arg0);
         void WarnFormat(string format, object arg0, object arg1);
         void WarnFormat(string format, object arg0, object arg1, object arg2);
         void WarnFormat(IFormatProvider provider, string format, params object[] args);
 
-        void Error(object message);
-        void Error(object message, Exception exception);
+        void Error<T>(T message);
+        void Error<T>(T message, Exception exception);
         void ErrorFormat(string format, params object[] args);
         void ErrorFormat(string format, object arg0);
         void ErrorFormat(string format, object arg0, object arg1);
         void ErrorFormat(string format, object arg0, object arg1, object arg2);
         void ErrorFormat(IFormatProvider provider, string format, params object[] args);
 
-        void Fatal(object message);
+        void Fatal<T>(T message);
         void Fatal(string message, Exception exception);
         void FatalFormat(string format, params object[] args);
         void FatalFormat(string format, object arg0);
@@ -133,7 +133,7 @@ namespace ASC.Common.Logging
             IsTraceEnabled = loger.Logger.IsEnabledFor(Level.Trace);
         }
 
-        public void Trace(object message)
+        public void Trace<T>(T message)
         {
             if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, message, null);
         }
@@ -143,12 +143,12 @@ namespace ASC.Common.Logging
             if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, string.Format(message, arg0), null);
         }
 
-        public void Debug(object message)
+        public void Debug<T>(T message)
         {
             if (IsDebugEnabled) loger.Debug(message);
         }
 
-        public void Debug(object message, Exception exception)
+        public void Debug<T>(T message, Exception exception)
         {
             if (IsDebugEnabled) loger.Debug(message, exception);
         }
@@ -191,7 +191,7 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Info(object message)
+        public void Info<T>(T message)
         {
             if (IsInfoEnabled) loger.Info(message);
         }
@@ -227,12 +227,12 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Warn(object message)
+        public void Warn<T>(T message)
         {
             if (IsWarnEnabled) loger.Warn(message);
         }
 
-        public void Warn(object message, Exception exception)
+        public void Warn<T>(T message, Exception exception)
         {
             if (IsWarnEnabled) loger.Warn(message, exception);
         }
@@ -263,12 +263,12 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Error(object message)
+        public void Error<T>(T message)
         {
             if (IsErrorEnabled) loger.Error(message);
         }
 
-        public void Error(object message, Exception exception)
+        public void Error<T>(T message, Exception exception)
         {
             if (IsErrorEnabled) loger.Error(message, exception);
         }
@@ -299,7 +299,7 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Fatal(object message)
+        public void Fatal<T>(T message)
         {
             if (IsFatalEnabled) loger.Fatal(message);
         }
@@ -438,7 +438,7 @@ namespace ASC.Common.Logging
 
         public bool IsTraceEnabled { get; private set; }
 
-        public void Trace(object message)
+        public void Trace<T>(T message)
         {
             if (IsTraceEnabled) Loger.Log(LogLevel.Trace, message);
         }
@@ -448,12 +448,12 @@ namespace ASC.Common.Logging
             if (IsTraceEnabled) Loger.Log(LogLevel.Trace, string.Format(message, arg0));
         }
 
-        public void Debug(object message)
+        public void Debug<T>(T message)
         {
             if (IsDebugEnabled) Loger.Debug(message);
         }
 
-        public void Debug(object message, Exception exception)
+        public void Debug<T>(T message, Exception exception)
         {
             if (IsDebugEnabled) Loger.Debug(exception, "{0}", message);
         }
@@ -520,7 +520,7 @@ namespace ASC.Common.Logging
             }
         }
 
-        public void Info(object message)
+        public void Info<T>(T message)
         {
             if (IsInfoEnabled) Loger.Info(message);
         }
@@ -556,12 +556,12 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Warn(object message)
+        public void Warn<T>(T message)
         {
             if (IsWarnEnabled) Loger.Warn(message);
         }
 
-        public void Warn(object message, Exception exception)
+        public void Warn<T>(T message, Exception exception)
         {
             if (IsWarnEnabled) Loger.Warn(exception, "{0}", message);
         }
@@ -592,12 +592,12 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Error(object message)
+        public void Error<T>(T message)
         {
             if (IsErrorEnabled) Loger.Error(message);
         }
 
-        public void Error(object message, Exception exception)
+        public void Error<T>(T message, Exception exception)
         {
             if (IsErrorEnabled) Loger.Error(exception, "{0}", message);
         }
@@ -628,7 +628,7 @@ namespace ASC.Common.Logging
         }
 
 
-        public void Fatal(object message)
+        public void Fatal<T>(T message)
         {
             if (IsFatalEnabled) Loger.Fatal(message);
         }
@@ -689,7 +689,7 @@ namespace ASC.Common.Logging
         public bool IsFatalEnabled { get; set; }
         public bool IsTraceEnabled { get; set; }
 
-        public void Trace(object message)
+        public void Trace<T>(T message)
         {
         }
 
@@ -701,11 +701,11 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void Debug(object message)
+        public void Debug<T>(T message)
         {
         }
 
-        public void Debug(object message, Exception exception)
+        public void Debug<T>(T message, Exception exception)
         {
         }
 
@@ -729,7 +729,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void Info(object message)
+        public void Info<T>(T message)
         {
         }
 
@@ -757,11 +757,11 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void Warn(object message)
+        public void Warn<T>(T message)
         {
         }
 
-        public void Warn(object message, Exception exception)
+        public void Warn<T>(T message, Exception exception)
         {
         }
 
@@ -785,11 +785,11 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void Error(object message)
+        public void Error<T>(T message)
         {
         }
 
-        public void Error(object message, Exception exception)
+        public void Error<T>(T message, Exception exception)
         {
         }
 
@@ -813,7 +813,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void Fatal(object message)
+        public void Fatal<T>(T message)
         {
         }
 
