@@ -12,6 +12,7 @@ import IconButton from "../../icon-button";
 
 import { tablet } from "../../../utils/device";
 import resizeImage from "resize-image";
+import throttle from "lodash/throttle";
 
 const step = 0.01;
 const min = 1;
@@ -53,6 +54,8 @@ const Slider = styled.input.attrs({
     border-radius: 30px;
     cursor: pointer;
     -webkit-appearance: none;
+    -webkit-box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.13);
+    box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.13);
   }
 
   &:focus::-webkit-slider-runnable-track {
@@ -69,12 +72,14 @@ const Slider = styled.input.attrs({
   }
 
   &::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
+    width: 14px;
+    height: 14px;
     background: #2da7db;
     border: 6px solid #ffffff;
     border-radius: 30px;
     cursor: pointer;
+    -moz-box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.13);
+    box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.13);
   }
 
   &::-ms-track {
@@ -108,6 +113,7 @@ const Slider = styled.input.attrs({
     cursor: pointer;
     margin-top: 0px;
     /*Needed to keep the Edge thumb centred*/
+    box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.13);
   }
 
   &:focus::-ms-fill-lower {
@@ -119,39 +125,11 @@ const Slider = styled.input.attrs({
   }
 `;
 
-// const CloseButton = styled.a`
-//   cursor: pointer;
-//   position: absolute;
-//   right: 33px;
-//   top: 4px;
-//   width: 16px;
-//   height: 16px;
-
-//   &:before,
-//   &:after {
-//     position: absolute;
-//     left: 8px;
-//     content: " ";
-//     height: 16px;
-//     width: 1px;
-//     background-color: #d8d8d8;
-//   }
-//   &:before {
-//     transform: rotate(45deg);
-//   }
-//   &:after {
-//     transform: rotate(-45deg);
-//   }
-//   @media ${tablet} {
-//     right: calc(50% - 147px);
-//   }
-// `;
-
 const DropZoneContainer = styled.div`
   box-sizing: border-box;
   display: block;
-  width: 100%;
-  height: 300px;
+  width: 408px;
+  height: 360px;
   border: 1px dashed #ccc;
   text-align: center;
   padding: 10em 0;
@@ -232,7 +210,7 @@ const StyledAvatarContainer = styled.div`
 
     .editor-buttons {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, 1fr) 2fr 1fr;
       grid-template-rows: 32px;
       height: 32px;
       background: #a3a9ae;
@@ -267,6 +245,8 @@ class AvatarEditorBody extends React.Component {
     };
 
     this.setEditorRef = React.createRef();
+
+    this.throttledSetCroppedImage = throttle(this.setCroppedImage, 300);
   }
 
   onPositionChange = position => {
@@ -332,9 +312,9 @@ class AvatarEditorBody extends React.Component {
     this.props.deleteImage();
   };
 
-  onImageChange = () => {
-    const image = this.setEditorRef.current.getImage().toDataURL();
-    if (this.setEditorRef.current !== null) {
+  setCroppedImage = () => {
+    if (this.setEditorRef && this.setEditorRef.current) {
+      const image = this.setEditorRef.current.getImage().toDataURL();
       this.setState({
         croppedImage: image
       });
@@ -492,19 +472,16 @@ class AvatarEditorBody extends React.Component {
         .then(blob => {
           const file = new File([blob], "File name", { type: "image/jpg" });
           _this.props.onLoadFile(file, callback);
+          //callback(file);
         });
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.image !== this.props.image) {
-      setTimeout(() => {
-        this.setState({
-          image: this.props.image,
-          rotate: 0
-        });
-      }, 0);
-    } else if (!prevProps.visible && this.props.visible) {
+    if (
+      prevProps.image !== this.props.image ||
+      prevProps.visible !== this.props.visible
+    ) {
       this.setState({
         image: this.props.image ? this.props.image : "",
         rotate: 0
@@ -556,8 +533,8 @@ class AvatarEditorBody extends React.Component {
                 className="react-avatar-editor"
                 image={this.state.image}
                 rotate={this.state.rotate}
-                color={[0, 0, 0, 0.5]}
-                onImageChange={this.onImageChange}
+                color={[196, 196, 196, 0.5]}
+                onImageChange={this.throttledSetCroppedImage}
                 onPositionChange={this.onPositionChange}
                 onImageReady={this.onImageReady}
               />
@@ -598,6 +575,16 @@ class AvatarEditorBody extends React.Component {
                   isClickable={false}
                   color="#FFFFFF"
                 />
+                <Box></Box>
+                <IconButton
+                  size="16"
+                  isDisabled={false}
+                  onClick={this.deleteImage}
+                  iconName={"CatalogTrashIcon"}
+                  isFill={true}
+                  isClickable={true}
+                  color="#FFFFFF"
+                />
               </Box>
               <Box className="zoom-container">
                 <IconButton
@@ -627,7 +614,6 @@ class AvatarEditorBody extends React.Component {
                   isClickable={false}
                 />
               </Box>
-              {/* <CloseButton onClick={this.deleteImage}></CloseButton> */}
             </Box>
             <Box className="avatar-container">
               <Avatar
@@ -651,8 +637,7 @@ class AvatarEditorBody extends React.Component {
                   contextOptions={[
                     {
                       key: "send-email",
-                      label: "Send email",
-                      onClick: () => alert("Hello world!")
+                      label: "Send email"
                     }
                   ]}
                 >
