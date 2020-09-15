@@ -11,8 +11,9 @@ import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
 import {
-  setLicense,
+  setPaymentsLicense,
   getSettingsPayment,
+  resetUploadedLicense,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -46,7 +47,6 @@ class Body extends React.PureComponent {
     this.state = {
       errorMessage: null,
       isErrorLicense: false,
-      isLicenseSet: false,
     };
 
     document.title = `${t("Payments")} – ${t("OrganizationName")}`;
@@ -59,32 +59,36 @@ class Body extends React.PureComponent {
       setCurrentProductId,
     } = this.props;
     currentProductId !== "payments" && setCurrentProductId("payments");
-    getSettingsPayment();
+    //getSettingsPayment();
   }
 
   componentDidUpdate(prevProps) {
-    const { getSettingsPayment, currentProductId } = this.props;
-    const { isLicenseSet } = this.state;
+    const {
+      getSettingsPayment,
+      currentProductId,
+      licenseUpload,
+      resetUploadedLicense,
+    } = this.props;
+
     // if (currentProductId !== prevProps.currentProductId) {
     //   this.fetchData(currentProductId);
     // }
-    if (isLicenseSet) {
+
+    if (licenseUpload) {
       getSettingsPayment();
+      resetUploadedLicense();
     }
   }
 
   onButtonClickUpload = (file) => {
-    const { setLicense, t } = this.props;
+    const { setPaymentsLicense, t } = this.props;
 
     let fd = new FormData();
     fd.append("files", file);
 
-    setLicense(null, fd)
+    setPaymentsLicense(null, fd)
       .then(() => {
         toastr.success(t("LoadingLicenseSuccess"), "", 0, true);
-        this.setState({
-          isLicenseSet: true,
-        });
       })
       .catch((error) => {
         toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);
@@ -137,10 +141,12 @@ PaymentsEnterprise.propTypes = {
 function mapStateToProps(state) {
   return {
     isLoaded: state.auth.isLoaded,
+    licenseUpload: state.payments.licenseUpload,
   };
 }
 export default connect(mapStateToProps, {
-  setLicense,
+  setPaymentsLicense,
   setCurrentProductId,
   getSettingsPayment,
+  resetUploadedLicense,
 })(withRouter(PaymentsEnterprise));
