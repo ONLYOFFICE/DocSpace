@@ -19,13 +19,6 @@ namespace ASC.Data.Storage.Encryption
 
         public void Start()
         {
-            StartEncryption(new EncryptionSettingsProto()
-            {
-                Password = "wda",
-                Status = EncryprtionStatus.EncryptionStarted,
-                NotifyUsers = true,
-                ServerRootPath = ""
-            });
             NotifySettings.Subscribe((n) => StartEncryption(n), CacheNotifyAction.Insert);
             NotifyStop.Subscribe((n) => StopEncryption(), CacheNotifyAction.Insert);
         }

@@ -117,8 +117,6 @@ namespace ASC.Data.Storage.Encryption
 
         private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
         {
-           // var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
-
             var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
             domains.Add(string.Empty);
