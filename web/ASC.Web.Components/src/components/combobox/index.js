@@ -97,7 +97,8 @@ class ComboBox extends React.Component {
       noBorder,
       scaledOptions,
       displayType,
-      toggleAction } = this.props;
+      toggleAction,
+      textOverflow } = this.props;
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -156,6 +157,7 @@ class ComboBox extends React.Component {
               ? advancedOptions
               : options.map((option) =>
                 <DropDownItem {...option}
+                  textOverflow={textOverflow}
                   key={option.key}
                   disabled={
                     option.disabled
@@ -189,7 +191,8 @@ ComboBox.propTypes = {
   selectedOption: PropTypes.object.isRequired,
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  toggleAction: PropTypes.func
+  toggleAction: PropTypes.func,
+  textOverflow: PropTypes.bool
 }
 
 ComboBox.defaultProps = {
