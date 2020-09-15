@@ -17,7 +17,7 @@ import { fetchFiles, setAction, getProgress, setProgressBarData, clearProgressDa
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/selectors";
+import { isCanBeDeleted, checkFolderType, isCanCreate } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -318,7 +318,8 @@ class SectionHeaderContent extends React.Component {
       isLoading,
       getProgress,
       loopFilesOperations,
-      setProgressBarData
+      setProgressBarData,
+      isCanCreate
     } = this.props;
 
     const {
@@ -482,7 +483,7 @@ class SectionHeaderContent extends React.Component {
               >
                 {title}
               </Headline>
-              {folder ? (
+              {folder && isCanCreate ? (
                 <>
                   <ContextMenuButton
                     className="add-button"
@@ -508,6 +509,7 @@ class SectionHeaderContent extends React.Component {
                   />
                 </>
               ) : (
+                isCanCreate && (
                   <ContextMenuButton
                     className="add-button"
                     directionX="right"
@@ -519,7 +521,8 @@ class SectionHeaderContent extends React.Component {
                     getData={this.getContextOptionsPlus}
                     isDisabled={false}
                   />
-                )}
+                )
+              )}
             </div>
           )}
 
@@ -605,7 +608,8 @@ const mapStateToProps = state => {
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     currentFolderId: id,
-    isLoading
+    isLoading,
+    isCanCreate: isCanCreate(selectedFolder, user),
   };
 };
 
