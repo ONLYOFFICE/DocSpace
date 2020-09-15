@@ -130,6 +130,9 @@ const TreeMenuStory = props => {
         badgeLabel={number('badgeLabel')}
         multiple={boolean('multiple', false)}
         showIcon={boolean('showIcon', true)}
+        isFullFillSelection={boolean('isFullFillSelection', true)}
+        gapBetweenNodes={text('gapBetweenNodes')}
+        gapBetweenNodesTablet={text('gapBetweenNodesTablet')}
 
         defaultExpandAll={boolean('defaultExpandAll', false)}
         defaultExpandParent={boolean('defaultExpandParent', true)}
