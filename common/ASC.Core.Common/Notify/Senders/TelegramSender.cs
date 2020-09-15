@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,42 +23,51 @@
  *
 */
 
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
-#if DEBUG
-namespace ASC.Core.Common.Tests
+using ASC.Common.Logging;
+using ASC.Core.Common.Notify;
+using ASC.Notify.Messages;
+
+using Microsoft.Extensions.Options;
+
+namespace ASC.Core.Notify.Senders
 {
-
-    using ASC.Core.Security.Authentication;
-
-    using NUnit.Framework;
-
-    [TestFixture]
-    public class CookieStorageTest
+    public class TelegramSender : INotifySender
     {
-        [Test]
-        public void Validate(CookieStorage cookieStorage)
+        private readonly ILog log;
+        private TelegramHelper TelegramHelper { get; }
+
+        public TelegramSender(IOptionsMonitor<ILog> options, TelegramHelper telegramHelper)
         {
-            //var t1 = 1;
-            //var id1 = Guid.NewGuid();
-            //var login1 = "l1";
-            //var pwd1 = "p1";
-            //var it1 = 1;
-            //var expire1 = DateTime.UtcNow;
-            //var iu1 = 1;
-
-            //var cookie = cookieStorage.EncryptCookie(t1, id1, login1, pwd1, it1, expire1, iu1);
+            log = options.Get("ASC");
+            TelegramHelper = telegramHelper;
+        }
 
 
-            //cookieStorage.DecryptCookie(cookie, out var t2, out var id2, out var login2, out var pwd2, out var it2, out var expire2, out var iu2);
+        public void Init(IDictionary<string, string> properties)
+        {
+        }
 
-            //Assert.AreEqual(t1, t2);
-            //Assert.AreEqual(id1, id2);
-            //Assert.AreEqual(login1, login2);
-            //Assert.AreEqual(pwd1, pwd2);
-            //Assert.AreEqual(it1, it2);
-            //Assert.AreEqual(expire1, expire2);
-            //Assert.AreEqual(iu1, iu2);
+        public NoticeSendResult Send(NotifyMessage m)
+        {
+            if (!string.IsNullOrEmpty(m.Content))
+            {
+                m.Content = m.Content.Replace("\r\n", "\n").Trim('\n', '\r', ' ');
+                m.Content = Regex.Replace(m.Content, "\n{3,}", "\n\n");
+            }
+            try
+            {
+                TelegramHelper.SendMessage(m);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Unexpected error, {0}, {1}, {2}",
+                       e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
+            }
+            return NoticeSendResult.OK;
         }
     }
 }
-#endif

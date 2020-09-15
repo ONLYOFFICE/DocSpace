@@ -42,12 +42,14 @@ namespace ASC.Core
 
         private UserManager UserManager { get; }
         private UserFormatter UserFormatter { get; }
+        private TenantManager TenantManager { get; }
 
-        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
+        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter, TenantManager tenantManager)
         {
             userService = service;
             UserManager = userManager;
             UserFormatter = userFormatter;
+            TenantManager = tenantManager;
         }
 
 
@@ -56,14 +58,14 @@ namespace ASC.Core
             return UserManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
         }
 
-        public void SetUserPassword(int tenantId, Guid userID, string password)
+        public void SetUserPasswordHash(Guid userID, string passwordHash)
         {
-            userService.SetUserPassword(tenantId, userID, password);
+            userService.SetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userID, passwordHash);
         }
 
-        public string GetUserPasswordHash(int tenantId, Guid userID)
+        public DateTime GetUserPasswordStamp(Guid userID)
         {
-            return userService.GetUserPassword(tenantId, userID);
+            return userService.GetUserPasswordStamp(TenantManager.GetCurrentTenant().TenantId, userID);
         }
 
         public IAccount GetAccountByID(int tenantId, Guid id)

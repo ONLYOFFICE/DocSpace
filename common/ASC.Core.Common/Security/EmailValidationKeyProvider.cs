@@ -55,13 +55,13 @@ namespace ASC.Security.Cryptography
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
         internal readonly TimeSpan ValidInterval;
 
+        private MachinePseudoKeys MachinePseudoKeys { get; }
         private TenantManager TenantManager { get; }
-        private IConfiguration Configuration { get; }
 
-        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
+            MachinePseudoKeys = machinePseudoKeys;
             TenantManager = tenantManager;
-            Configuration = configuration;
             if (!TimeSpan.TryParse(configuration["email:validinterval"], out var validInterval))
             {
                 validInterval = TimeSpan.FromDays(7);
@@ -92,7 +92,7 @@ namespace ASC.Security.Cryptography
             if (email == null) throw new ArgumentNullException("email");
             try
             {
-                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Configuration["core:machinekey"]);
+                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
             }
             catch (Exception e)
             {
@@ -226,15 +226,10 @@ namespace ASC.Security.Cryptography
                     checkKeyResult = Provider.ValidateEmailKey(Email + Type + AuthContext.CurrentAccount.ID, Key, Provider.ValidInterval);
                     break;
                 case ConfirmType.PasswordChange:
-                    var hash = string.Empty;
 
-                    if (P == 1)
-                    {
-                        var tenantId = TenantManager.GetCurrentTenant().TenantId;
-                        hash = Authentication.GetUserPasswordHash(tenantId, UiD.Value);
-                    }
+                    var hash = Authentication.GetUserPasswordStamp(UserManager.GetUserByEmail(Email).ID).ToString("s");
 
-                    checkKeyResult = Provider.ValidateEmailKey(Email + Type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)) + UiD, Key, Provider.ValidInterval);
+                    checkKeyResult = Provider.ValidateEmailKey(Email + Type + hash, Key, Provider.ValidInterval);
                     break;
                 case ConfirmType.Activation:
                     checkKeyResult = Provider.ValidateEmailKey(Email + Type + UiD, Key, Provider.ValidInterval);

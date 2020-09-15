@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -24,41 +24,39 @@
 */
 
 
-#if DEBUG
-namespace ASC.Core.Common.Tests
+using System;
+
+using ASC.Notify.Messages;
+
+namespace ASC.Core.Common.Notify
 {
-
-    using ASC.Core.Security.Authentication;
-
-    using NUnit.Framework;
-
-    [TestFixture]
-    public class CookieStorageTest
+    public class TelegramServiceClient : ITelegramService
     {
-        [Test]
-        public void Validate(CookieStorage cookieStorage)
+        public TelegramServiceClient()
         {
-            //var t1 = 1;
-            //var id1 = Guid.NewGuid();
-            //var login1 = "l1";
-            //var pwd1 = "p1";
-            //var it1 = 1;
-            //var expire1 = DateTime.UtcNow;
-            //var iu1 = 1;
 
-            //var cookie = cookieStorage.EncryptCookie(t1, id1, login1, pwd1, it1, expire1, iu1);
+        }
 
+        public void SendMessage(NotifyMessage m)
+        {
+            //Channel.SendMessage(m);//TODO
+        }
 
-            //cookieStorage.DecryptCookie(cookie, out var t2, out var id2, out var login2, out var pwd2, out var it2, out var expire2, out var iu2);
+        public void RegisterUser(string userId, int tenantId, string token)
+        {
+            //Channel.RegisterUser(userId, tenantId, token);
+        }
 
-            //Assert.AreEqual(t1, t2);
-            //Assert.AreEqual(id1, id2);
-            //Assert.AreEqual(login1, login2);
-            //Assert.AreEqual(pwd1, pwd2);
-            //Assert.AreEqual(it1, it2);
-            //Assert.AreEqual(expire1, expire2);
-            //Assert.AreEqual(iu1, iu2);
+        public bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy)
+        {
+            throw new NotImplementedException();
+            //return Channel.CheckConnection(tenantId, token, tokenLifespan, proxy);
+        }
+
+        public string RegistrationToken(string userId, int tenantId)
+        {
+            throw new NotImplementedException();
+            //return Channel.RegistrationToken(userId, tenantId);
         }
     }
 }
-#endif

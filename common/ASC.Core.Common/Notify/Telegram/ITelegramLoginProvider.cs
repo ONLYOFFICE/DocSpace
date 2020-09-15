@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,42 +23,16 @@
  *
 */
 
-
-#if DEBUG
-namespace ASC.Core.Common.Tests
+namespace ASC.Core.Common.Notify.Telegram
 {
-
-    using ASC.Core.Security.Authentication;
-
-    using NUnit.Framework;
-
-    [TestFixture]
-    public class CookieStorageTest
+    public interface ITelegramLoginProvider
     {
-        [Test]
-        public void Validate(CookieStorage cookieStorage)
-        {
-            //var t1 = 1;
-            //var id1 = Guid.NewGuid();
-            //var login1 = "l1";
-            //var pwd1 = "p1";
-            //var it1 = 1;
-            //var expire1 = DateTime.UtcNow;
-            //var iu1 = 1;
+        string TelegramBotToken { get; }
 
-            //var cookie = cookieStorage.EncryptCookie(t1, id1, login1, pwd1, it1, expire1, iu1);
+        string TelegramBotName { get; }
 
+        int TelegramAuthTokenLifespan { get; }
 
-            //cookieStorage.DecryptCookie(cookie, out var t2, out var id2, out var login2, out var pwd2, out var it2, out var expire2, out var iu2);
-
-            //Assert.AreEqual(t1, t2);
-            //Assert.AreEqual(id1, id2);
-            //Assert.AreEqual(login1, login2);
-            //Assert.AreEqual(pwd1, pwd2);
-            //Assert.AreEqual(it1, it2);
-            //Assert.AreEqual(expire1, expire2);
-            //Assert.AreEqual(iu1, iu2);
-        }
+        string TelegramProxy { get; }
     }
 }
-#endif
