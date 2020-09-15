@@ -59,17 +59,13 @@ const HeaderContainer = ({
   require("moment/min/locales.min");
   moment.locale(culture);
   const currentUserDate = moment().utcOffset(utcHoursOffset);
-  console.log(typeof expiresDate);
-  return moment(
-    moment.utc(expiresDate).set("hour", 0).set("minute", 0).set("second", 0)
-  ).isAfter(
-    currentUserDate.set("hour", 0).set("minute", 0).set("second", 0)
-  ) ? (
+
+  return new Date(currentUserDate).setHours(0, 0, 0, 0) <
+    expiresDate.setHours(0, 0, 0, 0) ? (
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
       <Text className="payments-header-additional_support">
-        {t("SubscriptionAndUpdatesExpires")}{" "}
-        {moment.utc(expiresDate).format("LL")}
+        {t("SubscriptionAndUpdatesExpires")} {moment(expiresDate).format("LL")}
         {"."}
       </Text>
     </StyledHeader>
@@ -79,7 +75,7 @@ const HeaderContainer = ({
 
       <Text className="payments-header-additional_support" color="#C96C27">
         {t("SupportNotAvailable")}{" "}
-        {moment.utc(expiresDate).startOf("day").format("ddd, D MMMM , YYYY")}
+        {moment(expiresDate).startOf("day").format("ddd, D MMMM , YYYY")}
         {". "}
         {t("LicenseRenewal")}
       </Text>

@@ -10,7 +10,10 @@ import HeaderContainer from "./sub-components/header-container";
 import AdvantagesContainer from "./sub-components/advantages-container";
 import ButtonContainer from "./sub-components/button-container";
 import ContactContainer from "./sub-components/contact-container";
-import { setLicense, getSettings } from "../../../store/payments/actions";
+import {
+  setLicense,
+  getSettingsPayment,
+} from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -51,25 +54,22 @@ class Body extends React.PureComponent {
 
   componentDidMount() {
     const {
-      getSettings,
-
+      getSettingsPayment,
       currentProductId,
       setCurrentProductId,
     } = this.props;
     currentProductId !== "payments" && setCurrentProductId("payments");
-    // getSettings();
-    // getStandalone();
-    //getCurrentLicense();
+    getSettingsPayment();
   }
 
   componentDidUpdate(prevProps) {
-    const { getSettings } = this.props;
+    const { getSettingsPayment, currentProductId } = this.props;
     const { isLicenseSet } = this.state;
     // if (currentProductId !== prevProps.currentProductId) {
     //   this.fetchData(currentProductId);
     // }
     if (isLicenseSet) {
-      getSettings();
+      getSettingsPayment();
     }
   }
 
@@ -96,12 +96,6 @@ class Body extends React.PureComponent {
   };
   onButtonClickBuy = (e) => {
     window.open(e.target.value, "_blank");
-  };
-
-  onCloseModalDialog = () => {
-    this.setState({
-      isVisibleModalDialog: false,
-    });
   };
 
   render() {
@@ -148,5 +142,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   setLicense,
   setCurrentProductId,
-  getSettings,
+  getSettingsPayment,
 })(withRouter(PaymentsEnterprise));
