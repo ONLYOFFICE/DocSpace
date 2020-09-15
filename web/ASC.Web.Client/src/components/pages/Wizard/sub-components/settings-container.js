@@ -80,33 +80,35 @@ const SettingsContainer = ({
 
       <Text fontSize="13px">{t('language')}</Text>
       <ComboBox 
-          className="drop-down" 
-          options={languages}
-          selectedOption={{
-            key: selectLanguage.key,
-            label: selectLanguage.label
-          }} 
-          noBorder={true}
-          scaled={false}
-          size='content'
-          dropDownMaxHeight={300} 
-          onSelect={onSelectLanguageHandler}
-        />
+        className="drop-down" 
+        options={languages}
+        selectedOption={{
+          key: selectLanguage.key,
+          label: selectLanguage.label
+        }} 
+        noBorder={true}
+        scaled={false}
+        size='content'
+        dropDownMaxHeight={300} 
+        onSelect={onSelectLanguageHandler}
+        textOverflow={true}
+      />
 
       <Text className="title" fontSize="13px">{t('timezone')}</Text>
       <ComboBox 
-          className="drop-down"
-          options={timezones}
-          selectedOption={{
-            key: selectTimezone.key,
-            label: selectTimezone.label 
-          }}
-          noBorder={true}
-          dropDownMaxHeight={300}
-          scaled={false}
-          size='content'
-          onSelect={onSelectTimezoneHandler}
-        />
+        className="drop-down"
+        options={timezones}
+        selectedOption={{
+          key: selectTimezone.key,
+          label: selectTimezone.label 
+        }}
+        noBorder={true}
+        dropDownMaxHeight={300}
+        scaled={false}
+        size='content'
+        onSelect={onSelectTimezoneHandler}
+        textOverflow={true}
+      />
   
     </StyledContainer>
   );
