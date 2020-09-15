@@ -222,7 +222,8 @@ class Form extends Component {
         window.open(homepage, "_self");
       })
       .catch(error => {
-        this.setState({ errorText: error, isLoading: false });
+        let err = error.data.error.message;
+        this.setState({ errorText: err, isLoading: false });
       });
   };
 

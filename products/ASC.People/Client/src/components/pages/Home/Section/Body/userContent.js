@@ -137,7 +137,7 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp, isMobile
       </Link>
       <Link
         containerMinWidth='140px'
-        containerWidth='15%'
+        containerWidth='17%'
         type='page'
         title={email}
         fontSize='12px'

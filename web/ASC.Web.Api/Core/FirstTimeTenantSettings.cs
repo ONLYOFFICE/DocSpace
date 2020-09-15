@@ -272,6 +272,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         {
             try
             {
+                StudioNotifyService.SendRegData(user);
+
                 var url = Configuration["web:install-url"];
                 if (string.IsNullOrEmpty(url)) return;
 

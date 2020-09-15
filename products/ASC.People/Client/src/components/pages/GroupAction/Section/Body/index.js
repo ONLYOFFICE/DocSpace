@@ -117,7 +117,7 @@ class SectionBodyContent extends React.Component {
         group && group.manager
           ? {
               key: group.manager.id,
-              label: group.manager.displayName
+              label: group.manager.displayName === "profile removed" ? t('LblSelect') : group.manager.displayName
             }
           : {
               key: GUID_EMPTY,

@@ -10,6 +10,40 @@ const StyledTreeMenu = styled(Tree)`
     width: 93%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
+  
+    ${props => props.isEmptyRootNode &&
+        css`
+            & > li > span.rc-tree-switcher-noop {
+                display: none;
+            }
+            & li span.rc-tree-iconEle {
+                margin-left: 4px;
+            }
+        `
+    }
+    .rc-tree-node-content-wrapper {
+        margin-bottom: ${props => +props.gapBetweenNodes - 15 + 'px;'};
+        @media(max-width: 1024px) {
+            margin-bottom: ${props => props.gapBetweenNodesTablet 
+                ? +props.gapBetweenNodesTablet - 15 + 'px;'
+                : +props.gapBetweenNodes - 15 + 'px;'
+            };
+        }
+    };
+    ${props => !props.isFullFillSelection && 
+        css`
+            & .rc-tree-node-selected {
+                width: min-content !important;
+                padding-right: 5px;
+                max-width: 100%;
+            }
+        `
+    }
+    
+    & .rc-tree-node-selected .rc-tree-title {
+      ${props => !props.isFullFillSelection && "width: 85%;"}
+    } 
+
     &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
         background: none;
     }
@@ -88,7 +122,8 @@ const TreeMenu = React.forwardRef((props, ref) => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, loadData, disableSwitch } = props;
+        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, loadData, disableSwitch,
+        isFullFillSelection, gapBetweenNodes, gapBetweenNodesTablet, isEmptyRootNode } = props;
 
     const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
@@ -138,6 +173,10 @@ const TreeMenu = React.forwardRef((props, ref) => {
             onRightClick={onRightClick}
 
             disableSwitch={disableSwitch}
+            isFullFillSelection={isFullFillSelection}
+            gapBetweenNodes={gapBetweenNodes}
+            gapBetweenNodesTablet={gapBetweenNodesTablet}
+            isEmptyRootNode={isEmptyRootNode}
         >
             {children}
         </StyledTreeMenu>
@@ -167,11 +206,19 @@ TreeMenu.propTypes = {
     id: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
-    disableSwitch: PropTypes.bool
+    disableSwitch: PropTypes.bool,
+
+    isFullFillSelection: PropTypes.bool,
+    gapBetweenNodes: PropTypes.string,
+    gapBetweenNodesTablet: PropTypes.string,
+    isEmptyRootNode: PropTypes.bool
 }
 
 TreeMenu.defaultProps = {
-    disableSwitch: false
+    disableSwitch: false,
+    isFullFillSelection: true,
+    gapBetweenNodes: '15',
+    isEmptyRootNode: false
 }
 
 TreeMenu.displayName = "TreeMenu";

@@ -194,6 +194,16 @@ $GreenButton
 
 ^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Зарегистрирован новый портал
+
+# URL-адрес портала: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Имя: $UserName
+# Фамилия: $UserLastName
+# Email: $UserEmail
+# Телефон: $Phone
+# Дата создания: $Date</value>
+  </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
     <value>Делать то же самое, что и пользователь|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
   </data>

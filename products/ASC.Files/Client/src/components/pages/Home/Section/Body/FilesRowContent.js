@@ -355,7 +355,7 @@ class FilesRowContent extends React.PureComponent {
             onClick={this.onMobileRowClick}
           >
             <Link
-              containerWidth='100%'
+              containerWidth='55%'
               type='page'
               title={titleWithoutExt}
               fontWeight="600"
@@ -467,7 +467,7 @@ class FilesRowContent extends React.PureComponent {
             </>
             <Text
               containerMinWidth='120px'
-              containerWidth='10%'
+              containerWidth='15%'
               as="div"
               color="#333"
               fontSize='12px'
@@ -490,7 +490,7 @@ class FilesRowContent extends React.PureComponent {
             </Text>
             <Text
               containerMinWidth='90px'
-              containerWidth='8%'
+              containerWidth='10%'
               as="div"
               color="#333"
               fontSize='12px'
