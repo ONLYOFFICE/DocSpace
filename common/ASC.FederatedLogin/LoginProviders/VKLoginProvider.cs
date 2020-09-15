@@ -77,7 +77,7 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return (new[] { 4194304 }).Sum().ToString(); }
         }
 
-        private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.80";
+        private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.103";
 
 
         public VKLoginProvider()

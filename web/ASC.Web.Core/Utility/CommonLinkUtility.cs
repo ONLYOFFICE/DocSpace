@@ -392,7 +392,7 @@ namespace ASC.Web.Studio.Utility
                 name = GetProductNameFromUrl(url);
                 if (string.IsNullOrEmpty(name))
                 {
-                    return GetAddonNameFromUrl(name);
+                    return GetAddonNameFromUrl(url);
                 }
 
             }
