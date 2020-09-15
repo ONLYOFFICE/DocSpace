@@ -41,6 +41,10 @@ import { TreeMenu } from "asc-web-components";
 | `showLine`            |       `bool`       |    -     |   -    | `false` | Whether show line                                                                                       |
 | `style`               |   `obj`, `array`   |    -     |   -    |    -    | Accepts css style                                                                                       |
 | `loadData`            |       `func`       |    -     |   -    |    -    | load data asynchronously and the return value should be a promise                                       |
+| `isFullFillSelection` |       `bool`       |    -     |   -    | `true`  | to select the selection style of the active node                                                        |
+| `gapBetweenNodes`     |      `string`      |    -     |   -    |   `15`  | for setting the spacing between nodes                                                                   |
+|`gapBetweenNodesTablet`|      `string`      |    -     |   -    |    -    | to set spacing between nodes on tablets and phones (if necessary)                                       |
+| `isEmptyRootNode`     |       `bool`       |    -     |   -    | `false` | swipe the root node to the left if there are no nested elements                                              |
 
 ### Properties TreeNode
 

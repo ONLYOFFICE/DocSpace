@@ -241,7 +241,6 @@ const TreeNodeMenu = styled(TreeNode)`
             background: #DFE2E3;
         }
     }
-    
 `;
 
 export default TreeNodeMenu;
