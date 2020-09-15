@@ -25,7 +25,7 @@ const disabledAndHeaderStyle = css`
 `;
 
 const StyledDropdownItem = styled.div`
-    display: flex;
+    display:${props => props.textOverflow ? "block" : "flex"};
     width: 100%;
     max-width: 500px;
     border: 0px;
@@ -88,6 +88,7 @@ const StyledDropdownItem = styled.div`
 `;
 
 const IconWrapper = styled.div`
+    display:flex;
     width: 16px;
     margin-right: 8px;
     line-height: 14px;
@@ -126,7 +127,8 @@ DropDownItem.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  textOverflow: PropTypes.bool
 };
 
 DropDownItem.defaultProps = {
@@ -135,7 +137,8 @@ DropDownItem.defaultProps = {
   tabIndex: -1,
   label: '',
   disabled: false,
-  noHover: false
+  noHover: false,
+  textOverflow: false
 };
 
 export default DropDownItem

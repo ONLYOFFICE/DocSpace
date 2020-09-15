@@ -890,13 +890,13 @@ class SectionBodyContent extends React.Component {
       item = selection.find(x => x.id === Number(splitValue[1]) && x.fileExst);
     }
     if (item) {
-      this.setState({isDrag: true});
+      this.setState({ isDrag: true });
     }
   }
 
   onMouseUp = e => {
     const { selection, dragging, setDragging, dragItem, setDragItem } = this.props;
-    this.state.isDrag && this.setState({isDrag: false});
+    this.state.isDrag && this.setState({ isDrag: false });
     const mouseButton = e.which ? e.which !== 1 : e.button ? e.button !== 0 : false;
     if (mouseButton || !this.tooltipRef.current || !dragging) { return; }
     document.removeEventListener("mousemove", this.onMouseMove);
@@ -1099,7 +1099,8 @@ class SectionBodyContent extends React.Component {
       viewAs,
       t,
       loopFilesOperations,
-      widthProp
+      widthProp,
+      isMobile
     } = this.props;
 
     const { editingId, showSharingPanel, showMoveToPanel, showCopyPanel } = this.state;
@@ -1278,6 +1279,7 @@ class SectionBodyContent extends React.Component {
                       >
                         <FilesRowContent
                           widthProp={widthProp}
+                          isMobile={isMobile}
                           item={item}
                           viewer={viewer}
                           culture={settings.culture}

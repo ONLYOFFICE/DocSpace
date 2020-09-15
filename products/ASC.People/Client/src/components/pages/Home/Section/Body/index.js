@@ -210,11 +210,11 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
           user.mobilePhone &&
-            isMobileOnly && {
-              key: "send-message",
-              label: t("LblSendMessage"),
-              onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
-            },
+          isMobileOnly && {
+            key: "send-message",
+            label: t("LblSendMessage"),
+            onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
+          },
           { key: "separator", isSeparator: true },
           {
             key: "edit",
@@ -235,18 +235,18 @@ class SectionBodyContent extends React.PureComponent {
             ? viewer.isOwner
               ? null
               : {
-                  key: "delete-profile",
-                  label: t("DeleteSelfProfile"),
-                  onClick: this.toggleDeleteSelfProfileDialog.bind(
-                    this,
-                    user.email
-                  )
-                }
-            : {
-                key: "disable",
-                label: t("DisableUserButton"),
-                onClick: this.onDisableClick.bind(this, user)
+                key: "delete-profile",
+                label: t("DeleteSelfProfile"),
+                onClick: this.toggleDeleteSelfProfileDialog.bind(
+                  this,
+                  user.email
+                )
               }
+            : {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick.bind(this, user)
+            }
         ];
       case "disabled":
         return [
@@ -284,17 +284,17 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onInviteAgainClick.bind(this, user)
           },
           !isSelf &&
-            (user.status === EmployeeStatus.Active
-              ? {
-                  key: "disable",
-                  label: t("DisableUserButton"),
-                  onClick: this.onDisableClick.bind(this, user)
-                }
-              : {
-                  key: "enable",
-                  label: t("EnableUserButton"),
-                  onClick: this.onEnableClick.bind(this, user)
-                }),
+          (user.status === EmployeeStatus.Active
+            ? {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick.bind(this, user)
+            }
+            : {
+              key: "enable",
+              label: t("EnableUserButton"),
+              onClick: this.onEnableClick.bind(this, user)
+            }),
           isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -347,7 +347,8 @@ class SectionBodyContent extends React.PureComponent {
       settings,
       t,
       filter,
-      widthProp
+      widthProp,
+      isMobile
     } = this.props;
     const { dialogsVisible, user } = this.state;
 
@@ -388,6 +389,7 @@ class SectionBodyContent extends React.PureComponent {
                 widthProp={widthProp}
               >
                 <UserContent
+                  isMobile={isMobile}
                   widthProp={widthProp}
                   user={user}
                   history={history}
@@ -434,22 +436,22 @@ class SectionBodyContent extends React.PureComponent {
         )}
       </>
     ) : (
-      <EmptyScreenContainer
-        imageSrc="images/empty_screen_filter.png"
-        imageAlt="Empty Screen Filter image"
-        headerText={t("NotFoundTitle")}
-        descriptionText={t("NotFoundDescription")}
-        widthProp={widthProp}
-        buttons={
-          <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-              {t("ClearButton")}
-            </Link>
-          </>
-        }
-      />
-    );
+          <EmptyScreenContainer
+            imageSrc="images/empty_screen_filter.png"
+            imageAlt="Empty Screen Filter image"
+            headerText={t("NotFoundTitle")}
+            descriptionText={t("NotFoundDescription")}
+            widthProp={widthProp}
+            buttons={
+              <>
+                <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+                <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+                  {t("ClearButton")}
+                </Link>
+              </>
+            }
+          />
+        );
   }
 }
 

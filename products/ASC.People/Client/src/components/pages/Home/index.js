@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -17,7 +17,6 @@ import {
   SectionPagingContent
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
-import { getSelectedGroup } from "../../../store/people/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
 const i18n = createI18N({
@@ -25,15 +24,11 @@ const i18n = createI18N({
   localesPath: "pages/Home"
 });
 const { changeLanguage } = utils;
+const { isAdmin } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
     super(props);
-
-    const currentGroup = getSelectedGroup(props.groups, props.selectedGroup);
-    document.title = currentGroup
-      ? `${currentGroup.name} – ${props.t("People")}`
-      : `${props.t("People")} – ${props.t("OrganizationName")}`;
 
     this.state = {
       isHeaderVisible: false,
@@ -97,7 +92,7 @@ class PureHome extends React.Component {
       isHeaderChecked,
       selected
     } = this.state;
-    const { t } = this.props;
+    const { t, isAdmin } = this.props;
     return (
       <>
         <RequestLoader
@@ -114,9 +109,11 @@ class PureHome extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
 
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
+          {isAdmin && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
 
           <PageLayout.ArticleBody>
             <ArticleBodyContent />
@@ -140,6 +137,7 @@ class PureHome extends React.Component {
 
           <PageLayout.SectionBody>
             <SectionBodyContent
+              isMobile={isMobile}
               selected={selected}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
@@ -172,17 +170,21 @@ const Home = props => {
 Home.propTypes = {
   users: PropTypes.array,
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
+  isAdmin: PropTypes.bool
 };
 
 function mapStateToProps(state) {
+  const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
-    users: state.people.users,
-    selection: state.people.selection,
-    selected: state.people.selected,
+    users,
+    selection,
+    selected,
+    selectedGroup,
+    groups,
     isLoaded: state.auth.isLoaded,
-    selectedGroup: state.people.selectedGroup,
-    groups: state.people.groups
+    organizationName: state.auth.settings.organizationName,
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 

@@ -1,5 +1,12 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons, toastr, utils, Badge } from "asc-web-components";
+import {
+  TreeMenu,
+  TreeNode,
+  Icons,
+  toastr,
+  utils,
+  Badge
+} from "asc-web-components";
 import styled from "styled-components";
 import { api, constants } from "asc-web-common";
 const { files } = api;
@@ -9,12 +16,18 @@ const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
 
 const StyledTreeMenu = styled(TreeMenu)`
-  .rc-tree-node-content-wrapper{
+  .rc-tree-node-content-wrapper {
     background: ${props => !props.dragging && "none !important"};
   }
-  
+
   .rc-tree-node-selected {
-    background: #DFE2E3 !important;
+    background: #dfe2e3 !important;
+  }
+
+  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
+  .rc-tree-treenode-disabled > a,
+  .rc-tree-treenode-disabled > a span {
+    cursor: wait;
   }
 `;
 
@@ -29,11 +42,13 @@ class TreeFolders extends React.Component {
   onBadgeClick = e => {
     const id = e.currentTarget.dataset.id;
     this.props.onBadgeClick && this.props.onBadgeClick(id);
-  }
+  };
 
   getFolderIcon = item => {
-    const showItem = item.newItems ? item.newItems > 0 && this.props.needUpdate : false;
-    const style = { position: "absolute", right: 1, top: 2 }
+    const showItem = item.newItems
+      ? item.newItems > 0 && this.props.needUpdate
+      : false;
+    const style = { position: "absolute", right: 1, top: 2 };
     const badgeProps = {
       label: item.newItems,
       backgroundColor: "#ED7309",
@@ -42,7 +57,7 @@ class TreeFolders extends React.Component {
       fontWeight: 800,
       borderRadius: "11px",
       padding: "0 5px",
-      style,
+      style
     };
 
     switch (item.key) {
@@ -53,7 +68,13 @@ class TreeFolders extends React.Component {
         return (
           <>
             <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />
-            {showItem && <Badge data-id={item.id} {...badgeProps} onClick={this.onBadgeClick} />}
+            {showItem && (
+              <Badge
+                data-id={item.id}
+                {...badgeProps}
+                onClick={this.onBadgeClick}
+              />
+            )}
           </>
         );
 
@@ -61,7 +82,13 @@ class TreeFolders extends React.Component {
         return (
           <>
             <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
-            {showItem && <Badge data-id={item.id} {...badgeProps} onClick={this.onBadgeClick} />}
+            {showItem && (
+              <Badge
+                data-id={item.id}
+                {...badgeProps}
+                onClick={this.onBadgeClick}
+              />
+            )}
           </>
         );
 
@@ -73,8 +100,16 @@ class TreeFolders extends React.Component {
     }
   };
 
-  showDragItems = (item) => {
-    const { isAdmin, myId, commonId, isCommon, isMy, isShare, currentId } = this.props;
+  showDragItems = item => {
+    const {
+      isAdmin,
+      myId,
+      commonId,
+      isCommon,
+      isMy,
+      isShare,
+      currentId
+    } = this.props;
     if (item.id === currentId) {
       return false;
     }
@@ -230,7 +265,7 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = treeNode => {
-    this.props.setIsLoading(true);
+    this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
 
     return this.generateTreeNodes(treeNode)
@@ -245,7 +280,7 @@ class TreeFolders extends React.Component {
         this.setState({ treeData });
       })
       .catch(err => toastr.error(err))
-      .finally(() => this.props.setIsLoading(false));
+      .finally(() => this.props.setIsLoading && this.props.setIsLoading(false));
   };
 
   onExpand = (data, treeNode) => {
@@ -278,7 +313,7 @@ class TreeFolders extends React.Component {
     }
   }
 
-  onMouseEnter = (data) => {
+  onMouseEnter = data => {
     if (this.props.dragging) {
       if (data.node.props.dragging) {
         this.props.setDragItem(data.node.props.id);
@@ -294,25 +329,29 @@ class TreeFolders extends React.Component {
 
   onDragOver = data => {
     const parentElement = data.event.target.parentElement;
-    const existElement = parentElement.classList.contains("rc-tree-node-content-wrapper");
+    const existElement = parentElement.classList.contains(
+      "rc-tree-node-content-wrapper"
+    );
 
     if (existElement) {
       if (data.node.props.dragging) {
         parentElement.style.background = backgroundDragColor;
       }
     }
-  }
+  };
 
   onDragLeave = data => {
     const parentElement = data.event.target.parentElement;
-    const existElement = parentElement.classList.contains("rc-tree-node-content-wrapper");
+    const existElement = parentElement.classList.contains(
+      "rc-tree-node-content-wrapper"
+    );
 
     if (existElement) {
       if (data.node.props.dragging) {
         parentElement.style.background = backgroundDragEnterColor;
       }
     }
-  }
+  };
 
   onDrop = data => {
     const { setDragging, onTreeDrop } = this.props;
@@ -321,10 +360,16 @@ class TreeFolders extends React.Component {
     if (dragging) {
       onTreeDrop(data.event, id);
     }
-  }
+  };
 
   render() {
-    const { selectedKeys, isLoading, onSelect, needUpdate, dragging } = this.props;
+    const {
+      selectedKeys,
+      isLoading,
+      onSelect,
+      needUpdate,
+      dragging
+    } = this.props;
     const { treeData, expandedKeys } = this.state;
     const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
@@ -344,7 +389,6 @@ class TreeFolders extends React.Component {
         onExpand={this.onExpand}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
-
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
         onDrop={this.onDrop}

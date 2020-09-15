@@ -50,7 +50,7 @@ const StyledRowContent = styled.div`
   display: inline-flex;
 
   ${props => !props.disableSideInfo
-    && (props.widthProp && (props.widthProp < size.tablet))
+    && (props.widthProp && (props.widthProp < size.tablet)) || props.isMobile
     ? `${containerTabletStyle}`
     : `
       @media ${tablet} {
@@ -70,7 +70,7 @@ const MainContainerWrapper = styled.div`
   min-width: 140px;
 
   ${props => !props.disableSideInfo
-    && (props.widthProp && (props.widthProp < size.tablet))
+    && (props.widthProp && (props.widthProp < size.tablet)) || props.isMobile
     ? `${mainWrapperTabletStyle}`
     : `
       @media ${tablet} {
@@ -84,7 +84,7 @@ const MainContainer = styled.div`
   margin-right: 8px;
   max-width: 86%;
 
-  ${props => props.widthProp && (props.widthProp < size.tablet)
+  ${props => props.widthProp && (props.widthProp < size.tablet) || props.isMobile
     ? `${mainContainerTabletStyle}`
     : `
       @media ${tablet} {
@@ -101,7 +101,7 @@ const MainIcons = styled.div`
 const SideContainerWrapper = styled.div`
   ${commonCss};
 
-  ${props => props.widthProp && (props.widthProp < size.tablet)
+  ${props => props.widthProp && (props.widthProp < size.tablet) || props.isMobile
     ? `${truncateCss}`
     : `
       @media ${tablet} {
@@ -121,7 +121,7 @@ const SideContainerWrapper = styled.div`
   color: ${props => props.color && props.color};
 
 ${props => !props.disableSideInfo
-    && (props.widthProp && (props.widthProp < size.tablet))
+    && (props.widthProp && (props.widthProp < size.tablet)) || props.isMobile
     ? `display: none;`
     : `
       @media ${tablet} {
@@ -133,7 +133,7 @@ ${props => !props.disableSideInfo
 const TabletSideInfo = styled.div`
   display: none;
 
-  ${props => props.widthProp && (props.widthProp < size.tablet)
+  ${props => props.widthProp && (props.widthProp < size.tablet) || props.isMobile
     ? `${sideInfoTabletStyle}`
     : `
       @media ${tablet} {
@@ -160,7 +160,7 @@ const getSideInfo = content => {
 
 const RowContent = props => {
   //console.log("RowContent render");
-  const { children, disableSideInfo, id, className, style, sideColor, onClick, widthProp } = props;
+  const { children, disableSideInfo, id, className, style, sideColor, onClick, widthProp, isMobile } = props;
 
   const sideInfo = getSideInfo(children);
   const mainContainerWidth = children[0].props && children[0].props.containerWidth;
@@ -173,15 +173,18 @@ const RowContent = props => {
       onClick={onClick}
       style={style}
       widthProp={widthProp}
+      isMobile={isMobile}
     >
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={mainContainerWidth}
         widthProp={widthProp}
+        isMobile={isMobile}
       >
         <MainContainer
           className="rowMainContainer"
           widthProp={widthProp}
+          isMobile={isMobile}
         >
           {children[0]}
         </MainContainer>
@@ -200,6 +203,7 @@ const RowContent = props => {
               containerWidth={element.props && element.props.containerWidth}
               containerMinWidth={element.props && element.props.containerMinWidth}
               widthProp={widthProp}
+              isMobile={isMobile}
             >
               {element}
             </SideContainerWrapper>
@@ -210,6 +214,7 @@ const RowContent = props => {
         <TabletSideInfo
           color={sideColor}
           widthProp={widthProp}
+          isMobile={isMobile}
         >
           {sideInfo}
         </TabletSideInfo>
@@ -227,6 +232,7 @@ RowContent.propTypes = {
   sideColor: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   widthProp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isMobile: PropTypes.bool
 };
 
 RowContent.defaultProps = {

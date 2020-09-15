@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -21,6 +21,7 @@ const i18n = createI18N({
   localesPath: "pages/ProfileAction"
 });
 const { changeLanguage } = utils;
+const { isAdmin } = store.auth.selectors;
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -50,7 +51,7 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     let loaded = false;
-    const { profile, isVisitor, match } = this.props;
+    const { profile, isVisitor, match, isAdmin } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -67,7 +68,7 @@ class ProfileAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
           )}
-          {!isVisitor && (
+          {(!isVisitor && isAdmin) && (
             <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent />
             </PageLayout.ArticleMainButton>
@@ -89,11 +90,11 @@ class ProfileAction extends React.Component {
               type ? (
                 <CreateUserForm />
               ) : (
-                <UpdateUserForm />
-              )
+                  <UpdateUserForm />
+                )
             ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            )}
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              )}
           </PageLayout.SectionBody>
         </PageLayout>
       </I18nextProvider>
@@ -104,7 +105,8 @@ class ProfileAction extends React.Component {
 ProfileAction.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  isAdmin: PropTypes.bool
 };
 
 const ProfileActionTranslate = withTranslation()(ProfileAction);
@@ -124,7 +126,8 @@ const ProfileActionContainer = props => {
 function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser
+    profile: state.profile.targetUser,
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 

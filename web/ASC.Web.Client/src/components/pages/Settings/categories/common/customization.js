@@ -95,12 +95,13 @@ class Customization extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
+      organizationName,
       t
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
     const timezones = mapTimezonesToArray(rawTimezones);
 
-    document.title = `${t("Customization")} – ${t("OrganizationName")}`;
+    document.title = `${t("Customization")} – ${organizationName}`;
 
     this.state = {
       isLoadedData: false,
@@ -268,14 +269,22 @@ class Customization extends React.Component {
 }
 
 function mapStateToProps(state) {
+  const {
+    culture,
+    timezone,
+    timezones,
+    cultures,
+    nameSchemaId,
+    organizationName
+  } = state.auth.settings;
   return {
-    portalLanguage: state.auth.settings.culture,
-    portalTimeZoneId: state.auth.settings.timezone,
-    language:
-      state.auth.user.cultureName || state.auth.settings.culture || "en-US",
-    rawTimezones: state.auth.settings.timezones,
-    rawCultures: state.auth.settings.cultures,
-    nameSchemaId: state.auth.settings.nameSchemaId
+    portalLanguage: culture,
+    portalTimeZoneId: timezone,
+    language: state.auth.user.cultureName || culture || "en-US",
+    rawTimezones: timezones,
+    rawCultures: cultures,
+    nameSchemaId: nameSchemaId,
+    organizationName
   };
 }
 
