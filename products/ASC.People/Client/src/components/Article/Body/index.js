@@ -6,6 +6,7 @@ import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { history, utils as commonUtils, store as initStore } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+import styled, { css } from "styled-components";
 
 const i18n = createI18N({
   page: "Article",
@@ -14,6 +15,10 @@ const i18n = createI18N({
 
 const { changeLanguage } = commonUtils;
 const { getCurrentModule, isAdmin } = initStore.auth.selectors;
+
+const StyledTreeMenu = styled(TreeMenu)`
+  ${props => props.isAdmin && css`margin-top: 19px;`}
+`;
 
 const getItems = data => {
   return data.map(item => {
@@ -119,11 +124,11 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const { data, selectedKeys, isAdmin } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
     return (
-      <TreeMenu
+      <StyledTreeMenu
         className="people-tree-menu"
         checkable={false}
         draggable={false}
@@ -134,9 +139,14 @@ class ArticleBodyContent extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
+        isFullFillSelection={false}
+        gapBetweenNodes="22"
+        gapBetweenNodesTablet="26"
+        isEmptyRootNode={getItems(data).length > 0 }
+        isAdmin={isAdmin}
       >
         {getItems(data)}
-      </TreeMenu>
+      </StyledTreeMenu>
     );
   }
 }
