@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASC.Web.Files.Services.NotifyService {
+namespace ASC.Files.Core.Services.NotifyService {
     using System;
     
     
@@ -19,7 +19,7 @@ namespace ASC.Web.Files.Services.NotifyService {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FilesPatternResource {
@@ -39,7 +39,7 @@ namespace ASC.Web.Files.Services.NotifyService {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Files.Services.NotifyService.FilesPatternResource", typeof(FilesPatternResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Files.Core.Services.NotifyService.FilesPatternResource", typeof(FilesPatternResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -144,13 +144,13 @@ namespace ASC.Web.Files.Services.NotifyService {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;patterns&gt;
-        ///  &lt;formatter type=&quot;ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Common&quot; /&gt;
+        ///  &lt;formatter type=&quot;ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Core.Common&quot; /&gt;
         ///
         ///  &lt;pattern id=&quot;DocuSignComplete&quot; sender=&quot;email.sender&quot;&gt;
-        ///    &lt;subject resource=&quot;|subject_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files&quot; /&gt;
-        ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files&quot; /&gt;
+        ///    &lt;subject resource=&quot;|subject_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
+        ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
         ///  &lt;/pattern&gt;
-        ///  &lt;pattern id=&quot;DocuSignComplete&quot; se [rest of string was truncated]&quot;;.
+        ///  &lt;pattern id=&quot;DocuSignCom [rest of string was truncated]&quot;;.
         /// </summary>
         public static string patterns {
             get {

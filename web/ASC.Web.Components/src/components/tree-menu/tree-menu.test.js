@@ -94,4 +94,54 @@ describe('<TreeMenu />', () => {
 
     expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
+  it('accepts isFullFillSelection', () => {
+    const wrapper = mount(
+      <TreeMenu
+        isFullFillSelection={false}
+      >
+        <TreeNode title="Parent" key="0-0">
+          <TreeNode
+            title="Child"
+            key="0-0-0"
+          ></TreeNode>
+        </TreeNode>
+      </TreeMenu>
+    );
+
+    expect(wrapper.prop('isFullFillSelection')).toEqual(false);
+  });
+  it('accepts gapBetweenNodes and gapBetweenNodesTablet', () => {
+    const wrapper = mount(
+      <TreeMenu
+        gapBetweenNodes='22'
+        gapBetweenNodesTablet='24'
+      >
+        <TreeNode title="Parent" key="0-0">
+          <TreeNode
+            title="Child"
+            key="0-0-0"
+          ></TreeNode>
+        </TreeNode>
+      </TreeMenu>
+    );
+
+    expect(wrapper.prop('gapBetweenNodes')).toEqual('22');
+    expect(wrapper.prop('gapBetweenNodesTablet')).toEqual('24');
+  });
+  it('accepts isEmptyRootNode', () => {
+    const wrapper = mount(
+      <TreeMenu
+      isEmptyRootNode={true}
+      >
+        <TreeNode title="Parent" key="0-0">
+          <TreeNode
+            title="Child"
+            key="0-0-0"
+          ></TreeNode>
+        </TreeNode>
+      </TreeMenu>
+    );
+
+    expect(wrapper.prop('isEmptyRootNode')).toEqual(true);
+  });
 });

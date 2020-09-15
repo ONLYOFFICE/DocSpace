@@ -107,8 +107,6 @@ class OperationsPanelComponent extends React.Component {
     //console.log("Operations panel render");
     const {
       t,
-      onLoading,
-      isLoading,
       filter,
       treeFolders,
       isCopy,
@@ -126,22 +124,21 @@ class OperationsPanelComponent extends React.Component {
           visible={visible}
           displayType="aside"
           zIndex={zIndex}
-          headerContent={
-            isRecycleBinFolder ? t("Restore") : isCopy ? t("Copy") : t("Move")
-          }
           onClose={onClose}
-          bodyContent={
+        >
+          <ModalDialog.Header>
+            {isRecycleBinFolder ? t("Restore") : isCopy ? t("Copy") : t("Move")}
+          </ModalDialog.Header>
+          <ModalDialog.Body>
             <TreeFolders
               expandedKeys={expandedKeys}
               data={data}
               filter={filter}
-              onLoading={onLoading}
-              isLoading={isLoading}
               onSelect={this.onSelect}
               needUpdate={false}
             />
-          }
-        />
+          </ModalDialog.Body>
+        </ModalDialog>
       </StyledAsidePanel>
     );
   }

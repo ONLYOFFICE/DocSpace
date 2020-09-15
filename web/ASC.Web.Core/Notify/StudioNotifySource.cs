@@ -159,7 +159,9 @@ namespace ASC.Web.Studio.Core.Notify
                     Actions.PersonalCustomModeConfirmation,
                     Actions.PersonalCustomModePasswordChange,
                     Actions.PersonalCustomModeEmailChange,
-                    Actions.PersonalCustomModeProfileDelete
+                    Actions.PersonalCustomModeProfileDelete,
+
+                    Actions.SaasCustomModeRegData
                 );
         }
 

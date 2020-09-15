@@ -1019,7 +1019,7 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? PathProvider.GetFolderUrl(file.FolderID)
+                    ? PathProvider.GetFolderUrlById(file.FolderID)
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
@@ -1117,7 +1117,7 @@ namespace ASC.Web.Files
             {
                 try
                 {
-                    urlRedirect = PathProvider.GetFolderUrl(folderId);
+                    urlRedirect = PathProvider.GetFolderUrlById(folderId);
                 }
                 catch (ArgumentNullException e)
                 {

@@ -67,8 +67,8 @@ const Tiles = ({ modules, isPrimary }) => {
       ))}
     </div>
   ) : (
-      <></>
-    );
+    <></>
+  );
 };
 
 Tiles.propTypes = {
@@ -76,12 +76,12 @@ Tiles.propTypes = {
   isPrimary: PropTypes.bool.isRequired
 };
 
-const Body = ({ modules, match, isLoaded, homepage }) => {
+const Body = ({ modules, match, isLoaded, homepage, organizationName }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
-  document.title = `${t("OrganizationName")}`;
-  window.open(homepage, '_self')
+  document.title = `${organizationName}`;
+  window.open(homepage, "_self");
 
   useEffect(() => error && toastr.error(error), [error]);
 
@@ -92,17 +92,17 @@ const Body = ({ modules, match, isLoaded, homepage }) => {
   return !isLoaded ? (
     <Loader className="pageLoader" type="rombs" size="40px" />
   ) : (
-      <HomeContainer>
-        <Tiles modules={modules} isPrimary={true} />
-        <Tiles modules={modules} isPrimary={false} />
+    <HomeContainer>
+      <Tiles modules={modules} isPrimary={true} />
+      <Tiles modules={modules} isPrimary={false} />
 
-        {!modules || !modules.length ? (
-          <Text className="home-error-text" fontSize="14px" color="#c30">
-            {t("NoOneModulesAvailable")}
-          </Text>
-        ) : null}
-      </HomeContainer>
-    );
+      {!modules || !modules.length ? (
+        <Text className="home-error-text" fontSize="14px" color="#c30">
+          {t("NoOneModulesAvailable")}
+        </Text>
+      ) : null}
+    </HomeContainer>
+  );
 };
 
 const Home = props => (
@@ -119,10 +119,13 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { modules, isLoaded, settings } = state.auth;
+  const { homepage, organizationName } = settings;
   return {
-    modules: state.auth.modules,
-    isLoaded: state.auth.isLoaded,
-    homepage: state.auth.settings.homepage
+    modules,
+    isLoaded,
+    homepage,
+    organizationName
   };
 }
 

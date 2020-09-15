@@ -51,8 +51,8 @@ const LoginContainer = styled.div`
   }
 
   .auth-form-container {
-    margin: 32px 22.5% 0 22.5%;
-    width: 32.4%;
+    margin: 32px 213px 0 213px;
+    width: 311px;
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
@@ -177,10 +177,7 @@ class Form extends Component {
     } else {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
-        .then(
-          res => toastr.success(res),
-          message => toastr.error(message)
-        )
+        .then(res => toastr.success(res), message => toastr.error(message))
         .finally(this.onDialogClose());
     }
   };
@@ -197,7 +194,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history, homepage } = this.props;
+    const { login, setIsLoaded, homepage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -222,19 +219,19 @@ class Form extends Component {
     login(userName, pass)
       .then(() => {
         setIsLoaded(true);
-        //history.push(homepage);
         window.open(homepage, "_self");
       })
       .catch(error => {
-        this.setState({ errorText: error, isLoading: false });
+        let err = error.data.error.message;
+        this.setState({ errorText: err, isLoading: false });
       });
   };
 
   componentDidMount() {
-    const { match, t } = this.props;
+    const { match, t, organizationName } = this.props;
     const { error, confirmedEmail } = match.params;
 
-    document.title = `${t("Authorization")} – ${t("OrganizationName")}`;
+    document.title = `${t("Authorization")} – ${organizationName}`;
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
@@ -420,7 +417,9 @@ Form.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   language: PropTypes.string.isRequired,
-  socialButtons: PropTypes.array
+  socialButtons: PropTypes.array,
+  organizationName: PropTypes.string,
+  homepage: PropTypes.string
 };
 
 Form.defaultProps = {
@@ -464,15 +463,26 @@ LoginForm.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { isLoaded, user, settings } = state.auth;
+  const {
+    greetingSettings,
+    enabledJoin,
+    organizationName,
+    homepage,
+    culture
+  } = settings;
+
   return {
-    isLoaded: state.auth.isLoaded,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-    greetingTitle: state.auth.settings.greetingSettings,
-    enabledJoin: state.auth.settings.enabledJoin,
-    homepage: state.auth.settings.homepage
+    isLoaded,
+    enabledJoin,
+    organizationName,
+    homepage,
+    language: user.cultureName || culture,
+    greetingTitle: greetingSettings
   };
 }
 
-export default connect(mapStateToProps, { login, setIsLoaded })(
-  withRouter(LoginForm)
-);
+export default connect(
+  mapStateToProps,
+  { login, setIsLoaded }
+)(withRouter(LoginForm));

@@ -7,6 +7,7 @@ import Heading from "../heading";
 import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
 import { Icons } from "../icons";
+import Box from "../box";
 
 const Dialog = styled.div`
   position: relative;
@@ -23,7 +24,7 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
-  box-sizing: border-box;  
+  box-sizing: border-box;
   .heading {
     max-width: 500px;
     margin: 0;
@@ -39,32 +40,46 @@ const StyledHeader = styled.div`
 `;
 
 const CloseButton = styled(Icons.CrossSidebarIcon)`
-cursor: pointer;
-position: absolute;
+  cursor: pointer;
+  position: absolute;
 
-width: 17px;
-height: 17px;
-min-width: 17px;
-min-height: 17px;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  min-height: 17px;
 
-right: 16px;
-top: 19px;
+  right: 16px;
+  top: 19px;
 
   &:hover {
-      path {
-        fill: #657077;
-      }
+    path {
+      fill: #657077;
+    }
   }
 `;
 
-const Body = styled.div`
+const BodyBox = styled(Box)`
   position: relative;
-  padding: ${props => props.bodyPadding};
 `;
 
-const Footer = styled.div``;
+function Header() {
+  return null;
+}
+Header.displayName = "DialogHeader";
+
+function Body() {
+  return null;
+}
+Body.displayName = "DialogBody";
+
+function Footer() {
+  return null;
+}
+Footer.displayName = "DialogFooter";
 
 class ModalDialog extends React.Component {
+  static Header = Header;
+  static Body = Body;
   constructor(props) {
     super(props);
 
@@ -126,77 +141,90 @@ class ModalDialog extends React.Component {
     const {
       visible,
       scale,
-      headerContent,
-      bodyContent,
-      footerContent,
       onClose,
       zIndex,
-      bodyPadding
+      bodyPadding,
+      children
     } = this.props;
+
+    let header = null;
+    let body = null;
+    let footer = null;
+
+    React.Children.forEach(children, child => {
+      const childType =
+        child && child.type && (child.type.displayName || child.type.name);
+
+      switch (childType) {
+        case Header.displayName:
+          header = child;
+          break;
+        case Body.displayName:
+          body = child;
+          break;
+        case Footer.displayName:
+          footer = child;
+          break;
+        default:
+          break;
+      }
+    });
 
     return this.state.displayType === "modal" ? (
       <Backdrop visible={visible} zIndex={zIndex}>
         <Dialog>
           <Content>
             <StyledHeader>
-              <Heading
-                className='heading'
-                size='medium'
-                truncate={true}
-              >
-                {headerContent}
+              <Heading className="heading" size="medium" truncate={true}>
+                {header ? header.props.children : null}
               </Heading>
               <CloseButton onClick={onClose}></CloseButton>
             </StyledHeader>
-            <Body bodyPadding={bodyPadding}>{bodyContent}</Body>
-            <Footer>{footerContent}</Footer>
+            <BodyBox paddingProp={bodyPadding}>
+              {body ? body.props.children : null}
+            </BodyBox>
+            <Box>{footer ? footer.props.children : null}</Box>
           </Content>
         </Dialog>
       </Backdrop>
     ) : (
-        <div
-          className={this.props.className}
-          id={this.props.id}
-          style={this.props.style}
+      <Box
+        className={this.props.className}
+        id={this.props.id}
+        style={this.props.style}
+      >
+        <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
+        <Aside
+          visible={visible}
+          scale={scale}
+          zIndex={zIndex}
+          className="modal-dialog-aside"
         >
-          <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
-          <Aside visible={visible} scale={scale} zIndex={zIndex} className="modal-dialog-aside">
-            <Content>
-              <StyledHeader>
-                <Heading
-                  className='heading'
-                  size='medium'
-                  truncate={true}
-                >
-                  {headerContent}
-                </Heading>
-                {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
-              </StyledHeader>
-              <Body bodyPadding={bodyPadding}>{bodyContent}</Body>
-              <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
-            </Content>
-          </Aside>
-        </div>
-      );
+          <Content>
+            <StyledHeader>
+              <Heading className="heading" size="medium" truncate={true}>
+                {header ? header.props.children : null}
+              </Heading>
+              {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
+            </StyledHeader>
+            <BodyBox paddingProp={bodyPadding}>
+              {body ? body.props.children : null}
+            </BodyBox>
+            <Box className="modal-dialog-aside-footer">
+              {footer ? footer.props.children : null}
+            </Box>
+          </Content>
+        </Aside>
+      </Box>
+    );
   }
 }
 
 ModalDialog.propTypes = {
+  children: PropTypes.any,
   visible: PropTypes.bool,
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   scale: PropTypes.bool,
-  headerContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  bodyContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  footerContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
   onClose: PropTypes.func,
   zIndex: PropTypes.number,
   bodyPadding: PropTypes.string,
@@ -210,5 +238,9 @@ ModalDialog.defaultProps = {
   zIndex: 310,
   bodyPadding: "16px 0"
 };
+
+ModalDialog.Header = Header;
+ModalDialog.Body = Body;
+ModalDialog.Footer = Footer;
 
 export default ModalDialog;

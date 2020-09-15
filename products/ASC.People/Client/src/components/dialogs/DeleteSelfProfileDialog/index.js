@@ -43,11 +43,9 @@ class DeleteSelfProfileDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("DeleteProfileTitle")}
-          bodyContent={
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("DeleteProfileTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
             <Text fontSize="13px">
               {t("DeleteProfileInfo")}{" "}
               <Link
@@ -60,28 +58,26 @@ class DeleteSelfProfileDialogComponent extends React.Component {
                 {email}
               </Link>
             </Text>
-          }
-          footerContent={
-            <>
-              <Button
-                key="SendBtn"
-                label={t("SendButton")}
-                size="medium"
-                primary={true}
-                onClick={this.onDeleteSelfProfileInstructions}
-                isLoading={isRequestRunning}
-              />
-              <Button
-                className="button-dialog"
-                key="CloseBtn"
-                label={t("CloseButton")}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              key="SendBtn"
+              label={t("SendButton")}
+              size="medium"
+              primary={true}
+              onClick={this.onDeleteSelfProfileInstructions}
+              isLoading={isRequestRunning}
+            />
+            <Button
+              className="button-dialog"
+              key="CloseBtn"
+              label={t("CloseButton")}
+              size="medium"
+              onClick={onClose}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

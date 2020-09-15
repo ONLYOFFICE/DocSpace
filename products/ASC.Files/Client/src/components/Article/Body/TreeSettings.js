@@ -26,18 +26,37 @@ const StyledTreeMenu = styled(TreeMenu)`
     background: #dfe2e3 !important;
   }
 
-  .settings-node {
-    margin-left: 8px !important;
+  .settings-node > .rc-tree-node-content-wrapper > .rc-tree-title {
+    padding-left: 4px !important;
+    width: 100%;
+  }
+  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
+  .rc-tree-treenode-disabled > a,
+  .rc-tree-treenode-disabled > a span {
+    cursor: wait;
+  }
+
+  .rc-tree-child-tree {
+    margin-left: 31px;
   }
 `;
 
-const PureTreeSettings = props => {
+const PureTreeSettings = ({
+  match,
+  enableThirdParty, 
+  isAdmin,
+  selectedTreeNode, 
+  expandedSetting,
+  isLoading,
+  setSelectedNode,
+  setExpandSettingsTree,
+  t
+}) => {
   useEffect(() => {
-    const { match, setSelectedNode, setExpandSettingsTree } = props;
     const { setting } = match.params;
     setSelectedNode([setting]);
     if (setting) setExpandSettingsTree(["settings"]);
-  }, [props.match.setting]);
+  }, [match]);
 
   const switcherIcon = obj => {
     if (obj.isLeaf) {
@@ -51,7 +70,6 @@ const PureTreeSettings = props => {
   };
 
   const onSelect = section => {
-    const { setSelectedNode, setExpandSettingsTree } = props;
     const path = section[0];
 
     if (path === "settings") {
@@ -65,12 +83,10 @@ const PureTreeSettings = props => {
   };
 
   const onExpand = data => {
-    const { setExpandSettingsTree } = props;
     setExpandSettingsTree(data);
   };
 
   const renderTreeNode = () => {
-    const { t, enableThirdParty, isAdmin } = props;
     return (
       <TreeNode
         id="settings"
@@ -109,7 +125,6 @@ const PureTreeSettings = props => {
     );
   };
 
-  const { selectedTreeNode, expandedSetting } = props;
   const nodes = renderTreeNode();
 
   return (
@@ -117,6 +132,7 @@ const PureTreeSettings = props => {
       expandedKeys={expandedSetting}
       selectedKeys={selectedTreeNode}
       defaultExpandParent={false}
+      disabled={isLoading}
       className="settings-tree-menu"
       switcherIcon={switcherIcon}
       onSelect={onSelect}
@@ -142,7 +158,7 @@ const TreeSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const { selectedTreeNode, settingsTree } = state.files;
+  const { selectedTreeNode, settingsTree, isLoading } = state.files;
 
   const { isAdmin } = state.auth.user;
 
@@ -152,7 +168,8 @@ function mapStateToProps(state) {
     selectedTreeNode,
     expandedSetting,
     enableThirdParty,
-    isAdmin
+    isAdmin,
+    isLoading
   };
 }
 

@@ -42,6 +42,7 @@ const initialState = {
       dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
       timePattern: "h:mm tt"
     },
+    organizationName: "ONLYOFFICE",
     greetingSettings: "Web Office Applications",
     enableAdmMess: false,
     urlLicense: "https://gnu.org/licenses/gpl-3.0.html",

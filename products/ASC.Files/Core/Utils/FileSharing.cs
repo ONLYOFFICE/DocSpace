@@ -41,7 +41,7 @@ using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.NotifyService;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Files.Services.WCFService;
 
 using Microsoft.Extensions.Options;

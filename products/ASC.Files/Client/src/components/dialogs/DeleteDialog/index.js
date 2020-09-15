@@ -189,77 +189,68 @@ class DeleteDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("ConfirmationTitle")}
-          bodyContent={
-            <>
-              <div className="modal-dialog-content">
-                <Text className="delete_dialog-header-text">
-                  {questionMessage}
-                </Text>
-                <Scrollbar
-                  style={{ height, maxHeight: 330 }}
-                  stype="mediumBlack"
-                >
-                  {foldersList.length > 0 && (
-                    <Text isBold>{t("FoldersModule")}:</Text>
-                  )}
-                  {foldersList.map((item, index) => (
-                    <Checkbox
-                      truncate
-                      className="modal-dialog-checkbox"
-                      value={`${item.fileExst}/${item.id}`}
-                      onChange={this.onChange}
-                      key={`checkbox_${index}`}
-                      isChecked={item.checked}
-                      label={item.title}
-                    />
-                  ))}
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <div className="modal-dialog-content">
+              <Text className="delete_dialog-header-text">
+                {questionMessage}
+              </Text>
+              <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
+                {foldersList.length > 0 && (
+                  <Text isBold>{t("FoldersModule")}:</Text>
+                )}
+                {foldersList.map((item, index) => (
+                  <Checkbox
+                    truncate
+                    className="modal-dialog-checkbox"
+                    value={`${item.fileExst}/${item.id}`}
+                    onChange={this.onChange}
+                    key={`checkbox_${index}`}
+                    isChecked={item.checked}
+                    label={item.title}
+                  />
+                ))}
 
-                  {filesList.length > 0 && (
-                    <Text isBold className="delete_dialog-text">
-                      {t("FilesModule")}:
-                    </Text>
-                  )}
-                  {filesList.map((item, index) => (
-                    <Checkbox
-                      truncate
-                      className="modal-dialog-checkbox"
-                      value={`${item.fileExst}/${item.id}`}
-                      onChange={this.onChange}
-                      key={`checkbox_${index}`}
-                      isChecked={item.checked}
-                      label={item.title}
-                    />
-                  ))}
-                </Scrollbar>
-              </div>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                className="button-dialog-accept"
-                key="OkButton"
-                label={t("OKButton")}
-                size="medium"
-                primary
-                onClick={this.onDelete}
-                isLoading={isLoading}
-              />
-              <Button
-                className="button-dialog"
-                key="CancelButton"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                isLoading={isLoading}
-              />
-            </>
-          }
-        />
+                {filesList.length > 0 && (
+                  <Text isBold className="delete_dialog-text">
+                    {t("FilesModule")}:
+                  </Text>
+                )}
+                {filesList.map((item, index) => (
+                  <Checkbox
+                    truncate
+                    className="modal-dialog-checkbox"
+                    value={`${item.fileExst}/${item.id}`}
+                    onChange={this.onChange}
+                    key={`checkbox_${index}`}
+                    isChecked={item.checked}
+                    label={item.title}
+                  />
+                ))}
+              </Scrollbar>
+            </div>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              className="button-dialog-accept"
+              key="OkButton"
+              label={t("OKButton")}
+              size="medium"
+              primary
+              onClick={this.onDelete}
+              isLoading={isLoading}
+            />
+            <Button
+              className="button-dialog"
+              key="CancelButton"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              isLoading={isLoading}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
@@ -272,11 +263,12 @@ const DeleteDialog = props => (
 );
 
 const mapStateToProps = state => {
-  const { selectedFolder, filter, treeFolders } = state.files;
+  const { selectedFolder, filter, treeFolders, isLoading } = state.files;
   return {
     currentFolderId: selectedFolder.id,
     filter,
-    treeFolders
+    treeFolders,
+    isLoading
   };
 };
 

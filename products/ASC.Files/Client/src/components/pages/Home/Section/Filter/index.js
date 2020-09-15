@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchFiles, setViewAs } from "../../../../../store/files/actions";
+import { fetchFiles, setViewAs, setIsLoading } from "../../../../../store/files/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -61,7 +61,7 @@ class SectionFilterContent extends React.Component {
   }
 
   onFilter = data => {
-    const { onLoading, filter, selectedFolderId } = this.props;
+    const { setIsLoading, filter, selectedFolderId } = this.props;
 
     const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
@@ -90,9 +90,9 @@ class SectionFilterContent extends React.Component {
     newFilter.withSubfolders = withSubfolders;
     newFilter.selectedItem = selectedFilterItem;
 
-    onLoading(true);
+    setIsLoading(true);
     fetchFiles(selectedFolderId, newFilter, store.dispatch)
-      .finally(() => onLoading(false));
+      .finally(() => setIsLoading(false));
   };
 
   onChangeViewAs = (view) => {
@@ -214,7 +214,7 @@ class SectionFilterContent extends React.Component {
       { key: "tile", label: t("ViewTiles"), isSetting: true, default: true }
     ];
     //TODO: Need use mobile detect for better result
-    return window.innerWidth < 460 ? [...commonOptions,...viewSettings] : commonOptions;
+    return window.innerWidth < 460 ? [...commonOptions, ...viewSettings] : commonOptions;
   };
 
   getSelectedFilterData = () => {
@@ -310,8 +310,9 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { 
+  {
     fetchFiles,
-    setViewAs 
+    setViewAs,
+    setIsLoading
   }
 )(withRouter(withTranslation()(SectionFilterContent)));

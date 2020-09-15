@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import { RequestLoader, Checkbox, toastr } from "asc-web-components";
+import { RequestLoader, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
@@ -29,8 +29,7 @@ import {
   setNewTreeFilesBadge,
   setProgressBarData,
   setSelected,
-  setTreeFolders,
-  setIsLoading
+  setTreeFolders
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
@@ -308,39 +307,38 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      selected,
-      overwriteSetting,
-      uploadOriginalFormatSetting,
-      hideWindowSetting
+      selected
+      // overwriteSetting,
+      // uploadOriginalFormatSetting,
+      // hideWindowSetting
     } = this.state;
     const {
       t,
       progressData,
       viewAs,
       isLoading,
-      convertDialogVisible,
-      setIsLoading
+      convertDialogVisible
     } = this.props;
 
-    const progressBarContent = (
-      <div>
-        <Checkbox
-          onChange={this.onChangeOverwrite}
-          isChecked={overwriteSetting}
-          label={t("OverwriteSetting")}
-        />
-        <Checkbox
-          onChange={this.onChangeOriginalFormat}
-          isChecked={uploadOriginalFormatSetting}
-          label={t("UploadOriginalFormatSetting")}
-        />
-        <Checkbox
-          onChange={this.onChangeWindowVisible}
-          isChecked={hideWindowSetting}
-          label={t("HideWindowSetting")}
-        />
-      </div>
-    );
+    // const progressBarContent = (
+    //   <div>
+    //     <Checkbox
+    //       onChange={this.onChangeOverwrite}
+    //       isChecked={overwriteSetting}
+    //       label={t("OverwriteSetting")}
+    //     />
+    //     <Checkbox
+    //       onChange={this.onChangeOriginalFormat}
+    //       isChecked={uploadOriginalFormatSetting}
+    //       label={t("UploadOriginalFormatSetting")}
+    //     />
+    //     <Checkbox
+    //       onChange={this.onChangeWindowVisible}
+    //       isChecked={hideWindowSetting}
+    //       label={t("HideWindowSetting")}
+    //     />
+    //   </div>
+    // );
 
     return (
       <>
@@ -378,13 +376,11 @@ class PureHome extends React.Component {
           </PageLayout.ArticleHeader>
 
           <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent onLoading={setIsLoading} />
+            <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
 
           <PageLayout.ArticleBody>
             <ArticleBodyContent
-              onLoading={setIsLoading}
-              isLoading={isLoading}
               onTreeDrop={this.onDrop}
             />
           </PageLayout.ArticleBody>
@@ -396,21 +392,18 @@ class PureHome extends React.Component {
               onCheck={this.onSectionHeaderContentCheck}
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
-              onLoading={setIsLoading}
-              isLoading={isLoading}
               loopFilesOperations={this.loopFilesOperations}
             />
           </PageLayout.SectionHeader>
 
           <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={setIsLoading} />
+            <SectionFilterContent />
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
             <SectionBodyContent
+              isMobile={isMobile}
               selected={selected}
-              isLoading={isLoading}
-              onLoading={setIsLoading}
               onChange={this.onRowChange}
               loopFilesOperations={this.loopFilesOperations}
               onDropZoneUpload={this.onDrop}
@@ -418,7 +411,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={setIsLoading} />
+            <SectionPagingContent />
           </PageLayout.SectionPaging>
         </PageLayout>
       </>
@@ -494,7 +487,6 @@ export default connect(
     setProgressBarData,
     setSelected,
     setTreeFolders,
-    startUpload,
-    setIsLoading
+    startUpload
   }
 )(withRouter(Home));

@@ -154,5 +154,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static readonly INotifyAction PersonalCustomModePasswordChange = new NotifyAction("personal_custom_mode_change_password");
         public static readonly INotifyAction PersonalCustomModeEmailChange = new NotifyAction("personal_custom_mode_change_email");
         public static readonly INotifyAction PersonalCustomModeProfileDelete = new NotifyAction("personal_custom_mode_profile_delete");
+
+        public static readonly INotifyAction SaasCustomModeRegData = new NotifyAction("saas_custom_mode_reg_data");
     }
 }

@@ -39,15 +39,15 @@ const getCustomModules = isAdmin => {
     return [];
   }
 
-  const separator = getSeparator("nav-modules-separator");
-  const settingsModuleWrapper = toModuleWrapper(
-    {
-      id: "settings",
-      title: i18n.t("Settings"),
-      link: "/settings"
-    },
-    "SettingsIcon"
-  );
+  /*  const separator = getSeparator("nav-modules-separator");
+    const settingsModuleWrapper = toModuleWrapper(
+      {
+        id: "settings",
+        title: i18n.t('Settings'),
+        link: "/settings"
+      },
+      "SettingsIcon"
+    );
   const paymentsModuleWrapper = toModuleWrapper(
     {
       id: "payments",
@@ -57,7 +57,8 @@ const getCustomModules = isAdmin => {
     "PaymentsIcon"
   );
 
-  return [separator, settingsModuleWrapper, paymentsModuleWrapper];
+  return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/   // Temporarily hiding the settings module
+  return [];
 };
 
 const getAvailableModules = (modules, currentUser) => {

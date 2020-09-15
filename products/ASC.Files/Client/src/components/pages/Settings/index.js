@@ -21,11 +21,18 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
-const PureSettings = props => {
+const PureSettings = ({
+  match,
+  t,
+  isLoading,
+  enableThirdParty,
+  isAdmin,
+  getFilesSettings, 
+  setIsLoading
+}) => {
   const [errorLoading, setErrorLoading] = useState(false);
 
   useEffect(() => {
-    const { getFilesSettings, setIsLoading } = props;
     setIsLoading(true);
     getFilesSettings()
       .then(() => setIsLoading(false))
@@ -35,15 +42,7 @@ const PureSettings = props => {
       });
   }, []);
 
-  console.log("Settings render()");
-  const {
-    match,
-    t,
-    isLoading,
-    setIsLoading,
-    enableThirdParty,
-    isAdmin
-  } = props;
+  //console.log("Settings render()");
   const { setting } = match.params;
 
   const settings = (
@@ -67,7 +66,7 @@ const PureSettings = props => {
         </PageLayout.ArticleMainButton>
 
         <PageLayout.ArticleBody>
-          <ArticleBodyContent onLoading={setIsLoading} isLoading={isLoading} />
+          <ArticleBodyContent />
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
@@ -83,12 +82,12 @@ const PureSettings = props => {
 
   return (!enableThirdParty && setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
-    <Error403 />
-  ) : errorLoading ? (
-    <Error520 />
-  ) : (
-    settings
-  );
+      <Error403 />
+    ) : errorLoading ? (
+      <Error520 />
+    ) : (
+        settings
+      );
 };
 
 const SettingsContainer = withTranslation()(PureSettings);

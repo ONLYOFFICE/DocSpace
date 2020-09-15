@@ -1,48 +1,81 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { history } from "asc-web-common";
 import { selectGroup } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
-
+import { history, utils as commonUtils, store as initStore } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+import styled, { css } from "styled-components";
+
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article"
 });
 
 const { changeLanguage } = commonUtils;
+const { getCurrentModule, isAdmin } = initStore.auth.selectors;
+
+const StyledTreeMenu = styled(TreeMenu)`
+  ${props => props.isAdmin && css`margin-top: 19px;`}
+`;
 
 const getItems = data => {
   return data.map(item => {
-    if (item.children && item.children.length) {
+    if (item.children) {
       return (
         <TreeNode
+          className="root-folder"
           title={item.title}
           key={item.key}
           icon={
             item.root ? (
-              <Icons.CatalogDepartmentsIcon
+              <Icons.DepartmentsGroupIcon
                 size="scale"
                 isfill={true}
                 color="#657077"
               />
             ) : (
-              ""
-            )
+                ""
+              )
           }
         >
           {getItems(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode key={item.key} title={item.title} />;
+    return <TreeNode
+      className='inner-folder'
+      key={item.key}
+      title={item.title}
+      icon={
+        <Icons.CatalogFolderIcon
+          size="scale"
+          isfill={true}
+          color="#657077"
+        />
+      }
+    />;
   });
 };
 
 class ArticleBodyContent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const {
+      organizationName,
+      groups,
+      selectedGroup,
+      currentModuleName
+    } = props;
+
+    const currentGroup = getSelectedGroup(groups, selectedGroup);
+    document.title = currentGroup
+      ? `${currentGroup.name} – ${currentModuleName}`
+      : `${currentModuleName} – ${organizationName}`;
+  }
+
   shouldComponentUpdate(nextProps) {
     if (
       !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
@@ -58,12 +91,18 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectGroup, groups, t } = this.props;
+    const {
+      currentModuleName,
+      selectGroup,
+      groups,
+      organizationName
+    } = this.props;
 
     const currentGroup = getSelectedGroup(groups, data[0]);
     document.title = currentGroup
-      ? `${currentGroup.name} – ${t("People")}`
-      : `${t("People")} – ${t("OrganizationName")}`;
+      ? `${currentGroup.name} – ${currentModuleName}`
+      : `${currentModuleName} – ${organizationName}`;
+
     selectGroup(
       data && data.length === 1 && data[0] !== "root" ? data[0] : null
     );
@@ -85,11 +124,11 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const { data, selectedKeys, isAdmin } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
     return (
-      <TreeMenu
+      <StyledTreeMenu
         className="people-tree-menu"
         checkable={false}
         draggable={false}
@@ -100,9 +139,14 @@ class ArticleBodyContent extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
+        isFullFillSelection={false}
+        gapBetweenNodes="22"
+        gapBetweenNodesTablet="26"
+        isEmptyRootNode={getItems(data).length > 0 }
+        isAdmin={isAdmin}
       >
         {getItems(data)}
-      </TreeMenu>
+      </StyledTreeMenu>
     );
   }
 }
@@ -168,15 +212,24 @@ const BodyContent = props => {
 };
 
 function mapStateToProps(state) {
+  const currentModule = getCurrentModule(
+    state.auth.modules,
+    state.auth.settings.currentProductId
+  );
+
   const groups = state.people.groups;
-  const { groupsCaption } = state.auth.settings.customNames;
+  const { customNames, organizationName } = state.auth.settings;
+  const { groupsCaption } = customNames;
 
   return {
     data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
-    groups
+    groups,
+    organizationName,
+    currentModuleName: (currentModule && currentModule.title) || "",
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 

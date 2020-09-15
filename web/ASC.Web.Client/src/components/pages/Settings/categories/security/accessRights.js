@@ -1,5 +1,6 @@
 import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
+import { connect } from "react-redux";
 //import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -32,9 +33,9 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
-    document.title = `${props.t("ManagementCategorySecurity")} – ${props.t(
-      "OrganizationName"
-    )}`;
+    const { t, organizationName } = props;
+
+    document.title = `${t("ManagementCategorySecurity")} – ${organizationName}`;
 
     const url = props.history.location.pathname;
     const newUrl = url.split("/");
@@ -118,7 +119,16 @@ class PureAccessRights extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureAccessRights);
+function mapStateToProps(state) {
+  const { organizationName } = state.auth.settings;
+  return {
+    organizationName
+  };
+}
+
+const AccessRightsContainer = connect(mapStateToProps)(
+  withTranslation()(PureAccessRights)
+);
 
 const AccessRights = props => {
   useEffect(() => {

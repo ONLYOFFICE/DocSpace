@@ -37,8 +37,9 @@ const SectionHeaderContent = (props) => {
       : "";
 
   const onClickBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    //history.goBack();
+    !profile ? history.push(settings.homepage) : history.push(`/products/people/view/${profile.userName}`);
+  }, [history, profile, settings.homepage]);
 
   return (
     <Wrapper>

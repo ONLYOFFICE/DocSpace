@@ -116,35 +116,31 @@ class ChangeEmailDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("EmailChangeTitle")}
-          bodyContent={
-            <>
-              <FieldContainer
-                isVertical
-                labelText={t("EnterEmail")}
-                errorMessage={errorMessage}
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <FieldContainer
+              isVertical
+              labelText={t("EnterEmail")}
+              errorMessage={errorMessage}
+              hasError={hasError}
+            >
+              <EmailInput
+                id="new-email"
+                scale={true}
+                isAutoFocussed={true}
+                value={email}
+                onChange={this.onChangeEmailInput}
+                onValidateInput={this.onValidateEmailInput}
+                onKeyUp={this.onKeyPress}
                 hasError={hasError}
-              >
-                <EmailInput
-                  id="new-email"
-                  scale={true}
-                  isAutoFocussed={true}
-                  value={email}
-                  onChange={this.onChangeEmailInput}
-                  onValidateInput={this.onValidateEmailInput}
-                  onKeyUp={this.onKeyPress}
-                  hasError={hasError}
-                />
-              </FieldContainer>
-              <Text className="text-dialog">
-                {t("EmailActivationDescription")}
-              </Text>
-            </>
-          }
-          footerContent={
+              />
+            </FieldContainer>
+            <Text className="text-dialog">
+              {t("EmailActivationDescription")}
+            </Text>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
             <Button
               key="SendBtn"
               label={t("SendButton")}
@@ -153,8 +149,8 @@ class ChangeEmailDialogComponent extends React.Component {
               onClick={this.onValidateEmail}
               isLoading={isRequestRunning}
             />
-          }
-        />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

@@ -176,6 +176,8 @@ import OrigLockIcon from "./lock.react.svg";
 import OrigDownloadAsIcon from "./download-as.react.svg";
 import OrigRenameIcon from "./rename.react.svg";
 
+import OrigDepartmentsGroup from './departments.group.react.svg';
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -692,4 +694,12 @@ export const DownloadAsIcon = createStyledIcon(
   OrigDownloadAsIcon,
   "DownloadAsIcon"
 );
-export const RenameIcon = createStyledIcon(OrigRenameIcon, "RenameIcon");
+export const RenameIcon = createStyledIcon(
+  OrigRenameIcon,
+  'RenameIcon'
+);
+
+export const DepartmentsGroupIcon = createStyledIcon(
+  OrigDepartmentsGroup,
+  'DepartmentsGroupIcon'
+);

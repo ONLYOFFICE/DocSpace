@@ -469,149 +469,139 @@ class DownloadDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("DownloadAs")}
-          bodyContent={
-            <>
-              <Text>{t("ChooseFormatText")}</Text>
-              {documents.length > 0 && (
-                <DownloadContent
-                  t={t}
-                  checkedTitle={checkedDocTitle}
-                  indeterminateTitle={indeterminateDocTitle}
-                  items={documents}
-                  formatKeys={formatKeys}
-                  onSelectFormat={this.onSelectFormat}
-                  onRowSelect={this.onRowSelect}
-                  getItemIcon={this.getItemIcon}
-                  getTitleLabel={this.getTitleLabel}
-                  titleFormat={documentsTitleFormat}
-                  type="document"
-                />
-              )}
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>{t("ChooseFormatText")}</Text>
+            {documents.length > 0 && (
+              <DownloadContent
+                t={t}
+                checkedTitle={checkedDocTitle}
+                indeterminateTitle={indeterminateDocTitle}
+                items={documents}
+                formatKeys={formatKeys}
+                onSelectFormat={this.onSelectFormat}
+                onRowSelect={this.onRowSelect}
+                getItemIcon={this.getItemIcon}
+                getTitleLabel={this.getTitleLabel}
+                titleFormat={documentsTitleFormat}
+                type="document"
+              />
+            )}
 
-              {spreadsheets.length > 0 && (
-                <DownloadContent
-                  t={t}
-                  checkedTitle={checkedSpreadsheetTitle}
-                  indeterminateTitle={indeterminateSpreadsheetTitle}
-                  items={spreadsheets}
-                  formatKeys={formatKeys}
-                  onSelectFormat={this.onSelectFormat}
-                  onRowSelect={this.onRowSelect}
-                  getItemIcon={this.getItemIcon}
-                  getTitleLabel={this.getTitleLabel}
-                  titleFormat={spreadsheetsTitleFormat}
-                  type="spreadsheet"
-                />
-              )}
+            {spreadsheets.length > 0 && (
+              <DownloadContent
+                t={t}
+                checkedTitle={checkedSpreadsheetTitle}
+                indeterminateTitle={indeterminateSpreadsheetTitle}
+                items={spreadsheets}
+                formatKeys={formatKeys}
+                onSelectFormat={this.onSelectFormat}
+                onRowSelect={this.onRowSelect}
+                getItemIcon={this.getItemIcon}
+                getTitleLabel={this.getTitleLabel}
+                titleFormat={spreadsheetsTitleFormat}
+                type="spreadsheet"
+              />
+            )}
 
-              {presentations.length > 0 && (
-                <DownloadContent
-                  t={t}
-                  checkedTitle={checkedPresentationTitle}
-                  indeterminateTitle={indeterminatePresentationTitle}
-                  items={presentations}
-                  formatKeys={formatKeys}
-                  onSelectFormat={this.onSelectFormat}
-                  onRowSelect={this.onRowSelect}
-                  getItemIcon={this.getItemIcon}
-                  getTitleLabel={this.getTitleLabel}
-                  titleFormat={presentationsTitleFormat}
-                  type="presentation"
-                />
-              )}
+            {presentations.length > 0 && (
+              <DownloadContent
+                t={t}
+                checkedTitle={checkedPresentationTitle}
+                indeterminateTitle={indeterminatePresentationTitle}
+                items={presentations}
+                formatKeys={formatKeys}
+                onSelectFormat={this.onSelectFormat}
+                onRowSelect={this.onRowSelect}
+                getItemIcon={this.getItemIcon}
+                getTitleLabel={this.getTitleLabel}
+                titleFormat={presentationsTitleFormat}
+                type="presentation"
+              />
+            )}
 
-              {otherLength > 0 && (
-                <>
-                  {showOther && (
-                    <Row
-                      key="title2"
-                      onSelect={this.onRowSelect.bind(this, "All", "other")}
-                      checked={checkedOtherTitle}
-                      indeterminate={indeterminateOtherTitle}
-                    >
-                      <RowContent>
-                        <Text
-                          truncate
-                          type="page"
-                          title={"Other"}
-                          fontSize="14px"
-                        >
-                          {t("Other")}
-                        </Text>
-                        <></>
-                      </RowContent>
-                    </Row>
-                  )}
-
-                  <RowContainer
-                    useReactWindow
-                    style={{ minHeight: minHeight, padding: "8px 0" }}
-                    itemHeight={50}
+            {otherLength > 0 && (
+              <>
+                {showOther && (
+                  <Row
+                    key="title2"
+                    onSelect={this.onRowSelect.bind(this, "All", "other")}
+                    checked={checkedOtherTitle}
+                    indeterminate={indeterminateOtherTitle}
                   >
-                    {other.map(folder => {
-                      const element = this.getItemIcon(folder);
-                      return (
-                        <Row
-                          key={folder.id}
-                          onSelect={this.onRowSelect.bind(
-                            this,
-                            folder,
-                            "other"
-                          )}
-                          checked={folder.checked}
-                          element={element}
-                        >
-                          <RowContent>
-                            <Text
-                              truncate
-                              type="page"
-                              title={folder.title}
-                              fontSize="14px"
-                            >
-                              {folder.title}
-                            </Text>
-                            <></>
-                            <Text fontSize="12px" containerWidth="auto">
-                              {folder.fileExst && t("OriginalFormat")}
-                            </Text>
-                          </RowContent>
-                        </Row>
-                      );
-                    })}
-                  </RowContainer>
-                </>
-              )}
+                    <RowContent>
+                      <Text
+                        truncate
+                        type="page"
+                        title={"Other"}
+                        fontSize="14px"
+                      >
+                        {t("Other")}
+                      </Text>
+                      <></>
+                    </RowContent>
+                  </Row>
+                )}
 
-              <Text>{t("ConvertToZip")}</Text>
-              <Text>{t("ConvertMessage")}</Text>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                className="button-dialog-accept"
-                key="DownloadButton"
-                label={t("DownloadButton")}
-                size="medium"
-                primary
-                onClick={this.onDownload}
-                //isLoading={isLoading}
-              />
-              <Button
-                className="button-dialog"
-                key="CancelButton"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                //isLoading={isLoading}
-              />
-            </>
-          }
-        />
+                <RowContainer
+                  useReactWindow
+                  style={{ minHeight: minHeight, padding: "8px 0" }}
+                  itemHeight={50}
+                >
+                  {other.map(folder => {
+                    const element = this.getItemIcon(folder);
+                    return (
+                      <Row
+                        key={folder.id}
+                        onSelect={this.onRowSelect.bind(this, folder, "other")}
+                        checked={folder.checked}
+                        element={element}
+                      >
+                        <RowContent>
+                          <Text
+                            truncate
+                            type="page"
+                            title={folder.title}
+                            fontSize="14px"
+                          >
+                            {folder.title}
+                          </Text>
+                          <></>
+                          <Text fontSize="12px" containerWidth="auto">
+                            {folder.fileExst && t("OriginalFormat")}
+                          </Text>
+                        </RowContent>
+                      </Row>
+                    );
+                  })}
+                </RowContainer>
+              </>
+            )}
+
+            <Text>{t("ConvertToZip")}</Text>
+            <Text>{t("ConvertMessage")}</Text>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              className="button-dialog-accept"
+              key="DownloadButton"
+              label={t("DownloadButton")}
+              size="medium"
+              primary
+              onClick={this.onDownload}
+              //isLoading={isLoading}
+            />
+            <Button
+              className="button-dialog"
+              key="CancelButton"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              //isLoading={isLoading}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }

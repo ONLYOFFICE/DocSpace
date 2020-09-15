@@ -79,6 +79,7 @@ namespace ASC.Notify
                 log.Error(e);
             }
         }
+        
 
         public void InvokeSendMethod(string service, string method, int tenant, params object[] parameters)
         {
@@ -98,9 +99,8 @@ namespace ASC.Notify
             }
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var tenantWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<TenantWhiteLabelSettingsHelper>();
-            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
+            var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
             tenantManager.SetCurrentTenant(tenant);
             tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);
@@ -112,11 +112,33 @@ namespace ASC.Notify
         }
     }
 
+    public class NotifyServiceScope
+    {
+        private TenantManager TenantManager { get; }
+        private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+
+        public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
+        {
+            TenantManager = tenantManager;
+            TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+            SettingsManager = settingsManager;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, out SettingsManager settingsManager)
+        {
+            tenantManager = TenantManager;
+            tenantWhiteLabelSettingsHelper = TenantWhiteLabelSettingsHelper;
+            settingsManager = SettingsManager;
+        }
+    }
+
     public static class NotifyServiceExtension
     {
         public static DIHelper AddNotifyService(this DIHelper services)
         {
             services.TryAddSingleton<NotifyService>();
+            services.TryAddScoped<NotifyServiceScope>();
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             return services

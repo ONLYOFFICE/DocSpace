@@ -97,73 +97,67 @@ class InviteDialogComponent extends React.Component {
     return (
       this.state.visible && (
         <ModalDialogContainer>
-          <ModalDialog
-            visible={visible}
-            onClose={this.onClose}
-            headerContent={t("InviteLinkTitle")}
-            bodyContent={
-              <>
-                <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text>
-                <Text className="text-dialog" as="p">
-                  {t("InviteLinkValidInterval", { count: 7 })}
-                </Text>
-                <div className="flex">
-                  <div>
+          <ModalDialog visible={visible} onClose={this.onClose}>
+            <ModalDialog.Header>{t("InviteLinkTitle")}</ModalDialog.Header>
+            <ModalDialog.Body>
+              <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text>
+              <Text className="text-dialog" as="p">
+                {t("InviteLinkValidInterval", { count: 7 })}
+              </Text>
+              <div className="flex">
+                <div>
+                  <Link
+                    className="link-dialog"
+                    type="action"
+                    isHovered={true}
+                    onClick={this.onCopyLinkToClipboard}
+                  >
+                    {t("CopyToClipboard")}
+                  </Link>
+                  {settings && !this.state.isLinkShort && (
                     <Link
-                      className="link-dialog"
                       type="action"
                       isHovered={true}
-                      onClick={this.onCopyLinkToClipboard}
+                      onClick={this.onGetShortenedLink}
                     >
-                      {t("CopyToClipboard")}
+                      {t("GetShortenLink")}
                     </Link>
-                    {settings && !this.state.isLinkShort && (
-                      <Link
-                        type="action"
-                        isHovered={true}
-                        onClick={this.onGetShortenedLink}
-                      >
-                        {t("GetShortenLink")}
-                      </Link>
-                    )}
-                  </div>
-                  <Checkbox
-                    label={t("InviteUsersAsCollaborators", { guestsCaption })}
-                    isChecked={this.state.isGuest}
-                    onChange={this.onCheckedGuest}
-                    isDisabled={this.state.isLoading}
-                  />
+                  )}
                 </div>
-                <Textarea
-                  className="textarea-dialog"
-                  isReadOnly={true}
+                <Checkbox
+                  label={t("InviteUsersAsCollaborators", { guestsCaption })}
+                  isChecked={this.state.isGuest}
+                  onChange={this.onCheckedGuest}
                   isDisabled={this.state.isLoading}
-                  name={textAreaName}
-                  value={
-                    this.state.isGuest
-                      ? this.state.guestInvitationLink
-                      : this.state.userInvitationLink
-                  }
                 />
-              </>
-            }
-            footerContent={
-              <>
-                <Button
-                  key="CloseBtn"
-                  label={
-                    this.state.isLoading
-                      ? t("LoadingProcessing")
-                      : t("CloseButton")
-                  }
-                  size="medium"
-                  primary={true}
-                  onClick={this.onClickToCloseButton}
-                  isLoading={this.state.isLoading}
-                />
-              </>
-            }
-          />
+              </div>
+              <Textarea
+                className="textarea-dialog"
+                isReadOnly={true}
+                isDisabled={this.state.isLoading}
+                name={textAreaName}
+                value={
+                  this.state.isGuest
+                    ? this.state.guestInvitationLink
+                    : this.state.userInvitationLink
+                }
+              />
+            </ModalDialog.Body>
+            <ModalDialog.Footer>
+              <Button
+                key="CloseBtn"
+                label={
+                  this.state.isLoading
+                    ? t("LoadingProcessing")
+                    : t("CloseButton")
+                }
+                size="medium"
+                primary={true}
+                onClick={this.onClickToCloseButton}
+                isLoading={this.state.isLoading}
+              />
+            </ModalDialog.Footer>
+          </ModalDialog>
         </ModalDialogContainer>
       )
     );

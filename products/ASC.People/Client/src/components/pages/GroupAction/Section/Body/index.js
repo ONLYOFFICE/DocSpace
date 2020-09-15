@@ -82,9 +82,7 @@ class SectionBodyContent extends React.Component {
 
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
-    const buttonLabel = group
-    ? t('SaveButton')
-    : t("AddButton");
+    const buttonLabel = group ? t("SaveButton") : t("AddButton");
 
     const newState = {
       id: group ? group.id : "",
@@ -119,7 +117,7 @@ class SectionBodyContent extends React.Component {
         group && group.manager
           ? {
               key: group.manager.id,
-              label: group.manager.displayName
+              label: group.manager.displayName === "profile removed" ? t('LblSelect') : group.manager.displayName
             }
           : {
               key: GUID_EMPTY,
@@ -191,11 +189,11 @@ class SectionBodyContent extends React.Component {
   };
 
   onSave = () => {
-    const { group, t, groupCaption } = this.props;
+    const { group, t, groupCaption, history, settings } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
-    if (!groupName || !groupName.trim().length) { 
-      this.setState({nameError: t('EmptyFieldError')});
+    if (!groupName || !groupName.trim().length) {
+      this.setState({ nameError: t("EmptyFieldError") });
       return false;
     }
 
@@ -211,7 +209,12 @@ class SectionBodyContent extends React.Component {
 
     this.save(newGroup)
       .then(group => {
-        toastr.success(t('SuccessSaveGroup', {groupCaption, groupName: group.name }));
+        toastr.success(
+          t("SuccessSaveGroup", { groupCaption, groupName: group.name })
+        );
+      })
+      .then(() => {
+        history.push(`${settings.homepage}/`);
       })
       .catch(error => {
         toastr.error(error);
@@ -220,10 +223,10 @@ class SectionBodyContent extends React.Component {
   };
 
   onCancel = () => {
-    const { history, resetGroup } = this.props;
+    const { history, resetGroup, settings } = this.props;
 
     resetGroup();
-    history.goBack();
+    history.push(`${settings.homepage}/`);
   };
 
   onSelectedItemClose = member => {
@@ -255,12 +258,11 @@ class SectionBodyContent extends React.Component {
     if (event.key === "Enter") {
       this.onSave();
     }
-  }
+  };
 
   onFocusName = () => {
-    if(this.state.nameError)
-      this.setState({ nameError: null });
-  } 
+    if (this.state.nameError) this.setState({ nameError: null });
+  };
 
   render() {
     const { t, groupHeadCaption, groupsCaption, me } = this.props;
@@ -328,7 +330,7 @@ class SectionBodyContent extends React.Component {
             onCancel={this.onCancelSelector}
             groupsCaption={groupsCaption}
             defaultOption={me}
-            defaultOptionLabel={t('MeLabel')}
+            defaultOptionLabel={t("MeLabel")}
           />
         </FieldContainer>
         <FieldContainer
@@ -361,10 +363,10 @@ class SectionBodyContent extends React.Component {
             isMultiSelect={true}
             onSelect={this.onUsersSelectorSelect}
             onCancel={this.onCancelSelector}
-            searchPlaceHolderLabel={t('SearchAddedMembers')}
+            searchPlaceHolderLabel={t("SearchAddedMembers")}
             groupsCaption={groupsCaption}
             defaultOption={me}
-            defaultOptionLabel={t('MeLabel')}
+            defaultOptionLabel={t("MeLabel")}
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
@@ -393,7 +395,11 @@ class SectionBodyContent extends React.Component {
             </div>
           </>
         )}
-        {error && <div><strong>{error}</strong></div>}
+        {error && (
+          <div>
+            <strong>{error}</strong>
+          </div>
+        )}
         <div className="buttons_container">
           <Button
             label={buttonLabel}

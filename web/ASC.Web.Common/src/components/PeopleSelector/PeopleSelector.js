@@ -248,7 +248,7 @@ class PeopleSelector extends React.Component {
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}
-        getOptionTooltipContent={this.getOptionTooltipContent}
+        //getOptionTooltipContent={this.getOptionTooltipContent}
         onCancel={onCancel}
         withoutAside={withoutAside}
         embeddedComponent={embeddedComponent}

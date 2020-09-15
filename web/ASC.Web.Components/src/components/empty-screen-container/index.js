@@ -12,7 +12,7 @@ const EmptyContentBody = styled.div`
 	display: grid;
 	grid-template-areas: 
     "img header"
-    "img subheading"
+    ${props => props.subheadingText && `"img subheading"`}
     "img desc"
     "img button";
   min-width: 320px;

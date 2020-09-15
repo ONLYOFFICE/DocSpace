@@ -11,7 +11,8 @@ class SortComboBox extends React.Component {
     const { sortDirection } = props;
 
     this.state = {
-      sortDirection
+      sortDirection,
+      opened: false
     }
 
     this.combobox = React.createRef();
@@ -28,6 +29,7 @@ class SortComboBox extends React.Component {
   onChangeSortId = (e) => {
     const { onChangeSortId } = this.props;
     typeof onChangeSortId === 'function' && onChangeSortId(e.target.value);
+    this.setState({ opened: !this.state.opened });
   }
 
   onChangeView = (e) => {
@@ -38,7 +40,7 @@ class SortComboBox extends React.Component {
   onChangeSortDirection = (e) => {
     const sortDirection = +e.target.value;
     const { onChangeSortDirection } = this.props;
-    this.setState({ sortDirection });
+    this.setState({ sortDirection, opened: !this.state.opened });
     typeof onChangeSortDirection === 'function' && onChangeSortDirection(sortDirection);
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -58,10 +60,17 @@ class SortComboBox extends React.Component {
     }
     return (!isEqual(this.props, nextProps) || !isEqual(this.state, nextState));
   }
+
+  onToggleAction = () => {
+    this.setState({
+      opened: !this.state.opened
+    });
+  }
+
   render() {
     const { options, directionAscLabel, directionDescLabel, isDisabled,
       selectedOption, viewAs } = this.props;
-    const { sortDirection } = this.state;
+    const { sortDirection, opened } = this.state;
 
     let settingsArray = options.filter(item => {
       item.value = item.key
@@ -126,6 +135,8 @@ class SortComboBox extends React.Component {
     );
     return (
       <ComboBox
+        opened={opened}
+        toggleAction={this.onToggleAction}
         advancedOptions={advancedOptions}
         className='styled-sort-combobox'
         directionX="right"

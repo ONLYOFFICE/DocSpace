@@ -141,7 +141,7 @@ namespace ASC.Web.Studio.Core.Notify
             csize = (csize ?? "").Trim();
             if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException("csize");
             site = (site ?? "").Trim();
-            if (string.IsNullOrEmpty(site)) throw new ArgumentNullException("site");
+            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("site");
             message = (message ?? "").Trim();
 
             var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
@@ -828,10 +828,9 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    TenantManager.SetCurrentTenant(tenant);
-
-                    var client = scope.ServiceProvider.GetService<StudioNotifyServiceHelper>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceScope>();
+                    var (tenantManager, studioNotifyServiceHelper) = scopeClass;
+                    tenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {
@@ -839,7 +838,7 @@ namespace ASC.Web.Studio.Core.Notify
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        client.SendNoticeToAsync(
+                        studioNotifyServiceHelper.SendNoticeToAsync(
                             Actions.PortalRename,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
@@ -881,7 +880,59 @@ namespace ASC.Web.Studio.Core.Notify
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
 
+
+        public void SendRegData(UserInfo u)
+        {
+            try
+            {
+                if (!TenantExtra.Saas || !CoreBaseSettings.CustomMode) return;
+
+                var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+                var salesEmail = settings.SalesEmail ?? SetupInfo.SalesEmail;
+
+                if (string.IsNullOrEmpty(salesEmail)) return;
+
+                var recipient = new DirectRecipient(salesEmail, null, new[] { salesEmail }, false);
+
+                client.SendNoticeToAsync(
+                    Actions.SaasCustomModeRegData,
+                    null,
+                    new IRecipient[] { recipient },
+                    new[] { EMailSenderName },
+                    null,
+                    new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.UserLastName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.UserEmail, u.Email.HtmlEncode()),
+                    new TagValue(Tags.Phone, u.MobilePhone != null ? u.MobilePhone.HtmlEncode() : "-"),
+                    new TagValue(Tags.Date, u.CreateDate.ToShortDateString() + " " + u.CreateDate.ToShortTimeString()),
+                    new TagValue(CommonTags.Footer, null),
+                    TagValues.WithoutUnsubscribe());
+            }
+            catch (Exception error)
+            {
+                Log.Error(error);
+            }
+        }
+
         #endregion
+    }
+
+    public class StudioNotifyServiceScope
+    {
+        private TenantManager TenantManager { get; }
+        private StudioNotifyServiceHelper StudioNotifyServiceHelper { get; }
+
+        public StudioNotifyServiceScope(TenantManager tenantManager, StudioNotifyServiceHelper studioNotifyServiceHelper)
+        {
+            TenantManager = tenantManager;
+            StudioNotifyServiceHelper = studioNotifyServiceHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out StudioNotifyServiceHelper studioNotifyServiceHelper)
+        {
+            tenantManager = TenantManager;
+            studioNotifyServiceHelper = StudioNotifyServiceHelper;
+        }
     }
 
     public static class StudioNotifyServiceExtension
@@ -890,7 +941,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             if (services.TryAddScoped<StudioNotifyService>())
             {
-
+                services.TryAddScoped<StudioNotifyServiceScope>();
                 return services
                     .AddDisplayUserSettingsService()
                     .AddMailWhiteLabelSettingsService()

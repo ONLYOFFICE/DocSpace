@@ -13,11 +13,11 @@ import {
   toastr,
   utils
 } from "asc-web-components";
-import { fetchFiles, setAction, getProgress, setProgressBarData, clearProgressData } from "../../../../../store/files/actions";
+import { fetchFiles, setAction, getProgress, setProgressBarData, clearProgressData, setIsLoading } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-import { isCanBeDeleted, checkFolderType } from "../../../../../store/files/selectors";
+import { isCanBeDeleted, checkFolderType, isCanCreate } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -40,6 +40,7 @@ const StyledContainer = styled.div`
 
     .arrow-button {
       margin-right: 16px;
+      min-width: 17px;
 
       @media ${tablet} {
         padding: 8px 0 8px 8px;
@@ -165,7 +166,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   createLinkForPortalUsers = () => {
-    const {currentFolderId} = this.props;
+    const { currentFolderId } = this.props;
     const { t } = this.props;
 
     copy(`${window.location.origin}/products/files/filter?folder=${currentFolderId}`);
@@ -180,7 +181,7 @@ class SectionHeaderContent extends React.Component {
   loop = url => {
     this.props.getProgress().then(res => {
       if (!url) {
-        this.props.setProgressBarData({visible: true, percent: res[0].progress, label: this.props.t("ArchivingData")});
+        this.props.setProgressBarData({ visible: true, percent: res[0].progress, label: this.props.t("ArchivingData") });
         setTimeout(() => this.loop(res[0].url), 1000);
       } else {
         setTimeout(() => clearProgressData(filesStore.dispatch), 5000);
@@ -208,7 +209,7 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    setProgressBarData({ visible: true, percent: 0, label: t("ArchivingData")});
+    setProgressBarData({ visible: true, percent: 0, label: t("ArchivingData") });
 
     api.files
       .downloadFiles(fileIds, folderIds)
@@ -284,10 +285,10 @@ class SectionHeaderContent extends React.Component {
   };
 
   onBackToParentFolder = () => {
-    const { onLoading, parentId, filter } = this.props;
-    onLoading(true);
+    const { setIsLoading, parentId, filter } = this.props;
+    setIsLoading(true);
     fetchFiles(parentId, filter, filesStore.dispatch).finally(() =>
-      onLoading(false)
+      setIsLoading(false)
     );
   };
 
@@ -313,11 +314,12 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       currentFolderId,
-      onLoading,
+      setIsLoading,
       isLoading,
       getProgress,
       loopFilesOperations,
-      setProgressBarData
+      setProgressBarData,
+      isCanCreate
     } = this.props;
 
     const {
@@ -440,7 +442,7 @@ class SectionHeaderContent extends React.Component {
     }
 
     const operationsPanelProps = {
-      onLoading,
+      setIsLoading,
       isLoading,
       loopFilesOperations
     };
@@ -481,7 +483,7 @@ class SectionHeaderContent extends React.Component {
               >
                 {title}
               </Headline>
-              {folder ? (
+              {folder && isCanCreate ? (
                 <>
                   <ContextMenuButton
                     className="add-button"
@@ -507,6 +509,7 @@ class SectionHeaderContent extends React.Component {
                   />
                 </>
               ) : (
+                isCanCreate && (
                   <ContextMenuButton
                     className="add-button"
                     directionX="right"
@@ -518,7 +521,8 @@ class SectionHeaderContent extends React.Component {
                     getData={this.getContextOptionsPlus}
                     isDisabled={false}
                   />
-                )}
+                )
+              )}
             </div>
           )}
 
@@ -545,7 +549,6 @@ class SectionHeaderContent extends React.Component {
 
         {showSharingPanel && (
           <SharingPanel
-            onLoading={onLoading}
             onClose={this.onOpenSharingPanel}
             visible={showSharingPanel}
           />
@@ -586,7 +589,8 @@ const mapStateToProps = state => {
     selectedFolder,
     selection,
     treeFolders,
-    filter
+    filter,
+    isLoading
   } = state.files;
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
@@ -603,10 +607,12 @@ const mapStateToProps = state => {
     title,
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    currentFolderId: id
+    currentFolderId: id,
+    isLoading,
+    isCanCreate: isCanCreate(selectedFolder, user),
   };
 };
 
-export default connect(mapStateToProps, { setAction, getProgress, setProgressBarData })(
+export default connect(mapStateToProps, { setAction, getProgress, setProgressBarData, setIsLoading })(
   withTranslation()(withRouter(SectionHeaderContent))
 );
