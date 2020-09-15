@@ -21,7 +21,8 @@ const Dialog = styled.div`
 
 const Content = styled.div`
   position: relative;
-  /* width: 100%; */
+  height: ${props => props.contentHeight};
+  width: ${props => props.contentWidth};
   background-color: #fff;
   padding: 0 16px 16px;
   box-sizing: border-box;
@@ -144,6 +145,8 @@ class ModalDialog extends React.Component {
       onClose,
       zIndex,
       bodyPadding,
+      contentHeight,
+      contentWidth,
       className,
       id,
       style,
@@ -176,7 +179,7 @@ class ModalDialog extends React.Component {
     return this.state.displayType === "modal" ? (
       <Backdrop visible={visible} zIndex={zIndex}>
         <Dialog className={className} id={id} style={style}>
-          <Content>
+          <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader>
               <Heading className="heading" size="medium" truncate={true}>
                 {header ? header.props.children : null}
@@ -199,7 +202,7 @@ class ModalDialog extends React.Component {
           zIndex={zIndex}
           className="modal-dialog-aside"
         >
-          <Content>
+          <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader>
               <Heading className="heading" size="medium" truncate={true}>
                 {header ? header.props.children : null}
@@ -227,6 +230,8 @@ ModalDialog.propTypes = {
   onClose: PropTypes.func,
   zIndex: PropTypes.number,
   bodyPadding: PropTypes.string,
+  contentHeight: PropTypes.string,
+  contentWidth: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
@@ -235,7 +240,8 @@ ModalDialog.propTypes = {
 ModalDialog.defaultProps = {
   displayType: "auto",
   zIndex: 310,
-  bodyPadding: "16px 0"
+  bodyPadding: "16px 0",
+  contentWidth: "100%"
 };
 
 ModalDialog.Header = Header;

@@ -117,6 +117,8 @@ class AvatarEditor extends React.Component {
         visible={this.state.visible}
         displayType={displayType}
         scale={true}
+        contentHeight="initial"
+        contentWidth="initial"
         onClose={this.onClose}
         className={className}
         id={id}
