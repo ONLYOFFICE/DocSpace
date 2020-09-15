@@ -129,7 +129,7 @@ namespace ASC.Data.Backup.Tasks
             return files.Distinct();
         }
 
-        protected virtual bool IsStorageModuleAllowed(string storageModuleName)
+        protected bool IsStorageModuleAllowed(string storageModuleName)
         {
             var allowedStorageModules = new List<string>
                 {
@@ -144,7 +144,9 @@ namespace ASC.Data.Backup.Tasks
                     "fckuploaders",
                     "talk",
                     "mailaggregator",
-                    "whitelabel"
+                    "whitelabel",
+                    "customnavigation",
+                    "userPhotos"
                 };
 
             if (!allowedStorageModules.Contains(storageModuleName))
