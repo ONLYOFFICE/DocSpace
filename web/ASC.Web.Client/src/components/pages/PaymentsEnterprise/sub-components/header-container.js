@@ -65,7 +65,8 @@ const HeaderContainer = ({
     <StyledHeader>
       <Text className="payments-header">{t("Using")}</Text>
       <Text className="payments-header-additional_support">
-        {t("SubscriptionAndUpdatesExpires")} {moment(expiresDate).format("LL")}
+        {t("SubscriptionAndUpdatesExpires")}{" "}
+        {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
         {"."}
       </Text>
     </StyledHeader>
@@ -75,7 +76,7 @@ const HeaderContainer = ({
 
       <Text className="payments-header-additional_support" color="#C96C27">
         {t("SupportNotAvailable")}{" "}
-        {moment(expiresDate).startOf("day").format("ddd, D MMMM , YYYY")}
+        {moment(expiresDate).startOf("day").format("ddd, D MMMM, YYYY")}
         {". "}
         {t("LicenseRenewal")}
       </Text>
