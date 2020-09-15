@@ -26,14 +26,18 @@ const StyledTreeMenu = styled(TreeMenu)`
     background: #dfe2e3 !important;
   }
 
-  .settings-node {
-    margin-left: 8px !important;
+  .settings-node > .rc-tree-node-content-wrapper > .rc-tree-title {
+    padding-left: 4px !important;
+    width: 100%;
   }
-
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
   .rc-tree-treenode-disabled > a span {
     cursor: wait;
+  }
+
+  .rc-tree-child-tree {
+    margin-left: 31px;
   }
 `;
 
