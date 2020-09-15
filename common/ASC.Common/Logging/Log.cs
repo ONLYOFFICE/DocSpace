@@ -51,14 +51,14 @@ namespace ASC.Common.Logging
         bool IsTraceEnabled { get; }
 
         void Trace<T>(T message);
-        void TraceFormat(string message, object arg0);
+        void TraceFormat<T>(string message, T arg0);
 
         void DebugWithProps(string message, params KeyValuePair<string, object>[] props);
         void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3);
         void Debug<T>(T message);
         void Debug<T>(T message, Exception exception);
         void DebugFormat(string format, params object[] args);
-        void DebugFormat(string format, object arg0);
+        void DebugFormat<T>(string format, T arg0);
         void DebugFormat(string format, object arg0, object arg1);
         void DebugFormat(string format, object arg0, object arg1, object arg2);
         void DebugFormat(IFormatProvider provider, string format, params object[] args);
@@ -67,7 +67,7 @@ namespace ASC.Common.Logging
         void Info<T>(T message);
         void Info(string message, Exception exception);
         void InfoFormat(string format, params object[] args);
-        void InfoFormat(string format, object arg0);
+        void InfoFormat<T>(string format, T arg0);
         void InfoFormat(string format, object arg0, object arg1);
         void InfoFormat(string format, object arg0, object arg1, object arg2);
         void InfoFormat(IFormatProvider provider, string format, params object[] args);
@@ -75,7 +75,7 @@ namespace ASC.Common.Logging
         void Warn<T>(T message);
         void Warn<T>(T message, Exception exception);
         void WarnFormat(string format, params object[] args);
-        void WarnFormat(string format, object arg0);
+        void WarnFormat<T>(string format, T arg0);
         void WarnFormat(string format, object arg0, object arg1);
         void WarnFormat(string format, object arg0, object arg1, object arg2);
         void WarnFormat(IFormatProvider provider, string format, params object[] args);
@@ -83,7 +83,7 @@ namespace ASC.Common.Logging
         void Error<T>(T message);
         void Error<T>(T message, Exception exception);
         void ErrorFormat(string format, params object[] args);
-        void ErrorFormat(string format, object arg0);
+        void ErrorFormat<T>(string format, T arg0);
         void ErrorFormat(string format, object arg0, object arg1);
         void ErrorFormat(string format, object arg0, object arg1, object arg2);
         void ErrorFormat(IFormatProvider provider, string format, params object[] args);
@@ -91,7 +91,7 @@ namespace ASC.Common.Logging
         void Fatal<T>(T message);
         void Fatal(string message, Exception exception);
         void FatalFormat(string format, params object[] args);
-        void FatalFormat(string format, object arg0);
+        void FatalFormat<T>(string format, T arg0);
         void FatalFormat(string format, object arg0, object arg1);
         void FatalFormat(string format, object arg0, object arg1, object arg2);
         void FatalFormat(IFormatProvider provider, string format, params object[] args);
@@ -138,7 +138,7 @@ namespace ASC.Common.Logging
             if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, message, null);
         }
 
-        public void TraceFormat(string message, object arg0)
+        public void TraceFormat<T>(string message, T arg0)
         {
             if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, string.Format(message, arg0), null);
         }
@@ -158,7 +158,7 @@ namespace ASC.Common.Logging
             if (IsDebugEnabled) loger.DebugFormat(format, args);
         }
 
-        public void DebugFormat(string format, object arg0)
+        public void DebugFormat<T>(string format, T arg0)
         {
             if (IsDebugEnabled) loger.DebugFormat(format, arg0);
         }
@@ -206,7 +206,7 @@ namespace ASC.Common.Logging
             if (IsInfoEnabled) loger.InfoFormat(format, args);
         }
 
-        public void InfoFormat(string format, object arg0)
+        public void InfoFormat<T>(string format, T arg0)
         {
             if (IsInfoEnabled) loger.InfoFormat(format, arg0);
         }
@@ -242,7 +242,7 @@ namespace ASC.Common.Logging
             if (IsWarnEnabled) loger.WarnFormat(format, args);
         }
 
-        public void WarnFormat(string format, object arg0)
+        public void WarnFormat<T>(string format, T arg0)
         {
             if (IsWarnEnabled) loger.WarnFormat(format, arg0);
         }
@@ -278,7 +278,7 @@ namespace ASC.Common.Logging
             if (IsErrorEnabled) loger.ErrorFormat(format, args);
         }
 
-        public void ErrorFormat(string format, object arg0)
+        public void ErrorFormat<T>(string format, T arg0)
         {
             if (IsErrorEnabled) loger.ErrorFormat(format, arg0);
         }
@@ -314,7 +314,7 @@ namespace ASC.Common.Logging
             if (IsFatalEnabled) loger.FatalFormat(format, args);
         }
 
-        public void FatalFormat(string format, object arg0)
+        public void FatalFormat<T>(string format, T arg0)
         {
             if (IsFatalEnabled) loger.FatalFormat(format, arg0);
         }
@@ -443,7 +443,7 @@ namespace ASC.Common.Logging
             if (IsTraceEnabled) Loger.Log(LogLevel.Trace, message);
         }
 
-        public void TraceFormat(string message, object arg0)
+        public void TraceFormat<T>(string message, T arg0)
         {
             if (IsTraceEnabled) Loger.Log(LogLevel.Trace, string.Format(message, arg0));
         }
@@ -463,7 +463,7 @@ namespace ASC.Common.Logging
             if (IsDebugEnabled) Loger.Debug(format, args);
         }
 
-        public void DebugFormat(string format, object arg0)
+        public void DebugFormat<T>(string format, T arg0)
         {
             if (IsDebugEnabled) Loger.Debug(format, arg0);
         }
@@ -535,7 +535,7 @@ namespace ASC.Common.Logging
             if (IsInfoEnabled) Loger.Info(format, args);
         }
 
-        public void InfoFormat(string format, object arg0)
+        public void InfoFormat<T>(string format, T arg0)
         {
             if (IsInfoEnabled) Loger.Info(format, arg0);
         }
@@ -571,7 +571,7 @@ namespace ASC.Common.Logging
             if (IsWarnEnabled) Loger.Warn(format, args);
         }
 
-        public void WarnFormat(string format, object arg0)
+        public void WarnFormat<T>(string format, T arg0)
         {
             if (IsWarnEnabled) Loger.Warn(format, arg0);
         }
@@ -607,7 +607,7 @@ namespace ASC.Common.Logging
             if (IsErrorEnabled) Loger.Error(format, args);
         }
 
-        public void ErrorFormat(string format, object arg0)
+        public void ErrorFormat<T>(string format, T arg0)
         {
             if (IsErrorEnabled) Loger.Error(format, arg0);
         }
@@ -643,7 +643,7 @@ namespace ASC.Common.Logging
             if (IsFatalEnabled) Loger.Fatal(format, args);
         }
 
-        public void FatalFormat(string format, object arg0)
+        public void FatalFormat<T>(string format, T arg0)
         {
             if (IsFatalEnabled) Loger.Fatal(format, arg0);
         }
@@ -693,7 +693,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void TraceFormat(string message, object arg0)
+        public void TraceFormat<T>(string message, T arg0)
         {
         }
 
@@ -713,7 +713,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void DebugFormat(string format, object arg0)
+        public void DebugFormat<T>(string format, T arg0)
         {
         }
 
@@ -741,7 +741,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void InfoFormat(string format, object arg0)
+        public void InfoFormat<T>(string format, T arg0)
         {
         }
 
@@ -769,7 +769,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void WarnFormat(string format, object arg0)
+        public void WarnFormat<T>(string format, T arg0)
         {
         }
 
@@ -797,7 +797,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void ErrorFormat(string format, object arg0)
+        public void ErrorFormat<T>(string format, T arg0)
         {
         }
 
@@ -825,7 +825,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void FatalFormat(string format, object arg0)
+        public void FatalFormat<T>(string format, T arg0)
         {
         }
 
