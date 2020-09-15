@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -315,6 +256,21 @@
   <data name="ConsumersLinkedInSecret" xml:space="preserve">
     <value>Clave de Linkedin</value>
   </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>Id.</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Clave secreta</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Habilite la aplicación para acceder al portal utilizando una cuenta de Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Cuando añada la aplicación Mail.ru, podrá habilitar el inicio de sesión en el portal mediante la cuenta Mail.ru en su página de perfil.</value>
+  </data>
   <data name="ConsumersRackspace" xml:space="preserve">
     <value>Rackspace Cloud Storage</value>
   </data>
@@ -354,11 +310,11 @@
   <data name="ConsumersSelectelauthUser" xml:space="preserve">
     <value>Nombre de usuario para autorización</value>
   </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Cuando Usted agrega el servicio Selectel Cloud Storage a su portal, puede usarlo para crear copias de seguridad de su portal asegurándose de que no se perderá ningún dato. También úselo para almacenar datos y contenido estático de su portal.</value>
-  </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
     <value>Conecte el servicio Selectel Cloud Storage para crear copia de seguridad y almacenar datos de su portal.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Cuando Usted agrega el servicio Selectel Cloud Storage a su portal, puede usarlo para crear copias de seguridad de su portal asegurándose de que no se perderá ningún dato. También úselo para almacenar datos y contenido estático de su portal.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Contenedor privado</value>
@@ -438,6 +394,21 @@
   <data name="Consumersusername" xml:space="preserve">
     <value>Nombre de usuario de Rackspace</value>
   </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Id. de aplicación</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Clave segura</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Habilite la aplicación para acceder al portal con una cuenta de VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Cuando añada la aplicación VK, podrá habilitar el inicio de sesión en el portal utilizando la cuenta VK en su página de perfil.</value>
+  </data>
   <data name="ConsumersWordpress" xml:space="preserve">
     <value>WordPress</value>
   </data>
@@ -467,6 +438,21 @@
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Yahoo podrá añadir usuarios al portal ONLYOFFICE de la lista de contactos.</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>Id.</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Habilite la aplicación para iniciar sesión en el portal con una cuenta de Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Cuando añada la aplicación Yandex, podrá habilitar el inicio de sesión en el portal utilizando la cuenta Yandex en su página de perfil.</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>Operación de recuperación de contraseña está prohibida para un usuario LDAP</value>
@@ -674,6 +660,9 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Usted ha enviado demasiados mensajes de texto. Por favor, intente de nuevo más tarde.</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Periodo de prueba</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Región EE.UU. Oeste (Oregón)</value>

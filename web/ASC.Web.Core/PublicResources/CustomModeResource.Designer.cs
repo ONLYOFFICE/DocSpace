@@ -201,6 +201,22 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to h3.New portal has been registered
+        ///
+        ///# Portal url: &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;
+        ///# First name: $UserName
+        ///# Last name: $UserLastName
+        ///# Email: $UserEmail
+        ///# Phone: $Phone
+        ///# Creation date: $Date.
+        /// </summary>
+        public static string pattern_saas_custom_mode_reg_data {
+            get {
+                return ResourceManager.GetString("pattern_saas_custom_mode_reg_data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common Documents&apos; section|Set up access rights to the documents and folders in the &apos;Common Documents&apos; section.
         /// </summary>
         public static string ProductAdminOpportunitiesCustomMode {

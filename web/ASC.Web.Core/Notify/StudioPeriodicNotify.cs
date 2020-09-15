@@ -88,26 +88,14 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-
             foreach (var tenant in activeTenants)
             {
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
+                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, coreBaseSettings, _, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.TenantId);
-
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
-                    var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
-                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-                    var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
-                    var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-                    var context = scope.ServiceProvider.GetService<DbContextManager<FeedDbContext>>();
-                    var couponManager = scope.ServiceProvider.GetService<CouponManager>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
@@ -207,7 +195,7 @@ namespace ASC.Web.Studio.Core.Notify
                             List<DateTime> datesWithActivity;
 
                             datesWithActivity =
-                                context.Get(dbid).FeedAggregates
+                                dbContextManager.Get(dbid).FeedAggregates
                                 .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
                                 .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
@@ -236,8 +224,12 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+
+                            if (!coreBaseSettings.CustomMode)
+                            {
+                                tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                                tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+                            }
 
                             tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
@@ -554,19 +546,10 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-                    var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
+                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, configuration, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
                     tenantManager.SetCurrentTenant(tenant.TenantId);
-
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
-                    var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-                    var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-                    var context = scope.ServiceProvider.GetService<DbContextManager<FeedDbContext>>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
@@ -697,7 +680,7 @@ namespace ASC.Web.Studio.Core.Notify
                             List<DateTime> datesWithActivity;
 
                             datesWithActivity =
-                                context.Get(dbid).FeedAggregates
+                                dbContextManager.Get(dbid).FeedAggregates
                                 .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
                                 .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
@@ -726,8 +709,12 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+
+                            if (!coreBaseSettings.CustomMode)
+                            {
+                                tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                                tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+                            }
 
                             tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
@@ -950,13 +937,9 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
+                    var (tenantManager, _, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.TenantId);
-
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var createdDate = tenant.CreatedDateTime.Date;
@@ -1137,15 +1120,10 @@ namespace ASC.Web.Studio.Core.Notify
                     var sendCount = 0;
 
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
+                    var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, coreBaseSettings, _, authManager, securityContext) = scopeClass;
 
                     tenantManager.SetCurrentTenant(tenant.TenantId);
-
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
-                    var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     Log.InfoFormat("Current tenant: {0}", tenant.TenantId);
@@ -1156,7 +1134,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         INotifyAction action;
 
-                        securityContext.AuthenticateMe(authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))
@@ -1252,12 +1230,109 @@ namespace ASC.Web.Studio.Core.Notify
             return !isSubscribe;
         }
     }
+
+    public class StudioPeriodicNotifyScope
+    {
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private PaymentManager PaymentManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private AuthContext AuthContext { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private ApiSystemHelper ApiSystemHelper { get; }
+        private SetupInfo SetupInfo { get; }
+        private DbContextManager<FeedDbContext> DbContextManager { get; }
+        private CouponManager CouponManager { get; }
+        private IConfiguration Configuration { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private AuthManager AuthManager { get; }
+        private SecurityContext SecurityContext { get; }
+
+        public StudioPeriodicNotifyScope(TenantManager tenantManager,
+            UserManager userManager,
+            StudioNotifyHelper studioNotifyHelper,
+            PaymentManager paymentManager,
+            TenantExtra tenantExtra,
+            AuthContext authContext,
+            CommonLinkUtility commonLinkUtility,
+            ApiSystemHelper apiSystemHelper,
+            SetupInfo setupInfo,
+            DbContextManager<FeedDbContext> dbContextManager,
+            CouponManager couponManager,
+            IConfiguration configuration,
+            SettingsManager settingsManager,
+            CoreBaseSettings coreBaseSettings,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            AuthManager authManager,
+            SecurityContext securityContext)
+        {
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            StudioNotifyHelper = studioNotifyHelper;
+            PaymentManager = paymentManager;
+            TenantExtra = tenantExtra;
+            AuthContext = authContext;
+            CommonLinkUtility = commonLinkUtility;
+            ApiSystemHelper = apiSystemHelper;
+            SetupInfo = setupInfo;
+            DbContextManager = dbContextManager;
+            CouponManager = couponManager;
+            Configuration = configuration;
+            SettingsManager = settingsManager;
+            CoreBaseSettings = coreBaseSettings;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            AuthManager = authManager;
+            SecurityContext = securityContext;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out UserManager userManager,
+            out StudioNotifyHelper studioNotifyHelper,
+            out PaymentManager paymentManager,
+            out TenantExtra tenantExtra,
+            out AuthContext authContext,
+            out CommonLinkUtility commonLinkUtility,
+            out ApiSystemHelper apiSystemHelper,
+            out SetupInfo setupInfo,
+            out DbContextManager<FeedDbContext> dbContextManager,
+            out CouponManager couponManager,
+            out IConfiguration configuration,
+            out SettingsManager settingsManager,
+            out CoreBaseSettings coreBaseSettings,
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out AuthManager authManager,
+            out SecurityContext securityContext)
+        {
+            tenantManager = TenantManager;
+            userManager = UserManager;
+            studioNotifyHelper = StudioNotifyHelper;
+            paymentManager = PaymentManager;
+            tenantExtra = TenantExtra;
+            authContext = AuthContext;
+            commonLinkUtility = CommonLinkUtility;
+            apiSystemHelper = ApiSystemHelper;
+            setupInfo = SetupInfo;
+            dbContextManager = DbContextManager;
+            couponManager = CouponManager;
+            configuration = Configuration;
+            settingsManager = SettingsManager;
+            coreBaseSettings = CoreBaseSettings;
+            displayUserSettingsHelper = DisplayUserSettingsHelper;
+            authManager = AuthManager;
+            securityContext = SecurityContext;
+        }
+    }
+
     public static class StudioPeriodicNotifyExtension
     {
         public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
         {
             services.TryAddSingleton<StudioPeriodicNotify>();
             services.TryAddSingleton<CouponManager>();
+            services.TryAddScoped<StudioPeriodicNotifyScope>();
 
             return services
                 .AddApiSystemHelper()

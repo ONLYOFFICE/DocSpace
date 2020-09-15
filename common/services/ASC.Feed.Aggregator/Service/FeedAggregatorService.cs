@@ -121,11 +121,9 @@ namespace ASC.Feed.Aggregator
             {
                 var cfg = FeedSettings.GetInstance(Configuration);
                 using var scope = ServiceProvider.CreateScope();
-                var commonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
-                commonLinkUtility.Initialize(cfg.ServerRoot);
-
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
+                var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
+                var (baseCommonLinkUtility, tenantManager, feedAggregateDataProvider, userManager, securityContext, authManager) = scopeClass;
+                baseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
                 var start = DateTime.UtcNow;
                 Log.DebugFormat("Start of collecting feeds...");
@@ -161,9 +159,6 @@ namespace ASC.Feed.Aggregator
                             }
 
                             tenantManager.SetCurrentTenant(tenant);
-                            var userManager = scope.ServiceProvider.GetService<UserManager>();
-                            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                            var authManager = scope.ServiceProvider.GetService<AuthManager>();
                             var users = userManager.GetUsers();
 
                             var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
@@ -293,11 +288,52 @@ namespace ASC.Feed.Aggregator
         }
     }
 
+    public class FeedAggregatorServiceScope
+        {
+            private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+            private TenantManager TenantManager { get; }
+            private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+            private UserManager UserManager { get; }
+            private SecurityContext SecurityContext { get; }
+            private AuthManager AuthManager { get; }
+
+            public FeedAggregatorServiceScope(BaseCommonLinkUtility baseCommonLinkUtility,
+                TenantManager tenantManager,
+                FeedAggregateDataProvider feedAggregateDataProvider,
+                UserManager userManager,
+                SecurityContext securityContext,
+                AuthManager authManager)
+            {
+                BaseCommonLinkUtility = baseCommonLinkUtility;
+                TenantManager = tenantManager;
+                FeedAggregateDataProvider = feedAggregateDataProvider;
+                UserManager = userManager;
+                SecurityContext = securityContext;
+                AuthManager = authManager;
+            }
+
+        public void Deconstruct(out BaseCommonLinkUtility baseCommonLinkUtility,
+            out TenantManager tenantManager,
+            out FeedAggregateDataProvider feedAggregateDataProvider, 
+            out UserManager userManager, 
+            out SecurityContext securityContext, 
+            out AuthManager authManager)
+        {
+            baseCommonLinkUtility = BaseCommonLinkUtility;
+            tenantManager = TenantManager;
+            feedAggregateDataProvider = FeedAggregateDataProvider;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            authManager = AuthManager;
+        }
+    }
+
     public static class FeedAggregatorServiceExtension
     {
         public static DIHelper AddFeedAggregatorService(this DIHelper services)
         {
             services.TryAddSingleton<FeedAggregatorService>();
+            services.TryAddScoped<FeedAggregatorServiceScope>();
 
             return services
                 .AddBaseCommonLinkUtilityService()

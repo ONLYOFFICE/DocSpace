@@ -61,11 +61,11 @@ namespace ASC.Core.Notify.Senders
         protected IConfiguration Configuration { get; }
         protected IServiceProvider ServiceProvider { get; }
 
-        private string _host;
-        private int _port;
-        private bool _ssl;
-        private ICredentials _credentials;
-        protected bool _useCoreSettings;
+        private string Host { get; set; }
+        private int Port { get; set; }
+        private bool Ssl { get; set; }
+        private ICredentials Credentials { get; set; }
+        protected bool _useCoreSettings { get; set; }
         const int NETWORK_TIMEOUT = 30000;
 
         public SmtpSender(
@@ -85,12 +85,12 @@ namespace ASC.Core.Notify.Senders
             }
             else
             {
-                _host = properties["host"];
-                _port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
-                _ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
+                Host = properties["host"];
+                Port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
+                Ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
                 if (properties.ContainsKey("userName"))
                 {
-                    _credentials = new NetworkCredential(
+                    Credentials = new NetworkCredential(
                          properties["userName"],
                          properties["password"]);
                 }
@@ -101,10 +101,10 @@ namespace ASC.Core.Notify.Senders
         {
             var s = configuration.SmtpSettings;
 
-            _host = s.Host;
-            _port = s.Port;
-            _ssl = s.EnableSSL;
-            _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
+            Host = s.Host;
+            Port = s.Port;
+            Ssl = s.EnableSSL;
+            Credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
                 ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
                 : null;
         }
@@ -112,9 +112,9 @@ namespace ASC.Core.Notify.Senders
         public virtual NoticeSendResult Send(NotifyMessage m)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
+            var (tenantManager, configuration) = scopeClass;
             tenantManager.SetCurrentTenant(m.Tenant);
-            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
             var smtpClient = GetSmtpClient();
             var result = NoticeSendResult.TryOnceAgain;
@@ -127,14 +127,14 @@ namespace ASC.Core.Notify.Senders
 
                     var mail = BuildMailMessage(m);
 
-                    Log.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                    Log.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", Host, Port, Ssl, Credentials != null);
 
-                    smtpClient.Connect(_host, _port,
-                        _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+                    smtpClient.Connect(Host, Port,
+                        Ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
-                    if (_credentials != null)
+                    if (Credentials != null)
                     {
-                        smtpClient.Authenticate(_credentials);
+                        smtpClient.Authenticate(Credentials);
                     }
 
                     smtpClient.Send(mail);
@@ -152,7 +152,7 @@ namespace ASC.Core.Notify.Senders
             }
             catch (InvalidOperationException)
             {
-                result = string.IsNullOrEmpty(_host) || _port == 0
+                result = string.IsNullOrEmpty(Host) || Port == 0
                     ? NoticeSendResult.SendingImpossible
                     : NoticeSendResult.TryOnceAgain;
             }
@@ -322,11 +322,27 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
+    public class SmtpSenderScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+
+        public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
+        {
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
+            => (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+    }
+
     public static class SmtpSenderExtension
     {
         public static DIHelper AddSmtpSenderService(this DIHelper services)
         {
             services.TryAddSingleton<SmtpSender>();
+            services.TryAddScoped<SmtpSenderScope>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

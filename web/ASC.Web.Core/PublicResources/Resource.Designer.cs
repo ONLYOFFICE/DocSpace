@@ -1969,6 +1969,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trial.
+        /// </summary>
+        public static string Trial {
+            get {
+                return ResourceManager.GetString("Trial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to US West (Oregon) Region.
         /// </summary>
         public static string UsServerRegion {

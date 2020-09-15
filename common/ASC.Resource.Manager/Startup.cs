@@ -25,6 +25,7 @@ namespace ASC.Resource.Manager
             var diHelper = new DIHelper(services);
             services.AddLogging();
             diHelper.TryAddScoped<ResourceData>();
+            diHelper.TryAddScoped<Program.Scope>();
 
             diHelper.AddDbContextManagerService<ResourceDbContext>();
             diHelper.AddLoggerService();

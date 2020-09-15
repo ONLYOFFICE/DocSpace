@@ -131,7 +131,7 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        public string GetFolderUrl<T>(T folderId)
+        public string GetFolderUrlById<T>(T folderId)
         {
             var folder = DaoFactory.GetFolderDao<T>().GetFolder(folderId);
 
