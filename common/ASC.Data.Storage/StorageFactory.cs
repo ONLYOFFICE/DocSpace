@@ -341,7 +341,8 @@ namespace ASC.Data.Storage
                     .AddEmailValidationKeyProviderService()
                     .AddStorageSettingsService()
                     .AddStorage()
-                    .AddEncryptionFactoryService();
+                    .AddEncryptionFactoryService()
+                    .AddEncryptionSettingsHelperService();
             }
 
             return services;
