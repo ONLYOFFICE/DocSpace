@@ -133,6 +133,7 @@ const TreeMenuStory = props => {
         isFullFillSelection={boolean('isFullFillSelection', true)}
         gapBetweenNodes={text('gapBetweenNodes')}
         gapBetweenNodesTablet={text('gapBetweenNodesTablet')}
+        isEmptyRootNode={boolean('isEmptyRootNode', false)}
 
         defaultExpandAll={boolean('defaultExpandAll', false)}
         defaultExpandParent={boolean('defaultExpandParent', true)}

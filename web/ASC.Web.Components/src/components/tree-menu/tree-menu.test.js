@@ -128,4 +128,20 @@ describe('<TreeMenu />', () => {
     expect(wrapper.prop('gapBetweenNodes')).toEqual('22');
     expect(wrapper.prop('gapBetweenNodesTablet')).toEqual('24');
   });
+  it('accepts isEmptyRootNode', () => {
+    const wrapper = mount(
+      <TreeMenu
+      isEmptyRootNode={true}
+      >
+        <TreeNode title="Parent" key="0-0">
+          <TreeNode
+            title="Child"
+            key="0-0-0"
+          ></TreeNode>
+        </TreeNode>
+      </TreeMenu>
+    );
+
+    expect(wrapper.prop('isEmptyRootNode')).toEqual(true);
+  });
 });
