@@ -10,7 +10,7 @@ class AvatarEditor extends React.Component {
     this.avatarEditorBodyRef = React.createRef();
 
     this.state = {
-      isContainsFile: !!this.props.image,
+      existImage: !!this.props.image,
       visible: props.visible,
       x: 0,
       y: 0,
@@ -27,56 +27,69 @@ class AvatarEditor extends React.Component {
     if (typeof this.props.onImageChange === "function")
       this.props.onImageChange(file);
   };
+
   onDeleteImage = () => {
     this.setState({
-      isContainsFile: false
+      existImage: false
     });
     if (typeof this.props.onDeleteImage === "function")
       this.props.onDeleteImage();
   };
+
   onSizeChange = data => {
     this.setState(data);
   };
+
   onPositionChange = data => {
     this.setState(data);
   };
+
   onLoadFileError = error => {
     if (typeof this.props.onLoadFileError === "function")
       this.props.onLoadFileError(error);
   };
+
   onLoadFile = (file, callback) => {
     if (typeof this.props.onLoadFile === "function")
       this.props.onLoadFile(file, callback);
-    if (!this.state.isContainsFile) this.setState({ isContainsFile: true });
+
+    if (!this.state.existImage) this.setState({ existImage: true });
   };
+
   onSaveButtonClick = () => {
     this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
+    //this.saveAvatar();
   };
+
   saveAvatar = () => {
-    this.state.isContainsFile
-      ? this.props.onSave(
-          this.state.isContainsFile,
-          {
-            x: this.state.x,
-            y: this.state.y,
-            width: this.state.width,
-            height: this.state.height
-          },
-          this.state.croppedImage
-        )
-      : this.props.onSave(this.state.isContainsFile);
+    if (!this.state.existImage) {
+      this.props.onSave(this.state.existImage);
+      return;
+    }
+
+    this.props.onSave(
+      this.state.existImage,
+      {
+        x: this.state.x,
+        y: this.state.y,
+        width: this.state.width,
+        height: this.state.height
+      },
+      this.state.croppedImage
+    );
   };
 
   onClose = () => {
     this.setState({ visible: false });
     this.props.onClose();
   };
+
   componentDidUpdate(prevProps) {
     if (this.props.visible !== prevProps.visible) {
       this.setState({ visible: this.props.visible });
     }
     if (this.props.image !== prevProps.image) {
-      this.setState({ isContainsFile: !!this.props.image });
+      this.setState({ existImage: !!this.props.image });
     }
   }
 
