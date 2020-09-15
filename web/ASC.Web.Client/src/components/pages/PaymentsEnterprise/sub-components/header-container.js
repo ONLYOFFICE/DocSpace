@@ -98,12 +98,12 @@ HeaderContainer.propTypes = {
   expiresDate: PropTypes.object,
   trialMode: PropTypes.bool,
 };
-function mapStateToProps(state) {
+function mapStateToProps({ auth, payments }) {
   return {
-    culture: state.auth.settings.culture,
-    utcHoursOffset: state.auth.settings.utcHoursOffset,
-    expiresDate: state.payments.currentLicense.expiresDate,
-    trialMode: state.payments.trialMode,
+    culture: auth.settings.culture,
+    utcHoursOffset: auth.settings.utcHoursOffset,
+    expiresDate: payments.currentLicense.expiresDate,
+    trialMode: payments.trialMode,
   };
 }
 export default connect(mapStateToProps)(withRouter(HeaderContainer));

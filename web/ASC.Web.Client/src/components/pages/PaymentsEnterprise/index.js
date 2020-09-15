@@ -59,7 +59,7 @@ class Body extends React.PureComponent {
       setCurrentProductId,
     } = this.props;
     currentProductId !== "payments" && setCurrentProductId("payments");
-    //getSettingsPayment();
+    getSettingsPayment();
   }
 
   componentDidUpdate(prevProps) {
@@ -138,10 +138,10 @@ PaymentsEnterprise.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps({ auth, payments }) {
   return {
-    isLoaded: state.auth.isLoaded,
-    licenseUpload: state.payments.licenseUpload,
+    isLoaded: auth.isLoaded,
+    licenseUpload: payments.licenseUpload,
   };
 }
 export default connect(mapStateToProps, {
