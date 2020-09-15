@@ -91,12 +91,15 @@ class FilterInput extends React.Component {
             return filterItems;
         }
 
+        let filterValues = props.selectedFilterData ? getDefaultFilterData() : [];
+        filterValues = [...filterValues, ...this.convertSelectorToInternalData(props.getFilterData(), cloneObjectsArray(props.selectedFilterData.filterValues))];
+
         this.state = {
             sortDirection: props.selectedFilterData.sortDirection === "desc" ? true : false,
             sortId: props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : props.getSortData().length > 0 ? props.getSortData()[0].key : "",
             searchText: props.selectedFilterData.inputValue || props.value,
 
-            filterValues: props.selectedFilterData ? getDefaultFilterData() : [],
+            filterValues,
             openFilterItems: [],
             hideFilterItems: []
         };
