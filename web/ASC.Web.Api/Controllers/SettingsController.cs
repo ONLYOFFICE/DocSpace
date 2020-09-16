@@ -77,6 +77,7 @@ using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
 using ASC.Web.Studio.UserControls.FirstTime;
+using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
@@ -1337,6 +1338,38 @@ namespace ASC.Api.Settings
             return true;
         }
 
+        [Create("license/accept", Check = false)]
+        public object AcceptLicense()
+        {
+            if (!CoreBaseSettings.Standalone) return "";
+
+            TariffSettings.SetLicenseAccept(SettingsManager);
+            MessageService.Send(MessageAction.LicenseKeyUploaded);
+
+            try
+            {
+                LicenseReader.RefreshLicense();
+            }
+            catch (BillingNotFoundException)
+            {
+                return UserControlsCommonResource.LicenseKeyNotFound;
+            }
+            catch (BillingNotConfiguredException)
+            {
+                return UserControlsCommonResource.LicenseKeyNotCorrect;
+            }
+            catch (BillingException)
+            {
+                return UserControlsCommonResource.LicenseException;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            return "";
+        }
+
         [AllowAnonymous]
         [Read("license/required", Check = false)]
         public bool RequestLicense()
@@ -1355,11 +1388,11 @@ namespace ASC.Api.Settings
                 if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
                 if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
 
-               
+
 
                 var licenseFile = model.Files.First();
                 var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
-                LicenseReader.RefreshLicense();
+
                 return dueDate >= DateTime.UtcNow.Date
                                      ? Resource.LicenseUploaded
                                      : string.Format(Resource.LicenseUploadedOverdue,
@@ -1806,7 +1839,7 @@ namespace ASC.Api.Settings
             return changed;
         }
 
-        [Read("payment")]
+        [Read("payment", Check = false)]
         public object PaymentSettings()
         {
             var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
