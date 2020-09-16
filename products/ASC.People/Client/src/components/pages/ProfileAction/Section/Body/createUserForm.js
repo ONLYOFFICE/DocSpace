@@ -377,7 +377,6 @@ class CreateUserForm extends React.Component {
               editAction={this.openAvatarEditor}
             />
             <AvatarEditor
-              displayType="modal"
               image={this.state.avatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
