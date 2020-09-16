@@ -1592,6 +1592,48 @@ Este mensaje ha sido generado automáticamente para probar su configuración SMT
 Atentamente,
 Equipo ONLYOFFICE</value>
   </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+El proceso de descifrado de archivos en su portal "${PortalUrl}":"${PortalUrl}" ha fracasado.
+
+Algunos archivos no pudieron ser descifrados. Encuentre más detalles en el "Panel de Control":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+El proceso de descifrado de archivos se ha iniciado en su portal "${PortalUrl}":"${PortalUrl}".
+
+El descifrado puede llevar algún tiempo, así que el portal no estará disponible temporalmente. En cuanto termine el descifrado, podrá volver a trabajar con sus datos.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+El proceso de descifrado de archivos en su portal "${PortalUrl}":"${PortalUrl}" ha sido completado con éxito.
+
+Su portal está disponible de nuevo.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Estimado $UserName,
+
+El proceso de cifrado de archivos en el portal "${PortalUrl}":"${PortalUrl}" ha sido completado.
+
+Algunos archivos no se han podido volver a cifrar. Para más detalles, consulte el "Panel de Control":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+El proceso de cifrado de archivos se ha iniciado en su portal "${PortalUrl}":"${PortalUrl}".
+
+El cifrado puede llevar algún tiempo, así que el portal no estará disponible temporalmente. Tan pronto como el cifrado termine, podrá trabajar con sus datos de nuevo.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+El proceso de cifrado de archivos en su portal "${PortalUrl}":"${PortalUrl}" ha sido completado con éxito.
+
+Su portal está disponible de nuevo.</value>
+  </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Nuevo usuario añadido al portal "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -1876,6 +1918,24 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Mensaje de prueba SMTP </value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. El proceso de descifrado ha fracasado</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. El proceso de descifrado se ha iniciado</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. El proceso de descifrado se ha completado</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Error de cifrado de archivo</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. El cifrado de archivos se ha iniciado</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. El proceso de cifrado se ha completado</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Usuario nuevo añadido a portal ${LetterLogoText}</value>

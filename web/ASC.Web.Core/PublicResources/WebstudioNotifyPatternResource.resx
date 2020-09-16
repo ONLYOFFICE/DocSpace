@@ -1607,6 +1607,48 @@ This message was generated automatically to test your SMTP settings. If you are 
 Best regards,
 ONLYOFFICE Team</value>
   </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Hello, $UserName!
+
+The file decryption process on your portal "${PortalUrl}":"${PortalUrl}" has been failed.
+
+Some files could not be decrypted. Find more details in the "Control Panel":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Hello, $UserName!
+
+The file decryption process has been started on your portal "${PortalUrl}":"${PortalUrl}".
+
+The decryption might take some time, so the portal will be temporarily unavailable. As soon as the decryption is over, you will be able to work with your data again.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Hello, $UserName!
+
+The file decryption process on your portal "${PortalUrl}":"${PortalUrl}" has been successfully completed.
+
+Your portal is available again.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Hello, $UserName!
+
+The file encryption process on the "${PortalUrl}":"${PortalUrl}" portal has been failed.
+
+Some files could not be encrypted. Find more details in the "Control Panel":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Hello, $UserName!
+
+The file encryption process has been started on your portal "${PortalUrl}":"${PortalUrl}".
+
+The encryption might take some time, so the portal will be temporarily unavailable. As soon as the encryption is over, you will be able to work with your data again.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Hello, $UserName!
+
+The file encryption process on your portal "${PortalUrl}":"${PortalUrl}" has been successfully completed.
+
+Your portal is available again.</value>
+  </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.New user added to "${__VirtualRootPath}":"${__VirtualRootPath}" portal
 
@@ -1892,6 +1934,24 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP test message</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Decryption process failed</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Decryption process started</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Decryption process completed</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Encryption process failed</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Encryption process started</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Encryption process completed</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>New user added to ${LetterLogoText} portal</value>

@@ -36,13 +36,13 @@ namespace ASC.Data.Storage.Encryption
 {
     public class NotifyHelper
     {
-        private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Studio";
+        private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
 
         private string ServerRootPath { get; set; }
         private NotifyServiceClient NotifyServiceClient { get; set; }
         private ILog Log { get; set; }
 
-        public NotifyHelper( IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
+        public NotifyHelper(IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
         {
             NotifyServiceClient = notifyServiceClient;
             Log = option.CurrentValue;

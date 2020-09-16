@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -62,10 +61,6 @@ namespace ASC.Notify
         public void Start()
         {
             CacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
-        }
-
-        public void StartInvokeSendMethod()
-        {
             CacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
         }
 
@@ -85,7 +80,7 @@ namespace ASC.Notify
                 Log.Error(e);
             }
         }
-        
+
 
         public void InvokeSendMethod(NotifyInvoke notifyInvoke)
         {
@@ -95,9 +90,10 @@ namespace ASC.Notify
             var parameters = notifyInvoke.Parameters;
 
             var serviceType = Type.GetType(service, true);
-            var getinstance = serviceType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
 
-            var instance = getinstance.GetValue(serviceType, null);
+            using var scope = ServiceProvider.CreateScope();
+
+            var instance = scope.ServiceProvider.GetService(serviceType);
             if (instance == null)
             {
                 throw new Exception("Service instance not found.");
@@ -109,7 +105,6 @@ namespace ASC.Notify
                 throw new Exception("Method not found.");
             }
 
-            using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
             var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
             tenantManager.SetCurrentTenant(tenant);
