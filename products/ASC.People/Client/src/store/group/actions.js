@@ -1,5 +1,5 @@
 import { setGroups, fetchPeople } from "../people/actions";
-import { api, history } from "asc-web-common";
+import { api } from "asc-web-common";
 
 export const SET_GROUP = "SET_GROUP";
 export const CLEAN_GROUP = "CLEAN_GROUP";
@@ -32,7 +32,6 @@ export function createGroup(groupName, groupManager, members) {
     return api.groups
       .createGroup(groupName, groupManager, members)
       .then(newGroup => {
-        history.goBack();
         dispatch(resetGroup());
         dispatch(setGroups([...groups, newGroup]));
         return Promise.resolve(newGroup);
@@ -48,7 +47,6 @@ export function updateGroup(id, groupName, groupManager, members) {
     return api.groups
       .updateGroup(id, groupName, groupManager, members)
       .then(newGroup => {
-        history.goBack();
         dispatch(resetGroup());
         const newGroups = groups.map(g =>
           g.id === newGroup.id ? newGroup : g
