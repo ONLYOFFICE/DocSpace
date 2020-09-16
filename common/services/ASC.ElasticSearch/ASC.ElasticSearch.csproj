@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\ASC.Data.Storage.Migration\ASC.Data.Storage.Migration.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
