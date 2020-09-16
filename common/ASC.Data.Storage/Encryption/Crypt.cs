@@ -58,6 +58,8 @@ namespace ASC.Data.Storage.Encryption
 
         public void EncryptFile(string filePath)
         {
+            if (string.IsNullOrEmpty(Settings.Password)) return;
+
             var metadata = EncryptionFactory.GetMetadata();
 
             metadata.Initialize(Settings.Password);
@@ -106,8 +108,6 @@ namespace ASC.Data.Storage.Encryption
 
         private void EncryptFile(string filePath, string password)
         {
-            if (string.IsNullOrEmpty(password)) return;
-
             var fileInfo = new FileInfo(filePath);
 
             if (fileInfo.IsReadOnly)
@@ -326,7 +326,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 File.Move(modifiedFilePath, originalFilePath);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 File.Move(tempFilePath, originalFilePath);
                 throw exception;
