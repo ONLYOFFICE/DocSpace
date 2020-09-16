@@ -46,7 +46,7 @@ const RegisterModalDialog = ({
             {t("RegisterTextBodyBeforeDomainsList")} {domainList}{" "}
             {t("RegisterTextBodyAfterDomainsList")}
           </Text>
-          ,
+          
           <FieldContainer
             key="e-mail"
             isVertical={true}
