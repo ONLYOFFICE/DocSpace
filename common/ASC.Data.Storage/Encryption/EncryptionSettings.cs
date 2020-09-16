@@ -30,6 +30,7 @@ using System.Security.Cryptography;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Security.Cryptography;
 
 namespace ASC.Data.Storage.Encryption
 {
@@ -63,17 +64,19 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public class EncryptionSettingsHelper 
+    public class EncryptionSettingsHelper
     {
         private const string key = "EncryptionSettings";
 
         private CoreConfiguration CoreConfiguration { get; }
         private AscCacheNotify AscCacheNotify { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
-        public EncryptionSettingsHelper(CoreConfiguration coreConfiguration, AscCacheNotify ascCacheNotify)
+        public EncryptionSettingsHelper(CoreConfiguration coreConfiguration, AscCacheNotify ascCacheNotify, InstanceCrypto instanceCrypto)
         {
             CoreConfiguration = coreConfiguration;
             AscCacheNotify = ascCacheNotify;
+            InstanceCrypto = instanceCrypto;
         }
 
         public void Save(EncryptionSettings encryptionSettings)
@@ -94,7 +97,7 @@ namespace ASC.Data.Storage.Encryption
         public string Serialize(EncryptionSettings encryptionSettings)
         {
             return string.Join("#",
-                string.IsNullOrEmpty(encryptionSettings.password) ? string.Empty : Crypto.GetV(encryptionSettings.password, 1, true),
+                string.IsNullOrEmpty(encryptionSettings.password) ? string.Empty : InstanceCrypto.Encrypt(encryptionSettings.password),
                 (int)encryptionSettings.Status,
                 encryptionSettings.NotifyUsers
             );
@@ -109,7 +112,7 @@ namespace ASC.Data.Storage.Encryption
 
             var parts = value.Split(new[] { '#' }, StringSplitOptions.None);
 
-            var password = string.IsNullOrEmpty(parts[0]) ? string.Empty : Crypto.GetV(parts[0], 1, false);
+            var password = string.IsNullOrEmpty(parts[0]) ? string.Empty : InstanceCrypto.Decrypt(parts[0]);
             var status = int.Parse(parts[1]);
             var notifyUsers = bool.Parse(parts[2]);
 
@@ -193,8 +196,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionSettingsHelperService(this DIHelper services)
         {
-            services.TryAddScoped<EncryptionSettingsHelper>();
-            services.TryAddScoped<AscCacheNotify>();
+            services.TryAddSingleton<EncryptionSettingsHelper>();
+            services.TryAddSingleton<AscCacheNotify>();
             return services
                 .AddCoreConfigurationService();
         }

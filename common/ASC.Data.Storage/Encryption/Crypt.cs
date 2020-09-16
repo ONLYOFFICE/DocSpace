@@ -25,11 +25,8 @@
 
 
 using System;
-using System.Configuration;
 using System.IO;
 using System.Security.Cryptography;
-
-using ASC.Common;
 
 using Microsoft.Extensions.Configuration;
 

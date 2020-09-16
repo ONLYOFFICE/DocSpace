@@ -28,7 +28,6 @@ using System;
 
 using ASC.Common;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
