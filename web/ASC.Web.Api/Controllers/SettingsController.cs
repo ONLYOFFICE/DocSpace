@@ -1359,7 +1359,7 @@ namespace ASC.Api.Settings
 
                 var licenseFile = model.Files.First();
                 var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
-
+                LicenseReader.RefreshLicense();
                 return dueDate >= DateTime.UtcNow.Date
                                      ? Resource.LicenseUploaded
                                      : string.Format(Resource.LicenseUploadedOverdue,
