@@ -7,12 +7,20 @@ import Avatar from "../../avatar/index";
 import accepts from "attr-accept";
 import Text from "../../text";
 import Box from "../../box";
-import Row from "../../row";
+import ContextMenuButton from "../../context-menu-button";
 import IconButton from "../../icon-button";
 
-import { tablet } from "../../../utils/device";
+import {
+  tablet,
+  desktop,
+  mobile,
+  isDesktop
+  //isTablet,
+  //isMobile
+} from "../../../utils/device";
 import resizeImage from "resize-image";
 import throttle from "lodash/throttle";
+import Link from "../../link";
 
 const step = 0.01;
 const min = 1;
@@ -126,111 +134,116 @@ const Slider = styled.input.attrs({
 `;
 
 const DropZoneContainer = styled.div`
-  box-sizing: border-box;
-  display: block;
-  width: 408px;
-  height: 360px;
-  border: 1px dashed #ccc;
-  text-align: center;
-  padding: 10em 0;
-  margin: 0 auto;
-  p {
-    margin: 0;
-    cursor: default;
-  }
-  .desktop {
-    display: block;
-  }
-  .mobile {
-    display: none;
-  }
-  @media ${tablet} {
-    .desktop {
-      display: none;
+  outline: none;
+
+  .dropzone-text {
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+
+    cursor: pointer;
+
+    @media ${desktop} {
+      width: 408px;
+      height: 360px;
     }
-    .mobile {
-      display: block;
+
+    @media ${tablet} {
+      height: 426px;
+    }
+
+    @media ${mobile} {
+      height: 426px;
     }
   }
 `;
 
 const StyledAvatarContainer = styled.div`
-  text-align: center;
-
   display: grid;
-  grid-template-columns: min-content 1fr;
-  grid-column-gap: 16px;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 50px;
 
-  .custom-range {
-    width: 100%;
-    display: block;
+  width: 100%;
+  @media ${desktop} {
+    width: 408px;
   }
-  .avatar-container {
-    width: 160px;
+
+  .preview-container {
     display: grid;
-    grid-template-rows: 160px 48px;
-    grid-row-gap: 16px;
+    grid-template-columns: 1fr;
+    grid-column-gap: 16px;
 
-    .avatar-mini-preview {
-      width: 160px;
+    .custom-range {
+      width: 100%;
+      display: block;
+    }
 
-      border: 1px solid #ECEEF1;
-      box-sizing: border-box;
-      border-radius: 6px;
+    @media ${desktop} {
+      grid-template-columns: min-content 1fr;
+      .avatar-container {
+        width: 160px;
+        display: grid;
+        grid-template-rows: 160px 48px;
+        grid-row-gap: 16px;
 
-      .avatar-mini-preview__row {
-        border-bottom: none;
+        .avatar-mini-preview {
+          width: 160px;
 
-        .row_content {
-          min-width: 40px;
-        }
-
-        .row_context-menu-wrapper {
-          padding-right: 8px;
+          border: 1px solid #eceef1;
+          box-sizing: border-box;
+          border-radius: 6px;
+          display: grid;
+          grid-template-columns: 38px 88px 1fr;
+          align-items: center;
+          padding: 8px;
         }
       }
     }
 
-    /* display: inline-block;
-    vertical-align: top;
-    @media ${tablet} {
-      display: none;
-    } */
+    .editor-container {
+      width: 100%;
+      display: grid;
+
+      @media ${desktop} {
+        width: 224px;
+      }
+
+      @media ${tablet} {
+        canvas {
+          width: 100% !important;
+          height: initial !important;
+        }
+      }
+
+      .react-avatar-editor {
+      }
+
+      .editor-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr) 2fr 1fr;
+        grid-template-rows: 32px;
+        height: 32px;
+        background: #a3a9ae;
+        justify-items: center;
+      }
+
+      .zoom-container {
+        height: 56px;
+        display: grid;
+        grid-template-columns: min-content 1fr min-content;
+        grid-column-gap: 12px;
+      }
+    }
   }
-  .editor-container {
-    width: 224px;
-    display: grid;
 
-    @media ${tablet} {
-      padding: 0;
-    }
-
-    .react-avatar-editor {
-    }
-
-    .editor-buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr) 2fr 1fr;
-      grid-template-rows: 32px;
-      height: 32px;
-      background: #a3a9ae;
-      justify-items: center;
-    }
-
-    .zoom-container {
-      height: 56px;
-      display: grid;
-      grid-template-columns: min-content 1fr min-content;
-      grid-column-gap: 12px;
-    }
+  .link-container {
   }
 `;
-// const StyledASCAvatar = styled(ASCAvatar)`
-//   display: block;
-//   @media ${tablet} {
-//     display: none;
-//   }
-// `;
 
 class AvatarEditorBody extends React.Component {
   constructor(props) {
@@ -245,6 +258,7 @@ class AvatarEditorBody extends React.Component {
     };
 
     this.setEditorRef = React.createRef();
+    this.dropzoneRef = React.createRef();
 
     this.throttledSetCroppedImage = throttle(this.setCroppedImage, 300);
   }
@@ -335,7 +349,7 @@ class AvatarEditorBody extends React.Component {
   };
 
   onTouchStart = evt => {
-    evt.preventDefault();
+    //evt.preventDefault();
     var tt = evt.targetTouches;
     if (tt.length >= 2) {
       this.dist = this.distance(tt[0], tt[1]);
@@ -346,7 +360,7 @@ class AvatarEditorBody extends React.Component {
   };
 
   onTouchMove = evt => {
-    evt.preventDefault();
+    //evt.preventDefault();
     var tt = evt.targetTouches;
     if (this.scaling) {
       this.curr_scale =
@@ -489,15 +503,45 @@ class AvatarEditorBody extends React.Component {
     }
   }
 
+  openDialog = () => {
+    if (!this.state.image) return;
+    // Note that the ref is set async,
+    // so it might be null at some point
+    if (this.dropzoneRef.current) {
+      this.dropzoneRef.current.open();
+    }
+  };
+
+  renderLinkContainer = () => {
+    const { selectNewPhotoLabel, orDropFileHereLabel } = this.props;
+    const desktopMode = isDesktop();
+    return (
+      <Text as="span">
+        <Link type="action" isHovered color="#316DAA" onClick={this.openDialog}>
+          {selectNewPhotoLabel}
+        </Link>{" "}
+        {desktopMode && orDropFileHereLabel}
+      </Text>
+    );
+  };
+
   render() {
-    const {
-      maxSize,
-      accept,
-      chooseFileLabel,
-      chooseMobileFileLabel,
-      role,
-      title
-    } = this.props;
+    const { maxSize, accept, role, title } = this.props;
+
+    const desktopMode = isDesktop();
+    //const tabletMode = isTablet();
+    //const mobileMode = isMobile();
+
+    let editorWidth = 174;
+    let editorHeight = 174;
+
+    /*if (tabletMode) {
+      editorWidth = 320;
+      editorHeight = 320;
+    } else if (mobileMode) {
+      editorWidth = 287;
+      editorHeight = 287;
+    }*/
 
     return (
       <div
@@ -506,155 +550,159 @@ class AvatarEditorBody extends React.Component {
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
       >
-        {this.state.image === "" ? (
-          <Dropzone
-            onDropAccepted={this.onDropAccepted}
-            onDropRejected={this.onDropRejected}
-            maxSize={maxSize}
-            accept={accept}
-          >
-            {({ getRootProps, getInputProps }) => (
-              <DropZoneContainer {...getRootProps()}>
-                <input {...getInputProps()} />
-                <p className="desktop">{chooseFileLabel}</p>
-                <p className="mobile">{chooseMobileFileLabel}</p>
-              </DropZoneContainer>
-            )}
-          </Dropzone>
-        ) : (
-          <StyledAvatarContainer>
-            <Box className="editor-container">
-              <ReactAvatarEditor
-                ref={this.setEditorRef}
-                width={174}
-                height={174}
-                borderRadius={200}
-                scale={this.state.scale}
-                className="react-avatar-editor"
-                image={this.state.image}
-                rotate={this.state.rotate}
-                color={[196, 196, 196, 0.5]}
-                onImageChange={this.throttledSetCroppedImage}
-                onPositionChange={this.onPositionChange}
-                onImageReady={this.onImageReady}
-              />
-              <Box className="editor-buttons">
-                <IconButton
-                  size="16"
-                  isDisabled={false}
-                  onClick={this.onRotateLeftClick}
-                  iconName={"RotateLeftIcon"}
-                  isFill={true}
-                  isClickable={false}
-                  color="#FFFFFF"
-                />
-                <IconButton
-                  size="16"
-                  isDisabled={false}
-                  onClick={this.onRotateRightClick}
-                  iconName={"RotateRightIcon"}
-                  isFill={true}
-                  isClickable={false}
-                  color="#FFFFFF"
-                />
-                <IconButton
-                  size="16"
-                  isDisabled={true}
-                  onClick={this.onFlipVerticalClick}
-                  iconName={"FlipVerticalIcon"}
-                  isFill={true}
-                  isClickable={false}
-                  color="#FFFFFF"
-                />
-                <IconButton
-                  size="16"
-                  isDisabled={true}
-                  onClick={this.onFlipHorizontalClick}
-                  iconName={"FlipHorizontalIcon"}
-                  isFill={true}
-                  isClickable={false}
-                  color="#FFFFFF"
-                />
-                <Box></Box>
-                <IconButton
-                  size="16"
-                  isDisabled={false}
-                  onClick={this.deleteImage}
-                  iconName={"CatalogTrashIcon"}
-                  isFill={true}
-                  isClickable={true}
-                  color="#FFFFFF"
-                />
-              </Box>
-              <Box className="zoom-container">
-                <IconButton
-                  size="16"
-                  isDisabled={false}
-                  onClick={this.onZoomMinusClick}
-                  iconName={"ZoomMinusIcon"}
-                  isFill={true}
-                  isClickable={false}
-                />
-                <Slider
-                  id="scale"
-                  type="range"
-                  className="custom-range"
-                  onChange={this.handleScale}
-                  min={this.state.allowZoomOut ? "0.1" : min}
-                  max={max}
-                  step={step}
-                  value={this.state.scale}
-                />
-                <IconButton
-                  size="16"
-                  isDisabled={false}
-                  onClick={this.onZoomPlusClick}
-                  iconName={"ZoomPlusIcon"}
-                  isFill={true}
-                  isClickable={false}
-                />
-              </Box>
-            </Box>
-            <Box className="avatar-container">
-              <Avatar
-                size="max"
-                role={role}
-                source={this.state.croppedImage}
-                editing={false}
-              />
-              <Box className="avatar-mini-preview">
-                <Row
-                  className="avatar-mini-preview__row"
-                  key="test-avatar"
-                  element={
-                    <Avatar
-                      size="small"
-                      role={role}
-                      source={this.state.croppedImage}
-                      editing={false}
-                    />
-                  }
-                  contextOptions={[
-                    {
-                      key: "send-email",
-                      label: "Send email"
-                    }
-                  ]}
-                >
-                  <Text
-                    as="div"
-                    fontSize="15px"
-                    fontWeight={600}
-                    title={title}
-                    truncate={true}
-                  >
-                    {title}
-                  </Text>
-                </Row>
-              </Box>
-            </Box>
-          </StyledAvatarContainer>
-        )}
+        <Dropzone
+          ref={this.dropzoneRef}
+          onDropAccepted={this.onDropAccepted}
+          onDropRejected={this.onDropRejected}
+          maxSize={maxSize}
+          accept={accept}
+          noClick={this.state.image !== ""}
+        >
+          {({ getRootProps, getInputProps }) => (
+            <DropZoneContainer {...getRootProps()}>
+              <input {...getInputProps()} />
+              {this.state.image === "" ? (
+                <Box className="dropzone-text">
+                  {this.renderLinkContainer()}
+                </Box>
+              ) : (
+                <StyledAvatarContainer>
+                  <Box className="preview-container">
+                    <Box className="editor-container">
+                      <ReactAvatarEditor
+                        ref={this.setEditorRef}
+                        width={editorWidth}
+                        height={editorHeight}
+                        borderRadius={200}
+                        scale={this.state.scale}
+                        className="react-avatar-editor"
+                        image={this.state.image}
+                        rotate={this.state.rotate}
+                        color={[196, 196, 196, 0.5]}
+                        onImageChange={this.throttledSetCroppedImage}
+                        onPositionChange={this.onPositionChange}
+                        onImageReady={this.onImageReady}
+                      />
+                      <Box className="editor-buttons">
+                        <IconButton
+                          size="16"
+                          isDisabled={false}
+                          onClick={this.onRotateLeftClick}
+                          iconName={"RotateLeftIcon"}
+                          isFill={true}
+                          isClickable={false}
+                          color="#FFFFFF"
+                        />
+                        <IconButton
+                          size="16"
+                          isDisabled={false}
+                          onClick={this.onRotateRightClick}
+                          iconName={"RotateRightIcon"}
+                          isFill={true}
+                          isClickable={false}
+                          color="#FFFFFF"
+                        />
+                        <IconButton
+                          size="16"
+                          isDisabled={true}
+                          onClick={this.onFlipVerticalClick}
+                          iconName={"FlipVerticalIcon"}
+                          isFill={true}
+                          isClickable={false}
+                          color="#FFFFFF"
+                        />
+                        <IconButton
+                          size="16"
+                          isDisabled={true}
+                          onClick={this.onFlipHorizontalClick}
+                          iconName={"FlipHorizontalIcon"}
+                          isFill={true}
+                          isClickable={false}
+                          color="#FFFFFF"
+                        />
+                        <Box></Box>
+                        <IconButton
+                          size="16"
+                          isDisabled={false}
+                          onClick={this.deleteImage}
+                          iconName={"CatalogTrashIcon"}
+                          isFill={true}
+                          isClickable={true}
+                          color="#FFFFFF"
+                        />
+                      </Box>
+                      <Box className="zoom-container">
+                        <IconButton
+                          size="16"
+                          isDisabled={false}
+                          onClick={this.onZoomMinusClick}
+                          iconName={"ZoomMinusIcon"}
+                          isFill={true}
+                          isClickable={false}
+                        />
+                        <Slider
+                          id="scale"
+                          type="range"
+                          className="custom-range"
+                          onChange={this.handleScale}
+                          min={this.state.allowZoomOut ? "0.1" : min}
+                          max={max}
+                          step={step}
+                          value={this.state.scale}
+                        />
+                        <IconButton
+                          size="16"
+                          isDisabled={false}
+                          onClick={this.onZoomPlusClick}
+                          iconName={"ZoomPlusIcon"}
+                          isFill={true}
+                          isClickable={false}
+                        />
+                      </Box>
+                    </Box>
+                    {desktopMode && (
+                      <Box className="avatar-container">
+                        <Avatar
+                          size="max"
+                          role={role}
+                          source={this.state.croppedImage}
+                          editing={false}
+                        />
+                        <Box className="avatar-mini-preview">
+                          <Avatar
+                            size="small"
+                            role={role}
+                            source={this.state.croppedImage}
+                            editing={false}
+                          />
+                          <Text
+                            as="div"
+                            fontSize="15px"
+                            fontWeight={600}
+                            title={title}
+                            truncate={true}
+                          >
+                            {title}
+                          </Text>
+                          <ContextMenuButton
+                            isFill
+                            color="#A3A9AE"
+                            hoverColor="#657077"
+                            directionX="right"
+                            getData={() => []}
+                          />
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                  <Box className="link-container">
+                    {this.renderLinkContainer()}
+                  </Box>
+                </StyledAvatarContainer>
+              )}
+            </DropZoneContainer>
+          )}
+        </Dropzone>
         <StyledErrorContainer key="errorMsg">
           {this.state.errorText !== null && (
             <Text as="p" color="#C96C27" isBold={true}>
@@ -678,8 +726,8 @@ AvatarEditorBody.propTypes = {
   maxSize: PropTypes.number,
   image: PropTypes.string,
   accept: PropTypes.arrayOf(PropTypes.string),
-  chooseFileLabel: PropTypes.string,
-  chooseMobileFileLabel: PropTypes.string,
+  selectNewPhotoLabel: PropTypes.string,
+  orDropFileHereLabel: PropTypes.string,
   unknownTypeError: PropTypes.string,
   maxSizeFileError: PropTypes.string,
   unknownError: PropTypes.string,
@@ -691,8 +739,8 @@ AvatarEditorBody.defaultProps = {
   accept: ["image/png", "image/jpeg"],
   maxSize: Number.MAX_SAFE_INTEGER,
   visible: false,
-  chooseFileLabel: "Drop files here, or click to select files",
-  chooseMobileFileLabel: "Click to select files",
+  selectNewPhotoLabel: "Select new photo",
+  orDropFileHereLabel: "or drop file here",
   unknownTypeError: "Unknown image file type",
   maxSizeFileError: "Maximum file size exceeded",
   unknownError: "Error",

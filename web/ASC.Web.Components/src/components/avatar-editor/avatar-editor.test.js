@@ -5,8 +5,8 @@ import AvatarEditor from ".";
 const baseProps = {
   visible: true,
   headerLabel: "test",
-  chooseFileLabel: "test",
-  chooseMobileFileLabel: "test",
+  selectNewPhotoLabel: "test",
+  orDropFileHere: "test",
   saveButtonLabel: "test",
   maxSizeFileError: "test",
   image: "",

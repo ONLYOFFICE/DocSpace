@@ -103,8 +103,8 @@ class AvatarEditor extends React.Component {
       maxSize,
       accept,
       image,
-      chooseFileLabel,
-      chooseMobileFileLabel,
+      selectNewPhotoLabel,
+      orDropFileHereLabel,
       unknownTypeError,
       maxSizeFileError,
       unknownError,
@@ -116,7 +116,7 @@ class AvatarEditor extends React.Component {
       <ModalDialog
         visible={this.state.visible}
         displayType={displayType}
-        scale={true}
+        scale={false}
         contentHeight="initial"
         contentWidth="initial"
         onClose={this.onClose}
@@ -139,8 +139,8 @@ class AvatarEditor extends React.Component {
             maxSize={maxSize * 1000000} // megabytes to bytes
             accept={accept}
             image={image}
-            chooseFileLabel={chooseFileLabel}
-            chooseMobileFileLabel={chooseMobileFileLabel}
+            selectNewPhotoLabel={selectNewPhotoLabel}
+            orDropFileHereLabel={orDropFileHereLabel}
             unknownTypeError={unknownTypeError}
             maxSizeFileError={maxSizeFileError}
             unknownError={unknownError}
@@ -164,8 +164,9 @@ class AvatarEditor extends React.Component {
 AvatarEditor.propTypes = {
   visible: PropTypes.bool,
   headerLabel: PropTypes.string,
-  chooseFileLabel: PropTypes.string,
-  chooseMobileFileLabel: PropTypes.string,
+  selectNewPhotoLabel: PropTypes.string,
+  orDropFileHereLabel: PropTypes.string,
+
   saveButtonLabel: PropTypes.string,
   saveButtonLoading: PropTypes.bool,
   maxSizeFileError: PropTypes.string,
