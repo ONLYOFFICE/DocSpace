@@ -1,14 +1,12 @@
 ﻿using ASC.Api.Documents;
-using ASC.Files.Tests;
-using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using NUnit.Framework;
 
-namespace ASC.Tests.ASC.Files.Tests
+namespace ASC.Files.Tests
 {
     [TestFixture]
-    public class FilesControllerTests : BaseTests
+    public class FilesControllerHelperIntTests : BaseFilesTests<int>
     {
         [SetUp]
         public override void SetUp()
@@ -16,12 +14,13 @@ namespace ASC.Tests.ASC.Files.Tests
             base.SetUp();
         }
 
-        [TestCase("folderOne")]
+        [TestCase("folderTwo")]
         [TestCase("folderTwo")]
         [Category("section 'My Documents'")]
         public void CreateFolderReturnsFolderWrapperTest(string folderTitle)
         {
-            var folderWrapper = FilesController.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
+            var qwe = Configuration[""];
+            var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
@@ -31,7 +30,7 @@ namespace ASC.Tests.ASC.Files.Tests
         [Category("section 'My Documents'")]
         public void RenameFolderReturnsFolderWrapperTest(int folderId, string folderTitle)
         {
-            var folderWrapper = FilesController.RenameFolder(folderId, folderTitle);
+            var folderWrapper = FilesControllerHelper.RenameFolder(folderId, folderTitle);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
@@ -41,9 +40,9 @@ namespace ASC.Tests.ASC.Files.Tests
         [Category("section 'My Documents'")]
         public void DeleteFolderTest(int folderId, bool deleteAfter, bool immediately)
         {
-            FilesController.DeleteFolder(folderId, deleteAfter, immediately);
+            FilesControllerHelper.DeleteFolder(folderId, deleteAfter, immediately);
 
-            var statuses = FilesController.GetOperationStatuses();
+            var statuses = FilesControllerHelper.GetOperationStatuses();
 
             FileOperationWraper status = null;
 
@@ -56,6 +55,16 @@ namespace ASC.Tests.ASC.Files.Tests
             }
 
             Assert.IsNotNull(status);
+        }
+
+        [TestCase("fileOne")]
+        [TestCase("fileTwo")]
+        public void CreateFileReturnsFilesWrapperTest(string fileTitle)
+        {
+            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
+
+            Assert.IsNotNull(fileWrapper);
+            Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
         [TearDown]

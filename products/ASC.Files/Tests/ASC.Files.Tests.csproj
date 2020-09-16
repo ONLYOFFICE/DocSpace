@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="filesTests.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AppLimit.CloudComputing.SharpBox" Version="1.1.0.451" />
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Autofac.Configuration" Version="5.1.0" />

@@ -1,0 +1,42 @@
+{
+  "user": {
+    "userId": "cb52f8a6-d564-11ea-a9b8-0a0027000010",
+    "tenantId": "1"
+  },
+
+  "folder": {
+    "create": {
+      "titleOne": "folderOne",
+      "titleTwo": "folderTwo"
+    },
+
+    "rename": {
+      "id": "1",
+      "title": "foldTest"
+    },
+
+    "delete": {
+      "id": "1",
+      "deleteAfter": "false",
+      "immediately": "true"
+    }
+  },
+
+  "file": {
+    "create": {
+      "titleOne": "fileOne",
+      "titleTwo": "fileTwo"
+    },
+
+    "rename": {
+      "id": "1",
+      "title": "fileTest"
+    },
+
+    "delete": {
+      "id": "1",
+      "deleteAfter": "false",
+      "immediately": "true"
+    }
+  }
+}
