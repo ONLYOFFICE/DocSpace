@@ -60,22 +60,27 @@ const getItems = data => {
 };
 
 class ArticleBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    this.changeTitleDocument();
+  }
 
+  componentDidUpdate() {
+    this.changeTitleDocument();
+  }
+
+  changeTitleDocument() {
     const {
       organizationName,
       groups,
-      selectedGroup,
+      selectedKeys,
       currentModuleName
-    } = props;
+    } = this.props;
 
-    const currentGroup = getSelectedGroup(groups, selectedGroup);
+    const currentGroup = getSelectedGroup(groups, selectedKeys[0]);
     document.title = currentGroup
       ? `${currentGroup.name} – ${currentModuleName}`
       : `${currentModuleName} – ${organizationName}`;
   }
-
   shouldComponentUpdate(nextProps) {
     if (
       !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
