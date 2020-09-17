@@ -14,6 +14,7 @@ import {
   setPaymentsLicense,
   getSettingsPayment,
   resetUploadedLicense,
+  AcceptPaymentsLicense,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -68,6 +69,8 @@ class Body extends React.PureComponent {
       currentProductId,
       licenseUpload,
       resetUploadedLicense,
+      AcceptPaymentsLicense,
+      expiresDate,
     } = this.props;
 
     // if (currentProductId !== prevProps.currentProductId) {
@@ -75,13 +78,14 @@ class Body extends React.PureComponent {
     // }
 
     if (licenseUpload) {
+      AcceptPaymentsLicense();
       getSettingsPayment();
       resetUploadedLicense();
     }
   }
 
   onButtonClickUpload = (file) => {
-    const { setPaymentsLicense, t } = this.props;
+    const { setPaymentsLicense, t, AcceptPaymentsLicense } = this.props;
 
     let fd = new FormData();
     fd.append("files", file);
@@ -149,4 +153,5 @@ export default connect(mapStateToProps, {
   setCurrentProductId,
   getSettingsPayment,
   resetUploadedLicense,
+  AcceptPaymentsLicense,
 })(withRouter(PaymentsEnterprise));

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text, utils } from "asc-web-components";
+import { WebStorageStateStore } from "oidc-client";
 
 const { tablet } = utils.device;
 
@@ -48,48 +49,65 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({
-  t,
-  expiresDate,
-  culture,
-  utcHoursOffset,
-  trialMode,
-}) => {
-  const moment = require("moment");
-  require("moment/min/locales.min");
-  moment.locale(culture);
-  const currentUserDate = moment().utcOffset(utcHoursOffset);
+class HeaderContainer extends React.Component {
+  constructor(props) {
+    super(props);
 
-  return new Date(currentUserDate).setHours(0, 0, 0, 0) <
-    expiresDate.setHours(0, 0, 0, 0) ? (
-    <StyledHeader>
-      <Text className="payments-header">{t("Using")}</Text>
-      <Text className="payments-header-additional_support">
-        {t("SubscriptionAndUpdatesExpires")}{" "}
-        {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
-        {"."}
-      </Text>
-    </StyledHeader>
-  ) : !trialMode ? (
-    <StyledHeader>
-      <Text className="payments-header">{t("Using")}</Text>
+    const { expiresDate, trialMode } = props;
 
-      <Text className="payments-header-additional_support" color="#C96C27">
-        {t("SupportNotAvailable")}{" "}
-        {moment(expiresDate).startOf("day").format("ddd, D MMMM, YYYY")}
-        {". "}
-        {t("LicenseRenewal")}
-      </Text>
-    </StyledHeader>
-  ) : (
-    <StyledHeader>
-      <Text className="payments-header">{t("TrialPeriodExpired")}</Text>
-      <Text className="payments-header-additional_support">
-        {t("ThanksToUser")}
-      </Text>
-    </StyledHeader>
-  );
-};
+    this.state = {
+      expiresDate: expiresDate,
+      trialMode: trialMode,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { expiresDate, trialMode } = this.props;
+
+    if (expiresDate !== prevProps.expiresDate) {
+      this.setState({ expiresDate: expiresDate });
+    }
+  }
+  render() {
+    const { t, culture, utcHoursOffset, trialMode } = this.props;
+    const { expiresDate } = this.state;
+
+    const moment = require("moment");
+    require("moment/min/locales.min");
+    moment.locale(culture);
+    const currentUserDate = moment().utcOffset(utcHoursOffset);
+
+    return new Date(currentUserDate).setHours(0, 0, 0, 0) <
+      expiresDate.setHours(0, 0, 0, 0) ? (
+      <StyledHeader>
+        <Text className="payments-header">{t("Using")}</Text>
+        <Text className="payments-header-additional_support">
+          {t("SubscriptionAndUpdatesExpires")}{" "}
+          {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
+          {"."}
+        </Text>
+      </StyledHeader>
+    ) : !trialMode ? (
+      <StyledHeader>
+        <Text className="payments-header">{t("Using")}</Text>
+
+        <Text className="payments-header-additional_support" color="#C96C27">
+          {t("SupportNotAvailable")}{" "}
+          {moment(expiresDate).startOf("day").format("ddd, D MMMM, YYYY")}
+          {". "}
+          {t("LicenseRenewal")}
+        </Text>
+      </StyledHeader>
+    ) : (
+      <StyledHeader>
+        <Text className="payments-header">{t("TrialPeriodExpired")}</Text>
+        <Text className="payments-header-additional_support">
+          {t("ThanksToUser")}
+        </Text>
+      </StyledHeader>
+    );
+  }
+}
 
 HeaderContainer.propTypes = {
   t: PropTypes.func.isRequired,
@@ -103,7 +121,7 @@ function mapStateToProps({ auth, payments }) {
     culture: auth.settings.culture,
     utcHoursOffset: auth.settings.utcHoursOffset,
     expiresDate: payments.currentLicense.expiresDate,
-    trialMode: payments.trialMode,
+    trialMode: payments.currentLicense.trialMode,
   };
 }
 export default connect(mapStateToProps)(withRouter(HeaderContainer));

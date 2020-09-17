@@ -71,6 +71,7 @@ import OrigImportIcon from "./import.react.svg";
 import OrigCatalogPinIcon from "./catalog.pin.react.svg";
 import OrigCopyIcon from "./copy.react.svg";
 import OrigShareEmailIcon from "./share.e-mail.react.svg";
+import OrigPaymentsIcon from "./payments.react.svg";
 import OrigShareGooglePlusIcon from "./share.google.plus.react.svg";
 import OrigSendClockIcon from "./send.clock.react.svg";
 import OrigAccessNoneIcon from "./access.none.react.svg";
