@@ -31,6 +31,18 @@ const {
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
+  removeLoader = () => {
+    const ele = document.getElementById("ipl-progress-indicator");
+    if (ele) {
+      // fade out
+      ele.classList.add("available");
+      setTimeout(() => {
+        // remove from DOM
+        ele.outerHTML = "";
+      }, 2000);
+    }
+  };
+
   componentDidMount() {
     const { getPortalSettings, getUser, getModules, setIsLoaded } = this.props;
 
@@ -48,25 +60,15 @@ class App extends React.Component {
       requests.push(getModules());
     }
 
-    if (requests.length > 0) {
-      axios
-        .all(requests)
-        .catch(e => {
-          console.log("INIT REQUESTS FAILED", e);
-        })
-        .finally(() => {
-          const ele = document.getElementById("ipl-progress-indicator");
-          if (ele) {
-            // fade out
-            ele.classList.add("available");
-            setTimeout(() => {
-              // remove from DOM
-              ele.outerHTML = "";
-            }, 2000);
-          }
-          setIsLoaded(true);
-        });
-    }
+    axios
+      .all(requests)
+      .catch(e => {
+        console.log("INIT REQUESTS FAILED", e);
+      })
+      .finally(() => {
+        this.removeLoader();
+        setIsLoaded(true);
+      });
   }
 
   render() {
