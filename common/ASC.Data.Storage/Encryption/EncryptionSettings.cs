@@ -70,7 +70,7 @@ namespace ASC.Data.Storage.Encryption
 
         private CoreConfiguration CoreConfiguration { get; }
         private AscCacheNotify AscCacheNotify { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        private InstanceCrypto InstanceCrypto { get; }
 
         public EncryptionSettingsHelper(CoreConfiguration coreConfiguration, AscCacheNotify ascCacheNotify, InstanceCrypto instanceCrypto)
         {
@@ -196,7 +196,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionSettingsHelperService(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionSettingsHelper>();
+            services.TryAddScoped<EncryptionSettingsHelper>();
             services.TryAddSingleton<AscCacheNotify>();
             return services
                 .AddCoreConfigurationService();

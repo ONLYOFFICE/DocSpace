@@ -40,6 +40,7 @@ using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -49,6 +50,7 @@ using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Backup.Contracts;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
@@ -83,6 +85,7 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -151,7 +154,11 @@ namespace ASC.Api.Settings
         private StorageSettingsHelper StorageSettingsHelper { get; }
         private ServiceClient ServiceClient { get; }
         private EncryptionServiceClient EncryptionServiceClient { get; }
+        private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
+        private ICacheNotify<BackupProgress> CacheBackupProgress { get; }
+        private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
         public ILog Log { get; set; }
+        private Dictionary<int, BackupProgress> BackupProgresses = new Dictionary<int, BackupProgress>();
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -205,7 +212,10 @@ namespace ASC.Api.Settings
             IOptionsSnapshot<AccountLinker> accountLinker,
             FirstTimeTenantSettings firstTimeTenantSettings,
             ServiceClient serviceClient,
-            EncryptionServiceClient encryptionServiceClient)
+            EncryptionServiceClient encryptionServiceClient,
+            EncryptionSettingsHelper encryptionSettingsHelper,
+            ICacheNotify<BackupProgress> cacheBackupProgress,
+            ICacheNotify<DeleteSchedule> cacheDeleteSchedule)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -259,6 +269,9 @@ namespace ASC.Api.Settings
             StorageSettingsHelper = storageSettingsHelper;
             ServiceClient = serviceClient;
             EncryptionServiceClient = encryptionServiceClient;
+            EncryptionSettingsHelper = encryptionSettingsHelper;
+            CacheBackupProgress = cacheBackupProgress;
+            CacheDeleteSchedule = cacheDeleteSchedule;
         }
 
         [Read("", Check = false)]
@@ -1631,6 +1644,137 @@ namespace ASC.Api.Settings
             EncryptionServiceClient.Start(encryptionSettingsProto);
         }
 
+        public readonly object Locker = new object();
+
+        [Create("encryption/start")]
+        public void StartStorageEncryption(StorageEncryptionModel storageEncryption)
+        {
+            lock (Locker)
+            {
+                var activeTenants = TenantManager.GetTenants();
+
+                if (activeTenants.Any())
+                {
+                    StartEncryption(storageEncryption.NotifyUsers);
+                }
+            }
+        }
+
+        private void Save(BackupProgress backupProgress)
+        {
+            if (BackupProgresses.ContainsKey(backupProgress.TenantId))
+            {
+                BackupProgresses[backupProgress.TenantId] = backupProgress;
+            }
+            else
+            {
+                BackupProgresses.Add(backupProgress.TenantId, backupProgress);
+            }
+        }
+        private void StartEncryption(bool notifyUsers)
+        {
+            CacheBackupProgress.Subscribe((n) => Save(n), CacheNotifyAction.Insert);
+            if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
+            {
+                throw new NotSupportedException();
+            }
+
+            if (!CoreBaseSettings.Standalone)
+            {
+                throw new NotSupportedException();
+            }
+
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            TenantExtra.DemandControlPanelPermission();
+
+            if (!TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).DiscEncryption)
+            {
+               // throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
+            }
+
+            var storages = GetAllStorages();
+
+            if (storages.Any(s => s.Current))
+            {
+                throw new NotSupportedException();
+            }
+
+            var cdnStorages = GetAllCdnStorages();
+
+            if (cdnStorages.Any(s => s.Current))
+            {
+                throw new NotSupportedException();
+            }
+
+            var tenants = TenantManager.GetTenants();
+
+            foreach (var tenant in tenants)
+            {
+                BackupProgress progress;
+                BackupProgresses.TryGetValue(tenant.TenantId, out progress);
+                if (progress != null && progress.IsCompleted == false)
+                {
+                    throw new Exception();
+                }
+            }
+
+            foreach (var tenant in tenants)
+            {
+                CacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.TenantId }, CacheNotifyAction.Insert);
+            }
+
+            var settings = EncryptionSettingsHelper.Load();
+
+            settings.NotifyUsers = notifyUsers;
+
+            if (settings.Status == EncryprtionStatus.Decrypted)
+            {
+                settings.Status = EncryprtionStatus.EncryptionStarted;
+                settings.Password = EncryptionSettingsHelper.GeneratePassword(32, 16);
+            }
+            else if (settings.Status == EncryprtionStatus.Encrypted)
+            {
+                settings.Status = EncryprtionStatus.DecryptionStarted;
+            }
+
+            MessageService.Send(settings.Status == EncryprtionStatus.EncryptionStarted ? MessageAction.StartStorageEncryption : MessageAction.StartStorageDecryption);
+
+            var serverRootPath = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+            foreach (var tenant in tenants)
+            {
+                TenantManager.SetCurrentTenant(tenant);
+
+                if (notifyUsers)
+                {
+                    if (settings.Status == EncryprtionStatus.EncryptionStarted)
+                    {
+                        StudioNotifyService.SendStorageEncryptionStart(serverRootPath);
+                    }
+                    else
+                    {
+                        StudioNotifyService.SendStorageDecryptionStart(serverRootPath);
+                    }
+                }
+
+                tenant.SetStatus(TenantStatus.Encryption);
+                TenantManager.SaveTenant(tenant);
+            }
+
+            EncryptionSettingsHelper.Save(settings);
+
+            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
+            {
+                NotifyUsers = settings.NotifyUsers,
+                Password = settings.Password,
+                Status = settings.Status,
+                ServerRootPath = serverRootPath
+            };
+            CacheBackupProgress.Unsubscribe(CacheNotifyAction.Insert);
+            EncryptionServiceClient.Start(encryptionSettingsProto);
+        }
+
         [Read("encryptionStop")]
         public void StopEncryption()
         {
@@ -1935,7 +2079,8 @@ namespace ASC.Api.Settings
                 .AddFirstTimeTenantSettings()
                 .AddServiceClient()
                 .AddTwilioProviderService()
-                .AddEncryptionServiceClient();
+                .AddEncryptionServiceClient()
+                .AddEncryptionSettingsHelperService();
         }
     }
 }
