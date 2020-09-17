@@ -29,6 +29,7 @@ namespace ASC.Web.Api.Controllers
         private AuthContext AuthContext { get; }
         private AuthManager AuthManager { get; }
         private CookiesManager CookiesManager { get; }
+        public PasswordHasher PasswordHasher { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -38,7 +39,8 @@ namespace ASC.Web.Api.Controllers
             EmailValidationKeyProvider emailValidationKeyProvider,
             AuthContext authContext,
             AuthManager authManager,
-            CookiesManager cookiesManager)
+            CookiesManager cookiesManager,
+            PasswordHasher passwordHasher)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -48,6 +50,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             AuthManager = authManager;
             CookiesManager = cookiesManager;
+            PasswordHasher = passwordHasher;
         }
 
         [Create(false)]
@@ -90,10 +93,11 @@ namespace ASC.Web.Api.Controllers
 
         private UserInfo GetUser(int tenantId, string userName, string password)
         {
-            var user = UserManager.GetUsers(
-                        tenantId,
-                        userName,
-                        Hasher.Base64Hash(password, HashAlg.SHA256));
+            var passwordHash = PasswordHasher.GetClientPassword(password);
+            var user = UserManager.GetUsersByPasswordHash(
+                tenantId,
+                userName,
+                passwordHash);
 
             if (user == null || !UserManager.UserExists(user))
             {
@@ -143,7 +147,8 @@ namespace ASC.Web.Api.Controllers
                 .AddTenantCookieSettingsService()
                 .AddEmailValidationKeyProviderService()
                 .AddAuthContextService()
-                .AddAuthManager();
+                .AddAuthManager()
+                .AddPasswordHasherService();
         }
     }
 }
