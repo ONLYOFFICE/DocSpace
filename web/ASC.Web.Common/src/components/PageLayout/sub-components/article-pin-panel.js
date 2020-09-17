@@ -13,6 +13,11 @@ const StyledArticlePinPanel = styled.div`
 
   @media ${tablet} {
     display: block;
+    position: fixed;
+    bottom: 0;
+    width: 208px;
+    z-index: 2;
+    background-color: #f8f9f9;
   }
 
   @media ${mobile} {
@@ -42,12 +47,12 @@ const ArticlePinPanel = React.memo(props => {
       {pinned ? (
         <div onClick={onUnpin}>
           <Icons.CatalogUnpinIcon size="medium" />
-          <Text {...textStyles} >{unpinText}</Text>
+          <Text {...textStyles}>{unpinText}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
           <Icons.CatalogPinIcon size="medium" />
-          <Text {...textStyles} >{pinText}</Text>
+          <Text {...textStyles}>{pinText}</Text>
         </div>
       )}
     </StyledArticlePinPanel>
