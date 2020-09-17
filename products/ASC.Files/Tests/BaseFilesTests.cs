@@ -18,12 +18,13 @@ namespace ASC.Files.Tests
 {
     public class BaseFilesTests<T>
     {
-        private string userId;
-        private int tenantId;
+        protected Guid userId;
+        protected int tenantId;
 
         protected FilesControllerHelper<T> FilesControllerHelper { get; set; }
         protected TestServer TestServer { get; set; }
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
+        protected UserManager UserManager { get; set; }
         protected Tenant CurrentTenant { get; set; }
         protected UserInfo User { get; set; }
         protected SecurityContext SecurityContext { get; set; }
@@ -39,11 +40,12 @@ namespace ASC.Files.Tests
                     Configure(hostingContext, config);
                 }));
 
-            userId = Configuration["user:userId"];
+            userId = Guid.Parse(Configuration["user:userId"]);
             tenantId = int.Parse(Configuration["user:tenantId"]);
 
             FilesControllerHelper = TestServer.Services.GetService<FilesControllerHelper<T>>();
             GlobalFolderHelper = TestServer.Services.GetService<GlobalFolderHelper>();
+            UserManager = TestServer.Services.GetService<UserManager>();
             SecurityContext = TestServer.Services.GetService<SecurityContext>();
             CurrentTenant = SetAndGetCurrentTenant();
             User = GetUser();
@@ -81,16 +83,14 @@ namespace ASC.Files.Tests
         private Tenant SetAndGetCurrentTenant()
         {
             var tenantManager = TestServer.Services.GetService<TenantManager>();
-            var tenant = tenantManager.GetTenant(tenantId);
-            tenantManager.SetCurrentTenant(tenant);
+            tenantManager.SetCurrentTenant(tenantId);
 
             return tenantManager.CurrentTenant;
         }
 
         private UserInfo GetUser()
         {
-            var userManager = TestServer.Services.GetService<UserManager>();
-            var user = userManager.GetUsers(new Guid(userId));
+            var user = UserManager.GetUsers(userId);
 
             return user;
         }
