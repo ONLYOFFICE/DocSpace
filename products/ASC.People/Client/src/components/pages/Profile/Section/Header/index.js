@@ -148,29 +148,33 @@ class SectionHeaderContent extends React.PureComponent {
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
-      .then((response) => {
+      .then(response => {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function() {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
             image: response.data,
             defaultWidth: img.width,
             defaultHeight: img.height
-          }
+          };
           _this.setState(stateCopy);
-          if (typeof callback === 'function') callback();
+          if (typeof callback === "function") callback();
         };
         img.src = response.data;
       })
-      .catch((error) => toastr.error(error));
-  }
+      .catch(error => toastr.error(error));
+  };
 
   onSaveAvatar = (isUpdate, result) => {
     if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
-        x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
-        y: Math.round(result.y * this.state.avatar.defaultHeight - result.height / 2),
+        x: Math.round(
+          result.x * this.state.avatar.defaultWidth - result.width / 2
+        ),
+        y: Math.round(
+          result.y * this.state.avatar.defaultHeight - result.height / 2
+        ),
         width: result.width,
         height: result.height,
         tmpFile: this.state.avatar.tmpFile
@@ -180,15 +184,15 @@ class SectionHeaderContent extends React.PureComponent {
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = "";
           stateCopy.profile.avatarMax =
-            response.max
-            + "?_="
-            + Math.floor(Math.random() * Math.floor(10000));
+            response.max +
+            "?_=" +
+            Math.floor(Math.random() * Math.floor(10000));
           toastr.success(this.props.t("ChangesApplied"));
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error))
         .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(this.state.profile.id))
+        .then(() => this.props.fetchProfile(this.state.profile.id));
     } else {
       deleteAvatar(this.state.profile.id)
         .then(response => {
@@ -323,15 +327,15 @@ class SectionHeaderContent extends React.PureComponent {
             ? viewer.isOwner
               ? {}
               : {
-                key: "delete-profile",
-                label: t("DeleteSelfProfile"),
-                onClick: this.toggleDeleteSelfProfileDialog
-              }
+                  key: "delete-profile",
+                  label: t("DeleteSelfProfile"),
+                  onClick: this.toggleDeleteSelfProfileDialog
+                }
             : {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
+                key: "disable",
+                label: t("DisableUserButton"),
+                onClick: this.onDisableClick
+              }
         ];
       case "disabled":
         return [
@@ -379,17 +383,17 @@ class SectionHeaderContent extends React.PureComponent {
             onClick: this.openAvatarEditor
           },
           !isMe(user, viewer.userName) &&
-          (user.status === EmployeeStatus.Active
-            ? {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
-            : {
-              key: "enable",
-              label: t("EnableUserButton"),
-              onClick: this.onEnableClick
-            }),
+            (user.status === EmployeeStatus.Active
+              ? {
+                  key: "disable",
+                  label: t("DisableUserButton"),
+                  onClick: this.onDisableClick
+                }
+              : {
+                  key: "enable",
+                  label: t("EnableUserButton"),
+                  onClick: this.onEnableClick
+                }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -455,8 +459,8 @@ class SectionHeaderContent extends React.PureComponent {
           onSave={this.onSaveAvatar}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("editAvatar")}
-          chooseFileLabel={t("chooseFileLabel")}
-          chooseMobileFileLabel={t("chooseMobileFileLabel")}
+          selectNewPhotoLabel={t("selectNewPhotoLabel")}
+          orDropFileHereLabel={t("orDropFileHereLabel")}
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}

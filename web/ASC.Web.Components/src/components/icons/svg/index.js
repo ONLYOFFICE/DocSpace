@@ -38,7 +38,6 @@ import OrigMediaZoomOutIcon from "./media.zoomout.react.svg";
 import OrigProjectsIcon from "./projects.react.svg";
 import OrigSearchIcon from "./search.react.svg";
 import OrigSettingsIcon from "./settings.react.svg";
-import OrigPaymentsIcon from "./payments.react.svg";
 import OrigProjectDocumentsUpIcon from "./project.documents.up.react.svg";
 import OrigProjectsTemplatesIcon from "./projects.templates.react.svg";
 import OrigItemPausedIcon from "./item.paused.react.svg";
@@ -176,7 +175,15 @@ import OrigLockIcon from "./lock.react.svg";
 import OrigDownloadAsIcon from "./download-as.react.svg";
 import OrigRenameIcon from "./rename.react.svg";
 
-import OrigDepartmentsGroup from './departments.group.react.svg';
+import OrigDepartmentsGroup from "./departments.group.react.svg";
+
+import OrigZoomMinus from "./zoom-minus.react.svg";
+import OrigZoomPlus from "./zoom-plus.react.svg";
+
+import OrigFlipHorizontal from "./flip.horizontal.react.svg";
+import OrigFlipVertical from "./flip.vertical.react.svg";
+import OrigRotateLeft from "./rotate.left.react.svg";
+import OrigRotateRight from "./rotate.right.react.svg";
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -694,12 +701,30 @@ export const DownloadAsIcon = createStyledIcon(
   OrigDownloadAsIcon,
   "DownloadAsIcon"
 );
-export const RenameIcon = createStyledIcon(
-  OrigRenameIcon,
-  'RenameIcon'
-);
+export const RenameIcon = createStyledIcon(OrigRenameIcon, "RenameIcon");
 
 export const DepartmentsGroupIcon = createStyledIcon(
   OrigDepartmentsGroup,
-  'DepartmentsGroupIcon'
+  "DepartmentsGroupIcon"
+);
+
+export const ZoomMinusIcon = createStyledIcon(OrigZoomMinus, "ZoomMinusIcon");
+
+export const ZoomPlusIcon = createStyledIcon(OrigZoomPlus, "ZoomPlusIcon");
+
+export const FlipHorizontalIcon = createStyledIcon(
+  OrigFlipHorizontal,
+  "FlipHorizontalIcon"
+);
+export const FlipVerticalIcon = createStyledIcon(
+  OrigFlipVertical,
+  "FlipVerticalIcon"
+);
+export const RotateLeftIcon = createStyledIcon(
+  OrigRotateLeft,
+  "RotateLeftIcon"
+);
+export const RotateRightIcon = createStyledIcon(
+  OrigRotateRight,
+  "RotateRightIcon"
 );
