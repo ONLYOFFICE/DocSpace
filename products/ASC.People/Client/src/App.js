@@ -67,25 +67,25 @@ class App extends React.Component {
 
     const token = localStorage.getItem(AUTH_KEY);
 
-    if (token) {
-      const requests = [
-        getUser(),
-        getPortalSettings(),
-        getModules(),
-        getPortalPasswordSettings(),
-        getPortalCultures(),
-        fetchGroups(),
-        fetchPeople()
-      ];
-
-      axios.all(requests).then(() => {
-        this.removeLoader();
-        finalize();
-      });
-    } else {
+    if (!token) {
       this.removeLoader();
-      setIsLoaded();
+      return setIsLoaded();
     }
+
+    const requests = [
+      getUser(),
+      getPortalSettings(),
+      getModules(),
+      getPortalPasswordSettings(),
+      getPortalCultures(),
+      fetchGroups(),
+      fetchPeople()
+    ];
+
+    axios.all(requests).then(() => {
+      this.removeLoader();
+      finalize();
+    });
   }
 
   render() {
