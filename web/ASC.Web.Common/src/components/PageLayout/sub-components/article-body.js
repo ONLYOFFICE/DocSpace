@@ -2,12 +2,24 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { Scrollbar } from "asc-web-components";
+import { Scrollbar, utils } from "asc-web-components";
+const { tablet, mobile } = utils.device;
 
 const StyledArticleBody = styled.div`
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+
+  @media ${tablet} {
+    height: calc(100% - 104px);
+    display: table;
+    width: 100%;
+  }
+
+  @media ${mobile} {
+    display: block;
+    height: 100%;
+  }
 
   .people-tree-menu {
     margin-right: 0;

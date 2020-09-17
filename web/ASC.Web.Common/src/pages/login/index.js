@@ -22,6 +22,7 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
+import history from "../../history";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -219,7 +220,8 @@ class Form extends Component {
     login(userName, pass)
       .then(() => {
         setIsLoaded(true);
-        window.open(homepage, "_self");
+        history.push("/");
+        location.replace(homepage);
       })
       .catch(error => {
         let err = error.data.error.message;
