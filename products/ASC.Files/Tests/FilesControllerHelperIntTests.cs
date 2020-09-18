@@ -1,5 +1,6 @@
 ﻿using ASC.Api.Documents;
 using ASC.Files.Core;
+using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using NUnit.Framework;
@@ -15,7 +16,7 @@ namespace ASC.Files.Tests
             base.SetUp();
         }
 
-        [TestCase("folderTwo")]
+        [TestCase("folderOne")]
         [TestCase("folderTwo")]
         [Category("section 'My Documents'")]
         public void CreateFolderReturnsFolderWrapperTest(string folderTitle)
@@ -30,7 +31,7 @@ namespace ASC.Files.Tests
         [Category("section 'My Documents'")]
         public void GetFolderReturnsFolderContentWrapperTest(int folderId, bool withSubFolders)
         {
-            var folderContentWrapper = FilesControllerHelper.GetFolder(folderId, userId, FilterType.None, withSubFolders);
+            var folderContentWrapper = FilesControllerHelper.GetFolder(folderId, UserOptions.Id, FilterType.None, withSubFolders);
 
             var filesCount = folderContentWrapper.Files.Count;
             var foldersCount = folderContentWrapper.Folders.Count;
@@ -39,9 +40,9 @@ namespace ASC.Files.Tests
             Assert.AreEqual(0, foldersCount);
         }
 
-        [TestCase(9,"folder")]
+        [TestCase(9, "folder")]
         [Category("section 'My Documents'")]
-        public void GetFolderInfoReturnsFolderWrapperTest(int folderId,string folderTitle)
+        public void GetFolderInfoReturnsFolderWrapperTest(int folderId, string folderTitle)
         {
             var folderWrapper = FilesControllerHelper.GetFolderInfo(folderId);
 
@@ -63,9 +64,7 @@ namespace ASC.Files.Tests
         [Category("section 'My Documents'")]
         public void DeleteFolderTest(int folderId, bool deleteAfter, bool immediately)
         {
-            FilesControllerHelper.DeleteFolder(folderId, deleteAfter, immediately);
-
-            var statuses = FilesControllerHelper.GetOperationStatuses();
+            var statuses = FilesControllerHelper.DeleteFolder(folderId, deleteAfter, immediately);
 
             FileOperationWraper status = null;
 
@@ -92,9 +91,9 @@ namespace ASC.Files.Tests
             Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
-        [TestCase(1,"fileOne.docx")]
+        [TestCase(1, "fileOne.docx")]
         [Category("section 'My Documents'")]
-        public void GetFileInfoReturnsFilesWrapperTest(int fileId,string fileTitle)
+        public void GetFileInfoReturnsFilesWrapperTest(int fileId, string fileTitle)
         {
             var fileWrapper = FilesControllerHelper.GetFileInfo(fileId);
 
@@ -102,7 +101,7 @@ namespace ASC.Files.Tests
             Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
-        [TestCase(1,"test",3)]
+        [TestCase(1, "test", 3)]
         public void UpdateFileReturnsFileWrapperTest(int fileId, string fileTitle, int lastVersion)
         {
             var fileWrapper = FilesControllerHelper.UpdateFile(fileId, fileTitle, lastVersion);
@@ -111,13 +110,11 @@ namespace ASC.Files.Tests
             Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
-        [TestCase(2,false,true)]
+        [TestCase(2, false, true)]
         [Category("section 'My Documents'")]
         public void DeleteFileTest(int fileId, bool deleteAfter, bool immediately)
         {
-            FilesControllerHelper.DeleteFile(fileId, deleteAfter, immediately);
-
-            var statuses = FilesControllerHelper.GetOperationStatuses();
+            var statuses = FilesControllerHelper.DeleteFile(fileId, deleteAfter, immediately);
 
             FileOperationWraper status = null;
 

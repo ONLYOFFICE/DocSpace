@@ -1,42 +1,58 @@
 {
-  "user": {
-    "userId": "cb52f8a6-d564-11ea-a9b8-0a0027000010",
-    "tenantId": "1"
+  "User": {
+    "Id": "cb52f8a6-d564-11ea-a9b8-0a0027000010",
+    "TenantId": "1"
   },
 
-  "folder": {
-    "create": {
-      "titleOne": "folderOne",
-      "titleTwo": "folderTwo"
+  "Folder": {
+    "CreateItems": {
+      "TitleOne": "FolderOne",
+      "TitleTwo": "FolderTwo"
     },
 
-    "rename": {
-      "id": "1",
-      "title": "foldTest"
+    "GetItems": {
+      "Id": "14",
+      "WithSubFolders": "true"
     },
 
-    "delete": {
-      "id": "1",
-      "deleteAfter": "false",
-      "immediately": "true"
+    "GetInfoItems": {
+      "Id": "9",
+      "TitleExpected": "Folder"
+    },
+
+    "RenameItems": {
+      "Id": "1",
+      "Title": "FoldTest"
+    },
+
+    "DeleteItems": {
+      "Id": "1",
+      "DeleteAfter": "False",
+      "Immediately": "True"
     }
   },
 
-  "file": {
-    "create": {
-      "titleOne": "fileOne",
-      "titleTwo": "fileTwo"
+  "File": {
+    "CreateItems": {
+      "TitleOne": "FileOne",
+      "TitleTwo": "FileTwo"
     },
 
-    "rename": {
-      "id": "1",
-      "title": "fileTest"
+    "GetInfoItems": {
+      "Id": "1",
+      "TitleExpected": "FileOne.docx"
     },
 
-    "delete": {
-      "id": "1",
-      "deleteAfter": "false",
-      "immediately": "true"
+    "UpdateItems": {
+      "Id": "1",
+      "Title": "FileTest",
+      "LastVersion": "3"
+    },
+
+    "DeleteItems": {
+      "Id": "1",
+      "DeleteAfter": "False",
+      "Immediately": "True"
     }
   }
 }
