@@ -23,6 +23,7 @@ import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 import history from "../../history";
+import { changeDocumentTitle } from "../../utils"
 
 const LoginContainer = styled.div`
   display: flex;
@@ -233,7 +234,7 @@ class Form extends Component {
     const { match, t, organizationName } = this.props;
     const { error, confirmedEmail } = match.params;
 
-    document.title = `${t("Authorization")} – ${organizationName}`;
+    changeDocumentTitle(`${t("Authorization")} – ${organizationName}`);
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
