@@ -23,7 +23,11 @@ const StyledSection = styled.section`
 
   .layout-progress-bar {
     position: sticky;
-    margin-left: -16px;
+    margin-left: -24px;
+    
+    @media ${tablet} {
+      margin-left: -16px;
+    }
   }
 
   .section-header_filter {
