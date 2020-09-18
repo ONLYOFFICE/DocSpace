@@ -1700,7 +1700,7 @@ namespace ASC.Api.Settings
 
             if (!TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).DiscEncryption)
             {
-               // throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
+                throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
             }
 
             var storages = GetAllStorages();
