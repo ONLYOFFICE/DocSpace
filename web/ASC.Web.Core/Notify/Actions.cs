@@ -156,5 +156,12 @@ namespace ASC.Web.Studio.Core.Notify
         public static readonly INotifyAction PersonalCustomModeProfileDelete = new NotifyAction("personal_custom_mode_profile_delete");
 
         public static readonly INotifyAction SaasCustomModeRegData = new NotifyAction("saas_custom_mode_reg_data");
+
+        public static readonly INotifyAction StorageEncryptionStart = new NotifyAction("storage_encryption_start");
+        public static readonly INotifyAction StorageEncryptionSuccess = new NotifyAction("storage_encryption_success");
+        public static readonly INotifyAction StorageEncryptionError = new NotifyAction("storage_encryption_error");
+        public static readonly INotifyAction StorageDecryptionStart = new NotifyAction("storage_decryption_start");
+        public static readonly INotifyAction StorageDecryptionSuccess = new NotifyAction("storage_decryption_success");
+        public static readonly INotifyAction StorageDecryptionError = new NotifyAction("storage_decryption_error");
     }
 }

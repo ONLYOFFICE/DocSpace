@@ -1582,6 +1582,15 @@ il team di ONLYOFFICE</value>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>messaggio di prova SMTP</value>
   </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di decrittografia fallito</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di decrittografia iniziato</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di decrittografia completato</value>
+  </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nuovo utente aggiunto al portale ${LetterLogoText}</value>
   </data>

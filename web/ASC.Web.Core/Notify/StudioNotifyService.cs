@@ -915,6 +915,74 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
         #endregion
+
+        #region Storage encryption
+
+        public void SendStorageEncryptionStart(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageEncryptionStart, false, serverRootPath);
+        }
+
+        public void SendStorageEncryptionSuccess(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageEncryptionSuccess, false, serverRootPath);
+        }
+
+        public void SendStorageEncryptionError(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageEncryptionError, true, serverRootPath);
+        }
+
+        public void SendStorageDecryptionStart(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageDecryptionStart, false, serverRootPath);
+        }
+
+        public void SendStorageDecryptionSuccess(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageDecryptionSuccess, false, serverRootPath);
+        }
+
+        public void SendStorageDecryptionError(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageDecryptionError, true, serverRootPath);
+        }
+
+        private void SendStorageEncryptionNotify(INotifyAction action, bool notifyAdminsOnly, string serverRootPath)
+        {
+            var users = notifyAdminsOnly
+                    ? UserManager.GetUsersByGroup(Constants.GroupAdmin.ID)
+                    : UserManager.GetUsers().Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
+
+            foreach (var u in users)
+            {
+                client.SendNoticeToAsync(
+                    action,
+                    null,
+                    new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                    new[] { EMailSenderName },
+                    null,
+                    new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.PortalUrl, serverRootPath),
+                    new TagValue(Tags.ControlPanelUrl, GetControlPanelUrl(serverRootPath)));
+            }
+        }
+
+        private string GetControlPanelUrl(string serverRootPath)
+        {
+            var controlPanelUrl = SetupInfo.ControlPanelUrl;
+
+            if (string.IsNullOrEmpty(controlPanelUrl))
+                return string.Empty;
+
+            if (controlPanelUrl.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
+                controlPanelUrl.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+                return controlPanelUrl;
+
+            return serverRootPath + "/" + controlPanelUrl.TrimStart('~', '/').TrimEnd('/');
+        }
+
+        #endregion
     }
 
     public class StudioNotifyServiceScope

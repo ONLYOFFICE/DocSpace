@@ -30,6 +30,7 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Web;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
@@ -39,6 +40,8 @@ using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Utility
 {
@@ -53,6 +56,7 @@ namespace ASC.Web.Studio.Utility
         private LicenseReader LicenseReader { get; }
         private SetupInfo SetupInfo { get; }
         private SettingsManager SettingsManager { get; }
+        private TenantControlPanelSettings TenantControlPanelSettings { get; }
 
         public TenantExtra(
             UserManager userManager,
@@ -63,7 +67,8 @@ namespace ASC.Web.Studio.Utility
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
             SetupInfo setupInfo,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            IConfiguration configuration)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
@@ -74,6 +79,7 @@ namespace ASC.Web.Studio.Utility
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
             SettingsManager = settingsManager;
+            TenantControlPanelSettings = configuration.GetSetting<TenantControlPanelSettings>("TenantControlPanelSettings");
         }
 
         public bool EnableTarrifSettings
@@ -241,6 +247,14 @@ namespace ASC.Web.Studio.Utility
                     return Math.Min(freeSize, diskQuota.MaxFileSize);
                 }
                 return SetupInfo.ChunkUploadSize;
+            }
+        }
+
+        public void DemandControlPanelPermission()
+        {
+            if (!CoreBaseSettings.Standalone || TenantControlPanelSettings.LimitedAccess)
+            {
+                throw new System.Security.SecurityException();
             }
         }
     }

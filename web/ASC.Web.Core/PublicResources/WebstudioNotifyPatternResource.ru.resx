@@ -1595,6 +1595,48 @@ h2.$activity.Key
 С уважением,
 команда ONLYOFFICE</value>
   </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Не удалось выполнить процесс расшифровки файлов на портале "${PortalUrl}":"${PortalUrl}".
+
+Некоторые файлы не удалось расшифровать. Подробности можно найти в "Панели управления":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Начат процесс расшифровки файлов на портале "${PortalUrl}":"${PortalUrl}".
+
+Расшифровка может занять некоторое время, так что портал будет временно недоступен. Когда расшифровка завершится, вы вновь сможете работать с данными.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Процесс расшифровки файлов на портале "${PortalUrl}":"${PortalUrl}" успешно завершен.
+
+Ваш портал вновь доступен.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Не удалось выполнить процесс шифрования файлов на портале "${PortalUrl}":"${PortalUrl}".
+
+Некоторые файлы не удалось зашифровать. Подробности можно найти в "Панели управления":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Начат процесс шифрования файлов на портале "${PortalUrl}":"${PortalUrl}".
+
+Шифрование может занять некоторое время, так что портал будет временно недоступен. Как только шифрование завершится, вы вновь сможете работать с данными.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Процесс шифрования файлов на портале "${PortalUrl}":"${PortalUrl}" успешно завершен.
+
+Ваш портал вновь доступен.</value>
+  </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Новый пользователь добавлен на портал "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -1879,6 +1921,24 @@ $GreenButton
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Тестовое письмо для проверки настроек SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Не удалось выполнить процесс расшифровки</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Начат процесс расшифровки</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Завершен процесс расшифровки</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Не удалось выполнить процесс шифрования</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Начат процесс шифрования</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Процесс шифрования завершен</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Добавлен новый пользователь на портале ${LetterLogoText}</value>

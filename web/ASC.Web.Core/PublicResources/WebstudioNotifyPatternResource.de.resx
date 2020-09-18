@@ -879,6 +879,48 @@ Diese Nachricht wurde automatisch generiert, um Ihre SMTP-Einstellungen zu teste
 Mit freundlichen Grüßen,
 ONLYOFFICE-Team</value>
   </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Die Entschlüsselung von Dateien in Ihrem Portal "${PortalUrl}":"${PortalUrl}" ist fehlgeschlagen.
+
+Einige Dateien konnten nicht entschlüsselt werden. Weitere Informationen finden Sie in den "Einstellungen":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Die Verschlüsselung von Dateien wurde in Ihrem Portal "${PortalUrl}":"${PortalUrl}" gestartet.
+
+Die Verschlüsselung dauert einige Zeit, daher wird das Portal temporär nicht zur Verfügung stehen. Sobald die Verschlüsselung beendet wurde, können Sie wieder mit Ihren Daten arbeiten.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Die Entschlüsselung wurde in Ihrem Portal "${PortalUrl}":"${PortalUrl}" wurde erfolgreich beendet.
+
+Ihr Portal steht wieder zur Verfügung.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Hallo $UserName,
+
+Die Datei-Verschlüsselung im Portal "${PortalUrl}":"${PortalUrl}" wurde abgeschlossen.
+
+Einige Dateien konnten nicht wieder verschlüsselt werden. Mehr Details finden Sie unter "Control Panel":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Die Verschlüsselung von Dateien wurde auf Ihrem Portal "${PortalUrl}":"${PortalUrl}" gestartet.
+
+Die Verschlüsselung dauert nimmt u.U. einige Zeit in Anspruch, daher ist das Portal in dieser Zeit nicht verfügbar. Sie können weiterarbeiten, wenn die Verschlüsselung abgeschlossen ist.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Die Datei-Verschlüsselung auf Ihrem Portal "${PortalUrl}":"${PortalUrl}" wurde erfolgreich abgeschlossen.
+
+Ihr Portal steht wieder zur Verfügung.</value>
+  </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Neuer Benutzer ist zum Portal "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt
 
@@ -1018,6 +1060,24 @@ ONLYOFFICE-Team</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP-Testmeldung</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Entschlüsselung fehlgeschlagen</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Entschlüsselung gestartet</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Entschlüsselung abgeschlossen</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Fehler bei Datei-Verschlüsselung</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Datei-Verschlüsselung gestartet</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Verschlüsselung abgeschlossen</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Neu hizugefügte Benutzer auf ${LetterLogoText} Portal</value>

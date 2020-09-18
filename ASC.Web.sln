@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Socket.IO.Svc", "common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Migration", "common\services\ASC.Data.Storage.Migration\ASC.Data.Storage.Migration.csproj", "{02356BD7-7E99-457B-BEFF-090CE4DF067D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Encryption", "common\services\ASC.Data.Storage.Encryption\ASC.Data.Storage.Encryption.csproj", "{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,6 +188,10 @@ Global
 		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

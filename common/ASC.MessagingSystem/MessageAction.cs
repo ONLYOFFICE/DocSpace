@@ -506,6 +506,10 @@ namespace ASC.MessagingSystem
 
         LicenseKeyUploaded = 5042,
 
+        StartStorageEncryption = 5050,
+
+        StartStorageDecryption = 5053,
+
         #endregion
 
         #region others
