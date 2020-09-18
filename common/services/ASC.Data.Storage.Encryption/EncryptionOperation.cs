@@ -114,6 +114,8 @@ namespace ASC.Data.Storage.Encryption
                 Percentage = 90;
                 GetProgress(progressEncryption);
                 ActivateTenants(tenantManager, log, notifyHelper);
+                Percentage = 100;
+                GetProgress(progressEncryption);
             }
             catch (Exception e)
             {

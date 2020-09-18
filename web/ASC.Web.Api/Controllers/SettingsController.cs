@@ -157,8 +157,10 @@ namespace ASC.Api.Settings
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
         private ICacheNotify<BackupProgress> CacheBackupProgress { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
+        private ICacheNotify<ProgressEncryption> CacheProgressEncryption { get; }
         public ILog Log { get; set; }
         private Dictionary<int, BackupProgress> BackupProgresses = new Dictionary<int, BackupProgress>();
+        private ProgressEncryption ProgressEncryption = new ProgressEncryption();
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -215,7 +217,8 @@ namespace ASC.Api.Settings
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
             ICacheNotify<BackupProgress> cacheBackupProgress,
-            ICacheNotify<DeleteSchedule> cacheDeleteSchedule)
+            ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
+            ICacheNotify<ProgressEncryption> cacheProgressEncryption)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -272,6 +275,7 @@ namespace ASC.Api.Settings
             EncryptionSettingsHelper = encryptionSettingsHelper;
             CacheBackupProgress = cacheBackupProgress;
             CacheDeleteSchedule = cacheDeleteSchedule;
+            CacheProgressEncryption = cacheProgressEncryption;
         }
 
         [Read("", Check = false)]
@@ -1660,7 +1664,7 @@ namespace ASC.Api.Settings
             }
         }
 
-        private void Save(BackupProgress backupProgress)
+        private void SaveBackapProgress(BackupProgress backupProgress)
         {
             if (BackupProgresses.ContainsKey(backupProgress.TenantId))
             {
@@ -1671,9 +1675,15 @@ namespace ASC.Api.Settings
                 BackupProgresses.Add(backupProgress.TenantId, backupProgress);
             }
         }
+
+        private void SaveProgressEncrypt(ProgressEncryption progressEncryption)
+        {
+            ProgressEncryption = progressEncryption;
+        }
         private void StartEncryption(bool notifyUsers)
         {
-            CacheBackupProgress.Subscribe((n) => Save(n), CacheNotifyAction.Insert);
+            CacheBackupProgress.Subscribe((n) => SaveBackapProgress(n), CacheNotifyAction.Insert);
+            CacheProgressEncryption.Subscribe((n) => SaveProgressEncrypt(n), CacheNotifyAction.Insert);
             if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
             {
                 throw new NotSupportedException();
@@ -1772,13 +1782,71 @@ namespace ASC.Api.Settings
                 ServerRootPath = serverRootPath
             };
             CacheBackupProgress.Unsubscribe(CacheNotifyAction.Insert);
+            CacheProgressEncryption.Unsubscribe(CacheNotifyAction.Insert);
             EncryptionServiceClient.Start(encryptionSettingsProto);
         }
 
-        [Read("encryptionStop")]
-        public void StopEncryption()
+        /// <summary>
+        /// Get storage encryption settings
+        /// </summary>
+        /// <returns>EncryptionSettings</returns>
+        /// <visible>false</visible>
+        [Read("encryption/settings")]
+        public EncryptionSettings GetStorageEncryptionSettings()
         {
-            EncryptionServiceClient.Stop();
+            try
+            {
+                if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
+                {
+                    throw new NotSupportedException();
+                }
+
+                if (!CoreBaseSettings.Standalone)
+                {
+                    throw new NotSupportedException();
+                }
+
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+                TenantExtra.DemandControlPanelPermission();
+
+                if (!TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).DiscEncryption)
+                {
+                    throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
+                }
+
+                var settings = EncryptionSettingsHelper.Load();
+
+                settings.Password = string.Empty; // Don't show password
+
+                return settings;
+            }
+            catch (Exception e)
+            {
+                Log.Error("GetStorageEncryptionSettings", e);
+                return null;
+            }
+        }
+
+        [Read("encryption/progress")]
+        public double GetStorageEncryptionProgress()
+        {
+            if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
+            {
+                throw new NotSupportedException();
+            }
+
+            if (!CoreBaseSettings.Standalone)
+            {
+                throw new NotSupportedException();
+            }
+
+            if (!TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).DiscEncryption)
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
+            }
+
+            return ProgressEncryption.Proggress;
         }
 
         [Update("storage")]

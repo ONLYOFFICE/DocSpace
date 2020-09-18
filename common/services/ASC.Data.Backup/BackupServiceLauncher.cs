@@ -107,7 +107,8 @@ namespace ASC.Data.Backup.Service
                 .AddBackupCleanerService()
                 .AddBackupSchedulerService()
                 .AddBackupWorkerService()
-                .AddBackupService();
+                .AddBackupService()
+                .AddBackupListenerService();
         }
     }
 }
