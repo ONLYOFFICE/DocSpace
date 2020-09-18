@@ -16,14 +16,12 @@ const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile"
 });
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class PureProfile extends React.Component {
   constructor(props) {
     super(props);
-
-    document.title = `${props.t("Profile")} – ${props.t("People")}`;
 
     this.state = {
       queryString: `${props.location.search.slice(1)}`
@@ -33,6 +31,8 @@ class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
+
+    changeDocumentTitle(`${t("Profile")} – ${t("People")}`);
 
     const queryParams = this.state.queryString.split("&");
     const arrayOfQueryParams = queryParams.map(queryParam =>

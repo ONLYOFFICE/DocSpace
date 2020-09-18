@@ -15,7 +15,7 @@ const i18n = createI18N({
   page: "GroupAction",
   localesPath: "pages/GroupAction"
 });
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class GroupAction extends React.Component {
@@ -23,8 +23,7 @@ class GroupAction extends React.Component {
     const { match, fetchGroup, t } = this.props;
     const { groupId } = match.params;
 
-    document.title = `${t("GroupAction")} – ${t("People")}`;
-
+    changeDocumentTitle(`${t("GroupAction")} – ${t("People")}`);
     changeLanguage(i18n);
 
     if (groupId) {

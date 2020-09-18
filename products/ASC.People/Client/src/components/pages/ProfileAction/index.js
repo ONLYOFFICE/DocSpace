@@ -20,7 +20,7 @@ const i18n = createI18N({
   page: "ProfileAction",
   localesPath: "pages/ProfileAction"
 });
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class ProfileAction extends React.Component {
@@ -28,8 +28,7 @@ class ProfileAction extends React.Component {
     const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
 
-    document.title = `${t("ProfileAction")} – ${t("People")}`;
-
+    changeDocumentTitle(`${t("ProfileAction")} – ${t("People")}`);
     changeLanguage(i18n);
 
     if (userId) {
