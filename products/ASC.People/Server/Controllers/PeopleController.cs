@@ -496,7 +496,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, false, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, passwordHash, false, false, memberModel.IsVisitor);
 
             user.ActivationStatus = EmployeeActivationStatus.Activated;
 

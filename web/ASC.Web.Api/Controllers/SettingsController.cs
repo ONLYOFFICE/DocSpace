@@ -150,6 +150,7 @@ namespace ASC.Api.Settings
         private StorageSettingsHelper StorageSettingsHelper { get; }
         private ServiceClient ServiceClient { get; }
         private StorageFactory StorageFactory { get; }
+        public UrlShortener UrlShortener { get; }
         public ILog Log { get; set; }
 
         public SettingsController(
@@ -204,7 +205,8 @@ namespace ASC.Api.Settings
             IOptionsSnapshot<AccountLinker> accountLinker,
             FirstTimeTenantSettings firstTimeTenantSettings,
             ServiceClient serviceClient,
-            StorageFactory storageFactory)
+            StorageFactory storageFactory,
+            UrlShortener urlShortener)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -258,6 +260,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper = storageSettingsHelper;
             ServiceClient = serviceClient;
             StorageFactory = storageFactory;
+            UrlShortener = urlShortener;
         }
 
         [Read("", Check = false)]
@@ -523,10 +526,11 @@ namespace ASC.Api.Settings
                     var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
                                      ? ("&mode=popup&callback=" + clientCallback)
                                      : ("&mode=Redirect&returnurl="
-                                        + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
-                                            "Auth.aspx"
-                                            + (Request.DesktopApp() ? "?desktop=true" : "")
-                                            ).ToString())));
+                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
+                                        "Auth.aspx"
+                                        + (Request.DesktopApp() ? "?desktop=true" : "")
+                                        ).ToString())
+                                 ));
 
                     infos.Add(new AccountInfo
                     {
@@ -1622,7 +1626,7 @@ namespace ASC.Api.Settings
 
             result.Add(instance);
 
-            if (!instance.IsDefault(CoreSettings) && !instance.IsLicensor)
+            if (!instance.IsDefault(CoreSettings) && !instance.GetIsLicensor(TenantManager, CoreSettings))
             {
                 result.Add(instance.GetDefault(ServiceProvider) as CompanyWhiteLabelSettings);
             }
@@ -1897,7 +1901,7 @@ namespace ASC.Api.Settings
 
             DemandRebrandingPermission();
 
-            settings.IsLicensor = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+            settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
             SettingsManager.SaveForDefaultTenant(settings);
         }
@@ -2040,6 +2044,10 @@ namespace ASC.Api.Settings
                     if (validateKeyProvider is TwilioProvider twilioLoginProvider)
                     {
                         twilioLoginProvider.ClearOldNumbers();
+                    }
+                    if (validateKeyProvider is BitlyLoginProvider bitly)
+                    {
+                        UrlShortener.Instance = null;
                     }
                 }
                 catch (Exception e)

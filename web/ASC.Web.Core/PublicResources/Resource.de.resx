@@ -626,6 +626,9 @@
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Die Hinweise für die Änderung der E-Mail-Adresse wurden erfolgreich gesendet</value>
   </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Wenn es einen Benutzer mit der E-Mail {0} gibt, wurden die Anweisungen zum Ändern des Passworts an diese E-Mail-Adresse verschickt.</value>
+  </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>Die Hinweise für die Änderung des Kennworts wurden an die folgende E-Mail-Adresse versandt: {0}</value>
   </data>
