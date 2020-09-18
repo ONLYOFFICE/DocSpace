@@ -65,12 +65,10 @@ class Body extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
-      getSettingsPayment,
       currentProductId,
       licenseUpload,
       resetUploadedLicense,
       AcceptPaymentsLicense,
-      expiresDate,
     } = this.props;
 
     // if (currentProductId !== prevProps.currentProductId) {
@@ -79,13 +77,12 @@ class Body extends React.PureComponent {
 
     if (licenseUpload) {
       AcceptPaymentsLicense();
-      getSettingsPayment();
       resetUploadedLicense();
     }
   }
 
   onButtonClickUpload = (file) => {
-    const { setPaymentsLicense, t, AcceptPaymentsLicense } = this.props;
+    const { setPaymentsLicense, t } = this.props;
 
     let fd = new FormData();
     fd.append("files", file);

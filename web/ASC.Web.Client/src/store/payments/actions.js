@@ -34,9 +34,12 @@ export function getSettingsPayment() {
 }
 export function setPaymentsLicense(confirmKey, data) {
   return (dispatch) => {
-    return api.settings
-      .setLicense(confirmKey, data)
-      .then((res) => dispatch(setLicenseUpload(res)));
+    return api.settings.setLicense(confirmKey, data).then((res) => {
+      dispatch(setLicenseUpload(res));
+      setTimeout(() => {
+        dispatch(getSettingsPayment());
+      }, 50);
+    });
   };
 }
 export function AcceptPaymentsLicense() {
