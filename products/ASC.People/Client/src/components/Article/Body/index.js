@@ -13,7 +13,7 @@ const i18n = createI18N({
   localesPath: "Article"
 });
 
-const { changeLanguage } = commonUtils;
+const { changeLanguage, changeDocumentTitle } = commonUtils;
 const { getCurrentModule, isAdmin } = initStore.auth.selectors;
 
 const StyledTreeMenu = styled(TreeMenu)`
@@ -60,22 +60,29 @@ const getItems = data => {
 };
 
 class ArticleBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    this.changeTitleDocument();
+  }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.selectedKeys[0] !== this.props.selectedKeys[0]) {
+      this.changeTitleDocument();
+    }
+  }
+
+  changeTitleDocument(data = null) {
     const {
       organizationName,
       groups,
-      selectedGroup,
+      selectedKeys,
       currentModuleName
-    } = props;
+    } = this.props;
 
-    const currentGroup = getSelectedGroup(groups, selectedGroup);
-    document.title = currentGroup
-      ? `${currentGroup.name} – ${currentModuleName}`
-      : `${currentModuleName} – ${organizationName}`;
+    const currentGroup = getSelectedGroup(groups, data ? data[0] : selectedKeys[0]);
+    currentGroup
+      ? changeDocumentTitle(`${currentGroup.name} – ${currentModuleName}`)
+      : changeDocumentTitle(`${currentModuleName} – ${organizationName}`);
   }
-
   shouldComponentUpdate(nextProps) {
     if (
       !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
@@ -92,17 +99,10 @@ class ArticleBodyContent extends React.Component {
 
   onSelect = data => {
     const {
-      currentModuleName,
-      selectGroup,
-      groups,
-      organizationName
+      selectGroup
     } = this.props;
 
-    const currentGroup = getSelectedGroup(groups, data[0]);
-    document.title = currentGroup
-      ? `${currentGroup.name} – ${currentModuleName}`
-      : `${currentModuleName} – ${organizationName}`;
-
+    this.changeTitleDocument(data)
     selectGroup(
       data && data.length === 1 && data[0] !== "root" ? data[0] : null
     );

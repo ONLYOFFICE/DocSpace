@@ -10,7 +10,7 @@ import {
 } from "../../../../../store/settings/actions";
 import { default as clientStore } from "../../../../../store/store";
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 const {
   getPortalCultures,
   getModules,
@@ -101,7 +101,7 @@ class Customization extends React.Component {
     const languages = mapCulturesToArray(rawCultures, t);
     const timezones = mapTimezonesToArray(rawTimezones);
 
-    document.title = `${t("Customization")} – ${organizationName}`;
+    changeDocumentTitle(`${t("Customization")} – ${organizationName}`);
 
     this.state = {
       isLoadedData: false,

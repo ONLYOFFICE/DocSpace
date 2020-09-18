@@ -201,6 +201,16 @@ The deletion of personal data allowed to free:
 
 ^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
   </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.New portal has been registered
+
+# Portal url: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# First name: $UserName
+# Last name: $UserLastName
+# Email: $UserEmail
+# Phone: $Phone
+# Creation date: $Date</value>
+  </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
     <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common Documents' section|Set up access rights to the documents and folders in the 'Common Documents' section</value>
   </data>

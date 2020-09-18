@@ -42,7 +42,7 @@ class ForgotPasswordModalDialog extends React.Component {
             >
               {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
             </Text>
-            ,
+            
             <FieldContainer
               key="e-mail"
               isVertical={true}

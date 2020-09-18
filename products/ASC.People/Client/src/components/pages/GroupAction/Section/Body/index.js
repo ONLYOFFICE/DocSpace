@@ -9,12 +9,13 @@ import {
   toastr,
   utils
 } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import { PeopleSelector, store as initStore } from "asc-web-common";
 import {
   createGroup,
   resetGroup,
   updateGroup
 } from "../../../../../store/group/actions";
+import { selectGroup } from "../../../../../store/people/actions";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
@@ -23,6 +24,8 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+
+const { getCurrentModule } = initStore.auth.selectors;
 
 const MainContainer = styled.div`
   display: flex;
@@ -117,14 +120,15 @@ class SectionBodyContent extends React.Component {
         group && group.manager
           ? {
               key: group.manager.id,
-              label: group.manager.displayName === "profile removed" ? "Select" : group.manager.displayName
+              label: group.manager.displayName === "profile removed" ? t('LblSelect') : group.manager.displayName
             }
           : {
               key: GUID_EMPTY,
               label: t("LblSelect"),
               default: true
             },
-      nameError: null
+      nameError: null,
+      updateGroup: false
     };
 
     return newState;
@@ -183,13 +187,14 @@ class SectionBodyContent extends React.Component {
 
   save = group => {
     const { createGroup, updateGroup } = this.props;
+    if (group.id) this.setState({ updateGroup: true });
     return group.id
       ? updateGroup(group.id, group.name, group.managerKey, group.members)
       : createGroup(group.name, group.managerKey, group.members);
   };
 
   onSave = () => {
-    const { group, t, groupCaption, history, settings } = this.props;
+    const { group, t, groupCaption, history, settings, selectGroup } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
     if (!groupName || !groupName.trim().length) {
@@ -206,7 +211,6 @@ class SectionBodyContent extends React.Component {
     };
 
     if (group && group.id) newGroup.id = group.id;
-
     this.save(newGroup)
       .then(group => {
         toastr.success(
@@ -214,7 +218,8 @@ class SectionBodyContent extends React.Component {
         );
       })
       .then(() => {
-        history.push(`${settings.homepage}/`);
+        if (this.state.updateGroup ) selectGroup(group.id);
+        else history.push(`${settings.homepage}/`);
       })
       .catch(error => {
         toastr.error(error);
@@ -457,6 +462,10 @@ const convertGroups = groups => {
 };
 
 function mapStateToProps(state) {
+  const currentModule = getCurrentModule(
+    state.auth.modules,
+    state.auth.settings.currentProductId
+  );
   return {
     settings: state.auth.settings,
     group: state.group.targetGroup,
@@ -465,11 +474,12 @@ function mapStateToProps(state) {
     groupHeadCaption: state.auth.settings.customNames.groupHeadCaption,
     groupsCaption: state.auth.settings.customNames.groupsCaption,
     groupCaption: state.auth.settings.customNames.groupCaption,
-    me: state.auth.user
+    me: state.auth.user,
+    currentModuleName: (currentModule && currentModule.title) || "",
   };
 }
 
 export default connect(
   mapStateToProps,
-  { resetGroup, createGroup, updateGroup }
+  { resetGroup, createGroup, updateGroup, selectGroup }
 )(withRouter(withTranslation()(SectionBodyContent)));

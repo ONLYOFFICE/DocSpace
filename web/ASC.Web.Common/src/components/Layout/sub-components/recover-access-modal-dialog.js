@@ -68,7 +68,6 @@ const RecoverAccessModalDialog = ({
           >
             {t("RecoverTextBody")}
           </Text>
-          ,
           <FieldContainer
             key="e-mail"
             isVertical={true}
@@ -91,7 +90,6 @@ const RecoverAccessModalDialog = ({
               onChange={onChangeEmail}
             />
           </FieldContainer>
-          ,
           <FieldContainer
             key="text-description"
             isVertical={true}

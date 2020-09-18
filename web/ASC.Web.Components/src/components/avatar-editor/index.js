@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import ModalDialog from "../modal-dialog";
 import Button from "../button";
-import IconButton from "../icon-button";
 import AvatarEditorBody from "./sub-components/avatar-editor-body";
 
 class AvatarEditor extends React.Component {
@@ -11,7 +10,7 @@ class AvatarEditor extends React.Component {
     this.avatarEditorBodyRef = React.createRef();
 
     this.state = {
-      isContainsFile: !!this.props.image,
+      existImage: !!this.props.image,
       visible: props.visible,
       x: 0,
       y: 0,
@@ -19,131 +18,142 @@ class AvatarEditor extends React.Component {
       height: 0,
       croppedImage: ""
     };
-
-    this.onClose = this.onClose.bind(this);
-    this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
-    this.onImageChange = this.onImageChange.bind(this);
-    this.onLoadFileError = this.onLoadFileError.bind(this);
-    this.onLoadFile = this.onLoadFile.bind(this);
-    this.onPositionChange = this.onPositionChange.bind(this);
-    this.onSizeChange = this.onSizeChange.bind(this);
-
-    this.onDeleteImage = this.onDeleteImage.bind(this);
   }
 
-  onImageChange(file) {
+  onImageChange = file => {
     this.setState({
       croppedImage: file
     });
     if (typeof this.props.onImageChange === "function")
       this.props.onImageChange(file);
-  }
-  onDeleteImage() {
+  };
+
+  onDeleteImage = () => {
     this.setState({
-      isContainsFile: false
+      existImage: false
     });
     if (typeof this.props.onDeleteImage === "function")
       this.props.onDeleteImage();
-  }
-  onSizeChange(data) {
+  };
+
+  onSizeChange = data => {
     this.setState(data);
-  }
-  onPositionChange(data) {
+  };
+
+  onPositionChange = data => {
     this.setState(data);
-  }
-  onLoadFileError(error) {
+  };
+
+  onLoadFileError = error => {
     if (typeof this.props.onLoadFileError === "function")
       this.props.onLoadFileError(error);
-  }
-  onLoadFile(file, callback) {
+  };
+
+  onLoadFile = (file, callback) => {
     if (typeof this.props.onLoadFile === "function")
       this.props.onLoadFile(file, callback);
-    if (!this.state.isContainsFile) this.setState({ isContainsFile: true });
-  }
-  onSaveButtonClick() {
+
+    if (!this.state.existImage) this.setState({ existImage: true });
+  };
+
+  onSaveButtonClick = () => {
     this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
-  }
+    //this.saveAvatar();
+  };
+
   saveAvatar = () => {
-    this.state.isContainsFile
-      ? this.props.onSave(
-        this.state.isContainsFile,
-        {
-          x: this.state.x,
-          y: this.state.y,
-          width: this.state.width,
-          height: this.state.height
-        },
-        this.state.croppedImage
-      )
-      : this.props.onSave(this.state.isContainsFile);
+    if (!this.state.existImage) {
+      this.props.onSave(this.state.existImage);
+      return;
+    }
+
+    this.props.onSave(
+      this.state.existImage,
+      {
+        x: this.state.x,
+        y: this.state.y,
+        width: this.state.width,
+        height: this.state.height
+      },
+      this.state.croppedImage
+    );
   };
-  onClickRotateLeft = e => {
-    this.avatarEditorBodyRef.current.rotateLeft(e);
-  };
-  onClose() {
+
+  onClose = () => {
     this.setState({ visible: false });
     this.props.onClose();
-  }
+  };
+
   componentDidUpdate(prevProps) {
     if (this.props.visible !== prevProps.visible) {
       this.setState({ visible: this.props.visible });
     }
     if (this.props.image !== prevProps.image) {
-      this.setState({ isContainsFile: !!this.props.image });
+      this.setState({ existImage: !!this.props.image });
     }
   }
 
   render() {
+    const {
+      displayType,
+      className,
+      id,
+      style,
+      headerLabel,
+      maxSize,
+      accept,
+      image,
+      selectNewPhotoLabel,
+      orDropFileHereLabel,
+      unknownTypeError,
+      maxSizeFileError,
+      unknownError,
+      saveButtonLabel,
+      saveButtonLoading
+    } = this.props;
+
     return (
       <ModalDialog
         visible={this.state.visible}
-        displayType={this.props.displayType}
-        scale={true}
+        displayType={displayType}
+        scale={false}
+        contentHeight="initial"
+        contentWidth="initial"
         onClose={this.onClose}
-        className={this.props.className}
-        id={this.props.id}
-        style={this.props.style}
+        className={className}
+        id={id}
+        style={style}
       >
-        <ModalDialog.Header>{this.props.headerLabel}</ModalDialog.Header>
+        <ModalDialog.Header>{headerLabel}</ModalDialog.Header>
         <ModalDialog.Body>
           <AvatarEditorBody
-            onImageChange={this.onImageChange}
+            ref={this.avatarEditorBodyRef}
             visible={this.state.visible}
+            onImageChange={this.onImageChange}
             onPositionChange={this.onPositionChange}
             onSizeChange={this.onSizeChange}
             onLoadFileError={this.onLoadFileError}
             onLoadFile={this.onLoadFile}
             deleteImage={this.onDeleteImage}
             saveAvatar={this.saveAvatar}
-            maxSize={this.props.maxSize * 1000000} // megabytes to bytes
-            accept={this.props.accept}
-            image={this.props.image}
-            chooseFileLabel={this.props.chooseFileLabel}
-            chooseMobileFileLabel={this.props.chooseMobileFileLabel}
-            unknownTypeError={this.props.unknownTypeError}
-            maxSizeFileError={this.props.maxSizeFileError}
-            unknownError={this.props.unknownError}
-            ref={this.avatarEditorBodyRef}
+            maxSize={maxSize * 1000000} // megabytes to bytes
+            accept={accept}
+            image={image}
+            selectNewPhotoLabel={selectNewPhotoLabel}
+            orDropFileHereLabel={orDropFileHereLabel}
+            unknownTypeError={unknownTypeError}
+            maxSizeFileError={maxSizeFileError}
+            unknownError={unknownError}
           />
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SaveBtn"
-            label={this.props.saveButtonLabel}
-            isLoading={this.props.saveButtonLoading}
+            label={saveButtonLabel}
+            isLoading={saveButtonLoading}
             primary={true}
-            size="medium"
+            size="big"
             onClick={this.onSaveButtonClick}
-          />
-          <IconButton
-            key="RotateBtn"
-            iconName="RotateIcon"
-            color="#A3A9AE"
-            size="25"
-            hoverColor="#657077"
-            isFill={true}
-            onClick={this.onClickRotateLeft}
-            style={{ display: "inline-block", marginLeft: "8px" }}
           />
         </ModalDialog.Footer>
       </ModalDialog>
@@ -154,8 +164,9 @@ class AvatarEditor extends React.Component {
 AvatarEditor.propTypes = {
   visible: PropTypes.bool,
   headerLabel: PropTypes.string,
-  chooseFileLabel: PropTypes.string,
-  chooseMobileFileLabel: PropTypes.string,
+  selectNewPhotoLabel: PropTypes.string,
+  orDropFileHereLabel: PropTypes.string,
+
   saveButtonLabel: PropTypes.string,
   saveButtonLoading: PropTypes.bool,
   maxSizeFileError: PropTypes.string,

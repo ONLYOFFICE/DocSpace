@@ -39,3 +39,9 @@ export function changeLanguage(i18n) {
     : Promise.resolve((...args) => i18n.t(...args)))
   : i18n.changeLanguage('en');
 }
+
+export function changeDocumentTitle(title) {
+  if (title !== document.title) {
+    document.title = title;
+  }
+}

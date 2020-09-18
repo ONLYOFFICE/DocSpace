@@ -19,7 +19,7 @@ const StyledGroupButtonsMenu = styled.div`
     width: ${props => props.containerWidth ? props.containerWidth + 'px' : '100%'};;
     white-space: nowrap;
     display: ${props => props.visible ? 'block' : 'none'};
-    z-index: 195;
+    z-index: 189;
 `;
 
 const CloseButton = styled.div`
