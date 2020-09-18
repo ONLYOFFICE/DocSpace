@@ -113,7 +113,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:support-feedback"] ?? string.Empty, null);
-                return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
+                return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
             }
         }
 

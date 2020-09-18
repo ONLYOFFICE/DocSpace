@@ -205,7 +205,8 @@ namespace ASC.Web.Core.Users
             if (!CheckPasswordRegex(passwordSettingsObj, password))
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
-        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+
+        public string GetPasswordRegex(PasswordSettings passwordSettings)
         {
             var pwdBuilder = new StringBuilder();
 
@@ -246,7 +247,14 @@ namespace ASC.Web.Core.Users
             pwdBuilder.Append(PasswordSettings.MaxLength);
             pwdBuilder.Append(@"}$");
 
-            return new Regex(pwdBuilder.ToString()).IsMatch(password);
+            return pwdBuilder.ToString();
+        }
+
+        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        {
+            var passwordRegex = GetPasswordRegex(passwordSettings);
+
+            return new Regex(passwordRegex).IsMatch(password);
         }
 
         public string SendUserPassword(string email)

@@ -25,12 +25,15 @@
 
 
 using System;
+using System.Reflection;
 using System.Web;
 
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Users
 {
@@ -55,10 +58,12 @@ namespace ASC.Web.Core.Users
 
     public class DisplayUserSettingsHelper
     {
-        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter)
+        private string RemovedProfileName;
+        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
         {
             UserManager = userManager;
             UserFormatter = userFormatter;
+            RemovedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
         }
 
         private UserManager UserManager { get; }
@@ -82,7 +87,18 @@ namespace ASC.Web.Core.Users
             }
             if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
             {
-                return "profile removed";
+                try
+                {
+                    var resourceType = Type.GetType("Resources.Resource, ASC.Web.Studio");
+                    var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
+                    var resourceValue = (string)resourceProperty.GetValue(null);
+
+                    return string.IsNullOrEmpty(resourceValue) ? RemovedProfileName : resourceValue;
+                }
+                catch (Exception)
+                {
+                    return RemovedProfileName;
+                }
             }
             var result = UserFormatter.GetUserName(userInfo, format);
             return withHtmlEncode ? HtmlEncode(result) : result;
