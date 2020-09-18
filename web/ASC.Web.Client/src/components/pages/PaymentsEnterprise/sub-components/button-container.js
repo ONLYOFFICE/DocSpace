@@ -10,7 +10,7 @@ const { tablet } = utils.device;
 const StyledButtonContainer = styled.div`
   background: #edf2f7;
   height: 108px;
-  margin-bottom: 17px;
+  margin-bottom: 18px;
   display: flex;
   .button-payments-enterprise {
     border-radius: 3px;
@@ -51,6 +51,7 @@ const StyledButtonContainer = styled.div`
   @media (max-width: 632px) {
     width: 343px;
     height: 168px;
+    margin-bottom: 16px;
     .button-buy {
       width: 279px;
     }

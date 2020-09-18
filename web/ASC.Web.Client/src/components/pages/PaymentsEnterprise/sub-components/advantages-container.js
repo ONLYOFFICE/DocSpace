@@ -44,7 +44,7 @@ const StyledBodyAdvantages = styled.div`
   .first-advantages {
     grid-area: first;
     z-index: 1;
-    /* padding: 3px; */
+    padding: 3px;
   }
   .first_icon {
     grid-area: firstI;
@@ -101,7 +101,7 @@ const StyledBodyAdvantages = styled.div`
       margin-bottom: 21px;
     }
     .first-advantages {
-      padding-left: 11px;
+      padding-left: 12px;
       margin-bottom: 6px;
       padding-top: 3px;
     }
@@ -109,24 +109,24 @@ const StyledBodyAdvantages = styled.div`
       padding-left: 5px;
     }
     .second-advantages {
-      padding-left: 11px;
-      margin-bottom: 5px;
+      padding-left: 12px;
+      margin-bottom: 6px;
       padding-top: 3px;
     }
     .third-advantages {
-      padding-left: 11px;
-      margin-bottom: 5px;
+      padding-left: 12px;
+      margin-bottom: 6px;
       padding-top: 3px;
     }
     .four-advantages {
-      padding-left: 11px;
+      padding-left: 12px;
       padding-top: 3px;
       margin-bottom: 6px;
     }
     .five-advantages {
       padding-left: 11px;
       padding-top: 3px;
-      margin-bottom: 32px;
+      margin-bottom: 33px;
     }
   }
 
@@ -145,13 +145,13 @@ const StyledBodyAdvantages = styled.div`
     /* grid-template-columns: 7.9% 92.1%; */
 
     /* grid-column-gap: 5px; */
-    grid-row-gap: 13px;
+    grid-row-gap: 10px;
     .header-advantages {
-      margin-bottom: 21px;
+      margin-bottom: 23px;
     }
     .first-advantages {
       padding-left: 5px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       /* padding-top: 0; */
     }
     .four-advantages {
@@ -159,12 +159,12 @@ const StyledBodyAdvantages = styled.div`
     }
     .second-advantages {
       padding-left: 5px;
-      margin-bottom: 2px;
+      margin-bottom: 5px;
       padding-top: 0px;
     }
     .third-advantages {
       padding-left: 5px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       padding-right: 0px;
     }
     .four-advantages {
@@ -174,7 +174,7 @@ const StyledBodyAdvantages = styled.div`
     .five-advantages {
       padding-left: 5px;
       padding-top: 0px;
-      margin-bottom: 29px;
+      margin-bottom: 28px;
     }
   }
 `;
@@ -183,7 +183,6 @@ const AdvantagesContainer = ({ t }) => {
   return (
     <StyledBodyAdvantages>
       <Text className="header-advantages">{t("SubscriptionGet")}</Text>
-
       <img
         className="first_icon"
         src="images/payments_enterprise_cubes.svg"
@@ -203,7 +202,6 @@ const AdvantagesContainer = ({ t }) => {
         alt="Icon"
       />
       <Text className="second-advantages  advantages">{t("PrivateRooom")}</Text>
-
       <img
         className="third_icon"
         src="images/payments_enterprise_smartphone.svg"
@@ -212,7 +210,6 @@ const AdvantagesContainer = ({ t }) => {
         alt="Icon"
       />
       <Text className="third-advantages  advantages">{t("WebEditors")}</Text>
-
       <img
         className="four_icon"
         src="images/payments_enterprise_update.svg"
@@ -223,7 +220,6 @@ const AdvantagesContainer = ({ t }) => {
       <Text className="four-advantages  advantages">
         {t("FunctionalityAndSecurity")}
       </Text>
-
       <img
         className="five_icon"
         src="images/payments_enterprise_help.svg"
@@ -234,7 +230,6 @@ const AdvantagesContainer = ({ t }) => {
       <Text className="five-advantages  advantages">
         {t("ProfessionalTechSupport")}
       </Text>
-
       <img
         className="payments-icon-enterprise main_icon"
         src="images/payments_enterprise.svg"

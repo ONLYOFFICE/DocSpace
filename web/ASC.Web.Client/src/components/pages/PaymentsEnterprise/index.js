@@ -59,6 +59,7 @@ class Body extends React.PureComponent {
       currentProductId,
       setCurrentProductId,
     } = this.props;
+
     currentProductId !== "payments" && setCurrentProductId("payments");
     getSettingsPayment();
   }

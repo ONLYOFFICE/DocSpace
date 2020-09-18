@@ -18,7 +18,7 @@ const StyledContactContainer = styled.div`
     width: 343px;
 
     .contact-emails {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .contact-emails_link {
       display: block;
