@@ -20,7 +20,6 @@ const StyledHeader = styled.div`
   }
   .payments-header-additional_support {
     margin-bottom: 40px;
-    font-weight: normal;
     font-size: 13px;
     line-height: 20px;
   }
@@ -28,7 +27,7 @@ const StyledHeader = styled.div`
   @media ${tablet} {
     width: 600px;
     .payments-header {
-      height: 64px;
+      margin-top: 39px;
       font-style: normal;
       font-weight: bold;
       font-size: 27px;
@@ -39,10 +38,8 @@ const StyledHeader = styled.div`
   @media (max-width: 632px) {
     width: 343px;
     .payments-header {
-      margin-top: 0px;
-      height: 96px;
+      margin-top: 1px;
     }
-
     .payments-header-additional_support {
       margin-bottom: 16px;
     }
@@ -72,7 +69,11 @@ class HeaderContainer extends React.Component {
       <StyledHeader>
         <Text className="payments-header">{t("Using")}</Text>
 
-        <Text className="payments-header-additional_support" color="#C96C27">
+        <Text
+          className="payments-header-additional_support"
+          color="#C96C27"
+          fontWeight="600"
+        >
           {t("SupportNotAvailable")}{" "}
           {moment(expiresDate).startOf("day").format("ddd, D MMMM, YYYY")}
           {". "}
