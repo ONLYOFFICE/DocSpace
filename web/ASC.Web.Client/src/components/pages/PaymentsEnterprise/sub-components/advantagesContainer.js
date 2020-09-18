@@ -188,7 +188,7 @@ const AdvantagesContainer = ({ t }) => {
         src="images/payments_enterprise_cubes.svg"
         width="24px"
         height="23px"
-        alt="Icon"
+        alt="Icon_cubes"
       />
       <Text className="first-advantages  advantages">
         {t("OnlyOfficeEditor")}
@@ -199,7 +199,7 @@ const AdvantagesContainer = ({ t }) => {
         src="images/payments_enterprise_lock.svg"
         width="24px"
         height="23px"
-        alt="Icon"
+        alt="Icon_lock"
       />
       <Text className="second-advantages  advantages">{t("PrivateRooom")}</Text>
       <img
@@ -207,7 +207,7 @@ const AdvantagesContainer = ({ t }) => {
         src="images/payments_enterprise_smartphone.svg"
         width="24px"
         height="23px"
-        alt="Icon"
+        alt="Icon_smartphone"
       />
       <Text className="third-advantages  advantages">{t("WebEditors")}</Text>
       <img
@@ -215,7 +215,7 @@ const AdvantagesContainer = ({ t }) => {
         src="images/payments_enterprise_update.svg"
         width="24px"
         height="23px"
-        alt="Icon"
+        alt="Icon_update"
       />
       <Text className="four-advantages  advantages">
         {t("FunctionalityAndSecurity")}
@@ -225,7 +225,7 @@ const AdvantagesContainer = ({ t }) => {
         src="images/payments_enterprise_help.svg"
         width="24px"
         height="23px"
-        alt="Icon"
+        alt="Icon_help"
       />
       <Text className="five-advantages  advantages">
         {t("ProfessionalTechSupport")}
@@ -235,7 +235,7 @@ const AdvantagesContainer = ({ t }) => {
         src="images/payments_enterprise.svg"
         width="222px"
         height="247px"
-        alt="Icon"
+        alt="Icon_main"
       />
     </StyledBodyAdvantages>
   );

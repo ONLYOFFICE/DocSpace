@@ -101,7 +101,6 @@ class Body extends React.PureComponent {
       <StyledBody>
         <HeaderContainer t={t} />
         <AdvantagesContainer t={t} />
-
         <ButtonContainer
           t={t}
           onClickBuy={this.onClickBuy}

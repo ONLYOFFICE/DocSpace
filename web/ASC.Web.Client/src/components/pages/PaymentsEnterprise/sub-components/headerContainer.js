@@ -67,7 +67,6 @@ class HeaderContainer extends React.Component {
     ) : !trialMode ? (
       <StyledHeader>
         <Text className="payments-header">{t("Using")}</Text>
-
         <Text
           className="payments-header-additional_support"
           color="#C96C27"
