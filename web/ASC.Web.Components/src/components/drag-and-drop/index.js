@@ -2,6 +2,7 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { tablet } from "../../utils/device";
 
 const StyledDragAndDrop = styled.div`
   /*-webkit-touch-callout: none;
@@ -11,6 +12,10 @@ const StyledDragAndDrop = styled.div`
   user-select: none;*/
   height: 100%;
   border: ${props => props.drag ? "1px dashed #bbb" : "1px solid transparent"};
+  
+  @media ${tablet} {
+    border: none;
+  }
   outline: none;
   background: ${props => props.dragging ? props.isDragAccept ? "#EFEFB2" : "#F8F7BF" : "none !important"};
 `;
