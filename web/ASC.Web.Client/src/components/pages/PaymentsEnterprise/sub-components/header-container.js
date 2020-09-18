@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text, utils } from "asc-web-components";
 import { WebStorageStateStore } from "oidc-client";
-
+import isEqual from "lodash/isEqual";
 const { tablet } = utils.device;
 
 const StyledHeader = styled.div`
@@ -50,27 +50,8 @@ const StyledHeader = styled.div`
 `;
 
 class HeaderContainer extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { expiresDate, trialMode } = props;
-
-    this.state = {
-      expiresDate: expiresDate,
-      trialMode: trialMode,
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    const { expiresDate, trialMode } = this.props;
-
-    if (expiresDate !== prevProps.expiresDate) {
-      this.setState({ expiresDate: expiresDate });
-    }
-  }
   render() {
-    const { t, culture, utcHoursOffset, trialMode } = this.props;
-    const { expiresDate } = this.state;
+    const { t, culture, utcHoursOffset, trialMode, expiresDate } = this.props;
 
     const moment = require("moment");
     require("moment/min/locales.min");
@@ -117,11 +98,13 @@ HeaderContainer.propTypes = {
   trialMode: PropTypes.bool,
 };
 function mapStateToProps({ auth, payments }) {
+  const { culture, utcHoursOffset } = auth.settings;
+  const { expiresDate, trialMode } = payments.currentLicense;
   return {
-    culture: auth.settings.culture,
-    utcHoursOffset: auth.settings.utcHoursOffset,
-    expiresDate: payments.currentLicense.expiresDate,
-    trialMode: payments.currentLicense.trialMode,
+    culture,
+    utcHoursOffset,
+    expiresDate,
+    trialMode,
   };
 }
 export default connect(mapStateToProps)(withRouter(HeaderContainer));
