@@ -4,8 +4,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text, utils } from "asc-web-components";
-import { WebStorageStateStore } from "oidc-client";
-import isEqual from "lodash/isEqual";
+
 const { tablet } = utils.device;
 
 const StyledHeader = styled.div`

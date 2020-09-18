@@ -24,7 +24,7 @@ const paymentsReducer = (state = initialState, action) => {
         salesEmail: action.settings.salesEmail,
         helpUrl: action.settings.feedbackAndSupportUrl,
         buyUrl: action.settings.buyUrl,
-        standaloneMode: action.settings.standaloneMode,
+        standaloneMode: action.settings.standalone,
         currentLicense: Object.assign({}, state.currentLicense, {
           expiresDate: new Date(action.settings.currentLicense.date),
           trialMode: action.settings.currentLicense.trial,
