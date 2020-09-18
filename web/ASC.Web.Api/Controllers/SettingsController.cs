@@ -51,6 +51,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Backup.Contracts;
+using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
@@ -155,12 +156,10 @@ namespace ASC.Api.Settings
         private ServiceClient ServiceClient { get; }
         private EncryptionServiceClient EncryptionServiceClient { get; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
-        private ICacheNotify<BackupProgress> CacheBackupProgress { get; }
+        private BackupServiceNotifier BackupServiceNotifier { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
-        private ICacheNotify<ProgressEncryption> CacheProgressEncryption { get; }
-        public ILog Log { get; set; }
-        private Dictionary<int, BackupProgress> BackupProgresses = new Dictionary<int, BackupProgress>();
-        private ProgressEncryption ProgressEncryption = new ProgressEncryption();
+        private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
+        private ILog Log { get; set; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -216,9 +215,9 @@ namespace ASC.Api.Settings
             ServiceClient serviceClient,
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
-            ICacheNotify<BackupProgress> cacheBackupProgress,
+            BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-            ICacheNotify<ProgressEncryption> cacheProgressEncryption)
+            EncryptionServiceNotifier encryptionServiceNotifier)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -273,9 +272,9 @@ namespace ASC.Api.Settings
             ServiceClient = serviceClient;
             EncryptionServiceClient = encryptionServiceClient;
             EncryptionSettingsHelper = encryptionSettingsHelper;
-            CacheBackupProgress = cacheBackupProgress;
+            BackupServiceNotifier = backupServiceNotifier;
             CacheDeleteSchedule = cacheDeleteSchedule;
-            CacheProgressEncryption = cacheProgressEncryption;
+            EncryptionServiceNotifier = encryptionServiceNotifier;
         }
 
         [Read("", Check = false)]
@@ -1664,26 +1663,8 @@ namespace ASC.Api.Settings
             }
         }
 
-        private void SaveBackapProgress(BackupProgress backupProgress)
-        {
-            if (BackupProgresses.ContainsKey(backupProgress.TenantId))
-            {
-                BackupProgresses[backupProgress.TenantId] = backupProgress;
-            }
-            else
-            {
-                BackupProgresses.Add(backupProgress.TenantId, backupProgress);
-            }
-        }
-
-        private void SaveProgressEncrypt(ProgressEncryption progressEncryption)
-        {
-            ProgressEncryption = progressEncryption;
-        }
         private void StartEncryption(bool notifyUsers)
         {
-            CacheBackupProgress.Subscribe((n) => SaveBackapProgress(n), CacheNotifyAction.Insert);
-            CacheProgressEncryption.Subscribe((n) => SaveProgressEncrypt(n), CacheNotifyAction.Insert);
             if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
             {
                 throw new NotSupportedException();
@@ -1721,8 +1702,7 @@ namespace ASC.Api.Settings
 
             foreach (var tenant in tenants)
             {
-                BackupProgress progress;
-                BackupProgresses.TryGetValue(tenant.TenantId, out progress);
+                var progress = BackupServiceNotifier.GetBackupProgress(tenant.TenantId);
                 if (progress != null && progress.IsCompleted == false)
                 {
                     throw new Exception();
@@ -1774,15 +1754,13 @@ namespace ASC.Api.Settings
 
             EncryptionSettingsHelper.Save(settings);
 
-            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
+            var encryptionSettingsProto = new EncryptionSettingsProto
             {
                 NotifyUsers = settings.NotifyUsers,
                 Password = settings.Password,
                 Status = settings.Status,
                 ServerRootPath = serverRootPath
             };
-            CacheBackupProgress.Unsubscribe(CacheNotifyAction.Insert);
-            CacheProgressEncryption.Unsubscribe(CacheNotifyAction.Insert);
             EncryptionServiceClient.Start(encryptionSettingsProto);
         }
 
@@ -1829,7 +1807,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("encryption/progress")]
-        public double GetStorageEncryptionProgress()
+        public double? GetStorageEncryptionProgress()
         {
             if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
             {
@@ -1846,7 +1824,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
             }
 
-            return ProgressEncryption.Proggress;
+            return EncryptionServiceNotifier.GetEncryptionProgress(Tenant.TenantId)?.Progress;
         }
 
         [Update("storage")]

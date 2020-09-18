@@ -25,19 +25,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+
+using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.DiscStorage;
-using System.IO;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using ASC.Common;
-using Microsoft.Extensions.Configuration;
-using ASC.Common.Caching;
-using System.Threading.Tasks;
 
 namespace ASC.Data.Storage.Encryption
 {
@@ -309,7 +311,7 @@ namespace ASC.Data.Storage.Encryption
 
                     if (!HasErrors)
                     {
-                       if (EncryptionSettings.NotifyUsers)
+                        if (EncryptionSettings.NotifyUsers)
                         {
                             if (IsEncryption)
                             {
@@ -339,7 +341,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public class EncryptionOperationScope 
+    public class EncryptionOperationScope
     {
         private ILog Log { get; set; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; set; }
@@ -372,7 +374,7 @@ namespace ASC.Data.Storage.Encryption
             Configuration = configuration;
         }
 
-        public void Deconstruct( out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out ICacheNotify<ProgressEncryption> progressEncryption, out IConfiguration configuration)
+        public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out ICacheNotify<ProgressEncryption> progressEncryption, out IConfiguration configuration)
         {
             log = Log;
             encryptionSettingsHelper = EncryptionSettingsHelper;
@@ -383,7 +385,7 @@ namespace ASC.Data.Storage.Encryption
             storageFactory = StorageFactory;
             progressEncryption = ProgressEncryption;
             configuration = Configuration;
-    }
+        }
     }
 
     public static class EncryptionOperationExtension
