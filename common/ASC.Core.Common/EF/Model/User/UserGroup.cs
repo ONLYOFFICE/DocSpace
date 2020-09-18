@@ -37,6 +37,12 @@ namespace ASC.Core.Common.EF
                 .Add(PgSqlAddUserGroup, Provider.Postrge);
             return modelBuilder;
         }
+        public static void UserGroupData(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserGroup>().HasData(
+                new UserGroup {Tenant = 1, UserId = Guid.Parse("66faa6e4 - f133 - 11ea - b126 - 00ffeec8b4ef"), GroupId = Guid.Parse("cd84e66b-b803-40fc-99f9-b2969a54a1de"), RefType = 0 }
+                );
+        }
         public static void MySqlAddUserGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserGroup>(entity =>

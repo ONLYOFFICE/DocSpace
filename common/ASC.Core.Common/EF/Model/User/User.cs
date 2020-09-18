@@ -80,6 +80,7 @@ namespace ASC.Core.Common.EF
 
     public static class DbUserExtension
     {
+
         public static ModelBuilderWrapper AddUser(this ModelBuilderWrapper modelBuilder)
         {
             modelBuilder
@@ -88,6 +89,12 @@ namespace ASC.Core.Common.EF
             return modelBuilder;
         }
 
+        public static void UserData(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = Guid.Parse("66faa6e4 - f133 - 11ea - b126 - 00ffeec8b4ef") , FirstName = "Administrator", LastName = "", UserName = "administrator", Tenant = 1, Email = "", WorkFromDate = DateTime.Parse("utc_timestamp()"), LastModified = DateTime.Parse("utc_timestamp()") }
+                );
+        }
         private static void MySqlAddUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.MySqlAddUserGroup();

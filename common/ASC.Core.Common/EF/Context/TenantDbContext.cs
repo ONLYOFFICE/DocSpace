@@ -37,7 +37,10 @@ namespace ASC.Core.Common.EF.Context
                 .AddDbTenantPartner()
                 .AddDbTenantVersion()
                 .Finish();
-      
+
+            modelBuilder.DbTenantForbidenData();
+            modelBuilder.TenantData();
+
             OnModelCreatingPartial(modelBuilder);
         }
 

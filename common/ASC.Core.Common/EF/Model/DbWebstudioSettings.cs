@@ -28,6 +28,12 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddWebstudioSettings, Provider.Postrge);
             return modelBuilder;
         }
+        public static void WebstudioSettingsData(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbWebstudioSettings>().HasData(
+                new DbWebstudioSettings { TenantId = 1, Id = Guid.Parse("9a925891-1f92-4ed7-b277-d6f649739f06"), UserId = Guid.Parse("00000000-0000-0000-0000-000000000000"), Data =  "{'Completed':false}" }
+                );
+        }
         public static void MySqlAddWebstudioSettings(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioSettings>(entity =>

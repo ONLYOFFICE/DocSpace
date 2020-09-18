@@ -24,6 +24,8 @@ namespace ASC.Core.Common.EF
                   .AddDbTariff()
                   .Finish();
 
+            modelBuilder.AclData();
+
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -19,8 +19,8 @@ namespace ASC.Core.Common.EF.Context
                 .AddWebstudioUserVisit()
                 .AddDbWebstudioIndex()
                 .Finish();
-           
-            
+
+            modelBuilder.WebstudioSettingsData();
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

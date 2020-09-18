@@ -1,7 +1,5 @@
 ﻿using ASC.Common;
 using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.EF.Model.Mail;
-using ASC.Core.Common.EF.Model.Resource;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
@@ -15,7 +13,9 @@ namespace ASC.Core.Common.EF.Context
                 .From(modelBuilder, Provider)
                 .AddFilesConverts()
                 .Finish();
-            
+
+            modelBuilder.FilesConvertsData();
+
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

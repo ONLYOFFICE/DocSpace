@@ -28,7 +28,10 @@ namespace ASC.Core.Common.EF.Context
                 .AddMailboxProvider()
                 .AddServerServer()
                 .Finish();
-            
+
+            modelBuilder.MailboxServerData();
+            modelBuilder.MailboxProviderData();
+
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

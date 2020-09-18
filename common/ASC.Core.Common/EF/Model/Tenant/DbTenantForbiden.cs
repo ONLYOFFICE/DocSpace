@@ -19,6 +19,13 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddDbTenantForbiden, Provider.Postrge);
             return modelBuilder;
         }
+        public static void DbTenantForbidenData(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbTenantForbiden>().HasData(
+                new DbTenantForbiden { Address = "controlpanel" },
+                new DbTenantForbiden { Address = "localhost" }
+                );
+        }
         public static void MySqlAddDbTenantForbiden(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantForbiden>(entity =>
