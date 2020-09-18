@@ -37,7 +37,7 @@ const toModuleWrapper = (item, iconName) => {
 const getCustomModules = isAdmin => {
   if (!isAdmin) {
     return [];
-  }
+  } // Temporarily hiding the settings module
 
   /*  const separator = getSeparator("nav-modules-separator");
     const settingsModuleWrapper = toModuleWrapper(
@@ -48,6 +48,10 @@ const getCustomModules = isAdmin => {
       },
       "SettingsIcon"
     );
+  
+
+  return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/
+
   const paymentsModuleWrapper = toModuleWrapper(
     {
       id: "payments",
@@ -56,9 +60,7 @@ const getCustomModules = isAdmin => {
     },
     "PaymentsIcon"
   );
-
-  return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/   // Temporarily hiding the settings module
-  return [];
+  return [paymentsModuleWrapper];
 };
 
 const getAvailableModules = (modules, currentUser) => {
