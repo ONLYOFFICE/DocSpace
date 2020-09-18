@@ -168,7 +168,7 @@ export function getPaymentSettings() {
     url: `/settings/payment.json`
   });
 }
-export function AcceptLicense() {
+export function acceptLicense() {
   return request({
     method: "post",
     url: `/settings/license/accept.json`

@@ -42,7 +42,7 @@ export function setPaymentsLicense(confirmKey, data) {
     });
   };
 }
-export function AcceptPaymentsLicense() {
+export function acceptPaymentsLicense() {
   return (dispatch) => {
     return api.settings.AcceptLicense().then((res) => console.log(res));
   };

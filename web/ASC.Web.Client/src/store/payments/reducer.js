@@ -12,7 +12,7 @@ const initialState = {
   standaloneMode: true,
   licenseUpload: null,
   currentLicense: {
-    expiresDate: new Date("2021-10-14T01:59:59"),
+    expiresDate: new Date(),
     trialMode: false,
   },
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PageLayout, utils, store } from "asc-web-common";
 import { Loader, utils as Utils, toastr } from "asc-web-components";
 import styled from "styled-components";
@@ -6,15 +6,15 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import HeaderContainer from "./sub-components/header-container";
-import AdvantagesContainer from "./sub-components/advantages-container";
-import ButtonContainer from "./sub-components/button-container";
-import ContactContainer from "./sub-components/contact-container";
+import HeaderContainer from "./sub-components/headerContainer";
+import AdvantagesContainer from "./sub-components/advantagesContainer";
+import ButtonContainer from "./sub-components/buttonContainer";
+import ContactContainer from "./sub-components/contactContainer";
 import {
   setPaymentsLicense,
   getSettingsPayment,
   resetUploadedLicense,
-  AcceptPaymentsLicense,
+  acceptPaymentsLicense,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -45,12 +45,7 @@ class Body extends React.PureComponent {
     super(props);
     const { t } = this.props;
 
-    this.state = {
-      errorMessage: null,
-      isErrorLicense: false,
-    };
-
-    document.title = `${t("Payments")} – ${t("OrganizationName")}`;
+    document.title = `${t("Payments")} – ${t("OrganizationName")}`; //убрать орг нейм
   }
 
   componentDidMount() {
@@ -64,25 +59,20 @@ class Body extends React.PureComponent {
     getSettingsPayment();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const {
-      currentProductId,
       licenseUpload,
       resetUploadedLicense,
-      AcceptPaymentsLicense,
+      acceptPaymentsLicense,
     } = this.props;
 
-    // if (currentProductId !== prevProps.currentProductId) {
-    //   this.fetchData(currentProductId);
-    // }
-
     if (licenseUpload) {
-      AcceptPaymentsLicense();
+      acceptPaymentsLicense();
       resetUploadedLicense();
     }
   }
 
-  onButtonClickUpload = (file) => {
+  onClickUpload = (file) => {
     const { setPaymentsLicense, t } = this.props;
 
     let fd = new FormData();
@@ -94,13 +84,11 @@ class Body extends React.PureComponent {
       })
       .catch((error) => {
         toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);
-        this.setState({
-          errorMessage: error,
-          isErrorLicense: true,
-        });
+        console.log(error);
       });
   };
-  onButtonClickBuy = (e) => {
+
+  onClickBuy = (e) => {
     window.open(e.target.value, "_blank");
   };
 
@@ -116,8 +104,8 @@ class Body extends React.PureComponent {
 
         <ButtonContainer
           t={t}
-          onButtonClickBuy={this.onButtonClickBuy}
-          onButtonClickUpload={this.onButtonClickUpload}
+          onClickBuy={this.onClickBuy}
+          onClickUpload={this.onClickUpload}
         />
         <ContactContainer t={t} />
       </StyledBody>
@@ -126,7 +114,10 @@ class Body extends React.PureComponent {
 }
 const PaymentsWrapper = withTranslation()(Body);
 const PaymentsEnterprise = (props) => {
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+
   return (
     <PageLayout>
       <PageLayout.SectionBody>
@@ -151,5 +142,5 @@ export default connect(mapStateToProps, {
   setCurrentProductId,
   getSettingsPayment,
   resetUploadedLicense,
-  AcceptPaymentsLicense,
+  acceptPaymentsLicense,
 })(withRouter(PaymentsEnterprise));
