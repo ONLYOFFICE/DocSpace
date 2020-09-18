@@ -17,7 +17,7 @@ const i18n = createI18N({
   localesPath: "pages/Settings"
 });
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 
 const MainContainer = styled.div`
   padding-bottom: 16px;
@@ -35,7 +35,7 @@ class PureAccessRights extends Component {
 
     const { t, organizationName } = props;
 
-    document.title = `${t("ManagementCategorySecurity")} – ${organizationName}`;
+    changeDocumentTitle(`${t("ManagementCategorySecurity")} – ${organizationName}`);
 
     const url = props.history.location.pathname;
     const newUrl = url.split("/");

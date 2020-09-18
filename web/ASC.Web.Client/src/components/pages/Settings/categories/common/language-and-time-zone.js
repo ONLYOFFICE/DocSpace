@@ -20,7 +20,7 @@ import {
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { default as clientStore } from "../../../../../store/store";
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 const {
   getPortalCultures,
   getModules,
@@ -96,7 +96,7 @@ class LanguageAndTimeZone extends React.Component {
     languageFromSessionStorage = getFromSessionStorage("language");
     timezoneFromSessionStorage = getFromSessionStorage("timezone");
 
-    document.title = `${t("Customization")} – ${organizationName}`;
+    changeDocumentTitle(`${t("Customization")} – ${organizationName}`);
 
     this.state = {
       isLoadedData: false,

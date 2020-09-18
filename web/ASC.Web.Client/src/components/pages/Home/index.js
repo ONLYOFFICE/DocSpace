@@ -13,7 +13,7 @@ const i18n = createI18N({
   localesPath: "pages/Home"
 });
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -80,7 +80,7 @@ const Body = ({ modules, match, isLoaded, homepage, organizationName }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
-  document.title = `${organizationName}`;
+  changeDocumentTitle(`${organizationName}`);
   window.open(homepage, "_self");
 
   useEffect(() => error && toastr.error(error), [error]);
