@@ -22,6 +22,7 @@ const StyledSection = styled.section`
   min-width: 344px;
 
   .layout-progress-bar {
+    bottom: 0;
     position: sticky;
     margin-left: -24px;
     
