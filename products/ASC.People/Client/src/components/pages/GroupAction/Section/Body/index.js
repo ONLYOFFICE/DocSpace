@@ -283,6 +283,7 @@ class SectionBodyContent extends React.Component {
       buttonLabel,
       nameError
     } = this.state;
+    
     return (
       <MainContainer>
         <FieldContainer
@@ -372,6 +373,7 @@ class SectionBodyContent extends React.Component {
             groupsCaption={groupsCaption}
             defaultOption={me}
             defaultOptionLabel={t("MeLabel")}
+            selectedOptions={groupMembers}
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
