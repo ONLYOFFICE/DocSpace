@@ -195,7 +195,6 @@ class PeopleSelector extends React.Component {
     const {
       options,
       groups,
-      selectedOptions,
       selectedGroups,
       hasNextPage,
       isNextPageLoading
@@ -216,7 +215,8 @@ class PeopleSelector extends React.Component {
       groupsCaption,
       displayType,
       withoutAside,
-      embeddedComponent
+      embeddedComponent,
+      selectedOptions
     } = this.props;
 
     return (
