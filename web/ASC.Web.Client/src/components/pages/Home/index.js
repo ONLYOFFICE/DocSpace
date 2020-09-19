@@ -76,12 +76,11 @@ Tiles.propTypes = {
   isPrimary: PropTypes.bool.isRequired
 };
 
-const Body = ({ modules, match, isLoaded, homepage, organizationName }) => {
+const Body = ({ modules, match, isLoaded, organizationName }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
   changeDocumentTitle(`${organizationName}`);
-  window.open(homepage, "_self");
 
   useEffect(() => error && toastr.error(error), [error]);
 
@@ -120,11 +119,10 @@ Home.propTypes = {
 
 function mapStateToProps(state) {
   const { modules, isLoaded, settings } = state.auth;
-  const { homepage, organizationName } = settings;
+  const { organizationName } = settings;
   return {
     modules,
     isLoaded,
-    homepage,
     organizationName
   };
 }

@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
 import PureStudioLayout from "./PureStudioLayout";
-import { changeLanguage } from '../../utils';
+import { changeLanguage } from "../../utils";
 import isEqual from "lodash/isEqual";
 
 const getSeparator = id => {
@@ -24,7 +24,7 @@ const toModuleWrapper = (item, iconName) => {
     iconUrl: item.iconUrl,
     notifications: 0,
     url: item.link,
-    onClick: (e) => {
+    onClick: e => {
       if (e) {
         window.open(item.link, "_self");
         e.preventDefault();
@@ -37,7 +37,7 @@ const toModuleWrapper = (item, iconName) => {
 const getCustomModules = isAdmin => {
   if (!isAdmin) {
     return [];
-  }
+  } // Temporarily hiding the settings module
 
   /*  const separator = getSeparator("nav-modules-separator");
     const settingsModuleWrapper = toModuleWrapper(
@@ -49,8 +49,7 @@ const getCustomModules = isAdmin => {
       "SettingsIcon"
     );
   
-    return [separator, settingsModuleWrapper];*/   // Temporarily hiding the settings module
-  return [];
+    return [separator, settingsModuleWrapper];*/ return [];
 };
 
 const getAvailableModules = (modules, currentUser) => {
@@ -92,13 +91,17 @@ StudioLayout.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { user, isAuthenticated, isLoaded, modules, settings } = state.auth;
+  const { defaultPage, currentProductId } = settings;
+
   return {
-    hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
-    availableModules: getAvailableModules(state.auth.modules, state.auth.user),
-    currentUser: state.auth.user,
-    currentModuleId: state.auth.settings.currentProductId,
-    settings: state.auth.settings,
-    modules: state.auth.modules
+    hasChanges: isAuthenticated && isLoaded,
+    availableModules: getAvailableModules(modules, user),
+    currentUser: user,
+    currentModuleId: currentProductId,
+    settings: settings,
+    modules: modules,
+    defaultPage: defaultPage || "/"
   };
 }
 

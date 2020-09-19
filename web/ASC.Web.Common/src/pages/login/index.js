@@ -22,8 +22,8 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
-import history from "../../history";
-import { changeDocumentTitle } from "../../utils"
+//import history from "../../history";
+import { changeDocumentTitle, redirectToDefaultPage } from "../../utils";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -220,9 +220,11 @@ class Form extends Component {
     this.setState({ isLoading: true });
     login(userName, pass)
       .then(() => {
-        setIsLoaded(true);
-        history.push("/");
-        location.replace(homepage);
+        //debugger;
+
+        if (!redirectToDefaultPage()) {
+          setIsLoaded(true);
+        }
       })
       .catch(error => {
         let err = error.data.error.message;
@@ -414,7 +416,7 @@ class Form extends Component {
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  //history: PropTypes.object.isRequired,
   setIsLoaded: PropTypes.func.isRequired,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
@@ -467,19 +469,12 @@ LoginForm.propTypes = {
 
 function mapStateToProps(state) {
   const { isLoaded, user, settings } = state.auth;
-  const {
-    greetingSettings,
-    enabledJoin,
-    organizationName,
-    homepage,
-    culture
-  } = settings;
+  const { greetingSettings, enabledJoin, organizationName, culture } = settings;
 
   return {
     isLoaded,
     enabledJoin,
     organizationName,
-    homepage,
     language: user.cultureName || culture,
     greetingTitle: greetingSettings
   };
