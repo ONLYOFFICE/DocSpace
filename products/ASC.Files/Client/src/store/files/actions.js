@@ -45,6 +45,7 @@ export const SET_IS_LOADING = "SET_IS_LOADING";
 export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
 export const SET_FILES_SETTINGS = "SET_FILES_SETTINGS";
 export const SET_FILES_SETTING = "SET_FILES_SETTING";
+export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 
 export function setFile(file) {
   return {
@@ -225,6 +226,13 @@ export function setFilesSetting(setting, val) {
   return {
     type: SET_FILES_SETTING,
     setting, val
+  }
+}
+
+export function setIsErrorSettings(isError) {
+  return {
+    type: SET_IS_ERROR_SETTINGS,
+    isError
   }
 }
 

@@ -9,7 +9,9 @@ import { createI18N } from "../../../helpers/i18n";
 
 import {
   setSelectedNode,
-  setExpandSettingsTree
+  setExpandSettingsTree,
+  setIsErrorSettings,
+  getFilesSettings
 } from "../../../store/files/actions";
 
 const i18n = createI18N({
@@ -50,6 +52,8 @@ const PureTreeSettings = ({
   isLoading,
   setSelectedNode,
   setExpandSettingsTree,
+  setIsErrorSettings,
+  getFilesSettings,
   t
 }) => {
   useEffect(() => {
@@ -57,6 +61,13 @@ const PureTreeSettings = ({
     setSelectedNode([setting]);
     if (setting) setExpandSettingsTree(["settings"]);
   }, [match]);
+
+  useEffect(() => {
+    getFilesSettings()
+      .catch(e => {
+        setIsErrorSettings(true);
+      });
+  }, []);
 
   const switcherIcon = obj => {
     if (obj.isLeaf) {
@@ -177,6 +188,8 @@ export default connect(
   mapStateToProps,
   {
     setSelectedNode,
-    setExpandSettingsTree
+    setExpandSettingsTree,
+    setIsErrorSettings,
+    getFilesSettings
   }
 )(withRouter(TreeSettings));
