@@ -63,7 +63,13 @@ namespace ASC.Core.Common.EF.Model
         public static void TenantData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenant>().HasData(
-                new DbTenant { Alias = "localhost", Name = "Web Office", CreationDateTime = DateTime.Parse("UTC_TIMESTAMP()"), OwnerId = Guid.Parse("66faa6e4 - f133 - 11ea - b126 - 00ffeec8b4ef") }
+                new DbTenant
+                {
+                    Alias = "localhost",
+                    Name = "Web Office",
+                    CreationDateTime = DateTime.UtcNow,
+                    OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
+                }
                 );
         }
         public static void MySqlAddDbTenant(this ModelBuilder modelBuilder)
@@ -76,7 +82,7 @@ namespace ASC.Core.Common.EF.Model
 
             modelBuilder.Entity<DbTenant>(entity =>
             {
-                entity.ToTable("tenants_tenants");
+                entity.ToTable("tenants_tenants", "onlyoffice");
 
                 entity.HasIndex(e => e.Alias)
                     .HasName("alias")

@@ -1,8 +1,10 @@
-﻿using ASC.Core.Common.EF.Model;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -35,7 +37,13 @@ namespace ASC.Core.Common.EF
         public static void UserSecurityData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserSecurity>().HasData(
-                new UserSecurity { Tenant = 1, UserId = Guid.Parse("66faa6e4 - f133 - 11ea - b126 - 00ffeec8b4ef"), PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=", PwdHashSha512 = "l/DFJ5yg4oh1F6Qp7uDhBw==" }
+                new UserSecurity
+                {
+                    Tenant = 1,
+                    UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                    PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
+                    PwdHashSha512 = "l/DFJ5yg4oh1F6Qp7uDhBw=="
+                }
                 );
         }
         public static void MySqlAddUserSecurity(this ModelBuilder modelBuilder)
