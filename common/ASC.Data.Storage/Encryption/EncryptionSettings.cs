@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -25,34 +25,36 @@
 
 
 using System;
-using System.Runtime.Serialization;
 using System.Security.Cryptography;
 
+using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Core;
 using ASC.Security.Cryptography;
 
 namespace ASC.Data.Storage.Encryption
 {
-    [Serializable]
-    [DataContract]
     public class EncryptionSettings
     {
-        private const string key = "EncryptionSettings";
 
-        private string password;
+        internal string password;
 
-        [DataMember]
         public string Password
         {
             get { return password; }
             set { password = (value ?? string.Empty).Replace('#', '_'); }
         }
 
-        [DataMember]
         public EncryprtionStatus Status { get; set; }
 
-        [DataMember]
         public bool NotifyUsers { get; set; }
+
+        public EncryptionSettings(EncryptionSettingsProto encryptionSettingsProto)
+        {
+            Password = encryptionSettingsProto.Password;
+            Status = encryptionSettingsProto.Status;
+            NotifyUsers = encryptionSettingsProto.NotifyUsers;
+        }
 
         public EncryptionSettings()
         {
@@ -60,18 +62,48 @@ namespace ASC.Data.Storage.Encryption
             Status = EncryprtionStatus.Decrypted;
             NotifyUsers = true;
         }
+    }
 
+    public class EncryptionSettingsHelper
+    {
+        private const string key = "EncryptionSettings";
 
-        public string Serialize()
+        private CoreConfiguration CoreConfiguration { get; }
+        private AscCacheNotify AscCacheNotify { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+
+        public EncryptionSettingsHelper(CoreConfiguration coreConfiguration, AscCacheNotify ascCacheNotify, InstanceCrypto instanceCrypto)
+        {
+            CoreConfiguration = coreConfiguration;
+            AscCacheNotify = ascCacheNotify;
+            InstanceCrypto = instanceCrypto;
+        }
+
+        public void Save(EncryptionSettings encryptionSettings)
+        {
+            var settings = Serialize(encryptionSettings);
+            CoreConfiguration.SaveSetting(key, settings);
+
+            AscCacheNotify.ClearCache();
+        }
+
+        public EncryptionSettings Load()
+        {
+            var settings = CoreConfiguration.GetSetting(key);
+
+            return Deserialize(settings);
+        }
+
+        public string Serialize(EncryptionSettings encryptionSettings)
         {
             return string.Join("#",
-                string.IsNullOrEmpty(password) ? string.Empty : InstanceCrypto.Encrypt(password),
-                (int)Status,
-                NotifyUsers
+                string.IsNullOrEmpty(encryptionSettings.password) ? string.Empty : InstanceCrypto.Encrypt(encryptionSettings.password),
+                (int)encryptionSettings.Status,
+                encryptionSettings.NotifyUsers
             );
         }
 
-        public static EncryptionSettings Deserialize(string value)
+        public EncryptionSettings Deserialize(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -93,7 +125,7 @@ namespace ASC.Data.Storage.Encryption
         }
 
         // source System.Web.Security.Membership.GeneratePassword
-        public static string GeneratePassword(int length, int numberOfNonAlphanumericCharacters)
+        public string GeneratePassword(int length, int numberOfNonAlphanumericCharacters)
         {
             var punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
@@ -158,21 +190,16 @@ namespace ASC.Data.Storage.Encryption
 
             return new string(array2);
         }
+    }
 
-        public static EncryptionSettings Load()
+    public static class EncryptionSettingsHelperExtension
+    {
+        public static DIHelper AddEncryptionSettingsHelperService(this DIHelper services)
         {
-            var settings = CoreContext.Configuration.GetSetting(key);
-
-            return Deserialize(settings);
-        }
-
-        public void Save()
-        {
-            var settings = Serialize();
-
-            CoreContext.Configuration.SaveSetting(key, settings);
-
-            AscCache.ClearCache();
+            services.TryAddScoped<EncryptionSettingsHelper>();
+            services.TryAddSingleton<AscCacheNotify>();
+            return services
+                .AddCoreConfigurationService();
         }
     }
 }

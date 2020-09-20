@@ -78,7 +78,7 @@
         "appendTenantId": false,
         "public": true,
         "disableMigrate": true,
-        "disableEncryption": true
+		"disableEncryption": true
       },
       {
         "name": "crm",
@@ -261,7 +261,7 @@
         "appendTenantId": false,
         "public": true,
         "disableMigrate": true,
-		"disableEncryption": true
+        "disableEncryption": true
       }
     ]
   }

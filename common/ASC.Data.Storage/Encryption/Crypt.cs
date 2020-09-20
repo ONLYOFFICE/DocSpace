@@ -1,6 +1,6 @@
 ﻿/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -28,28 +28,41 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
+using Microsoft.Extensions.Configuration;
+
 namespace ASC.Data.Storage.Encryption
 {
     public class Crypt : ICrypt
     {
-        private readonly string storage;
-        private readonly EncryptionSettings settings;
-        private readonly string tempDir;
+        private string Storage { get; set; }
+        private EncryptionSettings Settings { get; set; }
+        private string TempDir { get; set; }
 
-        public Crypt(string storageName, EncryptionSettings encryptionSettings)
+        private IConfiguration Configuration { get; set; }
+        private EncryptionFactory EncryptionFactory { get; set; }
+
+        public void Init(string storageName, EncryptionSettings encryptionSettings)
         {
-            storage = storageName;
-            settings = encryptionSettings;
-            tempDir = ConfigurationManagerExtension.AppSettings["storage.encryption.tempdir"] ?? Path.GetTempPath();
+            Storage = storageName;
+            Settings = encryptionSettings;
+            TempDir = Configuration["storage:encryption:tempdir"] ?? Path.GetTempPath();
+        }
+
+        public Crypt(IConfiguration configuration, EncryptionFactory encryptionFactory)
+        {
+            Configuration = configuration;
+            EncryptionFactory = encryptionFactory;
         }
 
         public byte Version { get { return 1; } }
 
         public void EncryptFile(string filePath)
         {
+            if (string.IsNullOrEmpty(Settings.Password)) return;
+
             var metadata = EncryptionFactory.GetMetadata();
 
-            metadata.Initialize(settings.Password);
+            metadata.Initialize(Settings.Password);
 
             using (var fileStream = File.OpenRead(filePath))
             {
@@ -59,44 +72,42 @@ namespace ASC.Data.Storage.Encryption
                 }
             }
 
-            EncryptFile(filePath, settings.Password);
+            EncryptFile(filePath, Settings.Password);
         }
 
         public void DecryptFile(string filePath)
         {
-            if (settings.Status == EncryprtionStatus.Decrypted)
+            if (Settings.Status == EncryprtionStatus.Decrypted)
             {
                 return;
             }
 
-            DecryptFile(filePath, settings.Password);
+            DecryptFile(filePath, Settings.Password);
         }
 
         public Stream GetReadStream(string filePath)
         {
-            if (settings.Status == EncryprtionStatus.Decrypted)
+            if (Settings.Status == EncryprtionStatus.Decrypted)
             {
                 return File.OpenRead(filePath);
             }
 
-            return GetReadStream(filePath, settings.Password);
+            return GetReadStream(filePath, Settings.Password);
         }
 
         public long GetFileSize(string filePath)
         {
-            if (settings.Status == EncryprtionStatus.Decrypted)
+            if (Settings.Status == EncryprtionStatus.Decrypted)
             {
                 return new FileInfo(filePath).Length;
             }
 
-            return GetFileSize(filePath, settings.Password);
+            return GetFileSize(filePath, Settings.Password);
         }
 
 
         private void EncryptFile(string filePath, string password)
         {
-            if (string.IsNullOrEmpty(password)) return;
-
             var fileInfo = new FileInfo(filePath);
 
             if (fileInfo.IsReadOnly)
@@ -292,14 +303,14 @@ namespace ASC.Data.Storage.Encryption
 
         private string GetUniqFileName(string filePath, string ext)
         {
-            var dir = string.IsNullOrEmpty(tempDir) ? Path.GetDirectoryName(filePath) : tempDir;
+            var dir = string.IsNullOrEmpty(TempDir) ? Path.GetDirectoryName(filePath) : TempDir;
             var name = Path.GetFileNameWithoutExtension(filePath);
-            var result = Path.Combine(dir, string.Format("{0}_{1}{2}", storage, name, ext));
+            var result = Path.Combine(dir, string.Format("{0}_{1}{2}", Storage, name, ext));
             var index = 1;
 
             while (File.Exists(result))
             {
-                result = Path.Combine(dir, string.Format("{0}_{1}({2}){3}", storage, name, index++, ext));
+                result = Path.Combine(dir, string.Format("{0}_{1}({2}){3}", Storage, name, index++, ext));
             }
 
             return result;

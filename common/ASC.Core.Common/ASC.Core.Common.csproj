@@ -31,6 +31,7 @@
     <None Remove="protos\AzRecordCache.proto" />
     <None Remove="protos\ConsumerCacheItem.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
+    <None Remove="protos\NotifyInvoke.proto" />
     <None Remove="protos\NotifyMessage.proto" />
     <None Remove="protos\QuotaCacheItem.proto" />
     <None Remove="protos\SettingsCacheItem.proto" />
@@ -58,6 +59,7 @@
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
   <ItemGroup>
+    <Protobuf Include="protos\NotifyInvoke.proto" />
     <Protobuf Include="protos\NotifyMessage.proto" />
     <Protobuf Include="protos\SettingsCacheItem.proto" />
     <Protobuf Include="protos\ConsumerCacheItem.proto" />

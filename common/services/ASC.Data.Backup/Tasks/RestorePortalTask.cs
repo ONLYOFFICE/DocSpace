@@ -394,7 +394,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (services.TryAddScoped<RestorePortalTask>())
             {
-                services.TryAddScoped<AscCacheNotify>();
+                services.TryAddSingleton<AscCacheNotify>();
                 return services
                     .AddCoreConfigurationService()
                     .AddStorageFactoryService()

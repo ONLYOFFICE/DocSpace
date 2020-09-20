@@ -22,46 +22,53 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-
-
-using System;
-
+using ASC.Common.Caching;
 using ASC.Common;
-
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptionFactory
+    public class EncryptionServiceListener
     {
-        private IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<EncryptionSettingsProto> NotifySettings { get; }
+        private ICacheNotify<EncryptionStop> NotifyStop { get; }
+        private EncryptionWorker EncryptionWorker { get; }
 
-        public EncryptionFactory(IServiceProvider serviceProvider)
+        public EncryptionServiceListener( ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop, EncryptionWorker encryptionWorker)
         {
-            ServiceProvider = serviceProvider;
+            NotifySettings = notifySettings;
+            NotifyStop = notifyStop;
+            EncryptionWorker = encryptionWorker;
         }
 
-        public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
+        public void Start()
         {
-            var crypt = ServiceProvider.GetService<Crypt>();
-            crypt.Init(storageName, encryptionSettings);
-            return crypt;
+            NotifySettings.Subscribe((n) => StartEncryption(n), CacheNotifyAction.Insert);
+            NotifyStop.Subscribe((n) => StopEncryption(), CacheNotifyAction.Insert);
         }
 
-        public IMetadata GetMetadata()
+        public void Stop()
         {
-            return ServiceProvider.GetService<Metadata>();
+            NotifySettings.Unsubscribe(CacheNotifyAction.Insert);
+            NotifySettings.Unsubscribe(CacheNotifyAction.Insert);
+        }
+
+        public void StartEncryption(EncryptionSettingsProto encryptionSettings)
+        {
+            EncryptionWorker.Start(encryptionSettings);
+        }
+
+        public void StopEncryption()
+        {
+            EncryptionWorker.Stop();
         }
     }
 
-    public static class EncryptionFactoryExtension
+    public static class EncryptionServiceListenerExtension
     {
-        public static DIHelper AddEncryptionFactoryService(this DIHelper services)
+        public static DIHelper AddEncryptionServiceListener(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionFactory>();
-            services.TryAddTransient<Crypt>();
-            services.TryAddTransient<Metadata>();
-            return services;
+            services.TryAddSingleton<EncryptionServiceListener>();
+            return services.AddEncryptionWorkerService();
         }
     }
-}
+}   

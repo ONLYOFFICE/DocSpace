@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  *
  * (c) Copyright Ascensio System Limited 2010-2020
  *
@@ -15,53 +15,46 @@
  * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 Â§ 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
  * relevant author attributions when distributing the software. If the display of the logo in its graphic 
  * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
  * in every copy of the program you distribute. 
- * Pursuant to Section 7 Â§ 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
-
-using System;
-
+using ASC.Api.Core;
 using ASC.Common;
 
+using Autofac.Extensions.DependencyInjection;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using ASC.Common.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptionFactory
+    public class Startup : BaseStartup
     {
-        private IServiceProvider ServiceProvider { get; }
+        public override string[] LogParams { get => new string[] { "ASC.Data.Storage.Encryption" }; }
 
-        public EncryptionFactory(IServiceProvider serviceProvider)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
-            ServiceProvider = serviceProvider;
+
         }
 
-        public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
+        public override void ConfigureServices(IServiceCollection services)
         {
-            var crypt = ServiceProvider.GetService<Crypt>();
-            crypt.Init(storageName, encryptionSettings);
-            return crypt;
-        }
+            var diHelper = new DIHelper(services);
 
-        public IMetadata GetMetadata()
-        {
-            return ServiceProvider.GetService<Metadata>();
-        }
-    }
+            diHelper.AddEncryptionServiceLauncher();
 
-    public static class EncryptionFactoryExtension
-    {
-        public static DIHelper AddEncryptionFactoryService(this DIHelper services)
-        {
-            services.TryAddSingleton<EncryptionFactory>();
-            services.TryAddTransient<Crypt>();
-            services.TryAddTransient<Metadata>();
-            return services;
+            services.AddHostedService<EncryptionServiceLauncher>();
+
+            base.ConfigureServices(services);
+
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

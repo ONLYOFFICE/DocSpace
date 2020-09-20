@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -43,6 +43,9 @@ namespace ASC.Data.Storage.DiscStorage
     public class DiscDataStore : BaseStorage
     {
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
+        private ICrypt Crypt { get; set; }
+        private EncryptionSettingsHelper EncryptionSettingsHelper { get; set; }
+        private EncryptionFactory EncryptionFactory { get; set; }
 
         public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
@@ -63,24 +66,24 @@ namespace ASC.Data.Storage.DiscStorage
                     ToDictionary(x => x.Name,
                                  y => y.Expires);
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-
-            var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : EncryptionSettings.Load();
-
+            var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : EncryptionSettingsHelper.Load();
             Crypt = EncryptionFactory.GetCrypt(moduleConfig.Name, settings);
 
             return this;
         }
 
         public DiscDataStore(
-            ICrypt crypt,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            EncryptionSettingsHelper encryptionSettingsHelper,
+            EncryptionFactory encryptionFactory)
             : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
-            Crypt = crypt;
+            EncryptionSettingsHelper = encryptionSettingsHelper;
+            EncryptionFactory = encryptionFactory;
         }
 
         public string GetPhysicalPath(string domain, string path)
@@ -235,7 +238,7 @@ namespace ASC.Data.Storage.DiscStorage
                     throw new FileNotFoundException("file not found " + target);
                 }
 
-                var size = new FileInfo(target).Length;
+                var size = Crypt.GetFileSize(target);
                 QuotaUsedAdd(domain, size);
             }
 
@@ -257,8 +260,6 @@ namespace ASC.Data.Storage.DiscStorage
         {
             get { return true; }
         }
-
-        private ICrypt Crypt { get; set; }
 
         #endregion
 
@@ -598,7 +599,7 @@ namespace ASC.Data.Storage.DiscStorage
 
                 File.Copy(target, newtarget, true);
 
-                var flength = Crypt.GetFileSize(target); ;
+                var flength = Crypt.GetFileSize(target);
                 QuotaUsedAdd(newdomain, flength);
             }
             else
@@ -728,5 +729,4 @@ namespace ASC.Data.Storage.DiscStorage
             }
         }
     }
-}
 }

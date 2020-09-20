@@ -54,6 +54,7 @@ namespace ASC.Web.Studio.Utility
         private LicenseReader LicenseReader { get; }
         private SetupInfo SetupInfo { get; }
         private SettingsManager SettingsManager { get; }
+        private TenantControlPanelSettings TenantControlPanelSettings { get; }
 
         public TenantExtra(
             UserManager userManager,

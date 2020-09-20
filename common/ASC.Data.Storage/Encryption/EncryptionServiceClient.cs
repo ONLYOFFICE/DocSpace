@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,25 +24,42 @@
 */
 
 
-using ASC.Common.Module;
+using ASC.Common;
+using ASC.Common.Caching;
 
 namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptionServiceClient : BaseWcfClient<IEncryptionService>, IEncryptionService
+    public class EncryptionServiceClient :  IEncryptionService
     {
-        public void Start(EncryptionSettings encryptionSettings, string serverRootPath)
+
+        private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
+        private ICacheNotify<EncryptionStop> NotifyStop { get; }
+
+        public EncryptionServiceClient(
+            ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
         {
-            Channel.Start(encryptionSettings, serverRootPath);
+            NotifySetting = notifySetting;
+            NotifyStop = notifyStop;
         }
 
-        public double GetProgress()
+        public void Start(EncryptionSettingsProto encryptionSettingsProto)
         {
-            return Channel.GetProgress();
+            NotifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
         }
 
         public void Stop()
         {
-            Channel.Stop();
+            NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
+        }
+
+    }
+
+    public static class EncryptionServiceClientExtension
+    {
+        public static DIHelper AddEncryptionServiceClient(this DIHelper services)
+        {
+            services.TryAddScoped<EncryptionServiceClient>();
+            return services;
         }
     }
 }
