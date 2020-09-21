@@ -2188,6 +2188,7 @@ asap@~2.0.6:
   dependencies:
     axios "^0.19.1"
     history "4.10.1"
+    react-content-loader "^5.1.1"
     react-player "^1.15.3"
     react-resize-detector "^5.0.7"
     react-svg "^11.0.9"
@@ -9412,6 +9413,11 @@ react-autosize-textarea@^7.0.0:
     autosize "^4.0.2"
     line-height "^0.3.1"
     prop-types "^15.5.6"
+
+react-content-loader@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-5.1.1.tgz#0e0ac1d582c5535f4006dcec4c7d3378df427d37"
+  integrity sha512-PZ9J8B3i/w8bs32xZfGjJDPEOfo8CYBpwOVwklAR1FZ/ymMkZHbTK2ccuaHP9KrlixkBNpNZw5vsim97lsOCMA==
 
 react-custom-scrollbars@^4.2.1:
   version "4.2.1"

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import { RequestLoader, toastr } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -35,15 +35,17 @@ import {
   loopTreeFolders,
   checkFolderType
 } from "../../../store/files/selectors";
-import store from "../../../store/store";
+
 import { ConvertDialog } from "../../dialogs";
 import { startUpload, onConvert, setDialogVisible } from "./FilesUploader";
 import { createI18N } from "../../../helpers/i18n";
+import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home"
 });
 const { changeLanguage } = utils;
+const { FilesFilter } = api;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -66,6 +68,84 @@ class PureHome extends React.Component {
       uploaded: true,
       uploadToFolder: null
     };
+  }
+
+  componentDidMount() {
+    const { fetchFiles, homepage } = this.props;
+
+    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
+    const match = window.location.pathname.match(reg);
+    let filterObj = null;
+
+    if (match && match.length > 0) {
+      filterObj = getFilterByLocation(window.location);
+
+      if (!filterObj) {
+        filterObj = FilesFilter.getDefault();
+        const folderId = filterObj.folder;
+        fetchFiles(folderId, filterObj);
+
+        return;
+      }
+    }
+
+    if (!filterObj) return;
+
+    let dataObj = filterObj;
+
+    if (filterObj && filterObj.authorType) {
+      const authorType = filterObj.authorType;
+      const indexOfUnderscore = authorType.indexOf("_");
+      const type = authorType.slice(0, indexOfUnderscore);
+      const itemId = authorType.slice(indexOfUnderscore + 1);
+
+      if (itemId) {
+        dataObj = {
+          type,
+          itemId,
+          filter: filterObj
+        };
+      } else {
+        filterObj.authorType = null;
+        dataObj = filterObj;
+      }
+    }
+
+    if (!dataObj) return;
+
+    const { filter, itemId, type } = dataObj;
+    const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
+    const requests = [Promise.resolve(newFilter)];
+
+    if (type === "group") {
+      requests.push(api.groups.getGroup(itemId));
+    } else if (type === "user") {
+      requests.push(api.people.getUserById(itemId));
+    }
+
+    Promise.all(requests)
+      .catch(err => {
+        Promise.resolve(FilesFilter.getDefault());
+        console.warn("Filter restored by default", err);
+      })
+      .then(data => {
+        const filter = data[0];
+        const result = data[1];
+        if (result) {
+          const type = result.displayName ? "user" : "group";
+          const selectedItem = {
+            key: result.id,
+            label: type === "user" ? result.displayName : result.name,
+            type
+          };
+          filter.selectedItem = selectedItem;
+        }
+
+        if (filter) {
+          const folderId = filter.folder;
+          fetchFiles(folderId, filter);
+        }
+      });
   }
 
   renderGroupButtonMenu = () => {
@@ -155,7 +235,8 @@ class PureHome extends React.Component {
       progressData,
       setNewTreeFilesBadge,
       setProgressBarData,
-      treeFolders
+      treeFolders,
+      fetchFiles
     } = this.props;
 
     getProgress()
@@ -186,7 +267,7 @@ class PureHome extends React.Component {
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
               if (!isCopy || destFolderId === currentFolderId) {
-                fetchFiles(currentFolderId, filter, store.dispatch)
+                fetchFiles(currentFolderId, filter)
                   .then(data => {
                     if (!isRecycleBinFolder) {
                       newTreeFolders = treeFolders;
@@ -206,31 +287,29 @@ class PureHome extends React.Component {
                   })
                   .catch(err => {
                     toastr.error(err);
-                    clearProgressData(store.dispatch);
+                    clearProgressData();
                   })
-                  .finally(() =>
-                    setTimeout(() => clearProgressData(store.dispatch), 5000)
-                  );
+                  .finally(() => setTimeout(() => clearProgressData(), 5000));
               } else {
                 setProgressBarData({
                   label: progressData.label,
                   percent: 100,
                   visible: true
                 });
-                setTimeout(() => clearProgressData(store.dispatch), 5000);
+                setTimeout(() => clearProgressData(), 5000);
                 setNewTreeFilesBadge(true);
                 setTreeFolders(newTreeFolders);
               }
             })
             .catch(err => {
               toastr.error(err);
-              clearProgressData(store.dispatch);
+              clearProgressData();
             });
         }
       })
       .catch(err => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
@@ -380,9 +459,7 @@ class PureHome extends React.Component {
           </PageLayout.ArticleMainButton>
 
           <PageLayout.ArticleBody>
-            <ArticleBodyContent
-              onTreeDrop={this.onDrop}
-            />
+            <ArticleBodyContent onTreeDrop={this.onDrop} />
           </PageLayout.ArticleBody>
           <PageLayout.SectionHeader>
             <SectionHeaderContent
@@ -439,6 +516,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { homepage } = state.auth.settings;
   const {
     convertDialogVisible,
     fileAction,
@@ -470,13 +548,13 @@ function mapStateToProps(state) {
     selection,
     treeFolders,
     viewAs,
-    isLoading
+    isLoading,
+    homepage
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
+const mapDispatchToProps = dispatch => {
+  return {
     deselectFile,
     getFolder,
     getProgress,
@@ -487,6 +565,13 @@ export default connect(
     setProgressBarData,
     setSelected,
     setTreeFolders,
-    startUpload
-  }
+    startUpload,
+    fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
+    clearProgressData: () => clearProgressData(dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
 )(withRouter(Home));

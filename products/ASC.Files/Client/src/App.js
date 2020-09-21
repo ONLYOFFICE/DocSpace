@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import { Router, Switch, Redirect } from "react-router-dom";
@@ -6,6 +6,7 @@ import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
+import VersionHistory from "./components/pages/VersionHistory";
 import {
   fetchMyFolder,
   fetchTreeFolders,
@@ -22,12 +23,11 @@ import {
   Login,
   Error404,
   Error520,
-  StudioLayout,
   Offline,
-  api
+  NavMenu,
+  Main
+  //PageLayout,
 } from "asc-web-common";
-
-import { getFilterByLocation } from "./helpers/converters";
 
 const {
   setIsLoaded,
@@ -40,17 +40,23 @@ const {
   getPortalCultures
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
-const { FilesFilter } = api;
 
-const VersionHistory = React.lazy(() =>
-  import("./components/pages/VersionHistory")
-);
+// const withStudioLayout = Component => props => (
+//   <StudioLayout>
+//     <Component {...props} />
+//   </StudioLayout>
+// );
 
-const withStudioLayout = Component => props => (
-  <StudioLayout>
-    <Component {...props} />
-  </StudioLayout>
-);
+// const LoaderPage = props => {
+//   console.log("LoaderPage render", props);
+//   return (
+//     <PageLayout>
+//       <PageLayout.SectionBody>
+//         <Loader className="pageLoader" type="rombs" size="40px" />
+//       </PageLayout.SectionBody>
+//     </PageLayout>
+//   );
+// };
 
 class App extends React.Component {
   removeLoader = () => {
@@ -58,10 +64,10 @@ class App extends React.Component {
     if (ele) {
       // fade out
       ele.classList.add("available");
-      setTimeout(() => {
-        // remove from DOM
-        ele.outerHTML = "";
-      }, 2000);
+      // setTimeout(() => {
+      //   // remove from DOM
+      //   ele.outerHTML = "";
+      // }, 2000);
     }
   };
 
@@ -74,7 +80,7 @@ class App extends React.Component {
       getPortalCultures,
       fetchMyFolder,
       fetchTreeFolders,
-      fetchFiles,
+      //fetchFiles,
       finalize,
       setIsLoaded
     } = this.props;
@@ -96,92 +102,10 @@ class App extends React.Component {
       fetchTreeFolders()
     ];
 
-    axios
-      .all(requests)
-      .then(() => {
-        const reg = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
-        const match = window.location.pathname.match(reg);
-        let filterObj = null;
-
-        if (match && match.length > 0) {
-          filterObj = getFilterByLocation(window.location);
-
-          if (!filterObj) {
-            filterObj = FilesFilter.getDefault();
-          }
-        }
-
-        return Promise.resolve(filterObj);
-      })
-      .then(filter => {
-        let dataObj = filter;
-
-        if (filter && filter.authorType) {
-          const filterObj = filter;
-          const authorType = filterObj.authorType;
-          const indexOfUnderscore = authorType.indexOf("_");
-          const type = authorType.slice(0, indexOfUnderscore);
-          const itemId = authorType.slice(indexOfUnderscore + 1);
-
-          if (itemId) {
-            dataObj = {
-              type,
-              itemId,
-              filter: filterObj
-            };
-          } else {
-            filterObj.authorType = null;
-            dataObj = filterObj;
-          }
-        }
-        return Promise.resolve(dataObj);
-      })
-      .then(data => {
-        if (!data) return Promise.resolve();
-        if (data instanceof FilesFilter) return Promise.resolve(data);
-
-        const { filter, itemId, type } = data;
-        const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
-
-        switch (type) {
-          case "group":
-            return Promise.all([api.groups.getGroup(itemId), newFilter]);
-          case "user":
-            return Promise.all([api.people.getUserById(itemId), newFilter]);
-          default:
-            return Promise.resolve(newFilter);
-        }
-      })
-      .catch(err => {
-        Promise.resolve(FilesFilter.getDefault());
-        console.warn("Filter restored by default", err);
-      })
-      .then(data => {
-        if (!data) return Promise.resolve();
-        if (data instanceof FilesFilter) return Promise.resolve(data);
-
-        const result = data[0];
-        const filter = data[1];
-        const type = result.displayName ? "user" : "group";
-        const selectedItem = {
-          key: result.id,
-          label: type === "user" ? result.displayName : result.name,
-          type
-        };
-        filter.selectedItem = selectedItem;
-
-        return Promise.resolve(filter);
-      })
-      .then(filter => {
-        if (!filter) return Promise.resolve();
-
-        const folderId = filter.folder;
-        return fetchFiles(folderId, filter);
-      })
-      .then(() => {
-        this.removeLoader();
-        finalize();
-      });
+    axios.all(requests).then(() => {
+      this.removeLoader();
+      finalize();
+    });
   }
 
   render() {
@@ -189,31 +113,24 @@ class App extends React.Component {
 
     return navigator.onLine ? (
       <Router history={history}>
-        <Suspense
-          fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
-        >
+        <NavMenu />
+        <Main>
           <Switch>
-            <Redirect exact from="/" to={`${homepage}`} />
-            <PrivateRoute
-              exact
-              path={[homepage, `${homepage}/filter`]}
-              component={withStudioLayout(Home)}
-            />
-            <PrivateRoute
-              exact
-              path={`${homepage}/settings/:setting`}
-              component={withStudioLayout(Settings)}
-            />
-            <PrivateRoute
-              exact
-              path={`${homepage}/doceditor`}
-              component={DocEditor}
-            />
-            <PrivateRoute
-              exact
-              path={`${homepage}/:fileId/history`}
-              component={withStudioLayout(VersionHistory)}
-            />
+            <PrivateRoute exact path="/">
+              <Redirect exact from="/" to={`${homepage}`} />
+            </PrivateRoute>
+            <PrivateRoute exact path={`${homepage}/settings/:setting`}>
+              <Settings />
+            </PrivateRoute>
+            <PrivateRoute exact path={`${homepage}/doceditor`}>
+              <DocEditor />
+            </PrivateRoute>
+            <PrivateRoute exact path={`${homepage}/:fileId/history`}>
+              <VersionHistory />
+            </PrivateRoute>
+            <PrivateRoute path={homepage}>
+              <Home />
+            </PrivateRoute>
             <PublicRoute
               exact
               path={[
@@ -221,16 +138,17 @@ class App extends React.Component {
                 "/login/error=:error",
                 "/login/confirmed-email=:confirmedEmail"
               ]}
-              component={withStudioLayout(Login)}
-            />
-            <PrivateRoute
-              exact
-              path={`/error=:error`}
-              component={withStudioLayout(Error520)}
-            />
-            <PrivateRoute component={withStudioLayout(Error404)} />
+            >
+              <Login />
+            </PublicRoute>
+            <PrivateRoute exact path={`/error=:error`}>
+              <Error520 />
+            </PrivateRoute>
+            <PrivateRoute>
+              <Error404 />
+            </PrivateRoute>
           </Switch>
-        </Suspense>
+        </Main>
       </Router>
     ) : (
       <Offline />
@@ -253,7 +171,6 @@ const mapDispatchToProps = dispatch => {
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchMyFolder: () => fetchMyFolder(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
-    fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
     finalize: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));

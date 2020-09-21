@@ -8,6 +8,7 @@ import {
   Badge
 } from "asc-web-components";
 import styled from "styled-components";
+import isEqual from "lodash/isEqual";
 import { api, constants } from "asc-web-common";
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -35,8 +36,24 @@ class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
 
-    const treeData = props.data;
-    this.state = { treeData, expandedKeys: props.expandedKeys };
+    const { data, expandedKeys } = props;
+    this.state = { treeData: data, expandedKeys };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { expandedKeys, data, needUpdate } = this.props;
+    if (
+      needUpdate &&
+      expandedKeys &&
+      this.state.expandedKeys.length !== expandedKeys.length
+    ) {
+      this.setState({ expandedKeys });
+    }
+
+    if (!isEqual(prevProps.data, data)) {
+      //!utils.array.isArrayEqual(prevProps.data, data)) {
+      this.setState({ treeData: data });
+    }
   }
 
   onBadgeClick = e => {
@@ -297,21 +314,6 @@ class TreeFolders extends React.Component {
 
     this.setState({ expandedKeys: data });
   };
-
-  componentDidUpdate(prevProps) {
-    const { expandedKeys, data, needUpdate } = this.props;
-    if (
-      needUpdate &&
-      expandedKeys &&
-      this.state.expandedKeys.length !== expandedKeys.length
-    ) {
-      this.setState({ expandedKeys });
-    }
-
-    if (!utils.array.isArrayEqual(prevProps.data, data)) {
-      this.setState({ treeData: data });
-    }
-  }
 
   onMouseEnter = data => {
     if (this.props.dragging) {
