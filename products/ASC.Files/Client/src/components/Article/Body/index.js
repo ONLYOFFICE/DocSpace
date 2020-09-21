@@ -1,9 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
+import ContentLoader from "react-content-loader";
 import { store as initStore, utils as commonUtils } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
+import isEmpty from "lodash/isEmpty";
 import {
   setFilter,
   fetchFiles,
@@ -18,6 +20,19 @@ import store from "../../../store/store";
 import { NewFilesPanel } from "../../panels";
 const { getCurrentModule } = initStore.auth.selectors;
 const { changeDocumentTitle } = commonUtils;
+
+const TreeFolderLoader = () => (
+  <ContentLoader
+    speed={2}
+    width={264}
+    height={188}
+    viewBox="0 0 264 188"
+    backgroundColor="#f3f3f3"
+    foregroundColor="#ecebeb"
+  >
+    <rect x="0" y="0" rx="0" ry="0" width="216" height="189" />
+  </ContentLoader>
+);
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -157,28 +172,34 @@ class ArticleBodyContent extends React.Component {
             //setNewItems={this.setNewItems}
           />
         )}
-        <TreeFolders
-          selectedKeys={selectedTreeNode}
-          onSelect={this.onSelect}
-          data={data}
-          filter={filter}
-          setFilter={setFilter}
-          setTreeFolders={setTreeFolders}
-          expandedKeys={expandedKeys}
-          dragging={dragging}
-          setDragging={setDragging}
-          setDragItem={setDragItem}
-          isMy={isMy}
-          myId={myId}
-          isCommon={isCommon}
-          commonId={commonId}
-          currentId={currentId}
-          isAdmin={isAdmin}
-          isShare={isShare}
-          onBadgeClick={this.onShowNewFilesPanel}
-          onTreeDrop={onTreeDrop}
-        />
-        <TreeSettings />
+        {isEmpty(data) ? (
+          <TreeFolderLoader />
+        ) : (
+          <>
+            <TreeFolders
+              selectedKeys={selectedTreeNode}
+              onSelect={this.onSelect}
+              data={data}
+              filter={filter}
+              setFilter={setFilter}
+              setTreeFolders={setTreeFolders}
+              expandedKeys={expandedKeys}
+              dragging={dragging}
+              setDragging={setDragging}
+              setDragItem={setDragItem}
+              isMy={isMy}
+              myId={myId}
+              isCommon={isCommon}
+              commonId={commonId}
+              currentId={currentId}
+              isAdmin={isAdmin}
+              isShare={isShare}
+              onBadgeClick={this.onShowNewFilesPanel}
+              onTreeDrop={onTreeDrop}
+            />
+            <TreeSettings />{" "}
+          </>
+        )}
       </>
     );
   }
