@@ -7,6 +7,7 @@ import PageLayout from "../PageLayout";
 import { isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
+import isEmpty from "lodash/isEmpty";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -25,17 +26,19 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const renderComponent = useCallback(
     props => {
-      if (!isLoaded) {
+      const userLoaded = !isEmpty(currentUser);
+
+      if (!userLoaded) {
         return (
           <PageLayout>
             <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size='40px' />
+              <Loader className="pageLoader" type="rombs" size="40px" />
             </PageLayout.SectionBody>
           </PageLayout>
         );
       }
 
-      if (!token || (isLoaded && !isAuthenticated)) {        
+      if (!token || (isLoaded && !isAuthenticated)) {
         return (
           <Redirect
             to={{
@@ -51,7 +54,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         isAdmin ||
         (allowForMe && userId && isMe(currentUser, userId))
       )
-        return <Component {...props} />;
+      return <Component {...props} />;
 
       if (restricted) {
         return <Error401 />;
@@ -73,7 +76,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     ]
   );
 
-   console.log("PrivateRoute render", rest);
+  console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
 };
 
