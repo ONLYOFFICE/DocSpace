@@ -16,8 +16,8 @@
     },
 
     "GetInfoItems": {
-      "Id": "9",
-      "TitleExpected": "Folder"
+      "Id": "1",
+      "TitleExpected": "FolderOne"
     },
 
     "RenameItems": {
