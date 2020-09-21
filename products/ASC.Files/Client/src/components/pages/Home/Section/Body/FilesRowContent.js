@@ -113,7 +113,10 @@ class FilesRowContent extends React.PureComponent {
       ? createFolder(item.parentId, itemTitle)
         .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
+        .then((file) => {
+          window.open(file.webUrl, "_blank")
+          this.completeAction(e)
+        }).finally(() => setIsLoading(false))
   }
 
   componentDidUpdate(prevProps) {
