@@ -135,7 +135,6 @@ const ArticleMainButtonContent = props => {
 };
 
 ArticleMainButtonContent.propTypes = {
-  isAdmin: PropTypes.bool,
   history: PropTypes.object.isRequired
 };
 
