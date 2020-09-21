@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
+import { Error403, Error520 } from "asc-web-common";
 
 import {
   setUpdateIfExist,
@@ -29,7 +30,7 @@ const StyledSettings = styled.div`
 `;
 
 const SectionBodyContent = ({
-  setting,
+  setting, isLoading,
   selectedTreeNode, setSelectedNode,
   storeForceSave, setStoreForceSave ,
   enableThirdParty, setEnableThirdParty,
@@ -37,7 +38,7 @@ const SectionBodyContent = ({
   confirmDelete, setConfirmDelete,
   updateIfExist, setUpdateIfExist,
   forceSave, setForceSave,
-  isAdmin,
+  isAdmin, isErrorSettings,
   t
 }) => {
 
@@ -157,11 +158,19 @@ const SectionBodyContent = ({
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
-  return content;
+
+  return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
+    (!isAdmin && setting === "admin" ) ? (
+      <Error403 />
+    ) : isErrorSettings ? (
+      <Error520 />
+    ) : (
+      content
+      );
 }
 
 function mapStateToProps(state) {
-  const { settingsTree, selectedTreeNode } = state.files;
+  const { settingsTree, selectedTreeNode, isLoading } = state.files;
   const { isAdmin } = state.auth.user;
   const {
     storeOriginalFiles,
@@ -169,7 +178,8 @@ function mapStateToProps(state) {
     updateIfExist,
     forceSave,
     storeForceSave,
-    enableThirdParty
+    enableThirdParty,
+    isErrorSettings
   } = settingsTree;
 
   return {
@@ -180,7 +190,8 @@ function mapStateToProps(state) {
     updateIfExist,
     forceSave,
     storeForceSave,
-    enableThirdParty
+    enableThirdParty,
+    isLoading
   };
 }
 
