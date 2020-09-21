@@ -32,13 +32,15 @@ import {
 } from "../../../store/wizard/actions";
 
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "Wizard",
   localesPath: "pages/Wizard"
 });
 
 const { tablet } = utils.device;
-const { changeLanguage, changeDocumentTitle } = commonUtils;
+const { changeLanguage } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -100,7 +102,7 @@ class Body extends Component {
       checkingMessages: []
     };
 
-    changeDocumentTitle(t("wizardTitle"));
+    setDocumentTitle(t("wizardTitle"));
   }
 
   async componentDidMount() {
