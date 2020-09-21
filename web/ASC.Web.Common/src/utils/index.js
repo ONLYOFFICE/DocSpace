@@ -40,12 +40,6 @@ export function changeLanguage(i18n) {
     : i18n.changeLanguage("en");
 }
 
-export function changeDocumentTitle(title) {
-  if (title !== document.title) {
-    document.title = title;
-  }
-}
-
 export function redirectToDefaultPage() {
   if (
     (window.location.pathname === "/" || window.location.pathname === "") &&
