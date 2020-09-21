@@ -1,6 +1,7 @@
 import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
+import ContentLoader from "react-content-loader";
 import { withRouter } from "react-router";
 import { constants, Headline, store, api } from "asc-web-common";
 import { connect } from "react-redux";
@@ -13,11 +14,26 @@ import {
   toastr,
   utils
 } from "asc-web-components";
-import { fetchFiles, setAction, getProgress, setProgressBarData, clearProgressData, setIsLoading } from "../../../../../store/files/actions";
+import {
+  fetchFiles,
+  setAction,
+  getProgress,
+  setProgressBarData,
+  clearProgressData,
+  setIsLoading
+} from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
-import { EmptyTrashDialog, DeleteDialog, DownloadDialog } from "../../../../dialogs";
+import {
+  EmptyTrashDialog,
+  DeleteDialog,
+  DownloadDialog
+} from "../../../../dialogs";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-import { isCanBeDeleted, checkFolderType, isCanCreate } from "../../../../../store/files/selectors";
+import {
+  isCanBeDeleted,
+  checkFolderType,
+  isCanCreate
+} from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -26,8 +42,8 @@ const { tablet, desktop } = utils.device;
 const StyledContainer = styled.div`
   @media ${desktop} {
     ${props =>
-    props.isHeaderVisible &&
-    css`
+      props.isHeaderVisible &&
+      css`
         width: calc(100% + 76px);
       `}
   }
@@ -83,8 +99,8 @@ const StyledContainer = styled.div`
     @media ${tablet} {
       & > div:first-child {
         ${props =>
-    props.isArticlePinned &&
-    css`
+          props.isArticlePinned &&
+          css`
             width: calc(100% - 240px);
           `}
         position: absolute;
@@ -98,6 +114,20 @@ const StyledContainer = styled.div`
     }
   }
 `;
+
+const HeadlineLoader = () => (
+  <ContentLoader
+    speed={2}
+    width={264}
+    height={56}
+    viewBox="0 0 264 56"
+    backgroundColor="#f3f3f3"
+    foregroundColor="#ecebeb"
+  >
+    <rect x="0" y="88" rx="3" ry="3" width="178" height="6" />
+    <rect x="0" y="21" rx="0" ry="0" width="216" height="23" />
+  </ContentLoader>
+);
 
 class SectionHeaderContent extends React.Component {
   constructor(props) {
@@ -169,29 +199,40 @@ class SectionHeaderContent extends React.Component {
     const { currentFolderId } = this.props;
     const { t } = this.props;
 
-    copy(`${window.location.origin}/products/files/filter?folder=${currentFolderId}`);
+    copy(
+      `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
+    );
 
     toastr.success(t("LinkCopySuccess"));
-  }
+  };
 
-  onMoveAction = () => this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
+  onMoveAction = () =>
+    this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
 
-  onCopyAction = () => this.setState({ showCopyPanel: !this.state.showCopyPanel });
+  onCopyAction = () =>
+    this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
   loop = url => {
-    this.props.getProgress().then(res => {
-      if (!url) {
-        this.props.setProgressBarData({ visible: true, percent: res[0].progress, label: this.props.t("ArchivingData") });
-        setTimeout(() => this.loop(res[0].url), 1000);
-      } else {
-        setTimeout(() => clearProgressData(filesStore.dispatch), 5000);
-        return window.open(url, "_blank");
-      }
-    }).catch((err) => {
-      toastr.error(err);
-      clearProgressData(filesStore.dispatch);
-    });
-  }
+    this.props
+      .getProgress()
+      .then(res => {
+        if (!url) {
+          this.props.setProgressBarData({
+            visible: true,
+            percent: res[0].progress,
+            label: this.props.t("ArchivingData")
+          });
+          setTimeout(() => this.loop(res[0].url), 1000);
+        } else {
+          setTimeout(() => clearProgressData(filesStore.dispatch), 5000);
+          return window.open(url, "_blank");
+        }
+      })
+      .catch(err => {
+        toastr.error(err);
+        clearProgressData(filesStore.dispatch);
+      });
+  };
 
   downloadAction = () => {
     const { t, selection, setProgressBarData } = this.props;
@@ -209,20 +250,25 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    setProgressBarData({ visible: true, percent: 0, label: t("ArchivingData") });
+    setProgressBarData({
+      visible: true,
+      percent: 0,
+      label: t("ArchivingData")
+    });
 
     api.files
       .downloadFiles(fileIds, folderIds)
       .then(res => {
         this.loop(res[0].url);
       })
-      .catch((err) => {
+      .catch(err => {
         toastr.error(err);
         clearProgressData(filesStore.dispatch);
       });
-  }
+  };
 
-  downloadAsAction = () => this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
+  downloadAsAction = () =>
+    this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
 
   renameAction = () => toastr.info("renameAction click");
 
@@ -292,11 +338,11 @@ class SectionHeaderContent extends React.Component {
     );
   };
 
-  onSelectorSelect = (item) => {
+  onSelectorSelect = item => {
     const { onSelect } = this.props;
 
     onSelect && onSelect(item.key);
-  }
+  };
 
   render() {
     //console.log("Body header render");
@@ -347,11 +393,7 @@ class SectionHeaderContent extends React.Component {
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem
-            key="all"
-            label={t("All")}
-            data-index={0}
-          />,
+          <DropDownItem key="all" label={t("All")} data-index={0} />,
           <DropDownItem
             key={FilterType.FoldersOnly}
             label={t("Folders")}
@@ -464,67 +506,73 @@ class SectionHeaderContent extends React.Component {
             />
           </div>
         ) : (
-            <div className="header-container">
-              {folder && (
-                <IconButton
-                  iconName="ArrowPathIcon"
-                  size="17"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
-                  isFill={true}
-                  onClick={this.onBackToParentFolder}
-                  className="arrow-button"
-                />
-              )}
-              <Headline
-                className="headline-header"
-                type="content"
-                truncate={true}
-              >
-                {title}
-              </Headline>
-              {folder && isCanCreate ? (
-                <>
-                  <ContextMenuButton
-                    className="add-button"
-                    directionX="right"
-                    iconName="PlusIcon"
-                    size={17}
+          <div className="header-container">
+            {!title ? (
+              <HeadlineLoader />
+            ) : (
+              <>
+                {folder && (
+                  <IconButton
+                    iconName="ArrowPathIcon"
+                    size="17"
                     color="#A3A9AE"
                     hoverColor="#657077"
-                    isFill
-                    getData={this.getContextOptionsPlus}
-                    isDisabled={false}
+                    isFill={true}
+                    onClick={this.onBackToParentFolder}
+                    className="arrow-button"
                   />
-                  <ContextMenuButton
-                    className="option-button"
-                    directionX="right"
-                    iconName="VerticalDotsIcon"
-                    size={17}
-                    color="#A3A9AE"
-                    hoverColor="#657077"
-                    isFill
-                    getData={this.getContextOptionsFolder}
-                    isDisabled={false}
-                  />
-                </>
-              ) : (
-                isCanCreate && (
-                  <ContextMenuButton
-                    className="add-button"
-                    directionX="right"
-                    iconName="PlusIcon"
-                    size={17}
-                    color="#A3A9AE"
-                    hoverColor="#657077"
-                    isFill
-                    getData={this.getContextOptionsPlus}
-                    isDisabled={false}
-                  />
-                )
-              )}
-            </div>
-          )}
+                )}
+                <Headline
+                  className="headline-header"
+                  type="content"
+                  truncate={true}
+                >
+                  {title}
+                </Headline>
+                {folder && isCanCreate ? (
+                  <>
+                    <ContextMenuButton
+                      className="add-button"
+                      directionX="right"
+                      iconName="PlusIcon"
+                      size={17}
+                      color="#A3A9AE"
+                      hoverColor="#657077"
+                      isFill
+                      getData={this.getContextOptionsPlus}
+                      isDisabled={false}
+                    />
+                    <ContextMenuButton
+                      className="option-button"
+                      directionX="right"
+                      iconName="VerticalDotsIcon"
+                      size={17}
+                      color="#A3A9AE"
+                      hoverColor="#657077"
+                      isFill
+                      getData={this.getContextOptionsFolder}
+                      isDisabled={false}
+                    />
+                  </>
+                ) : (
+                  isCanCreate && (
+                    <ContextMenuButton
+                      className="add-button"
+                      directionX="right"
+                      iconName="PlusIcon"
+                      size={17}
+                      color="#A3A9AE"
+                      hoverColor="#657077"
+                      isFill
+                      getData={this.getContextOptionsPlus}
+                      isDisabled={false}
+                    />
+                  )
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         {showDeleteDialog && (
           <DeleteDialog
@@ -609,10 +657,11 @@ const mapStateToProps = state => {
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     currentFolderId: id,
     isLoading,
-    isCanCreate: isCanCreate(selectedFolder, user),
+    isCanCreate: isCanCreate(selectedFolder, user)
   };
 };
 
-export default connect(mapStateToProps, { setAction, getProgress, setProgressBarData, setIsLoading })(
-  withTranslation()(withRouter(SectionHeaderContent))
-);
+export default connect(
+  mapStateToProps,
+  { setAction, getProgress, setProgressBarData, setIsLoading }
+)(withTranslation()(withRouter(SectionHeaderContent)));
