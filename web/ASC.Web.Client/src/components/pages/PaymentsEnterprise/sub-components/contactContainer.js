@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text, Link } from "asc-web-components";
+import { useTranslation } from "react-i18next";
+import { createI18N } from "../../../../helpers/i18n";
+import { utils } from "asc-web-common";
+const { changeLanguage } = utils;
+
+const i18n = createI18N({
+  page: "PaymentsEnterprise",
+  localesPath: "pages/PaymentsEnterprise",
+});
 
 const StyledContactContainer = styled.div`
   display: grid;
@@ -29,7 +38,12 @@ const StyledContactContainer = styled.div`
   }
 `;
 
-const ContactContainer = ({ t, salesEmail, helpUrl }) => {
+const ContactContainer = ({ salesEmail, helpUrl }) => {
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+
+  const { t } = useTranslation("translation", { i18n });
   return (
     <StyledContactContainer>
       <Text className="contact-emails">
@@ -55,7 +69,6 @@ const ContactContainer = ({ t, salesEmail, helpUrl }) => {
 ContactContainer.propTypes = {
   salesEmail: PropTypes.string,
   helpUrl: PropTypes.string,
-  t: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

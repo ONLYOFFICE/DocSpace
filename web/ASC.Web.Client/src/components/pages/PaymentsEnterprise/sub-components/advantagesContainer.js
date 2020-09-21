@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { utils } from "asc-web-common";
+import { Text, utils as Utils } from "asc-web-components";
+import { createI18N } from "../../../../helpers/i18n";
+import { useTranslation } from "react-i18next";
+const { changeLanguage } = utils;
+const { tablet } = Utils.device;
 
-import { Text, utils } from "asc-web-components";
-const { tablet } = utils.device;
+const i18n = createI18N({
+  page: "PaymentsEnterprise",
+  localesPath: "pages/PaymentsEnterprise",
+});
 const StyledBodyAdvantages = styled.div`
   display: grid;
   padding-left: 32px;
@@ -180,7 +188,12 @@ const StyledBodyAdvantages = styled.div`
   }
 `;
 
-const AdvantagesContainer = ({ t }) => {
+const AdvantagesContainer = () => {
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+
+  const { t } = useTranslation("translation", { i18n });
   return (
     <StyledBodyAdvantages>
       <Text className="header-advantages">{t("SubscriptionGet")}</Text>
@@ -240,10 +253,6 @@ const AdvantagesContainer = ({ t }) => {
       />
     </StyledBodyAdvantages>
   );
-};
-
-AdvantagesContainer.propTypes = {
-  t: PropTypes.func.isRequired,
 };
 
 export default AdvantagesContainer;

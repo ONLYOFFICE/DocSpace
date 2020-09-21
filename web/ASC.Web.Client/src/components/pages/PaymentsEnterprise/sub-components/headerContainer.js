@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Text, utils } from "asc-web-components";
+import { Text, utils as Utils } from "asc-web-components";
+import { utils } from "asc-web-common";
 
-const { tablet } = utils.device;
+import { useTranslation } from "react-i18next";
+import { createI18N } from "../../../../helpers/i18n";
+import moment from "moment";
+const { changeLanguage } = utils;
+const { tablet } = Utils.device;
 
+const i18n = createI18N({
+  page: "PaymentsEnterprise",
+  localesPath: "pages/PaymentsEnterprise",
+});
 const StyledHeader = styled.div`
   .payments-header {
     margin-top: 46px;
@@ -46,52 +55,57 @@ const StyledHeader = styled.div`
   }
 `;
 
-class HeaderContainer extends React.Component {
-  render() {
-    const { t, culture, utcHoursOffset, trialMode, expiresDate } = this.props;
-
+const HeaderContainer = ({
+  culture,
+  utcHoursOffset,
+  trialMode,
+  expiresDate,
+}) => {
+  useEffect(() => {
+    changeLanguage(i18n);
     const moment = require("moment");
     require("moment/min/locales.min");
     moment.locale(culture);
-    const currentUserDate = moment().utcOffset(utcHoursOffset);
+  }, [culture]);
 
-    return new Date(currentUserDate).setHours(0, 0, 0, 0) <
-      expiresDate.setHours(0, 0, 0, 0) ? (
-      <StyledHeader>
-        <Text className="payments-header">{t("Using")}</Text>
-        <Text className="payments-header-additional_support">
-          {t("SubscriptionAndUpdatesExpires")}{" "}
-          {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
-          {"."}
-        </Text>
-      </StyledHeader>
-    ) : !trialMode ? (
-      <StyledHeader>
-        <Text className="payments-header">{t("Using")}</Text>
-        <Text
-          className="payments-header-additional_support"
-          color="#C96C27"
-          fontWeight="600"
-        >
-          {t("SupportNotAvailable")}{" "}
-          {moment(expiresDate).startOf("day").format("D MMMM, YYYY")}
-          {". "}
-          {t("LicenseRenewal")}
-        </Text>
-      </StyledHeader>
-    ) : (
-      <StyledHeader>
-        <Text className="payments-header">{t("TrialPeriodExpired")}</Text>
-        <Text className="payments-header-additional_support">
-          {t("ThanksToUser")}
-        </Text>
-      </StyledHeader>
-    );
-  }
-}
+  const { t } = useTranslation("translation", { i18n });
+  const currentUserDate = moment().utcOffset(utcHoursOffset);
+
+  return new Date(currentUserDate).setHours(0, 0, 0, 0) <
+    expiresDate.setHours(0, 0, 0, 0) ? (
+    <StyledHeader>
+      <Text className="payments-header">{t("Using")}</Text>
+      <Text className="payments-header-additional_support">
+        {t("SubscriptionAndUpdatesExpires")}{" "}
+        {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
+        {"."}
+      </Text>
+    </StyledHeader>
+  ) : !trialMode ? (
+    <StyledHeader>
+      <Text className="payments-header">{t("Using")}</Text>
+      <Text
+        className="payments-header-additional_support"
+        color="#C96C27"
+        fontWeight="600"
+      >
+        {t("SupportNotAvailable")}{" "}
+        {moment(expiresDate).startOf("day").format("D MMMM, YYYY")}
+        {". "}
+        {t("LicenseRenewal")}
+      </Text>
+    </StyledHeader>
+  ) : (
+    <StyledHeader>
+      <Text className="payments-header">{t("TrialPeriodExpired")}</Text>
+      <Text className="payments-header-additional_support">
+        {t("ThanksToUser")}
+      </Text>
+    </StyledHeader>
+  );
+};
 
 HeaderContainer.propTypes = {
-  t: PropTypes.func.isRequired,
   culture: PropTypes.string,
   utcHoursOffset: PropTypes.number,
   expiresDate: PropTypes.object,

@@ -99,14 +99,13 @@ class Body extends React.PureComponent {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledBody>
-        <HeaderContainer t={t} />
-        <AdvantagesContainer t={t} />
+        <HeaderContainer />
+        <AdvantagesContainer />
         <ButtonContainer
-          t={t}
           onClickBuy={this.onClickBuy}
           onClickUpload={this.onClickUpload}
         />
-        <ContactContainer t={t} />
+        <ContactContainer />
       </StyledBody>
     );
   }

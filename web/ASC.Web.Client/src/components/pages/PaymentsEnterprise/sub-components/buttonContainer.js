@@ -1,11 +1,18 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Button, utils } from "asc-web-components";
-
-const { tablet } = utils.device;
+import { Button, utils as Utils } from "asc-web-components";
+import { useTranslation } from "react-i18next";
+import { createI18N } from "../../../../helpers/i18n";
+import { utils } from "asc-web-common";
+const { changeLanguage } = utils;
+const { tablet } = Utils.device;
+const i18n = createI18N({
+  page: "PaymentsEnterprise",
+  localesPath: "pages/PaymentsEnterprise",
+});
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;
@@ -63,7 +70,7 @@ const StyledButtonContainer = styled.div`
   }
 `;
 
-const ButtonContainer = ({ t, buyUrl, onClickBuy, onClickUpload }) => {
+const ButtonContainer = ({ buyUrl, onClickBuy, onClickUpload }) => {
   const inputFilesElementRef = useRef(null);
 
   const onClickSubmit = useCallback(() => {
@@ -78,6 +85,11 @@ const ButtonContainer = ({ t, buyUrl, onClickBuy, onClickUpload }) => {
     },
     [onClickUpload]
   );
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+
+  const { t } = useTranslation("translation", { i18n });
   return (
     <StyledButtonContainer>
       <Button
@@ -106,7 +118,6 @@ const ButtonContainer = ({ t, buyUrl, onClickBuy, onClickUpload }) => {
 
 ButtonContainer.propTypes = {
   buyUrl: PropTypes.string,
-  t: PropTypes.func.isRequired,
   onClickUpload: PropTypes.func.isRequired,
   onClickBuy: PropTypes.func.isRequired,
 };
