@@ -5,12 +5,17 @@ import Layout from "../Layout";
 
 class PureStudioLayout extends React.Component {
   shouldComponentUpdate(nextProps) {
-    if (this.props.availableModules && nextProps.availableModules && 
-      !utils.array.isArrayEqual(nextProps.modules, this.props.modules)) {
-        return true;
+    if (
+      this.props.availableModules &&
+      nextProps.availableModules &&
+      !utils.array.isArrayEqual(nextProps.modules, this.props.modules)
+    ) {
+      return true;
     }
-    return this.props.hasChanges !== nextProps.hasChanges ||
-    this.props.currentModuleId !== nextProps.currentModuleId
+    return (
+      this.props.hasChanges !== nextProps.hasChanges ||
+      this.props.currentModuleId !== nextProps.currentModuleId
+    );
   }
 
   onProfileClick = () => {
@@ -18,12 +23,12 @@ class PureStudioLayout extends React.Component {
     if (settings.homepage == "/products/people") {
       history.push("/products/people/view/@self");
     } else {
-      window.open("/products/people/view/@self", "_self")
+      window.open("/products/people/view/@self", "_self");
     }
   };
 
   onAboutClick = () => {
-    window.open("/about", "_self")
+    window.open("/about", "_self");
   };
 
   onLogoutClick = () => {
@@ -31,17 +36,19 @@ class PureStudioLayout extends React.Component {
   };
 
   onLogoClick = () => {
-    window.open("/", "_self")
+    window.open("/", "_self");
   };
 
   render() {
-    const { hasChanges, children, t, currentUser } = this.props;
-    const isUserDefined = Object.entries(currentUser).length > 0 && currentUser.constructor === Object;
+    const { hasChanges, children, t, currentUser, defaultPage } = this.props;
+    const isUserDefined =
+      Object.entries(currentUser).length > 0 &&
+      currentUser.constructor === Object;
     const userActionProfileView = {
       key: "ProfileBtn",
       label: t("Profile"),
       onClick: this.onProfileClick,
-      url: '/products/people/view/@self'
+      url: "/products/people/view/@self"
     };
 
     const currentUserActions = [
@@ -49,7 +56,7 @@ class PureStudioLayout extends React.Component {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
         onClick: this.onAboutClick,
-        url: '/about'
+        url: "/about"
       },
       {
         key: "LogoutBtn",
@@ -66,7 +73,7 @@ class PureStudioLayout extends React.Component {
           onLogoClick: this.onLogoClick,
           ...this.props
         }
-      : {};
+      : { defaultPage };
 
     console.log("PureStudioLayout render", newProps);
 
@@ -91,7 +98,8 @@ PureStudioLayout.propTypes = {
   history: PropTypes.object,
   settings: PropTypes.object,
   children: PropTypes.any,
-  t: PropTypes.func
+  t: PropTypes.func,
+  defaultPage: PropTypes.string
 };
 
 export default PureStudioLayout;
