@@ -23,7 +23,7 @@ const i18n = createI18N({
   localesPath: "pages/PaymentsEnterprise",
 });
 const { setCurrentProductId } = store.auth.actions;
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 const { tablet } = Utils.device;
 
 const StyledBody = styled.div`
@@ -43,9 +43,9 @@ const StyledBody = styled.div`
 class Body extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { t } = this.props;
+    const { t, organizationName } = this.props;
 
-    document.title = `${t("Payments")} – ${t("OrganizationName")}`; //убрать орг нейм
+    changeDocumentTitle(`${t("Payments")} – ${organizationName}`);
   }
 
   componentDidMount() {
@@ -93,7 +93,7 @@ class Body extends React.PureComponent {
   };
 
   render() {
-    const { isLoaded, t } = this.props;
+    const { isLoaded } = this.props;
 
     return !isLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -130,9 +130,13 @@ PaymentsEnterprise.propTypes = {
 };
 
 function mapStateToProps({ auth, payments }) {
+  const { organizationName } = auth.settings;
+  const { isLoaded } = auth;
+  const { licenseUpload } = payments;
   return {
-    isLoaded: auth.isLoaded,
-    licenseUpload: payments.licenseUpload,
+    isLoaded,
+    licenseUpload,
+    organizationName,
   };
 }
 export default connect(mapStateToProps, {
