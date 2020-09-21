@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { utils as commonUtils} from "asc-web-common";
 
 import {
   setUpdateIfExist,
@@ -13,8 +12,7 @@ import {
   setSelectedNode,
   setForceSave
 } from "../../../../../store/files/actions";
-
-const { changeDocumentTitle } = commonUtils;
+import { setDocumentTitle } from "../../../../../helpers/utils";
 
 const StyledSettings = styled.div`
   display: grid;
@@ -44,8 +42,8 @@ const SectionBodyContent = ({
 }) => {
 
   useEffect(() => {
-    changeDocumentTitle(t(`${setting}`));
-  }, [setting, changeDocumentTitle]);
+    setDocumentTitle(t(`${setting}`));
+  }, [setting, setDocumentTitle]);
 
   useEffect(() => {
     if (setting !== selectedTreeNode[0]) {
