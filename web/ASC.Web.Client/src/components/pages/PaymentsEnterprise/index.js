@@ -28,14 +28,14 @@ const { tablet } = Utils.device;
 
 const StyledBody = styled.div`
   margin: 0 auto;
-  width: 920px;
+  max-width: 920px;
 
   @media ${tablet} {
-    width: 600px;
+    max-width: 600px;
     margin: 0 auto;
   }
   @media (max-width: 632px) {
-    width: 343px;
+    /* max-width: 343px; */
     margin: 0 auto;
   }
 `;

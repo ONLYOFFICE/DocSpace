@@ -24,7 +24,8 @@ const StyledHeader = styled.div`
   }
 
   @media ${tablet} {
-    width: 600px;
+    display: grid;
+    max-width: 600px;
     .payments-header {
       margin-top: 39px;
       font-style: normal;
@@ -35,7 +36,7 @@ const StyledHeader = styled.div`
   }
 
   @media (max-width: 632px) {
-    width: 343px;
+    min-width: 343px;
     .payments-header {
       margin-top: 1px;
     }

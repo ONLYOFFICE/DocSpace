@@ -9,7 +9,7 @@ const StyledBodyAdvantages = styled.div`
   padding-left: 32px;
   padding-top: 32px;
   padding-right: 8px;
-  width: 880px;
+  /* max-width: 880px; */
   height: 279px;
   grid-template-areas:
     "header header"
@@ -19,7 +19,7 @@ const StyledBodyAdvantages = styled.div`
     "fourI four"
     "fiveI five";
 
-  grid-template-columns: 2.7% 98.3%;
+  grid-template-columns: 2.7% max-content;
   grid-template-rows: 11.6% 2.9% 2.8% 2.8% 2.8% 1.1%;
   grid-row-gap: 32px;
   grid-column-gap: 5px;
@@ -86,9 +86,10 @@ const StyledBodyAdvantages = styled.div`
     grid-area: fiveI;
   }
   @media ${tablet} {
-    width: 560px;
+    /* width: minmax(280px, 560px); */
+    max-width: 600px;
     height: 100%;
-    margin-right: 32px;
+    /* margin-right: 32px; */
     grid-template-columns: 2.7% 90.3%;
     grid-template-rows: min-content min-content;
     grid-auto-rows: min-content;
@@ -132,7 +133,7 @@ const StyledBodyAdvantages = styled.div`
 
   @media (max-width: 632px) {
     padding-right: 32px;
-    width: 280px;
+    /* width: 280px; */
     height: 100%;
 
     grid-template-columns: 7.9% 92.1%;

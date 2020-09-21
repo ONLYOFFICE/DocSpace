@@ -34,31 +34,31 @@ const StyledButtonContainer = styled.div`
     display: none;
   }
   @media ${tablet} {
-    width: 600px;
+    max-width: 600px;
     height: 168px;
-    display: block;
+    display: grid;
     .button-buy {
-      width: 536px;
+      max-width: 536px;
 
       margin: 32px 32px 16px 32px;
       border-radius: 3px;
     }
     .button-upload {
-      width: 536px;
+      max-width: 536px;
       margin: 0px 32px 32px 32px;
 
       border-radius: 3px;
     }
   }
   @media (max-width: 632px) {
-    width: 343px;
+    min-width: 343px;
     height: 168px;
     margin-bottom: 16px;
     .button-buy {
-      width: 279px;
+      min-width: 279px;
     }
     .button-upload {
-      width: 279px;
+      min-width: 279px;
     }
   }
 `;

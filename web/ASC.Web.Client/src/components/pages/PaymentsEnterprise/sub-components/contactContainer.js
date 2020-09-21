@@ -6,6 +6,8 @@ import { withRouter } from "react-router";
 import { Text, Link } from "asc-web-components";
 
 const StyledContactContainer = styled.div`
+  display: grid;
+  max-width: 600px;
   .contact-emails {
     position: static;
     margin-bottom: 11px;
@@ -15,13 +17,13 @@ const StyledContactContainer = styled.div`
   }
 
   @media (max-width: 632px) {
-    width: 343px;
+    min-width: 343px;
 
     .contact-emails {
       margin-bottom: 10px;
     }
     .contact-emails_link {
-      display: block;
+      /* display: block; */
       margin-top: 3px;
     }
   }
