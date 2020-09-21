@@ -13,7 +13,6 @@ const HeadlineLoader = () => (
     backgroundColor="#f3f3f3"
     foregroundColor="#ecebeb"
   >
-    <rect x="0" y="88" rx="3" ry="3" width="178" height="6" />
     <rect x="0" y="21" rx="0" ry="0" width="216" height="23" />
   </ContentLoader>
 );
