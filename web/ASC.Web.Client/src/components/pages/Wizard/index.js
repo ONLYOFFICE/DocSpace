@@ -38,7 +38,7 @@ const i18n = createI18N({
 });
 
 const { tablet } = utils.device;
-const { changeLanguage } = commonUtils;
+const { changeLanguage, changeDocumentTitle } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -100,7 +100,7 @@ class Body extends Component {
       checkingMessages: []
     };
 
-    document.title = t("wizardTitle");
+    changeDocumentTitle(t("wizardTitle"));
   }
 
   async componentDidMount() {

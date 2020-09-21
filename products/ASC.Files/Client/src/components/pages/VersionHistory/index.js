@@ -17,7 +17,7 @@ const i18n = createI18N({
   localesPath: "pages/VersionHistory"
 });
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 
 class PureVersionHistory extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class PureVersionHistory extends React.Component {
     const { match, t } = this.props;
     const { fileId } = match.params;
 
-    //document.title = `${t("GroupAction")} – ${t("People")}`;
+    //changeDocumentTitle(`${t("GroupAction")} – ${t("People")}`);
 
     if (fileId) {
       this.getFileVersions(fileId);

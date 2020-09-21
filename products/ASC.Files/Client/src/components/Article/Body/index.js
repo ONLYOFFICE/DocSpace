@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
-import { store as initStore } from "asc-web-common";
+import { store as initStore, utils as commonUtils } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import {
@@ -18,6 +18,7 @@ import store from "../../../store/store";
 import isEqual from "lodash/isEqual";
 import { NewFilesPanel } from "../../panels";
 const { getCurrentModule } = initStore.auth.selectors;
+const { changeDocumentTitle } = commonUtils;
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -25,9 +26,9 @@ class ArticleBodyContent extends React.Component {
 
     const { organizationName, selectedFolderTitle, currentModuleName } = props;
 
-    document.title = selectedFolderTitle
-      ? `${selectedFolderTitle} - ${currentModuleName}`
-      : `${currentModuleName} - ${organizationName}`;
+    selectedFolderTitle
+      ? changeDocumentTitle(`${selectedFolderTitle} - ${currentModuleName}`)
+      : changeDocumentTitle(`${currentModuleName} - ${organizationName}`);
 
     this.state = {
       expandedKeys: this.props.filter.treeFolders,
@@ -87,9 +88,9 @@ class ArticleBodyContent extends React.Component {
       const selectedFolderTitle =
         (e.node && e.node.props && e.node.props.title) || null;
 
-      document.title = selectedFolderTitle
-        ? `${selectedFolderTitle} - ${currentModuleName}`
-        : `${currentModuleName} - ${organizationName}`;
+      selectedFolderTitle
+        ? changeDocumentTitle(`${selectedFolderTitle} - ${currentModuleName}`)
+        : changeDocumentTitle(`${currentModuleName} - ${organizationName}`);
 
       fetchFiles(data[0], newFilter, store.dispatch)
         .catch(err => toastr.error(err))

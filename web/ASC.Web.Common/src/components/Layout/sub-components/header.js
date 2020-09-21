@@ -52,31 +52,35 @@ const Header = styled.header`
   }
 `;
 
-const HeaderComponent = React.memo(props => {
-  const { homepage } = props;
-  //console.log("Header render");
-  const currentModule = props.currentModule && props.currentModule.title;
-  return (
-    <Header module={currentModule}>
-      <NavItem
-        iconName="MenuIcon"
-        badgeNumber={props.badgeNumber}
-        onClick={props.onClick}
-        noHover={true}
-      />
-      <a className="header-logo-wrapper" href={homepage}>
-        <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
-        <img
-          className="header-logo-icon"
-          src="images/nav.logo.opened.react.svg"
+const HeaderComponent = React.memo(
+  ({ currentModule, badgeNumber, onClick, defaultPage }) => {
+    //console.log("Header render");
+    const currentModuleName = (currentModule && currentModule.title) || "";
+    return (
+      <Header module={currentModuleName}>
+        <NavItem
+          iconName="MenuIcon"
+          badgeNumber={badgeNumber}
+          onClick={onClick}
+          noHover={true}
         />
-      </a>
-      <Headline className="header-module-title" type="header" color="#FFF">
-        {props.currentModule && props.currentModule.title}
-      </Headline>
-    </Header>
-  );
-});
+        <a className="header-logo-wrapper" href={defaultPage}>
+          <img
+            className="header-logo-min_icon"
+            src="images/nav.logo.react.svg"
+          />
+          <img
+            className="header-logo-icon"
+            src="images/nav.logo.opened.react.svg"
+          />
+        </a>
+        <Headline className="header-module-title" type="header" color="#FFF">
+          {currentModuleName}
+        </Headline>
+      </Header>
+    );
+  }
+);
 
 HeaderComponent.displayName = "Header";
 
@@ -84,14 +88,8 @@ HeaderComponent.propTypes = {
   badgeNumber: PropTypes.number,
   onClick: PropTypes.func,
   onLogoClick: PropTypes.func,
-  currentModule: PropTypes.object
+  currentModule: PropTypes.object,
+  defaultPage: PropTypes.string
 };
 
-function mapStateToProps(state) {
-  const { homepage } = state.auth.settings;
-  return {
-    homepage
-  };
-}
-
-export default connect(mapStateToProps)(HeaderComponent);
+export default HeaderComponent;

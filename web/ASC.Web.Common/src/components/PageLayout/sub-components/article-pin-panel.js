@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { utils, Icons, Text } from "asc-web-components";
-const { tablet, mobile } = utils.device;
+const { tablet, smallTablet } = utils.device;
 
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;
@@ -20,7 +20,7 @@ const StyledArticlePinPanel = styled.div`
     background-color: #f8f9f9;
   }
 
-  @media ${mobile} {
+  @media ${smallTablet} {
     display: none;
   }
 

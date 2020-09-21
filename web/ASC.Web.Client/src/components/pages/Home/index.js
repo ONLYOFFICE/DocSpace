@@ -13,7 +13,7 @@ const i18n = createI18N({
   localesPath: "pages/Home"
 });
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -76,12 +76,11 @@ Tiles.propTypes = {
   isPrimary: PropTypes.bool.isRequired
 };
 
-const Body = ({ modules, match, isLoaded, homepage, organizationName }) => {
+const Body = ({ modules, match, isLoaded, organizationName }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
-  document.title = `${organizationName}`;
-  window.open(homepage, "_self");
+  changeDocumentTitle(`${organizationName}`);
 
   useEffect(() => error && toastr.error(error), [error]);
 
@@ -120,11 +119,10 @@ Home.propTypes = {
 
 function mapStateToProps(state) {
   const { modules, isLoaded, settings } = state.auth;
-  const { homepage, organizationName } = settings;
+  const { organizationName } = settings;
   return {
     modules,
     isLoaded,
-    homepage,
     organizationName
   };
 }

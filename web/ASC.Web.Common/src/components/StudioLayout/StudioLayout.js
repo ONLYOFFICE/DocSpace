@@ -102,13 +102,17 @@ StudioLayout.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { user, isAuthenticated, isLoaded, modules, settings } = state.auth;
+  const { defaultPage, currentProductId } = settings;
+
   return {
-    hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
-    availableModules: getAvailableModules(state.auth.modules, state.auth.user),
-    currentUser: state.auth.user,
-    currentModuleId: state.auth.settings.currentProductId,
-    settings: state.auth.settings,
-    modules: state.auth.modules
+    hasChanges: isAuthenticated && isLoaded,
+    availableModules: getAvailableModules(modules, user),
+    currentUser: user,
+    currentModuleId: currentProductId,
+    settings: settings,
+    modules: modules,
+    defaultPage: defaultPage || "/"
   };
 }
 

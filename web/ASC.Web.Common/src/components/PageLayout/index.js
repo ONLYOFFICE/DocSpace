@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Backdrop, ProgressBar } from "asc-web-components";
+import { Backdrop, ProgressBar, utils } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
@@ -19,6 +19,8 @@ import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
+
+const { size } = utils.device;
 
 function ArticleHeader() {
   return null;
@@ -80,10 +82,7 @@ class PageLayoutComponent extends React.Component {
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
-    const articleElement =
-      document.getElementsByTagName("article") &&
-      document.getElementsByTagName("article")[0];
-    articleElement && this.orientationChangeHandler();
+    this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
@@ -94,21 +93,13 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
-    const articleElement = document.getElementsByTagName("article")[0];
-
-    if (!articleElement) return;
-
-    const isOrientationVertical = !(screen.orientation
-      ? screen.orientation.angle % 180
-      : window.matchMedia("(orientation: portrait)"));
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
-    const articleWidth = articleElement.offsetWidth;
-    const isArticleWide = articleWidth > screen.availWidth - articleWidth;
+    const isEnoughWidth = screen.availWidth > size.smallTablet;
 
-    if (isOrientationVertical && isArticleWide && isValueExist) {
+    if (!isEnoughWidth && isValueExist) {
       this.backdropClick();
     }
-    if (!isOrientationVertical && isValueExist) {
+    if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
   };
@@ -151,7 +142,7 @@ class PageLayoutComponent extends React.Component {
 
   onResize = (width, height) => {
     //console.log(`onResize height: ${height}, width: ${width}`);
-  }
+  };
 
   render() {
     const {
@@ -274,10 +265,10 @@ class PageLayoutComponent extends React.Component {
           </Article>
         )}
         {isSectionAvailable && (
-          <ReactResizeDetector 
+          <ReactResizeDetector
             onResize={this.onResize}
             refreshRate={200}
-            refreshMode='debounce'
+            refreshMode="debounce"
           >
             {({ width }) => (
               <Section widthProp={width}>

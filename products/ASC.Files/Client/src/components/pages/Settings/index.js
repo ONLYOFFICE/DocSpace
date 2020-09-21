@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { PageLayout, utils, Error403, Error520 } from "asc-web-common";
@@ -9,8 +9,6 @@ import {
   ArticleMainButtonContent
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { setIsLoading, getFilesSettings } from "../../../store/files/actions";
-
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -27,21 +25,8 @@ const PureSettings = ({
   isLoading,
   enableThirdParty,
   isAdmin,
-  getFilesSettings, 
-  setIsLoading
+  isErrorSettings
 }) => {
-  const [errorLoading, setErrorLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getFilesSettings()
-      .then(() => setIsLoading(false))
-      .catch(e => {
-        setErrorLoading(true);
-        setIsLoading(false);
-      });
-  }, []);
-
   //console.log("Settings render()");
   const { setting } = match.params;
 
@@ -83,7 +68,7 @@ const PureSettings = ({
   return (!enableThirdParty && setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
       <Error403 />
-    ) : errorLoading ? (
+    ) : isErrorSettings ? (
       <Error520 />
     ) : (
         settings
@@ -107,14 +92,9 @@ function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
     enableThirdParty: state.files.settingsTree.enableThirdParty,
-    isAdmin: state.auth.user.isAdmin
+    isAdmin: state.auth.user.isAdmin,
+    isErrorSettings: state.files.settingsTree.isErrorSettings
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    setIsLoading,
-    getFilesSettings
-  }
-)(withRouter(Settings));
+export default connect(mapStateToProps)(withRouter(Settings));

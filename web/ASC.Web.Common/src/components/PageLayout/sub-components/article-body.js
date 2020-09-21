@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import { Scrollbar, utils } from "asc-web-components";
-const { tablet, mobile } = utils.device;
+const { tablet, smallTablet } = utils.device;
 
 const StyledArticleBody = styled.div`
   ${props => props.displayBorder && `outline: 1px dotted;`}
@@ -16,7 +16,7 @@ const StyledArticleBody = styled.div`
     width: 100%;
   }
 
-  @media ${mobile} {
+  @media ${smallTablet} {
     display: block;
     height: 100%;
   }

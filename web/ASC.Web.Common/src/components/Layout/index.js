@@ -195,9 +195,12 @@ class Layout extends React.Component {
             onClick={this.showNav}
             onLogoClick={this.state.onLogoClick}
             currentModule={this.state.currentModule}
+            defaultPage={this.props.defaultPage}
           />
         ) : (
-          <HeaderUnauth t={this.props.t}>{this.props.children}</HeaderUnauth>
+          <HeaderUnauth t={this.props.t} defaultPage={this.props.defaultPage}>
+            {this.props.children}
+          </HeaderUnauth>
         )}
         {this.state.isNavAvailable && (
           <Nav
@@ -265,7 +268,9 @@ Layout.propTypes = {
   currentUser: PropTypes.object,
   currentUserActions: PropTypes.array,
   availableModules: PropTypes.array,
-  currentModuleId: PropTypes.string
+  currentModuleId: PropTypes.string,
+  defaultPage: PropTypes.string,
+  t: PropTypes.func
 };
 
 Layout.defaultProps = {

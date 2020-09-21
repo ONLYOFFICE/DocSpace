@@ -12,7 +12,7 @@ const i18n = createI18N({
   localesPath: "pages/About"
 });
 
-const { changeLanguage } = utils;
+const { changeLanguage, changeDocumentTitle } = utils;
 
 const BodyStyle = styled.div`
   margin-top: 24px;
@@ -84,8 +84,8 @@ const Body = () => {
 
   useEffect(() => {
     changeLanguage(i18n);
-    document.title = `${t("AboutTitle")} – ${t("People")}`;
-  }, [t]);
+    changeDocumentTitle(`${t("AboutTitle")} – ${t("People")}`);
+  }, [t, changeDocumentTitle]);
 
   const gitHub = "GitHub";
   const license = "AGPL-3.0";

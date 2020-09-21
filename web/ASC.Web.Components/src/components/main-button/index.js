@@ -61,6 +61,7 @@ const GroupMainButton = styled.div`
 
 const StyledDropDown = styled(DropDown)`
   width: 100%;
+  top: 100%;
 `;
 
 const StyledMainButton = styled.div`
