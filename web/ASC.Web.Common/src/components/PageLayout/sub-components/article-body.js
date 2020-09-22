@@ -14,10 +14,14 @@ const StyledArticleBody = styled.div`
     height: calc(100% - 104px);
     display: table;
     width: 100%;
+
+    .custom-scrollbar{
+      display:table-cell;
+    }
   }
 
   @media ${smallTablet} {
-    display: block;
+    display: flex;
     height: 100%;
   }
 
