@@ -73,8 +73,10 @@ class ArticleBodyContent extends React.Component {
 
   changeTitleDocument(data = null) {
     const {
+      organizationName,
       groups,
-      selectedKeys
+      selectedKeys,
+      currentModuleName
     } = this.props;
 
     const currentGroup = getSelectedGroup(groups, data ? data[0] : selectedKeys[0]);
