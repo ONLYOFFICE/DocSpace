@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledMain = styled.main`
-  height: 100vh;
+  height: 100%;
+  position: absolute;
   padding: ${props => (props.fullscreen ? "0" : "56px 0 0 0")};
   width: 100vw;
   z-index: 0;
