@@ -20,15 +20,11 @@ const StyledHeader = styled.div`
   .payments-header {
     margin-top: 46px;
     font-style: normal;
-    font-weight: bold;
-    font-size: 27px;
     line-height: 32px;
-    color: #333333;
     margin-bottom: 8px;
   }
   .payments-header-additional_support {
     margin-bottom: 40px;
-    font-size: 13px;
     line-height: 20px;
   }
 
@@ -36,9 +32,6 @@ const StyledHeader = styled.div`
     display: grid;
     .payments-header {
       margin-top: 39px;
-      font-style: normal;
-      font-weight: bold;
-      font-size: 27px;
       line-height: 32px;
     }
   }
@@ -72,7 +65,9 @@ const HeaderContainer = ({
   return new Date(currentUserDate).setHours(0, 0, 0, 0) <
     expiresDate.setHours(0, 0, 0, 0) ? (
     <StyledHeader>
-      <Text className="payments-header">{t("Using")}</Text>
+      <Text className="payments-header" fontSize="27px" isBold={true}>
+        {t("Using")}
+      </Text>
       <Text className="payments-header-additional_support">
         {t("SubscriptionAndUpdatesExpires")}{" "}
         {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
@@ -81,7 +76,9 @@ const HeaderContainer = ({
     </StyledHeader>
   ) : !trialMode ? (
     <StyledHeader>
-      <Text className="payments-header">{t("Using")}</Text>
+      <Text className="payments-header" fontSize="27px" isBold={true}>
+        {t("Using")}
+      </Text>
       <Text
         className="payments-header-additional_support"
         color="#C96C27"
@@ -95,7 +92,9 @@ const HeaderContainer = ({
     </StyledHeader>
   ) : (
     <StyledHeader>
-      <Text className="payments-header">{t("TrialPeriodExpired")}</Text>
+      <Text className="payments-header" fontSize="27px" isBold={true}>
+        {t("TrialPeriodExpired")}
+      </Text>
       <Text className="payments-header-additional_support">
         {t("ThanksToUser")}
       </Text>

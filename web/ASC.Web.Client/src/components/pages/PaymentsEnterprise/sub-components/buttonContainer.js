@@ -45,14 +45,12 @@ const StyledButtonContainer = styled.div`
     display: grid;
     .button-buy {
       max-width: 536px;
-
       margin: 32px 32px 16px 32px;
       border-radius: 3px;
     }
     .button-upload {
       max-width: 536px;
       margin: 0px 32px 32px 32px;
-
       border-radius: 3px;
     }
   }

@@ -18,11 +18,7 @@ const StyledContactContainer = styled.div`
   display: grid;
 
   .contact-emails {
-    position: static;
     margin-bottom: 11px;
-  }
-  .contact-emails_link {
-    color: #316daa;
   }
 
   @media (max-width: 632px) {
@@ -45,7 +41,11 @@ const ContactContainer = ({ salesEmail, helpUrl }) => {
     <StyledContactContainer>
       <Text className="contact-emails">
         {t("PurchaseQuestions")}{" "}
-        <Link className="contact-emails_link" href={`mailto:${salesEmail}`}>
+        <Link
+          className="contact-emails_link"
+          href={`mailto:${salesEmail}`}
+          color="#316daa"
+        >
           {salesEmail}
         </Link>
       </Text>
@@ -55,6 +55,7 @@ const ContactContainer = ({ salesEmail, helpUrl }) => {
           target="_blank"
           className="contact-emails_link"
           href={`${helpUrl}`}
+          color="#316daa"
         >
           {helpUrl}
         </Link>

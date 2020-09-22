@@ -37,13 +37,9 @@ const StyledBodyAdvantages = styled.div`
   margin: 0;
   background: #f8f9f9;
   .advantages {
-    font-weight: bold;
-    font-size: 13px;
     line-height: 16px;
   }
   .header-advantages {
-    font-weight: bold;
-    font-size: 22px;
     line-height: 30px;
   }
   .main_icon {
@@ -51,6 +47,12 @@ const StyledBodyAdvantages = styled.div`
     margin-left: 634px;
     z-index: 0;
   }
+  .header-advantages {
+    grid-area: header;
+    padding-bottom: 15px;
+    z-index: 1;
+  }
+
   .first-advantages {
     grid-area: first;
     z-index: 1;
@@ -72,10 +74,7 @@ const StyledBodyAdvantages = styled.div`
     grid-area: five;
     z-index: 1;
   }
-  .header-advantages {
-    grid-area: header;
-    z-index: 1;
-  }
+
   .first_icon {
     grid-area: firstI;
   }
@@ -91,15 +90,11 @@ const StyledBodyAdvantages = styled.div`
   .five_icon {
     grid-area: fiveI;
   }
+
   @media ${tablet} {
     .main_icon {
       display: none;
     }
-  }
-
-  @media (max-width: 632px) {
-    grid-row-gap: 20px;
-    grid-column-gap: 12px;
   }
 `;
 
@@ -111,7 +106,9 @@ const AdvantagesContainer = () => {
   const { t } = useTranslation("translation", { i18n });
   return (
     <StyledBodyAdvantages>
-      <Text className="header-advantages">{t("SubscriptionGet")}</Text>
+      <Text className="header-advantages" fontSize="22px" isBold={true}>
+        {t("SubscriptionGet")}
+      </Text>
       <img
         className="first_icon"
         src="images/payments_enterprise_cubes.svg"
@@ -120,7 +117,7 @@ const AdvantagesContainer = () => {
         alt="Icon_cubes"
       />
       <Box className="wrapper">
-        <Text className="first-advantages  advantages">
+        <Text className="first-advantages  advantages" isBold={true}>
           {t("OnlyOfficeEditor")}
         </Text>
       </Box>
@@ -132,7 +129,7 @@ const AdvantagesContainer = () => {
         alt="Icon_lock"
       />
       <Box className="wrapper">
-        <Text className="second-advantages  advantages">
+        <Text className="second-advantages  advantages" isBold={true}>
           {t("PrivateRooom")}
         </Text>
       </Box>
@@ -144,7 +141,9 @@ const AdvantagesContainer = () => {
         alt="Icon_smartphone"
       />
       <Box className="wrapper">
-        <Text className="third-advantages  advantages">{t("WebEditors")}</Text>
+        <Text className="third-advantages  advantages" isBold={true}>
+          {t("WebEditors")}
+        </Text>
       </Box>
       <img
         className="four_icon"
@@ -154,7 +153,7 @@ const AdvantagesContainer = () => {
         alt="Icon_update"
       />
       <Box className="wrapper">
-        <Text className="four-advantages  advantages">
+        <Text className="four-advantages  advantages" isBold={true}>
           {t("FunctionalityAndSecurity")}
         </Text>
       </Box>
@@ -166,7 +165,7 @@ const AdvantagesContainer = () => {
         alt="Icon_help"
       />
       <Box className="wrapper">
-        <Text className="five-advantages  advantages">
+        <Text className="five-advantages  advantages" isBold={true}>
           {t("ProfessionalTechSupport")}
         </Text>
       </Box>
