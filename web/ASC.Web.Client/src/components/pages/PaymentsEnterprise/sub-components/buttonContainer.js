@@ -16,9 +16,12 @@ const i18n = createI18N({
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;
-  height: 108px;
   margin-bottom: 18px;
-  display: flex;
+  display: grid;
+  padding: 32px;
+  grid-template-columns: min-content min-content;
+  grid-template-rows: min-content;
+  grid-column-gap: 16px;
   .button-payments-enterprise {
     border-radius: 3px;
     padding: 12px 20px;
@@ -30,32 +33,24 @@ const StyledButtonContainer = styled.div`
     font-size: 16px;
     line-height: 20px;
   }
-  .button-buy {
-    margin: 32px 14px 32px 32px;
-  }
 
-  .button-upload {
-    margin: 32px 0px 32px 0px;
-  }
   .input-upload {
     display: none;
   }
   @media ${tablet} {
-    height: 168px;
     display: grid;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content min-content;
+    grid-row-gap: 16px;
     .button-buy {
       max-width: 536px;
-      margin: 32px 32px 16px 32px;
-      border-radius: 3px;
     }
     .button-upload {
       max-width: 536px;
-      margin: 0px 32px 32px 32px;
-      border-radius: 3px;
     }
   }
   @media (max-width: 632px) {
-    height: 168px;
     margin-bottom: 16px;
     .button-buy {
       min-width: 279px;

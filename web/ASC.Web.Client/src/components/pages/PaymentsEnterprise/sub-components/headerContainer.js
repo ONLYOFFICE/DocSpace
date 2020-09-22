@@ -32,7 +32,6 @@ const StyledHeader = styled.div`
     display: grid;
     .payments-header {
       margin-top: 39px;
-      line-height: 32px;
     }
   }
 
