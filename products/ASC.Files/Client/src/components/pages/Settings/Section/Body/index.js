@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { utils as commonUtils} from "asc-web-common";
+import { Error403, Error520 } from "asc-web-common";
 
 import {
   setUpdateIfExist,
@@ -13,8 +13,7 @@ import {
   setSelectedNode,
   setForceSave
 } from "../../../../../store/files/actions";
-
-const { changeDocumentTitle } = commonUtils;
+import { setDocumentTitle } from "../../../../../helpers/utils";
 
 const StyledSettings = styled.div`
   display: grid;
@@ -31,7 +30,7 @@ const StyledSettings = styled.div`
 `;
 
 const SectionBodyContent = ({
-  setting,
+  setting, isLoading,
   selectedTreeNode, setSelectedNode,
   storeForceSave, setStoreForceSave ,
   enableThirdParty, setEnableThirdParty,
@@ -39,13 +38,13 @@ const SectionBodyContent = ({
   confirmDelete, setConfirmDelete,
   updateIfExist, setUpdateIfExist,
   forceSave, setForceSave,
-  isAdmin,
+  isAdmin, isErrorSettings,
   t
 }) => {
 
   useEffect(() => {
-    changeDocumentTitle(t(`${setting}`));
-  }, [setting, changeDocumentTitle]);
+    setDocumentTitle(t(`${setting}`));
+  }, [setting, setDocumentTitle]);
 
   useEffect(() => {
     if (setting !== selectedTreeNode[0]) {
@@ -159,11 +158,19 @@ const SectionBodyContent = ({
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
-  return content;
+
+  return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
+    (!isAdmin && setting === "admin" ) ? (
+      <Error403 />
+    ) : isErrorSettings ? (
+      <Error520 />
+    ) : (
+      content
+      );
 }
 
 function mapStateToProps(state) {
-  const { settingsTree, selectedTreeNode } = state.files;
+  const { settingsTree, selectedTreeNode, isLoading } = state.files;
   const { isAdmin } = state.auth.user;
   const {
     storeOriginalFiles,
@@ -171,7 +178,8 @@ function mapStateToProps(state) {
     updateIfExist,
     forceSave,
     storeForceSave,
-    enableThirdParty
+    enableThirdParty,
+    isErrorSettings
   } = settingsTree;
 
   return {
@@ -182,7 +190,8 @@ function mapStateToProps(state) {
     updateIfExist,
     forceSave,
     storeForceSave,
-    enableThirdParty
+    enableThirdParty,
+    isLoading
   };
 }
 

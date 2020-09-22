@@ -23,7 +23,7 @@ import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 //import history from "../../history";
-import { changeDocumentTitle, redirectToDefaultPage } from "../../utils";
+import { redirectToDefaultPage } from "../../utils";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -236,7 +236,7 @@ class Form extends Component {
     const { match, t, organizationName } = this.props;
     const { error, confirmedEmail } = match.params;
 
-    changeDocumentTitle(`${t("Authorization")} – ${organizationName}`);
+    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });

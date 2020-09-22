@@ -11,11 +11,12 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { fetchGroup, resetGroup } from "../../../store/group/actions";
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
   page: "GroupAction",
   localesPath: "pages/GroupAction"
 });
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class GroupAction extends React.Component {
@@ -23,7 +24,7 @@ class GroupAction extends React.Component {
     const { match, fetchGroup, t } = this.props;
     const { groupId } = match.params;
 
-    changeDocumentTitle(`${t("GroupAction")} – ${t("People")}`);
+    setDocumentTitle(t("GroupAction"));
     changeLanguage(i18n);
 
     if (groupId) {

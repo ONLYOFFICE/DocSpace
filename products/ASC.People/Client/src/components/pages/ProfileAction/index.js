@@ -16,11 +16,12 @@ import {
 import { fetchProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
   page: "ProfileAction",
   localesPath: "pages/ProfileAction"
 });
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class ProfileAction extends React.Component {
@@ -28,7 +29,7 @@ class ProfileAction extends React.Component {
     const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
 
-    changeDocumentTitle(`${t("ProfileAction")} – ${t("People")}`);
+    setDocumentTitle(t("ProfileAction"));
     changeLanguage(i18n);
 
     if (userId) {

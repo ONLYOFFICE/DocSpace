@@ -8,12 +8,14 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home"
 });
 
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -80,7 +82,7 @@ const Body = ({ modules, match, isLoaded, organizationName }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
-  changeDocumentTitle(`${organizationName}`);
+  setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
 
