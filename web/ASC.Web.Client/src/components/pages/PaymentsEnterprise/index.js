@@ -24,23 +24,23 @@ const i18n = createI18N({
 });
 const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage, changeDocumentTitle } = utils;
-const { tablet } = Utils.device;
+const { tablet, size } = Utils.device;
 
 const StyledBody = styled.div`
   margin: 0 auto;
   max-width: 920px;
-
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(4, min-content);
   @media ${tablet} {
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: ${size.smallTablet}px;
   }
   @media (max-width: 632px) {
-    /* max-width: 343px; */
-    margin: 0 auto;
+    min-width: ${size.mobile}px;
   }
 `;
 
-class Body extends React.PureComponent {
+class Body extends React.Component {
   constructor(props) {
     super(props);
     const { t, organizationName } = this.props;

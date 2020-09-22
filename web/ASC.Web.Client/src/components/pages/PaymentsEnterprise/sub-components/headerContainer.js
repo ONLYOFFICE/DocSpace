@@ -34,7 +34,6 @@ const StyledHeader = styled.div`
 
   @media ${tablet} {
     display: grid;
-    max-width: 600px;
     .payments-header {
       margin-top: 39px;
       font-style: normal;
@@ -45,7 +44,6 @@ const StyledHeader = styled.div`
   }
 
   @media (max-width: 632px) {
-    min-width: 343px;
     .payments-header {
       margin-top: 1px;
     }
@@ -65,7 +63,7 @@ const HeaderContainer = ({
     changeLanguage(i18n);
     const moment = require("moment");
     require("moment/min/locales.min");
-    moment.locale(culture);
+    culture && moment.locale(culture);
   }, [culture]);
 
   const { t } = useTranslation("translation", { i18n });

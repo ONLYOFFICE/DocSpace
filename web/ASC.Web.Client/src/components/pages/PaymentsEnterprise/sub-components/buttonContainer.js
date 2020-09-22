@@ -41,7 +41,6 @@ const StyledButtonContainer = styled.div`
     display: none;
   }
   @media ${tablet} {
-    max-width: 600px;
     height: 168px;
     display: grid;
     .button-buy {
@@ -58,7 +57,6 @@ const StyledButtonContainer = styled.div`
     }
   }
   @media (max-width: 632px) {
-    min-width: 343px;
     height: 168px;
     margin-bottom: 16px;
     .button-buy {

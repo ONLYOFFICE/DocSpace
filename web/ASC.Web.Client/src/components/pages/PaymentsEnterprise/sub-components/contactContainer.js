@@ -16,7 +16,7 @@ const i18n = createI18N({
 
 const StyledContactContainer = styled.div`
   display: grid;
-  max-width: 600px;
+
   .contact-emails {
     position: static;
     margin-bottom: 11px;
@@ -26,13 +26,10 @@ const StyledContactContainer = styled.div`
   }
 
   @media (max-width: 632px) {
-    min-width: 343px;
-
     .contact-emails {
       margin-bottom: 10px;
     }
     .contact-emails_link {
-      /* display: block; */
       margin-top: 3px;
     }
   }
