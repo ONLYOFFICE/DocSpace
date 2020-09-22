@@ -26,7 +26,8 @@ import {
   SET_THIRD_PARTY,
   SET_FILES_SETTINGS,
   SET_FILES_SETTING,
-  SET_IS_ERROR_SETTINGS
+  SET_IS_ERROR_SETTINGS,
+  SET_FIRST_LOAD
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -53,6 +54,7 @@ const initialState = {
   newRowItems: [],
   selectedTreeNode: [],
   isLoading: false,
+  firstLoad: true,
   settingsTree: {
     expandedSetting: [],
     storeOriginalFiles: false,
@@ -63,7 +65,6 @@ const initialState = {
     enableThirdParty: false,
     isErrorSettings: false
   }
-  
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -95,7 +96,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_SELECTED:
       return Object.assign({}, state, {
         selected: action.selected,
-        selection: getFilesBySelected(state.files.concat(state.folders), action.selected)
+        selection: getFilesBySelected(
+          state.files.concat(state.folders),
+          action.selected
+        )
       });
     case SET_SELECTED_FOLDER:
       return Object.assign({}, state, {
@@ -118,13 +122,17 @@ const filesReducer = (state = initialState, action) => {
         filter: action.filter
       });
     case SELECT_FILE:
-      if (!isFileSelected(state.selection, action.file.id, action.file.parentId)) {
+      if (
+        !isFileSelected(state.selection, action.file.id, action.file.parentId)
+      ) {
         return Object.assign({}, state, {
           selection: [...state.selection, action.file]
         });
       } else return state;
     case DESELECT_FILE:
-      if (isFileSelected(state.selection, action.file.id, action.file.parentId)) {
+      if (
+        isFileSelected(state.selection, action.file.id, action.file.parentId)
+      ) {
         return Object.assign({}, state, {
           selection: skipFile(state.selection, action.file.id)
         });
@@ -132,66 +140,67 @@ const filesReducer = (state = initialState, action) => {
     case SET_ACTION:
       return Object.assign({}, state, {
         fileAction: action.fileAction
-      })
-    case SET_DRAGGING: 
+      });
+    case SET_DRAGGING:
       return Object.assign({}, state, {
         dragging: action.dragging
       });
-    case SET_DRAG_ITEM: 
+    case SET_DRAG_ITEM:
       return Object.assign({}, state, {
         dragItem: action.dragItem
       });
-    case SET_MEDIA_VIEWER_VISIBLE: 
+    case SET_MEDIA_VIEWER_VISIBLE:
       return Object.assign({}, state, {
         mediaViewerData: action.mediaViewerData
       });
-    case SET_PROGRESS_BAR_DATA: 
+    case SET_PROGRESS_BAR_DATA:
       return Object.assign({}, state, {
         progressData: action.progressData
       });
-    case SET_CONVERT_DIALOG_VISIBLE: 
+    case SET_CONVERT_DIALOG_VISIBLE:
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible
       });
-    case SET_NEW_TREE_FILES: 
+    case SET_NEW_TREE_FILES:
       return Object.assign({}, state, {
         updateTreeNew: action.updateTreeNew
       });
-    case SET_NEW_ROW_ITEMS: 
+    case SET_NEW_ROW_ITEMS:
       return Object.assign({}, state, {
         newRowItems: action.newRowItems
       });
-    case SET_SELECTED_NODE: 
-      if ( action.node[0] ) {
+    case SET_SELECTED_NODE:
+      if (action.node[0]) {
         return Object.assign({}, state, {
           selectedTreeNode: action.node
-        }) 
+        });
       } else {
         return state;
       }
     case SET_EXPAND_SETTINGS_TREE:
       return Object.assign({}, state, {
-        settingsTree: { ...state.settingsTree , expandedSetting: action.setting }
-      })
+        settingsTree: { ...state.settingsTree, expandedSetting: action.setting }
+      });
     case SET_IS_LOADING:
       return Object.assign({}, state, {
         isLoading: action.isLoading
-      })
+      });
     case SET_THIRD_PARTY:
       return Object.assign({}, state, {
         settingsTree: { ...state.settingsTree, thirdParty: action.data }
-      })
+      });
     case SET_FILES_SETTINGS:
-      const { 
+      const {
         storeOriginalFiles,
         confirmDelete,
         updateIfExist,
         forcesave,
         storeForcesave,
         enableThirdParty
-      } = action.settings
+      } = action.settings;
       return Object.assign({}, state, {
-        settingsTree: { ...state.settingsTree, 
+        settingsTree: {
+          ...state.settingsTree,
           storeOriginalFiles,
           confirmDelete,
           updateIfExist,
@@ -199,22 +208,27 @@ const filesReducer = (state = initialState, action) => {
           storeForceSave: storeForcesave,
           enableThirdParty
         }
-      })
+      });
     case SET_FILES_SETTING:
       const { setting, val } = action;
       return Object.assign({}, state, {
-        settingsTree: { 
-          ...state.settingsTree, 
+        settingsTree: {
+          ...state.settingsTree,
           [setting]: val
         }
-      })
+      });
     case SET_IS_ERROR_SETTINGS:
       return Object.assign({}, state, {
         settingsTree: {
           ...state.settingsTree,
           isErrorSettings: action.isError
         }
-      })
+      });
+    case SET_FIRST_LOAD:
+      debugger;
+      return Object.assign({}, state, {
+        firstLoad: action.firstLoad
+      });
     default:
       return state;
   }

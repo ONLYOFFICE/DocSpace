@@ -1,6 +1,6 @@
 import { api, history } from "asc-web-common";
 import axios from "axios";
-import queryString from 'query-string';
+import queryString from "query-string";
 import {
   AUTHOR_TYPE,
   FILTER_TYPE,
@@ -46,6 +46,7 @@ export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
 export const SET_FILES_SETTINGS = "SET_FILES_SETTINGS";
 export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
+export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 
 export function setFile(file) {
   return {
@@ -114,14 +115,14 @@ export function setDragging(dragging) {
   return {
     type: SET_DRAGGING,
     dragging
-  }
+  };
 }
 
 export function setDragItem(dragItem) {
   return {
     type: SET_DRAG_ITEM,
     dragItem
-  }
+  };
 }
 
 export function setFilesFilter(filter) {
@@ -136,7 +137,7 @@ export function setFilter(filter) {
     type: SET_FILTER,
     filter
   };
-};
+}
 
 export function setViewAs(viewAs) {
   return {
@@ -198,54 +199,61 @@ export function setSelectedNode(node) {
   return {
     type: SET_SELECTED_NODE,
     node
-  }
+  };
 }
 
 export function setExpandSettingsTree(setting) {
   return {
     type: SET_EXPAND_SETTINGS_TREE,
     setting
-  }
+  };
 }
 
 export function setIsLoading(isLoading) {
   return {
     type: SET_IS_LOADING,
     isLoading
-  }
+  };
 }
 
 export function setFilesSettings(settings) {
-  return { 
+  return {
     type: SET_FILES_SETTINGS,
     settings
-  }
+  };
 }
 
 export function setFilesSetting(setting, val) {
   return {
     type: SET_FILES_SETTING,
-    setting, val
-  }
+    setting,
+    val
+  };
 }
 
 export function setIsErrorSettings(isError) {
   return {
     type: SET_IS_ERROR_SETTINGS,
     isError
-  }
+  };
 }
 
+export function setFirstLoad(firstLoad) {
+  return {
+    type: SET_FIRST_LOAD,
+    firstLoad
+  };
+}
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
-  const URLParams = queryString.parse(window.location.href)
+  const URLParams = queryString.parse(window.location.href);
 
   if (filter.filterType) {
     params.push(`${FILTER_TYPE}=${filter.filterType}`);
   }
 
-  if (filter.withSubfolders === 'false') {
+  if (filter.withSubfolders === "false") {
     params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
   }
 
@@ -263,7 +271,7 @@ export function setFilterUrl(filter) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
   }
 
-  if(URLParams.preview) {
+  if (URLParams.preview) {
     params.push(`${PREVIEW}=${URLParams.preview}`);
   }
 
@@ -285,8 +293,15 @@ export function fetchFiles(folderId, filter, dispatch) {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     dispatch(setSelected("close"));
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts, ...{new: data.new} }));
-  })
+    return dispatch(
+      setSelectedFolder({
+        folders: data.folders,
+        ...data.current,
+        pathParts: data.pathParts,
+        ...{ new: data.new }
+      })
+    );
+  });
 }
 
 export function fetchFolders() {
@@ -301,8 +316,14 @@ export function fetchFolder(folderId, dispatch) {
   return files.getFolder(folderId).then(data => {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));
-  })
+    return dispatch(
+      setSelectedFolder({
+        folders: data.folders,
+        ...data.current,
+        pathParts: data.pathParts
+      })
+    );
+  });
 }
 
 export function fetchMyFolder(dispatch) {
@@ -317,7 +338,7 @@ export function getFolder(folderId) {
   return dispatch => {
     return files.getFolder(folderId);
   };
-};
+}
 
 export function fetchTrashFolder(dispatch) {
   return files.getTrashFolderList().then(data => {
@@ -374,56 +395,58 @@ export function fetchTreeFolders(dispatch) {
 
 export function createFile(folderId, title) {
   return dispatch => {
-    return files.createFile(folderId, title)
-      .then(folder => {
-        fetchFolder(folderId, dispatch);
-      });
+    return files.createFile(folderId, title).then(folder => {
+      fetchFolder(folderId, dispatch);
+    });
   };
 }
 
 export function createFolder(parentFolderId, title) {
   return dispatch => {
-    return files.createFolder(parentFolderId, title)
-      .then(folder => {
-        fetchFolder(parentFolderId, dispatch);
-      });
+    return files.createFolder(parentFolderId, title).then(folder => {
+      fetchFolder(parentFolderId, dispatch);
+    });
   };
 }
 
 export function updateFile(fileId, title) {
   return dispatch => {
-    return files.updateFile(fileId, title)
-      .then(file => {
-        dispatch(setFile(file));
-      });
+    return files.updateFile(fileId, title).then(file => {
+      dispatch(setFile(file));
+    });
   };
 }
 
 export function renameFolder(folderId, title) {
   return dispatch => {
-    return files.renameFolder(folderId, title)
-      .then(folder => {
-        dispatch(setFolder(folder));
-      });
+    return files.renameFolder(folderId, title).then(folder => {
+      dispatch(setFolder(folder));
+    });
   };
 }
 
 export function deleteFile(fileId, deleteAfter, immediately) {
   return dispatch => {
-    return files.deleteFile(fileId, deleteAfter, immediately)
-  }
+    return files.deleteFile(fileId, deleteAfter, immediately);
+  };
 }
 
 export function deleteFolder(folderId, deleteAfter, immediately) {
-  return (dispatch) => api.files.deleteFolder(folderId, deleteAfter, immediately);
+  return dispatch => api.files.deleteFolder(folderId, deleteAfter, immediately);
 }
 
-export function setShareFiles(folderIds, fileIds, share, notify, sharingMessage) {
-  const foldersRequests = folderIds.map((id) =>
+export function setShareFiles(
+  folderIds,
+  fileIds,
+  share,
+  notify,
+  sharingMessage
+) {
+  const foldersRequests = folderIds.map(id =>
     files.setShareFolder(id, share, notify, sharingMessage)
   );
 
-  const filesRequests = fileIds.map((id) =>
+  const filesRequests = fileIds.map(id =>
     files.setShareFiles(id, share, notify, sharingMessage)
   );
 
@@ -432,7 +455,9 @@ export function setShareFiles(folderIds, fileIds, share, notify, sharingMessage)
 }
 
 export function getShareUsers(folderIds, fileIds) {
-  const foldersRequests = folderIds.map(folderId => files.getShareFolders(folderId));
+  const foldersRequests = folderIds.map(folderId =>
+    files.getShareFolders(folderId)
+  );
   const filesRequests = fileIds.map(fileId => files.getShareFiles(fileId));
   const requests = [...foldersRequests, ...filesRequests];
 
@@ -443,25 +468,48 @@ export function getProgress() {
   return dispatch => {
     return files.getProgress();
   };
-};
+}
 
-export function copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
+export function copyToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter
+) {
   return dispatch => {
-    return files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+    return files.copyToFolder(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
   };
-};
+}
 
-export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
+export function moveToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter
+) {
   return dispatch => {
-    return files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
+    return files.moveToFolder(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
   };
-};
+}
 
 export function clearProgressData(dispatch) {
   const emptyProgressData = { visible: false, percent: 0, label: "" };
   dispatch(setProgressBarData(emptyProgressData));
 }
-
 
 /*export function deleteGroup(id) {
   return (dispatch, getState) => {
@@ -482,49 +530,56 @@ export function clearProgressData(dispatch) {
 
 export function setUpdateIfExist(data, setting) {
   return dispatch => {
-    return files.updateIfExist(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .updateIfExist(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setStoreOriginal(data, setting) {
   return dispatch => {
-    return files.storeOriginal(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .storeOriginal(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setConfirmDelete(data, setting) {
   return dispatch => {
-    return files.changeDeleteConfirm(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .changeDeleteConfirm(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setStoreForceSave(data, setting) {
   return dispatch => {
-    return files.storeForceSave(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .storeForceSave(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setEnableThirdParty(data, setting) {
   return dispatch => {
-    return files.thirdParty(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .thirdParty(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setForceSave(data, setting) {
   return dispatch => {
-    return files.forceSave(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .forceSave(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function getFilesSettings() {
   return dispatch => {
-    return files.getSettingsFiles()
-      .then( settings => dispatch(setFilesSettings(settings)));
-  }
+    return files
+      .getSettingsFiles()
+      .then(settings => dispatch(setFilesSettings(settings)));
+  };
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import ContentLoader from "react-content-loader";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
@@ -60,6 +61,39 @@ import { SharingPanel, OperationsPanel } from "../../../../panels";
 
 const { FilesFilter } = api;
 const { FileAction } = constants;
+
+const RowsLoader = props => (
+  <div style={{ width: "100%", height: "100%" }}>
+    <ContentLoader
+      speed={2}
+      width={"100%"}
+      height={300}
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+      {...props}
+    >
+      <rect x="0" y="24" rx="3" ry="3" width="16" height="16" />
+      <rect x="26" y="20" rx="5" ry="5" width="24" height="24" />
+      <rect x="65" y="15" rx="5" ry="5" width="100vw" height="35" />
+
+      <rect x="0" y="82" rx="3" ry="3" width="16" height="16" />
+      <rect x="26" y="78" rx="5" ry="5" width="24" height="24" />
+      <rect x="65" y="72" rx="5" ry="5" width="100vw" height="35" />
+
+      <rect x="0" y="140" rx="3" ry="3" width="16" height="16" />
+      <rect x="26" y="136" rx="5" ry="5" width="24" height="24" />
+      <rect x="65" y="129" rx="5" ry="5" width="100vw" height="35" />
+
+      <rect x="0" y="198" rx="3" ry="3" width="16" height="16" />
+      <rect x="26" y="194" rx="5" ry="5" width="24" height="24" />
+      <rect x="65" y="186" rx="5" ry="5" width="100vw" height="35" />
+
+      <rect x="0" y="255" rx="3" ry="3" width="16" height="16" />
+      <rect x="26" y="252" rx="5" ry="5" width="24" height="24" />
+      <rect x="65" y="243" rx="5" ry="5" width="100vw" height="35" />
+    </ContentLoader>
+  </div>
+);
 
 const linkStyles = {
   isHovered: true,
@@ -193,6 +227,8 @@ class SectionBodyContent extends React.Component {
   } */
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props && this.props.firstLoad) return true;
+
     const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
@@ -1296,7 +1332,8 @@ class SectionBodyContent extends React.Component {
       t,
       loopFilesOperations,
       widthProp,
-      isMobile
+      isMobile,
+      firstLoad
     } = this.props;
 
     const {
@@ -1305,6 +1342,7 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel,
       showCopyPanel
     } = this.state;
+
     const operationsPanelProps = {
       setIsLoading,
       isLoading,
@@ -1352,7 +1390,11 @@ class SectionBodyContent extends React.Component {
         this.renderEmptyFolderContainer()
       )
     ) : !fileAction.id && items.length === 0 ? (
-      this.renderEmptyFilterContainer()
+      firstLoad ? (
+        <RowsLoader />
+      ) : (
+        this.renderEmptyFilterContainer()
+      )
     ) : (
       <>
         {showMoveToPanel && (
@@ -1561,7 +1603,8 @@ const mapStateToProps = state => {
     dragItem,
     mediaViewerData,
     dragging,
-    isLoading
+    isLoading,
+    firstLoad
   } = state.files;
   const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
@@ -1610,7 +1653,8 @@ const mapStateToProps = state => {
     mediaViewerVisible: mediaViewerData.visible,
     currentMediaFileId: mediaViewerData.id,
     dragging,
-    isLoading
+    isLoading,
+    firstLoad
   };
 };
 

@@ -29,7 +29,9 @@ import {
   setNewTreeFilesBadge,
   setProgressBarData,
   setSelected,
-  setTreeFolders
+  setTreeFolders,
+  setIsLoading,
+  setFirstLoad
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
@@ -71,7 +73,7 @@ class PureHome extends React.Component {
   }
 
   componentDidMount() {
-    const { fetchFiles, homepage } = this.props;
+    const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
@@ -83,7 +85,11 @@ class PureHome extends React.Component {
       if (!filterObj) {
         filterObj = FilesFilter.getDefault();
         const folderId = filterObj.folder;
-        fetchFiles(folderId, filterObj);
+        setIsLoading(true);
+        fetchFiles(folderId, filterObj).finally(() => {
+          setIsLoading(false);
+          setFirstLoad(false);
+        });
 
         return;
       }
@@ -123,6 +129,7 @@ class PureHome extends React.Component {
       requests.push(api.people.getUserById(itemId));
     }
 
+    setIsLoading(true);
     Promise.all(requests)
       .catch(err => {
         Promise.resolve(FilesFilter.getDefault());
@@ -143,8 +150,14 @@ class PureHome extends React.Component {
 
         if (filter) {
           const folderId = filter.folder;
-          fetchFiles(folderId, filter);
+          return fetchFiles(folderId, filter);
         }
+
+        return Promise.resolve();
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setFirstLoad(false);
       });
   }
 
@@ -566,6 +579,8 @@ const mapDispatchToProps = dispatch => {
     setSelected,
     setTreeFolders,
     startUpload,
+    setIsLoading,
+    setFirstLoad,
     fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
     clearProgressData: () => clearProgressData(dispatch)
   };
