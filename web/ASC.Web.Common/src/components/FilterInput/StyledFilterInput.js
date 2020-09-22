@@ -115,7 +115,7 @@ const StyledFilterInput = styled.div`
       `}
 
       .combo-button-label {
-          color: #333;
+          color: #A3A9AE;
       }
     }
 `;
