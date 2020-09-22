@@ -14,6 +14,7 @@ import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
+const sideColor = '#A3A9AE';
 
 const SimpleFilesRowContent = styled(RowContent)`
 .badge-ext {
@@ -113,7 +114,10 @@ class FilesRowContent extends React.PureComponent {
       ? createFolder(item.parentId, itemTitle)
         .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
+        .then((file) => {
+          window.open(file.webUrl, "_blank")
+          this.completeAction(e)
+        }).finally(() => setIsLoading(false))
   }
 
   componentDidUpdate(prevProps) {
@@ -350,7 +354,7 @@ class FilesRowContent extends React.PureComponent {
           <SimpleFilesRowContent
             widthProp={widthProp}
             isMobile={isMobile}
-            sideColor="#333"
+            sideColor={sideColor}
             isFile={fileExst}
             onClick={this.onMobileRowClick}
           >
@@ -469,7 +473,7 @@ class FilesRowContent extends React.PureComponent {
               containerMinWidth='120px'
               containerWidth='15%'
               as="div"
-              color="#333"
+              color={sideColor}
               fontSize='12px'
               fontWeight={400}
               title={fileOwner}
@@ -483,7 +487,7 @@ class FilesRowContent extends React.PureComponent {
               title={updatedDate}
               fontSize='12px'
               fontWeight={400}
-              color="#333"
+              color={sideColor}
               className="row_update-text"
             >
               {updatedDate && updatedDate}
@@ -492,7 +496,7 @@ class FilesRowContent extends React.PureComponent {
               containerMinWidth='90px'
               containerWidth='10%'
               as="div"
-              color="#333"
+              color={sideColor}
               fontSize='12px'
               fontWeight={400}
               title=''

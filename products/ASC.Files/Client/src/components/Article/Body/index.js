@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
+import { store as initStore } from "asc-web-common";
 import ContentLoader from "react-content-loader";
-import { store as initStore, utils as commonUtils } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
@@ -18,8 +18,9 @@ import {
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { NewFilesPanel } from "../../panels";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const { getCurrentModule } = initStore.auth.selectors;
-const { changeDocumentTitle } = commonUtils;
 
 const TreeFolderLoader = () => (
   <ContentLoader
@@ -47,8 +48,8 @@ class ArticleBodyContent extends React.Component {
     } = props;
 
     selectedFolderTitle
-      ? changeDocumentTitle(`${selectedFolderTitle} - ${currentModuleName}`)
-      : changeDocumentTitle(`${currentModuleName} - ${organizationName}`);
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
 
     this.state = {
       expandedKeys: filter.treeFolders,
@@ -110,8 +111,8 @@ class ArticleBodyContent extends React.Component {
         (e.node && e.node.props && e.node.props.title) || null;
 
       selectedFolderTitle
-        ? changeDocumentTitle(`${selectedFolderTitle} - ${currentModuleName}`)
-        : changeDocumentTitle(`${currentModuleName} - ${organizationName}`);
+        ? setDocumentTitle(selectedFolderTitle)
+        : setDocumentTitle();
 
       fetchFiles(data[0], newFilter, store.dispatch)
         .catch(err => toastr.error(err))

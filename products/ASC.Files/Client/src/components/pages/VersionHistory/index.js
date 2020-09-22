@@ -12,12 +12,13 @@ import {
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
   page: "VersionHistory",
   localesPath: "pages/VersionHistory"
 });
 
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 
 class PureVersionHistory extends React.Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class PureVersionHistory extends React.Component {
     const { match, t } = this.props;
     const { fileId } = match.params;
 
-    //changeDocumentTitle(`${t("GroupAction")} – ${t("People")}`);
+    //setDocumentTitle(t("GroupAction"));
 
     if (fileId) {
       this.getFileVersions(fileId);

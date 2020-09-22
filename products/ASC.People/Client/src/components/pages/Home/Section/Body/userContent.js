@@ -7,7 +7,7 @@ import { getUserStatus } from "../../../../../store/people/selectors";
 const getFormatedGroups = (user, status, selectGroup) => {
   let temp = [];
   const groups = user.groups;
-  const linkColor = "#333";
+  const linkColor = "#A3A9AE";
 
   if (!groups) temp.push({ key: 0, label: '' });
 
@@ -77,7 +77,7 @@ const UserContent = ({ user, history, settings, selectGroup, widthProp, isMobile
   );
 
   const nameColor = "#333";
-  const sideInfoColor = "#333";
+  const sideInfoColor = "#A3A9AE";
 
   return (
     <RowContent

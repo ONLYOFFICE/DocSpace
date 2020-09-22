@@ -12,7 +12,7 @@ html, body {
     position: relative;
 
     .pageLoader {
-        position: fixed;
+        position: absolute;
         left: calc(50% - 20px);
         top: 35%;
     }

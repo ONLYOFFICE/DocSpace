@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { PageLayout, utils, Error403, Error520 } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
@@ -11,6 +11,11 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+import { 
+  setIsErrorSettings,
+  getFilesSettings,
+  setIsLoading
+} from "../../../store/files/actions";
 
 const i18n = createI18N({
   page: "Settings",
@@ -23,14 +28,24 @@ const PureSettings = ({
   match,
   t,
   isLoading,
-  enableThirdParty,
-  isAdmin,
-  isErrorSettings
+  setIsErrorSettings,
+  getFilesSettings,
+  setIsLoading
 }) => {
   //console.log("Settings render()");
   const { setting } = match.params;
 
-  const settings = (
+  useEffect(() => {
+    setIsLoading(true);
+    getFilesSettings()
+      .then(() => setIsLoading(false))
+      .catch(e => {
+        setIsErrorSettings(true);
+        setIsLoading(false)
+      });
+  }, []);
+
+  return (
     <>
       <RequestLoader
         visible={isLoading}
@@ -64,15 +79,6 @@ const PureSettings = ({
       </PageLayout>
     </>
   );
-
-  return (!enableThirdParty && setting === "thirdParty") ||
-    (!isAdmin && setting === "admin") ? (
-      <Error403 />
-    ) : isErrorSettings ? (
-      <Error520 />
-    ) : (
-        settings
-      );
 };
 
 const SettingsContainer = withTranslation()(PureSettings);
@@ -90,11 +96,15 @@ const Settings = props => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading,
-    enableThirdParty: state.files.settingsTree.enableThirdParty,
-    isAdmin: state.auth.user.isAdmin,
-    isErrorSettings: state.files.settingsTree.isErrorSettings
+    isLoading: state.files.isLoading
   };
 }
 
-export default connect(mapStateToProps)(withRouter(Settings));
+export default connect(
+  mapStateToProps,
+  {
+    setIsErrorSettings,
+    getFilesSettings,
+    setIsLoading
+  }
+)(withRouter(Settings));

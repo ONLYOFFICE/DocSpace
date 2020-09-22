@@ -31,11 +31,12 @@ const StyledViewer = styled(Viewer)`
     }
     .react-viewer-toolbar li{
         width: 40px;
-        height:30px;
+        height: 30px;
         margin-top: 4px;
         border-radius: 2px;
         cursor: pointer;
         line-height: 24px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
     .react-viewer-btn{
         background-color: transparent;

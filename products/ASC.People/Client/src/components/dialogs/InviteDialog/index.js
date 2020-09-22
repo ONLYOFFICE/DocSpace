@@ -79,11 +79,9 @@ class InviteDialogComponent extends React.Component {
 
   componentDidMount() {
     const { t } = this.props;
-    copy(this.state.userInvitationLink);
 
     changeLanguage(i18n)
       .then(() => this.setState({ visible: true }))
-      .then(() => toastr.success(t("LinkCopySuccess")));
   }
 
   onClickToCloseButton = () =>

@@ -80,7 +80,10 @@ const StyledContainer = styled.div`
 
     .option-button {
       margin-bottom: -1px;
-      margin-left: 16px;
+      
+      @media(min-width: 1024px) {
+        margin-left: 8px;
+      }
 
       @media ${tablet} {
         & > div:first-child {

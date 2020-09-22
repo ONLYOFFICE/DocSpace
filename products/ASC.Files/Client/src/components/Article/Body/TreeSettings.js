@@ -64,9 +64,7 @@ const PureTreeSettings = ({
 
   useEffect(() => {
     getFilesSettings()
-      .catch(e => {
-        setIsErrorSettings(true);
-      });
+      .catch(e => setIsErrorSettings(true));
   }, []);
 
   const switcherIcon = obj => {

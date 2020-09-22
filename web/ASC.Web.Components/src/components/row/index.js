@@ -52,9 +52,7 @@ const StyledOptionButton = styled.div`
   width: ${props => props.spacerWidth && props.spacerWidth};
 
   .expandButton > div:first-child {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 16px;
+    padding: 8px 8px 8px 16px;
   }
 `;
 
