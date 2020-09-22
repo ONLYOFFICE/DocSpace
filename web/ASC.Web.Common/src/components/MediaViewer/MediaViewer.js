@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Icons } from "asc-web-components";
+import { Icons, Text } from "asc-web-components";
 
 import ImageViewer from "./sub-components/image-viewer"
 import VideoViewer from "./sub-components/video-viewer"
@@ -352,7 +352,7 @@ class MediaViewer extends React.Component {
 
                 <div>
                     <div className="details" ref={this.detailsContainer}>
-                        <div className="title">{fileTitle}</div>
+                        <Text isBold fontSize="14px" color="#fff" className="title">{fileTitle}</Text>
                         <ControlBtn onClick={this.props.onClose && (this.props.onClose)} className="mediaPlayerClose">
                             <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
                         </ControlBtn>
