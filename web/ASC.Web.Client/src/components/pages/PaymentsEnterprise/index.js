@@ -37,7 +37,7 @@ const StyledBody = styled.div`
     max-width: ${size.smallTablet}px;
   }
   @media (max-width: 632px) {
-    min-width: ${size.mobile}px;
+    min-width: 343px;
   }
 `;
 
