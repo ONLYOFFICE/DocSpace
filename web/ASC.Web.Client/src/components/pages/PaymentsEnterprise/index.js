@@ -32,6 +32,7 @@ const StyledBody = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(4, min-content);
+  overflow-wrap: anywhere;
   @media ${tablet} {
     max-width: ${size.smallTablet}px;
   }
