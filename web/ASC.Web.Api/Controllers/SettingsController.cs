@@ -155,7 +155,8 @@ namespace ASC.Api.Settings
         private StorageSettingsHelper StorageSettingsHelper { get; }
         private ServiceClient ServiceClient { get; }
         private StorageFactory StorageFactory { get; }
-        private UrlShortener UrlShortener { get; }        private EncryptionServiceClient EncryptionServiceClient { get; }
+        private UrlShortener UrlShortener { get; }
+        private EncryptionServiceClient EncryptionServiceClient { get; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
         private BackupServiceNotifier BackupServiceNotifier { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
@@ -216,7 +217,7 @@ namespace ASC.Api.Settings
             ServiceClient serviceClient,
 
             StorageFactory storageFactory,
-            UrlShortener urlShortener
+            UrlShortener urlShortener,
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
             BackupServiceNotifier backupServiceNotifier,

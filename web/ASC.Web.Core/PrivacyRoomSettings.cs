@@ -42,11 +42,12 @@ namespace ASC.Web.Studio.Core
             };
         }
 
-        public bool GetEnabled(SettingsManager settingsManager)
+        public static bool GetEnabled(SettingsManager settingsManager)
         {
             return settingsManager.Load<PrivacyRoomSettings>().EnabledSetting;
         }
-        public void SetEnabled(TenantManager tenantManager, SettingsManager settingsManager, bool value)
+
+        public static void SetEnabled(TenantManager tenantManager, SettingsManager settingsManager, bool value)
         {
             if (!IsAvailable(tenantManager)) return;
 
@@ -55,7 +56,7 @@ namespace ASC.Web.Studio.Core
             settingsManager.Save(settings);
         }
 
-        public bool IsAvailable(TenantManager tenantManager)
+        public static bool IsAvailable(TenantManager tenantManager)
         {
             return SetupInfo.IsVisibleSettings(ManagementType.PrivacyRoom.ToString())
                 && tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().TenantId).PrivacyRoom;
