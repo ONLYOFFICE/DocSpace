@@ -970,14 +970,14 @@ namespace ASC.Api.Settings
             }
         }
 
-        public void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel model)
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
             SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId, model);
         }
 
-        public void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel model)
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
@@ -985,7 +985,7 @@ namespace ASC.Api.Settings
             SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
         }
 
-        public void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
         {
             foreach (var f in model.Attachments)
             {
@@ -1105,7 +1105,7 @@ namespace ASC.Api.Settings
             }
         }
 
-        public void RestoreWhiteLabelOptionsForCurrentTenant()
+        private void RestoreWhiteLabelOptionsForCurrentTenant()
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
@@ -1116,7 +1116,7 @@ namespace ASC.Api.Settings
             SettingsManager.Save(tenantInfoSettings);
         }
 
-        public void RestoreWhiteLabelOptionsForDefaultTenant()
+        private void RestoreWhiteLabelOptionsForDefaultTenant()
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
@@ -1124,7 +1124,7 @@ namespace ASC.Api.Settings
             RestoreWhiteLabelOptionsForTenant(settings, storage, Tenant.DEFAULT_TENANT);
         }
 
-        public void RestoreWhiteLabelOptionsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
+        private void RestoreWhiteLabelOptionsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
         {
             TenantWhiteLabelSettingsHelper.RestoreDefault(settings, TenantLogoManager, tenantId, storage);
         }
