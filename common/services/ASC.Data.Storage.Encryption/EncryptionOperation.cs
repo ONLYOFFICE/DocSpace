@@ -185,7 +185,7 @@ namespace ASC.Data.Storage.Encryption
         {
             var progressEncryption = new ProgressEncryption()
             {
-                Proggress = Percentage
+                Progress = Percentage
             };
             progress.Publish(progressEncryption, CacheNotifyAction.Insert);
         }

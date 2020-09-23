@@ -1992,7 +1992,8 @@ namespace ASC.Api.Settings
             var changed = false;
             var consumer = ConsumerFactory.GetByKey<Consumer>(model.Name);
 
-            var validateKeyProvider = (IValidateKeysProvider)ConsumerFactory.GetAll<Consumer>().FirstOrDefault(r => r.Name == consumer.Name && r is IValidateKeysProvider);
+            var validateKeyProvider = consumer as IValidateKeysProvider;
+
             if (validateKeyProvider != null)
             {
                 try
@@ -2126,7 +2127,11 @@ namespace ASC.Api.Settings
                 .AddServiceClient()
                 .AddTwilioProviderService()
                 .AddEncryptionServiceClient()
-                .AddEncryptionSettingsHelperService();
+                .AddEncryptionSettingsHelperService()
+                .AddTwilioProviderService()
+                .AddStorageFactoryService()
+                .AddBackupService()
+                .AddEncryptionServiceNotifierService();
         }
     }
 }
