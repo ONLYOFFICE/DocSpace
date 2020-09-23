@@ -48,11 +48,7 @@ const getCustomModules = isAdmin => {
       },
       "SettingsIcon"
     );
-  
-
-  return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/
-
-  const paymentsModuleWrapper = toModuleWrapper(
+   const paymentsModuleWrapper = toModuleWrapper(
     {
       id: "payments",
       title: i18n.t("Payments"),
@@ -60,7 +56,7 @@ const getCustomModules = isAdmin => {
     },
     "PaymentsIcon"
   );
-  return [paymentsModuleWrapper];
+    return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/ return [];
 };
 
 const getAvailableModules = (modules, currentUser) => {
