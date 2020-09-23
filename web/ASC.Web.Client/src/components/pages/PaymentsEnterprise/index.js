@@ -33,11 +33,13 @@ const StyledBody = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: repeat(4, min-content);
   overflow-wrap: anywhere;
+  margin-top: 40px;
   @media ${tablet} {
     max-width: ${size.smallTablet}px;
   }
   @media (max-width: 632px) {
     min-width: 343px;
+    margin-top: 0;
   }
 `;
 

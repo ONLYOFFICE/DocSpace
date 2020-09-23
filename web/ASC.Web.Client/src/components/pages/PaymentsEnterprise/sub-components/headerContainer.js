@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
 import moment from "moment";
 const { changeLanguage } = utils;
-const { tablet } = Utils.device;
 
 const i18n = createI18N({
   page: "PaymentsEnterprise",
@@ -23,7 +22,6 @@ const StyledHeader = styled.div`
   grid-row-gap: 8px;
 
   .payments-header {
-    margin-top: 46px;
     font-style: normal;
     line-height: 32px;
   }
@@ -32,16 +30,7 @@ const StyledHeader = styled.div`
     line-height: 20px;
   }
 
-  @media ${tablet} {
-    .payments-header {
-      margin-top: 39px;
-    }
-  }
-
   @media (max-width: 632px) {
-    .payments-header {
-      margin-top: 1px;
-    }
     .payments-header-additional_support {
       margin-bottom: 16px;
     }
