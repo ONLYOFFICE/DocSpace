@@ -3,8 +3,10 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Files.Helpers;
+using ASC.Files.Model;
 using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -14,6 +16,8 @@ using Microsoft.Extensions.Options;
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 
 namespace ASC.Files.Tests
 {
@@ -96,7 +100,8 @@ namespace ASC.Files.Tests
         private Tenant SetAndGetCurrentTenant()
         {
             var tenantManager = TestServer.Services.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(UserOptions.TenantId);
+            var tenant = tenantManager.GetTenant(1);
+            tenantManager.SetCurrentTenant(tenant);
 
             return tenantManager.CurrentTenant;
         }
@@ -104,13 +109,34 @@ namespace ASC.Files.Tests
         private UserInfo GetUser()
         {
             var user = UserManager.GetUsers(UserOptions.Id);
-
             return user;
         }
 
         private IAccount GetAccount()
         {
             return new Account(User.ID, "maks", true);
+        }
+
+        public BatchModel GetBatchModel(string text)
+        {
+            var json = text;
+
+            var jsonDocument = JsonDocument.Parse(json);
+            var root = jsonDocument.RootElement;
+            var folderIds = root[0].GetProperty("folderIds").EnumerateArray().ToList();
+            var fileIds = root[1].GetProperty("fileIds").EnumerateArray().ToList();
+            var destFolderdId = root[2];
+
+            var batchModel = new BatchModel
+            {
+                FolderIds = folderIds,
+                FileIds = fileIds,
+                DestFolderId = destFolderdId,
+                DeleteAfter = false,
+                ConflictResolveType = FileConflictResolveType.Overwrite
+            };
+
+            return batchModel;
         }
 
         public virtual void TearDown()
