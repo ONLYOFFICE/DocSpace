@@ -9,13 +9,13 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
-  ArticleMainButtonContent
+  ArticleMainButtonContent,
 } from "../../Article";
 import {
   SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
-  SectionPagingContent
+  SectionPagingContent,
 } from "./Section";
 import {
   clearProgressData,
@@ -31,11 +31,11 @@ import {
   setSelected,
   setTreeFolders,
   setIsLoading,
-  setFirstLoad
+  setFirstLoad,
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
-  checkFolderType
+  checkFolderType,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -44,7 +44,7 @@ import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
   page: "Home",
-  localesPath: "pages/Home"
+  localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
@@ -68,11 +68,14 @@ class PureHome extends React.Component {
 
       uploadStatus: null,
       uploaded: true,
-      uploadToFolder: null
+      uploadToFolder: null,
     };
   }
 
   componentDidMount() {
+    const tempElm = document.getElementById("temp-content");
+    if (tempElm) tempElm.outerHTML = "";
+
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
@@ -109,7 +112,7 @@ class PureHome extends React.Component {
         dataObj = {
           type,
           itemId,
-          filter: filterObj
+          filter: filterObj,
         };
       } else {
         filterObj.authorType = null;
@@ -131,11 +134,11 @@ class PureHome extends React.Component {
 
     setIsLoading(true);
     Promise.all(requests)
-      .catch(err => {
+      .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
         console.warn("Filter restored by default", err);
       })
-      .then(data => {
+      .then((data) => {
         const filter = data[0];
         const result = data[1];
         if (result) {
@@ -143,7 +146,7 @@ class PureHome extends React.Component {
           const selectedItem = {
             key: result.id,
             label: type === "user" ? result.displayName : result.name,
-            type
+            type,
           };
           filter.selectedItem = selectedItem;
         }
@@ -195,11 +198,11 @@ class PureHome extends React.Component {
     startUpload(files, folderId, t);
   };
 
-  onSectionHeaderContentCheck = checked => {
+  onSectionHeaderContentCheck = (checked) => {
     this.props.setSelected(checked ? "all" : "none");
   };
 
-  onSectionHeaderContentSelect = selected => {
+  onSectionHeaderContentSelect = (selected) => {
     this.props.setSelected(selected);
   };
 
@@ -219,7 +222,7 @@ class PureHome extends React.Component {
 
   onChangeOriginalFormat = () =>
     this.setState({
-      uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting
+      uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting,
     });
 
   onChangeWindowVisible = () =>
@@ -229,7 +232,9 @@ class PureHome extends React.Component {
     const { filter, selection, setFilter } = this.props;
     const newFilter = filter.clone();
     for (let item of selection) {
-      const expandedIndex = newFilter.treeFolders.findIndex(x => x == item.id);
+      const expandedIndex = newFilter.treeFolders.findIndex(
+        (x) => x == item.id
+      );
       if (expandedIndex !== -1) {
         newFilter.treeFolders.splice(expandedIndex, 1);
       }
@@ -249,17 +254,17 @@ class PureHome extends React.Component {
       setNewTreeFilesBadge,
       setProgressBarData,
       treeFolders,
-      fetchFiles
+      fetchFiles,
     } = this.props;
 
     getProgress()
-      .then(res => {
-        const currentItem = res.find(x => x.id === id);
+      .then((res) => {
+        const currentItem = res.find((x) => x.id === id);
         if (currentItem && currentItem.progress !== 100) {
           setProgressBarData({
             label: progressData.label,
             percent: currentItem.progress,
-            visible: true
+            visible: true,
           });
           setTimeout(
             () => this.loopFilesOperations(id, destFolderId, isCopy),
@@ -269,10 +274,10 @@ class PureHome extends React.Component {
           setProgressBarData({
             label: progressData.label,
             percent: 100,
-            visible: true
+            visible: true,
           });
           getFolder(destFolderId)
-            .then(data => {
+            .then((data) => {
               let newTreeFolders = treeFolders;
               let path = data.pathParts.slice(0);
               let folders = data.folders;
@@ -281,7 +286,7 @@ class PureHome extends React.Component {
 
               if (!isCopy || destFolderId === currentFolderId) {
                 fetchFiles(currentFolderId, filter)
-                  .then(data => {
+                  .then((data) => {
                     if (!isRecycleBinFolder) {
                       newTreeFolders = treeFolders;
                       path = data.selectedFolder.pathParts.slice(0);
@@ -298,7 +303,7 @@ class PureHome extends React.Component {
                     }
                     this.setNewFilter();
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     toastr.error(err);
                     clearProgressData();
                   })
@@ -307,33 +312,33 @@ class PureHome extends React.Component {
                 setProgressBarData({
                   label: progressData.label,
                   percent: 100,
-                  visible: true
+                  visible: true,
                 });
                 setTimeout(() => clearProgressData(), 5000);
                 setNewTreeFilesBadge(true);
                 setTreeFolders(newTreeFolders);
               }
             })
-            .catch(err => {
+            .catch((err) => {
               toastr.error(err);
               clearProgressData();
             });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         toastr.error(err);
         clearProgressData();
       });
   };
 
-  setSelections = items => {
+  setSelections = (items) => {
     const {
       selection,
       folders,
       files,
       selectFile,
       deselectFile,
-      fileActionId
+      fileActionId,
     } = this.props;
 
     if (selection.length > items.length) {
@@ -346,10 +351,12 @@ class PureHome extends React.Component {
         item = item.split("_");
         if (item[0] === "folder") {
           newFile = selection.find(
-            x => x.id === Number(item[1]) && !x.fileExst
+            (x) => x.id === Number(item[1]) && !x.fileExst
           );
         } else if (item[0] === "file") {
-          newFile = selection.find(x => x.id === Number(item[1]) && x.fileExst);
+          newFile = selection.find(
+            (x) => x.id === Number(item[1]) && x.fileExst
+          );
         }
         if (newFile) {
           newSelection.push(newFile);
@@ -358,7 +365,7 @@ class PureHome extends React.Component {
 
       for (let item of selection) {
         const element = newSelection.find(
-          x => x.id === item.id && x.fileExst === item.fileExst
+          (x) => x.id === item.id && x.fileExst === item.fileExst
         );
         if (!element) {
           deselectFile(item);
@@ -372,13 +379,15 @@ class PureHome extends React.Component {
         let newFile = null;
         item = item.split("_");
         if (item[0] === "folder") {
-          newFile = folders.find(x => x.id === Number(item[1]) && !x.fileExst);
+          newFile = folders.find(
+            (x) => x.id === Number(item[1]) && !x.fileExst
+          );
         } else if (item[0] === "file") {
-          newFile = files.find(x => x.id === Number(item[1]) && x.fileExst);
+          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
         }
         if (newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(
-            x => x.id === newFile.id && x.fileExst === newFile.fileExst
+            (x) => x.id === newFile.id && x.fileExst === newFile.fileExst
           );
           !existItem && selectFile(newFile);
         }
@@ -399,7 +408,7 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      selected
+      selected,
       // overwriteSetting,
       // uploadOriginalFormatSetting,
       // hideWindowSetting
@@ -409,7 +418,7 @@ class PureHome extends React.Component {
       progressData,
       viewAs,
       isLoading,
-      convertDialogVisible
+      convertDialogVisible,
     } = this.props;
 
     // const progressBarContent = (
@@ -511,7 +520,7 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = props => {
+const Home = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -525,7 +534,7 @@ const Home = props => {
 Home.propTypes = {
   files: PropTypes.array,
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -542,7 +551,7 @@ function mapStateToProps(state) {
     selection,
     treeFolders,
     viewAs,
-    isLoading
+    isLoading,
   } = state.files;
   const { id } = selectedFolder;
   const indexOfTrash = 3;
@@ -562,11 +571,11 @@ function mapStateToProps(state) {
     treeFolders,
     viewAs,
     isLoading,
-    homepage
+    homepage,
   };
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     deselectFile,
     getFolder,
@@ -582,11 +591,8 @@ const mapDispatchToProps = dispatch => {
     setIsLoading,
     setFirstLoad,
     fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
-    clearProgressData: () => clearProgressData(dispatch)
+    clearProgressData: () => clearProgressData(dispatch),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(Home));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home));
