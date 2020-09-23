@@ -15,6 +15,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
 import { api, utils } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+import { getPortalInviteLinks } from "../../../store/portal/actions";
 const i18n = createI18N({
   page: "InviteDialog",
   localesPath: "dialogs/InviteDialog"
@@ -78,12 +79,22 @@ class InviteDialogComponent extends React.Component {
   };
 
   componentDidMount() {
-    const { t } = this.props;
-    copy(this.state.userInvitationLink);
+    const { getPortalInviteLinks, userInvitationLink, guestInvitationLink } = this.props;
 
-    changeLanguage(i18n)
-      .then(() => this.setState({ visible: true }))
-      .then(() => toastr.success(t("LinkCopySuccess")));
+    changeLanguage(i18n).then(() => {
+      if(!userInvitationLink || !guestInvitationLink){
+        getPortalInviteLinks()
+        .then(() => {
+          this.setState({ 
+            visible: true,
+            userInvitationLink: this.props.userInvitationLink,
+            guestInvitationLink: this.props.guestInvitationLink
+          })
+        })
+      } else {
+        this.setState({ visible: true })
+      }
+    })
   }
 
   onClickToCloseButton = () =>
@@ -173,6 +184,12 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    getPortalInviteLinks: () => dispatch(getPortalInviteLinks())
+  }
+}
+
 const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
 
 const InviteDialog = props => <InviteDialogTranslated i18n={i18n} {...props} />;
@@ -183,4 +200,7 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps)(InviteDialog);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InviteDialog);

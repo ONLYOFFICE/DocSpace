@@ -12,12 +12,13 @@ import AdminsSettings from "./sub-components/admins";
 // import ModulesSettings from "./sub-components/modules";
 
 import { createI18N } from "../../../../../helpers/i18n";
+import { setDocumentTitle } from "../../../../../helpers/utils";
 const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings"
 });
 
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 
 const MainContainer = styled.div`
   padding-bottom: 16px;
@@ -35,7 +36,7 @@ class PureAccessRights extends Component {
 
     const { t, organizationName } = props;
 
-    changeDocumentTitle(`${t("ManagementCategorySecurity")} – ${organizationName}`);
+    setDocumentTitle(t("ManagementCategorySecurity"));
 
     const url = props.history.location.pathname;
     const newUrl = url.split("/");

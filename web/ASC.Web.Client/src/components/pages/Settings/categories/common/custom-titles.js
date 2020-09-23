@@ -15,9 +15,7 @@ import {
   restoreGreetingTitle
 } from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
-import { utils } from 'asc-web-common';
-
-const { changeDocumentTitle } = utils;
+import { setDocumentTitle } from "../../../../../helpers/utils";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -56,7 +54,7 @@ class CustomTitles extends React.Component {
 
     greetingTitleFromSessionStorage = getFromSessionStorage("greetingTitle");
 
-    changeDocumentTitle(`${t("Customization")} – ${organizationName}`);
+    setDocumentTitle(t("Customization"));
 
     this.state = {
       isLoadedData: false,

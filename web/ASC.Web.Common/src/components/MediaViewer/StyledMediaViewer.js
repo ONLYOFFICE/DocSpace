@@ -43,10 +43,6 @@ const StyledMediaViewer = styled.div`
     }
     .details{
         z-index: 4001;
-        font-size: 14px;
-        font-weight: bold;
-        text-align: center;
-        white-space: nowrap;
         padding-top: 14px;
         padding-bottom: 14px;
         height: 20px;
@@ -57,8 +53,7 @@ const StyledMediaViewer = styled.div`
         left: 0;
 
         .title{
-            width: calc(100% - 100px);
-            margin: 0 auto;
+            text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;

@@ -132,7 +132,7 @@ ${props => !props.disableSideInfo
 
 const TabletSideInfo = styled.div`
   display: none;
-
+  ${props => props.color ? `color: ${props.color};` : null}
   ${props => props.widthProp && (props.widthProp < size.tablet) || props.isMobile
     ? `${sideInfoTabletStyle}`
     : `
@@ -154,7 +154,6 @@ const getSideInfo = content => {
         : '';
     }
   });
-
   return info;
 };
 

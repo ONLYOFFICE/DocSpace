@@ -10,14 +10,18 @@ const StyledTreeMenu = styled(Tree)`
     width: 93%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
-  
+    .rc-tree-switcher {
+        margin-left: 0 !important;
+    }
+
+    & li span.rc-tree-iconEle {
+        margin-left: 4px;
+    }
+
     ${props => props.isEmptyRootNode &&
         css`
             & > li > span.rc-tree-switcher-noop {
                 display: none;
-            }
-            & li span.rc-tree-iconEle {
-                margin-left: 4px;
             }
         `
     }

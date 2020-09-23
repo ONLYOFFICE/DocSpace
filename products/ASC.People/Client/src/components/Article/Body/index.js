@@ -7,14 +7,15 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { history, utils as commonUtils, store as initStore } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
+import { setDocumentTitle } from "../../../helpers/utils";
 
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article"
 });
 
-const { changeLanguage, changeDocumentTitle } = commonUtils;
-const { getCurrentModule, isAdmin } = initStore.auth.selectors;
+const { changeLanguage } = commonUtils;
+const { isAdmin } = initStore.auth.selectors;
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${props => props.isAdmin && css`margin-top: 19px;`}
@@ -72,16 +73,14 @@ class ArticleBodyContent extends React.Component {
 
   changeTitleDocument(data = null) {
     const {
-      organizationName,
       groups,
-      selectedKeys,
-      currentModuleName
+      selectedKeys
     } = this.props;
 
     const currentGroup = getSelectedGroup(groups, data ? data[0] : selectedKeys[0]);
     currentGroup
-      ? changeDocumentTitle(`${currentGroup.name} – ${currentModuleName}`)
-      : changeDocumentTitle(`${currentModuleName} – ${organizationName}`);
+      ? setDocumentTitle(currentGroup.name)
+      : setDocumentTitle();
   }
   shouldComponentUpdate(nextProps) {
     if (
@@ -212,13 +211,8 @@ const BodyContent = props => {
 };
 
 function mapStateToProps(state) {
-  const currentModule = getCurrentModule(
-    state.auth.modules,
-    state.auth.settings.currentProductId
-  );
-
   const groups = state.people.groups;
-  const { customNames, organizationName } = state.auth.settings;
+  const { customNames } = state.auth.settings;
   const { groupsCaption } = customNames;
 
   return {
@@ -227,8 +221,6 @@ function mapStateToProps(state) {
       ? [state.people.selectedGroup]
       : ["root"],
     groups,
-    organizationName,
-    currentModuleName: (currentModule && currentModule.title) || "",
     isAdmin: isAdmin(state.auth.user)
   };
 }

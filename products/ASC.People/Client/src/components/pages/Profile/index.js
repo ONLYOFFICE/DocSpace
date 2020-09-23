@@ -12,11 +12,13 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile"
 });
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class PureProfile extends React.Component {
@@ -32,7 +34,7 @@ class PureProfile extends React.Component {
     const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
 
-    changeDocumentTitle(`${t("Profile")} – ${t("People")}`);
+    setDocumentTitle(t("Profile"));
 
     const queryParams = this.state.queryString.split("&");
     const arrayOfQueryParams = queryParams.map(queryParam =>
