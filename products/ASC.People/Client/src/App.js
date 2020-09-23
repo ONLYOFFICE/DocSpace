@@ -15,10 +15,13 @@ import {
   Login,
   Error404,
   Error520,
-  StudioLayout,
-  Offline
+  Offline,
+  utils,
+  store as commonStore,
+  constants,
+  NavMenu,
+  Main,
 } from "asc-web-common";
-import { store as commonStore, constants } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { getPortalInviteLinks } from "./store/portal/actions";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
@@ -32,7 +35,7 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalPasswordSettings,
-  getPortalCultures
+  getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 
@@ -41,18 +44,9 @@ const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
 const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 class App extends React.Component {
-  removeLoader = () => {
-    const ele = document.getElementById("ipl-progress-indicator");
-    if (ele) {
-      // fade out
-      ele.classList.add("available");
-      setTimeout(() => {
-        // remove from DOM
-        ele.outerHTML = "";
-      }, 2000);
-    }
-  };
   componentDidMount() {
+    utils.removeTempContent();
+
     const {
       getUser,
       getPortalSettings,
@@ -62,13 +56,13 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       finalize,
-      setIsLoaded
+      setIsLoaded,
     } = this.props;
 
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      this.removeLoader();
+      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -79,11 +73,11 @@ class App extends React.Component {
       getPortalPasswordSettings(),
       getPortalCultures(),
       fetchGroups(),
-      fetchPeople()
+      fetchPeople(),
     ];
 
     axios.all(requests).then(() => {
-      this.removeLoader();
+      utils.hideLoader();
       finalize();
     });
   }
@@ -92,7 +86,8 @@ class App extends React.Component {
     const { homepage } = this.props.settings;
     return navigator.onLine ? (
       <Router history={history}>
-        <StudioLayout>
+        <NavMenu />
+        <Main>
           <Suspense
             fallback={
               <Loader className="pageLoader" type="rombs" size="40px" />
@@ -100,55 +95,53 @@ class App extends React.Component {
           >
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
-              <PrivateRoute
-                exact
-                path={[homepage, `${homepage}/filter`]}
-                component={Home}
-              />
-              <PrivateRoute
-                path={`${homepage}/view/:userId`}
-                component={Profile}
-              />
+              <PrivateRoute path={homepage}>
+                <Home />
+              </PrivateRoute>
+              <PrivateRoute path={`${homepage}/view/:userId`}>
+                <Profile />
+              </PrivateRoute>
               <PrivateRoute
                 path={`${homepage}/edit/:userId`}
-                component={ProfileAction}
                 restricted
                 allowForMe
-              />
+              >
+                <ProfileAction />
+              </PrivateRoute>
+              <PrivateRoute path={`${homepage}/create/:type`} restricted>
+                <ProfileAction />
+              </PrivateRoute>
               <PrivateRoute
-                path={`${homepage}/create/:type`}
-                component={ProfileAction}
+                path={[
+                  `${homepage}/group/edit/:groupId`,
+                  `${homepage}/group/create`,
+                ]}
                 restricted
-              />
-              <PrivateRoute
-                path={`${homepage}/group/edit/:groupId`}
-                component={GroupAction}
-                restricted
-              />
-              <PrivateRoute
-                path={`${homepage}/group/create`}
-                component={GroupAction}
-                restricted
-              />
-              <PrivateRoute
-                path={`${homepage}/reassign/:userId`}
-                component={Reassign}
-                restricted
-              />
+              >
+                <GroupAction />
+              </PrivateRoute>
+              <PrivateRoute path={`${homepage}/reassign/:userId`} restricted>
+                <Reassign />
+              </PrivateRoute>
               <PublicRoute
                 exact
                 path={[
                   "/login",
                   "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail"
+                  "/login/confirmed-email=:confirmedEmail",
                 ]}
-                component={Login}
-              />
-              <PrivateRoute exact path={`/error=:error`} component={Error520} />
-              <PrivateRoute component={Error404} />
+              >
+                <Login />
+              </PublicRoute>
+              <PrivateRoute exact path={`/error=:error`}>
+                <Error520 />
+              </PrivateRoute>
+              <PrivateRoute>
+                <Error404 />
+              </PrivateRoute>
             </Switch>
           </Suspense>
-        </StudioLayout>
+        </Main>
       </Router>
     ) : (
       <Offline />
@@ -156,13 +149,13 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getUser: () =>
       getUser(dispatch).then(() => dispatch(getPortalInviteLinks())), //TODO: Try simplify
@@ -187,11 +180,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
       dispatch(setIsLoaded(true));
     },
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

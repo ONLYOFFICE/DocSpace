@@ -11,12 +11,13 @@ import {
   PublicRoute,
   Login,
   Error404,
-  StudioLayout,
   Offline,
-  ComingSoon
+  ComingSoon,
+  NavMenu,
+  Main,
+  utils,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
-//import store from "./store/store";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -27,23 +28,13 @@ const {
   setIsLoaded,
   getUser,
   getPortalSettings,
-  getModules
+  getModules,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
-  removeLoader = () => {
-    const ele = document.getElementById("ipl-progress-indicator");
-    if (ele) {
-      // fade out
-      ele.classList.add("available");
-      setTimeout(() => {
-        // remove from DOM
-        ele.outerHTML = "";
-      }, 2000);
-    }
-  };
-
   componentDidMount() {
+    utils.removeTempContent();
+
     const { getPortalSettings, getUser, getModules, setIsLoaded } = this.props;
 
     const { AUTH_KEY } = constants;
@@ -62,11 +53,11 @@ class App extends React.Component {
 
     axios
       .all(requests)
-      .catch(e => {
+      .catch((e) => {
         console.log("INIT REQUESTS FAILED", e);
       })
       .finally(() => {
-        this.removeLoader();
+        utils.hideLoader();
         setIsLoaded(true);
       });
   }
@@ -74,40 +65,48 @@ class App extends React.Component {
   render() {
     return navigator.onLine ? (
       <Router history={history}>
-        <StudioLayout>
+        <NavMenu />
+        <Main>
           <Suspense
             fallback={
               <Loader className="pageLoader" type="rombs" size="40px" />
             }
           >
             <Switch>
-              <Route exact path="/wizard" component={Wizard} />
+              <Route exact path="/wizard">
+                <Wizard />
+              </Route>
               <PublicRoute
                 exact
                 path={[
                   "/login",
                   "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail"
+                  "/login/confirmed-email=:confirmedEmail",
                 ]}
-                component={Login}
-              />
-              <Route path="/confirm" component={Confirm} />
-              <PrivateRoute
-                exact
-                path={["/", "/error=:error"]}
-                component={Home}
-              />
-              <PrivateRoute exact path="/about" component={About} />
-              <PrivateRoute restricted path="/settings" component={Settings} />
-              <PrivateRoute
-                exact
-                path={["/coming-soon"]}
-                component={ComingSoon}
-              />
-              <PrivateRoute component={Error404} />
+              >
+                <Login />
+              </PublicRoute>
+              <Route path="/confirm">
+                <Confirm />
+              </Route>
+              <PrivateRoute exact path={["/", "/error=:error"]}>
+                <Home />
+              </PrivateRoute>
+              <PrivateRoute exact path="/about">
+                <About />
+              </PrivateRoute>
+              <PrivateRoute restricted path="/settings">
+                <Settings />
+              </PrivateRoute>
+              <PrivateRoute exact path={["/coming-soon"]}>
+                <ComingSoon />
+              </PrivateRoute>
+              <PrivateRoute>
+                <Error404 />
+              </PrivateRoute>
             </Switch>
           </Suspense>
-        </StudioLayout>
+        </Main>
       </Router>
     ) : (
       <Offline />
@@ -115,27 +114,24 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { modules, isLoaded, settings } = state.auth;
   const { homepage, organizationName } = settings;
   return {
     modules,
     isLoaded,
     homepage,
-    organizationName
+    organizationName,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

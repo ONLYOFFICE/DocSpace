@@ -26,7 +26,7 @@ import {
   Offline,
   NavMenu,
   Main,
-  //PageLayout,
+  utils,
 } from "asc-web-common";
 
 const {
@@ -59,19 +59,9 @@ const { AUTH_KEY } = constants;
 // };
 
 class App extends React.Component {
-  removeLoader = () => {
-    const ele = document.getElementById("ipl-progress-indicator");
-    if (ele) {
-      // fade out
-      ele.classList.add("available");
-      // setTimeout(() => {
-      //   // remove from DOM
-      //   ele.outerHTML = "";
-      // }, 2000);
-    }
-  };
-
   componentDidMount() {
+    utils.removeTempContent();
+
     const {
       getUser,
       getPortalSettings,
@@ -80,7 +70,6 @@ class App extends React.Component {
       getPortalCultures,
       fetchMyFolder,
       fetchTreeFolders,
-      //fetchFiles,
       finalize,
       setIsLoaded,
     } = this.props;
@@ -88,7 +77,7 @@ class App extends React.Component {
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      this.removeLoader();
+      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -103,7 +92,7 @@ class App extends React.Component {
     ];
 
     axios.all(requests).then(() => {
-      this.removeLoader();
+      utils.hideLoader();
       finalize();
     });
   }

@@ -73,9 +73,6 @@ class PureHome extends React.Component {
   }
 
   componentDidMount() {
-    const tempElm = document.getElementById("temp-content");
-    if (tempElm) tempElm.outerHTML = "";
-
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
