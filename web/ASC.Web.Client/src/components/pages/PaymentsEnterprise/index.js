@@ -68,7 +68,7 @@ class Body extends React.Component {
 
     setPaymentsLicense(null, fd)
       .then(() => {
-        toastr.success(t("LoadingLicenseSuccess"), "", 0, true);
+        toastr.success(t("LoadingLicenseSuccess"), "");
       })
       .catch((error) => {
         toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);
