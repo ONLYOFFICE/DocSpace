@@ -10,7 +10,7 @@ import VersionHistory from "./components/pages/VersionHistory";
 import {
   fetchMyFolder,
   fetchTreeFolders,
-  fetchFiles
+  fetchFiles,
 } from "./store/files/actions";
 import config from "../package.json";
 
@@ -25,7 +25,7 @@ import {
   Error520,
   Offline,
   NavMenu,
-  Main
+  Main,
   //PageLayout,
 } from "asc-web-common";
 
@@ -37,7 +37,7 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalPasswordSettings,
-  getPortalCultures
+  getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 
@@ -82,7 +82,7 @@ class App extends React.Component {
       fetchTreeFolders,
       //fetchFiles,
       finalize,
-      setIsLoaded
+      setIsLoaded,
     } = this.props;
 
     const token = localStorage.getItem(AUTH_KEY);
@@ -99,7 +99,7 @@ class App extends React.Component {
       getPortalPasswordSettings(),
       getPortalCultures(),
       fetchMyFolder(),
-      fetchTreeFolders()
+      fetchTreeFolders(),
     ];
 
     axios.all(requests).then(() => {
@@ -136,7 +136,7 @@ class App extends React.Component {
               path={[
                 "/login",
                 "/login/error=:error",
-                "/login/confirmed-email=:confirmedEmail"
+                "/login/confirmed-email=:confirmedEmail",
               ]}
             >
               <Login />
@@ -156,13 +156,13 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
@@ -176,11 +176,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
       dispatch(setIsLoaded(true));
     },
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
