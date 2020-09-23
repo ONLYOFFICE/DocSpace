@@ -54,7 +54,6 @@ namespace ASC.Web.Studio.Utility
         private LicenseReader LicenseReader { get; }
         private SetupInfo SetupInfo { get; }
         private SettingsManager SettingsManager { get; }
-        private TenantControlPanelSettings TenantControlPanelSettings { get; }
 
         public TenantExtra(
             UserManager userManager,
@@ -254,6 +253,12 @@ namespace ASC.Web.Studio.Utility
                 return SetupInfo.ChunkUploadSize;
             }
         }
+
+        public void DemandControlPanelPermission()
+        {
+            if (!CoreBaseSettings.Standalone || SettingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
+            {
+                throw new System.Security.SecurityException();
     }
 
     public static class TenantExtraExtension

@@ -1,5 +1,6 @@
 ﻿using System;
 
+using ASC.Common;
 using ASC.Common.Caching;
 
 namespace ASC.Data.Storage.Encryption
@@ -27,5 +28,14 @@ namespace ASC.Data.Storage.Encryption
         }
 
         private string GetCacheKey(int tenantId) => $"encryption{tenantId}";
+    }
+
+    public static class EncryptionServiceNotifierExtension
+    {
+        public static DIHelper AddEncryptionServiceNotifierService(this DIHelper services)
+        {
+            services.TryAddSingleton<EncryptionServiceNotifier>();
+            return services;
+        }
     }
 }
