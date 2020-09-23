@@ -29,6 +29,10 @@ const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-treenode-disabled > a span {
     cursor: wait;
   }
+/*
+  span.rc-tree-iconEle {
+    margin-left: 4px;
+  }*/
 `;
 
 class TreeFolders extends React.Component {
@@ -393,6 +397,9 @@ class TreeFolders extends React.Component {
         onDragLeave={this.onDragLeave}
         onDrop={this.onDrop}
         dragging={dragging}
+        gapBetweenNodes="22"
+        gapBetweenNodesTablet="26"
+        isFullFillSelection={false}
       >
         {this.getItems(treeData)}
       </StyledTreeMenu>
