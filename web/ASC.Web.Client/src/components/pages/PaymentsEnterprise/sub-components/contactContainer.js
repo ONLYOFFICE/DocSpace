@@ -16,19 +16,9 @@ const i18n = createI18N({
 
 const StyledContactContainer = styled.div`
   display: grid;
-
-  .contact-emails {
-    margin-bottom: 11px;
-  }
-
-  @media (max-width: 632px) {
-    .contact-emails {
-      margin-bottom: 10px;
-    }
-    .contact-emails_link {
-      margin-top: 3px;
-    }
-  }
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content min-content;
+  grid-row-gap: 11px;
 `;
 
 const ContactContainer = ({ salesEmail, helpUrl }) => {
@@ -39,24 +29,16 @@ const ContactContainer = ({ salesEmail, helpUrl }) => {
   const { t } = useTranslation("translation", { i18n });
   return (
     <StyledContactContainer>
-      <Text className="contact-emails">
+      <Text>
         {t("PurchaseQuestions")}{" "}
-        <Link
-          className="contact-emails_link"
-          href={`mailto:${salesEmail}`}
-          color="#316daa"
-        >
+        <Link href={`mailto:${salesEmail}`} color="#316daa">
           {salesEmail}
         </Link>
       </Text>
-      <Text className="contact-emails">
+
+      <Text>
         {t("TechnicalIssues")}{" "}
-        <Link
-          target="_blank"
-          className="contact-emails_link"
-          href={`${helpUrl}`}
-          color="#316daa"
-        >
+        <Link target="_blank" href={`${helpUrl}`} color="#316daa">
           {helpUrl}
         </Link>
       </Text>

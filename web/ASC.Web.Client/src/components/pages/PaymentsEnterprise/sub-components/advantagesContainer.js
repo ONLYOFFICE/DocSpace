@@ -16,85 +16,31 @@ const i18n = createI18N({
 const StyledBodyAdvantages = styled.div`
   display: grid;
   padding: 32px;
-  grid-template-areas:
-    "header header"
-    "firstI first"
-    "secondI second"
-    "thirdI third"
-    "fourI four"
-    "fiveI five";
+
+  div {
+    display: flex;
+  }
 
   .wrapper {
-    display: flex;
     align-items: center;
   }
 
-  grid-template-columns: 24px 1fr;
-  grid-template-rows: min-content min-content;
-  grid-auto-rows: min-content;
+  background: url("images/payments_enterprise.svg") #f8f9f9 bottom 32px right
+    32px no-repeat;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(4, min-content);
   grid-row-gap: 18px;
-  grid-column-gap: 8px;
-  margin: 0;
-  background: #f8f9f9;
+
   .advantages {
     line-height: 16px;
   }
   .header-advantages {
     line-height: 30px;
-  }
-  .main_icon {
-    position: absolute;
-    margin-left: 634px;
-    z-index: 0;
-  }
-  .header-advantages {
-    grid-area: header;
     padding-bottom: 15px;
-    z-index: 1;
-  }
-
-  .first-advantages {
-    grid-area: first;
-    z-index: 1;
-  }
-
-  .second-advantages {
-    grid-area: second;
-    z-index: 1;
-  }
-  .third-advantages {
-    grid-area: third;
-    z-index: 1;
-  }
-  .four-advantages {
-    grid-area: four;
-    z-index: 1;
-  }
-  .five-advantages {
-    grid-area: five;
-    z-index: 1;
-  }
-
-  .first_icon {
-    grid-area: firstI;
-  }
-  .second_icon {
-    grid-area: secondI;
-  }
-  .third_icon {
-    grid-area: thirdI;
-  }
-  .four_icon {
-    grid-area: fourI;
-  }
-  .five_icon {
-    grid-area: fiveI;
   }
 
   @media ${tablet} {
-    .main_icon {
-      display: none;
-    }
+    background: #f8f9f9;
   }
 `;
 
@@ -109,73 +55,76 @@ const AdvantagesContainer = () => {
       <Text className="header-advantages" fontSize="22px" isBold={true}>
         {t("SubscriptionGet")}
       </Text>
-      <img
-        className="first_icon"
-        src="images/payments_enterprise_cubes.svg"
-        width="24px"
-        height="23px"
-        alt="Icon_cubes"
-      />
-      <Box className="wrapper">
-        <Text className="first-advantages  advantages" isBold={true}>
-          {t("OnlyOfficeEditor")}
-        </Text>
-      </Box>
-      <img
-        className="second_icon"
-        src="images/payments_enterprise_lock.svg"
-        width="24px"
-        height="23px"
-        alt="Icon_lock"
-      />
-      <Box className="wrapper">
-        <Text className="second-advantages  advantages" isBold={true}>
-          {t("PrivateRooom")}
-        </Text>
-      </Box>
-      <img
-        className="third_icon"
-        src="images/payments_enterprise_smartphone.svg"
-        width="24px"
-        height="23px"
-        alt="Icon_smartphone"
-      />
-      <Box className="wrapper">
-        <Text className="third-advantages  advantages" isBold={true}>
-          {t("WebEditors")}
-        </Text>
-      </Box>
-      <img
-        className="four_icon"
-        src="images/payments_enterprise_update.svg"
-        width="24px"
-        height="23px"
-        alt="Icon_update"
-      />
-      <Box className="wrapper">
-        <Text className="four-advantages  advantages" isBold={true}>
-          {t("FunctionalityAndSecurity")}
-        </Text>
-      </Box>
-      <img
-        className="five_icon"
-        src="images/payments_enterprise_help.svg"
-        width="24px"
-        height="23px"
-        alt="Icon_help"
-      />
-      <Box className="wrapper">
-        <Text className="five-advantages  advantages" isBold={true}>
-          {t("ProfessionalTechSupport")}
-        </Text>
-      </Box>
-      <img
-        className="payments-icon-enterprise main_icon"
-        src="images/payments_enterprise.svg"
-        width="222px"
-        height="247px"
-        alt="Icon_main"
-      />
+
+      <div>
+        <img
+          src="images/payments_enterprise_cubes.svg"
+          width="24px"
+          height="23px"
+          alt="Icon_cubes"
+        />
+        <Box className="wrapper" marginProp="0 0 0 8px">
+          <Text className="advantages" isBold={true}>
+            {t("OnlyOfficeEditor")}
+          </Text>
+        </Box>
+      </div>
+
+      <div>
+        <img
+          src="images/payments_enterprise_lock.svg"
+          width="24px"
+          height="23px"
+          alt="Icon_lock"
+        />
+        <Box className="wrapper" marginProp="0 0 0 8px">
+          <Text className="advantages" isBold={true}>
+            {t("PrivateRooom")}
+          </Text>
+        </Box>
+      </div>
+
+      <div>
+        <img
+          src="images/payments_enterprise_smartphone.svg"
+          width="24px"
+          height="23px"
+          alt="Icon_smartphone"
+        />
+        <Box className="wrapper" marginProp="0 0 0 8px">
+          <Text className="advantages" isBold={true}>
+            {t("WebEditors")}
+          </Text>
+        </Box>
+      </div>
+
+      <div>
+        <img
+          src="images/payments_enterprise_update.svg"
+          width="24px"
+          height="23px"
+          alt="Icon_update"
+        />
+        <Box className="wrapper" marginProp="0 0 0 8px">
+          <Text className="advantages" isBold={true}>
+            {t("FunctionalityAndSecurity")}
+          </Text>
+        </Box>
+      </div>
+
+      <div>
+        <img
+          src="images/payments_enterprise_help.svg"
+          width="24px"
+          height="23px"
+          alt="Icon_help"
+        />
+        <Box className="wrapper" marginProp="0 0 0 8px">
+          <Text className="advantages" isBold={true}>
+            {t("ProfessionalTechSupport")}
+          </Text>
+        </Box>
+      </div>
     </StyledBodyAdvantages>
   );
 };

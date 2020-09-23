@@ -17,11 +17,15 @@ const i18n = createI18N({
   localesPath: "pages/PaymentsEnterprise",
 });
 const StyledHeader = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content min-content;
+  grid-row-gap: 8px;
+
   .payments-header {
     margin-top: 46px;
     font-style: normal;
     line-height: 32px;
-    margin-bottom: 8px;
   }
   .payments-header-additional_support {
     margin-bottom: 40px;
@@ -29,7 +33,6 @@ const StyledHeader = styled.div`
   }
 
   @media ${tablet} {
-    display: grid;
     .payments-header {
       margin-top: 39px;
     }

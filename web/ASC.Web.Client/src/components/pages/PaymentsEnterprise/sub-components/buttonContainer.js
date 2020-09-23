@@ -16,12 +16,13 @@ const i18n = createI18N({
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   display: grid;
   padding: 32px;
   grid-template-columns: min-content min-content;
   grid-template-rows: min-content;
   grid-column-gap: 16px;
+
   .button-payments-enterprise {
     border-radius: 3px;
     padding: 12px 20px;
@@ -38,8 +39,6 @@ const StyledButtonContainer = styled.div`
     display: none;
   }
   @media ${tablet} {
-    display: grid;
-
     grid-template-columns: 1fr;
     grid-template-rows: min-content min-content;
     grid-row-gap: 16px;
@@ -51,7 +50,6 @@ const StyledButtonContainer = styled.div`
     }
   }
   @media (max-width: 632px) {
-    margin-bottom: 16px;
     .button-buy {
       min-width: 279px;
     }
