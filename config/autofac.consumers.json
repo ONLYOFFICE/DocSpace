@@ -59,7 +59,7 @@
 		  },
 		  "additional": {
 			"telegramAuthTokenLifespan" : 20,
-			"telegramProxy":
+			"telegramProxy": ""
 		  }
 	  }
     },    
@@ -647,7 +647,7 @@
 			"bucket" : "",
 			"region" : "",
 			"serviceurl": "",
-			"forcepathstyle": ""
+			"forcepathstyle": "",
 			"usehttp": "",
 			"sse": "",
 			"cdn": "S3Cdn"
