@@ -1,8 +1,4 @@
-import {
-  SET_SETTINGS_PAYMENTS_ENTERPRISE,
-  SET_UPLOAD_PAYMENTS_ENTERPRISE_LICENSE,
-  RESET_UPLOADED_LICENSE,
-} from "./actions";
+import { SET_SETTINGS_PAYMENTS_ENTERPRISE } from "./actions";
 
 const initialState = {
   salesEmail: "sales@onlyoffice.com",
@@ -10,7 +6,7 @@ const initialState = {
   buyUrl:
     "https://www.onlyoffice.com/enterprise-edition.aspx?type=buyenterprise",
   standaloneMode: true,
-  licenseUpload: null,
+
   currentLicense: {
     expiresDate: new Date(),
     trialMode: false,
@@ -30,15 +26,7 @@ const paymentsReducer = (state = initialState, action) => {
           trialMode: action.settings.currentLicense.trial,
         }),
       });
-    case SET_UPLOAD_PAYMENTS_ENTERPRISE_LICENSE:
-      return Object.assign({}, state, {
-        licenseUpload: action.message,
-      });
 
-    case RESET_UPLOADED_LICENSE:
-      return Object.assign({}, state, {
-        licenseUpload: null,
-      });
     default:
       return state;
   }

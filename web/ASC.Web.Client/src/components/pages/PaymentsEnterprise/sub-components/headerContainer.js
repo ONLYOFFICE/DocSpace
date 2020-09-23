@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Text, utils as Utils } from "asc-web-components";
+import { Text } from "asc-web-components";
 import { utils } from "asc-web-common";
 
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
 });
+
 const StyledHeader = styled.div`
   display: grid;
   grid-template-columns: 1fr;

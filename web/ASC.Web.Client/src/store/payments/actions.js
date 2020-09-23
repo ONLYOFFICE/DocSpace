@@ -2,9 +2,6 @@ import { api } from "asc-web-common";
 
 export const SET_SETTINGS_PAYMENTS_ENTERPRISE =
   "SET_SETTINGS_PAYMENTS_ENTERPRISE";
-export const SET_UPLOAD_PAYMENTS_ENTERPRISE_LICENSE =
-  "SET_UPLOAD_PAYMENTS_ENTERPRISE_LICENSE";
-export const RESET_UPLOADED_LICENSE = "RESET_UPLOADED_LICENSE";
 
 export function setSettings(settings) {
   return {
@@ -13,18 +10,6 @@ export function setSettings(settings) {
   };
 }
 
-export function setLicenseUpload(message) {
-  return {
-    type: SET_UPLOAD_PAYMENTS_ENTERPRISE_LICENSE,
-    message,
-  };
-}
-
-export function resetUploadedLicense() {
-  return {
-    type: RESET_UPLOADED_LICENSE,
-  };
-}
 export function getSettingsPayment() {
   return (dispatch) => {
     return api.settings.getPaymentSettings().then((settings) => {
@@ -34,12 +19,10 @@ export function getSettingsPayment() {
 }
 export function setPaymentsLicense(confirmKey, data) {
   return (dispatch) => {
-    return api.settings.setLicense(confirmKey, data).then((res) => {
-      dispatch(setLicenseUpload(res));
-      setTimeout(() => {
-        dispatch(getSettingsPayment());
-      }, 50);
-    });
+    return api.settings
+      .setLicense(confirmKey, data)
+      .then(() => dispatch(acceptPaymentsLicense()))
+      .then(() => dispatch(getSettingsPayment()));
   };
 }
 export function acceptPaymentsLicense() {

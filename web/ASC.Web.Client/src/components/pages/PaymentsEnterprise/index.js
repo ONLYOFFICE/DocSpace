@@ -13,8 +13,6 @@ import ContactContainer from "./sub-components/contactContainer";
 import {
   setPaymentsLicense,
   getSettingsPayment,
-  resetUploadedLicense,
-  acceptPaymentsLicense,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -60,19 +58,6 @@ class Body extends React.Component {
 
     currentProductId !== "payments" && setCurrentProductId("payments");
     getSettingsPayment();
-  }
-
-  componentDidUpdate() {
-    const {
-      licenseUpload,
-      resetUploadedLicense,
-      acceptPaymentsLicense,
-    } = this.props;
-
-    if (licenseUpload) {
-      acceptPaymentsLicense();
-      resetUploadedLicense();
-    }
   }
 
   onClickUpload = (file) => {
@@ -144,6 +129,4 @@ export default connect(mapStateToProps, {
   setPaymentsLicense,
   setCurrentProductId,
   getSettingsPayment,
-  resetUploadedLicense,
-  acceptPaymentsLicense,
 })(withRouter(PaymentsEnterprise));

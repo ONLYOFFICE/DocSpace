@@ -17,7 +17,7 @@ const i18n = createI18N({
 const StyledContactContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: min-content min-content;
+  grid-template-rows: repeat(min-content, 2);
   grid-row-gap: 11px;
 `;
 
