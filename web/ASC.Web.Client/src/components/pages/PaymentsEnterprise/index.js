@@ -17,13 +17,13 @@ import {
   acceptPaymentsLicense,
 } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
-
+import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",
 });
 const { setCurrentProductId } = store.auth.actions;
-const { changeLanguage, changeDocumentTitle } = utils;
+const { changeLanguage } = utils;
 const { tablet, size } = Utils.device;
 
 const StyledBody = styled.div`
@@ -46,9 +46,9 @@ const StyledBody = styled.div`
 class Body extends React.Component {
   constructor(props) {
     super(props);
-    const { t, organizationName } = this.props;
+    const { t } = this.props;
 
-    changeDocumentTitle(`${t("Payments")} – ${organizationName}`);
+    setDocumentTitle(`${t("Payments")}`);
   }
 
   componentDidMount() {
@@ -133,13 +133,11 @@ PaymentsEnterprise.propTypes = {
 };
 
 function mapStateToProps({ auth, payments }) {
-  const { organizationName } = auth.settings;
   const { isLoaded } = auth;
   const { licenseUpload } = payments;
   return {
     isLoaded,
     licenseUpload,
-    organizationName,
   };
 }
 export default connect(mapStateToProps, {
