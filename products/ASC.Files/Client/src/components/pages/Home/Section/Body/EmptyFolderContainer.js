@@ -19,15 +19,18 @@ const EmptyFolderWrapper = styled.div`
     }
 
     .empty-folder_container_up-image {
-      margin-right: 8px;
+      margin: 1px 8px 0 0;
       cursor: pointer;
     }
 
     .empty-folder_container_plus-image {
       margin: -8px 8px 0 0;
+      line-height: unset;
     }
 
     .empty-folder_container-icon {
+      height: 20px;
+      width: 12px;
       margin-right: 4px;
     }
   }
