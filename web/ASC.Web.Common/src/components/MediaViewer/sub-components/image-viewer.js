@@ -64,7 +64,6 @@ const StyledViewer = styled(Viewer)`
     }
     li[data-key='delete'],
     li[data-key='customDownload']{
-        position: fixed;
         bottom: 10px;
         .controlBtn{
             margin: 0
