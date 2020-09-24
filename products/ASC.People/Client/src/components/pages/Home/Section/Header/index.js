@@ -6,9 +6,9 @@ import {
   DropDownItem,
   toastr,
   ContextMenuButton,
-  utils
+  utils,
 } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { Headline, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
@@ -16,14 +16,14 @@ import {
   getUsersStatus,
   getInactiveUsers,
   getDeleteUsers,
-  getUsersIds
+  getUsersIds,
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
   fetchPeople,
   removeUser,
-  setSelected
+  setSelected,
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, constants } from "asc-web-common";
@@ -32,7 +32,7 @@ import {
   DeleteUsersDialog,
   SendInviteDialog,
   ChangeUserStatusDialog,
-  ChangeUserTypeDialog
+  ChangeUserTypeDialog,
 } from "../../../../dialogs";
 const { tablet, desktop } = utils.device;
 
@@ -41,7 +41,7 @@ const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
   @media ${desktop} {
-    ${props =>
+    ${(props) =>
       props.isHeaderVisible &&
       css`
         width: calc(100% + 76px);
@@ -55,7 +55,7 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       & > div:first-child {
-        ${props =>
+        ${(props) =>
           props.isArticlePinned &&
           css`
             width: calc(100% - 240px);
@@ -93,7 +93,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const SectionHeaderContent = props => {
+const SectionHeaderContent = (props) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [showDeleteDialog, setDeleteDialog] = useState(false);
   const [showSendInviteDialog, setSendInviteDialog] = useState(false);
@@ -123,7 +123,8 @@ const SectionHeaderContent = props => {
     usersToInvite,
     usersToRemove,
     setSelected,
-    selection
+    selection,
+    isLoaded,
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -134,7 +135,7 @@ const SectionHeaderContent = props => {
   );
 
   const onSetGuest = useCallback(() => setShowGuestDialog(!showGuestDialog), [
-    showGuestDialog
+    showGuestDialog,
   ]);
 
   const onSetActive = useCallback(
@@ -153,7 +154,7 @@ const SectionHeaderContent = props => {
   );
 
   const onDelete = useCallback(() => setDeleteDialog(!showDeleteDialog), [
-    showDeleteDialog
+    showDeleteDialog,
   ]);
 
   const onSendEmail = useCallback(() => {
@@ -164,9 +165,12 @@ const SectionHeaderContent = props => {
     window.open(`mailto: ${str}`, "_self");
   }, [selection]);
 
-  const onSelectorSelect = useCallback((item) => {
-    onSelect && onSelect(item.key);
-  }, [onSelect]);
+  const onSelectorSelect = useCallback(
+    (item) => {
+      onSelect && onSelect(item.key);
+    },
+    [onSelect]
+  );
 
   const menuItems = [
     {
@@ -176,51 +180,55 @@ const SectionHeaderContent = props => {
       isSelect: true,
       fontWeight: "bold",
       children: [
-        <DropDownItem key="active" label={t("LblActive")} data-index={0}/>,
-        <DropDownItem key="disabled" label={t("LblTerminated")} data-index={1}/>,
-        <DropDownItem key="invited" label={t("LblInvited")} data-index={2}/>
+        <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
+        <DropDownItem
+          key="disabled"
+          label={t("LblTerminated")}
+          data-index={1}
+        />,
+        <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
       ],
-      onSelect: onSelectorSelect
+      onSelect: onSelectorSelect,
     },
     {
       label: t("ChangeToUser", {
-        userCaption: settings.customNames.userCaption
+        userCaption: settings.customNames.userCaption,
       }),
       disabled: !usersWithEmployeeType.length,
-      onClick: onSetEmployee
+      onClick: onSetEmployee,
     },
     {
       label: t("ChangeToGuest", {
-        guestCaption: settings.customNames.guestCaption
+        guestCaption: settings.customNames.guestCaption,
       }),
       disabled: !usersWithGuestType.length,
-      onClick: onSetGuest
+      onClick: onSetGuest,
     },
     {
       label: t("LblSetActive"),
       disabled: !usersWithActiveStatus.length,
-      onClick: onSetActive
+      onClick: onSetActive,
     },
     {
       label: t("LblSetDisabled"),
       disabled: !usersWithDisableStatus.length,
-      onClick: onSetDisabled
+      onClick: onSetDisabled,
     },
     {
       label: t("LblInviteAgain"),
       disabled: !usersToInvite.length,
-      onClick: onSendInviteAgain
+      onClick: onSendInviteAgain,
     },
     {
       label: t("LblSendEmail"),
       disabled: !selection.length,
-      onClick: onSendEmail
+      onClick: onSendEmail,
     },
     {
       label: t("DeleteButton"),
       disabled: !usersToRemove.length,
-      onClick: onDelete
-    }
+      onClick: onDelete,
+    },
   ];
 
   const onEditGroup = useCallback(
@@ -239,13 +247,13 @@ const SectionHeaderContent = props => {
       {
         key: "edit-group",
         label: t("EditButton"),
-        onClick: onEditGroup
+        onClick: onEditGroup,
       },
       {
         key: "delete-group",
         label: t("DeleteButton"),
-        onClick: onDeleteGroup
-      }
+        onClick: onDeleteGroup,
+      },
     ];
   }, [t, onEditGroup, onDeleteGroup]);
 
@@ -272,29 +280,29 @@ const SectionHeaderContent = props => {
       {
         key: "new-employee",
         label: userCaption,
-        onClick: goToEmployeeCreate
+        onClick: goToEmployeeCreate,
       },
       {
         key: "new-guest",
         label: guestCaption,
-        onClick: goToGuestCreate
+        onClick: goToGuestCreate,
       },
       {
         key: "new-group",
         label: groupCaption,
-        onClick: goToGroupCreate
+        onClick: goToGroupCreate,
       },
       { key: "separator", isSeparator: true },
       {
         key: "make-invitation-link",
         label: t("MakeInvitationLink"),
-        onClick: onInvitationDialogClick
+        onClick: onInvitationDialogClick,
       } /* ,
       {
         key: "send-invitation",
         label: t("SendInviteAgain"),
         onClick: onSentInviteAgain
-      } */
+      } */,
     ];
   }, [
     settings,
@@ -302,7 +310,7 @@ const SectionHeaderContent = props => {
     goToEmployeeCreate,
     goToGuestCreate,
     goToGroupCreate,
-    onInvitationDialogClick /* , onSentInviteAgain */
+    onInvitationDialogClick /* , onSentInviteAgain */,
   ]);
 
   const isArticlePinned = window.localStorage.getItem("asc_article_pinned_key");
@@ -391,7 +399,9 @@ const SectionHeaderContent = props => {
         </div>
       ) : (
         <div className="header-container">
-          {group ? (
+          {!isLoaded ? (
+            <Loaders.Headline />
+          ) : group ? (
             <>
               <Headline
                 className="headline-header"
@@ -451,20 +461,22 @@ const SectionHeaderContent = props => {
   );
 };
 
-const mapStateToProps = state => {
-  const selection = state.people.selection;
+const mapStateToProps = (state) => {
+  const { isLoaded, settings, user } = state.auth;
+  const { filter, groups, selection, selectedGroup } = state.people;
+
   const activeUsers = 1;
   const disabledUsers = 2;
-  const currentUserId = state.auth.user.id;
+  const currentUserId = user && user.id;
   const employeeStatus = true;
   const guestStatus = false;
 
   return {
-    group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
+    group: getSelectedGroup(groups, selectedGroup),
     selection,
-    isAdmin: isAdmin(state.auth.user),
-    filter: state.people.filter,
-    settings: state.auth.settings,
+    isAdmin: isAdmin(user),
+    filter,
+    settings: settings,
 
     usersWithEmployeeType: getUserType(
       selection,
@@ -483,7 +495,8 @@ const mapStateToProps = state => {
       currentUserId
     ),
     usersToInvite: getInactiveUsers(selection),
-    usersToRemove: getDeleteUsers(selection)
+    usersToRemove: getDeleteUsers(selection),
+    isLoaded,
   };
 };
 
@@ -492,5 +505,5 @@ export default connect(mapStateToProps, {
   fetchPeople,
   deleteGroup,
   removeUser,
-  setSelected
+  setSelected,
 })(withTranslation()(withRouter(SectionHeaderContent)));
