@@ -31,9 +31,8 @@ namespace ASC.Files.Tests
         protected UserInfo User { get; set; }
         protected SecurityContext SecurityContext { get; set; }
         protected UserOptions UserOptions { get; set; }
-        protected DocumentsOptions DocumentsOptions { get; set; } = new DocumentsOptions();
         protected IAccount Account { get; set; }
-        protected IConfiguration Configuration { get; set; } = new ConfigurationBuilder().Build();
+        protected IConfiguration Configuration { get; set; }
 
         public virtual void SetUp()
         {
@@ -84,23 +83,12 @@ namespace ASC.Files.Tests
                 .AddEnvironmentVariables();
 
             Configuration = config.Build();
-
-            DocumentsOptions.FolderOptions.CreateItems = Configuration.GetSection("Folder:CreateItems").Get<CreateItems>();
-            DocumentsOptions.FolderOptions.GetItems = Configuration.GetSection("Folder:GetItems").Get<GetItems>();
-            DocumentsOptions.FolderOptions.GetInfoItems = Configuration.GetSection("Folder:GetInfoItems").Get<GetInfoItems>();
-            DocumentsOptions.FolderOptions.RenameItems = Configuration.GetSection("Folder:RenameItems").Get<RenameItems>();
-            DocumentsOptions.FolderOptions.DeleteItems = Configuration.GetSection("Folder:DeleteItems").Get<DeleteItems>();
-
-            DocumentsOptions.FileOptions.CreateItems = Configuration.GetSection("File:CreateItems").Get<CreateItems>();
-            DocumentsOptions.FileOptions.GetInfoItems = Configuration.GetSection("File:GetInfoItems").Get<GetInfoItems>();
-            DocumentsOptions.FileOptions.UpdateItems = Configuration.GetSection("File:UpdateItems").Get<UpdateItems>();
-            DocumentsOptions.FileOptions.DeleteItems = Configuration.GetSection("File:DeleteItems").Get<DeleteItems>();
         }
 
         private Tenant SetAndGetCurrentTenant()
         {
             var tenantManager = TestServer.Services.GetService<TenantManager>();
-            var tenant = tenantManager.GetTenant(1);
+            var tenant = tenantManager.GetTenant(UserOptions.TenantId);
             tenantManager.SetCurrentTenant(tenant);
 
             return tenantManager.CurrentTenant;

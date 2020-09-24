@@ -16,28 +16,25 @@ namespace ASC.Files.Tests
             base.SetUp();
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
         [Category("section 'My Documents'")]
-        public void CreateFolderReturnsFolderWrapperTest()
+        public void CreateFolderReturnsFolderWrapperTest(string folderTitle)
         {
-            var folderWrapperOne = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, DocumentsOptions.FolderOptions.CreateItems.TitleOne);
-            var folderWrapperTwo = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, DocumentsOptions.FolderOptions.CreateItems.TitleTwo);
+            var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
 
-            Assert.IsNotNull(folderWrapperOne);
-            Assert.IsNotNull(folderWrapperTwo);
-            Assert.AreEqual("FolderOne", folderWrapperOne.Title);
-            Assert.AreEqual("FolderTwo", folderWrapperTwo.Title);
+            Assert.IsNotNull(folderWrapper);
+            Assert.AreEqual(folderTitle, folderWrapper.Title);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItems))]
         [Category("section 'My Documents'")]
-        public void GetFolderReturnsFolderContentWrapperTest()
+        public void GetFolderReturnsFolderContentWrapperTest(int folderId, bool withSubFolders)
         {
             var folderContentWrapper = FilesControllerHelper.GetFolder(
-                DocumentsOptions.FolderOptions.GetItems.Id,
+                folderId,
                 UserOptions.Id,
                 FilterType.None,
-                DocumentsOptions.FolderOptions.GetItems.WithSubFolders);
+                withSubFolders);
 
             var filesCount = folderContentWrapper.Files.Count;
             var foldersCount = folderContentWrapper.Folders.Count;
@@ -46,36 +43,34 @@ namespace ASC.Files.Tests
             Assert.AreEqual(0, foldersCount);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
         [Category("section 'My Documents'")]
-        public void GetFolderInfoReturnsFolderWrapperTest()
+        public void GetFolderInfoReturnsFolderWrapperTest(int folderId, string folderTitleExpected)
         {
-            var folderWrapper = FilesControllerHelper.GetFolderInfo(DocumentsOptions.FolderOptions.GetInfoItems.id);
+            var folderWrapper = FilesControllerHelper.GetFolderInfo(folderId);
 
             Assert.IsNotNull(folderWrapper);
-            Assert.AreEqual(DocumentsOptions.FolderOptions.GetInfoItems.TitleExpected, folderWrapper.Title);
+            Assert.AreEqual(folderTitleExpected, folderWrapper.Title);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
         [Category("section 'My Documents'")]
-        public void RenameFolderReturnsFolderWrapperTest()
+        public void RenameFolderReturnsFolderWrapperTest(int folderId, string folderTitle)
         {
-            var folderWrapper = FilesControllerHelper.RenameFolder(
-                DocumentsOptions.FolderOptions.RenameItems.Id,
-                DocumentsOptions.FolderOptions.RenameItems.Title);
+            var folderWrapper = FilesControllerHelper.RenameFolder(folderId, folderTitle);
 
             Assert.IsNotNull(folderWrapper);
-            Assert.AreEqual(DocumentsOptions.FolderOptions.RenameItems.Title, folderWrapper.Title);
+            Assert.AreEqual(folderTitle, folderWrapper.Title);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("section 'My Documents'")]
-        public void DeleteFolderTest()
+        public void DeleteFolderTest(int folderId, bool deleteAfter, bool immediately)
         {
             var statuses = FilesControllerHelper.DeleteFolder(
-                DocumentsOptions.FolderOptions.DeleteItems.Id,
-                DocumentsOptions.FolderOptions.DeleteItems.DeleteAfter,
-                DocumentsOptions.FolderOptions.DeleteItems.Immediately);
+                folderId,
+                deleteAfter,
+                immediately);
 
             FileOperationWraper status = null;
             foreach (var item in statuses)
@@ -91,48 +86,47 @@ namespace ASC.Files.Tests
             Assert.AreEqual(statusDelete, status.OperationType);
         }
 
-        [Test]
-        public void CreateFileReturnsFileWrapperTest()
-        {
-            var fileWrapperOne = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, DocumentsOptions.FileOptions.CreateItems.TitleOne);
-            var fileWrapperTwo = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, DocumentsOptions.FileOptions.CreateItems.TitleTwo);
-
-            Assert.IsNotNull(fileWrapperOne);
-            Assert.IsNotNull(fileWrapperTwo);
-            Assert.AreEqual("FileOne", fileWrapperOne.Title);
-            Assert.AreEqual("FileTwo", fileWrapperTwo.Title);
-        }
-
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("section 'My Documents'")]
-        public void GetFileInfoReturnsFilesWrapperTest()
+        public void CreateFileReturnsFileWrapperTest(string fileTitle)
         {
-            var fileWrapper = FilesControllerHelper.GetFileInfo(DocumentsOptions.FileOptions.GetInfoItems.id);
+            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
 
             Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(DocumentsOptions.FileOptions.GetInfoItems.TitleExpected, fileWrapper.Title);
+            Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
-        [Test]
-        public void UpdateFileReturnsFileWrapperTest()
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
+        [Category("section 'My Documents'")]
+        public void GetFileInfoReturnsFilesWrapperTest(int fileId, string fileTitleExpected)
+        {
+            var fileWrapper = FilesControllerHelper.GetFileInfo(fileId);
+
+            Assert.IsNotNull(fileWrapper);
+            Assert.AreEqual(fileTitleExpected, fileWrapper.Title);
+        }
+
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
+        [Category("section 'My Documents'")]
+        public void UpdateFileReturnsFileWrapperTest(int fileId, string fileTitle, int lastVersion)
         {
             var fileWrapper = FilesControllerHelper.UpdateFile(
-                DocumentsOptions.FileOptions.UpdateItems.Id,
-                DocumentsOptions.FileOptions.UpdateItems.Title,
-                DocumentsOptions.FileOptions.UpdateItems.LastVersion);
+                fileId,
+                fileTitle,
+                lastVersion);
 
             Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(DocumentsOptions.FileOptions.UpdateItems.Title, fileWrapper.Title);
+            Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
         [Category("section 'My Documents'")]
-        public void DeleteFileTest()
+        public void DeleteFileTest(int fileId, bool deleteAfter, bool immediately)
         {
             var statuses = FilesControllerHelper.DeleteFile(
-                DocumentsOptions.FileOptions.DeleteItems.Id,
-                DocumentsOptions.FileOptions.DeleteItems.DeleteAfter,
-                DocumentsOptions.FileOptions.DeleteItems.Immediately);
+                fileId,
+                deleteAfter,
+                immediately);
 
             FileOperationWraper status = null;
             foreach (var item in statuses)
@@ -148,11 +142,10 @@ namespace ASC.Files.Tests
             Assert.AreEqual(statusDelete, status.OperationType);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetMoveBatchItems))]
         [Category("section 'My Documents'")]
-        public void MoveBatchItemsReturnsOperationMoveTest()
+        public void MoveBatchItemsReturnsOperationMoveTest(string json)
         {
-            var json = " [ { \"folderIds\": [ 1, 2, 3 ] }, { \"fileIds\": [ 1 , 2 ] }, { \"destFolderId\": 4 } ]";
             var batchModel = GetBatchModel(json);
 
             var statuses = FilesControllerHelper.MoveBatchItems(batchModel);
@@ -171,11 +164,10 @@ namespace ASC.Files.Tests
             Assert.AreEqual(statusMove, status.OperationType);
         }
 
-        [Test]
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCopyBatchItems))]
         [Category("section 'My Documents'")]
-        public void CopyBatchItemsReturnsOperationCopyTest()
+        public void CopyBatchItemsReturnsOperationCopyTest(string json)
         {
-            var json = " [ { \"folderIds\": [ 6 ] }, { \"fileIds\": [ 4 , 5 ] }, { \"destFolderId\": 5 } ]";
             var batchModel = GetBatchModel(json);
 
             var statuses = FilesControllerHelper.CopyBatchItems(batchModel);
