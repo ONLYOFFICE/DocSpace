@@ -2177,10 +2177,11 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../../packages/asc-web-common":
-  version "1.0.231"
+  version "1.0.238"
   dependencies:
     axios "^0.19.1"
     history "4.10.1"
+    react-content-loader "^5.1.2"
     react-player "^1.15.3"
     react-resize-detector "^5.0.7"
     react-svg "^11.0.9"
@@ -2189,7 +2190,7 @@ asap@~2.0.6:
     screenfull "^5.0.2"
 
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.449"
+  version "1.0.453"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
@@ -9405,6 +9406,11 @@ react-autosize-textarea@^7.0.0:
     autosize "^4.0.2"
     line-height "^0.3.1"
     prop-types "^15.5.6"
+
+react-content-loader@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-5.1.2.tgz#75dcff30f2651c166c21433484081e7e70b44b6a"
+  integrity sha512-Kr4wWisiL0qcdbzVWZx/puyCfTP1PiTTtR7N4B7mikTeY2wf5TMgMykUQyaEUW422IDUU9VJWfewSm9hIRwTiw==
 
 react-custom-scrollbars@^4.2.1:
   version "4.2.1"
