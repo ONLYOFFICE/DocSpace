@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toastr, utils } from "asc-web-components";
-import { store as initStore } from "asc-web-common";
-import ContentLoader from "react-content-loader";
+import { store as initStore, Loaders } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
@@ -14,7 +13,7 @@ import {
   setDragging,
   setNewTreeFilesBadge,
   setIsLoading,
-  setSelectedNode
+  setSelectedNode,
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { NewFilesPanel } from "../../panels";
@@ -22,30 +21,11 @@ import { setDocumentTitle } from "../../../helpers/utils";
 
 const { getCurrentModule } = initStore.auth.selectors;
 
-const TreeFolderLoader = () => (
-  <ContentLoader
-    speed={2}
-    width={264}
-    height={188}
-    viewBox="0 0 264 188"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-  >
-    <rect x="0" y="0" rx="0" ry="0" width="216" height="189" />
-  </ContentLoader>
-);
-
 class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const {
-      organizationName,
-      selectedFolderTitle,
-      currentModuleName,
-      filter,
-      data
-    } = props;
+    const { selectedFolderTitle, filter, data } = props;
 
     selectedFolderTitle
       ? setDocumentTitle(selectedFolderTitle)
@@ -54,7 +34,7 @@ class ArticleBodyContent extends React.Component {
     this.state = {
       expandedKeys: filter.treeFolders,
       data,
-      showNewFilesPanel: false
+      showNewFilesPanel: false,
     };
   }
 
@@ -95,9 +75,7 @@ class ArticleBodyContent extends React.Component {
       setIsLoading,
       selectedTreeNode,
       setSelectedNode,
-      currentModuleName,
-      organizationName,
-      fetchFiles
+      fetchFiles,
     } = this.props;
 
     if (selectedTreeNode[0] !== data[0]) {
@@ -115,22 +93,22 @@ class ArticleBodyContent extends React.Component {
         : setDocumentTitle();
 
       fetchFiles(data[0], newFilter, store.dispatch)
-        .catch(err => toastr.error(err))
+        .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     }
   };
 
-  onShowNewFilesPanel = folderId => {
+  onShowNewFilesPanel = (folderId) => {
     const { showNewFilesPanel } = this.state;
     this.setState({
       showNewFilesPanel: !showNewFilesPanel,
-      newFolderId: [folderId]
+      newFolderId: [folderId],
     });
   };
 
   setNewFilesCount = (folderPath, filesCount) => {
     const data = this.state.data;
-    const dataItem = data.find(x => x.id === folderPath[0]);
+    const dataItem = data.find((x) => x.id === folderPath[0]);
     dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
     this.setState({ data });
   };
@@ -153,7 +131,7 @@ class ArticleBodyContent extends React.Component {
       setDragging,
       onTreeDrop,
       selectedTreeNode,
-      setIsLoading
+      setIsLoading,
     } = this.props;
 
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
@@ -174,7 +152,7 @@ class ArticleBodyContent extends React.Component {
           />
         )}
         {isEmpty(data) ? (
-          <TreeFolderLoader />
+          <Loaders.TreeFolders />
         ) : (
           <>
             <TreeFolders
@@ -219,7 +197,7 @@ function mapStateToProps(state) {
     selection,
     dragging,
     updateTreeNew,
-    selectedTreeNode
+    selectedTreeNode,
   } = state.files;
 
   const currentFolderId =
@@ -267,11 +245,11 @@ function mapStateToProps(state) {
     selectedTreeNode: selected,
     currentModuleName: (currentModule && currentModule.title) || "",
     selectedFolderTitle: (selectedFolder && selectedFolder.title) || "",
-    organizationName
+    organizationName,
   };
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setFilter,
     setTreeFolders,
@@ -280,11 +258,8 @@ const mapDispatchToProps = dispatch => {
     setNewTreeFilesBadge,
     setIsLoading,
     setSelectedNode,
-    fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch)
+    fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ArticleBodyContent);
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);

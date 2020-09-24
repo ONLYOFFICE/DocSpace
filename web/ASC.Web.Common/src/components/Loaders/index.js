@@ -1,3 +1,4 @@
 import Headline from "./HeadlineLoader";
+import TreeFolders from "./TreeFolderLoader";
 
-export default { Headline };
+export default { Headline, TreeFolders };
