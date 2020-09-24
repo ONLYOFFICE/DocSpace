@@ -14,7 +14,7 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> GetFolderItems()
         {
-            yield return new TestCaseData(14, true);
+            yield return new TestCaseData(14, true, 0, 0);
         }
 
         public static IEnumerable<TestCaseData> GetFolderInfoItems()
@@ -34,8 +34,8 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> GetCreateFileItems()
         {
-            yield return new TestCaseData("FileOne");
-            yield return new TestCaseData("FileTwo");
+            yield return new TestCaseData("FileOne.docx");
+            yield return new TestCaseData("FileTwo.docx");
         }
 
         public static IEnumerable<TestCaseData> GetFileInfoItems()

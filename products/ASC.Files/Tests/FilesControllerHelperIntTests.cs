@@ -28,7 +28,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItems))]
         [Category("section 'My Documents'")]
-        public void GetFolderReturnsFolderContentWrapperTest(int folderId, bool withSubFolders)
+        public void GetFolderReturnsFolderContentWrapperTest(int folderId, bool withSubFolders,int filesCountExpected,int foldersCountExpected)
         {
             var folderContentWrapper = FilesControllerHelper.GetFolder(
                 folderId,
@@ -39,8 +39,8 @@ namespace ASC.Files.Tests
             var filesCount = folderContentWrapper.Files.Count;
             var foldersCount = folderContentWrapper.Folders.Count;
             Assert.IsNotNull(folderContentWrapper);
-            Assert.AreEqual(0, filesCount);
-            Assert.AreEqual(0, foldersCount);
+            Assert.AreEqual(filesCountExpected, filesCount);
+            Assert.AreEqual(foldersCountExpected, foldersCount);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
@@ -90,7 +90,7 @@ namespace ASC.Files.Tests
         [Category("section 'My Documents'")]
         public void CreateFileReturnsFileWrapperTest(string fileTitle)
         {
-            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
+            var fileWrapper = FilesControllerHelper.CreateFile(54, fileTitle);
 
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitle, fileWrapper.Title);
