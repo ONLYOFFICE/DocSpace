@@ -4,25 +4,34 @@ import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
 import { selectGroup } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { history, utils as commonUtils, store as initStore } from "asc-web-common";
+import {
+  history,
+  utils as commonUtils,
+  store as initStore,
+  Loaders,
+} from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { setDocumentTitle } from "../../../helpers/utils";
 
 const i18n = createI18N({
   page: "Article",
-  localesPath: "Article"
+  localesPath: "Article",
 });
 
 const { changeLanguage } = commonUtils;
 const { isAdmin } = initStore.auth.selectors;
 
 const StyledTreeMenu = styled(TreeMenu)`
-  ${props => props.isAdmin && css`margin-top: 19px;`}
+  ${(props) =>
+    props.isAdmin &&
+    css`
+      margin-top: 19px;
+    `}
 `;
 
-const getItems = data => {
-  return data.map(item => {
+const getItems = (data) => {
+  return data.map((item) => {
     if (item.children) {
       return (
         <TreeNode
@@ -37,26 +46,24 @@ const getItems = data => {
                 color="#657077"
               />
             ) : (
-                ""
-              )
+              ""
+            )
           }
         >
           {getItems(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode
-      className='inner-folder'
-      key={item.key}
-      title={item.title}
-      icon={
-        <Icons.CatalogFolderIcon
-          size="scale"
-          isfill={true}
-          color="#657077"
-        />
-      }
-    />;
+    return (
+      <TreeNode
+        className="inner-folder"
+        key={item.key}
+        title={item.title}
+        icon={
+          <Icons.CatalogFolderIcon size="scale" isfill={true} color="#657077" />
+        }
+      />
+    );
   });
 };
 
@@ -66,21 +73,19 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.selectedKeys[0] !== this.props.selectedKeys[0]) {
+    if (prevProps.selectedKeys[0] !== this.props.selectedKeys[0]) {
       this.changeTitleDocument();
     }
   }
 
   changeTitleDocument(data = null) {
-    const {
-      groups,
-      selectedKeys
-    } = this.props;
+    const { groups, selectedKeys } = this.props;
 
-    const currentGroup = getSelectedGroup(groups, data ? data[0] : selectedKeys[0]);
-    currentGroup
-      ? setDocumentTitle(currentGroup.name)
-      : setDocumentTitle();
+    const currentGroup = getSelectedGroup(
+      groups,
+      data ? data[0] : selectedKeys[0]
+    );
+    currentGroup ? setDocumentTitle(currentGroup.name) : setDocumentTitle();
   }
   shouldComponentUpdate(nextProps) {
     if (
@@ -96,18 +101,16 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
 
-  onSelect = data => {
-    const {
-      selectGroup
-    } = this.props;
+  onSelect = (data) => {
+    const { selectGroup } = this.props;
 
-    this.changeTitleDocument(data)
+    this.changeTitleDocument(data);
     selectGroup(
       data && data.length === 1 && data[0] !== "root" ? data[0] : null
     );
   };
 
-  switcherIcon = obj => {
+  switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -123,10 +126,12 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { data, selectedKeys, isAdmin } = this.props;
+    const { isLoaded, data, selectedKeys, isAdmin } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-    return (
+    return !isLoaded ? (
+      <Loaders.TreeFolders />
+    ) : (
       <StyledTreeMenu
         className="people-tree-menu"
         checkable={false}
@@ -141,7 +146,7 @@ class ArticleBodyContent extends React.Component {
         isFullFillSelection={false}
         gapBetweenNodes="22"
         gapBetweenNodesTablet="26"
-        isEmptyRootNode={getItems(data).length > 0 }
+        isEmptyRootNode={getItems(data).length > 0}
         isAdmin={isAdmin}
       >
         {getItems(data)}
@@ -154,7 +159,7 @@ const getTreeGroups = (groups, departments) => {
   const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
   const link = history.location.search.slice(1);
   let newLink = link.split("&");
-  const index = newLink.findIndex(x => x.includes("group"));
+  const index = newLink.findIndex((x) => x.includes("group"));
   index && newLink.splice(1, 1);
   newLink = newLink.join("&");
 
@@ -176,7 +181,7 @@ const getTreeGroups = (groups, departments) => {
       ),
       root: true,
       children:
-        groups.map(g => {
+        groups.map((g) => {
           return {
             key: g.id,
             title: (
@@ -187,10 +192,10 @@ const getTreeGroups = (groups, departments) => {
                 {g.name}
               </Link>
             ),
-            root: false
+            root: false,
           };
-        }) || []
-    }
+        }) || [],
+    },
   ];
 
   return treeData;
@@ -198,7 +203,7 @@ const getTreeGroups = (groups, departments) => {
 
 const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
 
-const BodyContent = props => {
+const BodyContent = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -212,7 +217,8 @@ const BodyContent = props => {
 
 function mapStateToProps(state) {
   const groups = state.people.groups;
-  const { customNames } = state.auth.settings;
+  const { isLoaded, settings } = state.auth;
+  const { customNames } = settings;
   const { groupsCaption } = customNames;
 
   return {
@@ -221,11 +227,9 @@ function mapStateToProps(state) {
       ? [state.people.selectedGroup]
       : ["root"],
     groups,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
+    isLoaded,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { selectGroup }
-)(BodyContent);
+export default connect(mapStateToProps, { selectGroup })(BodyContent);
