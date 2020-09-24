@@ -1,4 +1,4 @@
-import { SET_SETTINGS_PAYMENTS_ENTERPRISE } from "./actions";
+import { SET_PAYMENTS_SETTINGS } from "./actions";
 
 const initialState = {
   salesEmail: "sales@onlyoffice.com",
@@ -6,7 +6,6 @@ const initialState = {
   buyUrl:
     "https://www.onlyoffice.com/enterprise-edition.aspx?type=buyenterprise",
   standaloneMode: true,
-
   currentLicense: {
     expiresDate: new Date(),
     trialMode: false,
@@ -15,7 +14,7 @@ const initialState = {
 
 const paymentsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_SETTINGS_PAYMENTS_ENTERPRISE:
+    case SET_PAYMENTS_SETTINGS:
       return Object.assign({}, state, {
         salesEmail: action.settings.salesEmail,
         helpUrl: action.settings.feedbackAndSupportUrl,

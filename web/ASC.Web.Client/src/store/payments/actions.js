@@ -1,11 +1,10 @@
 import { api } from "asc-web-common";
 
-export const SET_SETTINGS_PAYMENTS_ENTERPRISE =
-  "SET_SETTINGS_PAYMENTS_ENTERPRISE";
+export const SET_PAYMENTS_SETTINGS = "SET_PAYMENTS_SETTINGS";
 
 export function setSettings(settings) {
   return {
-    type: SET_SETTINGS_PAYMENTS_ENTERPRISE,
+    type: SET_PAYMENTS_SETTINGS,
     settings,
   };
 }
