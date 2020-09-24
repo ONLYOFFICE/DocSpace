@@ -47,6 +47,7 @@ using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.Notify;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -61,6 +62,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
+using ASC.Notify.Messages;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
@@ -162,6 +164,7 @@ namespace ASC.Api.Settings
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
         private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
         private ILog Log { get; set; }
+        private TelegramHelper TelegramHelper { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -215,7 +218,7 @@ namespace ASC.Api.Settings
             IOptionsSnapshot<AccountLinker> accountLinker,
             FirstTimeTenantSettings firstTimeTenantSettings,
             ServiceClient serviceClient,
-
+            TelegramHelper telegramHelper,
             StorageFactory storageFactory,
             UrlShortener urlShortener,
             EncryptionServiceClient encryptionServiceClient,
@@ -282,6 +285,7 @@ namespace ASC.Api.Settings
             EncryptionServiceNotifier = encryptionServiceNotifier;
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
+            TelegramHelper = telegramHelper;
         }
 
         [Read("", Check = false)]
@@ -2284,7 +2288,6 @@ namespace ASC.Api.Settings
                     changed = true;
                 }
             }
-
             if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !consumer.All(r => string.IsNullOrEmpty(r.Value)))
             {
                 consumer.Clear();
@@ -2317,6 +2320,47 @@ namespace ASC.Api.Settings
                         currentTariff.DueDate.Date
                     }
                 };
+        }
+
+        /// <visible>false</visible>
+        /// <summary>
+        /// Gets a link that will connect TelegramBot to your account
+        /// </summary>
+        /// <returns>url</returns>
+        /// 
+        [Read("telegramlink")]
+        public object TelegramLink()
+        {
+            var currentLink = TelegramHelper.CurrentRegistrationLink(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+
+            if (string.IsNullOrEmpty(currentLink))
+            {
+                var url = TelegramHelper.RegisterUser(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+                return url;
+            }
+            else
+            {
+                return currentLink;
+            }
+        }
+
+        /// <summary>
+        /// Checks if user has connected TelegramBot
+        /// </summary>
+        /// <returns>0 - not connected, 1 - connected, 2 - awaiting confirmation</returns>
+        [Read("telegramisconnected")]
+        public object TelegramIsConnected()
+        {
+            return (int)TelegramHelper.UserIsConnected(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+        }
+
+        /// <summary>
+        /// Unlinks TelegramBot from your account
+        /// </summary>
+        [Delete("telegramdisconnect")]
+        public void TelegramDisconnect()
+        {
+            TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
         }
 
         private readonly int maxCount = 10;
@@ -2392,7 +2436,9 @@ namespace ASC.Api.Settings
                 .AddEncryptionSettingsHelperService()
                 .AddStorageFactoryService()
                 .AddBackupService()
-                .AddEncryptionServiceNotifierService();
+                .AddEncryptionServiceNotifierService()
+                .AddTelegramLoginProviderService()
+                .AddTelegramHelperSerivce();
         }
     }
 }

@@ -30,6 +30,7 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.Extensions.Options;
@@ -119,18 +120,17 @@ namespace ASC.Core.Common.Notify.Telegram
 
     public static class CachedTelegramDaoExtension
     {
-        public static DIHelper AddTenantService(this DIHelper services)
+        public static DIHelper AddCachedTelegramDaoService(this DIHelper services)
         {
             if (services.TryAddScoped<TelegramDao>())
             {
-                services.TryAddScoped<CachedTelegramDao>();
 
                 services.TryAddScoped<IConfigureOptions<TelegramDao>, ConfigureTelegramDaoService>();
                 services.TryAddScoped<IConfigureOptions<CachedTelegramDao>, ConfigureCachedTelegramDao>();
 
                 services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-                return services;
+                return services.AddTelegramDbContextService();
             }
 
             return services;

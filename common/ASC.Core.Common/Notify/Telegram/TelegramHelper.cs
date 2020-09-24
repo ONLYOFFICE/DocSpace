@@ -1,6 +1,6 @@
 ﻿/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 
+using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Notify.Telegram;
 using ASC.Notify.Messages;
@@ -59,31 +60,23 @@ namespace ASC.Core.Common.Notify
             TelegramServiceClient = telegramServiceClient;
         }
 
-        private TelegramServiceClient Client
-        {
-            get
-            {
-                return new TelegramServiceClient();
-            }
-        }
-
         public string RegisterUser(Guid userId, int tenantId)
         {
             var token = GenerateToken(userId);
 
-            Client.RegisterUser(userId.ToString(), tenantId, token);
+            TelegramServiceClient.RegisterUser(userId.ToString(), tenantId, token);
 
             return GetLink(token);
         }
 
         public void SendMessage(NotifyMessage msg)
         {
-            Client.SendMessage(msg);
+            TelegramServiceClient.SendMessage(msg);
         }
 
         public bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy)
         {
-            return Client.CheckConnection(tenantId, token, tokenLifespan, proxy);
+            return TelegramServiceClient.CheckConnection(tenantId, token, tokenLifespan, proxy);
         }
 
         public RegStatus UserIsConnected(Guid userId, int tenantId)
@@ -96,7 +89,7 @@ namespace ASC.Core.Common.Notify
         public string CurrentRegistrationLink(Guid userId, int tenantId)
         {
             var token = GetCurrentToken(userId, tenantId);
-            if (token == null) return "";
+            if (token == null || token == "") return "";
 
             return GetLink(token);
         }
@@ -113,7 +106,7 @@ namespace ASC.Core.Common.Notify
 
         private string GetCurrentToken(Guid userId, int tenantId)
         {
-            return Client.RegistrationToken(userId.ToString(), tenantId);
+            return TelegramServiceClient.RegistrationToken(userId.ToString(), tenantId);
         }
 
         private string GenerateToken(Guid userId)
@@ -137,6 +130,19 @@ namespace ASC.Core.Common.Notify
             if (string.IsNullOrEmpty(botname)) return null;
 
             return string.Format("t.me/{0}?start={1}", botname, token);
+        }
+    }
+
+    public static class TelegramHelperExtension
+    {
+        public static DIHelper AddTelegramHelperSerivce(this DIHelper services)
+        {
+            if (services.TryAddScoped<TelegramHelper>())
+            {
+                return services.AddTelegramServiceClient()
+                    .AddCachedTelegramDaoService();
+            }
+            return services;
         }
     }
 }

@@ -1,0 +1,9 @@
+﻿syntax = "proto3";
+
+package ASC.Core.Common.Notify;
+
+message RegistrationTokenProto {
+    string UserId= 1;
+    int32 TenantId= 2;
+    string Time = 3;
+}

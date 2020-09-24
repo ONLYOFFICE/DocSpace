@@ -81,6 +81,7 @@ namespace ASC.Core.Common.Notify.Telegram
             };
 
             TelegramDbContext.AddOrUpdate(r => r.Users, user);
+            TelegramDbContext.SaveChanges();
         }
 
         public TelegramUser GetUser(Guid userId, int tenantId)

@@ -1,6 +1,6 @@
 ﻿/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -25,38 +25,137 @@
 
 
 using System;
+using System.Threading;
 
+using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Notify.Messages;
 
 namespace ASC.Core.Common.Notify
 {
     public class TelegramServiceClient : ITelegramService
     {
-        public TelegramServiceClient()
-        {
+        private ICacheNotify<NotifyMessage> CacheMessage { get; }
+        private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
+        private ICacheNotify<CheckConnectionProto> CacheCheckConnection { get; }
+        private ICacheNotify<RegistrationTokenProto> CacheRegistrationToken { get; }
 
+        private ICacheNotify<GetConnectionProto> CacheGetConnection { get; }
+        private ICacheNotify<SuccessfulRegTokenProto> CacheSuccessfulRegistrationToken { get; }
+
+        private ICache Cache { get; }
+
+        public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
+            ICacheNotify<RegisterUserProto> cacheRegisterUser,
+            ICacheNotify<CheckConnectionProto> cacheCheckConnection,
+            ICacheNotify<RegistrationTokenProto> cacheRegistrationToken,
+            ICacheNotify<GetConnectionProto> cacheGetConnection,
+            ICacheNotify<SuccessfulRegTokenProto> cacheSuccessfulRegistrationToken)
+        {
+            CacheMessage = cacheMessage;
+            CacheRegisterUser = cacheRegisterUser;
+            CacheCheckConnection = cacheCheckConnection;
+            CacheRegistrationToken = cacheRegistrationToken;
+            CacheGetConnection = cacheGetConnection;
+            CacheSuccessfulRegistrationToken = cacheSuccessfulRegistrationToken;
+            CacheGetConnection.Subscribe(n => SaveAnswerConnect(n), CacheNotifyAction.Insert);
+            CacheSuccessfulRegistrationToken.Subscribe(n => SaveAnswerRegistration(n), CacheNotifyAction.Insert);
+            Cache = AscCache.Memory;
         }
 
         public void SendMessage(NotifyMessage m)
         {
-            //Channel.SendMessage(m);//TODO
+            CacheMessage.Publish(m, CacheNotifyAction.Insert);
         }
 
         public void RegisterUser(string userId, int tenantId, string token)
         {
-            //Channel.RegisterUser(userId, tenantId, token);
+            CacheRegisterUser.Publish(new RegisterUserProto() { 
+                UserId = userId,
+                TenantId = tenantId,
+                Token = token } , CacheNotifyAction.Insert);
         }
 
         public bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy)
         {
-            throw new NotImplementedException();
-            //return Channel.CheckConnection(tenantId, token, tokenLifespan, proxy);
+            var time = DateTime.Now.ToString("o");
+            CacheCheckConnection.Publish(new CheckConnectionProto()
+            {
+                TenantId = tenantId,
+                Token = token,
+                TokenLifespan = tokenLifespan,
+                Proxy = proxy,
+                Time = time
+            }, CacheNotifyAction.Insert);
+
+            while (true)
+            {
+                try
+                {
+                    Thread.Sleep(1000);
+                    var cache = Cache.Get<GetConnectionProto>(GetCacheConnectKey(tenantId, time)).Connect;
+                    Cache.Remove(GetCacheConnectKey(tenantId, time));
+                    return cache;
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
         }
 
         public string RegistrationToken(string userId, int tenantId)
         {
-            throw new NotImplementedException();
-            //return Channel.RegistrationToken(userId, tenantId);
+            var time = DateTime.Now.ToString("o");
+            CacheRegistrationToken.Publish(new RegistrationTokenProto()
+            {
+                UserId = userId,
+                TenantId = tenantId,
+                Time = time
+            }, CacheNotifyAction.Insert);
+            while (true)
+            {
+                try
+                {
+                    Thread.Sleep(1000);
+                    var cache = Cache.Get<SuccessfulRegTokenProto>(GetCacheRegKey(tenantId, time)).Token;
+                    Cache.Remove(GetCacheRegKey(tenantId, time));
+                    return cache;
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        }
+
+        private string GetCacheConnectKey(int tenantId, string time)
+        {
+            return typeof(GetConnectionProto).FullName + tenantId + time;
+        }
+
+        private string GetCacheRegKey(int tenantId, string time)
+        {
+            return typeof(SuccessfulRegTokenProto).FullName + tenantId + time;
+        }
+
+        private void SaveAnswerConnect(GetConnectionProto getConnectionProto)
+        {
+            Cache.Insert(GetCacheConnectKey(getConnectionProto.TenantId, getConnectionProto.Time), getConnectionProto, DateTime.MaxValue);
+        }
+
+        private void SaveAnswerRegistration(SuccessfulRegTokenProto successfulRegTokenProto)
+        {
+            Cache.Insert(GetCacheRegKey(successfulRegTokenProto.TenantId, successfulRegTokenProto.Time), successfulRegTokenProto, DateTime.MaxValue);
+        }
+    }
+
+    public static class TelegramServiceClientExtension
+    {
+        public static DIHelper AddTelegramServiceClient(this DIHelper services)
+        {
+            services.TryAddSingleton<TelegramServiceClient>();
+            return services;
         }
     }
 }
