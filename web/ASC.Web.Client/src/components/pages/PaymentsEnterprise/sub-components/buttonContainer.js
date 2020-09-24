@@ -23,18 +23,6 @@ const StyledButtonContainer = styled.div`
   grid-template-rows: min-content;
   grid-column-gap: 16px;
 
-  .button {
-    border-radius: 3px;
-    padding: 12px 20px;
-    display: inline-block;
-    background: #2da7db;
-    color: white;
-    height: 45px;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 20px;
-  }
-
   .input-upload {
     display: none;
   }
@@ -42,14 +30,6 @@ const StyledButtonContainer = styled.div`
     grid-template-columns: 1fr;
     grid-template-rows: min-content min-content;
     grid-row-gap: 16px;
-    .button {
-      max-width: 536px;
-    }
-  }
-  @media (max-width: 632px) {
-    .button {
-      min-width: 279px;
-    }
   }
 `;
 
@@ -76,9 +56,10 @@ const ButtonContainer = ({ buyUrl, onClickBuy, onClickUpload }) => {
   return (
     <StyledButtonContainer>
       <Button
-        className="button"
         label={t("Buy")}
         value={`${buyUrl}`}
+        size="large"
+        primary={true}
         onClick={onClickBuy}
       />
       <input
@@ -91,8 +72,9 @@ const ButtonContainer = ({ buyUrl, onClickBuy, onClickUpload }) => {
 
       <Button
         type="submit"
-        className="button"
         label={t("Upload")}
+        size="large"
+        primary={true}
         onClick={onClickSubmit}
       />
     </StyledButtonContainer>
