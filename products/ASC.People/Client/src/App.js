@@ -23,7 +23,6 @@ import {
   Main,
 } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
-import { getPortalInviteLinks } from "./store/portal/actions";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
 
@@ -157,8 +156,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUser: () =>
-      getUser(dispatch).then(() => dispatch(getPortalInviteLinks())), //TODO: Try simplify
+    getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
     getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
