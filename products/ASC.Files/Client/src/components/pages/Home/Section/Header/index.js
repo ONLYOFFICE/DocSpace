@@ -1,9 +1,8 @@
 import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
-import ContentLoader from "react-content-loader";
 import { withRouter } from "react-router";
-import { constants, Headline, store, api } from "asc-web-common";
+import { constants, Headline, store, api, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
@@ -12,7 +11,7 @@ import {
   GroupButtonsMenu,
   IconButton,
   toastr,
-  utils
+  utils,
 } from "asc-web-components";
 import {
   fetchFiles,
@@ -20,19 +19,19 @@ import {
   getProgress,
   setProgressBarData,
   clearProgressData,
-  setIsLoading
+  setIsLoading,
 } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import {
   EmptyTrashDialog,
   DeleteDialog,
-  DownloadDialog
+  DownloadDialog,
 } from "../../../../dialogs";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
   checkFolderType,
-  isCanCreate
+  isCanCreate,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -41,7 +40,7 @@ const { tablet, desktop } = utils.device;
 
 const StyledContainer = styled.div`
   @media ${desktop} {
-    ${props =>
+    ${(props) =>
       props.isHeaderVisible &&
       css`
         width: calc(100% + 76px);
@@ -80,8 +79,8 @@ const StyledContainer = styled.div`
 
     .option-button {
       margin-bottom: -1px;
-      
-      @media(min-width: 1024px) {
+
+      @media (min-width: 1024px) {
         margin-left: 8px;
       }
 
@@ -101,7 +100,7 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       & > div:first-child {
-        ${props =>
+        ${(props) =>
           props.isArticlePinned &&
           css`
             width: calc(100% - 240px);
@@ -118,19 +117,6 @@ const StyledContainer = styled.div`
   }
 `;
 
-const HeadlineLoader = () => (
-  <ContentLoader
-    speed={2}
-    width={264}
-    height={56}
-    viewBox="0 0 264 56"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-  >
-    <rect x="0" y="21" rx="0" ry="0" width="216" height="23" />
-  </ContentLoader>
-);
-
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
@@ -141,15 +127,15 @@ class SectionHeaderContent extends React.Component {
       showDownloadDialog: false,
       showEmptyTrashDialog: false,
       showMoveToPanel: false,
-      showCopyPanel: false
+      showCopyPanel: false,
     };
   }
 
-  onCreate = format => {
+  onCreate = (format) => {
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
-      id: -1
+      id: -1,
     });
   };
 
@@ -170,30 +156,30 @@ class SectionHeaderContent extends React.Component {
       {
         key: "new-document",
         label: t("NewDocument"),
-        onClick: this.createDocument
+        onClick: this.createDocument,
       },
       {
         key: "new-spreadsheet",
         label: t("NewSpreadsheet"),
-        onClick: this.createSpreadsheet
+        onClick: this.createSpreadsheet,
       },
       {
         key: "new-presentation",
         label: t("NewPresentation"),
-        onClick: this.createPresentation
+        onClick: this.createPresentation,
       },
       {
         key: "new-folder",
         label: t("NewFolder"),
-        onClick: this.createFolder
+        onClick: this.createFolder,
       },
       { key: "separator", isSeparator: true },
       {
         key: "make-invitation-link",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
-        disabled: true
-      }
+        disabled: true,
+      },
     ];
   };
 
@@ -214,15 +200,15 @@ class SectionHeaderContent extends React.Component {
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
-  loop = url => {
+  loop = (url) => {
     this.props
       .getProgress()
-      .then(res => {
+      .then((res) => {
         if (!url) {
           this.props.setProgressBarData({
             visible: true,
             percent: res[0].progress,
-            label: this.props.t("ArchivingData")
+            label: this.props.t("ArchivingData"),
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
@@ -230,7 +216,7 @@ class SectionHeaderContent extends React.Component {
           return window.open(url, "_blank");
         }
       })
-      .catch(err => {
+      .catch((err) => {
         toastr.error(err);
         clearProgressData(filesStore.dispatch);
       });
@@ -255,15 +241,15 @@ class SectionHeaderContent extends React.Component {
     setProgressBarData({
       visible: true,
       percent: 0,
-      label: t("ArchivingData")
+      label: t("ArchivingData"),
     });
 
     api.files
       .downloadFiles(fileIds, folderIds)
-      .then(res => {
+      .then((res) => {
         this.loop(res[0].url);
       })
-      .catch(err => {
+      .catch((err) => {
         toastr.error(err);
         clearProgressData(filesStore.dispatch);
       });
@@ -290,45 +276,45 @@ class SectionHeaderContent extends React.Component {
         key: "sharing-settings",
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
-        disabled: true
+        disabled: true,
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: false
+        disabled: false,
       },
       { key: "separator-2", isSeparator: true },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: true
+        disabled: true,
       },
       {
         key: "copy",
         label: t("Copy"),
         onClick: this.onCopyAction,
-        disabled: true
+        disabled: true,
       },
       {
         key: "download",
         label: t("Download"),
         onClick: this.downloadAction,
-        disabled: true
+        disabled: true,
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
-        disabled: true
+        disabled: true,
       },
       {
         key: "delete",
         label: t("Delete"),
         onClick: this.onDeleteAction,
-        disabled: true
-      }
+        disabled: true,
+      },
     ];
   };
 
@@ -340,7 +326,7 @@ class SectionHeaderContent extends React.Component {
     );
   };
 
-  onSelectorSelect = item => {
+  onSelectorSelect = (item) => {
     const { onSelect } = this.props;
 
     onSelect && onSelect(item.key);
@@ -367,7 +353,7 @@ class SectionHeaderContent extends React.Component {
       getProgress,
       loopFilesOperations,
       setProgressBarData,
-      isCanCreate
+      isCanCreate,
     } = this.props;
 
     const {
@@ -376,15 +362,15 @@ class SectionHeaderContent extends React.Component {
       showEmptyTrashDialog,
       showDownloadDialog,
       showMoveToPanel,
-      showCopyPanel
+      showCopyPanel,
     } = this.state;
 
     const isItemsSelected = selection.length;
     const isOnlyFolderSelected = selection.every(
-      selected => !selected.fileType
+      (selected) => !selected.fileType
     );
 
-    const accessItem = selection.find(x => x.access === 1 || x.access === 0);
+    const accessItem = selection.find((x) => x.access === 1 || x.access === 0);
     const shareDisable = !accessItem;
 
     const menuItems = [
@@ -435,51 +421,51 @@ class SectionHeaderContent extends React.Component {
             key={FilterType.FilesOnly}
             label={t("AllFiles")}
             data-index={8}
-          />
+          />,
         ],
-        onSelect: this.onSelectorSelect
+        onSelect: this.onSelectorSelect,
       },
       {
         label: t("Share"),
         disabled: shareDisable,
-        onClick: this.onOpenSharingPanel
+        onClick: this.onOpenSharingPanel,
       },
       {
         label: t("Download"),
         disabled: !isItemsSelected,
-        onClick: this.downloadAction
+        onClick: this.downloadAction,
       },
       {
         label: t("DownloadAs"),
         disabled: !isItemsSelected || isOnlyFolderSelected,
-        onClick: this.downloadAsAction
+        onClick: this.downloadAsAction,
       },
       {
         label: t("MoveTo"),
         disabled: !isItemsSelected,
-        onClick: this.onMoveAction
+        onClick: this.onMoveAction,
       },
       {
         label: t("Copy"),
         disabled: !isItemsSelected,
-        onClick: this.onCopyAction
+        onClick: this.onCopyAction,
       },
       {
         label: t("Delete"),
         disabled: !isItemsSelected || !deleteDialogVisible,
-        onClick: this.onDeleteAction
-      }
+        onClick: this.onDeleteAction,
+      },
     ];
 
     if (isRecycleBinFolder) {
       menuItems.push({
         label: t("EmptyRecycleBin"),
-        onClick: this.onEmptyTrashAction
+        onClick: this.onEmptyTrashAction,
       });
 
       menuItems.splice(4, 2, {
         label: t("Restore"),
-        onClick: this.onMoveAction
+        onClick: this.onMoveAction,
       });
 
       menuItems.splice(1, 1);
@@ -488,7 +474,7 @@ class SectionHeaderContent extends React.Component {
     const operationsPanelProps = {
       setIsLoading,
       isLoading,
-      loopFilesOperations
+      loopFilesOperations,
     };
 
     return (
@@ -510,7 +496,7 @@ class SectionHeaderContent extends React.Component {
         ) : (
           <div className="header-container">
             {!title ? (
-              <HeadlineLoader />
+              <Loaders.Headline />
             ) : (
               <>
                 {folder && (
@@ -634,13 +620,13 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     selectedFolder,
     selection,
     treeFolders,
     filter,
-    isLoading
+    isLoading,
   } = state.files;
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
@@ -659,11 +645,13 @@ const mapStateToProps = state => {
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     currentFolderId: id,
     isLoading,
-    isCanCreate: isCanCreate(selectedFolder, user)
+    isCanCreate: isCanCreate(selectedFolder, user),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { setAction, getProgress, setProgressBarData, setIsLoading }
-)(withTranslation()(withRouter(SectionHeaderContent)));
+export default connect(mapStateToProps, {
+  setAction,
+  getProgress,
+  setProgressBarData,
+  setIsLoading,
+})(withTranslation()(withRouter(SectionHeaderContent)));
