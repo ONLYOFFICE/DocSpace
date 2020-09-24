@@ -3121,7 +3121,7 @@ arrify@^1.0.1:
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.449"
+  version "1.0.453"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
@@ -10455,6 +10455,11 @@ react-color@^2.17.0:
     prop-types "^15.5.10"
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
+
+react-content-loader@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-5.1.2.tgz#75dcff30f2651c166c21433484081e7e70b44b6a"
+  integrity sha512-Kr4wWisiL0qcdbzVWZx/puyCfTP1PiTTtR7N4B7mikTeY2wf5TMgMykUQyaEUW422IDUU9VJWfewSm9hIRwTiw==
 
 react-custom-scrollbars@^4.2.1:
   version "4.2.1"

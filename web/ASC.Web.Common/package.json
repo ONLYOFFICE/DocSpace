@@ -30,6 +30,7 @@
     "lodash": "4.17.19",
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
+    "react-content-loader": "^5.1.2",
     "react-hammerjs": "^1.0.1",
     "react-onclickoutside": "^6.9.0",
     "react-player": "^1.15.3",
