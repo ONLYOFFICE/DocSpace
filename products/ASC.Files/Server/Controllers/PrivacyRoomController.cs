@@ -27,6 +27,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Core.Entries;
+using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Mvc;
@@ -42,9 +43,10 @@ namespace ASC.Api.Documents
         private PermissionContext PermissionContext { get; }
         private SettingsManager SettingsManager { get; }
         private TenantManager TenantManager { get; }
-        private EncryptionKeyPairHelper<int> EncryptionKeyPairHelperInt { get; }
-        public EncryptionKeyPairHelper<string> EncryptionKeyPairHelper { get; }
-        public MessageService MessageService { get; }
+        private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private FileStorageService<int> FileStorageServiceInt { get; }
+        private FileStorageService<string> FileStorageService { get; }
+        private MessageService MessageService { get; }
         private ILog Log { get; }
 
         public PrivacyRoomApi(
@@ -52,8 +54,9 @@ namespace ASC.Api.Documents
             PermissionContext permissionContext,
             SettingsManager settingsManager,
             TenantManager tenantManager,
-            EncryptionKeyPairHelper<int> encryptionKeyPairHelperint,
-            EncryptionKeyPairHelper<string> encryptionKeyPairHelper,
+            EncryptionKeyPairHelper encryptionKeyPairHelper,
+            FileStorageService<int> fileStorageServiceInt,
+            FileStorageService<string> fileStorageService,
             MessageService messageService,
             IOptionsMonitor<ILog> option)
         {
@@ -61,8 +64,9 @@ namespace ASC.Api.Documents
             PermissionContext = permissionContext;
             SettingsManager = settingsManager;
             TenantManager = tenantManager;
-            EncryptionKeyPairHelperInt = encryptionKeyPairHelperint;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
+            FileStorageServiceInt = fileStorageServiceInt;
+            FileStorageService = fileStorageService;
             MessageService = messageService;
             Log = option.Get("ASC.Api.Documents");
         }
@@ -106,8 +110,7 @@ namespace ASC.Api.Documents
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
-            var fileKeyPair = EncryptionKeyPairHelper.GetKeyPair(fileId);
-            return fileKeyPair;
+            return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageService);
         }
 
         [Read("access/{fileId:int}")]
@@ -115,8 +118,7 @@ namespace ASC.Api.Documents
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
-            var fileKeyPair = EncryptionKeyPairHelperInt.GetKeyPair(fileId);
-            return fileKeyPair;
+            return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageServiceInt);
         }
 
 

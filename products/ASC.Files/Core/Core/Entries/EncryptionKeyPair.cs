@@ -39,29 +39,26 @@ namespace ASC.Web.Files.Core.Entries
         public Guid UserId { get; set; }
     }
 
-    public class EncryptionKeyPairHelper<T>
+    public class EncryptionKeyPairHelper
     {
         private UserManager UserManager { get; }
         private AuthContext AuthContext { get; }
         private EncryptionLoginProvider EncryptionLoginProvider { get; }
         private FileSecurity FileSecurity { get; }
         private IDaoFactory DaoFactory { get; }
-        private FileStorageService<T> FileStorageService { get; }
 
         public EncryptionKeyPairHelper(
             UserManager userManager,
             AuthContext authContext,
             EncryptionLoginProvider encryptionLoginProvider,
             FileSecurity fileSecurity,
-            IDaoFactory daoFactory,
-            FileStorageService<T> fileStorageService)
+            IDaoFactory daoFactory)
         {
             UserManager = userManager;
             AuthContext = authContext;
             EncryptionLoginProvider = encryptionLoginProvider;
             FileSecurity = fileSecurity;
             DaoFactory = daoFactory;
-            FileStorageService = fileStorageService;
         }
 
         public void SetKeyPair(string publicKey, string privateKeyEnc)
@@ -93,7 +90,7 @@ namespace ASC.Web.Files.Core.Entries
             return keyPair;
         }
 
-        public IEnumerable<EncryptionKeyPair> GetKeyPair(T fileId)
+        public IEnumerable<EncryptionKeyPair> GetKeyPair<T>(T fileId, FileStorageService<T> FileStorageService)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
 
@@ -131,16 +128,14 @@ namespace ASC.Web.Files.Core.Entries
     {
         public static DIHelper AddEncryptionKeyPairHelperService(this DIHelper services)
         {
-            if (services.TryAddScoped<EncryptionKeyPairHelper<string>>())
+            if (services.TryAddScoped<EncryptionKeyPairHelper>())
             {
-                services.TryAddScoped<EncryptionKeyPairHelper<int>>();
                 services
                     .AddAuthContextService()
                     .AddUserManagerService()
                     .AddEncryptionLoginProviderService()
                     .AddFileSecurityService()
-                    .AddDaoFactoryService()
-                    .AddFileStorageService();
+                    .AddDaoFactoryService();
             }
 
             return services;

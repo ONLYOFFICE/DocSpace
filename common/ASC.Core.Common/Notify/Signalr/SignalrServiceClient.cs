@@ -48,7 +48,7 @@ namespace ASC.Core.Notify.Signalr
     {
         internal TenantManager TenantManager { get; }
         internal CoreSettings CoreSettings { get; }
-        public MachinePseudoKeys MachinePseudoKeys { get; }
+        internal MachinePseudoKeys MachinePseudoKeys { get; }
         internal IConfiguration Configuration { get; }
         internal IOptionsMonitor<ILog> Options { get; }
 
@@ -405,7 +405,8 @@ namespace ASC.Core.Notify.Signalr
 
                 return services
                     .AddTenantManagerService()
-                    .AddCoreSettingsService();
+                    .AddCoreSettingsService()
+                    .AddMachinePseudoKeysService();
             }
 
             return services;

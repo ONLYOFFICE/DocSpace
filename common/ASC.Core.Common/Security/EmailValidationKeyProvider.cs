@@ -264,11 +264,16 @@ namespace ASC.Security.Cryptography
     {
         public static DIHelper AddEmailValidationKeyProviderService(this DIHelper services)
         {
-            services.TryAddTransient<EmailValidationKeyModel>();
-            services.TryAddScoped<EmailValidationKeyProvider>();
+            if (services.TryAddScoped<EmailValidationKeyProvider>())
+            {
+                services.TryAddTransient<EmailValidationKeyModel>();
 
-            return services
-                .AddTenantManagerService();
+                return services
+                    .AddTenantManagerService()
+                    .AddMachinePseudoKeysService();
+            }
+
+            return services;
         }
     }
 }

@@ -121,7 +121,7 @@ namespace ASC.Web.Files.Services.WCFService
         private FileSharingAceHelper<T> FileSharingAceHelper { get; }
         private ApiContext ApiContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
-        public EncryptionKeyPairHelper<T> EncryptionKeyPairHelper { get; }
+        public EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
         public SettingsManager SettingsManager { get; }
         public ILog Logger { get; set; }
 
@@ -165,7 +165,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileSharingAceHelper<T> fileSharingAceHelper,
             ApiContext apiContext,
             ConsumerFactory consumerFactory,
-            EncryptionKeyPairHelper<T> encryptionKeyPairHelper,
+            EncryptionKeyPairHelper encryptionKeyPairHelper,
             SettingsManager settingsManager)
         {
             Global = global;
@@ -1994,7 +1994,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ErrorIf(!PrivacyRoomSettings.GetEnabled(SettingsManager), FilesCommonResource.ErrorMassage_SecurityException);
 
-            var fileKeyPair = EncryptionKeyPairHelper.GetKeyPair(fileId);
+            var fileKeyPair = EncryptionKeyPairHelper.GetKeyPair(fileId, this);
             return new ItemList<EncryptionKeyPair>(fileKeyPair);
         }
 
