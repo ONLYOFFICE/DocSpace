@@ -40,7 +40,6 @@
     <None Remove="protos\SettingsCacheItem.proto" />
     <None Remove="protos\SubscriptionMethodCache.proto" />
     <None Remove="protos\SubscriptionRecord.proto" />
-    <None Remove="protos\SuccCreateClientProto.proto" />
     <None Remove="protos\TenantCacheItem.proto" />
     <None Remove="protos\TenantSetting.proto" />
     <None Remove="protos\UserGroupRefCacheItem.proto" />
@@ -67,7 +66,6 @@
     <Protobuf Include="protos\CreateClientProto.proto" />
     <Protobuf Include="protos\NotifyInvoke.proto" />
     <Protobuf Include="protos\NotifyMessage.proto" />
-    <Protobuf Include="protos\SuccCreateClientProto.proto" />
     <Protobuf Include="protos\DisableClientProto.proto" />
     <Protobuf Include="protos\RegisterUserProto.proto" />
     <Protobuf Include="protos\SettingsCacheItem.proto" />
