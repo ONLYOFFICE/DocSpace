@@ -52,10 +52,17 @@ const HeaderContainer = ({
   }, [culture]);
 
   const { t } = useTranslation("translation", { i18n });
-  const currentUserDate = moment().utcOffset(utcHoursOffset);
 
-  return new Date(currentUserDate).setHours(0, 0, 0, 0) <
-    expiresDate.setHours(0, 0, 0, 0) ? (
+  const currentUserDate = +moment()
+    .utcOffset(`${utcHoursOffset}`)
+    .set("hour", 0)
+    .set("minute", 0)
+    .set("second", 0)
+    .set("millisecond", 0);
+
+  const expiresDateSetHours = expiresDate.setHours(0, 0, 0, 0);
+
+  return currentUserDate < expiresDateSetHours ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
         {t("Using")}
