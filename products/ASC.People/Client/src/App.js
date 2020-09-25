@@ -94,9 +94,6 @@ class App extends React.Component {
           >
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
-              <PrivateRoute path={homepage}>
-                <Home />
-              </PrivateRoute>
               <PrivateRoute path={`${homepage}/view/:userId`}>
                 <Profile />
               </PrivateRoute>
@@ -121,6 +118,9 @@ class App extends React.Component {
               </PrivateRoute>
               <PrivateRoute path={`${homepage}/reassign/:userId`} restricted>
                 <Reassign />
+              </PrivateRoute>
+              <PrivateRoute path={homepage}>
+                <Home />
               </PrivateRoute>
               <PublicRoute
                 exact

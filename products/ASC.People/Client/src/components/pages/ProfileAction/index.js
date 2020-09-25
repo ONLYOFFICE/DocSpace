@@ -6,20 +6,21 @@ import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 import {
   SectionHeaderContent,
   CreateUserForm,
-  UpdateUserForm
+  UpdateUserForm,
 } from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { withRouter } from "react-router";
 const i18n = createI18N({
   page: "ProfileAction",
-  localesPath: "pages/ProfileAction"
+  localesPath: "pages/ProfileAction",
 });
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
@@ -68,7 +69,7 @@ class ProfileAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
           )}
-          {(!isVisitor && isAdmin) && (
+          {!isVisitor && isAdmin && (
             <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent />
             </PageLayout.ArticleMainButton>
@@ -90,11 +91,11 @@ class ProfileAction extends React.Component {
               type ? (
                 <CreateUserForm />
               ) : (
-                  <UpdateUserForm />
-                )
+                <UpdateUserForm />
+              )
             ) : (
-                <Loader className="pageLoader" type="rombs" size="40px" />
-              )}
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            )}
           </PageLayout.SectionBody>
         </PageLayout>
       </I18nextProvider>
@@ -106,12 +107,12 @@ ProfileAction.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };
 
-const ProfileActionTranslate = withTranslation()(ProfileAction);
+const ProfileActionTranslate = withTranslation()(withRouter(ProfileAction));
 
-const ProfileActionContainer = props => {
+const ProfileActionContainer = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -127,11 +128,10 @@ function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { fetchProfile }
-)(ProfileActionContainer);
+export default connect(mapStateToProps, { fetchProfile })(
+  ProfileActionContainer
+);

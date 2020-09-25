@@ -6,38 +6,31 @@ import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { withRouter } from "react-router";
 
 const i18n = createI18N({
   page: "Profile",
-  localesPath: "pages/Profile"
+  localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class PureProfile extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      queryString: `${props.location.search.slice(1)}`
-    };
-  }
-
   componentDidMount() {
-    const { match, fetchProfile, t } = this.props;
+    const { match, fetchProfile, t, location } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
-
-    const queryParams = this.state.queryString.split("&");
-    const arrayOfQueryParams = queryParams.map(queryParam =>
+    const queryString = ((location && location.search) || "").slice(1);
+    const queryParams = queryString.split("&");
+    const arrayOfQueryParams = queryParams.map((queryParam) =>
       queryParam.split("=")
     );
     const linkParams = Object.fromEntries(arrayOfQueryParams);
@@ -74,7 +67,7 @@ class PureProfile extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
         )}
-        {(!isVisitor && isAdmin) && (
+        {!isVisitor && isAdmin && (
           <PageLayout.ArticleMainButton>
             <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
@@ -95,17 +88,17 @@ class PureProfile extends React.Component {
           {profile ? (
             <SectionBodyContent />
           ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            )}
+            <Loader className="pageLoader" type="rombs" size="40px" />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     );
   }
 }
 
-const ProfileContainer = withTranslation()(PureProfile);
+const ProfileContainer = withTranslation()(withRouter(PureProfile));
 
-const Profile = props => {
+const Profile = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -123,21 +116,18 @@ Profile.propTypes = {
   isLoaded: PropTypes.bool,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchProfile,
-    resetProfile
-  }
-)(Profile);
+export default connect(mapStateToProps, {
+  fetchProfile,
+  resetProfile,
+})(Profile);
