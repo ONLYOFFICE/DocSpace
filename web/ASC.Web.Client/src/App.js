@@ -73,9 +73,7 @@ class App extends React.Component {
             }
           >
             <Switch>
-              <Route exact path="/wizard">
-                <Wizard />
-              </Route>
+              <Route exact path="/wizard" component={Wizard} />
               <PublicRoute
                 exact
                 path={[
@@ -83,27 +81,22 @@ class App extends React.Component {
                   "/login/error=:error",
                   "/login/confirmed-email=:confirmedEmail",
                 ]}
-              >
-                <Login />
-              </PublicRoute>
-              <Route path="/confirm">
-                <Confirm />
-              </Route>
-              <PrivateRoute exact path={["/", "/error=:error"]}>
-                <Home />
-              </PrivateRoute>
-              <PrivateRoute exact path="/about">
-                <About />
-              </PrivateRoute>
-              <PrivateRoute restricted path="/settings">
-                <Settings />
-              </PrivateRoute>
-              <PrivateRoute exact path={["/coming-soon"]}>
-                <ComingSoon />
-              </PrivateRoute>
-              <PrivateRoute>
-                <Error404 />
-              </PrivateRoute>
+                component={Login}
+              />
+              <Route path="/confirm" component={Confirm} />
+              <PrivateRoute
+                exact
+                path={["/", "/error=:error"]}
+                component={Home}
+              />
+              <PrivateRoute exact path="/about" component={About} />
+              <PrivateRoute restricted path="/settings" component={Settings} />
+              <PrivateRoute
+                exact
+                path={["/coming-soon"]}
+                component={ComingSoon}
+              />
+              <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
         </Main>
@@ -116,11 +109,10 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { modules, isLoaded, settings } = state.auth;
-  const { homepage, organizationName } = settings;
+  const { organizationName } = settings;
   return {
     modules,
     isLoaded,
-    homepage,
     organizationName,
   };
 };

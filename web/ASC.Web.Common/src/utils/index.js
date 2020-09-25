@@ -42,7 +42,9 @@ export function changeLanguage(i18n) {
 
 export function redirectToDefaultPage() {
   if (
-    (window.location.pathname === "/" || window.location.pathname === "") &&
+    (window.location.pathname === "/" ||
+      window.location.pathname === "" ||
+      window.location.pathname === "/login") &&
     localStorage.getItem(AUTH_KEY) !== null
   ) {
     setTimeout(() => window.location.replace("/products/files"), 0);

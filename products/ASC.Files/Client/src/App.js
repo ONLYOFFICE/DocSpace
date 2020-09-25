@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import { Router, Switch, Redirect } from "react-router-dom";
-import { Loader } from "asc-web-components";
+//import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -10,7 +10,7 @@ import VersionHistory from "./components/pages/VersionHistory";
 import {
   fetchMyFolder,
   fetchTreeFolders,
-  fetchFiles,
+  //fetchFiles,
 } from "./store/files/actions";
 import config from "../package.json";
 
@@ -63,6 +63,7 @@ class App extends React.Component {
     utils.removeTempContent();
 
     const {
+      setModuleInfo,
       getUser,
       getPortalSettings,
       getModules,
@@ -70,9 +71,10 @@ class App extends React.Component {
       getPortalCultures,
       fetchMyFolder,
       fetchTreeFolders,
-      finalize,
       setIsLoaded,
     } = this.props;
+
+    setModuleInfo();
 
     const token = localStorage.getItem(AUTH_KEY);
 
@@ -93,33 +95,36 @@ class App extends React.Component {
 
     axios.all(requests).then(() => {
       utils.hideLoader();
-      finalize();
+      setIsLoaded();
     });
   }
 
   render() {
-    const { homepage } = this.props.settings;
+    const { homepage } = this.props;
 
     return navigator.onLine ? (
       <Router history={history}>
         <NavMenu />
         <Main>
           <Switch>
-            <PrivateRoute exact path="/">
-              <Redirect exact from="/" to={`${homepage}`} />
-            </PrivateRoute>
-            <PrivateRoute exact path={`${homepage}/settings/:setting`}>
-              <Settings />
-            </PrivateRoute>
-            <PrivateRoute exact path={`${homepage}/doceditor`}>
-              <DocEditor />
-            </PrivateRoute>
-            <PrivateRoute exact path={`${homepage}/:fileId/history`}>
-              <VersionHistory />
-            </PrivateRoute>
-            <PrivateRoute path={homepage}>
-              <Home />
-            </PrivateRoute>
+            <Redirect exact from="/" to={`${homepage}`} />
+            <PrivateRoute
+              exact
+              path={`${homepage}/settings/:setting`}
+              component={Settings}
+            />
+            <PrivateRoute
+              exact
+              path={`${homepage}/doceditor`}
+              component={DocEditor}
+            />
+            <PrivateRoute
+              exact
+              path={`${homepage}/:fileId/history`}
+              component={VersionHistory}
+            />
+            <PrivateRoute exact path={homepage} component={Home} />
+            <PrivateRoute path={`${homepage}/filter`} component={Home} />
             <PublicRoute
               exact
               path={[
@@ -127,15 +132,10 @@ class App extends React.Component {
                 "/login/error=:error",
                 "/login/confirmed-email=:confirmedEmail",
               ]}
-            >
-              <Login />
-            </PublicRoute>
-            <PrivateRoute exact path={`/error=:error`}>
-              <Error520 />
-            </PrivateRoute>
-            <PrivateRoute>
-              <Error404 />
-            </PrivateRoute>
+              component={Login}
+            />
+            <PrivateRoute exact path={`/error=:error`} component={Error520} />
+            <PrivateRoute component={Error404} />
           </Switch>
         </Main>
       </Router>
@@ -146,13 +146,19 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const { settings } = state.auth;
+  const { homepage } = settings;
   return {
-    settings: state.auth.settings,
+    homepage: homepage || config.homepage,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setModuleInfo: () => {
+      dispatch(setCurrentProductHomePage(config.homepage));
+      dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
+    },
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
@@ -160,11 +166,6 @@ const mapDispatchToProps = (dispatch) => {
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchMyFolder: () => fetchMyFolder(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
-    finalize: () => {
-      dispatch(setCurrentProductHomePage(config.homepage));
-      dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
-      dispatch(setIsLoaded(true));
-    },
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };

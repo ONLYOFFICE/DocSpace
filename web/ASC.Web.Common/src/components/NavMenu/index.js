@@ -6,7 +6,7 @@ import Nav from "./sub-components/nav";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
-import HeaderUnAuth from "./sub-components/header-unauth";
+//import HeaderUnAuth from "./sub-components/header-unauth";
 
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -32,7 +32,7 @@ class NavMenu extends React.Component {
     let currentHash = this.getPropsHash(this.props);
     let prevHash = this.getPropsHash(prevProps);
     if (currentHash !== prevHash) {
-      console.log("NavMenu componentDidUpdate hasChanges");
+      //console.log("NavMenu componentDidUpdate hasChanges");
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -288,7 +288,7 @@ const NavMenuWrapper = props => {
   }, [language]);
 
   return <NavMenuTranslationWrapper i18n={i18n} {...props} />;
-};
+  };
 
 NavMenuWrapper.propTypes = {
   language: PropTypes.string.isRequired
@@ -362,11 +362,8 @@ function mapStateToProps(state) {
     settings: settings,
     modules: modules,
     defaultPage: defaultPage || "/",
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    language: user.cultureName || settings.culture
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(withRouter(NavMenuWrapper));
+export default connect(mapStateToProps, { logout })(withRouter(NavMenuWrapper));

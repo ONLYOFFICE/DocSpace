@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
-import axios from "axios";
 import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import Profile from "./components/pages/Profile";
@@ -47,6 +46,7 @@ class App extends React.Component {
     utils.removeTempContent();
 
     const {
+      setModuleInfo,
       getUser,
       getPortalSettings,
       getModules,
@@ -54,9 +54,10 @@ class App extends React.Component {
       getPortalCultures,
       fetchGroups,
       fetchPeople,
-      finalize,
       setIsLoaded,
     } = this.props;
+
+    setModuleInfo();
 
     const token = localStorage.getItem(AUTH_KEY);
 
@@ -75,14 +76,15 @@ class App extends React.Component {
       fetchPeople(),
     ];
 
-    axios.all(requests).then(() => {
+    Promise.all(requests).finally(() => {
       utils.hideLoader();
-      finalize();
+      setIsLoaded();
     });
   }
 
   render() {
-    const { homepage } = this.props.settings;
+    const { homepage } = this.props;
+    console.log("People App render", this.props);
     return navigator.onLine ? (
       <Router history={history}>
         <NavMenu />
@@ -94,34 +96,37 @@ class App extends React.Component {
           >
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
-              <PrivateRoute path={`${homepage}/view/:userId`}>
-                <Profile />
-              </PrivateRoute>
+              <PrivateRoute
+                exact
+                path={`${homepage}/view/:userId`}
+                component={Profile}
+              />
               <PrivateRoute
                 path={`${homepage}/edit/:userId`}
                 restricted
                 allowForMe
-              >
-                <ProfileAction />
-              </PrivateRoute>
-              <PrivateRoute path={`${homepage}/create/:type`} restricted>
-                <ProfileAction />
-              </PrivateRoute>
+                component={ProfileAction}
+              />
+              <PrivateRoute
+                path={`${homepage}/create/:type`}
+                restricted
+                component={ProfileAction}
+              />
               <PrivateRoute
                 path={[
                   `${homepage}/group/edit/:groupId`,
                   `${homepage}/group/create`,
                 ]}
                 restricted
-              >
-                <GroupAction />
-              </PrivateRoute>
-              <PrivateRoute path={`${homepage}/reassign/:userId`} restricted>
-                <Reassign />
-              </PrivateRoute>
-              <PrivateRoute path={homepage}>
-                <Home />
-              </PrivateRoute>
+                component={GroupAction}
+              />
+              <PrivateRoute
+                path={`${homepage}/reassign/:userId`}
+                restricted
+                component={Reassign}
+              />
+              <PrivateRoute exact path={homepage} component={Home} />
+              <PrivateRoute path={`${homepage}/filter`} component={Home} />
               <PublicRoute
                 exact
                 path={[
@@ -129,15 +134,10 @@ class App extends React.Component {
                   "/login/error=:error",
                   "/login/confirmed-email=:confirmedEmail",
                 ]}
-              >
-                <Login />
-              </PublicRoute>
-              <PrivateRoute exact path={`/error=:error`}>
-                <Error520 />
-              </PrivateRoute>
-              <PrivateRoute>
-                <Error404 />
-              </PrivateRoute>
+                component={Login}
+              />
+              <PrivateRoute exact path={`/error=:error`} component={Error520} />
+              <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
         </Main>
@@ -149,13 +149,19 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const { settings } = state.auth;
+  const { homepage } = settings;
   return {
-    settings: state.auth.settings,
+    homepage: homepage || config.homepage,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setModuleInfo: () => {
+      dispatch(setCurrentProductHomePage(config.homepage));
+      dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
+    },
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
@@ -172,11 +178,6 @@ const mapDispatchToProps = (dispatch) => {
       }
 
       return Promise.resolve();
-    },
-    finalize: () => {
-      dispatch(setCurrentProductHomePage(config.homepage));
-      dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
-      dispatch(setIsLoaded(true));
     },
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };

@@ -10,7 +10,6 @@ import {
   Icons,
   Link,
   RowContainer,
-  Text,
   utils,
 } from "asc-web-components";
 import UserContent from "./userContent";
@@ -30,7 +29,6 @@ import {
 } from "../../../../../store/people/selectors";
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
-import { Loader } from "asc-web-components";
 import { store, api, constants, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,

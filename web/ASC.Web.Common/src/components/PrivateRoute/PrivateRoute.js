@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback } from "react";
+import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
@@ -11,82 +11,76 @@ import isEmpty from "lodash/isEmpty";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
-    isAuthenticated,
-    isLoaded,
     isAdmin,
+    isAuthenticated,
     restricted,
     allowForMe,
-    currentUser,
-    computedMatch,
-    wizardToken
+    user,
+    computedMatch
   } = rest;
-
   const { userId } = computedMatch.params;
-  const token = localStorage.getItem(AUTH_KEY);
 
-  const renderComponent = useCallback(
-    props => {
-      const userLoaded = !isEmpty(currentUser);
+  const renderComponent = props => {
+    if (!isAuthenticated) {
+      console.log("PrivateRoute render Redirect to login", rest);
+      return (
+        <Redirect
+          to={{
+            pathname: "/login",
+            state: { from: props.location }
+          }}
+        />
+      );
+    }
 
-      if (!userLoaded) {
-        return (
-          <PageLayout>
-            <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        );
-      }
+    const userLoaded = !isEmpty(user);
 
-      if (!token || (isLoaded && !isAuthenticated)) {
-        return (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location }
-            }}
-          />
-        );
-      }
+    if (!userLoaded) {
+      console.log("PrivateRoute render Loader", rest);
+      return (
+        <PageLayout>
+          <PageLayout.SectionBody>
+            <Loader className="pageLoader" type="rombs" size="40px" />
+          </PageLayout.SectionBody>
+        </PageLayout>
+      );
+    }
 
-      if (
-        !restricted ||
-        isAdmin ||
-        (allowForMe && userId && isMe(currentUser, userId))
-      )
+    if (
+      !restricted ||
+      isAdmin ||
+      (allowForMe && userId && isMe(user, userId))
+    ) {
+      console.log(
+        "PrivateRoute render Component",
+        rest,
+        Component.name || Component.displayName
+      );
       return <Component {...props} />;
+    }
 
-      if (restricted) {
-        return <Error401 />;
-      }
+    if (restricted) {
+      console.log("PrivateRoute render Error401", rest);
+      return <Error401 />;
+    }
 
-      return <Error404 />;
-    },
-    [
-      token,
-      isAuthenticated,
-      isLoaded,
-      isAdmin,
-      restricted,
-      allowForMe,
-      currentUser,
-      userId,
-      wizardToken,
-      Component
-    ]
-  );
+    console.log("PrivateRoute render Error404", rest);
+    return <Error404 />;
+  };
 
-  console.log("PrivateRoute render", rest);
+  //console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
 };
 
 function mapStateToProps(state) {
+  const { user, isLoaded, isAuthenticated } = state.auth;
   return {
-    isAuthenticated: state.auth.isAuthenticated,
-    isLoaded: state.auth.isLoaded,
-    isAdmin: isAdmin(state.auth.user),
-    currentUser: state.auth.user,
-    wizardToken: state.auth.settings.wizardToken
+    isAdmin: isAdmin(user),
+    user,
+    isAuthenticated: !(
+      !localStorage.getItem(AUTH_KEY) ||
+      (isLoaded && !isAuthenticated)
+    )
   };
 }
 
