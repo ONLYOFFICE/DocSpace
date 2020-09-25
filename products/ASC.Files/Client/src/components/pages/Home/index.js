@@ -317,7 +317,8 @@ class PureHome extends React.Component {
       progressData,
       viewAs,
       isLoading,
-      convertDialogVisible
+      convertDialogVisible,
+      fileActionId
     } = this.props;
 
     // const progressBarContent = (
@@ -370,6 +371,7 @@ class PureHome extends React.Component {
           //progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressData.label}
           viewAs={viewAs}
+          hideAside={fileActionId || progressData.visible}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

@@ -80,6 +80,16 @@ class PageLayoutComponent extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.hideAside &&
+      !this.state.isArticlePinned &&
+      this.props.hideAside !== prevProps.hideAside
+    ) {
+      this.backdropClick();
+    }
+  }
+
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
     this.orientationChangeHandler();
@@ -360,7 +370,8 @@ PageLayoutComponent.propTypes = {
   progressBarLabel: PropTypes.string,
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
-  uploadFiles: PropTypes.bool
+  uploadFiles: PropTypes.bool,
+  hideAside: PropTypes.bool
 };
 
 PageLayoutComponent.defaultProps = {

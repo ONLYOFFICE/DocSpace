@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
-  toastr,
   ModalDialog,
   Link,
   Checkbox,
@@ -36,21 +35,45 @@ class InviteDialogComponent extends React.Component {
       guestInvitationLink,
       isLoading: false,
       isLinkShort: false,
-      visible: false
+      visible: false,
+      LinkCopySuccess: false,
+      ChangeTextAnim: false
     };
   }
 
   onCopyLinkToClipboard = () => {
     // console.log("COPY", this.props);
-    const { t } = this.props;
     copy(
       this.state.isGuest
         ? this.state.guestInvitationLink
         : this.state.userInvitationLink
     );
 
-    toastr.success(t("LinkCopySuccess"));
+    this.ShowCopySuccessText();
   };
+
+  ShowCopySuccessText = async () => {
+
+    await this.StartChangeTextAnimation();
+
+    this.setState({ 
+      LinkCopySuccess: true
+    })
+
+    setTimeout(async () => {
+      await this.StartChangeTextAnimation();
+      this.setState({ LinkCopySuccess: false })
+    }, 1500)
+  }
+
+  StartChangeTextAnimation = () => {
+    this.setState({ChangeTextAnim: true})
+
+    return new Promise(resolve => setTimeout(() => {
+      this.setState({ChangeTextAnim: false})
+      resolve(true)
+    }, 200))
+  }
 
   onCheckedGuest = () => this.setState({ isGuest: !this.state.isGuest });
 
@@ -104,10 +127,11 @@ class InviteDialogComponent extends React.Component {
   render() {
     console.log("InviteDialog render");
     const { t, visible, settings, guestsCaption } = this.props;
+    const { LinkCopySuccess, ChangeTextAnim } = this.state;
 
     return (
       this.state.visible && (
-        <ModalDialogContainer>
+        <ModalDialogContainer ChangeTextAnim={ChangeTextAnim}>
           <ModalDialog visible={visible} onClose={this.onClose}>
             <ModalDialog.Header>{t("InviteLinkTitle")}</ModalDialog.Header>
             <ModalDialog.Body>
@@ -120,10 +144,11 @@ class InviteDialogComponent extends React.Component {
                   <Link
                     className="link-dialog"
                     type="action"
-                    isHovered={true}
-                    onClick={this.onCopyLinkToClipboard}
+                    isHovered={LinkCopySuccess ? false : true}
+                    noHover={LinkCopySuccess}
+                    onClick={LinkCopySuccess ? undefined : this.onCopyLinkToClipboard}
                   >
-                    {t("CopyToClipboard")}
+                    {LinkCopySuccess ? t("LinkCopySuccess") : t("CopyToClipboard")}
                   </Link>
                   {settings && !this.state.isLinkShort && (
                     <Link

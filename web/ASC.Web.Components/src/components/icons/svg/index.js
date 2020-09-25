@@ -147,8 +147,12 @@ import OrigNavLogoIcon from "./nav.logo.react.svg";
 import OrigNavLogoOpenedIcon from "./nav.logo.opened.react.svg";
 
 import OrigCheckIcon from "./check.react.svg";
+import OrigCheckToastIcon from "./check.toast.react.svg";
+
 import OrigDangerIcon from "./danger.react.svg";
+import OrigDangerToastIcon from "./danger.toast.react.svg";
 import OrigInfoIcon from "./info.react.svg";
+import OrigInfoToastIcon from "./info.toast.react.svg";
 
 import OrigArrowPathIcon from "./arrow.path.react.svg";
 
@@ -339,6 +343,7 @@ export const CatalogUserIcon = createStyledIcon(
 );
 export const ChatIcon = createStyledIcon(OrigChatIcon, "ChatIcon");
 export const CheckIcon = createStyledIcon(OrigCheckIcon, "CheckIcon");
+export const CheckToastIcon = createStyledIcon(OrigCheckToastIcon, "CheckToastIcon");
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   "CheckboxIcon",
@@ -393,6 +398,7 @@ export const CrossSidebarIcon = createStyledIcon(
   "CrossSidebarIcon"
 );
 export const DangerIcon = createStyledIcon(OrigDangerIcon, "DangerIcon");
+export const DangerToastIcon = createStyledIcon(OrigDangerToastIcon, "DangerToastIcon");
 export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   "DocumentsIcon"
@@ -443,6 +449,7 @@ export const HorizontalDotsIcon = createStyledIcon(
 export const IcqIcon = createStyledIcon(OrigIcqIcon, "IcqIcon");
 export const ImportIcon = createStyledIcon(OrigImportIcon, "ImportIcon");
 export const InfoIcon = createStyledIcon(OrigInfoIcon, "InfoIcon");
+export const InfoToastIcon = createStyledIcon(OrigInfoToastIcon, "InfoToastIcon");
 export const InvitationLinkIcon = createStyledIcon(
   OrigInvitationLinkIcon,
   "InvitationLinkIcon"

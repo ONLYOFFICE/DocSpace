@@ -181,7 +181,7 @@ const StyledToastContainer = styled(ToastContainer)`
       -webkit-border-radius: 3px;
       color: #000;
       margin: 0 0 6px;
-      padding: 13px 11px 13px 11px;
+      padding: 12px;
       min-height: 32px;
       font: normal 12px 'Open Sans', sans-serif;
       width: 100%;
@@ -192,14 +192,6 @@ const StyledToastContainer = styled(ToastContainer)`
     display: flex;
     align-items: center;
   }
-
-svg {
-    width: 20px;
-    min-width: 20px;
-    height: 20px;
-    min-height: 20px;
-  }
-
 `;
 
 const Toast = props => {
