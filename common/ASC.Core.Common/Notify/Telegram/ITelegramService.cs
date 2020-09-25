@@ -34,8 +34,9 @@ namespace ASC.Core.Common.Notify
 
         void RegisterUser(string userId, int tenantId, string token);
 
-        bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy);
+        void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy);
 
-        string RegistrationToken(string userId, int tenantId);
+        void DisableClient(int tenantId);
+
     }
 }

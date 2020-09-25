@@ -34,23 +34,22 @@ namespace ASC.TelegramService
     {
         private ICacheNotify<NotifyMessage> CacheMessage { get; }
         private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
-        private ICacheNotify<CheckConnectionProto> CacheCheckConnection { get; }
-        private ICacheNotify<RegistrationTokenProto> CacheRegistrationToken { get; }
-
-        private ICacheNotify<GetConnectionProto> CacheGetConnection { get; }
-        private ICacheNotify<SuccessfulRegTokenProto> CacheSuccessfulRegToken { get; }
+        private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
+        private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
         
         private TelegramService TelegramService { get; set; }
 
-        public TelegramListener(ICacheNotify<NotifyMessage> cacheMessage, ICacheNotify<RegisterUserProto> cacheRegisterUser, ICacheNotify<CheckConnectionProto> cacheCheckConnection, ICacheNotify<RegistrationTokenProto> cacheRegistrationToken, ICacheNotify<GetConnectionProto> cacheGetConnection, ICacheNotify<SuccessfulRegTokenProto> cacheSuccessfulRegToken, TelegramService telegramService)
+        public TelegramListener(ICacheNotify<NotifyMessage> cacheMessage,
+            ICacheNotify<RegisterUserProto> cacheRegisterUser,
+            ICacheNotify<CreateClientProto> cacheCreateClient,
+            TelegramService telegramService,
+            ICacheNotify<DisableClientProto> cacheDisableClient)
         {
             CacheMessage = cacheMessage;
             CacheRegisterUser = cacheRegisterUser;
-            CacheCheckConnection = cacheCheckConnection;
-            CacheRegistrationToken = cacheRegistrationToken;
+            CacheCreateClient = cacheCreateClient;
+            CacheDisableClient = cacheDisableClient;
 
-            CacheGetConnection = cacheGetConnection;
-            CacheSuccessfulRegToken = cacheSuccessfulRegToken;
             TelegramService = telegramService;
         }
 
@@ -58,8 +57,8 @@ namespace ASC.TelegramService
         {
             CacheMessage.Subscribe(n=> SendMessage(n), CacheNotifyAction.Insert);
             CacheRegisterUser.Subscribe(n=> RegisterUser(n), CacheNotifyAction.Insert);
-            CacheCheckConnection.Subscribe(n=> CheckConnection(n), CacheNotifyAction.Insert);
-            CacheRegistrationToken.Subscribe(n=> RegistrationToken(n), CacheNotifyAction.Insert);
+            CacheCreateClient.Subscribe(n=> CreateOrUpdateClient(n), CacheNotifyAction.Insert);
+            CacheDisableClient.Subscribe(n=> DisableClient(n), CacheNotifyAction.Insert);
 
         }
 
@@ -67,11 +66,16 @@ namespace ASC.TelegramService
         {
             CacheMessage.Unsubscribe(CacheNotifyAction.Insert);
             CacheRegisterUser.Unsubscribe(CacheNotifyAction.Insert);
-            CacheCheckConnection.Unsubscribe(CacheNotifyAction.Insert);
-            CacheRegistrationToken.Unsubscribe(CacheNotifyAction.Insert);
+            CacheCreateClient.Unsubscribe(CacheNotifyAction.Insert);
+            CacheDisableClient.Unsubscribe(CacheNotifyAction.Insert);
         }
-        
-        public void SendMessage(NotifyMessage notifyMessage)
+
+        private void DisableClient(DisableClientProto n)
+        {
+            TelegramService.DisableClient(n.TenantId);
+        }
+
+        private void SendMessage(NotifyMessage notifyMessage)
         {
             TelegramService.SendMessage(notifyMessage);
         }
@@ -81,23 +85,9 @@ namespace ASC.TelegramService
             TelegramService.RegisterUser(registerUserProto.UserId, registerUserProto.TenantId, registerUserProto.Token);
         }
 
-        private void CheckConnection(CheckConnectionProto checkConnectionProto)
+        private void CreateOrUpdateClient(CreateClientProto createClientProto)
         {
-            GetConnectionProto getConnectionProto = new GetConnectionProto();
-            getConnectionProto.Connect = TelegramService.CheckConnection(checkConnectionProto.TenantId, checkConnectionProto.Token, checkConnectionProto.TokenLifespan, checkConnectionProto.Proxy);
-            getConnectionProto.TenantId = checkConnectionProto.TenantId;
-            getConnectionProto.Time = checkConnectionProto.Time;
-            CacheGetConnection.Publish(getConnectionProto, CacheNotifyAction.Insert);
-        }
-
-        private void RegistrationToken(RegistrationTokenProto registrationTokenProto)
-        {
-            SuccessfulRegTokenProto successfulRegTokenProto = new SuccessfulRegTokenProto();
-            var tmp = TelegramService.RegistrationToken(registrationTokenProto.UserId, registrationTokenProto.TenantId);
-            successfulRegTokenProto.Token = tmp == null ? "" : tmp;
-            successfulRegTokenProto.TenantId = registrationTokenProto.TenantId;
-            successfulRegTokenProto.Time = registrationTokenProto.Time;
-            CacheSuccessfulRegToken.Publish(successfulRegTokenProto, CacheNotifyAction.Insert);
+            TelegramService.CreateOrUpdateClient(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy);
         }
     }
 

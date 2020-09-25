@@ -49,22 +49,14 @@ namespace ASC.TelegramService
             TelegramHandler.RegisterUser(userId, tenantId, token);
         }
 
-        public bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy)
+        public void DisableClient(int tenantId)
         {
-            if (string.IsNullOrEmpty(token))
-            {
-                TelegramHandler.DisableClient(tenantId);
-                return true;
-            }
-            else
-            {
-                return TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy);
-            }
+            TelegramHandler.DisableClient(tenantId);
         }
 
-        public string RegistrationToken(string userId, int tenantId)
+        public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
-            return TelegramHandler.CurrentRegistrationToken(userId, tenantId);
+             TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy, false);
         }
     }
 

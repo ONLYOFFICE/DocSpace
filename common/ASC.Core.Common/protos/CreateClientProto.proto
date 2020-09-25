@@ -2,7 +2,7 @@
 
 package ASC.Core.Common.Notify;
 
-message CheckConnectionProto {
+message CreateClientProto {
     int32 TenantId = 1;
     string Token = 2;
     int32 TokenLifespan = 3;

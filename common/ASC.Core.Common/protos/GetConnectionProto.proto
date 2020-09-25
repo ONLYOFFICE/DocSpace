@@ -1,9 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Common.Notify;
-
-message GetConnectionProto {
-    bool Connect = 1;
-    int32 TenantId = 2;
-    string Time = 3;
-}

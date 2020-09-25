@@ -26,14 +26,18 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Notify.Telegram;
 using ASC.Notify.Messages;
 
 using Microsoft.Extensions.Options;
+
+using Telegram.Bot;
 
 namespace ASC.Core.Common.Notify
 {
@@ -48,16 +52,19 @@ namespace ASC.Core.Common.Notify
 
         private ConsumerFactory ConsumerFactory { get; }
         private CachedTelegramDao CachedTelegramDao { get; }
-        public TelegramServiceClient TelegramServiceClient { get; }
+        private TelegramServiceClient TelegramServiceClient { get; }
+        private ILog Log { get; }
 
         public TelegramHelper(
             ConsumerFactory consumerFactory,
             IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao,
-            TelegramServiceClient telegramServiceClient)
+            TelegramServiceClient telegramServiceClient,
+            IOptionsMonitor<ILog> options)
         {
             ConsumerFactory = consumerFactory;
             CachedTelegramDao = cachedTelegramDao.Value;
             TelegramServiceClient = telegramServiceClient;
+            Log = options.CurrentValue;
         }
 
         public string RegisterUser(Guid userId, int tenantId)
@@ -74,9 +81,18 @@ namespace ASC.Core.Common.Notify
             TelegramServiceClient.SendMessage(msg);
         }
 
-        public bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy)
+        public bool CreateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
-            return TelegramServiceClient.CheckConnection(tenantId, token, tokenLifespan, proxy);
+            var client = InitClient(token, proxy);
+            if (TestingClient(client))
+            {
+                TelegramServiceClient.CreateOrUpdateClient(tenantId, token, tokenLifespan, proxy);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public RegStatus UserIsConnected(Guid userId, int tenantId)
@@ -92,6 +108,11 @@ namespace ASC.Core.Common.Notify
             if (token == null || token == "") return "";
 
             return GetLink(token);
+        }
+
+        public void DisableClient(int tenantId)
+        {
+            TelegramServiceClient.DisableClient(tenantId);
         }
 
         public void Disconnect(Guid userId, int tenantId)
@@ -130,6 +151,25 @@ namespace ASC.Core.Common.Notify
             if (string.IsNullOrEmpty(botname)) return null;
 
             return string.Format("t.me/{0}?start={1}", botname, token);
+        }
+
+        public bool TestingClient(TelegramBotClient telegramBotClient)
+        {
+            try
+            {
+                if (!telegramBotClient.TestApiAsync().GetAwaiter().GetResult()) return false;
+            }
+            catch (Exception e)
+            {
+                Log.DebugFormat("Couldn't test api connection: {0}", e);
+                return false;
+            }
+            return true;
+        }
+
+        public TelegramBotClient InitClient(string token, string proxy)
+        {
+            return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, new WebProxy(proxy));
         }
     }
 

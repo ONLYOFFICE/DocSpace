@@ -84,7 +84,15 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public bool ValidateKeys()
         {
-            return TelegramHelper.CheckConnection(TenantManager.GetCurrentTenant().TenantId, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
+            if (TelegramBotToken == "")
+            {
+                TelegramHelper.DisableClient(TenantManager.GetCurrentTenant().TenantId);
+                return true;
+            }
+            else
+            {
+                return TelegramHelper.CreateClient(TenantManager.GetCurrentTenant().TenantId, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
+            }
         }
     }
 

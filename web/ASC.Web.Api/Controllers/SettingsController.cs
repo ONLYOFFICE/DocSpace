@@ -62,7 +62,6 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
-using ASC.Notify.Messages;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;

@@ -29,19 +29,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="protos\AzRecordCache.proto" />
-    <None Remove="protos\CheckConnectionProto.proto" />
     <None Remove="protos\ConsumerCacheItem.proto" />
-    <None Remove="protos\GetConnectionProto.proto" />
+    <None Remove="protos\CreateClientProto.proto" />
+    <None Remove="protos\DisableClientProto.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
     <None Remove="protos\NotifyInvoke.proto" />
     <None Remove="protos\NotifyMessage.proto" />
     <None Remove="protos\QuotaCacheItem.proto" />
     <None Remove="protos\RegisterUserProto.proto" />
-    <None Remove="protos\RegistrationTokenProto.proto" />
     <None Remove="protos\SettingsCacheItem.proto" />
     <None Remove="protos\SubscriptionMethodCache.proto" />
     <None Remove="protos\SubscriptionRecord.proto" />
-    <None Remove="protos\SuccessfulRegTokenProto.proto" />
+    <None Remove="protos\SuccCreateClientProto.proto" />
     <None Remove="protos\TenantCacheItem.proto" />
     <None Remove="protos\TenantSetting.proto" />
     <None Remove="protos\UserGroupRefCacheItem.proto" />
@@ -62,14 +61,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.5" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos\SuccessfulRegTokenProto.proto" />
-    <Protobuf Include="protos\CheckConnectionProto.proto" />
+    <Protobuf Include="protos\CreateClientProto.proto" />
     <Protobuf Include="protos\NotifyInvoke.proto" />
     <Protobuf Include="protos\NotifyMessage.proto" />
-    <Protobuf Include="protos\GetConnectionProto.proto" />
-    <Protobuf Include="protos\RegistrationTokenProto.proto" />
+    <Protobuf Include="protos\SuccCreateClientProto.proto" />
+    <Protobuf Include="protos\DisableClientProto.proto" />
     <Protobuf Include="protos\RegisterUserProto.proto" />
     <Protobuf Include="protos\SettingsCacheItem.proto" />
     <Protobuf Include="protos\ConsumerCacheItem.proto" />

@@ -39,7 +39,7 @@ using Telegram.Bot.Args;
 using ASC.Common;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Types;
+using ASC.Core.Common.Notify;
 
 namespace ASC.TelegramService
 {
@@ -97,8 +97,12 @@ namespace ASC.TelegramService
             Clients.Remove(tenantId);
         }
 
-        public bool CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool force = false)
+        public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, bool force = false)
         {
+            var scope = ServiceProvider.CreateScope();
+            var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
+            var newClient = telegramHelper.InitClient(token, proxy);
+
             if (Clients.ContainsKey(tenantId))
             {
                 var client = Clients[tenantId];
@@ -106,18 +110,10 @@ namespace ASC.TelegramService
 
                 if (token != client.Token || proxy != client.Proxy)
                 {
-                    var newClient = InitClient(token, proxy);
-
-                    try
+                    if (startTelegramService) 
                     {
-                        if (!newClient.TestApiAsync().GetAwaiter().GetResult()) return false;
+                        if (!telegramHelper.TestingClient(newClient)) return;
                     }
-                    catch (Exception e)
-                    {
-                        Log.DebugFormat("Couldn't test api connection: {0}", e);
-                        return false;
-                    }
-
 
                     client.Client.StopReceiving();
 
@@ -130,34 +126,22 @@ namespace ASC.TelegramService
             }
             else
             {
-                var client = InitClient(token, proxy);
-
-                if (!force)
+                if (!force && startTelegramService)
                 {
-                    try
-                    {
-                        if (!client.TestApiAsync().GetAwaiter().GetResult()) return false;
-                    }
-                    catch (Exception e)
-                    {
-                        Log.DebugFormat("Couldn't test api connection: {0}", e);
-                        return false;
-                    }
+                    if (!telegramHelper.TestingClient(newClient)) return;
                 }
 
-                BindClient(client, tenantId);
+                BindClient(newClient, tenantId);
 
                 Clients.Add(tenantId, new TenantTgClient()
                 {
                     Token = token,
-                    Client = client,
+                    Client = newClient,
                     Proxy = proxy,
                     TenantId = tenantId,
                     TokenLifeSpan = tokenLifespan
                 });
             }
-
-            return true;
         }
 
         public void RegisterUser(string userId, int tenantId, string token)
@@ -167,13 +151,8 @@ namespace ASC.TelegramService
             var userKey = UserKey(userId, tenantId);
             var dateExpires = DateTimeOffset.Now.AddMinutes(Clients[tenantId].TokenLifeSpan);
             MemoryCache.Default.Set(token, userKey, dateExpires);
-            MemoryCache.Default.Set(string.Format(userKey), token, dateExpires);
         }
 
-        public string CurrentRegistrationToken(string userId, int tenantId)
-        {
-            return (string)MemoryCache.Default.Get(UserKey(userId, tenantId));
-        }
 
         private async void OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
         {
@@ -181,10 +160,6 @@ namespace ASC.TelegramService
             await Command.HandleCommand(e.Message, client, tenantId);
         }
 
-        private TelegramBotClient InitClient(string token, string proxy)
-        {
-            return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, new WebProxy(proxy));
-        }
 
         private void BindClient(TelegramBotClient client, int tenantId)
         {
@@ -204,7 +179,8 @@ namespace ASC.TelegramService
         {
             services.TryAddSingleton<TelegramHandler>();
             return services.AddCachedTelegramDaoService()
-                .AddCommandModuleService();
+                .AddCommandModuleService()
+                .AddTelegramHelperSerivce();
         }
     }
 }

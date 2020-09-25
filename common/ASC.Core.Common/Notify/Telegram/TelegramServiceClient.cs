@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -37,29 +36,20 @@ namespace ASC.Core.Common.Notify
     {
         private ICacheNotify<NotifyMessage> CacheMessage { get; }
         private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
-        private ICacheNotify<CheckConnectionProto> CacheCheckConnection { get; }
-        private ICacheNotify<RegistrationTokenProto> CacheRegistrationToken { get; }
-
-        private ICacheNotify<GetConnectionProto> CacheGetConnection { get; }
-        private ICacheNotify<SuccessfulRegTokenProto> CacheSuccessfulRegistrationToken { get; }
+        private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
+        private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
 
         private ICache Cache { get; }
 
         public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
             ICacheNotify<RegisterUserProto> cacheRegisterUser,
-            ICacheNotify<CheckConnectionProto> cacheCheckConnection,
-            ICacheNotify<RegistrationTokenProto> cacheRegistrationToken,
-            ICacheNotify<GetConnectionProto> cacheGetConnection,
-            ICacheNotify<SuccessfulRegTokenProto> cacheSuccessfulRegistrationToken)
+            ICacheNotify<CreateClientProto> cacheCreateClient,
+            ICacheNotify<DisableClientProto> cacheDisableClient)
         {
             CacheMessage = cacheMessage;
             CacheRegisterUser = cacheRegisterUser;
-            CacheCheckConnection = cacheCheckConnection;
-            CacheRegistrationToken = cacheRegistrationToken;
-            CacheGetConnection = cacheGetConnection;
-            CacheSuccessfulRegistrationToken = cacheSuccessfulRegistrationToken;
-            CacheGetConnection.Subscribe(n => SaveAnswerConnect(n), CacheNotifyAction.Insert);
-            CacheSuccessfulRegistrationToken.Subscribe(n => SaveAnswerRegistration(n), CacheNotifyAction.Insert);
+            CacheCreateClient = cacheCreateClient;
+            CacheDisableClient = cacheDisableClient;
             Cache = AscCache.Memory;
         }
 
@@ -70,83 +60,38 @@ namespace ASC.Core.Common.Notify
 
         public void RegisterUser(string userId, int tenantId, string token)
         {
+            Cache.Insert(GetCacheTokenKey(tenantId, userId), token, DateTime.MaxValue);
             CacheRegisterUser.Publish(new RegisterUserProto() { 
                 UserId = userId,
                 TenantId = tenantId,
-                Token = token } , CacheNotifyAction.Insert);
+                Token = token 
+            } , CacheNotifyAction.Insert);
         }
 
-        public bool CheckConnection(int tenantId, string token, int tokenLifespan, string proxy)
+        public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
-            var time = DateTime.Now.ToString("o");
-            CacheCheckConnection.Publish(new CheckConnectionProto()
+            CacheCreateClient.Publish(new CreateClientProto()
             {
                 TenantId = tenantId,
                 Token = token,
                 TokenLifespan = tokenLifespan,
-                Proxy = proxy,
-                Time = time
+                Proxy = proxy
             }, CacheNotifyAction.Insert);
+        }
 
-            while (true)
-            {
-                try
-                {
-                    Thread.Sleep(1000);
-                    var cache = Cache.Get<GetConnectionProto>(GetCacheConnectKey(tenantId, time)).Connect;
-                    Cache.Remove(GetCacheConnectKey(tenantId, time));
-                    return cache;
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
+        public void DisableClient(int tenantId)
+        {
+            CacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
         }
 
         public string RegistrationToken(string userId, int tenantId)
         {
-            var time = DateTime.Now.ToString("o");
-            CacheRegistrationToken.Publish(new RegistrationTokenProto()
-            {
-                UserId = userId,
-                TenantId = tenantId,
-                Time = time
-            }, CacheNotifyAction.Insert);
-            while (true)
-            {
-                try
-                {
-                    Thread.Sleep(1000);
-                    var cache = Cache.Get<SuccessfulRegTokenProto>(GetCacheRegKey(tenantId, time)).Token;
-                    Cache.Remove(GetCacheRegKey(tenantId, time));
-                    return cache;
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
+            return Cache.Get<string>(GetCacheTokenKey(tenantId, userId));
         }
 
-        private string GetCacheConnectKey(int tenantId, string time)
+        private string GetCacheTokenKey(int tenantId, string userId)
         {
-            return typeof(GetConnectionProto).FullName + tenantId + time;
-        }
-
-        private string GetCacheRegKey(int tenantId, string time)
-        {
-            return typeof(SuccessfulRegTokenProto).FullName + tenantId + time;
-        }
-
-        private void SaveAnswerConnect(GetConnectionProto getConnectionProto)
-        {
-            Cache.Insert(GetCacheConnectKey(getConnectionProto.TenantId, getConnectionProto.Time), getConnectionProto, DateTime.MaxValue);
-        }
-
-        private void SaveAnswerRegistration(SuccessfulRegTokenProto successfulRegTokenProto)
-        {
-            Cache.Insert(GetCacheRegKey(successfulRegTokenProto.TenantId, successfulRegTokenProto.Time), successfulRegTokenProto, DateTime.MaxValue);
+            return "Token" + userId + tenantId;
         }
     }
 
