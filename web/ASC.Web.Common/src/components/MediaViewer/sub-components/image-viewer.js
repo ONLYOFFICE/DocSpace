@@ -64,6 +64,10 @@ const StyledViewer = styled(Viewer)`
     }
     li[data-key='delete'],
     li[data-key='customDownload']{
+        position: fixed;
+        @media (max-width: 600px) {
+            position: initial;
+        }
         bottom: 10px;
         .controlBtn{
             margin: 0
@@ -87,8 +91,8 @@ const StyledViewer = styled(Viewer)`
 
     .btnContainer{
         display: block;
-        width: 20px;
-        margin: 3px 10px;
+        width: 18px;
+        margin: 4px 10px;
         line-height: 19px;
     }
     .scrollBtn{
