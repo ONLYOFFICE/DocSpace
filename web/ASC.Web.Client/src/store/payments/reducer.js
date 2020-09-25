@@ -8,21 +8,35 @@ const initialState = {
   standaloneMode: true,
   currentLicense: {
     expiresDate: new Date(),
-    trialMode: false,
+    trialMode: true,
   },
 };
 
 const paymentsReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_PAYMENTS_SETTINGS:
+      const {
+        buyUrl,
+        salesEmail,
+        currentLicense,
+        standalone: standaloneMode,
+        feedbackAndSupportUrl: helpUrl,
+      } = action.settings;
+
       return Object.assign({}, state, {
-        salesEmail: action.settings.salesEmail,
-        helpUrl: action.settings.feedbackAndSupportUrl,
-        buyUrl: action.settings.buyUrl,
-        standaloneMode: action.settings.standalone,
+        salesEmail,
+        buyUrl,
+        helpUrl,
+        standaloneMode,
         currentLicense: Object.assign({}, state.currentLicense, {
-          expiresDate: new Date(action.settings.currentLicense.date),
-          trialMode: action.settings.currentLicense.trial,
+          expiresDate:
+            currentLicense && currentLicense.date
+              ? new Date(currentLicense.date)
+              : state.currentLicense.expiresDate,
+          trialMode:
+            currentLicense && currentLicense.trial
+              ? currentLicense.trial
+              : state.currentLicense.trial,
         }),
       });
 
