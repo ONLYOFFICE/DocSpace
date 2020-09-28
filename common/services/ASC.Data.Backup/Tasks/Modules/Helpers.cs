@@ -67,7 +67,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new Guid("{BF88953E-3C43-4850-A3FB-B1E43AD53A3E}")  //talk product
             };
 
-        private InstanceCrypto instanceCrypto;
+        private readonly InstanceCrypto instanceCrypto;
         public Helpers(InstanceCrypto instanceCrypto)
         {
             this.instanceCrypto = instanceCrypto;

@@ -33,7 +33,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CalendarModuleSpecifics : ModuleSpecificsBase
     {
-        private Helpers helpers;
+        private readonly Helpers helpers;
 
         private readonly TableInfo[] _tables = new[]
             {

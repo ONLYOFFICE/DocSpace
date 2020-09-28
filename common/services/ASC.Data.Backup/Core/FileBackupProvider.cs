@@ -40,8 +40,8 @@ namespace ASC.Data.Backup
 {
     public class FileBackupProvider : IBackupProvider
     {
-        private IEnumerable<string> allowedModules;
-        private ILog log;
+        private readonly IEnumerable<string> allowedModules;
+        private readonly ILog log;
         private StorageFactory StorageFactory { get; set; }
         private StorageFactoryConfig StorageFactoryConfig { get; set; }
 

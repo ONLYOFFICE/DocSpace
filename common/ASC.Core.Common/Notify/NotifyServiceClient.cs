@@ -32,8 +32,8 @@ namespace ASC.Core.Notify
 {
     public class NotifyServiceClient : INotifyService
     {
-        private ICacheNotify<NotifyMessage> СacheNotify;
-        private ICacheNotify<NotifyInvoke> NotifyInvoke;
+        private readonly ICacheNotify<NotifyMessage> СacheNotify;
+        private readonly ICacheNotify<NotifyInvoke> NotifyInvoke;
         public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
         {
             СacheNotify = cacheNotify;
