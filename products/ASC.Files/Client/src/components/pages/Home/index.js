@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import { RequestLoader, toastr } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { RequestLoader } from "asc-web-components";
+import { PageLayout, utils, toastr } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,

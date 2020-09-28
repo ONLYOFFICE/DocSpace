@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
-  toastr,
   ModalDialog,
   Button,
   Text,
@@ -13,7 +12,7 @@ import {
 } from "asc-web-components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api } from "asc-web-common";
+import { utils, api, toastr } from "asc-web-common";
 import {
   getFileIcon,
   getFolderIcon,
