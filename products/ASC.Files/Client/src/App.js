@@ -72,7 +72,6 @@ class App extends React.Component {
       getModules,
       getPortalPasswordSettings,
       getPortalCultures,
-      fetchMyFolder,
       fetchTreeFolders,
       fetchFiles,
       finalize,
@@ -92,7 +91,6 @@ class App extends React.Component {
       getModules(),
       getPortalPasswordSettings(),
       getPortalCultures(),
-      fetchMyFolder(),
       fetchTreeFolders()
     ];
 
@@ -251,7 +249,6 @@ const mapDispatchToProps = dispatch => {
     getModules: () => getModules(dispatch),
     getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
-    fetchMyFolder: () => fetchMyFolder(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
     finalize: () => {
