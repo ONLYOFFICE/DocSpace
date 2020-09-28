@@ -50,7 +50,7 @@ const AdvantagesContainer = () => {
   return (
     <StyledBodyAdvantages>
       <Text className="header-advantages" fontSize="22px" isBold={true}>
-        {t("SubscriptionGet")}
+        {t("subscriptionRenewedLicense")}
       </Text>
 
       <Box className="row-advantages">
@@ -61,7 +61,7 @@ const AdvantagesContainer = () => {
           alt="Icon_cubes"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("OnlyOfficeEditor")}</Text>
+          <Text isBold={true}>{t("advantageEditor")}</Text>
         </Box>
       </Box>
 
@@ -73,7 +73,7 @@ const AdvantagesContainer = () => {
           alt="Icon_lock"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("PrivateRooom")}</Text>
+          <Text isBold={true}>{t("advantagePrivateRooom")}</Text>
         </Box>
       </Box>
 
@@ -85,7 +85,7 @@ const AdvantagesContainer = () => {
           alt="Icon_smartphone"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("WebEditors")}</Text>
+          <Text isBold={true}>{t("advantageWebEditors")}</Text>
         </Box>
       </Box>
 
@@ -97,7 +97,7 @@ const AdvantagesContainer = () => {
           alt="Icon_update"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("FunctionalityAndSecurity")}</Text>
+          <Text isBold={true}>{t("advantageUpdates")}</Text>
         </Box>
       </Box>
 
@@ -109,7 +109,7 @@ const AdvantagesContainer = () => {
           alt="Icon_help"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("ProfessionalTechSupport")}</Text>
+          <Text isBold={true}>{t("advantageProfessionalTechSupport")}</Text>
         </Box>
       </Box>
     </StyledBodyAdvantages>

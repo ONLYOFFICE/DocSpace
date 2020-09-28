@@ -53,10 +53,10 @@ const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
   return moment(expiresDate).isAfter(currentUserDate, "day") ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("Using")}
+        {t("headerLicense")}
       </Text>
       <Text className="payments-header-additional_support">
-        {t("SubscriptionAndUpdatesExpires")}{" "}
+        {t("accessSubscription")}{" "}
         {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
         {"."}
       </Text>
@@ -64,26 +64,26 @@ const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
   ) : !trialMode ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("Using")}
+        {t("headerLicense")}
       </Text>
       <Text
         className="payments-header-additional_support"
         color="#C96C27"
         fontWeight="600"
       >
-        {t("SupportNotAvailable")}{" "}
+        {t("expiryPaidLicense")}{" "}
         {moment(expiresDate).startOf("day").format("D MMMM, YYYY")}
         {". "}
-        {t("LicenseRenewal")}
+        {t("renewalLicense")}
       </Text>
     </StyledHeader>
   ) : (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("TrialPeriodExpired")}
+        {t("headerExpiredTrialLicense")}
       </Text>
       <Text className="payments-header-additional_support">
-        {t("ThanksToUser")}
+        {t("expiryTrialLicense")}
       </Text>
     </StyledHeader>
   );

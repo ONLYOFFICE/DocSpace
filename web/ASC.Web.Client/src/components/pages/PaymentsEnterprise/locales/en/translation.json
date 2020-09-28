@@ -1,23 +1,29 @@
 {
-  "PurchaseQuestions": "For any purchase questions, contact us at ",
-  "TechnicalIssues": "For for solving technical issues, use",
-  "SubscriptionAndUpdatesExpires": "Your subscription for support and updates expires on",
-  "OnlyOfficeEditor": "ONLYOFFICE editors with pro features",
-  "PrivateRooom": "Private Rooom for encrypted collaboretion",
-  "WebEditors": "Mobile web editors",
-  "FunctionalityAndSecurity": "Regular functionality and security updates during 1 year",
-  "ProfessionalTechSupport": "1 year of professional tech support service",
-  "Using": " You are using ONLYOFFICE Enterprise Edition",
-  "SubscriptionGet": "Renew subscription to get:",
-  "Buy": "Buy now",
-  "Upload": "Upload license",
-  "Payments": "Payments",
-  "LicenseIsNotValid": "Licence  is not valid",
-  "LoadingLicenseError": "Make sure you choose the right file",
-  "LoadingLicenseSuccess": "License activated successfully",
-  "OrganizationName": "ONLYOFFICE",
-  "SupportNotAvailable": "Support is no longer available for your license since",
-  "LicenseRenewal": "If you have already purchased the renewal, upload the license file.",
-  "ThanksToUser": "Thank you for having checked out ONLYOFFICE!",
-  "TrialPeriodExpired": "Free trial period has expired"
+  "contactEmail": "For any purchase questions, contact us at ",
+  "contactUrl": "For for solving technical issues, use",
+
+  "subscriptionRenewedLicense": "Renew subscription to get:",
+
+  "advantageEditor": "ONLYOFFICE editors with pro features",
+  "advantagePrivateRooom": "Private Rooom for encrypted collaboretion",
+  "advantageWebEditors": "Mobile web editors",
+  "advantageUpdates": "Regular functionality and security updates during 1 year",
+  "advantageProfessionalTechSupport": "1 year of professional tech support service",
+
+  "headerLicense": " You are using ONLYOFFICE Enterprise Edition",
+  "headerExpiredTrialLicense": "Free trial period has expired",
+
+  "buttonBuyLicense": "Buy now",
+  "buttonUploadLicense": "Upload license",
+
+  "paymentsTitle": "Payments",
+
+  "errorLicense": "Licence  is not valid",
+  "errorLoadingLicense": "Make sure you choose the right file",
+  "successLoadingLicense": "License activated successfully",
+
+  "accessSubscription": "Your subscription for support and updates expires on",
+  "expiryPaidLicense": "Support is no longer available for your license since",
+  "expiryTrialLicense": "Thank you for having checked out ONLYOFFICE!",
+  "renewalLicense": "If you have already purchased the renewal, upload the license file."
 }
