@@ -77,8 +77,10 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (oldMonoSerializer)
             {
-                var xml = new XmlDocument();
-                xml.PreserveWhitespace = true;
+                var xml = new XmlDocument
+                {
+                    PreserveWhitespace = true
+                };
                 xml.Load(result);
                 result.Close();
 

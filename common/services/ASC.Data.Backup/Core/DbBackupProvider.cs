@@ -100,10 +100,10 @@ namespace ASC.Data.Backup
         {
             if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
             {
-                var map = new ExeConfigurationFileMap();
-                map.ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ?
-                    config :
-                    Path.Combine(config, "Web.config");
+                var map = new ExeConfigurationFileMap
+                {
+                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : Path.Combine(config, "Web.config")
+                };
                 return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             }
             return ConfigurationManager.OpenExeConfiguration(config);
