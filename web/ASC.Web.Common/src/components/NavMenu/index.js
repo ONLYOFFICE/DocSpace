@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Aside, utils } from "asc-web-components";
+import { Backdrop, Toast /*Aside*/, utils } from "asc-web-components";
 import Header from "./sub-components/header";
 import Nav from "./sub-components/nav";
 import HeaderNav from "./sub-components/header-nav";
@@ -100,11 +100,11 @@ class NavMenu extends React.Component {
       isNavOpened: props.isNavOpened,
       isAsideVisible: props.isAsideVisible,
 
-      onLogoClick: props.onLogoClick,
+      onLogoClick: undefined,
       asideContent: props.asideContent,
 
       currentUser: props.currentUser,
-      currentUserActions: props.currentUserActions,
+      currentUserActions: undefined,
 
       availableModules: props.availableModules,
       isolateModules: isolateModules,
@@ -115,6 +115,42 @@ class NavMenu extends React.Component {
 
       totalNotifications: totalNotifications
     };
+
+    const { hasChanges } = props;
+
+    if (hasChanges) {
+      const { t, currentUser } = props;
+
+      const isUserDefined =
+        Object.entries(currentUser).length > 0 &&
+        currentUser.constructor === Object;
+
+      const userActionProfileView = {
+        key: "ProfileBtn",
+        label: t("Profile"),
+        onClick: this.onProfileClick,
+        url: "/products/people/view/@self"
+      };
+
+      const currentUserActions = [
+        {
+          key: "AboutBtn",
+          label: t("AboutCompanyTitle"),
+          onClick: this.onAboutClick,
+          url: "/about"
+        },
+        {
+          key: "LogoutBtn",
+          label: t("LogoutButton"),
+          onClick: this.onLogoutClick
+        }
+      ];
+
+      isUserDefined && currentUserActions.unshift(userActionProfileView);
+
+      newState.currentUserActions = currentUserActions;
+      newState.onLogoClick = this.onLogoClick;
+    }
 
     return newState;
   };
@@ -174,11 +210,33 @@ class NavMenu extends React.Component {
     });
   };
 
+  onProfileClick = () => {
+    const { history, settings } = this.props;
+    if (settings.homepage == "/products/people") {
+      history.push("/products/people/view/@self");
+    } else {
+      window.open("/products/people/view/@self", "_self");
+    }
+  };
+
+  onAboutClick = () => {
+    window.open("/about", "_self");
+  };
+
+  onLogoutClick = () => {
+    this.props.logout();
+  };
+
+  onLogoClick = () => {
+    window.open("/", "_self");
+  };
+
   render() {
     //console.log("NavMenu render");
 
     return (
       <>
+        <Toast />
         {this.state.isBackdropAvailable && (
           <Backdrop
             visible={this.state.isBackdropVisible}
@@ -288,7 +346,7 @@ const NavMenuWrapper = props => {
   }, [language]);
 
   return <NavMenuTranslationWrapper i18n={i18n} {...props} />;
-  };
+};
 
 NavMenuWrapper.propTypes = {
   language: PropTypes.string.isRequired
