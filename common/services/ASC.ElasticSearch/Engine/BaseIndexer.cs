@@ -475,10 +475,9 @@ namespace ASC.ElasticSearch
 
             var expression = fields.Body;
 
-            MemberExpression member;
             var sourceExprText = "";
 
-            while (!string.IsNullOrEmpty(name = TryGetName(expression, out member)))
+            while (!string.IsNullOrEmpty(name = TryGetName(expression, out MemberExpression member)))
             {
                 sourceExprText = "." + name + sourceExprText;
                 expression = member.Expression;

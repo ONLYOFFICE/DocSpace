@@ -74,14 +74,12 @@ namespace ASC.Data.Backup.Tasks.Modules
         }
         public bool IsEmptyOrSystemUser(string id)
         {
-            Guid g;
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out g) && SystemUsers.Contains(g);
+            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out Guid g) && SystemUsers.Contains(g);
         }
 
         public bool IsEmptyOrSystemGroup(string id)
         {
-            Guid g;
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out g) && SystemGroups.Contains(g);
+            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out Guid g) && SystemGroups.Contains(g);
         }
 
         public string CreateHash(string s)

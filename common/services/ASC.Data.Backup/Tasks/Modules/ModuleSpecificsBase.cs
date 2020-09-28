@@ -108,8 +108,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (table.InsertMethod == InsertMethod.None)
                 return null;
 
-            Dictionary<string, object> valuesForInsert;
-            if (!TryPrepareRow(dump, connection, columnMapper, table, row, out valuesForInsert))
+            if (!TryPrepareRow(dump, connection, columnMapper, table, row, out Dictionary<string, object> valuesForInsert))
                 return null;
 
             var columns = valuesForInsert.Keys.Intersect(table.Columns).ToArray();
@@ -259,11 +258,9 @@ namespace ASC.Data.Backup.Tasks.Modules
                 return true;
             }
 
-            Guid guidVal;
-            int intVal;
             return value == null ||
-                Guid.TryParse(Convert.ToString(value), out guidVal) ||
-                int.TryParse(Convert.ToString(value), out intVal);
+                Guid.TryParse(Convert.ToString(value), out Guid guidVal) ||
+                int.TryParse(Convert.ToString(value), out int intVal);
         }
 
         public virtual void PrepareData(DataTable data)

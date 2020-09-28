@@ -457,8 +457,7 @@ namespace ASC.Web.Core.Files
 
         private bool GetCanForcesave()
         {
-            bool canForcesave;
-            return !bool.TryParse(Configuration["files:docservice:forcesave"] ?? "", out canForcesave) || canForcesave;
+            return !bool.TryParse(Configuration["files:docservice:forcesave"] ?? "", out bool canForcesave) || canForcesave;
         }
 
         #endregion
