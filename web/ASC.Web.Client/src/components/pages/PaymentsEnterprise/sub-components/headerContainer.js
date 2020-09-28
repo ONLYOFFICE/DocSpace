@@ -48,16 +48,18 @@ const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
 
   const { t } = useTranslation("translation", { i18n });
 
-  const currentUserDate = moment();
+  const now = moment();
 
-  return moment(expiresDate).isAfter(currentUserDate, "day") ? (
+  const licenseDate = moment(expiresDate);
+  const licenseDateString = licenseDate.startOf("day").format("D MMMM, YYYY");
+
+  return licenseDate.isAfter(now, "day") ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
         {t("headerLicense")}
       </Text>
       <Text className="payments-header-additional_support">
-        {t("accessSubscription")}{" "}
-        {moment(expiresDate).startOf("day").format(" D MMMM, YYYY")}
+        {t("accessSubscription")} {licenseDateString}
         {"."}
       </Text>
     </StyledHeader>
@@ -71,8 +73,7 @@ const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
         color="#C96C27"
         fontWeight="600"
       >
-        {t("expiryPaidLicense")}{" "}
-        {moment(expiresDate).startOf("day").format("D MMMM, YYYY")}
+        {t("expiryPaidLicense")} {licenseDateString}
         {". "}
         {t("renewalLicense")}
       </Text>
