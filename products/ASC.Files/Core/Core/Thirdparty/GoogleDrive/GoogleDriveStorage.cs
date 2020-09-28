@@ -474,7 +474,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Fields = "maxUploadSize";
             var about = request.Execute();
 
-            return about.MaxUploadSize.HasValue ? about.MaxUploadSize.Value : MaxChunkedUploadFileSize;
+            return about.MaxUploadSize ?? MaxChunkedUploadFileSize;
         }
     }
 
