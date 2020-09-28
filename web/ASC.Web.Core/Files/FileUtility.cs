@@ -255,7 +255,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public List<string> extsWebEncrypt;
+        private List<string> extsWebEncrypt;
         public List<string> ExtsWebEncrypt { get => extsWebEncrypt ?? (extsWebEncrypt = (Configuration.GetSection("files:docservice:encrypted-docs").Get<string[]>() ?? new string[] { }).ToList()); }
 
         private List<string> extsWebReviewed;
