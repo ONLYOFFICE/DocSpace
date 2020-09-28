@@ -34,12 +34,12 @@ namespace ASC.Data.Backup.Extensions
     {
         public static string ValueOrDefault(this XElement el)
         {
-            return el != null ? el.Value : null;
+            return el?.Value;
         }
 
         public static string ValueOrDefault(this XAttribute attr)
         {
-            return attr != null ? attr.Value : null;
+            return attr?.Value;
         }
 
         public static void WriteTo(this XElement el, Stream stream)
