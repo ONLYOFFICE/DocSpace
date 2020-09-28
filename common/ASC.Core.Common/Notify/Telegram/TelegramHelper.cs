@@ -147,7 +147,7 @@ namespace ASC.Core.Common.Notify
         private string GetLink(string token)
         {
             var tgProvider = (ITelegramLoginProvider)ConsumerFactory.GetByKey("Telegram");
-            var botname = tgProvider == null ? default(string) : tgProvider.TelegramBotName;
+            var botname = tgProvider == null ? default : tgProvider.TelegramBotName;
             if (string.IsNullOrEmpty(botname)) return null;
 
             return string.Format("t.me/{0}?start={1}", botname, token);
