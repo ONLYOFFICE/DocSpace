@@ -95,9 +95,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (IsOpened)
                 return;
-
-            if (token == null) throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
-            _token = token;
+            _token = token ?? throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
 
             var tokenResponse = new TokenResponse
             {
