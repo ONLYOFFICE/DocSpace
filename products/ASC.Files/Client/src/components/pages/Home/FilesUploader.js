@@ -1,5 +1,4 @@
-import { api } from "asc-web-common";
-import { toastr } from "asc-web-components";
+import { api, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setProgressBarData,

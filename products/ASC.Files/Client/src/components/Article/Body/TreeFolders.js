@@ -3,12 +3,11 @@ import {
   TreeMenu,
   TreeNode,
   Icons,
-  toastr,
   utils,
   Badge
 } from "asc-web-components";
 import styled from "styled-components";
-import { api, constants } from "asc-web-common";
+import { api, constants, toastr } from "asc-web-common";
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
 

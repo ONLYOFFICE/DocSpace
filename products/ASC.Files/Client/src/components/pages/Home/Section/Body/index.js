@@ -11,7 +11,6 @@ import {
   IconButton,
   Row,
   RowContainer,
-  toastr,
   Link,
   DragAndDrop
 } from "asc-web-components";
@@ -21,7 +20,7 @@ import FilesTileContent from "./FilesTileContent";
 import TileContainer from './TileContainer';
 import Tile from './Tile';
 
-import { api, constants, MediaViewer } from 'asc-web-common';
+import { api, constants, MediaViewer, toastr } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,

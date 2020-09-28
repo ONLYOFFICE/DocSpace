@@ -8,10 +8,9 @@ import {
   Text,
   Link,
   TextInput,
-  Textarea,
-  toastr
+  Textarea
 } from "asc-web-components";
-import { utils } from "asc-web-common";
+import { utils, toastr } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledEmbeddingPanel,

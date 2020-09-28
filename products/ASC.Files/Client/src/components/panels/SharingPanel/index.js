@@ -9,7 +9,6 @@ import {
   Button,
   DropDown,
   DropDownItem,
-  toastr,
   Textarea,
   ComboBox,
   Icons
@@ -17,7 +16,7 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, constants } from "asc-web-common";
+import { utils as commonUtils, constants, toastr } from "asc-web-common";
 import { getShareUsers, setShareFiles, setIsLoading } from "../../../store/files/actions";
 import { getAccessOption } from "../../../store/files/selectors";
 import {

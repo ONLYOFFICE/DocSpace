@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
-  toastr,
   ModalDialog,
   Button,
   Text,
@@ -11,7 +10,7 @@ import {
   Scrollbar
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { api, utils } from "asc-web-common";
+import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setTreeFolders,
