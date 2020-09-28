@@ -30,14 +30,14 @@ const ContactContainer = ({ salesEmail, helpUrl }) => {
   return (
     <StyledContactContainer>
       <Text>
-        {t("contactEmail")}{" "}
+        {t("ContactEmail")}{" "}
         <Link href={`mailto:${salesEmail}`} color="#316daa">
           {salesEmail}
         </Link>
       </Text>
 
       <Text>
-        {t("contactUrl")}{" "}
+        {t("ContactUrl")}{" "}
         <Link target="_blank" href={`${helpUrl}`} color="#316daa">
           {helpUrl}
         </Link>

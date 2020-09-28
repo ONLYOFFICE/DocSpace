@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { utils } from "asc-web-common";
 import { Text, utils as Utils, Box } from "asc-web-components";
 import { createI18N } from "../../../../helpers/i18n";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
+
 const { changeLanguage } = utils;
 const { tablet } = Utils.device;
 
@@ -41,7 +42,7 @@ const StyledBodyAdvantages = styled.div`
   }
 `;
 
-const AdvantagesContainer = () => {
+const AdvantagesContainer = ({ organizationName }) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -50,7 +51,7 @@ const AdvantagesContainer = () => {
   return (
     <StyledBodyAdvantages>
       <Text className="header-advantages" fontSize="22px" isBold={true}>
-        {t("subscriptionRenewedLicense")}
+        {t("SubscriptionRenewedLicense")}
       </Text>
 
       <Box className="row-advantages">
@@ -61,7 +62,11 @@ const AdvantagesContainer = () => {
           alt="Icon_cubes"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("advantageEditor")}</Text>
+          <Text isBold={true}>
+            <Trans i18nKey="AdvantageEditor" i18n={i18n}>
+              {{ organizationName }}
+            </Trans>
+          </Text>
         </Box>
       </Box>
 
@@ -73,7 +78,7 @@ const AdvantagesContainer = () => {
           alt="Icon_lock"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("advantagePrivateRooom")}</Text>
+          <Text isBold={true}>{t("AdvantagePrivateRooom")}</Text>
         </Box>
       </Box>
 
@@ -85,7 +90,7 @@ const AdvantagesContainer = () => {
           alt="Icon_smartphone"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("advantageWebEditors")}</Text>
+          <Text isBold={true}>{t("AdvantageWebEditors")}</Text>
         </Box>
       </Box>
 
@@ -97,7 +102,7 @@ const AdvantagesContainer = () => {
           alt="Icon_update"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("advantageUpdates")}</Text>
+          <Text isBold={true}>{t("AdvantageUpdates")}</Text>
         </Box>
       </Box>
 
@@ -109,11 +114,17 @@ const AdvantagesContainer = () => {
           alt="Icon_help"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("advantageProfessionalTechSupport")}</Text>
+          <Text isBold={true}>{t("AdvantageProfessionalTechSupport")}</Text>
         </Box>
       </Box>
     </StyledBodyAdvantages>
   );
 };
 
-export default AdvantagesContainer;
+function mapStateToProps({ auth }) {
+  const { organizationName } = auth.settings;
+  return {
+    organizationName,
+  };
+}
+export default connect(mapStateToProps)(AdvantagesContainer);

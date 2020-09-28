@@ -1,29 +1,29 @@
 {
-  "contactEmail": "По вопросам покупки свяжитесь с нами по адресу",
-  "contactUrl": "Для решения технических проблем используйте",
+  "PaymentsTitle": "Платежи",
 
-  "subscriptionRenewedLicense": "Обновите подписку, чтобы получить:",
+  "ContactEmail": "По вопросам покупки свяжитесь с нами по адресу",
+  "ContactUrl": "Для решения технических проблем используйте",
 
-  "advantageEditor": "Редакторы ONLYOFFICE с профессиональными возможностями",
-  "advantagePrivateRooom": "Приватная комната для зашифрованной совместной работы",
-  "advantageWebEditors": "Мобильные веб-редакторы",
-  "advantageUpdates": "Регулярные обновления функциональных возможностей и безопасности в течение 1 года",
-  "advantageProfessionalTechSupport": "1 год услуг профессиональной технической поддержки",
+  "SubscriptionRenewedLicense": "Обновите подписку, чтобы получить:",
 
-  "headerLicense": "Вы используете ONLYOFFICE Enterprise Edition",
-  "headerExpiredTrialLicense": "Бесплатный пробный период истек",
+  "AdvantageEditor": "Редакторы {{organizationName}} с профессиональными возможностями",
+  "AdvantagePrivateRooom": "Приватная комната для зашифрованной совместной работы",
+  "AdvantageWebEditors": "Мобильные веб-редакторы",
+  "AdvantageUpdates": "Регулярные обновления функциональных возможностей и безопасности в течение 1 года",
+  "AdvantageProfessionalTechSupport": "1 год услуг профессиональной технической поддержки",
 
-  "buttonBuyLicense": "Купить сейчас",
-  "buttonUploadLicense": "Загрузить лицензию",
+  "HeaderLicense": "Вы используете {{organizationName}} Enterprise Edition",
+  "HeaderExpiredTrialLicense": "Бесплатный пробный период истек",
 
-  "paymentsTitle": "Платежи",
+  "AccessSubscription": "Техническая поддержка и обновления недоступны для вашей лицензии с",
+  "ExpiryPaidLicense": "Техническая поддержка больше не доступна для вашей лицензии с",
+  "ExpiryTrialLicense": "Благодарим Вас за то, что опробовали {{organizationName}}!",
+  "RenewalLicense": " Если вы уже купили обновление, загрузите файл лицензии.",
 
-  "errorLicense": "Лицензия не действительна",
-  "errorLoadingLicense": "Проверьте загружаемый файл",
-  "successLoadingLicense": "Лицензия успешно активирована",
+  "ButtonBuyLicense": "Купить сейчас",
+  "ButtonUploadLicense": "Загрузить лицензию",
 
-  "accessSubscription": "Техническая поддержка и обновления недоступны для вашей лицензии с",
-  "expiryPaidLicense": "Техническая поддержка больше не доступна для вашей лицензии с",
-  "expiryTrialLicense": "Благодарим Вас за то, что опробовали ONLYOFFICE!",
-  "renewalLicense": " Если вы уже купили обновление, загрузите файл лицензии."
+  "ErrorLicense": "Лицензия не действительна",
+  "ErrorLoadingLicense": "Проверьте загружаемый файл",
+  "SuccessLoadingLicense": "Лицензия успешно активирована"
 }

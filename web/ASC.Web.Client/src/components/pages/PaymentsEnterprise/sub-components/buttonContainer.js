@@ -56,7 +56,7 @@ const ButtonContainer = ({ buyUrl, onClickBuy, onClickUpload }) => {
   return (
     <StyledButtonContainer>
       <Button
-        label={t("buttonBuyLicense")}
+        label={t("ButtonBuyLicense")}
         value={`${buyUrl}`}
         size="large"
         primary={true}
@@ -72,7 +72,7 @@ const ButtonContainer = ({ buyUrl, onClickBuy, onClickUpload }) => {
 
       <Button
         type="submit"
-        label={t("buttonUploadLicense")}
+        label={t("ButtonUploadLicense")}
         size="large"
         primary={true}
         onClick={onClickSubmit}

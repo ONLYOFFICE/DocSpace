@@ -6,7 +6,7 @@ import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
 import { utils } from "asc-web-common";
 
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
 import moment from "moment";
 const { changeLanguage } = utils;
@@ -38,7 +38,12 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
+const HeaderContainer = ({
+  culture,
+  trialMode,
+  expiresDate,
+  organizationName,
+}) => {
   useEffect(() => {
     changeLanguage(i18n);
     const moment = require("moment");
@@ -56,35 +61,41 @@ const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
   return licenseDate.isAfter(now, "day") ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("headerLicense")}
+        <Trans i18nKey="HeaderLicense" i18n={i18n}>
+          {{ organizationName }}
+        </Trans>
       </Text>
       <Text className="payments-header-additional_support">
-        {t("accessSubscription")} {licenseDateString}
+        {t("AccessSubscription")} {licenseDateString}
         {"."}
       </Text>
     </StyledHeader>
   ) : !trialMode ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("headerLicense")}
+        <Trans i18nKey="HeaderLicense" i18n={i18n}>
+          {{ organizationName }}
+        </Trans>
       </Text>
       <Text
         className="payments-header-additional_support"
         color="#C96C27"
         fontWeight="600"
       >
-        {t("expiryPaidLicense")} {licenseDateString}
+        {t("ExpiryPaidLicense")} {licenseDateString}
         {". "}
-        {t("renewalLicense")}
+        {t("RenewalLicense")}
       </Text>
     </StyledHeader>
   ) : (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("headerExpiredTrialLicense")}
+        {t("HeaderExpiredTrialLicense")}
       </Text>
       <Text className="payments-header-additional_support">
-        {t("expiryTrialLicense")}
+        <Trans i18nKey="ExpiryTrialLicense" i18n={i18n}>
+          {{ organizationName }}
+        </Trans>
       </Text>
     </StyledHeader>
   );
@@ -96,12 +107,13 @@ HeaderContainer.propTypes = {
   trialMode: PropTypes.bool,
 };
 function mapStateToProps({ auth, payments }) {
-  const { culture } = auth.settings;
+  const { culture, organizationName } = auth.settings;
   const { expiresDate, trialMode } = payments.currentLicense;
   return {
     culture,
     expiresDate,
     trialMode,
+    organizationName,
   };
 }
 export default connect(mapStateToProps)(withRouter(HeaderContainer));
