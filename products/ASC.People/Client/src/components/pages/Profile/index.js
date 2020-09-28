@@ -120,10 +120,13 @@ Profile.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { user, isLoaded } = state.auth;
+  const { targetUser } = state.profile;
   return {
-    isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user),
+    profile: targetUser,
+    isVisitor: user.isVisitor,
+    isAdmin: isAdmin(user),
+    isLoaded,
   };
 }
 

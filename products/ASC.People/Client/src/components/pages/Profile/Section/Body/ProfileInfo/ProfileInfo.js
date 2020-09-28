@@ -7,10 +7,10 @@ import {
   Link,
   toastr,
   ComboBox,
-  HelpButton
+  HelpButton,
 } from "asc-web-components";
 import styled from "styled-components";
-import { history, api, store as commonStore } from "asc-web-common";
+import { history, api, store as commonStore, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import store from "../../../../../../store/store";
 const { resendUserInvites } = api.people;
@@ -72,7 +72,7 @@ const InfoItemValue = styled.div`
 `;
 
 const IconButtonWrapper = styled.div`
-  ${props => (props.isBefore ? `margin-right: 8px;` : `margin-left: 8px;`)}
+  ${(props) => (props.isBefore ? `margin-right: 8px;` : `margin-left: 8px;`)}
 
   display: inline-flex;
 
@@ -83,12 +83,12 @@ const IconButtonWrapper = styled.div`
   }
 `;
 
-const onGroupClick = e => {
+const onGroupClick = (e) => {
   const id = e.currentTarget.dataset.id;
   history.push(`/products/people/filter?group=${id}`);
 };
 
-const getFormattedDepartments = departments => {
+const getFormattedDepartments = (departments) => {
   const formattedDepartments = departments.map((department, index) => {
     return (
       <span key={index}>
@@ -109,7 +109,7 @@ const getFormattedDepartments = departments => {
   return formattedDepartments;
 };
 
-const capitalizeFirstLetter = string => {
+const capitalizeFirstLetter = (string) => {
   return string && string.charAt(0).toUpperCase() + string.slice(1);
 };
 
@@ -119,26 +119,26 @@ class ProfileInfo extends React.PureComponent {
     this.state = this.mapPropsToState(props);
   }
 
-  mapPropsToState = props => {
+  mapPropsToState = (props) => {
     const newState = {
-      profile: props.profile
+      profile: props.profile,
     };
 
     return newState;
   };
 
-  onSentInviteAgain = id => {
+  onSentInviteAgain = (id) => {
     resendUserInvites(new Array(id))
       .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(error => toastr.error(error));
+      .catch((error) => toastr.error(error));
   };
 
-  onEmailClick = e => {
+  onEmailClick = (e) => {
     const email = e.currentTarget.dataset.email;
     if (e.target.title) window.open("mailto:" + email);
   };
 
-  onLanguageSelect = language => {
+  onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
     const { profile, updateProfileCulture, nameSchemaId } = this.props;
 
@@ -150,16 +150,16 @@ class ProfileInfo extends React.PureComponent {
 
         return axios.all([
           getModules(store.dispatch),
-          getCurrentCustomSchema(store.dispatch, nameSchemaId)
+          getCurrentCustomSchema(store.dispatch, nameSchemaId),
         ]);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   getLanguages = () => {
     const { cultures, t } = this.props;
 
-    return cultures.map(culture => {
+    return cultures.map((culture) => {
       return { key: culture, label: t(`Culture_${culture}`) };
     });
   };
@@ -178,7 +178,7 @@ class ProfileInfo extends React.PureComponent {
       birthday,
       location,
       cultureName,
-      currentCulture
+      currentCulture,
     } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
@@ -189,12 +189,12 @@ class ProfileInfo extends React.PureComponent {
       regDateCaption,
       groupCaption,
       userCaption,
-      guestCaption
+      guestCaption,
     } = this.props;
     const type = isVisitor ? guestCaption : userCaption;
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
-    const selectedLanguage = languages.find(item => item.key === language);
+    const selectedLanguage = languages.find((item) => item.key === language);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
@@ -300,25 +300,31 @@ class ProfileInfo extends React.PureComponent {
           <InfoItem>
             <InfoItemLabel>{t("Language")}:</InfoItemLabel>
             <InfoItemValue>
-              <ComboBox
-                options={languages}
-                selectedOption={selectedLanguage}
-                onSelect={this.onLanguageSelect}
-                isDisabled={false}
-                noBorder={true}
-                scaled={false}
-                scaledOptions={false}
-                size="content"
-                className="language-combo"
-              />
-              <HelpButton
-                place="bottom"
-                offsetLeft={50}
-                offsetRight={0}
-                tooltipContent={tooltipLanguage}
-                helpButtonHeaderContent={t("Language")}
-                className="help-icon"
-              />
+              {languages && selectedLanguage ? (
+                <>
+                  <ComboBox
+                    options={languages}
+                    selectedOption={selectedLanguage}
+                    onSelect={this.onLanguageSelect}
+                    isDisabled={false}
+                    noBorder={true}
+                    scaled={false}
+                    scaledOptions={false}
+                    size="content"
+                    className="language-combo"
+                  />
+                  <HelpButton
+                    place="bottom"
+                    offsetLeft={50}
+                    offsetRight={0}
+                    tooltipContent={tooltipLanguage}
+                    helpButtonHeaderContent={t("Language")}
+                    className="help-icon"
+                  />
+                </>
+              ) : (
+                <Loaders.Text />
+              )}
             </InfoItemValue>
           </InfoItem>
         )}
@@ -334,7 +340,7 @@ function mapStateToProps(state) {
     regDateCaption,
     userPostCaption,
     userCaption,
-    guestCaption
+    guestCaption,
   } = customNames;
 
   return {
@@ -343,7 +349,7 @@ function mapStateToProps(state) {
     userPostCaption,
     userCaption,
     guestCaption,
-    nameSchemaId
+    nameSchemaId,
   };
 }
 
