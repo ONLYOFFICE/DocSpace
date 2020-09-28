@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { Icons } from '../icons'
 import IconButton from '../icon-button'
+import Text from '../text'
 
 // eslint-disable-next-line react/prop-types
 const Icon = ({ type }) => (
@@ -25,9 +26,24 @@ const IconWrapper = styled.div`
 `;
 
 const StyledDiv = styled.div`
-  margin-left: 15px;
-  line-height: 1.3;
-  align-self: center;
+
+  margin: 0 15px;
+
+  .toast-title{
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 5px;
+    line-height: 16px;
+    color:#000000;
+    font-size:12px;
+  }
+
+  .toast-text{
+    line-height: 1.3;
+    align-self: center;
+    font-size:12px;
+    color:#333333;
+  }
 `;
 
 const StyledCloseWrapper = styled.div`
@@ -38,13 +54,6 @@ const StyledCloseWrapper = styled.div`
       opacity: 1;
     }
   }
-`;
-
-const ToastTitle = styled.p`
-    font-weight: bold;
-    margin: 0;
-    margin-bottom: 5px;
-    line-height: 16px;
 `;
 
 const toastr = {
@@ -75,8 +84,8 @@ const notify = (type, data, title, timeout = 5000, withCross = false,  centerPos
         <Icon size="medium" type={type} />
       </IconWrapper>
       <StyledDiv>
-        {title && <ToastTitle>{title}</ToastTitle>}
-        {data}
+        {title && <Text className="toast-title">{title}</Text>}
+        {data && <Text className="toast-text">{data}</Text>}
       </StyledDiv>
     </>,
     {
