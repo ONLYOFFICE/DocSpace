@@ -54,8 +54,7 @@ namespace ASC.Data.Backup.Tasks.Data
 
                 var schema = new Dictionary<string, string>();
 
-                var schemaElement = XNode.ReadFrom(xmlReader) as XElement;
-                if (schemaElement != null)
+                if (XNode.ReadFrom(xmlReader) is XElement schemaElement)
                 {
                     foreach (var entry in schemaElement.Descendants(XName.Get("sequence", XmlSchemaNamespace)).Single().Elements(XName.Get("element", XmlSchemaNamespace)))
                     {
@@ -67,8 +66,7 @@ namespace ASC.Data.Backup.Tasks.Data
                 {
                     if (xmlReader.NodeType == XmlNodeType.Element)
                     {
-                        var el = XNode.ReadFrom(xmlReader) as XElement;
-                        if (el != null)
+                        if (XNode.ReadFrom(xmlReader) is XElement el)
                         {
                             var dataRowInfo = new DataRowInfo(el.Name.LocalName);
                             foreach (var column in schema)

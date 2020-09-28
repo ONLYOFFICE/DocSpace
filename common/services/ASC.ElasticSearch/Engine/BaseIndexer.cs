@@ -523,8 +523,7 @@ namespace ASC.ElasticSearch
             member = expr as MemberExpression;
             if (member == null)
             {
-                var unary = expr as UnaryExpression;
-                if (unary != null)
+                if (expr is UnaryExpression unary)
                 {
                     member = unary.Operand as MemberExpression;
                 }

@@ -406,8 +406,7 @@ namespace ASC.Data.Backup.Tasks
 
                         for (var i = 0; i < obj.Length; i++)
                         {
-                            var byteArray = obj[i] as byte[];
-                            if (byteArray != null)
+                            if (obj[i] is byte[] byteArray)
                             {
                                 sw.Write("0x");
                                 foreach (var b in byteArray)

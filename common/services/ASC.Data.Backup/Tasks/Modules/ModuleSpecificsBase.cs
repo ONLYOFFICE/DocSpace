@@ -150,8 +150,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 return DBNull.Value;
             }
 
-            var @enum = value as Enum;
-            if (@enum != null)
+            if (value is Enum @enum)
             {
                 return @enum.ToString("d");
             }
