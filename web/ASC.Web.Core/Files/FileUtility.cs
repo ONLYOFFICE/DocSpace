@@ -180,13 +180,13 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
 
                     var dbManager = FilesDbContext.Get(databaseId);
-                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Ouput }).ToList();
+                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
 
 
                     list.ForEach(item =>
                         {
                             var input = item.Input;
-                            var output = item.Ouput;
+                            var output = item.Output;
                             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
                                 return;
                             input = input.ToLower().Trim();
