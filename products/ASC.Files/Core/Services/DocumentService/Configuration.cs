@@ -425,8 +425,8 @@ namespace ASC.Web.Files.Services.DocumentService
         public PluginsConfig Plugins { get; set; }
 
         public CustomizationConfig<T> Customization { get; set; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public IDaoFactory DaoFactory { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private IDaoFactory DaoFactory { get; }
 
         public EmbeddedConfig Embedded
         {
@@ -453,7 +453,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private UserManager UserManager { get; }
         private AuthContext AuthContext { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
-        public FileUtility FileUtility { get; }
+        private FileUtility FileUtility { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public string SaveAsUrl { get; set; }
@@ -758,7 +758,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         public LogoConfig<T> Logo { get; set; }
-        public FileSharing FileSharing { get; }
+        private FileSharing FileSharing { get; }
 
         public bool MentionShare
         {
