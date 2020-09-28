@@ -6,20 +6,20 @@ import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
-  ArticleMainButtonContent
+  ArticleMainButtonContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import { 
+import {
   setIsErrorSettings,
   getFilesSettings,
-  setIsLoading
+  setIsLoading,
 } from "../../../store/files/actions";
 
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const { changeLanguage } = utils;
@@ -30,7 +30,7 @@ const PureSettings = ({
   isLoading,
   setIsErrorSettings,
   getFilesSettings,
-  setIsLoading
+  setIsLoading,
 }) => {
   //console.log("Settings render()");
   const { setting } = match.params;
@@ -39,9 +39,9 @@ const PureSettings = ({
     setIsLoading(true);
     getFilesSettings()
       .then(() => setIsLoading(false))
-      .catch(e => {
+      .catch((e) => {
         setIsErrorSettings(true);
-        setIsLoading(false)
+        setIsLoading(false);
       });
   }, []);
 
@@ -70,7 +70,7 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent title={t(`${setting}`)} />
+          <SectionHeaderContent setting={setting} t={t} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
@@ -83,7 +83,7 @@ const PureSettings = ({
 
 const SettingsContainer = withTranslation()(PureSettings);
 
-const Settings = props => {
+const Settings = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -96,15 +96,12 @@ const Settings = props => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading
+    isLoading: state.files.isLoading,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    setIsErrorSettings,
-    getFilesSettings,
-    setIsLoading
-  }
-)(withRouter(Settings));
+export default connect(mapStateToProps, {
+  setIsErrorSettings,
+  getFilesSettings,
+  setIsLoading,
+})(withRouter(Settings));
