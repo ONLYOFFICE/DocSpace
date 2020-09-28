@@ -1,0 +1,35 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:51702/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "telegram",
+        "log__dir": "../../../Logs",
+        "core__products__folder": "../../../products"
+      }
+    },
+    "ASC.TelegramService": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "telegram",
+        "log__dir": "../../../Logs",
+        "core__products__folder": "../../../products"
+      },
+      "applicationUrl": "http://localhost:51702/"
+    }
+  }
+}

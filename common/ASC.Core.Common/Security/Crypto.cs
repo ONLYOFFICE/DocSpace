@@ -121,14 +121,5 @@ namespace ASC.Core
 
             return result;
         }
-
-        public static string GeneratePassword(int length)
-        {
-            const string noise = "1234567890mnbasdflkjqwerpoiqweyuvcxnzhdkqpsdk";
-            var random = new AscRandom();
-            var pwd = string.Empty;
-            while (0 < length--) pwd += noise[random.Next(noise.Length)];
-            return pwd;
-        }
     }
 }

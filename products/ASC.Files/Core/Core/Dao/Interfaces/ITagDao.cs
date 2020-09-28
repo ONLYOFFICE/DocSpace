@@ -31,6 +31,8 @@ namespace ASC.Files.Core
 {
     public interface ITagDao<T>
     {
+        IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
+
         IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch);
 
         IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType);

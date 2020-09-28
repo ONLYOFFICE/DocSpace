@@ -61,11 +61,20 @@
   <data name="CorporateFiles" xml:space="preserve">
     <value>Documentos comunes</value>
   </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Favoritos</value>
+  </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Mis documentos</value>
   </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Sala Privada</value>
+  </data>
   <data name="ProjectFiles" xml:space="preserve">
     <value>Documentos de proyecto</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Reciente</value>
   </data>
   <data name="SharedForMe" xml:space="preserve">
     <value>Compartido para mi</value>

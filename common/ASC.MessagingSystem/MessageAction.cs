@@ -508,6 +508,9 @@ namespace ASC.MessagingSystem
 
         StartStorageEncryption = 5050,
 
+        PrivacyRoomEnable = 5051,
+        PrivacyRoomDisable = 5052,
+
         StartStorageDecryption = 5053,
 
         #endregion

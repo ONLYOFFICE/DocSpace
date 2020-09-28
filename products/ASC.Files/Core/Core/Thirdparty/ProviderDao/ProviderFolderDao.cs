@@ -407,6 +407,27 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             throw new NotImplementedException();
         }
 
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public string GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
         {
             throw new NotImplementedException();

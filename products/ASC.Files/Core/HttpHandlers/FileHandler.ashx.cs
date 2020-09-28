@@ -960,6 +960,16 @@ namespace ASC.Web.Files
 
         private async Task CreateFile(HttpContext context)
         {
+            if (!SecurityContext.IsAuthenticated)
+            {
+                //var refererURL = context.Request.GetUrlRewriter().AbsoluteUri;
+
+                //context.Session["refererURL"] = refererURL;
+                var authUrl = "~/Auth.aspx";
+                context.Response.Redirect(authUrl, true);
+                return;
+            }
+
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
             {

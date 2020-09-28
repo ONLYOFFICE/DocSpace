@@ -37,6 +37,8 @@ namespace ASC.Files.Core.Security
 
         bool CanReview<T>(FileEntry<T> entry, Guid userId);
 
+        bool CanCustomFilterEdit<T>(FileEntry<T> entry, Guid userId);
+
         bool CanFillForms<T>(FileEntry<T> entry, Guid userId);
 
         bool CanCreate<T>(FileEntry<T> entry, Guid userId);

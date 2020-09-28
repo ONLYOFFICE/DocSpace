@@ -14,6 +14,7 @@ message NotifyMessage {
     int64 CreationDate = 9;
     int32 Priority = 10;
     repeated NotifyMessageAttachment EmbeddedAttachments = 11;
+    string AutoSubmitted = 12;
 }
 message NotifyMessageAttachment {
     string FileName = 1;

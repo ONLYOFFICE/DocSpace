@@ -27,36 +27,37 @@ namespace ASC.Web.Files.Services.DocumentService
 {
     public class DocumentServiceParams
     {
-        public string DisplayName;
+        public string DisplayName { get; set; }
 
-        public string DocKeyForTrack;
+        public string DocKeyForTrack { get; set; }
 
-        public bool EditByUrl;
+        public bool EditByUrl { get; set; }
 
-        public string Email;
+        public string Email { get; set; }
 
-        public string FileId;
+        public string FileId { get; set; }
 
-        public string FileProviderKey;
+        public string FileProviderKey { get; set; }
 
-        public int FileVersion;
+        public int FileVersion { get; set; }
 
-        public string LinkToEdit;
+        public string LinkToEdit { get; set; }
 
-        public bool OpenHistory;
+        public bool OpenHistory { get; set; }
 
-        public string OpeninigDate;
+        public string OpeninigDate { get; set; }
 
-        public string ServerErrorMessage;
+        public string ServerErrorMessage { get; set; }
 
-        public string ShareLinkParam;
+        public string ShareLinkParam { get; set; }
 
-        public string TabId;
+        public string TabId { get; set; }
 
-        public bool ThirdPartyApp;
+        public bool ThirdPartyApp { get; set; }
 
-        public bool CanGetUsers;
+        public bool CanGetUsers { get; set; }
 
+        public string PageTitlePostfix { get; set; }
 
         public static string Serialize(DocumentServiceParams docServiceParams)
         {

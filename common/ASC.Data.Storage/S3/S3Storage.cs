@@ -1016,27 +1016,33 @@ namespace ASC.Data.Storage.S3
                 _recycleDir = props["recycleDir"];
             }
 
-            if (props.ContainsKey("region"))
+            if (props.ContainsKey("region") && !string.IsNullOrEmpty(props["region"]))
             {
                 _region = props["region"];
             }
 
-            if (props.ContainsKey("serviceurl"))
+            if (props.ContainsKey("serviceurl") && !string.IsNullOrEmpty(props["serviceurl"]))
             {
                 _serviceurl = props["serviceurl"];
             }
 
             if (props.ContainsKey("forcepathstyle"))
             {
-                _forcepathstyle = bool.Parse(props["forcepathstyle"]);
+                if (bool.TryParse(props["forcepathstyle"], out var fps))
+                {
+                    _forcepathstyle = fps;
+                }
             }
 
             if (props.ContainsKey("usehttp"))
             {
-                _useHttp = bool.Parse(props["usehttp"]);
+                if (bool.TryParse(props["usehttp"], out var uh))
+                {
+                    _useHttp = uh;
+                }
             }
 
-            if (props.ContainsKey("sse"))
+            if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
             {
                 switch (props["sse"].ToLower())
                 {

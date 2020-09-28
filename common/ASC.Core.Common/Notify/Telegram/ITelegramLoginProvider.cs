@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,14 +23,16 @@
  *
 */
 
-namespace ASC.Web.Files.Core.Entries
+namespace ASC.Core.Common.Notify.Telegram
 {
-    public class EncryptedData
+    public interface ITelegramLoginProvider
     {
-        public string PublicKey { get; set; }
+        string TelegramBotToken { get; }
 
-        public string FileHash { get; set; }
+        string TelegramBotName { get; }
 
-        public string Data { get; set; }
+        int TelegramAuthTokenLifespan { get; }
+
+        string TelegramProxy { get; }
     }
 }

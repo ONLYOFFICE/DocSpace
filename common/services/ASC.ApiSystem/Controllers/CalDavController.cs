@@ -45,8 +45,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-using Newtonsoft.Json.Linq;
-
 namespace ASC.ApiSystem.Controllers
 {
     [ApiController]
@@ -57,6 +55,7 @@ namespace ASC.ApiSystem.Controllers
         private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         private CoreSettings CoreSettings { get; }
         private CommonConstants CommonConstants { get; }
+        public InstanceCrypto InstanceCrypto { get; }
         private ILog Log { get; }
 
         public CalDavController(
@@ -64,12 +63,14 @@ namespace ASC.ApiSystem.Controllers
             EmailValidationKeyProvider emailValidationKeyProvider,
             CoreSettings coreSettings,
             CommonConstants commonConstants,
+            InstanceCrypto instanceCrypto,
             IOptionsMonitor<ILog> option)
         {
             CommonMethods = commonMethods;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             CoreSettings = coreSettings;
             CommonConstants = commonConstants;
+            InstanceCrypto = instanceCrypto;
             Log = option.Get("ASC.ApiSystem");
         }
 
@@ -147,9 +148,9 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPost("is_caldav_authenticated")]
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
-        public IActionResult IsCaldavAuthenticated(JObject data)
+        public IActionResult IsCaldavAuthenticated(UserPassword userPassword)
         {
-            if (data == null)
+            if (userPassword == null || string.IsNullOrEmpty(userPassword.User) || string.IsNullOrEmpty(userPassword.Password))
             {
                 Log.Error("CalDav authenticated data is null");
 
@@ -161,10 +162,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            var username = data.Value<string>("User");
-            var password = data.Value<string>("Password");
-
-            if (!GetUserData(username, out string email, out Tenant tenant, out object error))
+            if (!GetUserData(userPassword.User, out var email, out var tenant, out var error))
             {
                 return BadRequest(error);
             }
@@ -173,7 +171,7 @@ namespace ASC.ApiSystem.Controllers
             {
                 Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.TenantId));
 
-                if (email == "admin@ascsystem" && Core.Configuration.Constants.CoreSystem.ID.ToString() == password)
+                if (InstanceCrypto.Encrypt(email) == userPassword.Password)
                 {
                     return Ok(new
                     {
@@ -181,11 +179,11 @@ namespace ASC.ApiSystem.Controllers
                     });
                 }
 
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + password + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + userPassword.Password + ConfirmType.Auth);
 
                 var authData = string.Format("userName={0}&password={1}&key={2}",
                                              HttpUtility.UrlEncode(email),
-                                             HttpUtility.UrlEncode(password),
+                                             HttpUtility.UrlEncode(userPassword.Password),
                                              HttpUtility.UrlEncode(validationKey));
 
                 SendToApi(Request.Scheme, tenant, "authentication/login", null, WebRequestMethods.Http.Post, authData);
@@ -360,6 +358,12 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
+
+        public class UserPassword
+        {
+            public string User { get; set; }
+            public string Password { get; set; }
+        }
     }
 
     public static class CalDavControllerExtention

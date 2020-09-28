@@ -45,6 +45,10 @@ namespace ASC.Core.Billing
 
         public bool Customization { get; set; }
 
+        public bool Branding { get; set; }
+
+        public bool SSBranding { get; set; }
+
         [JsonPropertyName("end_date")]
         public DateTime DueDate { get; set; }
 
@@ -61,6 +65,7 @@ namespace ASC.Core.Billing
 
         public string Signature { get; set; }
 
+        public bool? DiscEncryption { get; set; }
 
         public static License Parse(string licenseString)
         {

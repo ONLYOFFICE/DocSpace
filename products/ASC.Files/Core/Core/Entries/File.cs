@@ -48,7 +48,11 @@ namespace ASC.Files.Core
 
         IsOriginal = 0x8,
 
-        IsEditingAlone = 0x10
+        IsEditingAlone = 0x10,
+
+        IsFavorite = 0x20,
+
+        IsTemplate = 0x40
     }
 
     [Serializable]
@@ -171,6 +175,30 @@ namespace ASC.Files.Core
                     _status |= FileStatus.IsNew;
                 else
                     _status ^= FileStatus.IsNew;
+            }
+        }
+
+        public bool IsFavorite
+        {
+            get { return (_status & FileStatus.IsFavorite) == FileStatus.IsFavorite; }
+            set
+            {
+                if (value)
+                    _status |= FileStatus.IsFavorite;
+                else
+                    _status ^= FileStatus.IsFavorite;
+            }
+        }
+
+        public bool IsTemplate
+        {
+            get { return (_status & FileStatus.IsTemplate) == FileStatus.IsTemplate; }
+            set
+            {
+                if (value)
+                    _status |= FileStatus.IsTemplate;
+                else
+                    _status ^= FileStatus.IsTemplate;
             }
         }
 
