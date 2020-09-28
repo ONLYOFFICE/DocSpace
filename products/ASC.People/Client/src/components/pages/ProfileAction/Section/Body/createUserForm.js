@@ -5,7 +5,6 @@ import {
   Avatar,
   Button,
   Textarea,
-  toastr,
   AvatarEditor,
   Text
 } from "asc-web-components";
@@ -33,7 +32,7 @@ import RadioField from "./FormFields/RadioField";
 import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
-import { api } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 
 class CreateUserForm extends React.Component {

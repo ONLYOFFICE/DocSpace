@@ -5,7 +5,6 @@ import { withTranslation, Trans } from "react-i18next";
 import {
   Row,
   Avatar,
-  toastr,
   EmptyScreenContainer,
   Icons,
   Link,
@@ -31,7 +30,7 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { Loader } from "asc-web-components";
-import { store, api, constants } from "asc-web-common";
+import { store, api, constants, toastr } from "asc-web-common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
