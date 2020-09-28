@@ -980,6 +980,48 @@ Ce message a été généré automatiquement pour tester vos paramètres SMTP. S
 Meilleures salutations,
 Équipe ONLYOFFICE </value>
   </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Bonjour, $UserName !
+
+L'échec s'est poduit lors de processus du déchiffrement sur votre portail "${PortalUrl}":"${PortalUrl}".
+
+Plusieurs fichiers ne peuvent pas être déchiffrés. Trouvez plus de détails dans le "Panneau de configuration":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Bonjour, $UserName !
+
+Le processus du déchiffrement de fichier a démarré sur votre portail "${PortalUrl}":"${PortalUrl}".
+
+Le déchiffrement va prendre un certain temps durant lequel le portail sera temporairement indisponible. dès que le déchiffrement soit terminé, vous pourrez travailler sur vos données de nouveau.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Bonjour, $UserName !
+
+Le processus du chiffrement de fichier s'est terminé avec succès sur votre portail "${PortalUrl}":"${PortalUrl}".
+
+Votre portail est de nouveau disponible.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Cher(ère) $UserName,
+
+Le processus du chiffrement de fichier sur le portail "${PortalUrl}":"${PortalUrl}" est terminé.
+
+Impossible de rechiffrer quelques fichiers. Trouvez plus de détails dans le "Panneau de configuration":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Bonjour, $UserName !
+
+Le processus du chiffrement de fichier a démarré sur votre portail "${PortalUrl}":"${PortalUrl}".
+
+Le chiffrement va prendre du temps durant lequel le portail sera temporairement indisponible.Dès que le chiffrement soit terminé, vous serez capable d'accéder à vos données.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Bonjour, $UserName !
+
+Le processus du chiffrement de fichier sur votre portail "${PortalUrl}":"${PortalUrl}" s'est effectué avec succès.
+
+Votre portail est de nouveau disponible.</value>
+  </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Nouvel utilisateur est ajouté au portail "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -1254,6 +1296,24 @@ Meilleures salutations,
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Message de test de SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Echec de déchiffrement</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Déchiffrement commencé</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Déchiffrement terminé</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Echec de chiffrement du fichier</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Chiffrement du fichier commencé</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Chiffrement terminé</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nouvel utilisateur ajouté au portail ${LetterLogoText}</value>

@@ -243,6 +243,14 @@ namespace ASC.Web.Studio.Utility
                 return SetupInfo.ChunkUploadSize;
             }
         }
+
+        public void DemandControlPanelPermission()
+        {
+            if (!CoreBaseSettings.Standalone || SettingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
+            {
+                throw new System.Security.SecurityException();
+            }
+        }
     }
 
     public static class TenantExtraExtension

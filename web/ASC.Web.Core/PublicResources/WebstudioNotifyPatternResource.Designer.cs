@@ -2440,6 +2440,84 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///The file decryption process on your portal &quot;${PortalUrl}&quot;:&quot;${PortalUrl}&quot; has been failed.
+        ///
+        ///Some files could not be decrypted. Find more details in the &quot;Control Panel&quot;:&quot;${ControlPanelUrl}/storage&quot;..
+        /// </summary>
+        internal static string pattern_storage_decryption_error {
+            get {
+                return ResourceManager.GetString("pattern_storage_decryption_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///The file decryption process has been started on your portal &quot;${PortalUrl}&quot;:&quot;${PortalUrl}&quot;.
+        ///
+        ///The decryption might take some time, so the portal will be temporarily unavailable. As soon as the decryption is over, you will be able to work with your data again..
+        /// </summary>
+        internal static string pattern_storage_decryption_start {
+            get {
+                return ResourceManager.GetString("pattern_storage_decryption_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///The file decryption process on your portal &quot;${PortalUrl}&quot;:&quot;${PortalUrl}&quot; has been successfully completed.
+        ///
+        ///Your portal is available again..
+        /// </summary>
+        internal static string pattern_storage_decryption_success {
+            get {
+                return ResourceManager.GetString("pattern_storage_decryption_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///The file encryption process on the &quot;${PortalUrl}&quot;:&quot;${PortalUrl}&quot; portal has been failed.
+        ///
+        ///Some files could not be encrypted. Find more details in the &quot;Control Panel&quot;:&quot;${ControlPanelUrl}/storage&quot;..
+        /// </summary>
+        internal static string pattern_storage_encryption_error {
+            get {
+                return ResourceManager.GetString("pattern_storage_encryption_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///The file encryption process has been started on your portal &quot;${PortalUrl}&quot;:&quot;${PortalUrl}&quot;.
+        ///
+        ///The encryption might take some time, so the portal will be temporarily unavailable. As soon as the encryption is over, you will be able to work with your data again..
+        /// </summary>
+        internal static string pattern_storage_encryption_start {
+            get {
+                return ResourceManager.GetString("pattern_storage_encryption_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///The file encryption process on your portal &quot;${PortalUrl}&quot;:&quot;${PortalUrl}&quot; has been successfully completed.
+        ///
+        ///Your portal is available again..
+        /// </summary>
+        internal static string pattern_storage_encryption_success {
+            get {
+                return ResourceManager.GetString("pattern_storage_encryption_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to h1.New user added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
         ///
         ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has joined your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
@@ -3268,6 +3346,60 @@ namespace ASC.Web.Core.PublicResources {
         internal static string subject_smtp_test {
             get {
                 return ResourceManager.GetString("subject_smtp_test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Decryption process failed.
+        /// </summary>
+        internal static string subject_storage_decryption_error {
+            get {
+                return ResourceManager.GetString("subject_storage_decryption_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Decryption process started.
+        /// </summary>
+        internal static string subject_storage_decryption_start {
+            get {
+                return ResourceManager.GetString("subject_storage_decryption_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Decryption process completed.
+        /// </summary>
+        internal static string subject_storage_decryption_success {
+            get {
+                return ResourceManager.GetString("subject_storage_decryption_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Encryption process failed.
+        /// </summary>
+        internal static string subject_storage_encryption_error {
+            get {
+                return ResourceManager.GetString("subject_storage_encryption_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Encryption process started.
+        /// </summary>
+        internal static string subject_storage_encryption_start {
+            get {
+                return ResourceManager.GetString("subject_storage_encryption_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Encryption process completed.
+        /// </summary>
+        internal static string subject_storage_encryption_success {
+            get {
+                return ResourceManager.GetString("subject_storage_encryption_success", resourceCulture);
             }
         }
         
