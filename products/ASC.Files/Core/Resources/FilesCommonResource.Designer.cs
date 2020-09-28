@@ -79,6 +79,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Filter.
+        /// </summary>
+        public static string AceStatusEnum_CustomFilter {
+            get {
+                return ResourceManager.GetString("AceStatusEnum_CustomFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Form Filling.
         /// </summary>
         public static string AceStatusEnum_FillForms {

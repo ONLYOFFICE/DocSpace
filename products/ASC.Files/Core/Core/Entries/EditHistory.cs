@@ -78,12 +78,13 @@ namespace ASC.Files.Core
                 var changes = new List<EditHistoryChanges>();
                 if (string.IsNullOrEmpty(ChangesString)) return changes;
 
-                //new scheme
-                Exception newSchemeException = null;
                 try
                 {
                     var jObject = JObject.Parse(ChangesString);
                     ServerVersion = jObject.Value<string>("serverVersion");
+
+                    if (string.IsNullOrEmpty(ServerVersion))
+                        return changes;
 
                     var jChanges = jObject.Value<JArray>("changes");
 
@@ -106,31 +107,6 @@ namespace ASC.Files.Core
                 }
                 catch (Exception ex)
                 {
-                    newSchemeException = ex;
-                }
-
-                //old scheme
-                //todo: delete
-                try
-                {
-                    var jChanges = JArray.Parse(ChangesString);
-
-                    changes = jChanges.Children<JObject>()
-                                      .Select(jChange =>
-                                              new EditHistoryChanges(TenantUtil)
-                                              {
-                                                  Date = jChange.Value<string>("date"),
-                                                  Author = new EditHistoryAuthor(AuthContext, UserManager, DisplayUserSettingsHelper)
-                                                  {
-                                                      Id = new Guid(jChange.Value<string>("userid") ?? Guid.Empty.ToString()),
-                                                      Name = jChange.Value<string>("username")
-                                                  }
-                                              })
-                                      .ToList();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error("DeSerialize new scheme exception", newSchemeException);
                     Logger.Error("DeSerialize old scheme exception", ex);
                 }
 
@@ -180,9 +156,7 @@ namespace ASC.Files.Core
             {
                 UserInfo user;
                 return
-                    Id.Equals(AuthContext.CurrentAccount.ID)
-                        ? FilesCommonResource.Author_Me
-                        : Id.Equals(Guid.Empty)
+                    Id.Equals(Guid.Empty)
                           || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
                           || (user = UserManager.GetUsers(Id)).Equals(Constants.LostUser)
                               ? string.IsNullOrEmpty(_name)

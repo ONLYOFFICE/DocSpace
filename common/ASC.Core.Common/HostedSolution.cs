@@ -36,7 +36,6 @@ using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Options;
 
@@ -134,14 +133,13 @@ namespace ASC.Core
             return FindTenants(login, null);
         }
 
-        public List<Tenant> FindTenants(string login, string password)
+        public List<Tenant> FindTenants(string login, string passwordHash)
         {
-            var hash = !string.IsNullOrEmpty(password) ? Hasher.Base64Hash(password, HashAlg.SHA256) : null;
-            if (hash != null && UserService.GetUser(Tenant.DEFAULT_TENANT, login, hash) == null)
+            if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DEFAULT_TENANT, login, passwordHash) == null)
             {
                 throw new SecurityException("Invalid login or password.");
             }
-            return TenantService.GetTenants(login, hash).Select(AddRegion).ToList();
+            return TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
         }
 
         public Tenant GetTenant(string domain)
@@ -169,7 +167,7 @@ namespace ASC.Core
             if (ri.LastName == null) throw new Exception("Account lastname can not be empty");
             if (!UserFormatter.IsValidUserName(ri.FirstName, ri.LastName)) throw new Exception("Incorrect firstname or lastname");
 
-            if (string.IsNullOrEmpty(ri.Password)) ri.Password = Crypto.GeneratePassword(6);
+            if (string.IsNullOrEmpty(ri.PasswordHash)) ri.PasswordHash = Guid.NewGuid().ToString();
 
             // create tenant
             tenant = new Tenant(ri.Address.ToLowerInvariant())
@@ -200,7 +198,7 @@ namespace ASC.Core
                 ActivationStatus = ri.ActivationStatus
             };
             user = UserService.SaveUser(tenant.TenantId, user);
-            UserService.SetUserPassword(tenant.TenantId, user.ID, ri.Password);
+            UserService.SetUserPasswordHash(tenant.TenantId, user.ID, ri.PasswordHash);
             UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
             // save tenant owner
@@ -208,6 +206,7 @@ namespace ASC.Core
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
             SettingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
+            SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.TenantId);
         }
 
         public Tenant SaveTenant(Tenant tenant)
@@ -220,27 +219,20 @@ namespace ASC.Core
             TenantService.RemoveTenant(tenant.TenantId);
         }
 
-        public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, string login, string password)
-        {
-            var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
-            var u = UserService.GetUser(tenantId, login, passwordhash);
-            return u != null ? CreateAuthenticationCookie(cookieStorage, tenantId, u.ID, login, passwordhash) : null;
-        }
-
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
         {
             var u = UserService.GetUser(tenantId, userId);
-            var password = UserService.GetUserPassword(tenantId, userId);
-            var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
-            return u != null ? CreateAuthenticationCookie(cookieStorage, tenantId, userId, u.Email, passwordhash) : null;
+            return CreateAuthenticationCookie(cookieStorage, tenantId, u);
         }
 
-        private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId, string login, string passwordhash)
+        private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, UserInfo user)
         {
+            if (user == null) return null;
+
             var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId);
-            return cookieStorage.EncryptCookie(tenantId, userId, login, passwordhash, tenantSettings.Index, expires, userSettings.Index);
+            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.ID);
+            return cookieStorage.EncryptCookie(tenantId, user.ID, tenantSettings.Index, expires, userSettings.Index);
         }
 
         public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)

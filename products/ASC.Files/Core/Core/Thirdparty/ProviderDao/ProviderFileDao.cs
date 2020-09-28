@@ -149,7 +149,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result.ToList();
         }
 
-        public List<File<string>> GetFilesForShare(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             var result = Enumerable.Empty<File<string>>();
 
@@ -164,7 +164,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                                         .SelectMany(matchedId =>
                                         {
                                             var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                            return fileDao.GetFilesForShare(matchedId.Select(selectorLocal.ConvertId).ToArray(),
+                                            return fileDao.GetFilesFiltered(matchedId.Select(selectorLocal.ConvertId).ToArray(),
                                                     filterType, subjectGroup, subjectID, searchText, searchInContent);
                                         })
                                         .Where(r => r != null));

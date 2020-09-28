@@ -938,154 +938,39 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    var (tenantManager, _, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
+                    var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var createdDate = tenant.CreatedDateTime.Date;
 
-                    INotifyAction action = null;
-
-                    Func<string> greenButtonText = () => string.Empty;
-                    var greenButtonUrl = string.Empty;
-
-                    string tableItemText1() => string.Empty;
-                    string tableItemText2() => string.Empty;
-                    string tableItemText3() => string.Empty;
-                    string tableItemText4() => string.Empty;
-                    string tableItemText5() => string.Empty;
-                    string tableItemText6() => string.Empty;
-                    string tableItemText7() => string.Empty;
-
-                    var tableItemUrl1 = string.Empty;
-                    var tableItemUrl2 = string.Empty;
-                    var tableItemUrl3 = string.Empty;
-                    var tableItemUrl4 = string.Empty;
-                    var tableItemUrl5 = string.Empty;
-                    var tableItemUrl6 = string.Empty;
-                    var tableItemUrl7 = string.Empty;
-
-                    var tableItemImg1 = string.Empty;
-                    var tableItemImg2 = string.Empty;
-                    var tableItemImg3 = string.Empty;
-                    var tableItemImg4 = string.Empty;
-                    var tableItemImg5 = string.Empty;
-                    var tableItemImg6 = string.Empty;
-                    var tableItemImg7 = string.Empty;
-
-                    Func<string> tableItemComment1 = () => string.Empty;
-                    Func<string> tableItemComment2 = () => string.Empty;
-                    Func<string> tableItemComment3 = () => string.Empty;
-                    Func<string> tableItemComment4 = () => string.Empty;
-                    Func<string> tableItemComment5 = () => string.Empty;
-                    Func<string> tableItemComment6 = () => string.Empty;
-                    Func<string> tableItemComment7 = () => string.Empty;
-
-                    Func<string> tableItemLearnMoreText1 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText2 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText3 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText4 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText5 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText6 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText7 = () => string.Empty;
-
-                    var tableItemLearnMoreUrl1 = string.Empty;
-                    var tableItemLearnMoreUrl2 = string.Empty;
-                    var tableItemLearnMoreUrl3 = string.Empty;
-                    var tableItemLearnMoreUrl4 = string.Empty;
-                    var tableItemLearnMoreUrl5 = string.Empty;
-                    var tableItemLearnMoreUrl6 = string.Empty;
-                    var tableItemLearnMoreUrl7 = string.Empty;
-
 
                     #region After registration letters
 
-                    #region 7 days after registration to admins
+                    #region 5 days after registration to admins
 
-                    if (createdDate.AddDays(7) == nowDate)
+                    if (createdDate.AddDays(5) == nowDate)
                     {
-                        action = Actions.OpensourceAdminSecurityTips;
+                        var users = studioNotifyHelper.GetRecipients(true, true, false);
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                        greenButtonUrl = "https://www.onlyoffice.com/enterprise-edition-free.aspx";
+
+                        foreach (var u in users.Where(u => studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                        {
+                            var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
+                            Thread.CurrentThread.CurrentCulture = culture;
+                            Thread.CurrentThread.CurrentUICulture = culture;
+
+                            client.SendNoticeToAsync(
+                                u.IsAdmin(userManager) ? Actions.OpensourceAdminDocsTipsV11 : Actions.OpensourceUserDocsTipsV11,
+                                new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                                new[] { senderName },
+                                new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettingsHelper)),
+                                new TagValue(CommonTags.Footer, "opensource"));
+                        }
                     }
-
-                    #endregion
-
-                    #region 3 weeks after registration to admins
-
-                    else if (createdDate.AddDays(21) == nowDate)
-                    {
-                        action = Actions.OpensourceAdminDocsTips;
-
-                        tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
-                        tableItemComment1 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips1;
-                        tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/CollaborativeEditing.aspx";
-                        tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-
-                        tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-docinfo-100.png");
-                        tableItemComment2 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips2;
-                        tableItemLearnMoreUrl2 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/ViewDocInfo.aspx";
-                        tableItemLearnMoreText2 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-
-                        tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
-                        tableItemComment3 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips3;
-                        tableItemLearnMoreUrl3 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/Review.aspx";
-                        tableItemLearnMoreText3 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-
-                        tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
-                        tableItemComment4 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips4;
-                        tableItemLearnMoreUrl4 = studioNotifyHelper.Helplink + "/gettingstarted/documents.aspx#SharingDocuments_block";
-                        tableItemLearnMoreText4 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-
-                        tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-mailmerge-100.png");
-                        tableItemComment5 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips5;
-                        tableItemLearnMoreUrl5 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/UseMailMerge.aspx";
-                        tableItemLearnMoreText5 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-
-                        tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-desktop-100.png");
-                        tableItemComment6 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips6;
-                        tableItemLearnMoreUrl6 = "http://www.onlyoffice.com/desktop.aspx";
-                        tableItemLearnMoreText6 = () => WebstudioNotifyPatternResource.ButtonDownloadNow;
-
-                        tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
-                        tableItemComment7 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips7;
-                        tableItemLearnMoreUrl7 = "https://itunes.apple.com/us/app/onlyoffice-documents/id944896972";
-                        tableItemLearnMoreText7 = () => WebstudioNotifyPatternResource.ButtonGoToAppStore;
-                    }
-
                     #endregion
 
                     #endregion
-
-
-                    if (action == null) continue;
-
-                    var users = studioNotifyHelper.GetRecipients(true, false, false);
-
-                    foreach (var u in users.Where(u => studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
-                    {
-                        var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                        Thread.CurrentThread.CurrentCulture = culture;
-                        Thread.CurrentThread.CurrentUICulture = culture;
-
-                        client.SendNoticeToAsync(
-                            action,
-                            new[] { studioNotifyHelper.ToRecipient(u.ID) },
-                            new[] { senderName },
-                            new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettingsHelper)),
-                            TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                            TagValues.TableTop(),
-                            TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
-                            TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
-                            TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
-                            TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
-                            TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
-                            TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
-                            TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
-                            TagValues.TableBottom(),
-                            new TagValue(CommonTags.Footer, "opensource"));
-                    }
                 }
                 catch (Exception err)
                 {

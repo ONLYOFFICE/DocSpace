@@ -4,11 +4,10 @@ import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
   DropDownItem,
-  toastr,
   ContextMenuButton,
   utils
 } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { Headline, toastr } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,

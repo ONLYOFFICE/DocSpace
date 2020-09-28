@@ -34,7 +34,8 @@ class PureEditor extends React.Component {
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
     const wrapperStyle = {
-      height: "100vh"
+      height: "100vh",
+      height: "calc(var(--vh, 1vh) * 100)"
     };
 
     files.openEdit(fileId).then(config => {

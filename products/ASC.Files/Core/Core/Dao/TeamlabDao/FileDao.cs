@@ -174,7 +174,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesForShare(int[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(int[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
@@ -477,8 +477,10 @@ namespace ASC.Files.Core.Data
                 {
                     SaveFileStream(file, fileStream);
                 }
-                catch
+                catch (Exception saveException)
                 {
+                    try
+                    {
                     if (isNew)
                     {
                         var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
@@ -487,6 +489,11 @@ namespace ASC.Files.Core.Data
                     else if (!IsExistOnStorage(file))
                     {
                         DeleteVersion(file);
+                    }
+                    }
+                    catch (Exception deleteException)
+                    {
+                        throw new Exception(saveException.Message, deleteException);
                     }
                     throw;
                 }
@@ -918,7 +925,7 @@ namespace ASC.Files.Core.Data
 
         public bool UseTrashForRemove(File<int> file)
         {
-            return file.RootFolderType != FolderType.TRASH;
+            return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy;
         }
 
         public string GetUniqFileDirectory(int fileId)

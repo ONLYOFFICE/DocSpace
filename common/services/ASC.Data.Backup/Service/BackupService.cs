@@ -296,7 +296,9 @@ namespace ASC.Data.Backup.Service
             {
                 services.TryAddSingleton<BackupServiceNotifier>();
                 return services
-                    .AddBackupWorkerService();
+                    .AddBackupWorkerService()
+                    .AddBackupStorageFactory()
+                    .AddBackupRepositoryService();
             }
 
             return services;

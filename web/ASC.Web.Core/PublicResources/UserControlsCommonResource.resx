@@ -70,6 +70,9 @@
   <data name="LicenseKeyNotFound" xml:space="preserve">
     <value>You must enter a license key</value>
   </data>
+  <data name="NewDocument" xml:space="preserve">
+    <value>New Document</value>
+  </data>
   <data name="TariffPerMonth" xml:space="preserve">
     <value>month</value>
   </data>

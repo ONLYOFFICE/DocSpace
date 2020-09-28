@@ -1,6 +1,6 @@
-/*
+﻿/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -23,14 +23,45 @@
  *
 */
 
-namespace ASC.Web.Files.Core.Entries
+
+using System;
+
+using ASC.Common;
+
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptedData
+    public class EncryptionFactory
     {
-        public string PublicKey { get; set; }
+        private IServiceProvider ServiceProvider { get; }
 
-        public string FileHash { get; set; }
+        public EncryptionFactory(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
 
-        public string Data { get; set; }
+        public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
+        {
+            var crypt = ServiceProvider.GetService<Crypt>();
+            crypt.Init(storageName, encryptionSettings);
+            return crypt;
+        }
+
+        public IMetadata GetMetadata()
+        {
+            return ServiceProvider.GetService<Metadata>();
+        }
+    }
+
+    public static class EncryptionFactoryExtension
+    {
+        public static DIHelper AddEncryptionFactoryService(this DIHelper services)
+        {
+            services.TryAddSingleton<EncryptionFactory>();
+            services.TryAddTransient<Crypt>();
+            services.TryAddTransient<Metadata>();
+            return services;
+        }
     }
 }

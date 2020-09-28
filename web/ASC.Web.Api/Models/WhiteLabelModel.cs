@@ -11,5 +11,7 @@ namespace ASC.Web.Api.Models
         public IEnumerable<IFormFile> Attachments { get; set; }
         public string LogoText { get; set; }
         public IEnumerable<ItemKeyValuePair<int, string>> Logo { get; set; }
+        public bool IsDefault { get; set; }
+        public bool IsRetina { get; set; }
     }
 }

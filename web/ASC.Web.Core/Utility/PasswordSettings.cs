@@ -65,7 +65,7 @@ namespace ASC.Web.Core.Utility
 
         public ISettings GetDefault(IConfiguration configuration)
         {
-            var def = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
+            var def = new PasswordSettings { MinLength = 8, UpperCase = false, Digits = false, SpecSymbols = false };
 
             if (int.TryParse(configuration["web.password.min"], out var defaultMinLength))
             {

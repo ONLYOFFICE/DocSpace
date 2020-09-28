@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
-  toastr,
   ModalDialog,
   Button,
   Text,
@@ -14,7 +13,7 @@ import {
 import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { utils } from "asc-web-common";
+import { utils, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { updateUserType } from "../../../store/people/actions";
 

@@ -2,7 +2,7 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { constants, Headline, store, api } from "asc-web-common";
+import { constants, Headline, store, api, toastr } from "asc-web-common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
@@ -10,7 +10,6 @@ import {
   DropDownItem,
   GroupButtonsMenu,
   IconButton,
-  toastr,
   utils
 } from "asc-web-components";
 import { fetchFiles, setAction, getProgress, setProgressBarData, clearProgressData, setIsLoading } from "../../../../../store/files/actions";

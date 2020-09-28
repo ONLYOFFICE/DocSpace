@@ -47,13 +47,15 @@ namespace ASC.Core.Notify
         private readonly INotifySender sender;
 
 
-        public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+        public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             this.sender = sender ?? throw new ArgumentNullException("sender");
             ServiceProvider = serviceProvider;
+            Log = options.Get("ASC.Notify");
         }
 
         private IServiceProvider ServiceProvider { get; }
+        private ILog Log { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
@@ -146,6 +148,19 @@ namespace ASC.Core.Notify
             if (attachmentTag != null && attachmentTag.Value != null)
             {
                 m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
+            }
+
+            var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
+            if (autoSubmittedTag != null && autoSubmittedTag.Value is string)
+            {
+                try
+                {
+                    m.AutoSubmitted = autoSubmittedTag.Value.ToString();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
+                }
             }
 
             return m;

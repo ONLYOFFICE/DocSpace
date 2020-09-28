@@ -113,7 +113,7 @@ namespace ASC.Web.Files.Configuration
             result = folderDao.Search(text).Where(security.CanRead);
 
             if (ThirdpartyConfiguration.SupportInclusion
-                && (Global.IsAdministrator || FilesSettingsHelper.EnableThirdParty))
+                && FilesSettingsHelper.EnableThirdParty)
             {
                 var id = GlobalFolderHelper.FolderMy;
                 if (!Equals(id, 0))
