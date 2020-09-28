@@ -38,12 +38,7 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({
-  culture,
-  utcHoursOffset,
-  trialMode,
-  expiresDate,
-}) => {
+const HeaderContainer = ({ culture, trialMode, expiresDate }) => {
   useEffect(() => {
     changeLanguage(i18n);
     const moment = require("moment");
@@ -53,16 +48,9 @@ const HeaderContainer = ({
 
   const { t } = useTranslation("translation", { i18n });
 
-  const currentUserDate = +moment()
-    .utcOffset(`${utcHoursOffset}`)
-    .set("hour", 0)
-    .set("minute", 0)
-    .set("second", 0)
-    .set("millisecond", 0);
+  const currentUserDate = moment();
 
-  const expiresDateSetHours = expiresDate.setHours(0, 0, 0, 0);
-
-  return currentUserDate < expiresDateSetHours ? (
+  return moment(expiresDate).isAfter(currentUserDate, "day") ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
         {t("Using")}
@@ -103,16 +91,14 @@ const HeaderContainer = ({
 
 HeaderContainer.propTypes = {
   culture: PropTypes.string,
-  utcHoursOffset: PropTypes.number,
   expiresDate: PropTypes.object,
   trialMode: PropTypes.bool,
 };
 function mapStateToProps({ auth, payments }) {
-  const { culture, utcHoursOffset } = auth.settings;
+  const { culture } = auth.settings;
   const { expiresDate, trialMode } = payments.currentLicense;
   return {
     culture,
-    utcHoursOffset,
     expiresDate,
     trialMode,
   };
