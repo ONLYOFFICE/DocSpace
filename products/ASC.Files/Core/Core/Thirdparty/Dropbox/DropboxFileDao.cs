@@ -262,7 +262,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             var dropboxFile = GetDropboxFile(file.ID);
             if (dropboxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (dropboxFile is ErrorFile) throw new Exception(((ErrorFile)dropboxFile).Error);
+            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(MakeDropboxPath(dropboxFile), (int)offset);
 
@@ -390,10 +390,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public string MoveFile(string fileId, string toFolderId)
         {
             var dropboxFile = GetDropboxFile(fileId);
-            if (dropboxFile is ErrorFile) throw new Exception(((ErrorFile)dropboxFile).Error);
+            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
+            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var fromFolderPath = GetParentFolderPath(dropboxFile);
 
@@ -444,10 +444,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var dropboxFile = GetDropboxFile(fileId);
-            if (dropboxFile is ErrorFile) throw new Exception(((ErrorFile)dropboxFile).Error);
+            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
+            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var newDropboxFile = ProviderInfo.Storage.CopyFile(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name);
 

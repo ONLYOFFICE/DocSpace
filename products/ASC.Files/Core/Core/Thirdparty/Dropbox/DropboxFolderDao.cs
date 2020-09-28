@@ -294,10 +294,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var dropboxFolder = GetDropboxFolder(folderId);
-            if (dropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)dropboxFolder).Error);
+            if (dropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
+            if (toDropboxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var fromFolderPath = GetParentFolderPath(dropboxFolder);
 
@@ -338,10 +338,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var dropboxFolder = GetDropboxFolder(folderId);
-            if (dropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)dropboxFolder).Error);
+            if (dropboxFolder is ErrorFolder folder) throw new Exception(folder.Error);
 
             var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
+            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var newDropboxFolder = ProviderInfo.Storage.CopyFolder(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
 

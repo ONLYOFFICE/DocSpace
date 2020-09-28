@@ -258,7 +258,7 @@ namespace ASC.Files.Thirdparty.Box
 
             var boxFile = GetBoxFile(file.ID);
             if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (boxFile is ErrorFile) throw new Exception(((ErrorFile)boxFile).Error);
+            if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(boxFile, (int)offset);
 
@@ -397,10 +397,10 @@ namespace ASC.Files.Thirdparty.Box
         public string MoveFile(string fileId, string toFolderId)
         {
             var boxFile = GetBoxFile(fileId);
-            if (boxFile is ErrorFile) throw new Exception(((ErrorFile)boxFile).Error);
+            if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var toBoxFolder = GetBoxFolder(toFolderId);
-            if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
+            if (toBoxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var fromFolderId = GetParentFolderId(boxFile);
 
@@ -432,10 +432,10 @@ namespace ASC.Files.Thirdparty.Box
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var boxFile = GetBoxFile(fileId);
-            if (boxFile is ErrorFile) throw new Exception(((ErrorFile)boxFile).Error);
+            if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var toBoxFolder = GetBoxFolder(toFolderId);
-            if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
+            if (toBoxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
             var newBoxFile = ProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);

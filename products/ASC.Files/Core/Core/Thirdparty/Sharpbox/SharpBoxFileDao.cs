@@ -253,8 +253,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             if (fileToDownload == null)
                 throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (fileToDownload is ErrorEntry)
-                throw new Exception(((ErrorEntry)fileToDownload).Error);
+            if (fileToDownload is ErrorEntry errorEntry)
+                throw new Exception(errorEntry.Error);
 
             var fileStream = fileToDownload.GetDataTransferAccessor().GetDownloadStream();
 

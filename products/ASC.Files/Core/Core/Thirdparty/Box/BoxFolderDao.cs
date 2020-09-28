@@ -270,10 +270,10 @@ namespace ASC.Files.Thirdparty.Box
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var boxFolder = GetBoxFolder(folderId);
-            if (boxFolder is ErrorFolder) throw new Exception(((ErrorFolder)boxFolder).Error);
+            if (boxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var toBoxFolder = GetBoxFolder(toFolderId);
-            if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
+            if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var fromFolderId = GetParentFolderId(boxFolder);
 
@@ -330,10 +330,10 @@ namespace ASC.Files.Thirdparty.Box
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var boxFolder = GetBoxFolder(folderId);
-            if (boxFolder is ErrorFolder) throw new Exception(((ErrorFolder)boxFolder).Error);
+            if (boxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var toBoxFolder = GetBoxFolder(toFolderId);
-            if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
+            if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var newTitle = GetAvailableTitle(boxFolder.Name, toBoxFolder.Id, IsExist);
             var newBoxFolder = ProviderInfo.Storage.CopyFolder(boxFolder.Id, newTitle, toBoxFolder.Id);

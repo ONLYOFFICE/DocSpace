@@ -272,9 +272,9 @@ namespace ASC.Api.Core
 
         public int CompareTo(object obj)
         {
-            if (obj is DateTime)
-                return CompareTo((DateTime)obj);
-            return obj is ApiDateTime ? CompareTo((ApiDateTime)obj) : 0;
+            if (obj is DateTime dateTime)
+                return CompareTo(dateTime);
+            return obj is ApiDateTime apiDateTime ? CompareTo(apiDateTime) : 0;
         }
 
         public override string ToString()
@@ -309,13 +309,13 @@ namespace ASC.Api.Core
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value is string)
+            if (value is string @string)
             {
-                return ApiDateTime.Parse((string)value, null, null);
+                return ApiDateTime.Parse(@string, null, null);
             }
-            if (value is DateTime)
+            if (value is DateTime time)
             {
-                return new ApiDateTime(null, null, (DateTime)value);
+                return new ApiDateTime(null, null, time);
             }
             return base.ConvertFrom(context, culture, value);
         }

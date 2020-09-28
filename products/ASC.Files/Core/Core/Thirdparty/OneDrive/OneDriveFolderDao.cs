@@ -290,10 +290,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var onedriveFolder = GetOneDriveItem(folderId);
-            if (onedriveFolder is ErrorItem) throw new Exception(((ErrorItem)onedriveFolder).Error);
+            if (onedriveFolder is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var toOneDriveFolder = GetOneDriveItem(toFolderId);
-            if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
+            if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var fromFolderId = GetParentFolderId(onedriveFolder);
 
@@ -335,10 +335,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var onedriveFolder = GetOneDriveItem(folderId);
-            if (onedriveFolder is ErrorItem) throw new Exception(((ErrorItem)onedriveFolder).Error);
+            if (onedriveFolder is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var toOneDriveFolder = GetOneDriveItem(toFolderId);
-            if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
+            if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var newTitle = GetAvailableTitle(onedriveFolder.Name, toOneDriveFolder.Id, IsExist);
             var newOneDriveFolder = ProviderInfo.Storage.CopyItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);

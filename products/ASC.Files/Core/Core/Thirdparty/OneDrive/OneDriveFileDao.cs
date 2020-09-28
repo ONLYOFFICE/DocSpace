@@ -258,7 +258,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var onedriveFile = GetOneDriveItem(file.ID);
             if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
+            if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
 
@@ -393,10 +393,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         public string MoveFile(string fileId, string toFolderId)
         {
             var onedriveFile = GetOneDriveItem(fileId);
-            if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
+            if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var toOneDriveFolder = GetOneDriveItem(toFolderId);
-            if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
+            if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var fromFolderId = GetParentFolderId(onedriveFile);
 
@@ -438,10 +438,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var onedriveFile = GetOneDriveItem(fileId);
-            if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
+            if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var toOneDriveFolder = GetOneDriveItem(toFolderId);
-            if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
+            if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
             var newOneDriveFile = ProviderInfo.Storage.CopyItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);

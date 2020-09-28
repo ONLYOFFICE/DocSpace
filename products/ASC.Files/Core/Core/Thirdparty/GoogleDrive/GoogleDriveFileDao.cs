@@ -258,7 +258,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             ProviderInfo.CacheReset(driveId, true);
             var driveFile = GetDriveEntry(file.ID);
             if (driveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (driveFile is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFile).Error);
+            if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(driveFile, (int)offset);
 
@@ -392,10 +392,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public string MoveFile(string fileId, string toFolderId)
         {
             var driveFile = GetDriveEntry(fileId);
-            if (driveFile is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFile).Error);
+            if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var toDriveFolder = GetDriveEntry(toFolderId);
-            if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
             var fromFolderDriveId = GetParentDriveId(driveFile);
 
@@ -440,10 +440,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var driveFile = GetDriveEntry(fileId);
-            if (driveFile is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFile).Error);
+            if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var toDriveFolder = GetDriveEntry(toFolderId);
-            if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
             var newDriveFile = ProviderInfo.Storage.CopyEntry(toDriveFolder.Id, driveFile.Id);
 

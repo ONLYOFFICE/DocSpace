@@ -283,10 +283,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var driveFolder = GetDriveEntry(folderId);
-            if (driveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFolder).Error);
+            if (driveFolder is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var toDriveFolder = GetDriveEntry(toFolderId);
-            if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
             var fromFolderDriveId = GetParentDriveId(driveFolder);
 
@@ -331,10 +331,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var driveFolder = GetDriveEntry(folderId);
-            if (driveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFolder).Error);
+            if (driveFolder is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var toDriveFolder = GetDriveEntry(toFolderId);
-            if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
             var newDriveFolder = ProviderInfo.Storage.InsertEntry(null, driveFolder.Name, toDriveFolder.Id, true);
 
