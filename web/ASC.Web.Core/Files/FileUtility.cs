@@ -137,6 +137,11 @@ namespace ASC.Web.Core.Files
             return ExtsWebReviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
+        public bool CanWebCustomFilterEditing(string fileName)
+        {
+            return ExtsWebCustomFilterEditing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+        }
+
         public bool CanWebRestrictedEditing(string fileName)
         {
             return ExtsWebRestrictedEditing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
@@ -267,6 +272,20 @@ namespace ASC.Web.Core.Files
             }
         }
 
+        private List<string> extsWebCustomFilterEditing;
+        public List<string> ExtsWebCustomFilterEditing
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebCustomFilterEditing ?? (extsWebCustomFilterEditing = (Configuration.GetSection("files:docservice:customfilter-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
+        }
+
         private List<string> extsWebRestrictedEditing;
         public List<string> ExtsWebRestrictedEditing
         {
@@ -294,6 +313,8 @@ namespace ASC.Web.Core.Files
                 return extsWebCommented ?? (extsWebCommented = (Configuration.GetSection("files:docservice:commented-docs").Get<string[]>() ?? new string[] { }).ToList());
             }
         }
+
+        public List<string> ExtsWebTemplate { get; }
 
         private List<string> extsMustConvert;
         public List<string> ExtsMustConvert
@@ -350,7 +371,7 @@ namespace ASC.Web.Core.Files
                 ".bmp", ".cod", ".gif", ".ief", ".jpe", ".jpeg", ".jpg",
                 ".jfif", ".tiff", ".tif", ".cmx", ".ico", ".pnm", ".pbm",
                 ".png", ".ppm", ".rgb", ".svg", ".xbm", ".xpm", ".xwd",
-                ".svgt", ".svgy", ".gdraw"
+                ".svgt", ".svgy", ".gdraw", ".webp"
             };
 
         public static readonly List<string> ExtsSpreadsheet = new List<string>
@@ -383,6 +404,13 @@ namespace ASC.Web.Core.Files
                 ".gdoc"
             };
 
+        public static readonly List<string> ExtsTemplate = new List<string>
+            {
+                ".ott", ".ots", ".otp",
+                ".dot", ".dotm", ".dotx",
+                ".xlt", ".xltm", ".xltx",
+                ".pot", ".potm", ".potx",
+            };
         public Dictionary<FileType, string> InternalExtension
         {
             get => new Dictionary<FileType, string>

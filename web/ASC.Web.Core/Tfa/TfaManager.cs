@@ -38,10 +38,13 @@ using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 
 using Google.Authenticator;
+
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -49,19 +52,31 @@ namespace ASC.Web.Studio.Core.TFA
     public class BackupCode
     {
         private string code;
-
+        private InstanceCrypto InstanceCrypto { get; }
         private Signature Signature { get; }
 
         public string Code
         {
-            get { return Signature.Read<string>(code); }
-            set { code = Signature.Create(value); }
+            get
+            {
+                try
+                {
+                    return InstanceCrypto.Decrypt(code);
+                }
+                catch
+                {
+                    //support old scheme stored in the DB
+                    return Signature.Read<string>(code);
+                }
+            }
+            set { code = InstanceCrypto.Encrypt(value); }
         }
 
         public bool IsUsed { get; set; }
 
-        public BackupCode(Signature signature, string code)
+        public BackupCode(InstanceCrypto instanceCrypto, Signature signature, string code)
         {
+            InstanceCrypto = instanceCrypto;
             Signature = signature;
             Code = code;
             IsUsed = false;
@@ -78,19 +93,25 @@ namespace ASC.Web.Studio.Core.TFA
         private CookiesManager CookiesManager { get; }
         private SetupInfo SetupInfo { get; }
         private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        public MachinePseudoKeys MachinePseudoKeys { get; }
 
         public TfaManager(
             SettingsManager settingsManager,
             SecurityContext securityContext,
             CookiesManager cookiesManager,
             SetupInfo setupInfo,
-            Signature signature)
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            MachinePseudoKeys machinePseudoKeys)
         {
             SettingsManager = settingsManager;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
             SetupInfo = setupInfo;
             Signature = signature;
+            InstanceCrypto = instanceCrypto;
+            MachinePseudoKeys = machinePseudoKeys;
         }
 
         public SetupCode GenerateSetupCode(UserInfo user, int size)
@@ -171,7 +192,7 @@ namespace ASC.Web.Studio.Core.TFA
                         result.Append(alphabet[b % (alphabet.Length)]);
                     }
 
-                    list.Add(new BackupCode(Signature, result.ToString()));
+                    list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));
                 }
             }
             var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
@@ -183,7 +204,14 @@ namespace ASC.Web.Studio.Core.TFA
 
         private string GenerateAccessToken(UserInfo user)
         {
-            return Signature.Create(TfaAppUserSettings.GetSalt(SettingsManager, user.ID)).Substring(0, 10);
+            var userSalt = TfaAppUserSettings.GetSalt(SettingsManager, user.ID);
+
+            //from Signature.Create
+            var machineSalt = Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant());
+            var token = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(userSalt + machineSalt)));
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            return encodedToken.Substring(0, 10);
         }
     }
 

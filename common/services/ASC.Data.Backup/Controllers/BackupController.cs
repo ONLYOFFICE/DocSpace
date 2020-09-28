@@ -4,9 +4,11 @@ using System.Collections.Generic;
 
 using ASC.Api.Core.Middleware;
 using ASC.Common;
+using ASC.Core;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.Models;
 using ASC.Web.Api.Routing;
+using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +19,17 @@ namespace ASC.Data.Backup.Controllers
     public class BackupController
     {
         private BackupAjaxHandler BackupHandler { get; }
-        public BackupController(BackupAjaxHandler backupAjaxHandler)
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private TenantExtra TenantExtra { get; }
+
+        public BackupController(
+            BackupAjaxHandler backupAjaxHandler,
+            CoreBaseSettings coreBaseSettings,
+            TenantExtra tenantExtra)
         {
             BackupHandler = backupAjaxHandler;
+            CoreBaseSettings = coreBaseSettings;
+            TenantExtra = tenantExtra;
         }
         /// <summary>
         /// Returns the backup schedule of the current portal
@@ -29,6 +39,11 @@ namespace ASC.Data.Backup.Controllers
         [Read("getbackupschedule")]
         public BackupAjaxHandler.Schedule GetBackupSchedule()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             return BackupHandler.GetSchedule();
         }
 
@@ -44,6 +59,11 @@ namespace ASC.Data.Backup.Controllers
         [Create("createbackupschedule")]
         public void CreateBackupSchedule(BackupStorageType storageType, [FromQuery] Dictionary<string, string> storageParams, int backupsStored, [FromBody] BackupAjaxHandler.CronParams cronParams, bool backupMail)
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             BackupHandler.CreateSchedule(storageType, storageParams, backupsStored, cronParams, backupMail);
         }
 
@@ -54,6 +74,11 @@ namespace ASC.Data.Backup.Controllers
         [Delete("deletebackupschedule")]
         public void DeleteBackupSchedule()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             BackupHandler.DeleteSchedule();
         }
 
@@ -68,6 +93,11 @@ namespace ASC.Data.Backup.Controllers
         [Create("startbackup")]
         public BackupProgress StartBackup(Models.Backup backup)
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             BackupHandler.StartBackup(backup.StorageType, backup.StorageParams ?? new Dictionary<string, string>(), backup.BackupMail);
             return BackupHandler.GetBackupProgress();
         }
@@ -80,6 +110,11 @@ namespace ASC.Data.Backup.Controllers
         [Read("getbackupprogress")]
         public BackupProgress GetBackupProgress()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             return BackupHandler.GetBackupProgress();
         }
 
@@ -91,6 +126,11 @@ namespace ASC.Data.Backup.Controllers
         [Read("getbackuphistory")]
         public List<BackupHistoryRecord> GetBackupHistory()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             return BackupHandler.GetBackupHistory();
         }
 
@@ -101,6 +141,11 @@ namespace ASC.Data.Backup.Controllers
         [Delete("deletebackup/{id}")]
         public void DeleteBackup(Guid id)
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             BackupHandler.DeleteBackup(id);
         }
 
@@ -112,6 +157,11 @@ namespace ASC.Data.Backup.Controllers
         [Delete("deletebackuphistory")]
         public void DeleteBackupHistory()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             BackupHandler.DeleteAllBackups();
         }
 
@@ -127,6 +177,11 @@ namespace ASC.Data.Backup.Controllers
         [Create("startrestore")]
         public BackupProgress StartBackupRestore(BackupRestore backupRestore)
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             BackupHandler.StartRestore(backupRestore.BackupId, backupRestore.StorageType, backupRestore.StorageParams, backupRestore.Notify);
             return BackupHandler.GetBackupProgress();
         }
@@ -139,6 +194,11 @@ namespace ASC.Data.Backup.Controllers
         [Read("getrestoreprogress", true)]  //NOTE: this method doesn't check payment!!!
         public BackupProgress GetRestoreProgress()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             return BackupHandler.GetRestoreProgress();
         }
 
@@ -146,6 +206,11 @@ namespace ASC.Data.Backup.Controllers
         [Read("backuptmp")]
         public string GetTempPath()
         {
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+
             return BackupHandler.GetTmpFolder();
         }
     }
@@ -155,7 +220,9 @@ namespace ASC.Data.Backup.Controllers
         {
             return services
                 .AddBackupAjaxHandler()
-                .AddIpSecurityFilter();
+                .AddIpSecurityFilter()
+                .AddCoreBaseSettingsService()
+                .AddTenantExtraService();
         }
     }
 }

@@ -29,7 +29,9 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
+using System.Web;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -57,22 +59,23 @@ namespace ASC.Web.Studio.UserControls.FirstTime
 {
     public class FirstTimeTenantSettings
     {
-        public ILog Log { get; }
-        public IConfiguration Configuration { get; }
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public TenantExtra TenantExtra { get; }
-        public SettingsManager SettingsManager { get; }
-        public UserManager UserManager { get; }
-        public SetupInfo SetupInfo { get; }
-        public SecurityContext SecurityContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public PaymentManager PaymentManager { get; }
-        public MessageService MessageService { get; }
-        public LicenseReader LicenseReader { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private ILog Log { get; }
+        private IConfiguration Configuration { get; }
+        private TenantManager TenantManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private TenantExtra TenantExtra { get; }
+        private SettingsManager SettingsManager { get; }
+        private UserManager UserManager { get; }
+        private SetupInfo SetupInfo { get; }
+        private SecurityContext SecurityContext { get; }
+        private CookiesManager CookiesManager { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private PaymentManager PaymentManager { get; }
+        private MessageService MessageService { get; }
+        private LicenseReader LicenseReader { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public FirstTimeTenantSettings(
             IOptionsMonitor<ILog> options,
@@ -90,7 +93,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             MessageService messageService,
             LicenseReader licenseReader,
             StudioNotifyService studioNotifyService,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            CoreBaseSettings coreBaseSettings)
         {
             Log = options.CurrentValue;
             Configuration = configuration;
@@ -108,13 +112,14 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             LicenseReader = licenseReader;
             StudioNotifyService = studioNotifyService;
             TimeZoneConverter = timeZoneConverter;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public WizardSettings SaveData(WizardModel wizardModel)
         {
             try
             {
-                var (email, pwd, lng, timeZone, promocode, amiid, analytics) = wizardModel;
+                var (email, passwordHash, lng, timeZone, promocode, amiid, analytics, subscribeFromSite) = wizardModel;
 
                 var tenant = TenantManager.GetCurrentTenant();
                 var settings = SettingsManager.Load<WizardSettings>();
@@ -145,8 +150,10 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                     throw new Exception(Resource.EmailAndPasswordIncorrectEmail);
                 }
 
-                UserManagerWrapper.CheckPasswordPolicy(pwd);
-                SecurityContext.SetUserPassword(currentUser.ID, pwd);
+                if (string.IsNullOrEmpty(passwordHash))
+                    throw new Exception(Resource.ErrorPasswordEmpty);
+
+                SecurityContext.SetUserPasswordHash(currentUser.ID, passwordHash);
 
                 email = email.Trim();
                 if (currentUser.Email != email)
@@ -191,7 +198,14 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 TenantManager.SaveTenant(tenant);
 
                 StudioNotifyService.SendCongratulations(currentUser);
+                StudioNotifyService.SendRegData(currentUser);
+
                 SendInstallInfo(currentUser);
+
+                if (subscribeFromSite && TenantExtra.Opensource && !CoreBaseSettings.CustomMode)
+                {
+                    SubscribeFromSite(currentUser);
+                }
 
                 return settings;
             }
@@ -302,6 +316,45 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             catch (Exception error)
             {
                 Log.Error(error);
+            }
+        }
+
+        private void SubscribeFromSite(UserInfo user)
+        {
+            try
+            {
+                var url = (SetupInfo.TeamlabSiteRedirect ?? "").Trim().TrimEnd('/');
+                if (string.IsNullOrEmpty(url)) return;
+
+                url += "/post.ashx";
+
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.Timeout = 10000;
+
+                var bodyString = string.Format("type=sendsubscription&email={0}", HttpUtility.UrlEncode(user.Email));
+                var bytes = Encoding.UTF8.GetBytes(bodyString);
+                request.ContentLength = bytes.Length;
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(bytes, 0, bytes.Length);
+                }
+
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    if (stream == null) throw new Exception("Response is null");
+
+                    using (var reader = new StreamReader(stream))
+                    {
+                        Log.Debug("Subscribe response: " + reader.ReadToEnd());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Subscribe request", e);
             }
         }
 

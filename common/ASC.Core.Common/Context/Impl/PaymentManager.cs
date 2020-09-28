@@ -95,6 +95,11 @@ namespace ASC.Core
             return tariffService.GetInvoice(paymentId);
         }
 
+        public IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(params string[] productIds)
+        {
+            return tariffService.GetProductPriceInfo(productIds);
+        }
+
         public Uri GetShoppingUri(int tenant, int quotaId, string currency = null, string language = null, string customerId = null)
         {
             return tariffService.GetShoppingUri(tenant, quotaId, null, currency, language, customerId);

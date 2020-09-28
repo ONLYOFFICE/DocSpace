@@ -131,6 +131,12 @@ namespace ASC.Web.Files.HttpHandlers
         {
             try
             {
+                if (context.Request.Method == "OPTIONS")
+                {
+                    context.Response.StatusCode = 200;
+                    return;
+                }
+
                 var request = new ChunkedRequestHelper<T>(context.Request);
 
                 if (!TryAuthorize(request))

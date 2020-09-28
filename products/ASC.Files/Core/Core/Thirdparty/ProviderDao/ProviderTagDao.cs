@@ -47,6 +47,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
         }
 
+        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return TagDao.GetTags(subject, tagType, fileEntries);
+        }
+
+
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
             return TagDao.GetTags(tagType, fileEntries);

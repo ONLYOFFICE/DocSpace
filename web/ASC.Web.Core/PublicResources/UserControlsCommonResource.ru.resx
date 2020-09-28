@@ -70,6 +70,9 @@
   <data name="LicenseKeyNotFound" xml:space="preserve">
     <value>Необходимо ввести лицензионный ключ</value>
   </data>
+  <data name="NewDocument" xml:space="preserve">
+    <value>Новый документ</value>
+  </data>
   <data name="TariffPerMonth" xml:space="preserve">
     <value>месяц</value>
   </data>

@@ -31,6 +31,38 @@
 		  }
 	  }
     },    
+    {
+      "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Telegram",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Telegram",
+		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Telegram",
+		  "order": "13",
+		  "props": {
+			"telegramBotToken": "",
+			"telegramBotName": ""
+		  },
+		  "additional": {
+			"telegramAuthTokenLifespan" : 20,
+			"telegramProxy": ""
+		  }
+	  }
+    },    
 	{
       "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -613,7 +645,12 @@
 		  "additional": {
 			"handlerType" : "ASC.Data.Storage.S3.S3Storage, ASC.Data.Storage",
 			"bucket" : "",
-			"region" : ""
+			"region" : "",
+			"serviceurl": "",
+			"forcepathstyle": "",
+			"usehttp": "",
+			"sse": "",
+			"cdn": "S3Cdn"
 		  }
 	  }
     },

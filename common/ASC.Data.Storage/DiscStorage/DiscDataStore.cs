@@ -310,7 +310,7 @@ namespace ASC.Data.Storage.DiscStorage
                 var entries = Directory.GetFiles(targetDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
                 foreach (var entry in entries)
                 {
-                    var size = new FileInfo(entry).Length;
+                    var size = Crypt.GetFileSize(entry);
                     File.Delete(entry);
                     QuotaUsedDelete(domain, size);
                 }

@@ -269,7 +269,7 @@ namespace ASC.Core.Notify.Senders
                 mimeMessage.ReplyTo.Add(MailboxAddress.Parse(ParserOptions.Default, m.ReplyTo));
             }
 
-            mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+            mimeMessage.Headers.Add("Auto-Submitted", string.IsNullOrEmpty(m.AutoSubmitted) ? "auto-generated" : m.AutoSubmitted);
 
             return mimeMessage;
         }

@@ -73,7 +73,7 @@ namespace ASC.Files.Core.Data
         {
         }
 
-        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
+        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = fileEntries.Where(e => e.FileEntryType == FileEntryType.File).Select(e => MappingID(e.ID).ToString()).ToList();
             var foldersId = fileEntries.Where(e => e.FileEntryType == FileEntryType.Folder).Select(e => MappingID(e.ID).ToString()).ToList();
@@ -85,8 +85,19 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Any(f => r.Link.EntryId == f)
                 || r.Link.EntryType == FileEntryType.Folder && foldersId.Any(f => r.Link.EntryId == f));
 
+            if (subject != Guid.Empty)
+            {
+                q.Where(r => r.Link.CreateBy == subject);
+            }
+
             return FromQuery(q);
         }
+
+        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
+        {
+            return GetTags(Guid.Empty, tagType, fileEntries);
+        }
+
 
         public IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType)
         {
@@ -133,6 +144,8 @@ namespace ASC.Files.Core.Data
             {
                 q = q.Where(r => r.Tag.Owner == owner);
             }
+
+            q = q.OrderByDescending(r => r.Link.CreateOn);
 
             return FromQuery(q);
         }
@@ -193,7 +206,7 @@ namespace ASC.Files.Core.Data
                 Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
                 .Where(r => r.Link.TenantId == r.Tag.TenantId)
-                .Where(r => r.Tag.Flag == TagType.New && r.Link.CreateOn <= TenantUtil.DateTimeNow().AddMonths(-1))
+                .Where(r => (r.Tag.Flag == TagType.New || r.Tag.Flag == TagType.Recent) && r.Link.CreateOn <= TenantUtil.DateTimeNow().AddMonths(-1))
                 .ToList();
 
             foreach (var row in mustBeDeleted)
@@ -517,6 +530,61 @@ namespace ASC.Files.Core.Data
                     .Select(r => r.tagLink);
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareSboxTags));
+            }
+            else if (parentFolder.FolderType == FolderType.Privacy)
+            {
+                var shareQuery =
+                    new Func<IQueryable<TagLinkData>>(() => getBaseSqlQuery().Where(
+                        r => FilesDbContext.Security
+                        .Where(a => a.TenantId == r.Link.TenantId)
+                        .Where(a => a.EntryId == r.Link.EntryId)
+                        .Where(a => a.EntryType == r.Link.EntryType)
+                        .Any()));
+
+                var tmpShareFileTags =
+                    shareQuery()
+                    .Join(FilesDbContext.Files, r => r.Link.EntryId, f => f.Id.ToString(), (tagLink, file) => new { tagLink, file })
+                    .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
+                    .Where(r => r.file.CreateBy != subject)
+                    .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
+                    .Select(r => new
+                    {
+                        r.tagLink,
+                        root = FilesDbContext.Folders
+                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                            .Where(x => x.folder.TenantId == r.file.TenantId)
+                            .Where(x => x.tree.FolderId == r.file.FolderId)
+                            .OrderByDescending(r => r.tree.Level)
+                            .Select(r => r.folder)
+                            .FirstOrDefault()
+                    })
+                    .Where(r => r.root.FolderType == FolderType.Privacy)
+                    .Select(r => r.tagLink);
+
+                tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
+
+
+                var tmpShareFolderTags =
+                                    shareQuery()
+                                    .Join(FilesDbContext.Folders, r => r.Link.EntryId, f => f.Id.ToString(), (tagLink, folder) => new { tagLink, folder })
+                                    .Where(r => r.folder.TenantId == r.tagLink.Link.TenantId)
+                                    .Where(r => r.folder.CreateBy != subject)
+                                    .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)
+                                    .Select(r => new
+                                    {
+                                        r.tagLink,
+                                        root = FilesDbContext.Folders
+                                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                                            .Where(x => x.folder.TenantId == r.folder.TenantId)
+                                            .Where(x => x.tree.FolderId == r.folder.ParentId)
+                                            .OrderByDescending(r => r.tree.Level)
+                                            .Select(r => r.folder)
+                                            .FirstOrDefault()
+                                    })
+                                    .Where(r => r.root.FolderType == FolderType.Privacy)
+                                    .Select(r => r.tagLink);
+
+                tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
             }
             else if (parentFolder.FolderType == FolderType.Projects)
             {

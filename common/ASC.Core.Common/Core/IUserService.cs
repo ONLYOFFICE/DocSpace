@@ -55,7 +55,7 @@ namespace ASC.Core
 
         UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
 
-        UserInfo GetUser(int tenant, string login, string passwordHash);
+        UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash);
 
         UserInfo SaveUser(int tenant, UserInfo user);
 
@@ -65,9 +65,9 @@ namespace ASC.Core
 
         void SetUserPhoto(int tenant, Guid id, byte[] photo);
 
-        string GetUserPassword(int tenant, Guid id);
+        DateTime GetUserPasswordStamp(int tenant, Guid id);
 
-        void SetUserPassword(int tenant, Guid id, string password);
+        void SetUserPasswordHash(int tenant, Guid id, string passwordHash);
 
 
         IDictionary<Guid, Group> GetGroups(int tenant, DateTime from);

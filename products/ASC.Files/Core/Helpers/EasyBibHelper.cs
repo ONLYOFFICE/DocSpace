@@ -48,7 +48,7 @@ namespace ASC.Web.Files.Helpers
         static string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
                         searchJournalUrl = "https://crossref.citation-api.com/query?search=",
                         searchWebSiteUrl = "https://web.citation-api.com/query?search=",
-                        easyBibStyles = "http://easybib-csl.herokuapp.com/1.0/styles";
+                        easyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
 
         public enum EasyBibSource
         {

@@ -51,6 +51,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         #region ITagDao Members
 
+        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return null;
+        }
+
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
             return null;

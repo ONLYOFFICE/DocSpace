@@ -66,6 +66,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Migration"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Encryption", "common\services\ASC.Data.Storage.Encryption\ASC.Data.Storage.Encryption.csproj", "{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.TelegramService", "common\services\ASC.TelegramService\ASC.TelegramService.csproj", "{95CE7371-17B6-4EEE-8E38-2FDE6347E955}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -192,6 +194,10 @@ Global
 		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

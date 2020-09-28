@@ -37,11 +37,11 @@ using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.DocumentService;
-using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Files.Services.WCFService;
 
 using Microsoft.Extensions.Options;
@@ -137,6 +137,7 @@ namespace ASC.Web.Files.Utils
                 }
 
                 var addRecipient = share == FileShare.Read
+                                   || share == FileShare.CustomFilter
                                    || share == FileShare.ReadWrite
                                    || share == FileShare.Review
                                    || share == FileShare.FillForms
@@ -172,8 +173,9 @@ namespace ASC.Web.Files.Utils
                     FileMarker.MarkAsNew(entry, recipients.Keys.ToList());
                 }
 
-                if (entry.RootFolderType == FolderType.USER
-                    && notify)
+                if ((entry.RootFolderType == FolderType.USER
+                   || entry.RootFolderType == FolderType.Privacy)
+                   && notify)
                 {
                     NotifyClient.SendShareNotice(entry, recipients, message);
                 }
@@ -191,11 +193,16 @@ namespace ASC.Web.Files.Utils
             entries.ForEach(
                 entry =>
                 {
-                    if (entry.RootFolderType != FolderType.USER || Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy))
+                    if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
+                            || Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy)
+                            || Equals(entry.RootFolderId, GlobalFolderHelper.FolderPrivacy))
                         return;
 
                     var entryType = entry.FileEntryType;
-                    fileSecurity.Share(entry.ID, entryType, AuthContext.CurrentAccount.ID, fileSecurity.DefaultMyShare);
+                    fileSecurity.Share(entry.ID, entryType, AuthContext.CurrentAccount.ID,
+                         entry.RootFolderType == FolderType.USER
+                            ? fileSecurity.DefaultMyShare
+                            : fileSecurity.DefaultPrivacyShare);
 
                     if (entryType == FileEntryType.File)
                     {
@@ -234,9 +241,12 @@ namespace ASC.Web.Files.Utils
             return
                 entry != null
                 && (entry.RootFolderType == FolderType.COMMON && Global.IsAdministrator
-                    || entry.RootFolderType == FolderType.USER
-                    && (Equals(entry.RootFolderId, GlobalFolderHelper.GetFolderMy<T>()) || FileSecurity.CanEdit(entry))
-                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager));
+                    || !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
+                        && (entry.RootFolderType == FolderType.USER
+                            && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy) || FileSecurity.CanEdit(entry))
+                            || entry.RootFolderType == FolderType.Privacy
+                                && entry is File<T>
+                                && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderPrivacy) || FileSecurity.CanEdit(entry))));
         }
     }
 
