@@ -8,7 +8,7 @@ import {
   Button,
   Box,
   Text,
-  utils
+  utils,
 } from "asc-web-components";
 
 const { tablet } = utils.device;
@@ -36,21 +36,21 @@ const ModalContainer = ({
   onEmailChangeHandler,
   onSaveEmailHandler,
   onCloseModal,
-  checkingMessages
+  checkingMessages,
 }) => {
   let header, content, footer;
 
   const visible = errorLoading ? errorLoading : visibleModal;
 
   if (errorLoading) {
-    header = t("errorLicenseTitle");
+    header = t("ErrorLicenseTitle");
     content = (
       <BodyContainer>
-        {errorMessage ? errorMessage : t("errorLicenseBody")}
+        {errorMessage ? errorMessage : t("ErrorLicenseBody")}
       </BodyContainer>
     );
   } else if (visibleModal && checkingMessages.length < 1) {
-    header = t("changeEmailTitle");
+    header = t("ChangeEmailTitle");
 
     content = (
       <EmailInput
@@ -59,7 +59,7 @@ const ModalContainer = ({
         size="base"
         id="change-email"
         name="email-wizard"
-        placeholder={t("placeholderEmail")}
+        placeholder={t("PlaceholderEmail")}
         emailSettings={settings}
         value={emailOwner}
         onValidateInput={onEmailChangeHandler}
@@ -70,7 +70,7 @@ const ModalContainer = ({
       <BtnContainer>
         <Button
           key="saveBtn"
-          label={t("changeEmailBtn")}
+          label={t("ChangeEmailBtn")}
           primary={true}
           scale={true}
           size="big"
@@ -79,11 +79,11 @@ const ModalContainer = ({
       </BtnContainer>
     );
   } else if (visibleModal && checkingMessages.length > 0) {
-    header = t("errorParamsTitle");
+    header = t("ErrorParamsTitle");
 
     content = (
       <>
-        <Text as="p">{t("errorParamsBody")}</Text>
+        <Text as="p">{t("ErrorParamsBody")}</Text>
         {checkingMessages.map((el, index) => (
           <Text key={index} as="p">
             - {el};
@@ -96,7 +96,7 @@ const ModalContainer = ({
       <BtnContainer>
         <Button
           key="saveBtn"
-          label={t("errorParamsFooter")}
+          label={t("ErrorParamsFooter")}
           primary={true}
           scale={true}
           size="big"
@@ -128,7 +128,7 @@ ModalContainer.propTypes = {
   settings: PropTypes.object.isRequired,
   onEmailChangeHandler: PropTypes.func.isRequired,
   onSaveEmailHandler: PropTypes.func.isRequired,
-  onCloseModal: PropTypes.func.isRequired
+  onCloseModal: PropTypes.func.isRequired,
 };
 
 export default ModalContainer;
