@@ -1,25 +1,25 @@
 {
-  "treeSettingsMenuTitle": "Settings",
-  "treeSettingsCommonSettings": "Common Settings",
-  "treeSettingsAdminSettings": "Admin Settings",
-  "treeSettingsConnectedCloud": "Connected Clouds",
+  "TreeSettingsMenuTitle": "Settings",
+  "TreeSettingsCommonSettings": "Common Settings",
+  "TreeSettingsAdminSettings": "Admin Settings",
+  "TreeSettingsConnectedCloud": "Connected Clouds",
 
-  "common": "Common Settings",
-  "admin": "Admin Settings",
-  "thirdParty": "Connected Clouds",
+  "Common": "Common Settings",
+  "Admin": "Admin Settings",
+  "ThirdParty": "Connected Clouds",
 
-  "intermediateVersion": "Keep all saved intermediate versions",
-  "thirdPartyBtn": "Allow users to connect third-party storages",
+  "IntermediateVersion": "Keep all saved intermediate versions",
+  "ThirdPartyBtn": "Allow users to connect third-party storages",
 
-  "originalCopy": "Save the file copy in the original format as well",
-  "displayNotification": "Display notification when moving the element to the trash",
-  "displayRecent": "Display Recent",
-  "displayFavorites": "Display Favorites",
-  "displayTemplates": "Display Templates",
+  "OriginalCopy": "Save the file copy in the original format as well",
+  "DisplayNotification": "Display notification when moving the element to the trash",
+  "DisplayRecent": "Display Recent",
+  "DisplayFavorites": "Display Favorites",
+  "DisplayTemplates": "Display Templates",
 
-  "storingFileVersion": "Storing file versions",
-  "updateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
-  "keepIntermediateVersion": "Keep intermediate versions when editing",
+  "StoringFileVersion": "Storing file versions",
+  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
+  "KeepIntermediateVersion": "Keep intermediate versions when editing",
 
   "LoadingProcessing": "Loading...",
   "LoadingDescription": "Please wait..."
