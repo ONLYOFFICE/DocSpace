@@ -474,6 +474,26 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return null;
         }
 
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
+
         public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
         {
             return null;

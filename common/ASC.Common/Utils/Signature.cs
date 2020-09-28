@@ -64,17 +64,10 @@ namespace ASC.Common.Utils
 
         public static T Read<T>(string signature, string secret)
         {
-            return Read<T>(signature, secret, true);
-        }
-
-        public static T Read<T>(string signature, string secret, bool useSecret)
-        {
             try
             {
                 var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(signature)).Split('?');
-                if (!useSecret || GetHashBase64(payloadParts[1] + secret) == payloadParts[0]
-                    || GetHashBase64MD5(payloadParts[1] + secret) == payloadParts[0] //todo: delete
-                    )
+                if (GetHashBase64(payloadParts[1] + secret) == payloadParts[0])
                 {
                     //Sig correct
                     return JsonConvert.DeserializeObject<T>(payloadParts[1]);

@@ -23,7 +23,7 @@ namespace ASC.Resource.Manager
         {
             Parser.Default.ParseArguments<Options>(args).WithParsed(Export);
         }
-        
+
         public static void Export(Options options)
         {
             var services = new ServiceCollection();
@@ -42,10 +42,11 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                //project = "Files";
-                //module = "JavaScript";
-                //filePath = "FilesJSResource.resx";
-                //exportPath = @"C:\Git\portals_core\products\ASC.Files\Server\Resources";
+                project = "Files";
+                module = "Common";
+                filePath = "FilesCommonResource.resx";
+                exportPath = @"C:\Git\portals_core\products\ASC.Files\Core\Resources";
+                key = "AceStatusEnum_CustomFilter";
 
                 if (format == "json")
                 {

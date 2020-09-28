@@ -8,7 +8,7 @@ namespace ASC.Core.Common.EF.Model
     public class FilesConverts
     {
         public string Input { get; set; }
-        public string Ouput { get; set; }
+        public string Output { get; set; }
     }
 
     public static class FilesConvertsExtension
@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF.Model
         public static ModelBuilder AddFilesConverts(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FilesConverts>()
-                .HasKey(c => new { c.Input, c.Ouput });
+                .HasKey(c => new { c.Input, c.Output });
 
             return modelBuilder;
         }

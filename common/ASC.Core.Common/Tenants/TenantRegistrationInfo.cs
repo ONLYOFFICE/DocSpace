@@ -49,7 +49,7 @@ namespace ASC.Core.Tenants
 
         public string MobilePhone { get; set; }
 
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
 
         public EmployeeActivationStatus ActivationStatus { get; set; }
 
@@ -69,6 +69,7 @@ namespace ASC.Core.Tenants
 
         public string Campaign { get; set; }
 
+        public bool LimitedControlPanel { get; set; }
 
         public TenantRegistrationInfo()
         {

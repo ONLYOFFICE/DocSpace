@@ -69,7 +69,7 @@ namespace ASC.Web.Core.PublicResources {
             }
         }
         
-        /// <summary>        
+        /// <summary>
         ///   Looks up a localized string similar to License expired or user quota does not match the license.
         /// </summary>
         public static string LicenseException {
@@ -93,6 +93,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string LicenseKeyNotFound {
             get {
                 return ResourceManager.GetString("LicenseKeyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Document.
+        /// </summary>
+        public static string NewDocument {
+            get {
+                return ResourceManager.GetString("NewDocument", resourceCulture);
             }
         }
         

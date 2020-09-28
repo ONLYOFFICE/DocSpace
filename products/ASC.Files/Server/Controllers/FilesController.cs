@@ -233,6 +233,42 @@ namespace ASC.Api.Documents
         }
 
         /// <summary>
+        /// Returns the detailed list of recent files
+        /// </summary>
+        /// <short>Section Recent</short>
+        /// <category>Folders</category>
+        /// <returns>Recent contents</returns>
+        [Read("@recent")]
+        public FolderContentWrapper<int> GetRecentFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of favorites files
+        /// </summary>
+        /// <short>Section Favorite</short>
+        /// <category>Folders</category>
+        /// <returns>Favorites contents</returns>
+        [Read("@favorites")]
+        public FolderContentWrapper<int> GetFavoritesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderFavorites, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of templates files
+        /// </summary>
+        /// <short>Section Template</short>
+        /// <category>Folders</category>
+        /// <returns>Templates contents</returns>
+        [Read("@templates")]
+        public FolderContentWrapper<int> GetTemplatesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderTemplates, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
         /// Returns the detailed list of files and folders located in the 'Recycle Bin' section
         /// </summary>
         /// <short>
@@ -427,15 +463,15 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("{fileId}/update", DisableFormat = true)]
-        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false)
+        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false, bool forcesave = false)
         {
-            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted);
+            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted, forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false)
+        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false, bool forcesave = false)
         {
-            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted);
+            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted, forcesave);
         }
 
 
@@ -701,7 +737,7 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<int> CreateFile(CreateFileModel model)
+        public FileWrapper<int> CreateFile(CreateFileModel<int> model)
         {
             return CreateFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -716,15 +752,15 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file", DisableFormat = true)]
-        public FileWrapper<string> CreateFile(string folderId, CreateFileModel model)
+        public FileWrapper<string> CreateFile(string folderId, CreateFileModel<string> model)
         {
-            return FilesControllerHelperString.CreateFile(folderId, model.Title);
+            return FilesControllerHelperString.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         [Create("{folderId:int}/file")]
-        public FileWrapper<int> CreateFile(int folderId, CreateFileModel model)
+        public FileWrapper<int> CreateFile(int folderId, CreateFileModel<int> model)
         {
-            return FilesControllerHelperInt.CreateFile(folderId, model.Title);
+            return FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         /// <summary>
@@ -1235,9 +1271,7 @@ namespace ASC.Api.Documents
             var result = new List<List<string>>();
 
             if (UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)
-                || (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID)
-                    && !WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, SecurityContext.CurrentAccount.ID)
-                    && !FilesSettingsHelper.EnableThirdParty
+                    || (!FilesSettingsHelper.EnableThirdParty
                     && !CoreBaseSettings.Personal))
             {
                 return result;
@@ -1262,6 +1296,10 @@ namespace ASC.Api.Documents
             if (ThirdpartyConfiguration.SupportSharePointInclusion)
             {
                 result.Add(new List<string> { "SharePoint" });
+            }
+            if (ThirdpartyConfiguration.SupportkDriveInclusion)
+            {
+                result.Add(new List<string> { "kDrive" });
             }
             if (ThirdpartyConfiguration.SupportYandexInclusion)
             {
@@ -1375,6 +1413,65 @@ namespace ASC.Api.Documents
         //    return files.Concat(folders);
         //}
 
+        /// <summary>
+        /// Adding files to favorite list
+        /// </summary>
+        /// <short>Favorite add</short>
+        /// <category>Files</category>
+        /// <param name="folderIds" visible="false"></param>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Create("favorites")]
+        public bool AddFavorites(BaseBatchModel<JsonElement> model)
+        {
+            FileStorageServiceInt.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            return true;
+        }
+
+        /// <summary>
+        /// Removing files from favorite list
+        /// </summary>
+        /// <short>Favorite delete</short>
+        /// <category>Files</category>
+        /// <param name="folderIds" visible="false"></param>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Delete("favorites")]
+        public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
+        {
+            FileStorageServiceInt.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            return true;
+        }
+
+        /// <summary>
+        /// Adding files to template list
+        /// </summary>
+        /// <short>Template add</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Create("templates")]
+        public bool AddTemplates(IEnumerable<int> fileIds)
+        {
+            FileStorageServiceInt.AddToTemplates(fileIds);
+            return true;
+        }
+
+        /// <summary>
+        /// Removing files from template list
+        /// </summary>
+        /// <short>Template delete</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Delete("templates")]
+        public bool DeleteTemplates(IEnumerable<int> fileIds)
+        {
+            FileStorageServiceInt.DeleteTemplates(fileIds);
+            return true;
+        }
 
         /// <summary>
         /// 
@@ -1471,6 +1568,42 @@ namespace ASC.Api.Documents
         public bool ChangeAccessToThirdparty(SettingsModel model)
         {
             return FileStorageService.ChangeAccessToThirdparty(model.Set);
+        }
+
+        /// <summary>
+        /// Display recent folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"displayRecent")]
+        public bool DisplayRecent(bool set)
+        {
+            return FileStorageService.DisplayRecent(set);
+        }
+
+        /// <summary>
+        /// Display favorite folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/favorites")]
+        public bool DisplayFavorite(bool set)
+        {
+            return FileStorageService.DisplayFavorite(set);
+        }
+
+        /// <summary>
+        /// Display template folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/templates")]
+        public bool DisplayTemplates(bool set)
+        {
+            return FileStorageService.DisplayTemplates(set);
         }
 
         /// <summary>

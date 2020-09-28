@@ -37,9 +37,6 @@ namespace ASC.Web.Studio.UserControls.Management
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
-        [JsonPropertyName("HideRecommendation")]
-        public bool HideBuyRecommendationSetting { get; set; }
-
         [JsonPropertyName("HideNotify")]
         public bool HideNotifySetting { get; set; }
 
@@ -53,7 +50,6 @@ namespace ASC.Web.Studio.UserControls.Management
         {
             return new TariffSettings
             {
-                HideBuyRecommendationSetting = false,
                 HideNotifySetting = false,
                 HidePricingPageForUsers = false,
                 LicenseAcceptSetting = DateTime.MinValue.ToString(CultureInfo),
@@ -63,19 +59,6 @@ namespace ASC.Web.Studio.UserControls.Management
         public Guid ID
         {
             get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
-        }
-
-        //TODO: Need to be returned when needed
-        public static bool GetHideRecommendation(SettingsManager settingsManager)
-        {
-            return settingsManager.LoadForCurrentUser<TariffSettings>().HideBuyRecommendationSetting;
-        }
-
-        public static void SetHideRecommendation(SettingsManager settingsManager, bool newVal)
-        {
-            var tariffSettings = settingsManager.LoadForCurrentUser<TariffSettings>();
-            tariffSettings.HideBuyRecommendationSetting = newVal;
-            settingsManager.SaveForCurrentUser(tariffSettings);
         }
 
         public static bool GetHideNotify(SettingsManager settingsManager)

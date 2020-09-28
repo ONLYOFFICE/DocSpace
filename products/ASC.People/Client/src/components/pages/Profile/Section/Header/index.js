@@ -3,10 +3,9 @@ import { connect } from "react-redux";
 import {
   IconButton,
   ContextMenuButton,
-  toastr,
   AvatarEditor
 } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { Headline, toastr } from "asc-web-common";
 import { withRouter } from "react-router";
 import {
   getUserStatus,

@@ -35,6 +35,7 @@ using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -52,18 +53,21 @@ namespace ASC.Core
         private IConfiguration Configuraion { get; }
         private CookieStorage CookieStorage { get; }
         private EFLoggerFactory LoggerFactory { get; }
+        private PasswordHasher PasswordHasher { get; }
         private IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
             CookieStorage cookieStorage,
             EFLoggerFactory loggerFactory,
+            PasswordHasher passwordHasher,
             IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
             CookieStorage = cookieStorage;
             LoggerFactory = loggerFactory;
+            PasswordHasher = passwordHasher;
             HostedSolutionOptions = hostedSolutionOptions;
             Initialize();
         }
@@ -80,7 +84,7 @@ namespace ASC.Core
             return FindTenants(login, null);
         }
 
-        public List<Tenant> FindTenants(string login, string password)
+        public List<Tenant> FindTenants(string login, string password, string passwordHash = null)
         {
             var result = new List<Tenant>();
             Exception error = null;
@@ -89,7 +93,11 @@ namespace ASC.Core
             {
                 try
                 {
-                    result.AddRange(service.FindTenants(login, password));
+                    if (string.IsNullOrEmpty(passwordHash) && !string.IsNullOrEmpty(password))
+                    {
+                        passwordHash = PasswordHasher.GetClientPassword(password);
+                    }
+                    result.AddRange(service.FindTenants(login, passwordHash));
                 }
                 catch (SecurityException exception)
                 {
@@ -132,11 +140,6 @@ namespace ASC.Core
             return GetRegionService(region).SaveTenant(tenant);
         }
 
-
-        public string CreateAuthenticationCookie(string region, int tenantId, string login, string password)
-        {
-            return GetRegionService(region).CreateAuthenticationCookie(CookieStorage, tenantId, login, password);
-        }
 
         public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
         {

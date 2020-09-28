@@ -38,6 +38,7 @@ using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
@@ -72,6 +73,7 @@ namespace ASC.ApiSystem.Controllers
         private UserFormatter UserFormatter { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
         private IConfiguration Configuration { get; }
+        public PasswordHasher PasswordHasher { get; }
         private ILog Log { get; }
 
         public RegistrationController(
@@ -89,7 +91,8 @@ namespace ASC.ApiSystem.Controllers
             UserFormatter userFormatter,
             UserManagerWrapper userManagerWrapper,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            PasswordHasher passwordHasher)
         {
             CommonMethods = commonMethods;
             CommonConstants = commonConstants;
@@ -105,6 +108,7 @@ namespace ASC.ApiSystem.Controllers
             UserFormatter = userFormatter;
             UserManagerWrapper = userManagerWrapper;
             Configuration = configuration;
+            PasswordHasher = passwordHasher;
             Log = option.Get("ASC.ApiSystem");
         }
 
@@ -155,7 +159,7 @@ namespace ASC.ApiSystem.Controllers
 
             object error;
 
-            if (!string.IsNullOrEmpty(model.Password))
+            if (string.IsNullOrEmpty(model.PasswordHash) && !string.IsNullOrEmpty(model.Password))
             {
                 if (!CheckPasswordPolicy(model.Password, out error))
                 {
@@ -163,6 +167,7 @@ namespace ASC.ApiSystem.Controllers
 
                     return BadRequest(error);
                 }
+                model.PasswordHash = PasswordHasher.GetClientPassword(model.Password);
             }
 
             if (!CheckValidName(model.FirstName.Trim() + model.LastName.Trim(), out error))
@@ -262,14 +267,15 @@ namespace ASC.ApiSystem.Controllers
                 Culture = lang,
                 FirstName = model.FirstName.Trim(),
                 LastName = model.LastName.Trim(),
-                Password = string.IsNullOrEmpty(model.Password) ? null : model.Password,
+                PasswordHash = String.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
                 Email = model.Email.Trim(),
                 TimeZoneInfo = tz,
                 MobilePhone = string.IsNullOrEmpty(model.Phone) ? null : model.Phone.Trim(),
                 Industry = (TenantIndustry)model.Industry,
                 Spam = model.Spam,
                 Calls = model.Calls,
-                Analytics = model.Analytics
+                Analytics = model.Analytics,
+                LimitedControlPanel = model.LimitedControlPanel
             };
 
             if (!string.IsNullOrEmpty(model.PartnerId))
@@ -322,7 +328,7 @@ namespace ASC.ApiSystem.Controllers
 
             string sendCongratulationsAddress = null;
 
-            if (!string.IsNullOrEmpty(model.Password))
+            if (!String.IsNullOrEmpty(model.PasswordHash))
             {
                 isFirst = !CommonMethods.SendCongratulations(Request.Scheme, t, model.SkipWelcome, out sendCongratulationsAddress);
             }

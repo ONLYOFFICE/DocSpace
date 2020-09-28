@@ -74,7 +74,7 @@ namespace ASC.Web.Files.Helpers
                 var providerDao = DaoFactory.ProviderDao;
                 if (providerDao == null) return false;
 
-                return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportYandexInclusion;
+                return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportkDriveInclusion || SupportYandexInclusion;
             }
         }
 
@@ -120,6 +120,11 @@ namespace ASC.Web.Files.Helpers
         public bool SupportOwncloudInclusion
         {
             get { return ThirdPartyProviders.Contains("owncloud"); }
+        }
+
+        public bool SupportkDriveInclusion
+        {
+            get { return ThirdPartyProviders.Contains("kdrive"); }
         }
 
         public bool SupportYandexInclusion

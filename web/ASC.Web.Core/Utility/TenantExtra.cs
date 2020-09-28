@@ -35,6 +35,7 @@ using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Management;
@@ -83,7 +84,7 @@ namespace ASC.Web.Studio.Utility
                 return
                     SetupInfo.IsVisibleSettings<TariffSettings>()
                     && !SettingsManager.Load<TenantAccessSettings>().Anyone
-                    && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl));
+                    && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath));
             }
         }
 
@@ -94,24 +95,25 @@ namespace ASC.Web.Studio.Utility
 
         public bool Enterprise
         {
-            get { return CoreBaseSettings.Standalone && !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreBaseSettings.Standalone && !string.IsNullOrEmpty(LicenseReader.LicensePath); }
         }
 
         public bool Opensource
         {
-            get { return CoreBaseSettings.Standalone && string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreBaseSettings.Standalone && string.IsNullOrEmpty(LicenseReader.LicensePath); }
         }
 
         public bool EnterprisePaid
         {
-            get { return Enterprise && GetTenantQuota().Id != Tenant.DEFAULT_TENANT && GetCurrentTariff().State < TariffState.NotPaid; }
+            get { return Enterprise && GetCurrentTariff().State < TariffState.NotPaid; }
         }
 
         public bool EnableControlPanel
         {
             get
             {
-                return Enterprise &&
+                return CoreBaseSettings.Standalone &&
+                    !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl) &&
                     GetTenantQuota().ControlPanel &&
                     GetCurrentTariff().State < TariffState.NotPaid &&
                     UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager);
@@ -124,12 +126,12 @@ namespace ASC.Web.Studio.Utility
         }
         public string GetAppsPageLink()
         {
-            return VirtualPathUtility.ToAbsolute("~/appinstall.aspx");
+            return VirtualPathUtility.ToAbsolute("~/AppInstall.aspx");
         }
 
         public string GetTariffPageLink()
         {
-            return VirtualPathUtility.ToAbsolute("~/tariffs.aspx");
+            return VirtualPathUtility.ToAbsolute("~/Tariffs.aspx");
         }
 
         public Tariff GetCurrentTariff()
@@ -207,6 +209,14 @@ namespace ASC.Web.Studio.Utility
                 return CoreBaseSettings.Standalone
                        && (licenseDay = GetCurrentTariff().LicenseDate.Date) < DateTime.Today
                        && licenseDay < LicenseReader.VersionReleaseDate;
+            }
+        }
+
+        public void DemandControlPanelPermission()
+        {
+            if (!CoreBaseSettings.Standalone || SettingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
+            {
+                throw new System.Security.SecurityException(Resource.ErrorAccessDenied);
             }
         }
 

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { toastr, ModalDialog, Button, Text } from "asc-web-components";
+import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { api, utils } from "asc-web-common";
+import { api, utils, toastr } from "asc-web-common";
 import { fetchFiles, clearProgressData } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";

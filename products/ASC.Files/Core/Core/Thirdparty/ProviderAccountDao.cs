@@ -68,6 +68,7 @@ namespace ASC.Files.Thirdparty
         SharePoint,
         SkyDrive,
         WebDav,
+        kDrive,
         Yandex,
     }
 

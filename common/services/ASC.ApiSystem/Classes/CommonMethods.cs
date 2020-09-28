@@ -78,6 +78,8 @@ namespace ASC.ApiSystem.Controllers
         private HostedSolution HostedSolution { get; }
 
         private IMemoryCache MemoryCache { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public TenantManager TenantManager { get; }
 
         public CommonMethods(
             IHttpContextAccessor httpContextAccessor,
@@ -88,7 +90,9 @@ namespace ASC.ApiSystem.Controllers
             EmailValidationKeyProvider emailValidationKeyProvider,
             TimeZoneConverter timeZoneConverter, CommonConstants commonConstants,
             IMemoryCache memoryCache,
-            IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
+            IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
+            CoreBaseSettings coreBaseSettings,
+            TenantManager tenantManager)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -107,7 +111,8 @@ namespace ASC.ApiSystem.Controllers
             CommonConstants = commonConstants;
 
             MemoryCache = memoryCache;
-
+            CoreBaseSettings = coreBaseSettings;
+            TenantManager = tenantManager;
             HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
         }
 
@@ -201,6 +206,12 @@ namespace ASC.ApiSystem.Controllers
 
         public bool GetTenant(IModel model, out Tenant tenant)
         {
+            if (CoreBaseSettings.Standalone && model != null && !string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+            {
+                tenant = TenantManager.GetTenant((model.PortalName ?? "").Trim());
+                return true;
+            }
+
             if (model != null && model.TenantId.HasValue)
             {
                 tenant = HostedSolution.GetTenant(model.TenantId.Value);
@@ -219,8 +230,13 @@ namespace ASC.ApiSystem.Controllers
 
         public bool IsTestEmail(string email)
         {
+            //the point is not needed in gmail.com
+            email = Regex.Replace(email ?? "", "\\.*(?=\\S*(@gmail.com$))", "").ToLower();
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(CommonConstants.AutotestSecretEmails))
+                return false;
+
             var regex = new Regex(CommonConstants.AutotestSecretEmails, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
-            return regex.IsMatch((email ?? "").ToLower());
+            return regex.IsMatch(email);
         }
 
         public bool CheckMuchRegistration(TenantModel model, string clientIP, Stopwatch sw)
