@@ -155,9 +155,8 @@ namespace ASC.Data.Backup.Tasks.Modules
                 return @enum.ToString("d");
             }
 
-            if (value is DateTime)
+            if (value is DateTime d)
             {
-                var d = (DateTime)value;
                 return new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Unspecified);
             }
             return value;
