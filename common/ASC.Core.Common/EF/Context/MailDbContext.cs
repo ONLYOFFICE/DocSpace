@@ -18,7 +18,7 @@ namespace ASC.Core.Common.EF.Context
         public MailDbContext() { }
         public MailDbContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+           //Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF.Context
 
         public DbContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

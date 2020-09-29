@@ -19,10 +19,7 @@ namespace ASC.Core.Common.EF
         public UserDbContext() { }
         public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)
-        {
-            Database.EnsureCreated();
-
-        }
+        {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

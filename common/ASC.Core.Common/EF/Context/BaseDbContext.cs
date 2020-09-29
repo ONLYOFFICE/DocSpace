@@ -21,6 +21,7 @@ namespace ASC.Core.Common.EF
         public BaseDbContext() { }
         public BaseDbContext(DbContextOptions options) : base(options)
         {
+            Database.Migrate();
         }
 
         internal ILoggerFactory LoggerFactory { get; set; }
@@ -31,7 +32,6 @@ namespace ASC.Core.Common.EF
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-
             switch (ConnectionStringSettings.ProviderName)
             {
                 case "MySql.Data.MySqlClient":
