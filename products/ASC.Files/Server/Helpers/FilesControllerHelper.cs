@@ -302,13 +302,11 @@ namespace ASC.Files.Helpers
 
         private FileWrapper<T> CreateFile(T folderId, string title, string content, string extension)
         {
-            using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-            {
-                var file = FileUploader.Exec(folderId,
-                                  title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
-                                  memStream.Length, memStream);
-                return FileWrapperHelper.Get(file);
-            }
+            using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var file = FileUploader.Exec(folderId,
+                              title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
+                              memStream.Length, memStream);
+            return FileWrapperHelper.Get(file);
         }
 
         public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
