@@ -43,7 +43,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         private string _connectionStringName;
         public virtual string ConnectionStringName
         {
-            get { return _connectionStringName ?? (_connectionStringName = ModuleName.ToString().ToLower()); }
+            get { return _connectionStringName ??= ModuleName.ToString().ToLower(); }
         }
 
         public abstract IEnumerable<TableInfo> Tables { get; }

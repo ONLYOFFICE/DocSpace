@@ -199,7 +199,7 @@ namespace ASC.Web.Core.Users
         public ILog Log { get; }
 
         private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         //note: using auto stop queue
         private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue;//TODO: configure
@@ -229,7 +229,7 @@ namespace ASC.Web.Core.Users
         public string defaultAbsoluteWebPath;
         public string GetDefaultPhotoAbsoluteWebPath()
         {
-            return defaultAbsoluteWebPath ?? (defaultAbsoluteWebPath = WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar));
+            return defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
 
         public string GetRetinaPhotoURL(Guid userID)
@@ -292,31 +292,31 @@ namespace ASC.Web.Core.Users
         public string defaultSmallPhotoURL;
         public string GetDefaultSmallPhotoURL()
         {
-            return defaultSmallPhotoURL ?? (defaultSmallPhotoURL = GetDefaultPhotoAbsoluteWebPath(SmallFotoSize));
+            return defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
         }
 
         public string defaultMediumPhotoURL;
         public string GetDefaultMediumPhotoURL()
         {
-            return defaultMediumPhotoURL ?? (defaultMediumPhotoURL = GetDefaultPhotoAbsoluteWebPath(MediumFotoSize));
+            return defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
         }
 
         public string defaultBigPhotoURL;
         public string GetDefaultBigPhotoURL()
         {
-            return defaultBigPhotoURL ?? (defaultBigPhotoURL = GetDefaultPhotoAbsoluteWebPath(BigFotoSize));
+            return defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
         }
 
         public string defaultMaxPhotoURL;
         public string GetDefaultMaxPhotoURL()
         {
-            return defaultMaxPhotoURL ?? (defaultMaxPhotoURL = GetDefaultPhotoAbsoluteWebPath(MaxFotoSize));
+            return defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
         }
 
         public string defaultRetinaPhotoURL;
         public string GetDefaultRetinaPhotoURL()
         {
-            return defaultRetinaPhotoURL ?? (defaultRetinaPhotoURL = GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize));
+            return defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
         }
 
 
@@ -855,7 +855,7 @@ namespace ASC.Web.Core.Users
         private IDataStore dataStore;
         private IDataStore GetDataStore()
         {
-            return dataStore ?? (dataStore = StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos"));
+            return dataStore ??= StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos");
         }
 
         public static CacheSize ToCache(Size size) =>

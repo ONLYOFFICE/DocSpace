@@ -72,7 +72,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         private OneDriveClient OnedriveClient
         {
-            get { return _onedriveClientCache ?? (_onedriveClientCache = new OneDriveClient(new OneDriveAuthProvider(AccessToken))); }
+            get { return _onedriveClientCache ??= new OneDriveClient(new OneDriveAuthProvider(AccessToken)); }
         }
 
         public bool IsOpened { get; private set; }
