@@ -594,8 +594,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         }
         public static void PgSqlAddMailboxServer(this ModelBuilder modelBuilder)
         {
-            modelBuilder.HasPostgresEnum("onlyoffice", "en", new[] { "plain", "SSL", "STARTTLS" })
-                .HasPostgresEnum("onlyoffice", "enum", new[] { "pop3", "imap", "smtp" });
+            modelBuilder.HasPostgresEnum("onlyoffice", "enum_mail_mailbox_server", new[] { "pop3", "imap", "smtp" });
 
             modelBuilder.Entity<MailboxServer>(entity =>
             {
@@ -604,19 +603,12 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.HasIndex(e => e.IdProvider)
                     .HasName("id_provider_mail_mailbox_server");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasColumnName("type")
-                    .HasColumnType("onlyoffice.enum");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Authentication)
                     .HasColumnName("authentication")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Hostname)
                     .IsRequired()
@@ -627,20 +619,20 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.IsUserData)
                     .HasColumnName("is_user_data")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Port).HasColumnName("port");
 
                 entity.Property(e => e.SocketType)
                     .IsRequired()
                     .HasColumnName("socket_type")
-                    .HasColumnType("onlyoffice.en")
-                    .HasDefaultValueSql("'plain'::text");
+                    .HasColumnType("character varying")
+                    .HasDefaultValueSql("'plain'");
 
                 entity.Property(e => e.UserName)
                     .HasColumnName("username")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
             });
         }
     }

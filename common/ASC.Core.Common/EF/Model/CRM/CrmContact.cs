@@ -184,9 +184,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => new { e.TenantId, e.DisplayName })
                     .HasName("display_name");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("char");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CompanyId).HasColumnName("company_id");
 
@@ -208,22 +206,22 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Currency)
                     .HasColumnName("currency")
                     .HasMaxLength(3)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.FirstName)
                     .HasColumnName("first_name")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Industry)
                     .HasColumnName("industry")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.IsCompany).HasColumnName("is_company");
 
@@ -241,7 +239,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.LastName)
                     .HasColumnName("last_name")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Notes).HasColumnName("notes");
 
@@ -252,8 +250,9 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Title)
                     .HasColumnName("title")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
             });
+
         }
     }
 }

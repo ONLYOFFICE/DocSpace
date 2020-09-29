@@ -85,7 +85,7 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Counter)
                     .HasColumnName("counter")
-                    .HasDefaultValueSql("'0'::bigint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
@@ -94,7 +94,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Tag)
                     .HasColumnName("tag")
                     .HasMaxLength(1024)
-                    .HasDefaultValueSql("'0'::character varying");
+                    .HasDefaultValueSql("'0'");
             });
         }
     }

@@ -187,7 +187,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Price)
                     .HasColumnName("price")
                     .HasColumnType("numeric(10,4)")
-                    .HasDefaultValueSql("NULL::numeric");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
 
@@ -198,7 +198,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.RecordSid)
                     .HasColumnName("record_sid")
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.RecordUrl).HasColumnName("record_url");
 

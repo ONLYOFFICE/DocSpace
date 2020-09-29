@@ -81,8 +81,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("account_links", "onlyoffice");
 
                 entity.HasIndex(e => e.UId)
-                    .HasName("uid")
-                    .HasOperators(new[] { "varchar_ops" });
+                    .HasName("uid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -101,7 +100,8 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Provider)
                     .HasColumnName("provider")
                     .HasMaxLength(60)
-                    .IsFixedLength();
+                    .IsFixedLength()
+                    .HasDefaultValueSql("NULL");
             });
         }
     }

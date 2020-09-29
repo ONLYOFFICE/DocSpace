@@ -100,10 +100,12 @@ namespace ASC.Core.Common.EF
                     UserName = "administrator",
                     Tenant = 1,
                     Email = "",
+                    Status = (EmployeeStatus)1,
+                    ActivationStatus = 0,
                     WorkFromDate = DateTime.UtcNow,
                     LastModified = DateTime.UtcNow
                 }
-                );
+                ) ;
         }
         private static void MySqlAddUser(this ModelBuilder modelBuilder)
         {
@@ -273,7 +275,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Contacts)
                     .HasColumnName("contacts")
                     .HasMaxLength(1024)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
@@ -282,12 +284,12 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Culture)
                     .HasColumnName("culture")
                     .HasMaxLength(20)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -304,17 +306,17 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Location)
                     .HasColumnName("location")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Notes)
                     .HasColumnName("notes")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("phone")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.PhoneActivation).HasColumnName("phone_activation");
 
@@ -325,17 +327,17 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Sid)
                     .HasColumnName("sid")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.SsoNameId)
                     .HasColumnName("sso_name_id")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.SsoSessionId)
                     .HasColumnName("sso_session_id")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
@@ -348,7 +350,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Title)
                     .HasColumnName("title")
                     .HasMaxLength(64)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()

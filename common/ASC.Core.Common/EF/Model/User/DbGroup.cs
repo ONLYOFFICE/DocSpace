@@ -109,7 +109,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
-                    .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Name)
@@ -127,7 +126,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Sid)
                     .HasColumnName("sid")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });

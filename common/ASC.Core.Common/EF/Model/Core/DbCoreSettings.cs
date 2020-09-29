@@ -75,7 +75,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
-                    .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Value)

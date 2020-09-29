@@ -157,7 +157,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Object)
                     .HasColumnName("object")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("'0'::character varying");
+                    .HasDefaultValueSql("''");
 
                 entity.Property(e => e.AceType).HasColumnName("acetype");
             });

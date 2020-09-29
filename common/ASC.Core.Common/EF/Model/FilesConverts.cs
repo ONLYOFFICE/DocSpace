@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace ASC.Core.Common.EF.Model
     [Table("files_converts")]
     public class FilesConverts
     {
+        [Key]
         public string Input { get; set; }
         public string Ouput { get; set; }
     }

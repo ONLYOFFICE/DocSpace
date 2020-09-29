@@ -262,9 +262,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.HasIndex(e => new { e.Tenant, e.IdUser })
                     .HasName("user_id_index");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Address)
                     .IsRequired()
@@ -273,7 +271,7 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.BeginDate)
                     .HasColumnName("begin_date")
-                    .HasDefaultValueSql("'1975-01-01 00:00:00'::timestamp without time zone");
+                    .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
                 entity.Property(e => e.DateAuthError).HasColumnName("date_auth_error");
 
@@ -283,9 +281,11 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.DateLoginDelayExpires)
                     .HasColumnName("date_login_delay_expires")
-                    .HasDefaultValueSql("'1975-01-01 00:00:00'::timestamp without time zone");
+                    .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
-                entity.Property(e => e.DateModified).HasColumnName("date_modified");
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.DateUserChecked).HasColumnName("date_user_checked");
 
@@ -293,7 +293,7 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.Enabled)
                     .HasColumnName("enabled")
-                    .HasDefaultValueSql("'1'");
+                    .HasDefaultValueSql("'1'::smallint");
 
                 entity.Property(e => e.IdInServer).HasColumnName("id_in_server");
 
@@ -328,19 +328,19 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.LoginDelay)
                     .HasColumnName("login_delay")
-                    .HasDefaultValueSql("'30'::bigint");
+                    .HasDefaultValueSql("'30'");
 
                 entity.Property(e => e.MsgCountLast).HasColumnName("msg_count_last");
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Pop3Password)
                     .HasColumnName("pop3_password")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.QuotaError)
                     .HasColumnName("quota_error")
@@ -351,7 +351,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.Property(e => e.SmtpPassword)
                     .HasColumnName("smtp_password")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 
@@ -359,7 +359,7 @@ namespace ASC.Core.Common.EF.Model.Mail
 
                 entity.Property(e => e.TokenType)
                     .HasColumnName("token_type")
-                    .HasDefaultValueSql("'0'::smallint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.UserOnline)
                     .HasColumnName("user_online")

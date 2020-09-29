@@ -156,7 +156,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.GroupId)
                     .HasColumnName("group_id")
                     .HasMaxLength(70)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Json)
                     .IsRequired()

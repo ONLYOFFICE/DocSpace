@@ -74,9 +74,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.HasIndex(e => e.ServerType)
                     .HasName("mail_server_server_type_server_type_fk_id");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ConnectionString)
                     .IsRequired()
@@ -88,7 +86,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .IsRequired()
                     .HasColumnName("mx_record")
                     .HasMaxLength(128)
-                    .HasDefaultValueSql("' '::character varying");
+                    .HasDefaultValueSql("' '");
 
                 entity.Property(e => e.ServerType).HasColumnName("server_type");
 

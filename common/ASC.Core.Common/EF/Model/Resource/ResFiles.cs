@@ -81,13 +81,11 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasName("resname")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("creationDate")
-                    .HasDefaultValueSql("'1975-03-03 00:00:00'::timestamp without time zone");
+                    .HasDefaultValueSql("'1975-03-03 00:00:00'");
 
                 entity.Property(e => e.IsLock)
                     .HasColumnName("isLock")

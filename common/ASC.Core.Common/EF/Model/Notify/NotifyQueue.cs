@@ -116,9 +116,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.ToTable("notify_queue", "onlyoffice");
 
-                entity.Property(e => e.NotifyId)
-                    .HasColumnName("notify_id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.NotifyId).HasColumnName("notify_id");
 
                 entity.Property(e => e.Attachments).HasColumnName("attachments");
 
@@ -127,34 +125,34 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.ContentType)
                     .HasColumnName("content_type")
                     .HasMaxLength(64)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.CreationDate).HasColumnName("creation_date");
 
                 entity.Property(e => e.Reciever)
                     .HasColumnName("reciever")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.ReplyTo)
                     .HasColumnName("reply_to")
                     .HasMaxLength(1024)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Sender)
                     .HasColumnName("sender")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.SenderType)
                     .HasColumnName("sender_type")
                     .HasMaxLength(64)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasMaxLength(1024)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });

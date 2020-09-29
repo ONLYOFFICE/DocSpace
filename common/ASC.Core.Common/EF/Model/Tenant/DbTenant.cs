@@ -65,6 +65,7 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder.Entity<DbTenant>().HasData(
                 new DbTenant
                 {
+                    Id = 1, 
                     Alias = "localhost",
                     Name = "Web Office",
                     CreationDateTime = DateTime.UtcNow,
@@ -77,16 +78,11 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder.Entity<DbTenant>()
                 .HasOne(r => r.Partner)
                 .WithOne(r => r.Tenant)
-                .HasForeignKey<DbTenantPartner>(r => new { r.TenantId })
                 .HasPrincipalKey<DbTenant>(r => new { r.Id });
 
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants", "onlyoffice");
-
-                entity.HasIndex(e => e.Alias)
-                    .HasName("alias")
-                    .IsUnique();
 
                 entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
@@ -108,7 +104,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Calls)
                     .HasColumnName("calls")
-                    .HasDefaultValueSql("'1'");
+                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.CreationDateTime)
                     .HasColumnName("creationdatetime")
@@ -164,7 +160,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Spam)
                     .HasColumnName("spam")
-                    .HasDefaultValueSql("'1'");
+                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.Status).HasColumnName("status");
 
@@ -216,9 +212,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.Version)
                     .HasName("version");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Alias)
                     .IsRequired()
@@ -227,7 +221,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Calls)
                     .HasColumnName("calls")
-                    .HasDefaultValueSql("'1'");
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.CreationDateTime).HasColumnName("creationdatetime");
 
@@ -238,7 +232,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("language")
                     .HasMaxLength(10)
                     .IsFixedLength()
-                    .HasDefaultValueSql("'en-US'::bpchar");
+                    .HasDefaultValueSql("'en-US'");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
@@ -247,7 +241,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.MappedDomain)
                     .HasColumnName("mappeddomain")
                     .HasMaxLength(100)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -262,18 +256,18 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.PaymentId)
                     .HasColumnName("payment_id")
                     .HasMaxLength(38)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Public).HasColumnName("public");
 
                 entity.Property(e => e.PublicVisibleProducts)
                     .HasColumnName("publicvisibleproducts")
                     .HasMaxLength(1024)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Spam)
                     .HasColumnName("spam")
-                    .HasDefaultValueSql("'1'");
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.Status).HasColumnName("status");
 
@@ -282,12 +276,12 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.TimeZone)
                     .HasColumnName("timezone")
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TrustedDomains)
                     .HasColumnName("trusteddomains")
                     .HasMaxLength(1024)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TrustedDomainsEnabled)
                     .HasColumnName("trusteddomainsenabled")

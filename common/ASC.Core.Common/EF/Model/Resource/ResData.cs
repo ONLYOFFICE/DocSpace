@@ -139,23 +139,25 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .IsRequired()
                     .HasColumnName("authorLogin")
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("'Console'::character varying");
+                    .HasDefaultValueSql("'Console'");
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
                 entity.Property(e => e.Flag).HasColumnName("flag");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Link)
                     .HasColumnName("link")
                     .HasMaxLength(120)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.ResourceType)
                     .HasColumnName("resourceType")
                     .HasMaxLength(20)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TextValue).HasColumnName("textValue");
 

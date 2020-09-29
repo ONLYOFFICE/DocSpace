@@ -50,9 +50,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.Tenant)
                     .HasName("tenant_tenants_iprestrictions");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Ip)
                     .IsRequired()

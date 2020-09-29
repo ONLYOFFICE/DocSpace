@@ -86,7 +86,9 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 entity.Property(e => e.Flag).HasColumnName("flag");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.TextValue).HasColumnName("textValue");
             });

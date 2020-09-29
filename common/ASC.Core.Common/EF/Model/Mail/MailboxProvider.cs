@@ -290,9 +290,7 @@ namespace ASC.Core.Common.EF.Model.Mail
             {
                 entity.ToTable("mail_mailbox_provider", "onlyoffice");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name")
@@ -302,12 +300,12 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.Property(e => e.DisplayShortName)
                     .HasColumnName("display_short_name")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Documentation)
                     .HasColumnName("documentation")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Name)
                     .IsRequired()

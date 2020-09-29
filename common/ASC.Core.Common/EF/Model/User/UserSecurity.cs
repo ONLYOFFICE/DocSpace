@@ -104,12 +104,12 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.PwdHash)
                     .HasColumnName("pwdhash")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.PwdHashSha512)
                     .HasColumnName("pwdhashsha512")
                     .HasMaxLength(512)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });

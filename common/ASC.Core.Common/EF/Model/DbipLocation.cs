@@ -138,7 +138,7 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddDbipLocation(this ModelBuilder modelBuilder)
         {
-            modelBuilder.HasPostgresEnum("onlyoffice", "add_type", new[] { "ipv4", "ipv6" });
+            modelBuilder.HasPostgresEnum("onlyoffice", "enum_dbip_location", new[] { "ipv4", "ipv6" });
             modelBuilder.Entity<DbipLocation>(entity =>
             {
                 entity.ToTable("dbip_location", "onlyoffice");
@@ -146,13 +146,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.IPStart)
                     .HasName("ip_start");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.AddrType)
-                .HasColumnName("addr_type")
-                .HasColumnType("onlyoffice.add_type");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.City)
                     .IsRequired()
@@ -167,7 +161,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.District)
                     .HasColumnName("district")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
 
@@ -197,14 +191,14 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.TimezoneName)
                     .HasColumnName("timezone_name")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
 
                 entity.Property(e => e.ZipCode)
                     .HasColumnName("zipcode")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
             });
         }
     }

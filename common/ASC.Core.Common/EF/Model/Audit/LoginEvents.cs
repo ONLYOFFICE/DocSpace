@@ -95,9 +95,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => new { e.UserId, e.TenantId })
                     .HasName("tenant_id_login_events");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Action).HasColumnName("action");
 
@@ -111,27 +109,27 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasMaxLength(500)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Ip)
                     .HasColumnName("ip")
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Login)
                     .HasColumnName("login")
                     .HasMaxLength(200)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Page)
                     .HasColumnName("page")
                     .HasMaxLength(300)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Platform)
                     .HasColumnName("platform")
                     .HasMaxLength(200)
-                    .HasDefaultValueSql("200");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

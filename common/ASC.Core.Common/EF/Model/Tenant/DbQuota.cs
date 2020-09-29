@@ -100,16 +100,21 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder.Entity<DbQuota>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.Tenant)
+                    .HasName("tenants_quota_pkey");
 
                 entity.ToTable("tenants_quota", "onlyoffice");
+
+                entity.Property(e => e.Tenant)
+                    .HasColumnName("tenant")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.ActiveUsers).HasColumnName("active_users");
 
                 entity.Property(e => e.AvangateId)
                     .HasColumnName("avangate_id")
                     .HasMaxLength(128)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
@@ -119,11 +124,11 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.MaxFileSize)
                     .HasColumnName("max_file_size")
-                    .HasDefaultValueSql("'0'::bigint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.MaxTotalSize)
                     .HasColumnName("max_total_size")
-                    .HasDefaultValueSql("'0'::bigint");
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
@@ -138,8 +143,6 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("price2")
                     .HasColumnType("numeric(10,2)")
                     .HasDefaultValueSql("0.00");
-
-                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });

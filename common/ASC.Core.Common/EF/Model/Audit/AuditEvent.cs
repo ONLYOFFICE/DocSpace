@@ -95,39 +95,41 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => new { e.TenantId, e.Date })
                     .HasName("date");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Action).HasColumnName("action");
 
                 entity.Property(e => e.Browser)
                     .HasColumnName("browser")
-                    .HasMaxLength(200);
+                    .HasMaxLength(200)
+                    .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasColumnType("timestamp with time zone");
+                entity.Property(e => e.Date).HasColumnName("date");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
-                    .HasMaxLength(20000);
+                    .HasMaxLength(20000)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Initiator)
                     .HasColumnName("initiator")
-                    .HasMaxLength(200);
+                    .HasMaxLength(200)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Ip)
                     .HasColumnName("ip")
-                    .HasMaxLength(50);
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Page)
                     .HasColumnName("page")
-                    .HasMaxLength(300);
+                    .HasMaxLength(300)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Platform)
                     .HasColumnName("platform")
-                    .HasMaxLength(200);
+                    .HasMaxLength(200)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Target).HasColumnName("target");
 
@@ -136,7 +138,8 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasMaxLength(38)
-                    .IsFixedLength();
+                    .IsFixedLength()
+                    .HasDefaultValueSql("NULL");
             });
         }
     }

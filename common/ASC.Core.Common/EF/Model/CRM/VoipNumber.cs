@@ -76,7 +76,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Alias)
                     .HasColumnName("alias")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Number)
                     .IsRequired()

@@ -77,14 +77,12 @@ namespace ASC.Core.Common.EF
                 entity.HasIndex(e => e.Tenant)
                     .HasName("tenant_tenants_tariff");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasMaxLength(255)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
@@ -97,7 +95,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.TariffKey)
                     .HasColumnName("tariff_key")
                     .HasMaxLength(64)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
