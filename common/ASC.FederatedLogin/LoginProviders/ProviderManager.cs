@@ -52,9 +52,9 @@ namespace ASC.FederatedLogin.LoginProviders
                 ProviderConstants.GosUslugi
             };
 
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public ProviderManager(Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
         {

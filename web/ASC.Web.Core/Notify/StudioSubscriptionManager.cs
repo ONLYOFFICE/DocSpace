@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Notify.Model;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Subscriptions;
@@ -77,7 +78,7 @@ namespace ASC.Web.Studio.Core.Notify
             get { return StudioNotifyHelper.SubscriptionProvider; }
         }
 
-        public StudioNotifyHelper StudioNotifyHelper { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
 
         #endregion
     }

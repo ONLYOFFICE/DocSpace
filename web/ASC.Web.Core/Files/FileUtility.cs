@@ -40,7 +40,7 @@ namespace ASC.Web.Core.Files
 {
     public class FileUtility
     {
-        public DbContextManager<FilesDbContext> FilesDbContext { get; set; }
+        private DbContextManager<FilesDbContext> FilesDbContext { get; set; }
         public FileUtility(
             IConfiguration configuration,
             FilesLinkUtility filesLinkUtility,
@@ -135,6 +135,11 @@ namespace ASC.Web.Core.Files
         public bool CanWebReview(string fileName)
         {
             return ExtsWebReviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+        }
+
+        public bool CanWebCustomFilterEditing(string fileName)
+        {
+            return ExtsWebCustomFilterEditing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
         public bool CanWebRestrictedEditing(string fileName)
@@ -267,6 +272,20 @@ namespace ASC.Web.Core.Files
             }
         }
 
+        private List<string> extsWebCustomFilterEditing;
+        public List<string> ExtsWebCustomFilterEditing
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+                {
+                    return new List<string>();
+                }
+
+                return extsWebCustomFilterEditing ?? (extsWebCustomFilterEditing = (Configuration.GetSection("files:docservice:customfilter-docs").Get<string[]>() ?? new string[] { }).ToList());
+            }
+        }
+
         private List<string> extsWebRestrictedEditing;
         public List<string> ExtsWebRestrictedEditing
         {
@@ -295,6 +314,8 @@ namespace ASC.Web.Core.Files
             }
         }
 
+        public List<string> ExtsWebTemplate { get; }
+
         private List<string> extsMustConvert;
         public List<string> ExtsMustConvert
         {
@@ -315,8 +336,8 @@ namespace ASC.Web.Core.Files
             get => extsCoAuthoring ?? (extsCoAuthoring = (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList());
         }
 
-        public IConfiguration Configuration { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
+        private IConfiguration Configuration { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
 
         public static readonly List<string> ExtsArchive = new List<string>
             {
@@ -350,7 +371,7 @@ namespace ASC.Web.Core.Files
                 ".bmp", ".cod", ".gif", ".ief", ".jpe", ".jpeg", ".jpg",
                 ".jfif", ".tiff", ".tif", ".cmx", ".ico", ".pnm", ".pbm",
                 ".png", ".ppm", ".rgb", ".svg", ".xbm", ".xpm", ".xwd",
-                ".svgt", ".svgy", ".gdraw"
+                ".svgt", ".svgy", ".gdraw", ".webp"
             };
 
         public static readonly List<string> ExtsSpreadsheet = new List<string>
@@ -383,6 +404,13 @@ namespace ASC.Web.Core.Files
                 ".gdoc"
             };
 
+        public static readonly List<string> ExtsTemplate = new List<string>
+            {
+                ".ott", ".ots", ".otp",
+                ".dot", ".dotm", ".dotx",
+                ".xlt", ".xltm", ".xltx",
+                ".pot", ".potm", ".potx",
+            };
         public Dictionary<FileType, string> InternalExtension
         {
             get => new Dictionary<FileType, string>

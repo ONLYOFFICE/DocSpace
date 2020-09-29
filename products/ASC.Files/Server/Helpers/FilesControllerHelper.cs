@@ -51,37 +51,37 @@ namespace ASC.Files.Helpers
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<T> FileStorageService;
 
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FileWrapperHelper FileWrapperHelper { get; }
-        public FilesSettingsHelper FilesSettingsHelper { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUploader FileUploader { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public FolderWrapperHelper FolderWrapperHelper { get; }
-        public FileOperationWraperHelper FileOperationWraperHelper { get; }
-        public FileShareWrapperHelper FileShareWrapperHelper { get; }
-        public FileShareParamsHelper FileShareParamsHelper { get; }
-        public EntryManager EntryManager { get; }
-        public UserManager UserManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        public BoxLoginProvider BoxLoginProvider { get; }
-        public DropboxLoginProvider DropboxLoginProvider { get; }
-        public GoogleLoginProvider GoogleLoginProvider { get; }
-        public OneDriveLoginProvider OneDriveLoginProvider { get; }
-        public MessageService MessageService { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public FolderContentWrapperHelper FolderContentWrapperHelper { get; }
-        public WordpressToken WordpressToken { get; }
-        public WordpressHelper WordpressHelper { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public EasyBibHelper EasyBibHelper { get; }
-        public ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        public ProductEntryPoint ProductEntryPoint { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private FileWrapperHelper FileWrapperHelper { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private FileUploader FileUploader { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private FileOperationWraperHelper FileOperationWraperHelper { get; }
+        private FileShareWrapperHelper FileShareWrapperHelper { get; }
+        private FileShareParamsHelper FileShareParamsHelper { get; }
+        private EntryManager EntryManager { get; }
+        private UserManager UserManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private BoxLoginProvider BoxLoginProvider { get; }
+        private DropboxLoginProvider DropboxLoginProvider { get; }
+        private GoogleLoginProvider GoogleLoginProvider { get; }
+        private OneDriveLoginProvider OneDriveLoginProvider { get; }
+        private MessageService MessageService { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
+        private WordpressToken WordpressToken { get; }
+        private WordpressHelper WordpressHelper { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+        private EasyBibHelper EasyBibHelper { get; }
+        private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
+        private ProductEntryPoint ProductEntryPoint { get; }
         public ILog Logger { get; set; }
 
         /// <summary>
@@ -215,11 +215,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false)
+        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted);
+                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted, forcesave);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -329,9 +329,9 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public FileWrapper<T> CreateFile(T folderId, string title)
+        public FileWrapper<T> CreateFile(T folderId, string title, T templateId)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title });
+            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId });
             return FileWrapperHelper.Get(file);
         }
 
@@ -547,6 +547,12 @@ namespace ASC.Files.Helpers
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
             return history.Select(FileWrapperHelper.Get);
+        }
+
+        public FileWrapper<T> LockFile(T fileId, bool lockFile)
+        {
+            var result = FileStorageService.LockFile(fileId, lockFile);
+            return FileWrapperHelper.Get(result);
         }
 
         public string UpdateComment(T fileId, int version, string comment)

@@ -56,8 +56,8 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class ChunkedUploaderHandler
     {
-        public RequestDelegate Next { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private RequestDelegate Next { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public ChunkedUploaderHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
@@ -76,16 +76,16 @@ namespace ASC.Web.Files.HttpHandlers
 
     public class ChunkedUploaderHandlerService
     {
-        public TenantManager TenantManager { get; }
-        public FileUploader FileUploader { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public AuthManager AuthManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public SetupInfo SetupInfo { get; }
-        public EntryManager EntryManager { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
-        public ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
+        private TenantManager TenantManager { get; }
+        private FileUploader FileUploader { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private AuthManager AuthManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private SetupInfo SetupInfo { get; }
+        private EntryManager EntryManager { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         public ILog Logger { get; }
 
         public ChunkedUploaderHandlerService(
@@ -131,6 +131,12 @@ namespace ASC.Web.Files.HttpHandlers
         {
             try
             {
+                if (context.Request.Method == "OPTIONS")
+                {
+                    context.Response.StatusCode = 200;
+                    return;
+                }
+
                 var request = new ChunkedRequestHelper<T>(context.Request);
 
                 if (!TryAuthorize(request))

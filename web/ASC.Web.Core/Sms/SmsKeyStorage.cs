@@ -27,16 +27,18 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Sms
 {
     public class SmsKeyStorageCache
     {
-        public ICacheNotify<SmsKeyCacheKey> KeyCacheNotify { get; }
+        private ICacheNotify<SmsKeyCacheKey> KeyCacheNotify { get; }
         public ICache KeyCache { get; }
         public ICache CheckCache { get; }
 
@@ -63,7 +65,7 @@ namespace ASC.Web.Core.Sms
         public ICache KeyCache { get; }
         public ICache CheckCache { get; }
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
         public SmsKeyStorageCache SmsKeyStorageCache { get; }
 
         public SmsKeyStorage(TenantManager tenantManager, IConfiguration configuration, SmsKeyStorageCache smsKeyStorageCache)

@@ -28,9 +28,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Tenants;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -108,10 +110,10 @@ namespace ASC.VoipService
             }
         }
 
-        public AuthContext AuthContext { get; }
-        public TenantUtil TenantUtil { get; }
-        public SecurityContext SecurityContext { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        protected AuthContext AuthContext { get; }
+        protected TenantUtil TenantUtil { get; }
+        protected SecurityContext SecurityContext { get; }
+        protected BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public VoipSettings(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {

@@ -37,6 +37,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Common.WhiteLabel;
+using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
@@ -75,7 +76,7 @@ namespace ASC.Web.Core.WhiteLabel
         internal bool IsDefaultLogoDocsEditor { get; set; }
 
 
-        private string LogoText { get; set; }
+        public string LogoText { get; set; }
 
         public string GetLogoText(SettingsManager settingsManager)
         {
@@ -199,14 +200,14 @@ namespace ASC.Web.Core.WhiteLabel
     {
         private const string moduleName = "whitelabel";
 
-        public WebImageSupplier WebImageSupplier { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public StorageFactory StorageFactory { get; }
-        public WhiteLabelHelper WhiteLabelHelper { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IOptionsMonitor<ILog> Option { get; }
+        private WebImageSupplier WebImageSupplier { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private WhiteLabelHelper WhiteLabelHelper { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public ILog Log { get; set; }
 
@@ -233,7 +234,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region Restore default
 
-        public void RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantLogoManager tenantLogoManager)
+        public void RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantLogoManager tenantLogoManager, int tenantId, IDataStore storage = null)
         {
             tenantWhiteLabelSettings.LogoLightSmallExt = null;
             tenantWhiteLabelSettings.LogoDarkExt = null;
@@ -247,8 +248,8 @@ namespace ASC.Web.Core.WhiteLabel
 
             tenantWhiteLabelSettings.SetLogoText(null);
 
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-            var store = StorageFactory.GetStorage(tenantId.ToString(), moduleName);
+            var store = storage ?? StorageFactory.GetStorage(tenantId.ToString(), moduleName);
+
             try
             {
                 store.DeleteFiles("", "*", false);
@@ -282,9 +283,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region Set logo
 
-        public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data)
+        public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, IDataStore storage = null)
         {
-            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
+            var store = storage ?? StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
 
             #region delete from storage if already exists
 
@@ -321,7 +322,7 @@ namespace ASC.Web.Core.WhiteLabel
             ResizeLogo(type, generalFileName, data, -1, generalSize, store);
         }
 
-        public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, string> logo)
+        public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, string> logo, IDataStore storage = null)
         {
             var xStart = @"data:image/png;base64,";
 
@@ -357,13 +358,13 @@ namespace ASC.Web.Core.WhiteLabel
 
                     if (data != null)
                     {
-                        SetLogo(tenantWhiteLabelSettings, currentLogoType, fileExt, data);
+                        SetLogo(tenantWhiteLabelSettings, currentLogoType, fileExt, data, storage);
                     }
                 }
             }
         }
 
-        public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream)
+        public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, IDataStore storage = null)
         {
             byte[] data = null;
             using (var memoryStream = new MemoryStream())
@@ -374,7 +375,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             if (data != null)
             {
-                SetLogo(tenantWhiteLabelSettings, type, fileExt, data);
+                SetLogo(tenantWhiteLabelSettings, type, fileExt, data, storage);
             }
         }
 
@@ -551,19 +552,28 @@ namespace ASC.Web.Core.WhiteLabel
         public void Save(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
         {
             SettingsManager.SaveForTenant(tenantWhiteLabelSettings, tenantId);
-            SetNewLogoText(tenantWhiteLabelSettings, tenantId, restore);
 
-            tenantLogoManager.RemoveMailLogoDataFromCache();
+            if (tenantId == Tenant.DEFAULT_TENANT)
+            {
+                AppliedTenants.Clear();
+            }
+            else
+            {
+                SetNewLogoText(tenantWhiteLabelSettings, tenantId, restore);
+                tenantLogoManager.RemoveMailLogoDataFromCache();
+            }
         }
 
         private void SetNewLogoText(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, bool restore = false)
         {
             WhiteLabelHelper.DefaultLogoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if (restore && !CoreBaseSettings.CustomMode)
+            var partnerSettings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
+
+            if (restore && string.IsNullOrEmpty(partnerSettings.GetLogoText(SettingsManager)))
             {
                 WhiteLabelHelper.RestoreOldText(tenantId);
             }
-            else if (!string.IsNullOrEmpty(tenantWhiteLabelSettings.GetLogoText(SettingsManager)))
+            else
             {
                 WhiteLabelHelper.SetNewText(tenantId, tenantWhiteLabelSettings.GetLogoText(SettingsManager));
             }

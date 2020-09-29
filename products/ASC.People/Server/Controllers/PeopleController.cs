@@ -51,37 +51,38 @@ namespace ASC.Employee.Core.Controllers
     public class PeopleController : ControllerBase
     {
         public Tenant Tenant { get { return ApiContext.Tenant; } }
-        public ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public QueueWorkerReassign QueueWorkerReassign { get; }
-        public QueueWorkerRemove QueueWorkerRemove { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public UserManager UserManager { get; }
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public PermissionContext PermissionContext { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemManager WebItemManager { get; }
-        public CustomNamingPeople CustomNamingPeople { get; }
-        public TenantUtil TenantUtil { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public SetupInfo SetupInfo { get; }
-        public FileSizeComment FileSizeComment { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public WebItemSecurityCache WebItemSecurityCache { get; }
-        public MessageTarget MessageTarget { get; }
-        public SettingsManager SettingsManager { get; }
-        public IOptionsSnapshot<AccountLinker> AccountLinker { get; }
-        public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
-        public UserFormatter UserFormatter { get; }
+        private ApiContext ApiContext { get; }
+        private MessageService MessageService { get; }
+        private QueueWorkerReassign QueueWorkerReassign { get; }
+        private QueueWorkerRemove QueueWorkerRemove { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private UserManager UserManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private CookiesManager CookiesManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private PermissionContext PermissionContext { get; }
+        private AuthContext AuthContext { get; }
+        private WebItemManager WebItemManager { get; }
+        private CustomNamingPeople CustomNamingPeople { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileSizeComment FileSizeComment { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private WebItemSecurityCache WebItemSecurityCache { get; }
+        private MessageTarget MessageTarget { get; }
+        private SettingsManager SettingsManager { get; }
+        private IOptionsSnapshot<AccountLinker> AccountLinker { get; }
+        private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
+        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private UserFormatter UserFormatter { get; }
+        public PasswordHasher PasswordHasher { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -116,7 +117,8 @@ namespace ASC.Employee.Core.Controllers
             IOptionsSnapshot<AccountLinker> accountLinker,
             EmployeeWraperFullHelper employeeWraperFullHelper,
             EmployeeWraperHelper employeeWraperHelper,
-            UserFormatter userFormatter)
+            UserFormatter userFormatter,
+            PasswordHasher passwordHasher)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -150,6 +152,7 @@ namespace ASC.Employee.Core.Controllers
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             UserFormatter = userFormatter;
+            PasswordHasher = passwordHasher;
         }
 
         [Read("info")]
@@ -402,10 +405,22 @@ namespace ASC.Employee.Core.Controllers
 
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-            if (string.IsNullOrEmpty(memberModel.Password))
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
 
-            memberModel.Password = memberModel.Password.Trim();
+                if (string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.Password = UserManagerWrapper.GeneratePassword();
+                }
+                else
+                {
+                    UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                }
+
+                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+            }
 
             var user = new UserInfo();
 
@@ -427,7 +442,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, true, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, false, true, memberModel.IsVisitor);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
             MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
@@ -449,8 +464,19 @@ namespace ASC.Employee.Core.Controllers
 
             var user = new UserInfo();
 
+            memberModel.Password = (memberModel.Password ?? "").Trim();
+
             if (string.IsNullOrEmpty(memberModel.Password))
+            {
                 memberModel.Password = UserManagerWrapper.GeneratePassword();
+            }
+            else
+            {
+                UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+            }
+
+            var passwordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+
 
             //Validate email
             var address = new MailAddress(memberModel.Email);
@@ -470,7 +496,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, false, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, passwordHash, false, false, memberModel.IsVisitor);
 
             user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -922,9 +948,13 @@ namespace ASC.Employee.Core.Controllers
         [Create("password", false)]
         public string SendUserPassword(MemberModel memberModel)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(memberModel.Email);
+            string error;
+            if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
+            {
+                Log.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
+            }
 
-            return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
+            return string.Format(Resource.MessageYourPasswordSendedToEmail, memberModel.Email);
         }
 
         [Update("{userid}/password")]
@@ -954,7 +984,9 @@ namespace ASC.Employee.Core.Controllers
 
             if (!string.IsNullOrEmpty(memberModel.Password))
             {
-                SecurityContext.SetUserPassword(userid, memberModel.Password);
+                var passwordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                SecurityContext.SetUserPasswordHash(userid, passwordHash);
+
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
                 CookiesManager.ResetUserCookie(userid);
@@ -1497,7 +1529,8 @@ namespace ASC.Employee.Core.Controllers
                 .AddSettingsManagerService()
                 .AddEmployeeWraperFull()
                 .AddEmployeeWraper()
-                .AddUserFormatter();
+                .AddUserFormatter()
+                .AddPasswordHasherService();
         }
     }
 }

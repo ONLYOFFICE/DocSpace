@@ -89,14 +89,15 @@ namespace ASC.Web.Files.Utils
 
         private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
 
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public IDaoFactory DaoFactory { get; }
-        public GlobalFolder GlobalFolder { get; }
-        public FileSecurity FileSecurity { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public AuthContext AuthContext { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private IDaoFactory DaoFactory { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private FileSecurity FileSecurity { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private AuthContext AuthContext { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
 
         public FileMarker(
             TenantManager tenantManager,
@@ -106,7 +107,8 @@ namespace ASC.Web.Files.Utils
             FileSecurity fileSecurity,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            FilesSettingsHelper filesSettingsHelper)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -116,6 +118,7 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
+            FilesSettingsHelper = filesSettingsHelper;
             cache = AscCache.Memory;
         }
 
@@ -220,8 +223,7 @@ namespace ASC.Web.Files.Utils
                         RemoveFromCahce(rootFolder.ID, userID);
                     }
                 }
-
-                if (obj.FileEntry.RootFolderType == FolderType.COMMON)
+                else if (obj.FileEntry.RootFolderType == FolderType.COMMON)
                 {
                     userIDs.ForEach(userID => RemoveFromCahce(GlobalFolder.GetFolderCommon(this, DaoFactory), userID));
 
@@ -237,6 +239,24 @@ namespace ASC.Web.Files.Utils
 
                                                 RemoveFromCahce(GlobalFolder.GetFolderCommon(this, DaoFactory), userID);
                                             });
+                    }
+                }
+                else if (obj.FileEntry.RootFolderType == FolderType.Privacy)
+                {
+                    foreach (var userID in userIDs)
+                    {
+                        var privacyFolderId = folderDao.GetFolderIDPrivacy(false, userID);
+                        if (Equals(privacyFolderId, 0)) continue;
+
+                        var rootFolder = folderDao.GetFolder(privacyFolderId);
+                        if (rootFolder == null) continue;
+
+                        if (userEntriesData.ContainsKey(userID))
+                            userEntriesData[userID].Add(rootFolder);
+                        else
+                            userEntriesData.Add(userID, new List<FileEntry<T>> { rootFolder });
+
+                        RemoveFromCahce(rootFolder.ID, userID);
                     }
                 }
 
@@ -325,6 +345,7 @@ namespace ASC.Web.Files.Utils
             T folderID;
             int valueNew;
             var userFolderId = folderDao.GetFolderIDUser(false, userID);
+            var privacyFolderId = folderDao.GetFolderIDPrivacy(false, userID);
 
             var removeTags = new List<Tag>();
 
@@ -388,6 +409,13 @@ namespace ASC.Web.Files.Utils
                     cacheFolderId = rootFolderId = GlobalFolder.GetFolderShare<T>(DaoFactory);
                 else
                     cacheFolderId = userFolderId;
+            }
+            else if (rootFolder.RootFolderType == FolderType.Privacy)
+            {
+                if (!Equals(privacyFolderId, 0))
+                {
+                    cacheFolderId = rootFolderId = privacyFolderId;
+                }
             }
             else if (rootFolder.RootFolderType == FolderType.SHARE)
             {
@@ -504,7 +532,7 @@ namespace ASC.Web.Files.Utils
                 var entry = tag.EntryType == FileEntryType.File
                                 ? fileDao.GetFile((T)tag.EntryId)
                                 : (FileEntry<T>)folderDao.GetFolder((T)tag.EntryId);
-                if (entry != null)
+                if (entry != null && (!entry.ProviderEntry || FilesSettingsHelper.EnableThirdParty))
                 {
                     entryTags.Add(entry, tag);
                 }

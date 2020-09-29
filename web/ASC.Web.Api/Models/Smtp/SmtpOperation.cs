@@ -29,16 +29,21 @@ using System.Net.Sockets;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Logging;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Web.Core.PublicResources;
+
 using MailKit.Net.Smtp;
 using MailKit.Security;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
 using MimeKit;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Api.Settings.Smtp
@@ -67,10 +72,10 @@ namespace ASC.Api.Settings.Smtp
         protected int CurrentTenant { get; private set; }
 
         protected Guid CurrentUser { get; private set; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public IConfiguration Configuration { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private IConfiguration Configuration { get; }
         protected ILog Logger { get; private set; }
 
         public SmtpSettingsWrapper SmtpSettings { get; private set; }

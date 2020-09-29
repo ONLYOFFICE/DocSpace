@@ -25,6 +25,7 @@
 
 
 using System;
+
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Notify.Push;
@@ -37,7 +38,7 @@ namespace ASC.Web.Core.Mobile
         private readonly TimeSpan cacheExpiration;
         private readonly IMobileAppInstallRegistrator registrator;
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TenantManager tenantManager)
             : this(registrator, TimeSpan.FromMinutes(30), tenantManager)

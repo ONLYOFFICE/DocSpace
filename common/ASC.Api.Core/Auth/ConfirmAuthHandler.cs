@@ -12,6 +12,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -33,7 +34,8 @@ namespace ASC.Api.Core.Auth
             TenantManager tenantManager,
             UserManager userManager,
             AuthManager authManager,
-            AuthContext authContext) :
+            AuthContext authContext,
+            IServiceProvider serviceProvider) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
@@ -43,19 +45,22 @@ namespace ASC.Api.Core.Auth
             UserManager = userManager;
             AuthManager = authManager;
             AuthContext = authContext;
+            ServiceProvider = serviceProvider;
         }
 
-        public SecurityContext SecurityContext { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public AuthManager AuthManager { get; }
-        public AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private SetupInfo SetupInfo { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private AuthManager AuthManager { get; }
+        private AuthContext AuthContext { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var emailValidationKeyModel = EmailValidationKeyModel.FromRequest(Context.Request);
+            using var scope = ServiceProvider.CreateScope();
+            var emailValidationKeyModel = scope.ServiceProvider.GetService<EmailValidationKeyModel>();
 
             if (!emailValidationKeyModel.Type.HasValue)
             {
@@ -67,7 +72,7 @@ namespace ASC.Api.Core.Auth
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
             try
             {
-                checkKeyResult = emailValidationKeyModel.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
+                checkKeyResult = emailValidationKeyModel.Validate();
             }
             catch (ArgumentNullException)
             {

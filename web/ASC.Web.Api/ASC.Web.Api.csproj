@@ -33,7 +33,13 @@
     <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+    <ProjectReference Include="..\..\common\services\ASC.Data.Backup\ASC.Data.Backup.csproj" />
     <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\" />
   </ItemGroup>
 
 </Project>

@@ -123,11 +123,6 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public static AdditionalWhiteLabelSettings Instance(SettingsManager settingsManager)
-        {
-            return settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-        }
-
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return GetDefault(serviceProvider.GetService<IConfiguration>());
@@ -136,7 +131,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public class AdditionalWhiteLabelSettingsHelper
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public AdditionalWhiteLabelSettingsHelper(IConfiguration configuration)
         {
@@ -147,7 +142,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web.help-center"];
+                var url = Configuration["web:help-center"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
@@ -156,7 +151,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web.support-feedback"];
+                var url = Configuration["web:support-feedback"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
@@ -165,7 +160,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web.user-forum"];
+                var url = Configuration["web:user-forum"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
@@ -183,7 +178,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var email = Configuration["web.payment.email"];
+                var email = Configuration["web:payment:email"];
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
@@ -192,7 +187,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var site = Configuration["web.teamlab-site"];
+                var site = Configuration["web:teamlab-site"];
                 return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
             }
         }

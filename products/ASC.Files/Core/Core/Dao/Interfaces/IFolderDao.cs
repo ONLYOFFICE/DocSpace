@@ -261,6 +261,40 @@ namespace ASC.Files.Core
         T GetFolderIDShare(bool createIfNotExists);
 
         /// <summary>
+        /// Returns id folder "Recent"
+        /// Only in TMFolderDao
+        /// </summary>
+        /// <param name="createIfNotExists"></param>
+        /// <returns></returns>
+        T GetFolderIDRecent(bool createIfNotExists);
+
+        /// <summary>
+
+        /// <summary>
+        /// Returns id folder "Favorites"
+        /// Only in TMFolderDao
+        /// </summary>
+        /// <param name="createIfNotExists"></param>
+        /// <returns></returns>
+        T GetFolderIDFavorites(bool createIfNotExists);
+
+        /// <summary>
+        /// Returns id folder "Templates"
+        /// Only in TMFolderDao
+        /// </summary>
+        /// <param name="createIfNotExists"></param>
+        /// <returns></returns>
+        T GetFolderIDTemplates(bool createIfNotExists);
+
+        /// <summary>
+        /// Returns id folder "Privacy"
+        /// Only in TMFolderDao
+        /// </summary>
+        /// <param name="createIfNotExists"></param>
+        /// <returns></returns>
+        T GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null);
+
+        /// <summary>
         /// Returns id folder "Trash"
         /// Only in TMFolderDao
         /// </summary>

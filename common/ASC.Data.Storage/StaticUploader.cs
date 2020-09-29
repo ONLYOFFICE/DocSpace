@@ -54,10 +54,10 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
-        public IServiceProvider ServiceProvider { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
 
         protected readonly DistributedTaskQueue Queue;
         static StaticUploader()
@@ -116,9 +116,9 @@ namespace ASC.Data.Storage
             var task = new Task<string>(() =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
+                var(tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
-                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
@@ -186,7 +186,7 @@ namespace ASC.Data.Storage
         private readonly string path;
         private readonly string mappedPath;
         public string Result { get; private set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
@@ -203,16 +203,13 @@ namespace ASC.Data.Storage
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
+                var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
-                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var SettingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-                var StorageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
-
-                var dataStore = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>());
+                var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
 
                 if (File.Exists(mappedPath))
                 {
@@ -242,8 +239,8 @@ namespace ASC.Data.Storage
         private readonly IEnumerable<string> directoryFiles;
         private readonly int StepCount;
 
-        public IServiceProvider ServiceProvider { get; }
-        public StaticUploader StaticUploader { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private StaticUploader StaticUploader { get; }
         public int TenantId { get; }
         public object Error { get; set; }
 
@@ -310,10 +307,39 @@ namespace ASC.Data.Storage
                 Percentage += 100.0 / StepCount;
             }
         }
-
         public object Clone()
         {
             return MemberwiseClone();
+        }
+    }
+    public class StaticUploaderScope
+    {
+        private TenantManager TenantManager { get; }
+        private StaticUploader StaticUploader { get; }
+        private SecurityContext SecurityContext { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+
+        public StaticUploaderScope(TenantManager tenantManager,
+            StaticUploader staticUploader,
+            SecurityContext securityContext,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper)
+        {
+            TenantManager = tenantManager;
+            StaticUploader = staticUploader;
+            SecurityContext = securityContext;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out StaticUploader staticUploader, out SecurityContext securityContext, out SettingsManager settingsManager, out StorageSettingsHelper storageSettingsHelper)
+        {
+            tenantManager = TenantManager;
+            staticUploader = StaticUploader;
+            securityContext = SecurityContext;
+            settingsManager = SettingsManager;
+            storageSettingsHelper = StorageSettingsHelper;
         }
     }
 
@@ -323,6 +349,7 @@ namespace ASC.Data.Storage
         {
             if (services.TryAddScoped<StaticUploader>())
             {
+                services.TryAddScoped<StaticUploaderScope>();
                 return services
                     .AddTenantManagerService()
                     .AddCdnStorageSettingsService();

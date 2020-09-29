@@ -35,6 +35,7 @@ using System.Text;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify.Jabber;
+using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -45,19 +46,22 @@ namespace ASC.Core.Notify.Signalr
 {
     public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
     {
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        internal TenantManager TenantManager { get; }
+        internal CoreSettings CoreSettings { get; }
+        internal MachinePseudoKeys MachinePseudoKeys { get; }
+        internal IConfiguration Configuration { get; }
+        internal IOptionsMonitor<ILog> Options { get; }
 
         public ConfigureSignalrServiceClient(
             TenantManager tenantManager,
             CoreSettings coreSettings,
+            MachinePseudoKeys machinePseudoKeys,
             IConfiguration configuration,
             IOptionsMonitor<ILog> options)
         {
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
+            MachinePseudoKeys = machinePseudoKeys;
             Configuration = configuration;
             Options = options;
         }
@@ -68,7 +72,7 @@ namespace ASC.Core.Notify.Signalr
             options.hub = name.Trim('/');
             options.TenantManager = TenantManager;
             options.CoreSettings = CoreSettings;
-            options.CoreMachineKey = Configuration["core:machinekey"];
+            options.SKey = MachinePseudoKeys.GetMachineConstant();
             options.Url = Configuration["web:hub:internal"];
             options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
 
@@ -103,7 +107,7 @@ namespace ASC.Core.Notify.Signalr
         internal ILog Log;
         private static DateTime lastErrorTime;
         public bool EnableSignalr;
-        internal string CoreMachineKey;
+        internal byte[] SKey;
         internal string Url;
         internal bool JabberReplaceDomain;
         internal string JabberReplaceFromDomain;
@@ -111,8 +115,8 @@ namespace ASC.Core.Notify.Signalr
 
         internal string hub;
 
-        public TenantManager TenantManager { get; internal set; }
-        public CoreSettings CoreSettings { get; internal set; }
+        internal TenantManager TenantManager { get; set; }
+        internal CoreSettings CoreSettings { get; set; }
 
         static SignalrServiceClient()
         {
@@ -384,7 +388,7 @@ namespace ASC.Core.Notify.Signalr
 
         public string CreateAuthToken(string pkey = "socketio")
         {
-            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(CoreMachineKey));
+            using var hasher = new HMACSHA1(SKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
             return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
@@ -397,11 +401,12 @@ namespace ASC.Core.Notify.Signalr
         {
             if (services.TryAddScoped<SignalrServiceClient>())
             {
-                services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
+                services.TryAddScoped<IConfigureNamedOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
 
                 return services
                     .AddTenantManagerService()
-                    .AddCoreSettingsService();
+                    .AddCoreSettingsService()
+                    .AddMachinePseudoKeysService();
             }
 
             return services;

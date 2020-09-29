@@ -48,8 +48,8 @@ namespace ASC.Web.Studio.Core.Notify
     {
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
-        public IServiceProvider ServiceProvider { get; }
-        public IConfiguration Configuration { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IConfiguration Configuration { get; }
 
         public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
         {
@@ -57,17 +57,12 @@ namespace ASC.Web.Studio.Core.Notify
             ServiceProvider = serviceProvider;
             Configuration = configuration;
         }
-
+       
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var authContext = scope.ServiceProvider.GetService<AuthContext>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
-
+            var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
+            var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
             tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
@@ -113,9 +108,8 @@ namespace ASC.Web.Studio.Core.Notify
             var cron = Configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-
+            var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
+            var (_, _, _,  _,  tenantExtra, coreBaseSettings) = scopeClass;
             if (Configuration["core:notify:tariff"] != "false")
             {
                 if (tenantExtra.Enterprise)
@@ -177,11 +171,52 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    public class StudioNotifyServiceSenderScope
+    {
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private TenantExtra TenantExtra { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+
+        public StudioNotifyServiceSenderScope(TenantManager tenantManager,
+            UserManager userManager,
+            SecurityContext securityContext,
+            StudioNotifyHelper studioNotifyHelper,
+            TenantExtra tenantExtra,
+            CoreBaseSettings coreBaseSettings)
+        {
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            StudioNotifyHelper = studioNotifyHelper;
+            TenantExtra = tenantExtra;
+            CoreBaseSettings = coreBaseSettings;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out UserManager userManager,
+            out SecurityContext securityContext,
+            out StudioNotifyHelper studioNotifyHelper,
+            out TenantExtra tenantExtra, 
+            out CoreBaseSettings coreBaseSettings)
+        {
+            tenantManager = TenantManager;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            studioNotifyHelper = StudioNotifyHelper;
+            tenantExtra = TenantExtra;
+            coreBaseSettings = CoreBaseSettings;
+        }
+    }
+
     public static class ServiceLauncherExtension
     {
         public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
         {
             services.TryAddSingleton<StudioNotifyServiceSender>();
+            services.TryAddScoped<StudioNotifyServiceSenderScope>();
 
             return services
                 .AddStudioPeriodicNotify()
@@ -193,8 +228,7 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddStudioNotifyHelperService()
                 .AddDisplayUserSettingsService()
                 .AddTenantExtraService()
-                .AddCoreBaseSettingsService()
-                ;
+                .AddCoreBaseSettingsService();
         }
     }
 }

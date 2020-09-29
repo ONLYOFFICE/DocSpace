@@ -52,6 +52,7 @@ namespace ASC.Files.Core.Security
                 {
                     (int)FileShare.None,
                     (int)FileShare.ReadWrite,
+                    (int)FileShare.CustomFilter,
                     (int)FileShare.Review,
                     (int)FileShare.FillForms,
                     (int)FileShare.Comment,

@@ -26,9 +26,10 @@
 
 using System;
 using System.Text.Json.Serialization;
+
 using ASC.Files.Core;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 
 namespace ASC.Web.Files.Services.WCFService
 {
@@ -85,8 +86,8 @@ namespace ASC.Web.Files.Services.WCFService
                 case FileShare.ReadWrite:
                     permission = FilesCommonResource.AceStatusEnum_ReadWrite;
                     break;
-                case FileShare.Restrict:
-                    permission = FilesCommonResource.AceStatusEnum_Restrict;
+                case FileShare.CustomFilter:
+                    permission = FilesCommonResource.AceStatusEnum_CustomFilter;
                     break;
                 case FileShare.Review:
                     permission = FilesCommonResource.AceStatusEnum_Review;
@@ -96,6 +97,9 @@ namespace ASC.Web.Files.Services.WCFService
                     break;
                 case FileShare.Comment:
                     permission = FilesCommonResource.AceStatusEnum_Comment;
+                    break;
+                case FileShare.Restrict:
+                    permission = FilesCommonResource.AceStatusEnum_Restrict;
                     break;
             }
 

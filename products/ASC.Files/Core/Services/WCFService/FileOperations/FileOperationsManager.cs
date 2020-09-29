@@ -43,7 +43,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     {
         private readonly DistributedTaskQueue tasks;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public FileOperationsManager(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
@@ -171,9 +171,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     public class FileOperationsManagerHelper
     {
-        public FileOperationsManager FileOperationsManager { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private FileOperationsManager FileOperationsManager { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public FileOperationsManagerHelper(
             FileOperationsManager fileOperationsManager,
@@ -240,6 +240,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 services.TryAddSingleton<FileOperationsManager>();
                 services.TryAddSingleton<DistributedTaskCacheNotify>();
                 services.AddDistributedTaskQueueService("fileOperations", 10);
+                services.TryAddScoped<FileDeleteOperationScope>();
+                services.TryAddScoped<FileMarkAsReadOperationScope>();
+                services.TryAddScoped<FileMoveCopyOperationScope>();
+                services.TryAddScoped<FileOperationScope>();
+                services.TryAddScoped<FileDownloadOperationScope>();
 
                 return services
                     .AddAuthContextService()

@@ -85,11 +85,11 @@ namespace ASC.Api.Documents
     {
         /// <summary> 
         /// </summary>
-        public Guid Id;
+        public Guid Id { get; set; }
 
         /// <summary> 
         /// </summary>
-        public string ShareLink;
+        public string ShareLink { get; set; }
     }
     public class FileShareWrapperHelper
     {

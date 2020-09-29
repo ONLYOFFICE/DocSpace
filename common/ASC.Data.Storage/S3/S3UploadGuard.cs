@@ -27,9 +27,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
+
 using ASC.Core;
 
 namespace ASC.Data.Storage.S3
@@ -43,7 +45,7 @@ namespace ASC.Data.Storage.S3
         private bool configErrors;
         private bool configured;
 
-        public CoreSettings CoreSettings { get; }
+        private CoreSettings CoreSettings { get; }
         public Configuration.Storage Storage { get; }
 
         public S3UploadGuard(CoreSettings coreSettings, Configuration.Storage storage)

@@ -27,11 +27,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using ASC.Common.Logging;
 using ASC.Notify.Messages;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -39,7 +41,7 @@ namespace ASC.Notify.Engine
 {
     public class NotifyRequest
     {
-        public INotifySource NotifySource { get; internal set; }
+        private INotifySource NotifySource { get; set; }
 
         public INotifyAction NotifyAction { get; internal set; }
 
@@ -140,6 +142,26 @@ namespace ASC.Notify.Engine
         internal NoticeMessage CreateMessage(IDirectRecipient recipient)
         {
             return new NoticeMessage(recipient, NotifyAction, ObjectID);
+        }
+
+        public IActionProvider GetActionProvider(IServiceScope scope)
+        {
+            return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetActionProvider();
+        }
+
+        public IPatternProvider GetPatternProvider(IServiceScope scope)
+        {
+            return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetPatternProvider();
+        }
+
+        public IRecipientProvider GetRecipientsProvider(IServiceScope scope)
+        {
+            return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetRecipientsProvider();
+        }
+
+        public ISubscriptionProvider GetSubscriptionProvider(IServiceScope scope)
+        {
+            return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetSubscriptionProvider();
         }
     }
 }

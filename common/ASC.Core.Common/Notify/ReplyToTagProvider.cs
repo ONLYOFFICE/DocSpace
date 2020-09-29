@@ -26,6 +26,7 @@
 
 using System;
 using System.Text.RegularExpressions;
+
 using ASC.Notify.Patterns;
 
 namespace ASC.Core.Common.Notify
@@ -94,8 +95,8 @@ namespace ASC.Core.Common.Notify
             }
         }
 
-        public TenantManager TenantManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
     }
 }

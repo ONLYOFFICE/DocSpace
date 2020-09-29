@@ -35,6 +35,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+using ASC.Migration;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -47,16 +48,18 @@ namespace ASC.Data.Storage
 
         private static readonly object Locker;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
 
         static StorageUploader()
         {
             Locker = new object();
         }
 
-        public StorageUploader(IServiceProvider serviceProvider, DistributedTaskQueueOptionsManager options)
+        public StorageUploader(IServiceProvider serviceProvider, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
         {
             ServiceProvider = serviceProvider;
+            CacheMigrationNotify = cacheMigrationNotify;
             Queue = options.Get(nameof(StorageUploader));
         }
 
@@ -68,7 +71,7 @@ namespace ASC.Data.Storage
                 var migrateOperation = Queue.GetTask<MigrateOperation>(id);
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(ServiceProvider, id, tenantId, newStorageSettings, storageFactoryConfig);
+                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig);
                 Queue.QueueTask((a, b) => migrateOperation.RunJob(), migrateOperation);
             }
         }
@@ -106,12 +109,13 @@ namespace ASC.Data.Storage
             ConfigPath = "";
         }
 
-        public MigrateOperation(IServiceProvider serviceProvider, string id, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
+        public MigrateOperation(IServiceProvider serviceProvider, ICacheNotify<MigrationProgress> cacheMigrationNotify, string id, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
         {
             Id = id;
             Status = DistributedTaskStatus.Created;
 
             ServiceProvider = serviceProvider;
+            CacheMigrationNotify = cacheMigrationNotify;
             this.tenantId = tenantId;
             this.settings = settings;
             StorageFactoryConfig = storageFactoryConfig;
@@ -120,8 +124,9 @@ namespace ASC.Data.Storage
             Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
-        public IServiceProvider ServiceProvider { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
 
         public object Error { get; set; }
 
@@ -137,15 +142,10 @@ namespace ASC.Data.Storage
                 Status = DistributedTaskStatus.Running;
 
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
+                var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
-
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-                var options = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>();
-                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
 
                 securityContext.AuthenticateMe(tenant.OwnerId);
 
@@ -155,7 +155,7 @@ namespace ASC.Data.Storage
                     var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility (options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)
@@ -184,6 +184,8 @@ namespace ASC.Data.Storage
                     }
 
                     StepDone();
+
+                    MigrationPublish();
                 }
 
                 settingsManager.Save(settings);
@@ -197,19 +199,65 @@ namespace ASC.Data.Storage
                 Error = e;
                 Log.Error(e);
             }
+
+            MigrationPublish();
         }
 
-        public object Clone()
+		public object Clone()
         {
             return MemberwiseClone();
+		}
+
+        private void MigrationPublish()
+        {
+            CacheMigrationNotify.Publish(new MigrationProgress
+            {
+                TenantId = tenantId,
+                Progress = Percentage,
+                Error = Error.ToString(),
+                IsCompleted = IsCompleted
+            },
+            CacheNotifyAction.Insert);
+        }
+    }
+
+    public class MigrateOperationScope
+    {
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private StorageFactory StorageFactory { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+
+        public MigrateOperationScope(TenantManager tenantManager,
+            SecurityContext securityContext,
+            StorageFactory storageFactory, 
+            IOptionsMonitor<ILog> options, 
+            StorageSettingsHelper storageSettingsHelper,
+            SettingsManager settingsManager)
+        {
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            StorageFactory = storageFactory;
+            Options = options;
+            StorageSettingsHelper = storageSettingsHelper;
+            SettingsManager = settingsManager;
         }
 
-        protected void StepDone()
+        public void Deconstruct(out TenantManager tenantManager,
+            out SecurityContext securityContext,
+            out StorageFactory storageFactory, 
+            out IOptionsMonitor<ILog> options,
+            out StorageSettingsHelper storageSettingsHelper,
+            out SettingsManager settingsManager )
         {
-            if (StepCount > 0)
-            {
-                Percentage += 100.0 / StepCount;
-            }
+            tenantManager = TenantManager;
+            securityContext = SecurityContext;
+            storageFactory = StorageFactory;
+            options = Options;
+            storageSettingsHelper = StorageSettingsHelper;
+            settingsManager = SettingsManager;
         }
     }
 }

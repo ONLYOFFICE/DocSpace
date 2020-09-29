@@ -37,6 +37,7 @@ using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
@@ -44,7 +45,7 @@ namespace ASC.Core.Data
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
-        public ICacheNotify<SettingsCacheItem> Notify { get; }
+        private ICacheNotify<SettingsCacheItem> Notify { get; }
 
         public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
         {
@@ -148,7 +149,7 @@ namespace ASC.Core.Data
         private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return (currentUserID ?? (currentUserID = AuthContext.CurrentAccount.ID)).Value; }
+            get { return ((Guid?)(currentUserID ??= AuthContext.CurrentAccount.ID)).Value; }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
@@ -227,7 +228,7 @@ namespace ASC.Core.Data
 
         internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
         {
-            var settingsInstance = Activator.CreateInstance<T>();
+            var settingsInstance = ActivatorUtilities.CreateInstance<T>(ServiceProvider);
             var key = settingsInstance.ID.ToString() + tenantId + userId;
             var def = (T)settingsInstance.GetDefault(ServiceProvider);
 

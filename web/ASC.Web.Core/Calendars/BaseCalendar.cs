@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using ASC.Common.Utils;
 using ASC.Core;
 
@@ -61,8 +62,8 @@ namespace ASC.Web.Core.Calendars
         public virtual TimeZoneInfo TimeZone { get; set; }
 
         public virtual CalendarContext Context { get; set; }
-        public AuthContext AuthContext { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private AuthContext AuthContext { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         #endregion
 

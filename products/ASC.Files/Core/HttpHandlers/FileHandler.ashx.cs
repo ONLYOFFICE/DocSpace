@@ -73,8 +73,8 @@ namespace ASC.Web.Files
 {
     public class FileHandler
     {
-        public RequestDelegate Next { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private RequestDelegate Next { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public FileHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
@@ -97,31 +97,31 @@ namespace ASC.Web.Files
         {
             get { return FilesLinkUtility.FileHandlerPath; }
         }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public TenantExtra TenantExtra { get; }
-        public AuthContext AuthContext { get; }
-        public SecurityContext SecurityContext { get; }
-        public GlobalStore GlobalStore { get; }
-        public IDaoFactory DaoFactory { get; }
-        public FileSecurity FileSecurity { get; }
-        public FileMarker FileMarker { get; }
-        public SetupInfo SetupInfo { get; }
-        public FileUtility FileUtility { get; }
-        public Global Global { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public PathProvider PathProvider { get; }
-        public DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public FileShareLink FileShareLink { get; }
-        public FileConverter FileConverter { get; }
-        public FFmpegService FFmpegService { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private TenantExtra TenantExtra { get; }
+        private AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private GlobalStore GlobalStore { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private FileMarker FileMarker { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileUtility FileUtility { get; }
+        private Global Global { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private PathProvider PathProvider { get; }
+        private DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private FileShareLink FileShareLink { get; }
+        private FileConverter FileConverter { get; }
+        private FFmpegService FFmpegService { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private UserManager UserManager { get; }
         public ILog Logger { get; }
-        public CookiesManager CookiesManager { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        private CookiesManager CookiesManager { get; }
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
 
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
@@ -960,6 +960,16 @@ namespace ASC.Web.Files
 
         private async Task CreateFile(HttpContext context)
         {
+            if (!SecurityContext.IsAuthenticated)
+            {
+                //var refererURL = context.Request.GetUrlRewriter().AbsoluteUri;
+
+                //context.Session["refererURL"] = refererURL;
+                var authUrl = "~/Auth.aspx";
+                context.Response.Redirect(authUrl, true);
+                return;
+            }
+
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
             {
@@ -1019,7 +1029,7 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? PathProvider.GetFolderUrl(file.FolderID)
+                    ? PathProvider.GetFolderUrlById(file.FolderID)
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
@@ -1117,7 +1127,7 @@ namespace ASC.Web.Files
             {
                 try
                 {
-                    urlRedirect = PathProvider.GetFolderUrl(folderId);
+                    urlRedirect = PathProvider.GetFolderUrlById(folderId);
                 }
                 catch (ArgumentNullException e)
                 {

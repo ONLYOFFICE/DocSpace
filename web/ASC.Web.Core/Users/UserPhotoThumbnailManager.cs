@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
@@ -107,7 +108,7 @@ namespace ASC.Web.Core.Users
     public class ThumbnailsData
     {
         private Guid UserId { get; set; }
-        public UserPhotoManager UserPhotoManager { get; }
+        private UserPhotoManager UserPhotoManager { get; }
 
         public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
         {

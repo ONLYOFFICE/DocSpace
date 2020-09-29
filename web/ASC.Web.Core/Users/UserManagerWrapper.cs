@@ -48,19 +48,19 @@ namespace ASC.Web.Core.Users
     /// </summary>
     public sealed class UserManagerWrapper
     {
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        public MessageService MessageService { get; }
-        public CustomNamingPeople CustomNamingPeople { get; }
-        public TenantUtil TenantUtil { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IPSecurity.IPSecurity IPSecurity { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public UserFormatter UserFormatter { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private MessageService MessageService { get; }
+        private CustomNamingPeople CustomNamingPeople { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IPSecurity.IPSecurity IPSecurity { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private UserFormatter UserFormatter { get; }
 
         public UserManagerWrapper(
             StudioNotifyService studioNotifyService,
@@ -119,14 +119,12 @@ namespace ASC.Web.Core.Users
             return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
         }
 
-        public UserInfo AddUser(UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
+        public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
             if (userInfo == null) throw new ArgumentNullException("userInfo");
 
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
                 throw new Exception(Resource.ErrorIncorrectUserName);
-
-            CheckPasswordPolicy(password);
 
             if (!CheckUniqueEmail(userInfo.ID, userInfo.Email))
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
@@ -145,7 +143,7 @@ namespace ASC.Web.Core.Users
             }
 
             var newUserInfo = UserManager.SaveUserInfo(userInfo, isVisitor);
-            SecurityContext.SetUserPassword(newUserInfo.ID, password);
+            SecurityContext.SetUserPasswordHash(newUserInfo.ID, passwordHash);
 
             if (CoreBaseSettings.Personal)
             {
@@ -207,7 +205,8 @@ namespace ASC.Web.Core.Users
             if (!CheckPasswordRegex(passwordSettingsObj, password))
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
-        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+
+        public string GetPasswordRegex(PasswordSettings passwordSettings)
         {
             var pwdBuilder = new StringBuilder();
 
@@ -248,10 +247,17 @@ namespace ASC.Web.Core.Users
             pwdBuilder.Append(PasswordSettings.MaxLength);
             pwdBuilder.Append(@"}$");
 
-            return new Regex(pwdBuilder.ToString()).IsMatch(password);
+            return pwdBuilder.ToString();
         }
 
-        public UserInfo SendUserPassword(string email)
+        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        {
+            var passwordRegex = GetPasswordRegex(passwordSettings);
+
+            return new Regex(passwordRegex).IsMatch(password);
+        }
+
+        public string SendUserPassword(string email)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
@@ -264,19 +270,19 @@ namespace ASC.Web.Core.Users
             var userInfo = UserManager.GetUserByEmail(email);
             if (!UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
             {
-                throw new Exception(string.Format(Resource.ErrorUserNotFoundByEmail, email));
+                return string.Format(Resource.ErrorUserNotFoundByEmail, email);
             }
             if (userInfo.Status == EmployeeStatus.Terminated)
             {
-                throw new Exception(Resource.ErrorDisabledProfile);
+                return Resource.ErrorDisabledProfile;
             }
             if (userInfo.IsLDAP())
             {
-                throw new Exception(Resource.CouldNotRecoverPasswordForLdapUser);
+                return Resource.CouldNotRecoverPasswordForLdapUser;
             }
             if (userInfo.IsSSO())
             {
-                throw new Exception(Resource.CouldNotRecoverPasswordForSsoUser);
+                return Resource.CouldNotRecoverPasswordForSsoUser;
             }
 
             StudioNotifyService.UserPasswordChange(userInfo);
@@ -284,26 +290,12 @@ namespace ASC.Web.Core.Users
             var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
             MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
-            return userInfo;
+            return null;
         }
-
-        private const string Noise = "1234567890mnbasdflkjqwerpoiqweyuvcxnzhdkqpsdk_-()=";
 
         public string GeneratePassword()
         {
-            var ps = SettingsManager.Load<PasswordSettings>();
-
-            var maxLength = PasswordSettings.MaxLength
-                            - (ps.Digits ? 1 : 0)
-                            - (ps.UpperCase ? 1 : 0)
-                            - (ps.SpecSymbols ? 1 : 0);
-            var minLength = Math.Min(ps.MinLength, maxLength);
-
-            return string.Format("{0}{1}{2}{3}",
-                                 GeneratePassword(minLength, minLength, Noise[0..^4]),
-                                 ps.Digits ? GeneratePassword(1, 1, Noise.Substring(0, 10)) : string.Empty,
-                                 ps.UpperCase ? GeneratePassword(1, 1, Noise.Substring(10, 20).ToUpper()) : string.Empty,
-                                 ps.SpecSymbols ? GeneratePassword(1, 1, Noise.Substring(Noise.Length - 4, 4).ToUpper()) : string.Empty);
+            return Guid.NewGuid().ToString();
         }
 
         private static readonly Random Rnd = new Random();

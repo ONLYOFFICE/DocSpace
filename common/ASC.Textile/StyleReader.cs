@@ -17,7 +17,7 @@ namespace Textile
             {
                 if (match.Success)
                 {
-                    _tagStyler.Add(match.Groups["selector"].Value.Trim('{', '}', ' '), _minimizer.Replace(match.Groups["style"].Value.Trim('{', '}', ' '),";"));
+                    _tagStyler.Add(match.Groups["selector"].Value.Trim('{', '}', ' '), _minimizer.Replace(match.Groups["style"].Value.Trim('{', '}', ' '), ";"));
                 }
             }
         }

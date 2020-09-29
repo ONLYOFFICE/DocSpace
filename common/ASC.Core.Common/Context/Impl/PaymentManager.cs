@@ -52,8 +52,8 @@ namespace ASC.Core
         private readonly string partnerUrl;
         private readonly string partnerKey;
 
-        public TenantManager TenantManager { get; }
-        public IConfiguration Configuration { get; }
+        private TenantManager TenantManager { get; }
+        private IConfiguration Configuration { get; }
 
         public PaymentManager(TenantManager tenantManager, ITariffService tariffService, IConfiguration configuration)
         {
@@ -93,6 +93,11 @@ namespace ASC.Core
         public Invoice GetPaymentInvoice(string paymentId)
         {
             return tariffService.GetInvoice(paymentId);
+        }
+
+        public IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(params string[] productIds)
+        {
+            return tariffService.GetProductPriceInfo(productIds);
         }
 
         public Uri GetShoppingUri(int tenant, int quotaId, string currency = null, string language = null, string customerId = null)

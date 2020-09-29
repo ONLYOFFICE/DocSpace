@@ -26,23 +26,32 @@
 
 using System;
 using System.Text;
+
 using ASC.Core;
+using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Helpers
 {
     public class AuthorizationHelper
     {
-        public AuthorizationHelper(IHttpContextAccessor httpContextAccessor, UserManager userManager, SecurityContext securityContext)
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private PasswordHasher PasswordHasher { get; }
+
+        public AuthorizationHelper(
+            IHttpContextAccessor httpContextAccessor,
+            UserManager userManager,
+            SecurityContext securityContext,
+            PasswordHasher passwordHasher)
         {
             HttpContextAccessor = httpContextAccessor;
             UserManager = userManager;
             SecurityContext = securityContext;
+            PasswordHasher = passwordHasher;
         }
-
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
 
         public bool ProcessBasicAuthorization(out string authCookie)
         {
@@ -65,7 +74,8 @@ namespace ASC.Web.Core.Helpers
                     var u = UserManager.GetUserByEmail(username);
                     if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
                     {
-                        authCookie = SecurityContext.AuthenticateMe(u.Email, password);
+                        var passwordHash = PasswordHasher.GetClientPassword(password);
+                        authCookie = SecurityContext.AuthenticateMe(u.Email, passwordHash);
                     }
                 }
                 else if (0 <= authorization.IndexOf("Bearer", 0))

@@ -40,11 +40,11 @@ namespace ASC.Web.Files.Utils
 {
     public class FileShareLink
     {
-        public FileUtility FileUtility { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public Global Global { get; }
-        public FileSecurity FileSecurity { get; }
+        private FileUtility FileUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private Global Global { get; }
+        private FileSecurity FileSecurity { get; }
 
         public FileShareLink(
             FileUtility fileUtility,
@@ -93,7 +93,12 @@ namespace ASC.Web.Files.Utils
         public bool Check<T>(string doc, bool checkRead, IFileDao<T> fileDao, out File<T> file)
         {
             var fileShare = Check(doc, fileDao, out file);
-            return (!checkRead && (fileShare == FileShare.ReadWrite || fileShare == FileShare.Review || fileShare == FileShare.FillForms || fileShare == FileShare.Comment))
+            return (!checkRead
+                    && (fileShare == FileShare.ReadWrite
+                        || fileShare == FileShare.CustomFilter
+                        || fileShare == FileShare.Review
+                        || fileShare == FileShare.FillForms
+                        || fileShare == FileShare.Comment))
                 || (checkRead && fileShare != FileShare.Restrict);
         }
 
@@ -107,6 +112,7 @@ namespace ASC.Web.Files.Utils
 
             var filesSecurity = FileSecurity;
             if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return FileShare.ReadWrite;
+            if (filesSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)) return FileShare.CustomFilter;
             if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return FileShare.Review;
             if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return FileShare.FillForms;
             if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return FileShare.Comment;

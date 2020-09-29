@@ -85,7 +85,7 @@ namespace ASC.Web.Studio.Core
             }
         }
 
-        public SettingsManager SettingsManager { get; }
+        private SettingsManager SettingsManager { get; }
     }
 
     public static class PersonalSettingsExtention

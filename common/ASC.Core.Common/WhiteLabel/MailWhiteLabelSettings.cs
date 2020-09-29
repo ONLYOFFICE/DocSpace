@@ -48,7 +48,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public string SalesEmail { get; set; }
 
-        public string DemotUrl { get; set; }
+        public string DemoUrl { get; set; }
 
         public string SiteUrl { get; set; }
 
@@ -68,7 +68,7 @@ namespace ASC.Web.Core.WhiteLabel
                 SupportUrl = mailWhiteLabelSettingsHelper.DefaultMailSupportUrl,
                 SupportEmail = mailWhiteLabelSettingsHelper.DefaultMailSupportEmail,
                 SalesEmail = mailWhiteLabelSettingsHelper.DefaultMailSalesEmail,
-                DemotUrl = mailWhiteLabelSettingsHelper.DefaultMailDemotUrl,
+                DemoUrl = mailWhiteLabelSettingsHelper.DefaultMailDemoUrl,
                 SiteUrl = mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
             };
         }
@@ -82,7 +82,7 @@ namespace ASC.Web.Core.WhiteLabel
                     SupportUrl == defaultSettings.SupportUrl &&
                     SupportEmail == defaultSettings.SupportEmail &&
                     SalesEmail == defaultSettings.SalesEmail &&
-                    DemotUrl == defaultSettings.DemotUrl &&
+                    DemoUrl == defaultSettings.DemoUrl &&
                     SiteUrl == defaultSettings.SiteUrl;
         }
 
@@ -113,7 +113,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:support-feedback"] ?? string.Empty, null);
-                return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
+                return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
             }
         }
 
@@ -135,7 +135,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public string DefaultMailDemotUrl
+        public string DefaultMailDemoUrl
         {
             get
             {
@@ -153,7 +153,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
     }
 
     public static class MailWhiteLabelSettingsExtention

@@ -51,7 +51,7 @@ namespace ASC.Core.Common
         private UriBuilder _serverRoot;
         private string _vpath;
 
-        public IHttpContextAccessor HttpContextAccessor { get; set; }
+        protected IHttpContextAccessor HttpContextAccessor { get; set; }
 
         public BaseCommonLinkUtility(
             CoreBaseSettings coreBaseSettings,
@@ -108,9 +108,9 @@ namespace ASC.Core.Common
             get { return ToAbsolute("~"); }
         }
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
-        public TenantManager TenantManager { get; }
+        protected CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
+        private TenantManager TenantManager { get; }
 
         private string serverRootPath;
         public string ServerRootPath
@@ -223,6 +223,10 @@ namespace ASC.Core.Common
 
             //--remove redundant slashes
             var uri = new Uri(url);
+
+            if (uri.Scheme == "mailto")
+                return uri.OriginalString;
+
             var baseUri = new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri;
             baseUri = uri.Segments.Aggregate(baseUri, (current, segment) => new Uri(current, segment));
             //--

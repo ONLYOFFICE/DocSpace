@@ -26,8 +26,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Web.Core", "web\ASC.Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.VoipService", "common\ASC.VoipService\ASC.VoipService.csproj", "{988536C1-4B89-4649-8F77-5C16F55D95D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Resource.Manager", "common\ASC.Resource.Manager\ASC.Resource.Manager.csproj", "{5A4A13CC-8EDD-4FDB-8C75-29E2B14A47F2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.MessagingSystem", "common\ASC.MessagingSystem\ASC.MessagingSystem.csproj", "{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.IPSecurity", "common\ASC.IPSecurity\ASC.IPSecurity.csproj", "{2FF2177F-2D1A-4396-84EB-51F14FD99385}"
@@ -48,8 +46,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ElasticSearch", "common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files", "products\ASC.Files\Server\ASC.Files.csproj", "{77BA2F61-6155-4283-BB39-F8E42F46A0B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppLimit.CloudComputing.SharpBox", "thirdparty\AppLimit.CloudComputing.SharpBox\AppLimit.CloudComputing.SharpBox.csproj", "{5B53855C-4347-4402-B750-76C6295A35D3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files.Service", "products\ASC.Files\Service\ASC.Files.Service.csproj", "{5D41FFFF-816C-40B2-95CD-E2DDDCB83784}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ApiSystem", "common\services\ASC.ApiSystem\ASC.ApiSystem.csproj", "{C2BB03A0-C35B-433F-96D4-3A06CBC06AD7}"
@@ -62,11 +58,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Thumbnails.Svc", "commo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Backup", "common\services\ASC.Data.Backup\ASC.Data.Backup.csproj", "{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Graph.Core", "thirdparty\Microsoft.Graph.Core\Microsoft.Graph.Core.csproj", "{D4C1A5C9-2327-4181-B7FD-005ED240B09F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.OneDrive.Sdk", "thirdparty\onedrive-sdk-csharp-master\src\OneDriveSdk\Microsoft.OneDrive.Sdk.csproj", "{D78506D2-CC97-4063-A800-B16F5A063DE9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Files.Core", "products\ASC.Files\Core\ASC.Files.Core.csproj", "{F0A39728-940D-4DBE-A37A-05D4EB57F342}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Socket.IO.Svc", "common\services\ASC.Socket.IO.Svc\ASC.Socket.IO.Svc.csproj", "{2DADEAD3-0FE9-4199-9817-41A32E6BF450}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Migration", "common\services\ASC.Data.Storage.Migration\ASC.Data.Storage.Migration.csproj", "{02356BD7-7E99-457B-BEFF-090CE4DF067D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Encryption", "common\services\ASC.Data.Storage.Encryption\ASC.Data.Storage.Encryption.csproj", "{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.TelegramService", "common\services\ASC.TelegramService\ASC.TelegramService.csproj", "{95CE7371-17B6-4EEE-8E38-2FDE6347E955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,10 +114,6 @@ Global
 		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{988536C1-4B89-4649-8F77-5C16F55D95D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A4A13CC-8EDD-4FDB-8C75-29E2B14A47F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A4A13CC-8EDD-4FDB-8C75-29E2B14A47F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A4A13CC-8EDD-4FDB-8C75-29E2B14A47F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A4A13CC-8EDD-4FDB-8C75-29E2B14A47F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD8A18A5-60C5-4411-9719-0AA11B4BE0E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -158,10 +154,6 @@ Global
 		{77BA2F61-6155-4283-BB39-F8E42F46A0B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77BA2F61-6155-4283-BB39-F8E42F46A0B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77BA2F61-6155-4283-BB39-F8E42F46A0B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B53855C-4347-4402-B750-76C6295A35D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B53855C-4347-4402-B750-76C6295A35D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B53855C-4347-4402-B750-76C6295A35D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B53855C-4347-4402-B750-76C6295A35D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D41FFFF-816C-40B2-95CD-E2DDDCB83784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D41FFFF-816C-40B2-95CD-E2DDDCB83784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D41FFFF-816C-40B2-95CD-E2DDDCB83784}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -186,18 +178,26 @@ Global
 		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE3DAF51-FB29-41FC-AF41-A4BA8D91BFB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4C1A5C9-2327-4181-B7FD-005ED240B09F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4C1A5C9-2327-4181-B7FD-005ED240B09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4C1A5C9-2327-4181-B7FD-005ED240B09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4C1A5C9-2327-4181-B7FD-005ED240B09F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D78506D2-CC97-4063-A800-B16F5A063DE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D78506D2-CC97-4063-A800-B16F5A063DE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D78506D2-CC97-4063-A800-B16F5A063DE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D78506D2-CC97-4063-A800-B16F5A063DE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0A39728-940D-4DBE-A37A-05D4EB57F342}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DADEAD3-0FE9-4199-9817-41A32E6BF450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02356BD7-7E99-457B-BEFF-090CE4DF067D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A05AE2-21C8-4C1C-B422-6AB80F13F63E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95CE7371-17B6-4EEE-8E38-2FDE6347E955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

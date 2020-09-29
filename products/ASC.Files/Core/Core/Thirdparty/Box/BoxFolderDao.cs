@@ -49,10 +49,10 @@ namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public BoxDaoSelector BoxDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
-        public IFolderDao<int> FolderDao { get; }
+        private CrossDao CrossDao { get; }
+        private BoxDaoSelector BoxDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
+        private IFolderDao<int> FolderDao { get; }
 
         public BoxFolderDao(
             IServiceProvider serviceProvider,
@@ -481,6 +481,26 @@ namespace ASC.Files.Thirdparty.Box
         }
 
         public string GetFolderIDShare(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
         {
             return null;
         }

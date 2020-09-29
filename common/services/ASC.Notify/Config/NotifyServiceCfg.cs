@@ -26,7 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
 using ASC.Core.Notify.Senders;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Config
@@ -38,7 +40,7 @@ namespace ASC.Notify.Config
             ServiceProvider = serviceProvider;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public void Configure(NotifyServiceCfg options)
         {

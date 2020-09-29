@@ -184,7 +184,7 @@ namespace ASC.Web.Core.Users
         }
 
         public PeopleNamesSettings PeopleNamesSettings { get; }
-        public SettingsManager SettingsManager { get; }
+        private SettingsManager SettingsManager { get; }
 
         public string Substitute<T>(string resourceKey) where T : class
         {

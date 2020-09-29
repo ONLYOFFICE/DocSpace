@@ -100,7 +100,7 @@ namespace ASC.Common.Threading
 
     public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedTaskQueue>
     {
-        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public ConfigureDistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)

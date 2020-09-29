@@ -24,11 +24,11 @@
 */
 
 
+using System.ComponentModel.DataAnnotations;
+
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Interfaces;
 using ASC.Core.Tenants;
-
-using System.ComponentModel.DataAnnotations;
 
 
 namespace ASC.ApiSystem.Models
@@ -62,8 +62,11 @@ namespace ASC.ApiSystem.Models
         [StringLength(38)]
         public string Module { get; set; }
 
+        //todo: delete after www update
         [StringLength(Web.Core.Utility.PasswordSettings.MaxLength)]
         public string Password { get; set; }
+
+        public string PasswordHash { get; set; }
 
         [StringLength(255)]
         public string PartnerId { get; set; }
@@ -90,5 +93,7 @@ namespace ASC.ApiSystem.Models
         public bool Analytics { get; set; }
 
         public string AppKey { get; set; }
+
+        public bool LimitedControlPanel { get; set; }
     }
 }

@@ -27,15 +27,12 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -44,7 +41,7 @@ namespace ASC.Core.Billing
     public class LicenseReader
     {
         private readonly ILog Log;
-        private readonly string LicensePath;
+        public readonly string LicensePath;
         private readonly string LicensePathTemp;
 
         public const string CustomerIdKey = "CustomerId";
@@ -63,7 +60,7 @@ namespace ASC.Core.Billing
             PaymentManager = paymentManager;
             CoreSettings = coreSettings;
             Configuration = configuration;
-            LicensePath = Configuration["license:file:path"];
+            LicensePath = Configuration["license:file:path"] ?? "";
             LicensePathTemp = LicensePath + ".tmp";
             Log = options.CurrentValue;
         }
@@ -162,14 +159,8 @@ namespace ASC.Core.Billing
                 licenseStream.Seek(0, SeekOrigin.Begin);
             }
 
-            const int bufferSize = 4096;
             using var fs = File.Open(path, FileMode.Create);
-            var buffer = new byte[bufferSize];
-            int readed;
-            while ((readed = licenseStream.Read(buffer, 0, bufferSize)) != 0)
-            {
-                fs.Write(buffer, 0, readed);
-            }
+            licenseStream.CopyTo(fs);
         }
 
         private DateTime Validate(License license)
@@ -220,26 +211,36 @@ namespace ASC.Core.Billing
                 MaxFileSize = defaultQuota.MaxFileSize,
                 MaxTotalSize = defaultQuota.MaxTotalSize,
                 Name = "license",
+                DocsEdition = true,
                 HasDomain = true,
                 Audit = true,
                 ControlPanel = true,
                 HealthCheck = true,
                 Ldap = true,
                 Sso = true,
+                Customization = license.Customization,
                 WhiteLabel = license.WhiteLabel || license.Customization,
+                Branding = license.Branding,
+                SSBranding = license.SSBranding,
                 Update = true,
                 Support = true,
                 Trial = license.Trial,
                 CountPortals = license.PortalCount,
+                DiscEncryption = license.DiscEncryption ?? !license.Trial,
+                PrivacyRoom = !license.Trial,
             };
 
-            TenantManager.SaveTenantQuota(quota);
-
-            if (defaultQuota.CountPortals != license.PortalCount)
+            if (defaultQuota.Name != "overdue" && !defaultQuota.Trial)
             {
-                defaultQuota.CountPortals = license.PortalCount;
-                TenantManager.SaveTenantQuota(defaultQuota);
+                quota.WhiteLabel |= defaultQuota.WhiteLabel;
+                quota.Branding |= defaultQuota.Branding;
+                quota.SSBranding |= defaultQuota.SSBranding;
+                quota.DiscEncryption |= defaultQuota.DiscEncryption;
+
+                quota.CountPortals = Math.Max(defaultQuota.CountPortals, quota.CountPortals);
             }
+
+            TenantManager.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -282,59 +283,62 @@ namespace ASC.Core.Billing
         {
             get
             {
-                if (_date != DateTime.MinValue) return _date;
-
-                _date = DateTime.MaxValue;
-                try
-                {
-                    var versionDate = Configuration["version:release:date"];
-                    var sign = Configuration["version:release:sign"];
-
-                    if (!sign.StartsWith("ASC "))
-                    {
-                        throw new Exception("sign without ASC");
-                    }
-
-                    var splitted = sign.Substring(4).Split(':');
-                    var pkey = splitted[0];
-                    if (pkey != versionDate)
-                    {
-                        throw new Exception("sign with different date");
-                    }
-
-                    var date = splitted[1];
-                    var orighash = splitted[2];
-
-                    var skey = Configuration["core:machinekey"];
-
-                    using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
-                    {
-                        var data = string.Join("\n", date, pkey);
-                        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
-                        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
-                        {
-                            throw new Exception("incorrect hash");
-                        }
-                    }
-
-                    var year = int.Parse(versionDate.Substring(0, 4));
-                    var month = int.Parse(versionDate.Substring(4, 2));
-                    var day = int.Parse(versionDate.Substring(6, 2));
-                    _date = new DateTime(year, month, day);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("VersionReleaseDate", ex);
-                }
+                // release sign is not longer requered
                 return _date;
+
+                //if (_date != DateTime.MinValue) return _date;
+
+                //_date = DateTime.MaxValue;
+                //try
+                //{
+                //    var versionDate = Configuration["version:release:date"];
+                //    var sign = Configuration["version:release:sign"];
+
+                //    if (!sign.StartsWith("ASC "))
+                //    {
+                //        throw new Exception("sign without ASC");
+                //    }
+
+                //    var splitted = sign.Substring(4).Split(':');
+                //    var pkey = splitted[0];
+                //    if (pkey != versionDate)
+                //    {
+                //        throw new Exception("sign with different date");
+                //    }
+
+                //    var date = splitted[1];
+                //    var orighash = splitted[2];
+
+                //var skey = MachinePseudoKeys.GetMachineConstant();
+
+                //using (var hasher = new HMACSHA1(skey))
+                //    {
+                //        var data = string.Join("\n", date, pkey);
+                //        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
+                //        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
+                //        {
+                //            throw new Exception("incorrect hash");
+                //        }
+                //    }
+
+                //    var year = int.Parse(versionDate.Substring(0, 4));
+                //    var month = int.Parse(versionDate.Substring(4, 2));
+                //    var day = int.Parse(versionDate.Substring(6, 2));
+                //    _date = new DateTime(year, month, day);
+                //}
+                //catch (Exception ex)
+                //{
+                //    Log.Error("VersionReleaseDate", ex);
+                //}
+                //return _date;
             }
         }
 
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public PaymentManager PaymentManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private IConfiguration Configuration { get; }
     }
 
     public static class LicenseReaderExtension

@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Data.Backup.Tasks.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,7 +32,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Logging;
+using ASC.Data.Backup.Tasks.Data;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks.Modules
@@ -114,7 +116,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         private Helpers helpers;
         private ILog log;
-        public FilesModuleSpecifics(IOptionsMonitor<ILog> options,Helpers helpers) : base(helpers)
+        public FilesModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
             log = options.CurrentValue;
             this.helpers = helpers;
@@ -266,7 +268,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
                 return true;
             }
-            if(table.Name == "files_folder" && (columnName == "create_by" || columnName == "modified_by"))
+            if (table.Name == "files_folder" && (columnName == "create_by" || columnName == "modified_by"))
             {
                 base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
                 return true;
@@ -308,11 +310,11 @@ namespace ASC.Data.Backup.Tasks.Modules
     }
 
 
-    
+
     public class FilesModuleSpecifics2 : ModuleSpecificsBase
     {
         public FilesModuleSpecifics2(Helpers helpers)
-        :base(helpers)
+        : base(helpers)
         {
 
         }

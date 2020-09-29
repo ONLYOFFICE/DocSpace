@@ -44,15 +44,14 @@ using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core;
-using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 
@@ -150,8 +149,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
             public string Message { get; set; }
 
-            public string[] Addresses { get; set; }
-
             public static string Serialize(TrackResponse response)
             {
                 return JsonSerializer.Serialize(response);
@@ -163,24 +160,23 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class DocumentServiceTrackerHelper
     {
-        public SecurityContext SecurityContext { get; }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public SocketManager SocketManager { get; }
-        public GlobalStore GlobalStore { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public IDaoFactory DaoFactory { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public EntryManager EntryManager { get; }
-        public FileShareLink FileShareLink { get; }
-        public FilesMessageService FilesMessageService { get; }
-        public EncryptionAddressHelper EncryptionAddressHelper { get; }
-        public DocumentServiceConnector DocumentServiceConnector { get; }
-        public NotifyClient NotifyClient { get; }
-        public MailMergeTaskRunner MailMergeTaskRunner { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private SocketManager SocketManager { get; }
+        private GlobalStore GlobalStore { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private IDaoFactory DaoFactory { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private EntryManager EntryManager { get; }
+        private FileShareLink FileShareLink { get; }
+        private FilesMessageService FilesMessageService { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private NotifyClient NotifyClient { get; }
+        private MailMergeTaskRunner MailMergeTaskRunner { get; }
         public ILog Logger { get; }
 
         public DocumentServiceTrackerHelper(
@@ -199,7 +195,6 @@ namespace ASC.Web.Files.Services.DocumentService
             EntryManager entryManager,
             FileShareLink fileShareLink,
             FilesMessageService filesMessageService,
-            EncryptionAddressHelper encryptionAddressHelper,
             DocumentServiceConnector documentServiceConnector,
             NotifyClient notifyClient,
             MailMergeTaskRunner mailMergeTaskRunner)
@@ -218,7 +213,6 @@ namespace ASC.Web.Files.Services.DocumentService
             EntryManager = entryManager;
             FileShareLink = fileShareLink;
             FilesMessageService = filesMessageService;
-            EncryptionAddressHelper = encryptionAddressHelper;
             DocumentServiceConnector = documentServiceConnector;
             NotifyClient = notifyClient;
             MailMergeTaskRunner = mailMergeTaskRunner;
@@ -461,10 +455,6 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.FilesChangeEditors(fileId, !forcesave);
 
             var result = new TrackResponse { Message = saveMessage };
-            if (string.IsNullOrEmpty(saveMessage) && file != null && file.Encrypted)
-            {
-                result.Addresses = EncryptionAddressHelper.GetAddresses(file.ID.ToString()).ToArray();
-            }
             return result;
         }
 
@@ -669,7 +659,6 @@ namespace ASC.Web.Files.Services.DocumentService
                     .AddFilesMessageService()
                     .AddDocumentServiceConnectorService()
                     .AddNotifyClientService()
-                    .AddEncryptionAddressHelperService()
                     .AddSocketManagerService()
                     .AddMailMergeTaskRunnerService();
             }

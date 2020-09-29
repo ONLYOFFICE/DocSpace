@@ -47,10 +47,10 @@ namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public SharePointDaoSelector SharePointDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
-        public IFolderDao<int> FolderDao { get; }
+        private CrossDao CrossDao { get; }
+        private SharePointDaoSelector SharePointDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
+        private IFolderDao<int> FolderDao { get; }
 
         public SharePointFolderDao(
             IServiceProvider serviceProvider,
@@ -439,6 +439,26 @@ namespace ASC.Files.Thirdparty.SharePoint
         public string GetFolderIDShare(bool createIfNotExists)
         {
             return null;
+        }
+
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
+        {
+            throw new NotImplementedException();
         }
 
         public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)

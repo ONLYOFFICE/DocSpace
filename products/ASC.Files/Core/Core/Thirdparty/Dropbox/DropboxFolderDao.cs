@@ -47,10 +47,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public DropboxDaoSelector DropboxDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
-        public IFolderDao<int> FolderDao { get; }
+        private CrossDao CrossDao { get; }
+        private DropboxDaoSelector DropboxDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
+        private IFolderDao<int> FolderDao { get; }
 
         public DropboxFolderDao(
             IServiceProvider serviceProvider,
@@ -478,6 +478,26 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
 
         public string GetFolderIDShare(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
         {
             return null;
         }

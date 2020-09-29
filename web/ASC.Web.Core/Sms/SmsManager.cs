@@ -25,6 +25,7 @@
 
 
 using System;
+
 using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Tenants;
@@ -32,20 +33,21 @@ using ASC.Core.Users;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Core.SMS
 {
     public class SmsManager
     {
-        public UserManager UserManager { get; }
-        public TenantExtra TenantExtra { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
         public SmsKeyStorage SmsKeyStorage { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         public SmsSender SmsSender { get; }
-        public StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
+        private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
 
         public SmsManager(
             UserManager userManager,

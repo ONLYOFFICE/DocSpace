@@ -43,7 +43,7 @@ namespace ASC.Core
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
-        public Constants Constants { get; }
+        internal Constants Constants { get; }
 
         public UserManagerConstants(Constants constants)
         {
@@ -205,9 +205,9 @@ namespace ASC.Core
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
-        public UserInfo GetUsers(int tenant, string login, string passwordHash)
+        public UserInfo GetUsersByPasswordHash(int tenant, string login, string passwordHash)
         {
-            var u = UserService.GetUser(tenant, login, passwordHash);
+            var u = UserService.GetUserByPasswordHash(tenant, login, passwordHash);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 

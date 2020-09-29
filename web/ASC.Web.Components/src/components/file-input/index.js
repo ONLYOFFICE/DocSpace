@@ -120,7 +120,10 @@ class FileInput extends Component {
         fileName: this.inputRef.current.files[0].name,
         file: this.inputRef.current.files[0]
       }, () => {
-        if(onInput) onInput(this.state.file);
+        if(onInput) { 
+          this.inputRef.current.value = '';
+          onInput(this.state.file);
+        };
       });
 
     } 

@@ -32,7 +32,7 @@ using ASC.Core;
 using ASC.Files.Core.Resources;
 using ASC.Notify.Model;
 using ASC.Web.Core.Subscriptions;
-using ASC.Web.Files.Services.NotifyService;
+using ASC.Files.Core.Services.NotifyService;
 
 namespace ASC.Web.Files.Classes
 {
@@ -129,8 +129,8 @@ namespace ASC.Web.Files.Classes
             get { return NotifySource.GetSubscriptionProvider(); }
         }
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public NotifySource NotifySource { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private NotifySource NotifySource { get; }
 
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {

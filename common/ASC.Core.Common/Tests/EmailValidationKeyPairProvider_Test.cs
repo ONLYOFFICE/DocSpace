@@ -30,13 +30,15 @@ using System;
 namespace ASC.Common.Tests.Security.Cryptography
 {
     using System.Security.Cryptography;
+
     using ASC.Security.Cryptography;
+
     using NUnit.Framework;
 
     [TestFixture]
     public class EmailValidationKeyPairProvider_Test
     {
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; set; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; set; }
 
         public void PasswordDerivedBytes_Test()
         {

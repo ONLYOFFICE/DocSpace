@@ -30,10 +30,12 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common.Security.Authentication;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -84,7 +86,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
+            var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
@@ -111,8 +114,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 ProgressStep();
             });
 
-            var globalFolder = scope.ServiceProvider.GetService<GlobalFolder>();
-            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
             var rootIds = new List<int>
                 {
                     globalFolder.GetFolderMy(fileMarker, daoFactory),
@@ -121,11 +122,48 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     globalFolder.GetFolderProjects(daoFactory),
                 };
 
+            if (PrivacyRoomSettings.GetEnabled(settingsManager))
+            {
+                rootIds.Add(globalFolder.GetFolderPrivacy(daoFactory));
+            }
+
             var newrootfolder =
                 rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
             Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+        }
+    }
+
+    public class FileMarkAsReadOperationScope
+    {
+        private FileMarker FileMarker { get; }
+        private GlobalFolder GlobalFolder { get; }
+        private IDaoFactory DaoFactory { get; }
+        private SettingsManager SettingsManager { get; }
+
+        public FileMarkAsReadOperationScope(
+            FileMarker fileMarker,
+            GlobalFolder globalFolder,
+            IDaoFactory daoFactory,
+            SettingsManager settingsManager)
+        {
+            FileMarker = fileMarker;
+            GlobalFolder = globalFolder;
+            DaoFactory = daoFactory;
+            SettingsManager = settingsManager;
+        }
+
+        public void Deconstruct(
+            out FileMarker fileMarker,
+            out GlobalFolder globalFolder,
+            out IDaoFactory daoFactory,
+            out SettingsManager settingsManager)
+        {
+            fileMarker = FileMarker;
+            globalFolder = GlobalFolder;
+            daoFactory = DaoFactory;
+            settingsManager = SettingsManager;
         }
     }
 }

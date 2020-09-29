@@ -40,7 +40,7 @@ namespace ASC.Core.ChunkedUploader
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-        public IOptionsMonitor<ILog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
         private IDataStore DataStore { get; set; }
         private string Domain { get; set; }
         private long MaxChunkUploadSize { get; set; }
@@ -167,7 +167,7 @@ namespace ASC.Core.ChunkedUploader
 
                 if (uploadSession.BytesTotal == uploadSession.BytesUploaded)
                 {
-                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.Read, FileShare.ReadWrite,
+                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite,
                         4096, FileOptions.DeleteOnClose);
                 }
             }

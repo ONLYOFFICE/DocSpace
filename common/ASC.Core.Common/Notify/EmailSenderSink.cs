@@ -27,12 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -44,13 +47,15 @@ namespace ASC.Core.Notify
         private readonly INotifySender sender;
 
 
-        public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+        public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             this.sender = sender ?? throw new ArgumentNullException("sender");
             ServiceProvider = serviceProvider;
+            Log = options.Get("ASC.Notify");
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ILog Log { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
@@ -93,8 +98,9 @@ namespace ASC.Core.Notify
             };
 
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+
+            var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
+            var (tenantManager, configuration, options) = scopeClass;
 
             var tenant = tenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
@@ -144,7 +150,46 @@ namespace ASC.Core.Notify
                 m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
             }
 
+            var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
+            if (autoSubmittedTag != null && autoSubmittedTag.Value is string)
+            {
+                try
+                {
+                    m.AutoSubmitted = autoSubmittedTag.Value.ToString();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
+                }
+            }
+
             return m;
+        }
+    }
+
+    public class EmailSenderSinkScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+
+        public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+            Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
+            => (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+    }
+
+    public static class EmailSenderSinkExtension
+    {
+        public static DIHelper AddEmailSenderSinkService(this DIHelper services)
+        {
+            services.TryAddScoped<EmailSenderSinkScope>();
+            return services;
         }
     }
 }

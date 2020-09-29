@@ -256,7 +256,9 @@ namespace ASC.Data.Backup.Service
             if (services.TryAddScoped<BackupService>())
             {
                 return services
-                    .AddBackupWorkerService();
+                    .AddBackupWorkerService()
+                    .AddBackupStorageFactory()
+                    .AddBackupRepositoryService();
             }
 
             return services;

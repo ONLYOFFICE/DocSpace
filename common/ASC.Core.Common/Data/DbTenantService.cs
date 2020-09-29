@@ -28,12 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -42,8 +44,8 @@ namespace ASC.Core.Data
 {
     public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
     {
-        public TenantDomainValidator TenantDomainValidator { get; }
-        public DbContextManager<TenantDbContext> DbContextManager { get; }
+        private TenantDomainValidator TenantDomainValidator { get; }
+        private DbContextManager<TenantDbContext> DbContextManager { get; }
 
         public ConfigureDbTenantService(
             TenantDomainValidator tenantDomainValidator,
@@ -71,7 +73,7 @@ namespace ASC.Core.Data
         private List<string> forbiddenDomains;
 
         internal TenantDomainValidator TenantDomainValidator { get; set; }
-
+        public MachinePseudoKeys MachinePseudoKeys { get; }
         internal TenantDbContext TenantDbContext { get; set; }
 
         public Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
@@ -91,7 +93,7 @@ namespace ASC.Core.Data
                 PaymentId = r.PaymentId,
                 Spam = r.Spam,
                 Status = r.Status,
-                StatusChangeDate = r.StatusChanged,
+                StatusChangeDate = r.StatusChangedHack ?? DateTime.MinValue,
                 TenantAlias = r.Alias,
                 TenantId = r.Id,
                 MappedDomain = r.MappedDomain,
@@ -109,10 +111,15 @@ namespace ASC.Core.Data
             FromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
         }
 
-        public DbTenantService(DbContextManager<TenantDbContext> dbContextManager, TenantDomainValidator tenantDomainValidator) : this()
+        public DbTenantService(
+            DbContextManager<TenantDbContext> dbContextManager,
+            TenantDomainValidator tenantDomainValidator,
+            MachinePseudoKeys machinePseudoKeys)
+            : this()
         {
             TenantDbContext = dbContextManager.Value;
             TenantDomainValidator = tenantDomainValidator;
+            MachinePseudoKeys = machinePseudoKeys;
         }
 
         public void ValidateDomain(string domain)
@@ -142,31 +149,81 @@ namespace ASC.Core.Data
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
 
-            var q = TenantsQuery()
-                .Where(r => r.Status == TenantStatus.Active)
-                .Join(TenantDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
-                {
-                    tenant,
-                    user
-                })
-                .Join(TenantDbContext.UserSecurity, r => r.user.Id, r => r.UserId, (tenantUser, security) => new TenantUserSecurity
-                {
-                    DbTenant = tenantUser.tenant,
-                    User = tenantUser.user,
-                    UserSecurity = security
+            Func<IQueryable<TenantUserSecurity>> query = () => TenantsQuery()
+                    .Where(r => r.Status == TenantStatus.Active)
+                    .Join(TenantDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
+                    {
+                        tenant,
+                        user
+                    })
+                    .Join(TenantDbContext.UserSecurity, r => r.user.Id, r => r.UserId, (tenantUser, security) => new TenantUserSecurity
+                    {
+                        DbTenant = tenantUser.tenant,
+                        User = tenantUser.user,
+                        UserSecurity = security
 
-                })
-                .Where(r => r.User.Status == EmployeeStatus.Active)
-                .Where(r => r.User.Removed == false)
-                .Where(r => login.Contains('@') ? r.User.Email == login : r.User.Id.ToString() == login);
+                    })
+                    .Where(r => r.User.Status == EmployeeStatus.Active)
+                    .Where(r => r.DbTenant.Status == TenantStatus.Active)
+                    .Where(r => r.User.Removed == false);
 
-
-            if (passwordHash != null)
+            if (passwordHash == null)
             {
-                q.Where(r => r.UserSecurity.PwdHash == passwordHash);
+                var q = query()
+                    .Where(r => login.Contains('@') ? r.User.Email == login : r.User.Id.ToString() == login);
+
+                return q.Select(FromTenantUserToTenant).ToList();
             }
 
-            return q.Select(FromTenantUserToTenant).ToList();
+            if (Guid.TryParse(login, out var userId))
+            {
+                var pwdHash = GetPasswordHash(userId, passwordHash);
+                var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
+                var q = query()
+                    .Where(r => r.User.Id == userId)
+                    .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
+                    ;
+
+                return q.Select(FromTenantUserToTenant).ToList();
+            }
+            else
+            {
+                var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
+
+                var q =
+                    query()
+                    .Where(r => r.UserSecurity.PwdHash == oldHash);
+
+                if (login.Contains('@'))
+                {
+                    q = q.Where(r => r.User.Email == login);
+                }
+                else if (Guid.TryParse(login, out var uId))
+                {
+                    q = q.Where(r => r.User.Id == uId);
+                }
+
+                //old password
+                var result = q.Select(FromTenantUserToTenant).ToList();
+
+                var usersQuery = TenantDbContext.Users
+                    .Where(r => r.Email == login)
+                    .Where(r => r.Status == EmployeeStatus.Active)
+                    .Where(r => !r.Removed)
+                    .Select(r => r.Id)
+                    .ToList();
+
+                var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
+
+                q = query()
+                    .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p));
+
+                //new password
+                result = result.Concat(q.Select(FromTenantUserToTenant)).ToList();
+                result.Distinct();
+
+                return result;
+            }
         }
 
         public Tenant GetTenant(int id)
@@ -382,9 +439,10 @@ namespace ASC.Core.Data
                 {
                     Id = key,
                     Tenant = tenant,
-                    Value = data
+                    Value = data,
+                    LastModified = DateTime.UtcNow
                 };
-                TenantDbContext.CoreSettings.Add(settings);
+                TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
             }
             TenantDbContext.SaveChanges();
             tx.Commit();
@@ -449,6 +507,11 @@ namespace ASC.Core.Data
 
                 throw new TenantAlreadyExistsException("Address busy.", existsTenants);
             }
+        }
+
+        protected string GetPasswordHash(Guid userId, string password)
+        {
+            return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
         }
     }
 

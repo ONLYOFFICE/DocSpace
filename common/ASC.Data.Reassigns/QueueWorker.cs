@@ -49,8 +49,8 @@ namespace ASC.Data.Reassigns
     {
         protected readonly DistributedTaskQueue Queue;
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public IServiceProvider ServiceProvider { get; }
+        protected IHttpContextAccessor HttpContextAccessor { get; }
+        protected IServiceProvider ServiceProvider { get; }
 
         public object SynchRoot = new object();
 
@@ -110,7 +110,7 @@ namespace ASC.Data.Reassigns
 
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
-        public QueueWorkerRemove QueueWorkerRemove { get; }
+        private QueueWorkerRemove QueueWorkerRemove { get; }
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,

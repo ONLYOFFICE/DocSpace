@@ -30,15 +30,17 @@ namespace ASC.Notify.Textile
     using ASC.Core;
     using ASC.Notify.Messages;
     using ASC.Security.Cryptography;
+
     using Microsoft.Extensions.Configuration;
+
     using NUnit.Framework;
 
     [TestFixture]
     public class StylerTests
     {
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public IConfiguration Configuration { get; set; }
-        public InstanceCrypto InstanceCrypto { get; set; }
+        private CoreBaseSettings CoreBaseSettings { get; set; }
+        private IConfiguration Configuration { get; set; }
+        private InstanceCrypto InstanceCrypto { get; set; }
 
         private readonly string pattern = "h1.New Post in Forum Topic: \"==Project(%: \"Sample Title\"==\":\"==http://sssp.teamlab.com==\"" + System.Environment.NewLine +
             "25/1/2022 \"Jim\":\"http://sssp.teamlab.com/myp.aspx\"" + System.Environment.NewLine +

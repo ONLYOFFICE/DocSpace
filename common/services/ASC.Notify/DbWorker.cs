@@ -51,7 +51,7 @@ namespace ASC.Notify
         private readonly string dbid;
         private readonly object syncRoot = new object();
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
         public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)
@@ -79,7 +79,8 @@ namespace ASC.Notify
                 SenderType = m.Sender,
                 CreationDate = new DateTime(m.CreationDate),
                 ReplyTo = m.ReplyTo,
-                Attachments = m.EmbeddedAttachments.ToString()
+                Attachments = m.EmbeddedAttachments.ToString(),
+                AutoSubmitted = m.AutoSubmitted
             };
 
             notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
@@ -135,7 +136,8 @@ namespace ASC.Notify
                                 Content = r.queue.Content,
                                 Sender = r.queue.SenderType,
                                 CreationDate = r.queue.CreationDate.Ticks,
-                                ReplyTo = r.queue.ReplyTo
+                                ReplyTo = r.queue.ReplyTo,
+                                AutoSubmitted = r.queue.AutoSubmitted
                             };
                             try
                             {

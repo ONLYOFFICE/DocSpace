@@ -36,6 +36,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
+using ASC.Web.Studio.Core.Notify;
 
 namespace ASC.Web.Files.Configuration
 {
@@ -44,10 +45,10 @@ namespace ASC.Web.Files.Configuration
         internal const string ProductPath = "/products/files/";
 
         //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public AuthContext AuthContext { get; }
-        public UserManager UserManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private AuthContext AuthContext { get; }
+        private UserManager UserManager { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         //public SubscriptionManager SubscriptionManager { get; }
 
@@ -60,7 +61,8 @@ namespace ASC.Web.Files.Configuration
             //            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
-            UserManager userManager
+            UserManager userManager,
+            IServiceProvider serviceProvider
             //            SubscriptionManager subscriptionManager
             )
         {
@@ -68,6 +70,7 @@ namespace ASC.Web.Files.Configuration
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             UserManager = userManager;
+            ServiceProvider = serviceProvider;
             //SubscriptionManager = subscriptionManager;
         }
 
@@ -101,6 +104,10 @@ namespace ASC.Web.Files.Configuration
                     CanNotBeDisabled = true,
                 };
 
+            if (ServiceProvider != null)
+            {
+                NotifyConfiguration.Configure(ServiceProvider);
+            }
             //SearchHandlerManager.Registry(new SearchHandler());
         }
 
@@ -175,6 +182,7 @@ namespace ASC.Web.Files.Configuration
         {
             if (services.TryAddScoped<ProductEntryPoint>())
             {
+                services.TryAddScoped<IWebItem, ProductEntryPoint>();
                 return services
                     .AddFilesSpaceUsageStatManagerService()
                     .AddCoreBaseSettingsService()

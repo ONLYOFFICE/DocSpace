@@ -28,7 +28,9 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+
 using ASC.Security.Cryptography;
+
 using NUnit.Framework;
 
 namespace ASC.Common.Tests.Security.Cryptography

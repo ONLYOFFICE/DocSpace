@@ -36,9 +36,9 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
-using ASC.Files.Core.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
@@ -49,9 +49,9 @@ namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public SharePointDaoSelector SharePointDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
+        private CrossDao CrossDao { get; }
+        private SharePointDaoSelector SharePointDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
 
         public SharePointFileDao(
             IServiceProvider serviceProvider,
@@ -107,7 +107,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return fileIds.Select(fileId => ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId))).ToList();
         }
 
-        public List<File<string>> GetFilesForShare(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 

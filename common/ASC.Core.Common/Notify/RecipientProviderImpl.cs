@@ -36,7 +36,7 @@ namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider
     {
-        public UserManager UserManager { get; }
+        private UserManager UserManager { get; }
 
         public RecipientProviderImpl(UserManager userManager) =>
             (UserManager) = (userManager);
@@ -110,6 +110,7 @@ namespace ASC.Core.Notify
                     if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
                     if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName) return new[] { user.UserName };
                     if (senderName == ASC.Core.Configuration.Constants.NotifyPushSenderSysName) return new[] { user.UserName };
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyTelegramSenderSysName) return new[] { user.ID.ToString() };
                 }
             }
             return new string[0];

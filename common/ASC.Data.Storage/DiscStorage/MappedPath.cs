@@ -32,7 +32,7 @@ namespace ASC.Data.Storage.DiscStorage
     internal class MappedPath
     {
         public string PhysicalPath { get; set; }
-        public PathUtils PathUtils { get; }
+        private PathUtils PathUtils { get; }
 
         private MappedPath(PathUtils pathUtils)
         {

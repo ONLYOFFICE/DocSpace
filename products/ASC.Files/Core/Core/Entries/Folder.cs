@@ -39,7 +39,11 @@ namespace ASC.Files.Core
         TRASH = 3,
         USER = 5,
         SHARE = 6,
-        Projects = 8
+        Projects = 8,
+        Favorites = 10,
+        Recent = 11,
+        Templates = 12,
+        Privacy = 13,
     }
 
     [DebuggerDisplay("{Title} ({ID})")]

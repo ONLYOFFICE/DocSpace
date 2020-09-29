@@ -106,20 +106,11 @@ namespace ASC.Data.Reassigns
 
         public void RunJob()
         {
-            var logger = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Web");
-
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
+            var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
+            var logger = options.Get("ASC.Web");
             var tenant = tenantManager.SetCurrentTenant(_tenantId);
-
-            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var messageService = scope.ServiceProvider.GetService<MessageService>();
-            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
-            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
 
             try
             {
@@ -140,7 +131,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
 
-                if (!coreSettings.CustomMode)
+                if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 
@@ -224,11 +215,74 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    public class ReassignProgressItemScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private MessageService MessageService { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private MessageTarget MessageTarget { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+
+        public ReassignProgressItemScope(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            MessageService messageService,
+            StudioNotifyService studioNotifyService,
+            SecurityContext securityContext,
+            UserManager userManager,
+            UserPhotoManager userPhotoManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            MessageTarget messageTarget,
+            IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            MessageService = messageService;
+            StudioNotifyService = studioNotifyService;
+            SecurityContext = securityContext;
+            UserManager = userManager;
+            UserPhotoManager = userPhotoManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            MessageTarget = messageTarget;
+            Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, 
+            out CoreBaseSettings coreBaseSettings,
+            out MessageService messageService,
+            out StudioNotifyService studioNotifyService,
+            out SecurityContext securityContext,
+            out UserManager userManager, 
+            out UserPhotoManager userPhotoManager,
+            out DisplayUserSettingsHelper displayUserSettingsHelper, 
+            out MessageTarget messageTarget, 
+            out IOptionsMonitor<ILog> optionsMonitor )
+        {
+            tenantManager = TenantManager;
+            coreBaseSettings = CoreBaseSettings;
+            messageService = MessageService;
+            studioNotifyService = StudioNotifyService;
+            securityContext = SecurityContext;
+            userManager = UserManager;
+            userPhotoManager = UserPhotoManager;
+            displayUserSettingsHelper = DisplayUserSettingsHelper;
+            messageTarget = MessageTarget;
+            optionsMonitor = Options;
+        }
+    }
+
     public static class ReassignProgressItemExtension
     {
         public static DIHelper AddReassignProgressItemService(this DIHelper services)
         {
-            services.TryAddScoped<ReassignProgressItem>();
+            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+            services.TryAddScoped<ReassignProgressItemScope>();
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
             return services;
         }
     }

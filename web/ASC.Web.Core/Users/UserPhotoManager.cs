@@ -193,13 +193,13 @@ namespace ASC.Web.Core.Users
                     @"(?'user'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){1}" +
                     @"_(?'kind'orig|size){1}_(?'size'(?'width'[0-9]{1,5})-{1}(?'height'[0-9]{1,5})){0,1}\..*", RegexOptions.Compiled);
 
-        public UserManager UserManager { get; }
-        public WebImageSupplier WebImageSupplier { get; }
-        public TenantManager TenantManager { get; }
-        public StorageFactory StorageFactory { get; }
-        public UserPhotoManagerCache UserPhotoManagerCache { get; }
-        public SettingsManager SettingsManager { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private UserManager UserManager { get; }
+        private WebImageSupplier WebImageSupplier { get; }
+        private TenantManager TenantManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private UserPhotoManagerCache UserPhotoManagerCache { get; }
+        private SettingsManager SettingsManager { get; }
+        private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         private Tenant tenant;

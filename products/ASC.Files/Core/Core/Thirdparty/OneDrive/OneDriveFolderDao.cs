@@ -47,10 +47,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 {
     internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
     {
-        public CrossDao CrossDao { get; }
-        public OneDriveDaoSelector OneDriveDaoSelector { get; }
-        public IFileDao<int> FileDao { get; }
-        public IFolderDao<int> FolderDao { get; }
+        private CrossDao CrossDao { get; }
+        private OneDriveDaoSelector OneDriveDaoSelector { get; }
+        private IFileDao<int> FileDao { get; }
+        private IFolderDao<int> FolderDao { get; }
 
         public OneDriveFolderDao(
             IServiceProvider serviceProvider,
@@ -481,6 +481,26 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
         public string GetFolderIDShare(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
         {
             return null;
         }

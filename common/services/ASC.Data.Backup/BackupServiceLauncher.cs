@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Utils;
+using ASC.Data.Backup.Listerners;
 using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Configuration;
@@ -39,24 +40,27 @@ namespace ASC.Data.Backup.Service
 {
     internal class BackupServiceLauncher : IHostedService
     {
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private IConfiguration Configuration { get; set; }
+        private BackupListener BackupListener { get; set; }
 
         public BackupServiceLauncher(
             IServiceProvider serviceProvider,
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            BackupListener backupListener)
         {
             ServiceProvider = serviceProvider;
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
+            BackupListener = backupListener;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -66,6 +70,7 @@ namespace ASC.Data.Backup.Service
             var settings = Configuration.GetSetting<BackupSettings>("backup");
 
             BackupWorker.Start(settings);
+            BackupListener.Start();
 
             CleanerService.Period = settings.Cleaner.Period;
             CleanerService.Start();
@@ -79,6 +84,7 @@ namespace ASC.Data.Backup.Service
         public Task StopAsync(CancellationToken cancellationToken)
         {
             BackupWorker.Stop();
+            BackupListener.Stop();
             if (CleanerService != null)
             {
                 CleanerService.Stop();
@@ -101,7 +107,8 @@ namespace ASC.Data.Backup.Service
                 .AddBackupCleanerService()
                 .AddBackupSchedulerService()
                 .AddBackupWorkerService()
-                .AddBackupService();
+                .AddBackupService()
+                .AddBackupListenerService();
         }
     }
 }

@@ -63,7 +63,7 @@ namespace ASC.Files.Core
 
     public class ChunkedUploadSessionHelper
     {
-        public EntryManager EntryManager { get; }
+        private EntryManager EntryManager { get; }
         public ILog Logger { get; }
 
         public ChunkedUploadSessionHelper(IOptionsMonitor<ILog> options, EntryManager entryManager)

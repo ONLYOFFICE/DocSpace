@@ -61,6 +61,18 @@
   <data name="BackupSpaceExceed" xml:space="preserve">
     <value>La función de Backup no está disponible porque el espacio de almacenamiento excede {0}. Pase a la sección {1}Estadística{2} para obtener información sobre espacio usado.</value>
   </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>Licencia ha caducado o cuota de los usuarios no coincide con la licencia</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>La clave de la licencia no es correcta</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Tiene que meter la clave de la licencia</value>
+  </data>
+  <data name="NewDocument" xml:space="preserve">
+    <value>Nuevo documento</value>
+  </data>
   <data name="TariffPerMonth" xml:space="preserve">
     <value>mes</value>
   </data>

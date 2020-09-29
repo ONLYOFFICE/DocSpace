@@ -68,6 +68,7 @@ namespace ASC.Files.Thirdparty
         SharePoint,
         SkyDrive,
         WebDav,
+        kDrive,
         Yandex,
     }
 
@@ -75,14 +76,14 @@ namespace ASC.Files.Thirdparty
     {
         private int tenantID;
         protected int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
-        public FilesDbContext FilesDbContext { get; }
+        private FilesDbContext FilesDbContext { get; }
         public ILog Logger { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public TenantUtil TenantUtil { get; }
-        public TenantManager TenantManager { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public SecurityContext SecurityContext { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private TenantUtil TenantUtil { get; }
+        private TenantManager TenantManager { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private SecurityContext SecurityContext { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public ProviderAccountDao(
             IServiceProvider serviceProvider,
