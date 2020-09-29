@@ -92,7 +92,7 @@ namespace ASC.Data.Backup
 
         private void OnProgressChanged(string status, int progress)
         {
-            if (ProgressChanged != null) ProgressChanged(this, new ProgressChangedEventArgs(status, progress));
+            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
         }
 
 
