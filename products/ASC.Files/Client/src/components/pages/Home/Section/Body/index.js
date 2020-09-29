@@ -22,16 +22,11 @@ import Tile from "./Tile";
 
 import { api, constants, MediaViewer, toastr, Loaders } from "asc-web-common";
 import {
-  deleteFile,
-  deleteFolder,
   deselectFile,
   fetchFiles,
   selectFile,
   setAction,
   setTreeFolders,
-  moveToFolder,
-  copyToFolder,
-  getProgress,
   setDragging,
   setDragItem,
   setMediaViewerData,
@@ -285,20 +280,20 @@ class SectionBodyContent extends React.Component {
   };
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { deleteFile, t, setProgressBarData } = this.props;
+    const { t, setProgressBarData, clearProgressData } = this.props;
     setProgressBarData({
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
     });
-    deleteFile(fileId)
+    api.files.deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false);
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
@@ -308,11 +303,10 @@ class SectionBodyContent extends React.Component {
       treeFolders,
       setTreeFolders,
       currentFolderType,
-      getProgress,
       t,
       setProgressBarData,
     } = this.props;
-    getProgress().then((res) => {
+    api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
         setProgressBarData({
@@ -344,27 +338,27 @@ class SectionBodyContent extends React.Component {
           })
           .catch((err) => {
             toastr.error(err);
-            clearProgressData(store.dispatch);
+            this.props.clearProgressData();
           })
           .finally(() =>
-            setTimeout(() => clearProgressData(store.dispatch), 5000)
+            setTimeout(() => this.props.clearProgressData(), 5000)
           );
       }
     });
   };
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder, t, setProgressBarData } = this.props;
+    const { t, setProgressBarData, clearProgressData } = this.props;
     const progressLabel = t("DeleteOperation");
     setProgressBarData({ visible: true, percent: 0, label: progressLabel });
-    deleteFolder(folderId, currentFolderId)
+    api.files.deleteFolder(folderId, currentFolderId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true);
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
@@ -1194,9 +1188,9 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { copyToFolder, loopFilesOperations } = this.props;
+    const { loopFilesOperations, clearProgressData } = this.props;
 
-    copyToFolder(
+    api.files.copyToFolder(
       destFolderId,
       folderIds,
       fileIds,
@@ -1209,7 +1203,7 @@ class SectionBodyContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
@@ -1220,9 +1214,9 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { moveToFolder, loopFilesOperations } = this.props;
+    const { loopFilesOperations, clearProgressData } = this.props;
 
-    moveToFolder(
+    api.files.moveToFolder(
       destFolderId,
       folderIds,
       fileIds,
@@ -1235,7 +1229,7 @@ class SectionBodyContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
@@ -1630,17 +1624,11 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  deleteFile,
-  deleteFolder,
   deselectFile,
   fetchFiles,
-  //fetchRootFolders,
   selectFile,
   setAction,
   setTreeFolders,
-  moveToFolder,
-  copyToFolder,
-  getProgress,
   setDragging,
   setDragItem,
   setMediaViewerData,
@@ -1649,4 +1637,5 @@ export default connect(mapStateToProps, {
   setSelected,
   setNewTreeFilesBadge,
   setIsLoading,
+  clearProgressData
 })(withRouter(withTranslation()(SectionBodyContent)));

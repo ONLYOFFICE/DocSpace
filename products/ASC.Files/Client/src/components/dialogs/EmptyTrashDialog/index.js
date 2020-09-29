@@ -3,7 +3,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import { fetchFiles, clearProgressData } from "../../../store/files/actions";
+import { fetchFiles } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -23,8 +23,8 @@ const EmptyTrashDialogComponent = props => {
     filter,
     currentFolderId,
     setProgressBarData,
-    getProgress,
-    isLoading
+    isLoading,
+    clearProgressData
   } = props;
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const EmptyTrashDialogComponent = props => {
   const loopEmptyTrash = useCallback(
     id => {
       const successMessage = "Success empty recycle bin";
-      getProgress()
+      api.files.getProgress()
         .then(res => {
           const currentProcess = res.find(x => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
@@ -53,21 +53,21 @@ const EmptyTrashDialogComponent = props => {
                   percent: 100,
                   label: t("DeleteOperation")
                 });
-                setTimeout(() => clearProgressData(store.dispatch), 5000);
+                setTimeout(() => clearProgressData(), 5000);
                 toastr.success(successMessage);
               })
               .catch(err => {
                 toastr.error(err);
-                clearProgressData(store.dispatch);
+                clearProgressData();
               });
           }
         })
         .catch(err => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     },
-    [t, currentFolderId, filter, getProgress, setProgressBarData]
+    [t, currentFolderId, filter, setProgressBarData, clearProgressData]
   );
 
   const onEmptyTrash = useCallback(() => {
@@ -86,9 +86,9 @@ const EmptyTrashDialogComponent = props => {
       })
       .catch(err => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
-  }, [onClose, loopEmptyTrash, setProgressBarData, t]);
+  }, [onClose, loopEmptyTrash, setProgressBarData, t, clearProgressData]);
 
   return (
     <ModalDialogContainer>
@@ -97,7 +97,6 @@ const EmptyTrashDialogComponent = props => {
         <ModalDialog.Body>
           <Text>{t("EmptyTrashDialogQuestion")}</Text>
           <Text>{t("EmptyTrashDialogMessage")}</Text>
-          <Text>{t("EmptyTrashDialogWarning")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button

@@ -5,7 +5,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
-import { setTreeFolders, getProgress } from "../../../store/files/actions";
+import { setTreeFolders } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "ConvertDialog",
@@ -115,7 +115,4 @@ const mapStateToProps = state => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  { setTreeFolders, getProgress }
-)(withRouter(ConvertDialog));
+export default connect(mapStateToProps, { setTreeFolders })(withRouter(ConvertDialog));

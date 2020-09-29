@@ -334,12 +334,6 @@ export function fetchMyFolder(dispatch) {
   });
 }
 
-export function getFolder(folderId) {
-  return dispatch => {
-    return files.getFolder(folderId);
-  };
-}
-
 export function fetchTrashFolder(dispatch) {
   return files.getTrashFolderList().then(data => {
     dispatch(setFiles(data.files));
@@ -427,16 +421,6 @@ export function renameFolder(folderId, title) {
   };
 }
 
-export function deleteFile(fileId, deleteAfter, immediately) {
-  return dispatch => {
-    return files.deleteFile(fileId, deleteAfter, immediately);
-  };
-}
-
-export function deleteFolder(folderId, deleteAfter, immediately) {
-  return dispatch => api.files.deleteFolder(folderId, deleteAfter, immediately);
-}
-
 export function setShareFiles(
   folderIds,
   fileIds,
@@ -466,51 +450,10 @@ export function getShareUsers(folderIds, fileIds) {
   return axios.all(requests).then(res => res);
 }
 
-export function getProgress() {
+export function clearProgressData() {
   return dispatch => {
-    return files.getProgress();
-  };
-}
-
-export function copyToFolder(
-  destFolderId,
-  folderIds,
-  fileIds,
-  conflictResolveType,
-  deleteAfter
-) {
-  return dispatch => {
-    return files.copyToFolder(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );
-  };
-}
-
-export function moveToFolder(
-  destFolderId,
-  folderIds,
-  fileIds,
-  conflictResolveType,
-  deleteAfter
-) {
-  return dispatch => {
-    return files.moveToFolder(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );
-  };
-}
-
-export function clearProgressData(dispatch) {
-  const emptyProgressData = { visible: false, percent: 0, label: "" };
-  dispatch(setProgressBarData(emptyProgressData));
+    dispatch(setProgressBarData({ visible: false, percent: 0, label: "" }));
+  }
 }
 
 /*export function deleteGroup(id) {

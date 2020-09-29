@@ -14,7 +14,6 @@ import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setTreeFolders,
-  getProgress,
   setProgressBarData,
   clearProgressData,
   setNewTreeFilesBadge
@@ -60,12 +59,12 @@ class DeleteDialogComponent extends React.Component {
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
-      getProgress,
       setProgressBarData,
+      clearProgressData,
       t
     } = this.props;
     const successMessage = "Files and folders was deleted";
-    getProgress()
+    api.files.getProgress()
       .then(res => {
         const currentProcess = res.find(x => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
@@ -81,7 +80,7 @@ class DeleteDialogComponent extends React.Component {
             label: t("DeleteOperation"),
             visible: true
           });
-          setTimeout(() => clearProgressData(store.dispatch), 5000);
+          setTimeout(() => clearProgressData(), 5000);
           fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
             if (!isRecycleBinFolder) {
               const path = data.selectedFolder.pathParts.slice(0);
@@ -98,12 +97,12 @@ class DeleteDialogComponent extends React.Component {
       })
       .catch(err => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
   onDelete = () => {
-    const { isRecycleBinFolder, onClose, t, setProgressBarData } = this.props;
+    const { isRecycleBinFolder, onClose, t, setProgressBarData, clearProgressData } = this.props;
     const { selection } = this.state;
 
     const deleteAfter = true; //Delete after finished
@@ -138,7 +137,7 @@ class DeleteDialogComponent extends React.Component {
         })
         .catch(err => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     }
   };
@@ -273,5 +272,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setTreeFolders, getProgress, setProgressBarData, setNewTreeFilesBadge }
+  { setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge }
 )(withRouter(DeleteDialog));

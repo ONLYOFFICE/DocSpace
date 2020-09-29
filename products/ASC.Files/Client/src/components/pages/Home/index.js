@@ -21,8 +21,6 @@ import {
   clearProgressData,
   deselectFile,
   fetchFiles,
-  getFolder,
-  getProgress,
   selectFile,
   setDragging,
   setFilter,
@@ -241,20 +239,20 @@ class PureHome extends React.Component {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
+    console.log("loopFilesOperations");
     const {
       currentFolderId,
       filter,
-      getFolder,
-      getProgress,
       isRecycleBinFolder,
       progressData,
       setNewTreeFilesBadge,
       setProgressBarData,
       treeFolders,
       fetchFiles,
+      clearProgressData
     } = this.props;
 
-    getProgress()
+    api.files.getProgress()
       .then((res) => {
         const currentItem = res.find((x) => x.id === id);
         if (currentItem && currentItem.progress !== 100) {
@@ -273,7 +271,7 @@ class PureHome extends React.Component {
             percent: 100,
             visible: true,
           });
-          getFolder(destFolderId)
+          api.files.getFolder(destFolderId)
             .then((data) => {
               let newTreeFolders = treeFolders;
               let path = data.pathParts.slice(0);
@@ -583,8 +581,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     deselectFile: (file) => dispatch(deselectFile(file)),
-    getFolder: () => dispatch(getFolder()),
-    getProgress: () => dispatch(getProgress()),
     selectFile: (file) => dispatch(selectFile(file)),
     setDragging: (dragging) => dispatch(setDragging(dragging)),
     setFilter: (filter) => dispatch(setFilter(filter)),
@@ -598,7 +594,7 @@ const mapDispatchToProps = (dispatch) => {
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
-    clearProgressData: () => clearProgressData(dispatch),
+    clearProgressData: () => dispatch(clearProgressData())
   };
 };
 

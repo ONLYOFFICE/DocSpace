@@ -15,7 +15,6 @@ import {
 import {
   fetchFiles,
   setAction,
-  getProgress,
   setProgressBarData,
   clearProgressData,
   setIsLoading,
@@ -200,7 +199,7 @@ class SectionHeaderContent extends React.Component {
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
   loop = (url) => {
-    this.props
+    api.files
       .getProgress()
       .then((res) => {
         if (!url) {
@@ -211,18 +210,18 @@ class SectionHeaderContent extends React.Component {
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
-          setTimeout(() => clearProgressData(filesStore.dispatch), 5000);
+          setTimeout(() => this.props.clearProgressData(filesStore.dispatch), 5000);
           return window.open(url, "_blank");
         }
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData(filesStore.dispatch);
+        this.props.clearProgressData(filesStore.dispatch);
       });
   };
 
   downloadAction = () => {
-    const { t, selection, setProgressBarData } = this.props;
+    const { t, selection, setProgressBarData, clearProgressData } = this.props;
     const fileIds = [];
     const folderIds = [];
     const items = [];
@@ -349,10 +348,10 @@ class SectionHeaderContent extends React.Component {
       currentFolderId,
       setIsLoading,
       isLoading,
-      getProgress,
       loopFilesOperations,
       setProgressBarData,
       isCanCreate,
+      clearProgressData
     } = this.props;
 
     const {
@@ -575,7 +574,7 @@ class SectionHeaderContent extends React.Component {
           <EmptyTrashDialog
             {...operationsPanelProps}
             setProgressBarData={setProgressBarData}
-            getProgress={getProgress}
+            clearProgressData={clearProgressData}
             currentFolderId={currentFolderId}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
@@ -650,7 +649,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setAction,
-  getProgress,
   setProgressBarData,
   setIsLoading,
+  clearProgressData
 })(withTranslation()(withRouter(SectionHeaderContent)));

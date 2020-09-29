@@ -264,7 +264,7 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ showConvertDialog: !this.state.showConvertDialog });
 
   getConvertProgress = fileId => {
-    const { selectedFolder, filter, setIsLoading, setProgressBarData, t } = this.props;
+    const { selectedFolder, filter, setIsLoading, setProgressBarData, t, clearProgressData } = this.props;
     api.files.getConvertFile(fileId).then(res => {
       if (res && res[0] && res[0].progress !== 100) {
         setProgressBarData({ visible: true, percent: res[0].progress, label: t("Convert") });
@@ -272,7 +272,7 @@ class FilesRowContent extends React.PureComponent {
       } else {
         if (res[0].error) {
           toastr.error(res[0].error);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         } else {
           setProgressBarData({ visible: true, percent: 100, label: t("Convert") });
           setTimeout(() => clearProgressData(), 5000)
@@ -535,6 +535,15 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setTreeFolders, setProgressBarData, setNewTreeFilesBadge, setNewRowItems, setIsLoading })(
-  withRouter(withTranslation()(FilesRowContent))
-);
+export default connect(mapStateToProps, {
+  createFile,
+  createFolder,
+  updateFile,
+  renameFolder,
+  setTreeFolders,
+  setProgressBarData,
+  setNewTreeFilesBadge,
+  setNewRowItems,
+  setIsLoading,
+  clearProgressData
+})(withRouter(withTranslation()(FilesRowContent)));
