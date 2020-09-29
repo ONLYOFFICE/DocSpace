@@ -248,13 +248,7 @@ namespace ASC.Data.Backup
 
             public override int GetHashCode()
             {
-                unchecked
-                {
-                    var result = (Module != null ? Module.GetHashCode() : 0);
-                    result = (result * 397) ^ (Domain != null ? Domain.GetHashCode() : 0);
-                    result = (result * 397) ^ (Path != null ? Path.GetHashCode() : 0);
-                    return result;
-                }
+                return HashCode.Combine(Module, Domain, Path);
             }
         }
     }

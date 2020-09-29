@@ -89,13 +89,7 @@ namespace ASC.Web.Core.Users
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var result = UserId.GetHashCode();
-                result = (result * 397) ^ MaxFileSize.GetHashCode();
-                result = (result * 397) ^ Size.GetHashCode();
-                return result;
-            }
+            return HashCode.Combine(UserId, MaxFileSize, Size);
         }
     }
 
