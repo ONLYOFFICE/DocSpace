@@ -456,6 +456,16 @@ class SectionBodyContent extends React.Component {
           'data-id': item.id
         }
         : null,
+      isFile ?
+         {
+          key: "mark-as-favorite",
+          label: t("MarkAsFavorite"),
+          icon: 'FavoritesIcon',
+          onClick: null,
+          disabled: false,
+          'data-id': item.id
+        }
+        : null,
       (isFile && isMediaOrImage)
         ? {
           key: "view",
@@ -509,6 +519,20 @@ class SectionBodyContent extends React.Component {
         onClick: this.onClickDelete,
         disabled: false
       },
+      {
+        key: "sep",
+        isSeparator: true
+      },
+      isFile ?
+      {
+       key: "remove-from-favorites",
+       label: t("RemoveFromFavorites"),
+       icon: 'FavoritesIcon',
+       onClick: null,
+       disabled: false,
+       'data-id': item.id
+     }
+     : null
     ];
 
     return menu;
