@@ -13,7 +13,7 @@ import {
   Error404,
   StudioLayout,
   Offline,
-  ComingSoon
+  ComingSoon,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 //import store from "./store/store";
@@ -22,12 +22,12 @@ const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
-
+const Payments = lazy(() => import("./components/pages/Payments"));
 const {
   setIsLoaded,
   getUser,
   getPortalSettings,
-  getModules
+  getModules,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
@@ -62,7 +62,7 @@ class App extends React.Component {
 
     axios
       .all(requests)
-      .catch(e => {
+      .catch((e) => {
         console.log("INIT REQUESTS FAILED", e);
       })
       .finally(() => {
@@ -87,7 +87,7 @@ class App extends React.Component {
                 path={[
                   "/login",
                   "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail"
+                  "/login/confirmed-email=:confirmedEmail",
                 ]}
                 component={Login}
               />
@@ -104,6 +104,7 @@ class App extends React.Component {
                 path={["/coming-soon"]}
                 component={ComingSoon}
               />
+              <PrivateRoute path="/payments" component={Payments} />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
@@ -115,27 +116,24 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { modules, isLoaded, settings } = state.auth;
   const { homepage, organizationName } = settings;
   return {
     modules,
     isLoaded,
     homepage,
-    organizationName
+    organizationName,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
