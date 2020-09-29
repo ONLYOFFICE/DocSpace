@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    public class FilesDbContext : BaseDbContext
+    public partial class FilesDbContext : BaseDbContext
     {
         public DbSet<DbFile> Files { get; set; }
         public DbSet<DbFolder> Folders { get; set; }
@@ -23,17 +23,25 @@ namespace ASC.Files.Core.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            ModelBuilderWrapper
+                .From(modelBuilder, new Provider())
                 .AddDbFiles()
+                .AddDbFolder()
                 .AddDbFolderTree()
+                .AddDbFilesThirdpartyAccount()
                 .AddDbFilesBunchObjects()
                 .AddDbFilesSecurity()
                 .AddDbFilesThirdpartyIdMapping()
                 .AddDbFilesTagLink()
-                .AddDbFilesThirdpartyApp()
+                .AddDbFilesTag()
+                .AddDbDbFilesThirdpartyApp()
                 .AddDbEncryptedData()
-                .MySqlAddDbTenant();
+                .AddDbTenant()
+                .Finish();
+            
+            OnModelCreatingPartial(modelBuilder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class FilesDbExtension
