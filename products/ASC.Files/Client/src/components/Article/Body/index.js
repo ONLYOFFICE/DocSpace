@@ -251,13 +251,14 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setFilter,
-    setTreeFolders,
-    setDragItem,
-    setDragging,
-    setNewTreeFilesBadge,
-    setIsLoading,
-    setSelectedNode,
+    setFilter: (filter) => dispatch(setFilter(filter)),
+    setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
+    setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
+    setDragging: (dragging) => dispatch(setDragging(dragging)),
+    setNewTreeFilesBadge: (updateTreeNew) =>
+      dispatch(setNewTreeFilesBadge(updateTreeNew)),
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
     fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
   };
 };

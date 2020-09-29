@@ -188,7 +188,7 @@ class PureHome extends React.Component {
   };
 
   onDrop = (files, e, uploadToFolder) => {
-    const { t, currentFolderId, startUpload } = this.props;
+    const { t, currentFolderId } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
     this.props.setDragging(false);
@@ -416,7 +416,7 @@ class PureHome extends React.Component {
       viewAs,
       isLoading,
       convertDialogVisible,
-      fileActionId
+      fileActionId,
     } = this.props;
 
     // const progressBarContent = (
@@ -576,19 +576,21 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deselectFile,
+    deselectFile: (file) => dispatch(deselectFile(file)),
     getFolder,
     getProgress,
-    selectFile,
-    setDragging,
-    setFilter,
-    setNewTreeFilesBadge,
-    setProgressBarData,
-    setSelected,
-    setTreeFolders,
-    startUpload,
-    setIsLoading,
-    setFirstLoad,
+    selectFile: (file) => dispatch(selectFile(file)),
+    setDragging: (dragging) => dispatch(setDragging(dragging)),
+    setFilter: (filter) => dispatch(setFilter(filter)),
+    setNewTreeFilesBadge: (updateTreeNew) =>
+      dispatch(setNewTreeFilesBadge(updateTreeNew)),
+    setProgressBarData: (progressData) =>
+      dispatch(setProgressBarData(progressData)),
+    setSelected: (selected) => dispatch(setSelected(selected)),
+    setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
+    //startUpload: () => dispatch(),
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
     clearProgressData: () => clearProgressData(dispatch),
   };
