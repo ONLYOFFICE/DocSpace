@@ -70,6 +70,7 @@
   "SharedEmptyContainerDescription": "The 'Shared with Me' section is used to show the files which your friends or colleagues gave you access to. In case you haven't seen the latest changes in the documents they are marked 'new'. You can remove the files from the list clicking the appropriate button.",
   "CommonEmptyContainerDescription": "The 'Common Documents' section shows all the documents shared by portal administrator for common access. Only portal administrator can create folders in this section, but with the access granted the portal users can also upload their files here. Drag-and-drop the files from your computer here to upload them to your portal even more easily.",
   "TrashEmptyContainerDescription": "The 'Recycle Bin' section is where all the deleted files are moved. You can either restore them in case they are deleted by mistake or delete them permanently. Please note, that when you delete the files from the 'Recycle Bin' they cannot be restored any longer.",
+  "FavoritesEmptyContainerDescription": "To mark files as favorites or remove them from this list, use the context menu.",
   "GoToMyButton": "Go to My Documents",
   "BackToParentFolderButton" : "Back to parent folder",
   "EmptyFolderHeader": "No files in this folder",

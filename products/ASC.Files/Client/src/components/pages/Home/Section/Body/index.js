@@ -633,6 +633,7 @@ class SectionBodyContent extends React.Component {
     const shareDescription = t("SharedEmptyContainerDescription");
     const commonDescription = t("CommonEmptyContainerDescription");
     const trashDescription = t("TrashEmptyContainerDescription");
+    const favoritesDescription = t("FavoritesEmptyContainerDescription");
 
     const commonButtons = (
       <>
@@ -731,6 +732,17 @@ class SectionBodyContent extends React.Component {
             descriptionText={trashDescription}
             imageSrc="images/empty_screen_trash.png"
             buttons={trashButtons}
+            widthProp={widthProp}
+          />
+        );
+      case "Favorites":
+        return (
+          <EmptyFolderContainer
+            headerText={title}
+            subheadingText={subheadingText}
+            descriptionText={favoritesDescription}
+            imageSrc="images/empty_screen_favorites.png"
+            //buttons={null}
             widthProp={widthProp}
           />
         );
