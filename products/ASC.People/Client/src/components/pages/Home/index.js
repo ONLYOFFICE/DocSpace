@@ -2,26 +2,26 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { RequestLoader } from "asc-web-components";
+//import { RequestLoader } from "asc-web-components";
 import { PageLayout, utils, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
-  ArticleMainButtonContent
+  ArticleMainButtonContent,
 } from "../../Article";
 import {
   SectionHeaderContent,
   SectionBodyContent,
   SectionFilterContent,
-  SectionPagingContent
+  SectionPagingContent,
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
 const i18n = createI18N({
   page: "Home",
-  localesPath: "pages/Home"
+  localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
@@ -34,7 +34,7 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false
+      isLoading: false,
     };
   }
 
@@ -65,13 +65,21 @@ class PureHome extends React.Component {
     if (this.props.selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
     }
+
+    if (this.props.isLoading !== prevProps.isLoading) {
+      if (this.props.isLoading) {
+        utils.showLoader();
+      } else {
+        utils.hideLoader();
+      }
+    }
   }
 
-  onSectionHeaderContentCheck = checked => {
+  onSectionHeaderContentCheck = (checked) => {
     this.props.setSelected(checked ? "all" : "none");
   };
 
-  onSectionHeaderContentSelect = selected => {
+  onSectionHeaderContentSelect = (selected) => {
     this.props.setSelected(selected);
   };
 
@@ -81,7 +89,7 @@ class PureHome extends React.Component {
     this.setState({ isHeaderVisible: false });
   };
 
-  onLoading = status => {
+  onLoading = (status) => {
     this.setState({ isLoading: status });
   };
 
@@ -90,12 +98,12 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      selected
+      selected,
     } = this.state;
-    const { t, isAdmin } = this.props;
+    const { isAdmin } = this.props;
     return (
       <>
-        <RequestLoader
+        {/* <RequestLoader
           visible={this.state.isLoading}
           zIndex={256}
           loaderSize="16px"
@@ -103,7 +111,7 @@ class PureHome extends React.Component {
           label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
           fontSize="12px"
           fontColor={"#999"}
-        />
+        /> */}
         <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -155,7 +163,7 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = props => {
+const Home = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -171,7 +179,7 @@ Home.propTypes = {
   users: PropTypes.array,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -184,11 +192,8 @@ function mapStateToProps(state) {
     groups,
     isLoaded: state.auth.isLoaded,
     organizationName: state.auth.settings.organizationName,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { setSelected }
-)(withRouter(Home));
+export default connect(mapStateToProps, { setSelected })(withRouter(Home));
