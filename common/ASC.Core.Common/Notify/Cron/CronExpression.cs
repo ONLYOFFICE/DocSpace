@@ -443,7 +443,7 @@ namespace ASC.Notify.Cron
                 }
                 if (type == DayOfWeek && !lastdayOfMonth)
                 {
-                    var val = (int)daysOfMonth[daysOfMonth.Count - 1];
+                    var val = (int)daysOfMonth[^1];
                     if (val == NoSpecInt)
                     {
                         throw new FormatException(
