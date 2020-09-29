@@ -159,7 +159,6 @@ namespace ASC.Data.Storage
     {
         private const string DefaultTenantName = "default";
 
-        private StorageFactoryListener StorageFactoryListener { get; }
         private StorageFactoryConfig StorageFactoryConfig { get; }
         private SettingsManager SettingsManager { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
@@ -173,7 +172,6 @@ namespace ASC.Data.Storage
         private EncryptionFactory EncryptionFactory { get; }
 
         public StorageFactory(
-            StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
@@ -184,11 +182,10 @@ namespace ASC.Data.Storage
             IOptionsMonitor<ILog> options,
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory) :
-            this(storageFactoryListener, storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null, encryptionSettingsHelper, encryptionFactory)
+            this(storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null, encryptionSettingsHelper, encryptionFactory)
         {
         }
         public StorageFactory(
-            StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
@@ -201,7 +198,6 @@ namespace ASC.Data.Storage
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory)
         {
-            StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;

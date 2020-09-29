@@ -51,7 +51,6 @@ namespace ASC.Files.Helpers
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<T> FileStorageService;
 
-        private GlobalFolderHelper GlobalFolderHelper { get; }
         private FileWrapperHelper FileWrapperHelper { get; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
@@ -81,7 +80,6 @@ namespace ASC.Files.Helpers
         private ConsumerFactory ConsumerFactory { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        private ProductEntryPoint ProductEntryPoint { get; }
         public ILog Logger { get; set; }
 
         /// <summary>
@@ -91,7 +89,6 @@ namespace ASC.Files.Helpers
         public FilesControllerHelper(
             ApiContext context,
             FileStorageService<T> fileStorageService,
-            GlobalFolderHelper globalFolderHelper,
             FileWrapperHelper fileWrapperHelper,
             FilesSettingsHelper filesSettingsHelper,
             FilesLinkUtility filesLinkUtility,
@@ -117,12 +114,10 @@ namespace ASC.Files.Helpers
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            ProductEntryPoint productEntryPoint,
             IOptionsMonitor<ILog> optionMonitor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
-            GlobalFolderHelper = globalFolderHelper;
             FileWrapperHelper = fileWrapperHelper;
             FilesSettingsHelper = filesSettingsHelper;
             FilesLinkUtility = filesLinkUtility;
@@ -152,7 +147,6 @@ namespace ASC.Files.Helpers
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
-            ProductEntryPoint = productEntryPoint;
             Logger = optionMonitor.Get("ASC.Files");
         }
 

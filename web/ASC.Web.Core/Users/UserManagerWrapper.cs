@@ -51,8 +51,6 @@ namespace ASC.Web.Core.Users
         private StudioNotifyService StudioNotifyService { get; }
         private UserManager UserManager { get; }
         private SecurityContext SecurityContext { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
         private MessageService MessageService { get; }
         private CustomNamingPeople CustomNamingPeople { get; }
         private TenantUtil TenantUtil { get; }
@@ -66,7 +64,6 @@ namespace ASC.Web.Core.Users
             StudioNotifyService studioNotifyService,
             UserManager userManager,
             SecurityContext securityContext,
-            AuthContext authContext,
             MessageService messageService,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
@@ -74,13 +71,11 @@ namespace ASC.Web.Core.Users
             IPSecurity.IPSecurity iPSecurity,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
-            UserFormatter userFormatter
-            )
+            UserFormatter userFormatter)
         {
             StudioNotifyService = studioNotifyService;
             UserManager = userManager;
             SecurityContext = securityContext;
-            AuthContext = authContext;
             MessageService = messageService;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;

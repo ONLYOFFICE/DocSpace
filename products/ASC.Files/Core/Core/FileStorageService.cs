@@ -88,8 +88,6 @@ namespace ASC.Web.Files.Services.WCFService
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private AuthContext AuthContext { get; }
         private UserManager UserManager { get; }
-        private FactoryIndexer<DbFolder> FoldersIndexer { get; }
-        private FactoryIndexer<DbFile> FilesIndexer { get; }
         private FileUtility FileUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -97,7 +95,6 @@ namespace ASC.Web.Files.Services.WCFService
         private CustomNamingPeople CustomNamingPeople { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
-        private DocuSignLoginProvider DocuSignLoginProvider { get; }
         private PathProvider PathProvider { get; }
         private FileSecurity FileSecurity { get; }
         private SocketManager SocketManager { get; }
@@ -119,7 +116,6 @@ namespace ASC.Web.Files.Services.WCFService
         private UrlShortener UrlShortener { get; }
         private IServiceProvider ServiceProvider { get; }
         private FileSharingAceHelper<T> FileSharingAceHelper { get; }
-        private ApiContext ApiContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
         public EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
         public SettingsManager SettingsManager { get; }
@@ -132,8 +128,6 @@ namespace ASC.Web.Files.Services.WCFService
             FilesSettingsHelper filesSettingsHelper,
             AuthContext authContext,
             UserManager userManager,
-            FactoryIndexer<DbFolder> foldersIndexer,
-            FactoryIndexer<DbFile> filesIndexer,
             FileUtility fileUtility,
             FilesLinkUtility filesLinkUtility,
             BaseCommonLinkUtility baseCommonLinkUtility,
@@ -163,7 +157,6 @@ namespace ASC.Web.Files.Services.WCFService
             UrlShortener urlShortener,
             IServiceProvider serviceProvider,
             FileSharingAceHelper<T> fileSharingAceHelper,
-            ApiContext apiContext,
             ConsumerFactory consumerFactory,
             EncryptionKeyPairHelper encryptionKeyPairHelper,
             SettingsManager settingsManager)
@@ -174,8 +167,6 @@ namespace ASC.Web.Files.Services.WCFService
             FilesSettingsHelper = filesSettingsHelper;
             AuthContext = authContext;
             UserManager = userManager;
-            FoldersIndexer = foldersIndexer;
-            FilesIndexer = filesIndexer;
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
             BaseCommonLinkUtility = baseCommonLinkUtility;
@@ -204,7 +195,6 @@ namespace ASC.Web.Files.Services.WCFService
             UrlShortener = urlShortener;
             ServiceProvider = serviceProvider;
             FileSharingAceHelper = fileSharingAceHelper;
-            ApiContext = apiContext;
             ConsumerFactory = consumerFactory;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
             SettingsManager = settingsManager;

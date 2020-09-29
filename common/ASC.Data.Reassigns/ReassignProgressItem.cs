@@ -50,7 +50,6 @@ namespace ASC.Data.Reassigns
 {
     public class ReassignProgressItem : IProgressItem
     {
-        private readonly HttpContext _context;
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
         private readonly int _tenantId;
@@ -78,7 +77,6 @@ namespace ASC.Data.Reassigns
             int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
             ServiceProvider = serviceProvider;
-            _context = context;
             QueueWorkerRemove = queueWorkerRemove;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 

@@ -243,7 +243,6 @@ namespace ASC.Data.Storage
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
 
-        private IServiceProvider ServiceProvider { get; }
         private StaticUploader StaticUploader { get; }
 
         public UploadOperationProgress(StaticUploader staticUploader, string relativePath, string mappedPath)

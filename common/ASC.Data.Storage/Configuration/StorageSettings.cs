@@ -106,10 +106,8 @@ namespace ASC.Data.Storage.Configuration
 
     public class StorageSettingsHelper
     {
-        private BaseStorageSettingsListener BaseStorageSettingsListener { get; }
         private StorageFactoryConfig StorageFactoryConfig { get; }
         private PathUtils PathUtils { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         private ICacheNotify<DataStoreCacheItem> Cache { get; }
         private IOptionsMonitor<ILog> Options { get; }
         private TenantManager TenantManager { get; }
@@ -118,20 +116,16 @@ namespace ASC.Data.Storage.Configuration
         private ConsumerFactory ConsumerFactory { get; }
 
         public StorageSettingsHelper(
-            BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
             ConsumerFactory consumerFactory)
         {
-            BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
             PathUtils = pathUtils;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
             Cache = cache;
             Options = options;
             TenantManager = tenantManager;
@@ -139,17 +133,15 @@ namespace ASC.Data.Storage.Configuration
             ConsumerFactory = consumerFactory;
         }
         public StorageSettingsHelper(
-            BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
             IHttpContextAccessor httpContextAccessor,
             ConsumerFactory consumerFactory)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, tenantManager, settingsManager, consumerFactory)
+            : this(storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
         {
             HttpContextAccessor = httpContextAccessor;
         }

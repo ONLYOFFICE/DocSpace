@@ -121,7 +121,6 @@ namespace ASC.Web.Files
         private UserManager UserManager { get; }
         public ILog Logger { get; }
         private CookiesManager CookiesManager { get; }
-        private TenantStatisticsProvider TenantStatisticsProvider { get; }
 
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,

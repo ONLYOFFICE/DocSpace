@@ -68,8 +68,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         private UserManager UserManager { get; }
         private SetupInfo SetupInfo { get; }
         private SecurityContext SecurityContext { get; }
-        private CookiesManager CookiesManager { get; }
-        private UserManagerWrapper UserManagerWrapper { get; }
         private PaymentManager PaymentManager { get; }
         private MessageService MessageService { get; }
         private LicenseReader LicenseReader { get; }
@@ -87,8 +85,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             UserManager userManager,
             SetupInfo setupInfo,
             SecurityContext securityContext,
-            CookiesManager cookiesManager,
-            UserManagerWrapper userManagerWrapper,
             PaymentManager paymentManager,
             MessageService messageService,
             LicenseReader licenseReader,
@@ -105,8 +101,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             UserManager = userManager;
             SetupInfo = setupInfo;
             SecurityContext = securityContext;
-            CookiesManager = cookiesManager;
-            UserManagerWrapper = userManagerWrapper;
             PaymentManager = paymentManager;
             MessageService = messageService;
             LicenseReader = licenseReader;

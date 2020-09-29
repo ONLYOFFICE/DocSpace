@@ -73,7 +73,6 @@ namespace ASC.Web.Studio.Core.Notify
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private SettingsManager SettingsManager { get; }
         private WebItemSecurity WebItemSecurity { get; }
-        private WebItemManager WebItemManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(
@@ -92,7 +91,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
             WebItemSecurity webItemSecurity,
-            WebItemManager webItemManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
@@ -109,7 +107,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             SettingsManager = settingsManager;
             WebItemSecurity = webItemSecurity;
-            WebItemManager = webItemManager;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }

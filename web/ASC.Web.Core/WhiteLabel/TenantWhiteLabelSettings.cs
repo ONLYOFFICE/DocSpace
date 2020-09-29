@@ -206,10 +206,8 @@ namespace ASC.Web.Core.WhiteLabel
         private WhiteLabelHelper WhiteLabelHelper { get; }
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IOptionsMonitor<ILog> Option { get; }
 
-        public ILog Log { get; set; }
+        private ILog Log { get; set; }
 
         public TenantWhiteLabelSettingsHelper(
             WebImageSupplier webImageSupplier,
@@ -218,7 +216,6 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper whiteLabelHelper,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> option)
         {
             WebImageSupplier = webImageSupplier;
@@ -227,8 +224,6 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper = whiteLabelHelper;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
-            CoreBaseSettings = coreBaseSettings;
-            Option = option;
             Log = option.CurrentValue;
         }
 

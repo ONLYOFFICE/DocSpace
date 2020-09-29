@@ -44,7 +44,6 @@ namespace ASC.Data.Backup.Storage
 {
     public class BackupStorageFactory
     {
-        private IServiceProvider ServiceProvider { get; }
         private IConfiguration Configuration { get; }
         private DocumentsBackupStorage DocumentsBackupStorage { get; }
         private DataStoreBackupStorage DataStoreBackupStorage { get; }
@@ -52,9 +51,8 @@ namespace ASC.Data.Backup.Storage
         private ConsumerBackupStorage ConsumerBackupStorage { get; }
         private TenantManager TenantManager { get; }
 
-        public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage, LocalBackupStorage localBackupStorage, IServiceProvider serviceProvider, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
+        public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage, LocalBackupStorage localBackupStorage, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
         {
-            ServiceProvider = serviceProvider;
             Configuration = configuration;
             DocumentsBackupStorage = documentsBackupStorage;
             DataStoreBackupStorage = dataStoreBackupStorage;

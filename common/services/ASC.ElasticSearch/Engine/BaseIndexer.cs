@@ -87,7 +87,6 @@ namespace ASC.ElasticSearch
         private Client Client { get; }
         public ILog Log { get; }
         private TenantManager TenantManager { get; }
-        private SearchSettingsHelper SearchSettingsHelper { get; }
         private BaseIndexerHelper BaseIndexerHelper { get; }
         private Settings Settings { get; }
         private IServiceProvider ServiceProvider { get; }
@@ -98,7 +97,6 @@ namespace ASC.ElasticSearch
             IOptionsMonitor<ILog> log,
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
-            SearchSettingsHelper searchSettingsHelper,
             BaseIndexerHelper baseIndexerHelper,
             Settings settings,
             IServiceProvider serviceProvider)
@@ -106,7 +104,6 @@ namespace ASC.ElasticSearch
             Client = client;
             Log = log.CurrentValue;
             TenantManager = tenantManager;
-            SearchSettingsHelper = searchSettingsHelper;
             BaseIndexerHelper = baseIndexerHelper;
             Settings = settings;
             ServiceProvider = serviceProvider;

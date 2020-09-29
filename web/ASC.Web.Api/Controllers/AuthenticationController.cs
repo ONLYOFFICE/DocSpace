@@ -25,9 +25,6 @@ namespace ASC.Web.Api.Controllers
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
         private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private AuthContext AuthContext { get; }
-        private AuthManager AuthManager { get; }
         private CookiesManager CookiesManager { get; }
         public PasswordHasher PasswordHasher { get; }
 
@@ -36,9 +33,6 @@ namespace ASC.Web.Api.Controllers
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            AuthContext authContext,
-            AuthManager authManager,
             CookiesManager cookiesManager,
             PasswordHasher passwordHasher)
         {
@@ -46,9 +40,6 @@ namespace ASC.Web.Api.Controllers
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            AuthContext = authContext;
-            AuthManager = authManager;
             CookiesManager = cookiesManager;
             PasswordHasher = passwordHasher;
         }

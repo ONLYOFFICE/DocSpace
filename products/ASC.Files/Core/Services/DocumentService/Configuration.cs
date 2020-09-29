@@ -638,8 +638,6 @@ namespace ASC.Web.Files.Services.DocumentService
             IDaoFactory daoFactory,
             GlobalFolderHelper globalFolderHelper,
             PathProvider pathProvider,
-            WebImageSupplier webImageSupplier,
-            BaseCommonLinkUtility baseCommonLinkUtility,
             CustomerConfig<T> customerConfig,
             LogoConfig<T> logoConfig,
             FileSharing fileSharing)
@@ -653,8 +651,6 @@ namespace ASC.Web.Files.Services.DocumentService
             DaoFactory = daoFactory;
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
-            WebImageSupplier = webImageSupplier;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
             Customer = customerConfig;
             Logo = logoConfig;
             FileSharing = fileSharing;
@@ -786,8 +782,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private IDaoFactory DaoFactory { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private PathProvider PathProvider { get; }
-        private WebImageSupplier WebImageSupplier { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
     }
 
     public class CustomerConfig<T>
