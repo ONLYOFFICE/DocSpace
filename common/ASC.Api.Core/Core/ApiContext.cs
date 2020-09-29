@@ -40,7 +40,7 @@ namespace ASC.Api.Core
     {
         public IHttpContextAccessor HttpContextAccessor { get; set; }
         public Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext)); } }
+        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
