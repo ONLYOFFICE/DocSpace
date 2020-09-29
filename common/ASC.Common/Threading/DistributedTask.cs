@@ -33,7 +33,7 @@ namespace ASC.Common.Threading
 {
     public class DistributedTask
     {
-        protected internal Action<DistributedTask> Publication { get; set; }
+        public Action<DistributedTask> Publication { get; set; }
 
         protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
 

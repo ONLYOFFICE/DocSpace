@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -58,6 +59,7 @@ namespace ASC.Data.Storage
         public SettingsManager SettingsManager { get; }
         public StorageSettingsHelper StorageSettingsHelper { get; }
 
+        protected readonly DistributedTaskQueue Queue;
         static StaticUploader()
         {
             Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
@@ -70,12 +72,14 @@ namespace ASC.Data.Storage
             IServiceProvider serviceProvider,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            StorageSettingsHelper storageSettingsHelper)
+            StorageSettingsHelper storageSettingsHelper,
+            DistributedTaskQueueOptionsManager options)
         {
             ServiceProvider = serviceProvider;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
+            Queue = options.Get(nameof(StaticUploader));
         }
 
         public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -125,7 +129,7 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public async void UploadDir(string relativePath, string mappedPath)
+        public void UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
@@ -136,21 +140,12 @@ namespace ASC.Data.Storage
 
             lock (Locker)
             {
-                uploadOperation = Cache.Get<UploadOperationProgress>(key);
+                uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(this, relativePath, mappedPath);
-                Cache.Insert(key, uploadOperation, DateTime.MaxValue);
+                uploadOperation = new UploadOperationProgress(this, key, tenant.TenantId, relativePath, mappedPath);
+                Queue.QueueTask((a, b) => uploadOperation.RunJob(), uploadOperation);
             }
-
-
-            tenant.SetStatus(TenantStatus.Migrating);
-            TenantManager.SaveTenant(tenant);
-
-            await uploadOperation.RunJobAsync();
-
-            tenant.SetStatus(Core.Tenants.TenantStatus.Active);
-            TenantManager.SaveTenant(tenant);
         }
 
         public bool CanUpload()
@@ -240,18 +235,29 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class UploadOperationProgress : ProgressBase
+    public class UploadOperationProgress : DistributedTask, IProgressItem
     {
         private readonly string relativePath;
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
+        private readonly int StepCount;
 
         public IServiceProvider ServiceProvider { get; }
         public StaticUploader StaticUploader { get; }
+        public int TenantId { get; }
+        public object Error { get; set; }
 
-        public UploadOperationProgress(StaticUploader staticUploader, string relativePath, string mappedPath)
+        public double Percentage { get; set; }
+
+        public bool IsCompleted { get; set; }
+
+        public UploadOperationProgress(StaticUploader staticUploader, string key, int tenantId, string relativePath, string mappedPath)
         {
+            Id = key;
+            Status = DistributedTaskStatus.Created;
+
             StaticUploader = staticUploader;
+            TenantId = tenantId;
             this.relativePath = relativePath;
             this.mappedPath = mappedPath;
 
@@ -265,7 +271,7 @@ namespace ASC.Data.Storage
             StepCount = directoryFiles.Count();
         }
 
-        protected override async Task DoJobAsync()
+        protected async Task RunJobAsync()
         {
             var tasks = new List<Task>();
             foreach (var file in directoryFiles)
@@ -277,13 +283,37 @@ namespace ASC.Data.Storage
             await Task.WhenAll(tasks);
         }
 
-        protected override void DoJob()
+        public void RunJob()
         {
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenant = tenantManager.GetTenant(TenantId);
+            tenantManager.SetCurrentTenant(tenant);
+
+            tenant.SetStatus(TenantStatus.Migrating);
+            tenantManager.SaveTenant(tenant);
+
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
                 StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
             }
+
+            tenant.SetStatus(Core.Tenants.TenantStatus.Active);
+            tenantManager.SaveTenant(tenant);
+        }
+
+        protected void StepDone()
+        {
+            if (StepCount > 0)
+            {
+                Percentage += 100.0 / StepCount;
+            }
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 

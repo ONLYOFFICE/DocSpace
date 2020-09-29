@@ -27,11 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -45,68 +43,47 @@ namespace ASC.Data.Storage
 {
     public class StorageUploader
     {
-        private static readonly TaskScheduler Scheduler;
-        private static readonly CancellationTokenSource TokenSource;
+        protected readonly DistributedTaskQueue Queue;
 
-        private static readonly ICache Cache;
         private static readonly object Locker;
 
         public IServiceProvider ServiceProvider { get; }
 
         static StorageUploader()
         {
-            Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
-            TokenSource = new CancellationTokenSource();
-            Cache = AscCache.Memory;
             Locker = new object();
         }
 
-        public StorageUploader(IServiceProvider serviceProvider)
+        public StorageUploader(IServiceProvider serviceProvider, DistributedTaskQueueOptionsManager options)
         {
             ServiceProvider = serviceProvider;
+            Queue = options.Get(nameof(StorageUploader));
         }
 
         public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
         {
-            if (TokenSource.Token.IsCancellationRequested) return;
-
-            MigrateOperation migrateOperation;
-
             lock (Locker)
             {
-                migrateOperation = Cache.Get<MigrateOperation>(GetCacheKey(tenantId));
+                var id = GetCacheKey(tenantId);
+                var migrateOperation = Queue.GetTask<MigrateOperation>(id);
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(ServiceProvider, tenantId, newStorageSettings, storageFactoryConfig);
-                Cache.Insert(GetCacheKey(tenantId), migrateOperation, DateTime.MaxValue);
+                migrateOperation = new MigrateOperation(ServiceProvider, id, tenantId, newStorageSettings, storageFactoryConfig);
+                Queue.QueueTask((a, b) => migrateOperation.RunJob(), migrateOperation);
             }
-
-            var task = new Task(migrateOperation.RunJob, TokenSource.Token, TaskCreationOptions.LongRunning);
-
-            task.ConfigureAwait(false)
-                .GetAwaiter()
-                .OnCompleted(() =>
-                {
-                    lock (Locker)
-                    {
-                        Cache.Remove(GetCacheKey(tenantId));
-                    }
-                });
-
-            task.Start(Scheduler);
         }
 
-        public static MigrateOperation GetProgress(int tenantId)
+        public MigrateOperation GetProgress(int tenantId)
         {
             lock (Locker)
             {
-                return Cache.Get<MigrateOperation>(GetCacheKey(tenantId));
+                return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
             }
         }
 
-        public static void Stop()
+        public void Stop(int tenantId)
         {
-            TokenSource.Cancel();
+            Queue.CancelTask(GetCacheKey(tenantId));
         }
 
         private static string GetCacheKey(int tenantId)
@@ -115,21 +92,25 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class MigrateOperation : ProgressBase
+    public class MigrateOperation : DistributedTask, IProgressItem
     {
         private readonly ILog Log;
         private static readonly string ConfigPath;
         private readonly IEnumerable<string> Modules;
         private readonly StorageSettings settings;
         private readonly int tenantId;
+        private readonly int StepCount;
 
         static MigrateOperation()
         {
             ConfigPath = "";
         }
 
-        public MigrateOperation(IServiceProvider serviceProvider, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
+        public MigrateOperation(IServiceProvider serviceProvider, string id, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
         {
+            Id = id;
+            Status = DistributedTaskStatus.Created;
+
             ServiceProvider = serviceProvider;
             this.tenantId = tenantId;
             this.settings = settings;
@@ -142,11 +123,19 @@ namespace ASC.Data.Storage
         public IServiceProvider ServiceProvider { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
 
-        protected override void DoJob()
+        public object Error { get; set; }
+
+        public double Percentage { get; set; }
+
+        public bool IsCompleted { get; set; }
+
+        public void RunJob()
         {
             try
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
+                Status = DistributedTaskStatus.Running;
+
                 using var scope = ServiceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var tenant = tenantManager.GetTenant(tenantId);
@@ -200,11 +189,26 @@ namespace ASC.Data.Storage
                 settingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
+                Status = DistributedTaskStatus.Completed;
             }
             catch (Exception e)
             {
+                Status = DistributedTaskStatus.Failted;
                 Error = e;
                 Log.Error(e);
+            }
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
+        protected void StepDone()
+        {
+            if (StepCount > 0)
+            {
+                Percentage += 100.0 / StepCount;
             }
         }
     }
