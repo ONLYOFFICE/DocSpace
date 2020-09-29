@@ -44,7 +44,7 @@ export function getFolder(folderId, filter) {
 }
 
 export function getFoldersTree() {
-  const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@trash']; //TODO: need get from settings
+  const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@trash', '@favorites']; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}?filterType=2` }));
 
   return axios.all(requestsArray)
@@ -86,6 +86,15 @@ export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@common`
+  };
+
+  return request(options);
+}
+
+export function getFavoritesFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@favorites`
   };
 
   return request(options);
