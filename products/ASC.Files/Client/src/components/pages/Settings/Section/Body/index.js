@@ -11,7 +11,7 @@ import {
   setConfirmDelete,
   setStoreForceSave,
   setSelectedNode,
-  setForceSave
+  setForceSave,
 } from "../../../../../store/files/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 
@@ -30,20 +30,29 @@ const StyledSettings = styled.div`
 `;
 
 const SectionBodyContent = ({
-  setting, isLoading,
-  selectedTreeNode, setSelectedNode,
-  storeForceSave, setStoreForceSave ,
-  enableThirdParty, setEnableThirdParty,
-  storeOriginalFiles, setStoreOriginal,
-  confirmDelete, setConfirmDelete,
-  updateIfExist, setUpdateIfExist,
-  forceSave, setForceSave,
-  isAdmin, isErrorSettings,
-  t
+  setting,
+  isLoading,
+  selectedTreeNode,
+  setSelectedNode,
+  storeForceSave,
+  setStoreForceSave,
+  enableThirdParty,
+  setEnableThirdParty,
+  storeOriginalFiles,
+  setStoreOriginal,
+  confirmDelete,
+  setConfirmDelete,
+  updateIfExist,
+  setUpdateIfExist,
+  forceSave,
+  setForceSave,
+  isAdmin,
+  isErrorSettings,
+  t,
 }) => {
-
   useEffect(() => {
-    setDocumentTitle(t(`${setting}`));
+    const title = setting[0].toUpperCase() + setting.slice(1);
+    setDocumentTitle(t(`${title}`));
   }, [setting, setDocumentTitle]);
 
   useEffect(() => {
@@ -65,13 +74,13 @@ const SectionBodyContent = ({
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
-          label={t("intermediateVersion")}
+          label={t("IntermediateVersion")}
           onChange={onChangeStoreForceSave}
           isChecked={storeForceSave}
         />
         <ToggleButton
           className="toggle-btn"
-          label={t("thirdPartyBtn")}
+          label={t("ThirdPartyBtn")}
           onChange={onChangeThirdParty}
           isChecked={enableThirdParty}
         />
@@ -100,49 +109,49 @@ const SectionBodyContent = ({
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
-          label={t("originalCopy")}
+          label={t("OriginalCopy")}
           onChange={onChangeOriginalCopy}
           isChecked={storeOriginalFiles}
         />
         <ToggleButton
           className="toggle-btn"
-          label={t("displayNotification")}
+          label={t("DisplayNotification")}
           onChange={onChangeDeleteConfirm}
           isChecked={confirmDelete}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
-          label={t("displayRecent")}
-          onChange={e => console.log(e)}
+          label={t("DisplayRecent")}
+          onChange={(e) => console.log(e)}
           isChecked={false}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
-          label={t("displayFavorites")}
-          onChange={e => console.log(e)}
+          label={t("DisplayFavorites")}
+          onChange={(e) => console.log(e)}
           isChecked={false}
         />
         <ToggleButton
           isDisabled={true}
           className="toggle-btn"
-          label={t("displayTemplates")}
-          onChange={e => console.log(e)}
+          label={t("DisplayTemplates")}
+          onChange={(e) => console.log(e)}
           isChecked={false}
         />
         <Heading className="heading" level={2} size="small">
-          {t("storingFileVersion")}
+          {t("StoringFileVersion")}
         </Heading>
         <ToggleButton
           className="toggle-btn"
-          label={t("updateOrCreate")}
+          label={t("UpdateOrCreate")}
           onChange={onChangeUpdateIfExist}
           isChecked={updateIfExist}
         />
         <ToggleButton
           className="toggle-btn"
-          label={t("keepIntermediateVersion")}
+          label={t("KeepIntermediateVersion")}
           onChange={onChangeForceSave}
           isChecked={forceSave}
         />
@@ -160,14 +169,14 @@ const SectionBodyContent = ({
   if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
 
   return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
-    (!isAdmin && setting === "admin" ) ? (
-      <Error403 />
-    ) : isErrorSettings ? (
-      <Error520 />
-    ) : (
-      content
-      );
-}
+    (!isAdmin && setting === "admin") ? (
+    <Error403 />
+  ) : isErrorSettings ? (
+    <Error520 />
+  ) : (
+    content
+  );
+};
 
 function mapStateToProps(state) {
   const { settingsTree, selectedTreeNode, isLoading } = state.files;
@@ -179,7 +188,7 @@ function mapStateToProps(state) {
     forceSave,
     storeForceSave,
     enableThirdParty,
-    isErrorSettings
+    isErrorSettings,
   } = settingsTree;
 
   return {
@@ -191,19 +200,16 @@ function mapStateToProps(state) {
     forceSave,
     storeForceSave,
     enableThirdParty,
-    isLoading
+    isLoading,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    setUpdateIfExist,
-    setStoreOriginal,
-    setEnableThirdParty,
-    setConfirmDelete,
-    setStoreForceSave,
-    setSelectedNode,
-    setForceSave
-  }
-)(SectionBodyContent);
+export default connect(mapStateToProps, {
+  setUpdateIfExist,
+  setStoreOriginal,
+  setEnableThirdParty,
+  setConfirmDelete,
+  setStoreForceSave,
+  setSelectedNode,
+  setForceSave,
+})(SectionBodyContent);

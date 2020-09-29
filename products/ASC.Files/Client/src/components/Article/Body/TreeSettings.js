@@ -11,12 +11,12 @@ import {
   setSelectedNode,
   setExpandSettingsTree,
   setIsErrorSettings,
-  getFilesSettings
+  getFilesSettings,
 } from "../../../store/files/actions";
 
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const { changeLanguage } = utils;
@@ -33,7 +33,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-treenode-disabled > a span {
     cursor: wait;
   }
-  
+
   .rc-tree-child-tree .rc-tree-node-content-wrapper > .rc-tree-title {
     width: 99% !important;
     padding-left: 4px !important;
@@ -46,16 +46,16 @@ const StyledTreeMenu = styled(TreeMenu)`
 
 const PureTreeSettings = ({
   match,
-  enableThirdParty, 
+  enableThirdParty,
   isAdmin,
-  selectedTreeNode, 
+  selectedTreeNode,
   expandedSetting,
   isLoading,
   setSelectedNode,
   setExpandSettingsTree,
   setIsErrorSettings,
   getFilesSettings,
-  t
+  t,
 }) => {
   useEffect(() => {
     const { setting } = match.params;
@@ -64,11 +64,10 @@ const PureTreeSettings = ({
   }, [match]);
 
   useEffect(() => {
-    getFilesSettings()
-      .catch(e => setIsErrorSettings(true));
+    getFilesSettings().catch((e) => setIsErrorSettings(true));
   }, []);
 
-  const switcherIcon = obj => {
+  const switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -79,7 +78,7 @@ const PureTreeSettings = ({
     }
   };
 
-  const onSelect = section => {
+  const onSelect = (section) => {
     const path = section[0];
 
     if (path === "settings") {
@@ -92,7 +91,7 @@ const PureTreeSettings = ({
     return history.push(`/products/files/settings/${path}`);
   };
 
-  const onExpand = data => {
+  const onExpand = (data) => {
     setExpandSettingsTree(data);
   };
 
@@ -101,7 +100,7 @@ const PureTreeSettings = ({
       <TreeNode
         id="settings"
         key="settings"
-        title={t("treeSettingsMenuTitle")}
+        title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
         icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
       >
@@ -110,7 +109,7 @@ const PureTreeSettings = ({
           id="common-settings"
           key="common"
           isLeaf={true}
-          title={t("treeSettingsCommonSettings")}
+          title={t("TreeSettingsCommonSettings")}
         />
         {isAdmin ? (
           <TreeNode
@@ -118,7 +117,7 @@ const PureTreeSettings = ({
             id="admin-settings"
             key="admin"
             isLeaf={true}
-            title={t("treeSettingsAdminSettings")}
+            title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
         {enableThirdParty ? (
@@ -128,7 +127,7 @@ const PureTreeSettings = ({
             id="connected-clouds"
             key="thirdParty"
             isLeaf={true}
-            title={t("treeSettingsConnectedCloud")}
+            title={t("TreeSettingsConnectedCloud")}
           />
         ) : null}
       </TreeNode>
@@ -159,7 +158,7 @@ const PureTreeSettings = ({
 
 const TreeSettingsContainer = withTranslation()(PureTreeSettings);
 
-const TreeSettings = props => {
+const TreeSettings = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -182,16 +181,13 @@ function mapStateToProps(state) {
     expandedSetting,
     enableThirdParty,
     isAdmin,
-    isLoading
+    isLoading,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    setSelectedNode,
-    setExpandSettingsTree,
-    setIsErrorSettings,
-    getFilesSettings
-  }
-)(withRouter(TreeSettings));
+export default connect(mapStateToProps, {
+  setSelectedNode,
+  setExpandSettingsTree,
+  setIsErrorSettings,
+  getFilesSettings,
+})(withRouter(TreeSettings));
