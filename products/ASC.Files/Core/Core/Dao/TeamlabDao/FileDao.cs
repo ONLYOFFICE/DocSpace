@@ -971,12 +971,10 @@ namespace ASC.Files.Core.Data
         {
             if (!uploadSession.UseChunks)
             {
-                using (var streamToSave = ChunkedUploadSessionHolder.UploadSingleChunk(uploadSession, stream, chunkLength))
+                using var streamToSave = ChunkedUploadSessionHolder.UploadSingleChunk(uploadSession, stream, chunkLength);
+                if (streamToSave != Stream.Null)
                 {
-                    if (streamToSave != Stream.Null)
-                    {
-                        uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
-                    }
+                    uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
                 }
 
                 return;

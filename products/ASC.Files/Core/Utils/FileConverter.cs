@@ -775,11 +775,9 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                using (var convertedFileStream = new ResponseStream(req.GetResponse()))
-                {
-                    newFile.ContentLength = convertedFileStream.Length;
-                    newFile = fileDao.SaveFile(newFile, convertedFileStream);
-                }
+                using var convertedFileStream = new ResponseStream(req.GetResponse());
+                newFile.ContentLength = convertedFileStream.Length;
+                newFile = fileDao.SaveFile(newFile, convertedFileStream);
             }
             catch (WebException e)
             {

@@ -104,57 +104,55 @@ namespace ASC.Files.Core.Data
                 var entryId = (MappingID(r.EntryId) ?? "").ToString();
                 if (string.IsNullOrEmpty(entryId)) return;
 
-                using (var tx = FilesDbContext.Database.BeginTransaction())
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                var files = new List<string>();
+
+                if (r.EntryType == FileEntryType.Folder)
                 {
-                    var files = new List<string>();
-
-                    if (r.EntryType == FileEntryType.Folder)
+                    var folders = new List<string>();
+                    if (int.TryParse(entryId, out var intEntryId))
                     {
-                        var folders = new List<string>();
-                        if (int.TryParse(entryId, out var intEntryId))
-                        {
-                            var foldersInt = FilesDbContext.Tree
-                                .Where(r => r.ParentId.ToString() == entryId)
-                                .Select(r => r.FolderId)
-                                .ToList();
+                        var foldersInt = FilesDbContext.Tree
+                            .Where(r => r.ParentId.ToString() == entryId)
+                            .Select(r => r.FolderId)
+                            .ToList();
 
-                            folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
-                            files.AddRange(Query(FilesDbContext.Files).Where(r => foldersInt.Any(a => a == r.FolderId)).Select(r => r.Id.ToString()));
-                        }
-                        else
-                        {
-                            folders.Add(entryId);
-                        }
-
-                        var toDelete = FilesDbContext.Security
-                            .Where(a => a.TenantId == r.Tenant)
-                            .Where(a => folders.Any(b => b == a.EntryId))
-                            .Where(a => a.EntryType == FileEntryType.Folder)
-                            .Where(a => a.Subject == r.Subject);
-
-                        FilesDbContext.Security.RemoveRange(toDelete);
-                        FilesDbContext.SaveChanges();
-
+                        folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
+                        files.AddRange(Query(FilesDbContext.Files).Where(r => foldersInt.Any(a => a == r.FolderId)).Select(r => r.Id.ToString()));
                     }
                     else
                     {
-                        files.Add(entryId);
+                        folders.Add(entryId);
                     }
 
-                    if (0 < files.Count)
-                    {
-                        var toDelete = FilesDbContext.Security
-                            .Where(a => a.TenantId == r.Tenant)
-                            .Where(a => files.Any(b => b == a.EntryId))
-                            .Where(a => a.EntryType == FileEntryType.File)
-                            .Where(a => a.Subject == r.Subject);
+                    var toDelete = FilesDbContext.Security
+                        .Where(a => a.TenantId == r.Tenant)
+                        .Where(a => folders.Any(b => b == a.EntryId))
+                        .Where(a => a.EntryType == FileEntryType.Folder)
+                        .Where(a => a.Subject == r.Subject);
 
-                        FilesDbContext.Security.RemoveRange(toDelete);
-                        FilesDbContext.SaveChanges();
-                    }
+                    FilesDbContext.Security.RemoveRange(toDelete);
+                    FilesDbContext.SaveChanges();
 
-                    tx.Commit();
                 }
+                else
+                {
+                    files.Add(entryId);
+                }
+
+                if (0 < files.Count)
+                {
+                    var toDelete = FilesDbContext.Security
+                        .Where(a => a.TenantId == r.Tenant)
+                        .Where(a => files.Any(b => b == a.EntryId))
+                        .Where(a => a.EntryType == FileEntryType.File)
+                        .Where(a => a.Subject == r.Subject);
+
+                    FilesDbContext.Security.RemoveRange(toDelete);
+                    FilesDbContext.SaveChanges();
+                }
+
+                tx.Commit();
             }
             else
             {

@@ -909,10 +909,8 @@ namespace ASC.Web.Files.Utils
                     }
 
                     var req = (HttpWebRequest)WebRequest.Create(downloadUri);
-                    using (var editedFileStream = new ResponseStream(req.GetResponse()))
-                    {
-                        editedFileStream.CopyTo(tmpStream);
-                    }
+                    using var editedFileStream = new ResponseStream(req.GetResponse());
+                    editedFileStream.CopyTo(tmpStream);
                 }
                 tmpStream.Position = 0;
 

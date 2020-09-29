@@ -340,10 +340,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 {
                     if (stream == null) throw new Exception("Response is null");
 
-                    using (var reader = new StreamReader(stream))
-                    {
-                        Log.Debug("Subscribe response: " + reader.ReadToEnd());
-                    }
+                    using var reader = new StreamReader(stream);
+                    Log.Debug("Subscribe response: " + reader.ReadToEnd());
                 }
             }
             catch (Exception e)

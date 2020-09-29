@@ -538,11 +538,9 @@ namespace ASC.Files.Thirdparty.Box
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
-                using (var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
-                                               FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose))
-                {
-                    uploadSession.File = SaveFile(uploadSession.File, fs);
-                }
+                using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
+                                               FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+                uploadSession.File = SaveFile(uploadSession.File, fs);
             }
             else
             {

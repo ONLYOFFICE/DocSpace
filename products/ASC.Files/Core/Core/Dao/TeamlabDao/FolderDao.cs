@@ -405,60 +405,58 @@ namespace ASC.Files.Core.Data
         {
             if (id == default) throw new ArgumentNullException("folderId");
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var subfolders =
+                FilesDbContext.Tree
+                .Where(r => r.ParentId == id)
+                .Select(r => r.FolderId)
+                .ToList();
+
+            if (!subfolders.Contains(id)) subfolders.Add(id); // chashed folder_tree
+
+            var parent = Query(FilesDbContext.Folders)
+                .Where(r => r.Id == id)
+                .Select(r => r.ParentId)
+                .FirstOrDefault();
+
+            var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Any(a => r.Id == a));
+            FilesDbContext.Folders.RemoveRange(folderToDelete);
+
+            foreach (var f in folderToDelete)
             {
-                var subfolders =
-                    FilesDbContext.Tree
-                    .Where(r => r.ParentId == id)
-                    .Select(r => r.FolderId)
-                    .ToList();
+                FactoryIndexer.DeleteAsync(f);
+            }
 
-                if (!subfolders.Contains(id)) subfolders.Add(id); // chashed folder_tree
+            var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
+            FilesDbContext.Tree.RemoveRange(treeToDelete);
 
-                var parent = Query(FilesDbContext.Folders)
-                    .Where(r => r.Id == id)
-                    .Select(r => r.ParentId)
-                    .FirstOrDefault();
+            var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
+            var linkToDelete = Query(FilesDbContext.TagLink)
+                .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
+                .Where(r => r.EntryType == FileEntryType.Folder);
+            FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
-                var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Any(a => r.Id == a));
-                FilesDbContext.Folders.RemoveRange(folderToDelete);
+            var tagsToRemove = Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
 
-                foreach (var f in folderToDelete)
-                {
-                    FactoryIndexer.DeleteAsync(f);
-                }
+            FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
-                var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
-                FilesDbContext.Tree.RemoveRange(treeToDelete);
-
-                var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
-                var linkToDelete = Query(FilesDbContext.TagLink)
+            var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
                     .Where(r => r.EntryType == FileEntryType.Folder);
-                FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
-                var tagsToRemove = Query(FilesDbContext.Tag)
-                    .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+            FilesDbContext.Security.RemoveRange(securityToDelete);
+            FilesDbContext.SaveChanges();
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove);
+            var bunchToDelete = Query(FilesDbContext.BunchObjects)
+                .Where(r => r.LeftNode == id.ToString());
 
-                var securityToDelete = Query(FilesDbContext.Security)
-                        .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
-                        .Where(r => r.EntryType == FileEntryType.Folder);
+            FilesDbContext.RemoveRange(bunchToDelete);
+            FilesDbContext.SaveChanges();
 
-                FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+            tx.Commit();
 
-                var bunchToDelete = Query(FilesDbContext.BunchObjects)
-                    .Where(r => r.LeftNode == id.ToString());
-
-                FilesDbContext.RemoveRange(bunchToDelete);
-                FilesDbContext.SaveChanges();
-
-                tx.Commit();
-
-                RecalculateFoldersCount(parent);
-            }
+            RecalculateFoldersCount(parent);
 
             //FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
         }

@@ -926,11 +926,9 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".zip"));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(".zip");
 
-                using (var stream = fileDao.GetDifferenceStream(file))
-                {
-                    context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    await stream.CopyToAsync(context.Response.Body);
-                }
+                using var stream = fileDao.GetDifferenceStream(file);
+                context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {

@@ -285,16 +285,14 @@ namespace ASC.Files.Core.Data
 
             lock (syncRoot)
             {
-                using (var tx = FilesDbContext.Database.BeginTransaction())
-                {
-                    var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
 
-                    foreach (var tag in tags)
-                    {
-                        UpdateNewTagsInDb(tag, createOn);
-                    }
-                    tx.Commit();
+                foreach (var tag in tags)
+                {
+                    UpdateNewTagsInDb(tag, createOn);
                 }
+                tx.Commit();
             }
         }
 
@@ -335,14 +333,12 @@ namespace ASC.Files.Core.Data
 
             lock (syncRoot)
             {
-                using (var tx = FilesDbContext.Database.BeginTransaction())
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                foreach (var t in tags)
                 {
-                    foreach (var t in tags)
-                    {
-                        RemoveTagInDb(t);
-                    }
-                    tx.Commit();
+                    RemoveTagInDb(t);
                 }
+                tx.Commit();
             }
         }
 
@@ -352,12 +348,10 @@ namespace ASC.Files.Core.Data
 
             lock (syncRoot)
             {
-                using (var tx = FilesDbContext.Database.BeginTransaction())
-                {
-                    RemoveTagInDb(tag);
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                RemoveTagInDb(tag);
 
-                    tx.Commit();
-                }
+                tx.Commit();
             }
         }
 

@@ -546,10 +546,8 @@ namespace ASC.Files.Thirdparty.Dropbox
             else
             {
                 var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-                using (var fs = new FileStream(tempPath, FileMode.Append))
-                {
-                    stream.CopyTo(fs);
-                }
+                using var fs = new FileStream(tempPath, FileMode.Append);
+                stream.CopyTo(fs);
             }
 
             uploadSession.BytesUploaded += chunkLength;
@@ -590,11 +588,9 @@ namespace ASC.Files.Thirdparty.Dropbox
                 return ToFile(dropboxFile.AsFile);
             }
 
-            using (var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
-                                           FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose))
-            {
-                return SaveFile(uploadSession.File, fs);
-            }
+            using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
+                                           FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+            return SaveFile(uploadSession.File, fs);
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)

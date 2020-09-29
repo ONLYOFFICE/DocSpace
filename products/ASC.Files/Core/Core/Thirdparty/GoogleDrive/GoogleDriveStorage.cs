@@ -448,18 +448,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 googleDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-                using (var responseStream = response.GetResponseStream())
+                using var responseStream = response.GetResponseStream();
+                if (responseStream == null) return;
+                string responseString;
+                using (var readStream = new StreamReader(responseStream))
                 {
-                    if (responseStream == null) return;
-                    string responseString;
-                    using (var readStream = new StreamReader(responseStream))
-                    {
-                        responseString = readStream.ReadToEnd();
-                    }
-                    var responseJson = JObject.Parse(responseString);
-
-                    googleDriveSession.FileId = responseJson.Value<string>("id");
+                    responseString = readStream.ReadToEnd();
                 }
+                var responseJson = JObject.Parse(responseString);
+
+                googleDriveSession.FileId = responseJson.Value<string>("id");
             }
 
             if (response != null)

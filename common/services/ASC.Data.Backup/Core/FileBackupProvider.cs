@@ -88,17 +88,15 @@ namespace ASC.Data.Backup
                     {
                         try
                         {
-                            using (var stream = storage.GetReadStream(file.Domain, file.Path))
+                            using var stream = storage.GetReadStream(file.Domain, file.Path);
+                            var tmpPath = Path.GetTempFileName();
+                            using (var tmpFile = File.OpenWrite(tmpPath))
                             {
-                                var tmpPath = Path.GetTempFileName();
-                                using (var tmpFile = File.OpenWrite(tmpPath))
-                                {
-                                    stream.CopyTo(tmpFile);
-                                }
-
-                                writer.WriteEntry(backupPath, tmpPath);
-                                File.Delete(tmpPath);
+                                stream.CopyTo(tmpFile);
                             }
+
+                            writer.WriteEntry(backupPath, tmpPath);
+                            File.Delete(tmpPath);
 
                             break;
                         }
