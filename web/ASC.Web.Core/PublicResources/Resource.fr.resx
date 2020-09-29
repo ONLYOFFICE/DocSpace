@@ -624,6 +624,9 @@
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Les instructions de changement d'émail ont été envoyées avec succès</value>
   </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Si l'utilisateur avec le mail {0} existe, les consignes du changement de mot de passe ont été envoyées à votre adresse mail.</value>
+  </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>Les instructions de changement de mot de passe ont été envoyées à {0}</value>
   </data>

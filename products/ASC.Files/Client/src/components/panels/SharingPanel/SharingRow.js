@@ -6,9 +6,9 @@ import {
   Text,
   Icons,
   DropDownItem,
-  LinkWithDropdown,
-  toastr,
+  LinkWithDropdown
 } from "asc-web-components";
+import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
 
 const SharingRow = (props) => {

@@ -11,11 +11,10 @@ import {
   RowContainer,
   Text,
   Link,
-  Button,
-  toastr
+  Button
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, api } from "asc-web-common";
+import { utils as commonUtils, api, toastr } from "asc-web-common";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,

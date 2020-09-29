@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using ASC.Files.Core;
+using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
@@ -92,7 +93,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         File SaveEditing(string fileId, string fileExtension, string fileuri, Stream stream, string doc, bool forcesave);
 
-        File UpdateFileStream(string fileId, Stream stream, bool encrypted);
+        File UpdateFileStream(string fileId, Stream stream, bool encrypted, bool forcesave);
 
         string StartEdit(string fileId, bool editingAlone, string doc);
 
@@ -109,6 +110,25 @@ namespace ASC.Web.Files.Services.WCFService
         Web.Core.Files.DocumentService.FileLink GetPresignedUri(string fileId);
 
         #endregion
+
+        #region Favorites Manager
+
+        ItemList<FileEntry<T>> AddToFavorites(ItemList<T> foldersId, ItemList<T> filesId);
+
+        ItemList<FileEntry<T>> DeleteFavorites(ItemList<T> foldersId, ItemList<T> filesId);
+
+        #endregion
+
+        #region Templates Manager
+
+        ItemList<FileEntry<T>> AddToTemplates(ItemList<T> filesId);
+
+        ItemList<FileEntry<T>> DeleteTemplates(ItemList<T> filesId);
+
+        ItemList<FileEntry<T>> GetTemplates(FilterType filter, int from, int count, bool subjectGroup, string ssubject, string searchText, bool searchInContent);
+
+        #endregion
+
 
         #region Utils
 
@@ -133,6 +153,12 @@ namespace ASC.Web.Files.Services.WCFService
         bool Forcesave(bool value);
 
         bool StoreForcesave(bool value);
+
+        bool DisplayRecent(bool value);
+
+        bool DisplayFavorite(bool value);
+
+        bool DisplayTemplates(bool value);
 
         bool ChangeDeleteConfrim(bool update);
 
@@ -159,6 +185,8 @@ namespace ASC.Web.Files.Services.WCFService
         ItemList<MentionWrapper> SharedUsers(string fileId);
 
         ItemList<AceShortWrapper> SendEditorNotify(string fileId, MentionMessageWrapper mentionMessage);
+
+        ItemList<EncryptionKeyPair> GetEncryptionAccess(T fileId);
 
         #endregion
 

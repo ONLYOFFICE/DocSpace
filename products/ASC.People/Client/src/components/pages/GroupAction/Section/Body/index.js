@@ -6,10 +6,9 @@ import {
   SearchInput,
   SelectedItem,
   TextInput,
-  toastr,
   utils
 } from "asc-web-components";
-import { PeopleSelector, store as initStore } from "asc-web-common";
+import { PeopleSelector, store as initStore, toastr } from "asc-web-common";
 import {
   createGroup,
   resetGroup,

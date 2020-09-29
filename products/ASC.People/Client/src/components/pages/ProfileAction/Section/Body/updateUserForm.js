@@ -6,7 +6,6 @@ import {
   Button,
   Textarea,
   Text,
-  toastr,
   AvatarEditor,
   Link
 } from "asc-web-components";
@@ -38,7 +37,7 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
-import { api } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,

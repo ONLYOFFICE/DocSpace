@@ -45,7 +45,7 @@ export function getFolder(folderId, filter) {
 
 export function getFoldersTree() {
   const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@trash']; //TODO: need get from settings
-  const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}` }));
+  const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}?filterType=2` }));
 
   return axios.all(requestsArray)
     .then(axios.spread((...responses) =>

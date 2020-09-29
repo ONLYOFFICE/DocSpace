@@ -48,8 +48,15 @@ const getCustomModules = isAdmin => {
       },
       "SettingsIcon"
     );
-  
-    return [separator, settingsModuleWrapper];*/ return [];
+   const paymentsModuleWrapper = toModuleWrapper(
+    {
+      id: "payments",
+      title: i18n.t("Payments"),
+      link: "/payments"
+    },
+    "PaymentsIcon"
+  );
+    return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/ return [];
 };
 
 const getAvailableModules = (modules, currentUser) => {
@@ -105,7 +112,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(withRouter(StudioLayout));
+export default connect(mapStateToProps, { logout })(withRouter(StudioLayout));

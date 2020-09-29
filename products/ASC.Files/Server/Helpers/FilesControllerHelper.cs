@@ -215,11 +215,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false)
+        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted);
+                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted, forcesave);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -329,9 +329,9 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public FileWrapper<T> CreateFile(T folderId, string title)
+        public FileWrapper<T> CreateFile(T folderId, string title, T templateId)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title });
+            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId });
             return FileWrapperHelper.Get(file);
         }
 
@@ -806,7 +806,7 @@ namespace ASC.Files.Helpers
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
             return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
                                                                                startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
+                                                                               Convert.ToInt32(ApiContext.Count),
                                                                                filterType,
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),

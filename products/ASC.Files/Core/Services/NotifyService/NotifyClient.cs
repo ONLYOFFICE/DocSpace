@@ -141,7 +141,6 @@ namespace ASC.Files.Core.Services.NotifyService
                     recipient,
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
-                    new TagValue(NotifyConstants.Tag_FolderID, fileEntry.ID),
                     new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
@@ -186,6 +185,8 @@ namespace ASC.Files.Core.Services.NotifyService
                     return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo);
                 case FileShare.ReadWrite:
                     return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo);
+                case FileShare.CustomFilter:
+                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_CustomFilter", cultureInfo);
                 case FileShare.Review:
                     return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo);
                 case FileShare.FillForms:

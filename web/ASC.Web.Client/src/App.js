@@ -23,7 +23,7 @@ const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
-
+const Payments = lazy(() => import("./components/pages/Payments"));
 const {
   setIsLoaded,
   getUser,
@@ -96,6 +96,7 @@ class App extends React.Component {
                 path={["/coming-soon"]}
                 component={ComingSoon}
               />
+              <PrivateRoute path="/payments" component={Payments} />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>

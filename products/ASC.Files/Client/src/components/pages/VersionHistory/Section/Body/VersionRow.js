@@ -8,13 +8,12 @@ import {
   Textarea,
   Button,
   ModalDialog,
-  toastr,
   utils
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { api } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
 

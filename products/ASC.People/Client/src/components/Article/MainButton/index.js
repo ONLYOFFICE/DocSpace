@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem, toastr } from "asc-web-components";
+import { MainButton, DropDownItem } from "asc-web-components";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils } from "asc-web-common";
+import { utils, toastr } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({

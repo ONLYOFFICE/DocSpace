@@ -39,7 +39,7 @@ namespace ASC.Files
             diHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
-                .AddEncryptionControllerService()
+                .AddPrivacyRoomApiService()
                 .AddFileHandlerService()
                 .AddChunkedUploaderHandlerService()
                 .AddThirdPartyAppHandlerService()

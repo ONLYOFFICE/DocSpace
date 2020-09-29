@@ -68,7 +68,8 @@ namespace ASC.Web.Studio.Utility
         FullTextSearch = 18,
         WhiteLabel = 19,
         MailService = 20,
-        Storage = 21
+        Storage = 21,
+        PrivacyRoom = 22
     }
 
     public class CommonLinkUtility : BaseCommonLinkUtility
@@ -539,11 +540,6 @@ namespace ASC.Web.Studio.Utility
             if (userId != default)
             {
                 link += $"&uid={userId}";
-            }
-
-            if (postfix != null)
-            {
-                link += "&p=1";
             }
 
             return link;

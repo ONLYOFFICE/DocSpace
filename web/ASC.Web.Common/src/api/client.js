@@ -25,13 +25,13 @@ client.interceptors.response.use(
   error => {
     switch (true) {
       case error.response.status === 401:
-        setAuthorizationToken();
+      setAuthorizationToken();
         window.location.href = "/login";
         break;
       case error.response.status === 402:
         if (!window.location.pathname.includes("payments")) {
           window.location.href = "/payments";
-        }
+    }
         break;
       default:
         break;

@@ -719,12 +719,15 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
             File<T> newFile = null;
+            var markAsTemplate = false;
             var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetInternalExtension(file.Title));
 
             if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit(file))
             {
                 newFile = (File<T>)file.Clone();
                 newFile.Version++;
+                markAsTemplate = FileUtility.ExtsTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase)
+                              && FileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(newFileTitle), StringComparer.CurrentCultureIgnoreCase);
             }
             else
             {
@@ -807,6 +810,11 @@ namespace ASC.Web.Files.Utils
             {
                 tags.ForEach(r => r.EntryId = newFile.ID);
                 tagDao.SaveTags(tags);
+            }
+
+            if (markAsTemplate)
+            {
+                tagDao.SaveTags(Tag.Template(AuthContext.CurrentAccount.ID, newFile));
             }
 
             return newFile;

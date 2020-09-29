@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import { RequestLoader, toastr } from "asc-web-components";
-import { PageLayout, utils, api } from "asc-web-common";
+import { RequestLoader } from "asc-web-components";
+import { PageLayout, utils, toastr, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -416,6 +416,7 @@ class PureHome extends React.Component {
       viewAs,
       isLoading,
       convertDialogVisible,
+      fileActionId
     } = this.props;
 
     // const progressBarContent = (
@@ -468,6 +469,7 @@ class PureHome extends React.Component {
           //progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressData.label}
           viewAs={viewAs}
+          hideAside={fileActionId || progressData.visible}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

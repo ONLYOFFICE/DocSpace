@@ -4,7 +4,7 @@
   "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
   "CopyToClipboard": "Copy the link",
   "CloseButton": "Close",
-  "LinkCopySuccess": "Link has been copied to the clipboard",
+  "LinkCopySuccess": "Link has been copied",
   "GetShortenLink": "Get shortened link",
   "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
   "LoadingProcessing": "Loading..."

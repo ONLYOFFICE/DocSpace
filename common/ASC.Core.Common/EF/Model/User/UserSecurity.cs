@@ -16,6 +16,8 @@ namespace ASC.Core.Common.EF
 
         public string PwdHashSha512 { get; set; }
 
+        public DateTime? LastModified { get; set; }
+
         public override object[] GetKeys()
         {
             return new object[] { UserId };

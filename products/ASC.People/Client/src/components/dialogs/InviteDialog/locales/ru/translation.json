@@ -4,7 +4,7 @@
 "InviteLinkValidInterval": "Эта ссылка действительна только в течение {{ count }} дней.",
 "CopyToClipboard": "Копировать ссылку",
 "CloseButton": "Закрыть",
-"LinkCopySuccess": "Ссылка скопирована в буфер обмена",
+"LinkCopySuccess": "Ссылка скопирована",
 "GetShortenLink": "Получить сокращенную ссылку",
 "InviteUsersAsCollaborators": "Добавить со статусом {{guestsCaption, lowercase}}",
 "LoadingProcessing": "Загрузка..."

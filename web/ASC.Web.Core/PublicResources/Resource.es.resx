@@ -103,6 +103,9 @@
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Si Usted añade el servicio Bitly, Usted podrá recibir los enlaces acortados para invitar a nuevos usuarios al portal ONLYOFFICE™ y los enlaces acortados para los documentos en el módulo 'Documentos' compartidos con los usuarios externos.</value>
   </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para acortar los enlaces de invitación y de documentos. {0}Inserte su login de Bitly y su clave de la API a continuación:</value>
+  </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Clave Box</value>
   </data>
@@ -118,6 +121,9 @@
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Box, Usted podrá conectar su cuenta de Box en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Box, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de Box al módulo Documentos. Podrá gestionar, editar y compartir archivos de Box con los usuarios de ONLYOFFICE. {0}Acceda a su cuenta en la página de desarrolladores de Box y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
   </data>
@@ -129,6 +135,9 @@
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Clickatell usted podrá habilitar la autenticación de dos factores y recibir un SMS con un código que le permite ingresar al portal ONLYOFFICE.</value>
+  </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>Utilice esta aplicación para habilitar la autenticación de dos factores con el servicio Clickatell. {0}Acceda a su cuenta de la Plataforma SMS y cree una nueva integración de ONLYOFFICE. Copie la apiKey e insértela a continuación:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
     <value>DocuSign</value>
@@ -148,6 +157,9 @@
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio DocuSign, Usted podrá firmar los documentos del módulo 'Documentos'. Este permite enviar el archivo para recibir una firma electrónica a los empleados de portal ONLYOFFICE™ por medio del servicio DocuSugn. El archivo firmado será guardado en el módulo 'Documentos' de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para firmar digitalmente documentos usando DocuSign. {0}Vaya a la consola de administración de DocuSign y añada la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>Dropbox</value>
   </data>
@@ -156,6 +168,9 @@
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Dropbox, Usted podrá conectar su cuenta de Dropbox en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Dropbox, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de Dropbox con el módulo Documentos. Podrá administrar, editar y compartir archivos de Dropbox con los usuarios de ONLYOFFICE. {0}Inicie sesión en su cuenta en la página web de desarrolladores de Dropbox y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>ID de Dropbox</value>
@@ -192,6 +207,9 @@
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Facebook, Usted podrá conectar el acceso al portal ONLYOFFICE™ en la página de su perfil con ayuda de la cuenta Facebook. También Usted podrá encontrar y enlazar la cuenta de Facebook en la página de 'Editar persona/empresa' en el módulo CRM.</value>
+  </data>
+  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando Facebook y vincular las cuentas de Facebook de sus clientes al módulo CRM. {0}Vaya al Portal de Desarrolladores de Facebook y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
@@ -241,6 +259,9 @@
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Si Usted añade un proyecto del servicio Google, Usted podrá conectar el acceso a su portal ONLYOFFICE™ con ayuda de la cuenta Google y conectar su cuenta de Google Drive en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Google Drive, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de Google Drive al módulo Documentos. Podrá administrar, editar y compartir archivos de Google Drive con los usuarios de ONLYOFFICE. {0}Vaya a la consola de las APIs de Google y cree un nuevo proyecto para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
     <value>Clave de Linkedin</value>
   </data>
@@ -249,6 +270,9 @@
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio LinkedIn, Usted podrá conectar el acceso al portal ONLYOFFICE™ en la página de su perfil con ayuda de la cuenta LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando sus cuentas de LinkedIn. {0}Vaya al sitio web de LinkedIn Developers y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>ID de Linkedin</value>
@@ -337,6 +361,9 @@
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio OneDrive, Usted podrá conectar su cuenta de OneDrive en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en OneDrive, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de OneDrive al módulo Documentos. Podrá administrar, editar y compartir archivos de OneDrive con los usuarios de ONLYOFFICE. {0}Acceda a su cuenta en el Centro de Desarrolladores de Live Connect y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>Centro SMS</value>
   </data>
@@ -345,6 +372,9 @@
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Centro SMS usted podrá habilitar la autenticación de dos factores y recibir un SMS con un código que le permite ingresar al portal ONLYOFFICE. La aplicación Centro SMS es útil como proveedor para paises CIS.</value>
+  </data>
+  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+    <value>Utilice esta aplicación para habilitar la autenticación de dos factores con el servicio SMS Center. {0}Inserte el nombre de su cuenta smsc y su contraseña (o la contraseña MD5 hash) en minúsculas:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Ingreso</value>
@@ -367,6 +397,9 @@
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>Después de añadir Twilio Usted podrá llamar a cualquier contacto del módulo CRM directamente de su navegador.</value>
   </data>
+  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios llamar a sus contactos desde el módulo CRM usando Twilio. {0}Vaya a la consola Twilio y pegue los siguientes datos:</value>
+  </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
     <value>Número telefónico de Twilio (se requiere para la autenticación SMS)</value>
   </data>
@@ -384,6 +417,9 @@
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Twitter, Usted podrá conectar el acceso al portal ONLYOFFICE™ en la página de su perfil con ayuda de la cuenta Twitter. También Usted podrá enlazar la cuenta Twitter y leer noticias en la página de 'Editar persona/empresa' en el módulo CRM.</value>
+  </data>
+  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando su Twitter y vincular las cuentas de Twitter de sus clientes al módulo CRM. {0}Vaya al Portal de Desarrolladores de Twitter y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>ID de Twitter </value>
@@ -438,6 +474,9 @@
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Yahoo podrá añadir usuarios al portal ONLYOFFICE de la lista de contactos.</value>
+  </data>
+  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para añadir nuevos usuarios del portal desde su lista de contactos de Yahoo. {0}Vaya a la página Crear Aplicación en la Red de Desarrolladores de Yahoo y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
     <value>Yandex</value>
@@ -588,6 +627,9 @@
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Las instrucciones para cambiar el correo electrónico se han enviado con éxito</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Si existe un usuario con el correo electrónico {0}, la instrucción para cambiar la contraseña se ha enviado a esta dirección de correo electrónico.</value>
   </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>La contraseña de usuario ha sido enviada al e-mail {0}</value>
