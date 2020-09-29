@@ -91,12 +91,10 @@ PaymentsEnterprise.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-function mapStateToProps({ auth, payments }) {
+function mapStateToProps({ auth }) {
   const { isLoaded } = auth;
-  const { licenseUpload } = payments;
   return {
     isLoaded,
-    licenseUpload,
   };
 }
 export default connect(mapStateToProps, {
