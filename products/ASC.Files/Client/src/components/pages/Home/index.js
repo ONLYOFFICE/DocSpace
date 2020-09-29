@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import { RequestLoader } from "asc-web-components";
+//import { RequestLoader } from "asc-web-components";
 import { PageLayout, utils, toastr, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
@@ -398,6 +398,14 @@ class PureHome extends React.Component {
     if (this.props.selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
     }
+
+    if (this.props.isLoading !== prevProps.isLoading) {
+      if (this.props.isLoading) {
+        utils.showLoader();
+      } else {
+        utils.hideLoader();
+      }
+    }
   }
 
   render() {
@@ -411,10 +419,8 @@ class PureHome extends React.Component {
       // hideWindowSetting
     } = this.state;
     const {
-      t,
       progressData,
       viewAs,
-      isLoading,
       convertDialogVisible,
       fileActionId,
     } = this.props;
@@ -448,7 +454,7 @@ class PureHome extends React.Component {
             onConvert={onConvert}
           />
         )}
-        <RequestLoader
+        {/* <RequestLoader
           visible={isLoading}
           zIndex={256}
           loaderSize="16px"
@@ -456,7 +462,7 @@ class PureHome extends React.Component {
           label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
           fontSize="12px"
           fontColor={"#999"}
-        />
+        /> */}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -577,8 +583,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     deselectFile: (file) => dispatch(deselectFile(file)),
-    getFolder,
-    getProgress,
+    getFolder: () => dispatch(getFolder()),
+    getProgress: () => dispatch(getProgress()),
     selectFile: (file) => dispatch(selectFile(file)),
     setDragging: (dragging) => dispatch(setDragging(dragging)),
     setFilter: (filter) => dispatch(setFilter(filter)),

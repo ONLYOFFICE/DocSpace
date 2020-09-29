@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { PageLayout, utils } from "asc-web-common";
-import { RequestLoader } from "asc-web-components";
+//import { RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -43,11 +43,19 @@ const PureSettings = ({
         setIsErrorSettings(true);
         setIsLoading(false);
       });
-  }, []);
+  }, [getFilesSettings, setIsErrorSettings, setIsLoading]);
+
+  useEffect(() => {
+    if (isLoading) {
+      utils.showLoader();
+    } else {
+      utils.hideLoader();
+    }
+  }, [isLoading]);
 
   return (
     <>
-      <RequestLoader
+      {/* <RequestLoader
         visible={isLoading}
         zIndex={256}
         loaderSize="16px"
@@ -55,7 +63,7 @@ const PureSettings = ({
         label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
         fontSize="12px"
         fontColor={"#999"}
-      />
+      /> */}
       <PageLayout>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />

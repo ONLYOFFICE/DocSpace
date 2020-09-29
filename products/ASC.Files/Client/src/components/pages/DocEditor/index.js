@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { RequestLoader } from "asc-web-components";
+import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -11,59 +11,39 @@ const i18n = createI18N({
   localesPath: "pages/DocEditor",
 });
 
-const { changeLanguage, getObjectByLocation } = utils;
+const { changeLanguage, getObjectByLocation, hideLoader, showLoader } = utils;
 const { files } = api;
 
 class PureEditor extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLoading: false,
-    };
-  }
-
-  onLoading = (status) => {
-    this.setState({ isLoading: status });
-  };
-
-  render() {
-    const { isLoading } = this.state;
-    const { t } = this.props;
-
+  componentDidMount() {
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
 
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
 
-    const wrapperStyle = {
-      //height: "100vh",
-      height: "calc(var(--vh, 1vh) * 100)",
-      width: "100vw",
-    };
+    showLoader();
 
-    files.openEdit(fileId).then((config) => {
-      if (window.innerWidth < 720) {
-        config.type = "mobile";
-      }
+    files
+      .openEdit(fileId)
+      .then((config) => {
+        if (window.innerWidth < 720) {
+          config.type = "mobile";
+        }
 
-      window.DocsAPI.DocEditor("editor", config);
-    });
+        window.DocsAPI.DocEditor("editor", config);
+      })
+      .catch((e) => {
+        console.log(e);
+        hideLoader();
+      });
+  }
 
+  render() {
     return (
-      <div style={wrapperStyle}>
-        <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        />
+      <Box widthProp="100vw" heightProp="calc(var(--vh, 1vh) * 100)">
         <div id="editor"></div>
-      </div>
+      </Box>
     );
   }
 }
