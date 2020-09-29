@@ -8,6 +8,7 @@ import Profile from "./components/pages/Profile";
 import ProfileAction from "./components/pages/ProfileAction";
 import GroupAction from "./components/pages/GroupAction";
 import Reassign from "./components/pages/Reassign";
+import AvatarEditor from "./components/pages/AvatarEditor";
 import {
   history,
   PrivateRoute,
@@ -111,6 +112,12 @@ class App extends React.Component {
               <PrivateRoute
                 path={`${homepage}/edit/:userId`}
                 component={ProfileAction}
+                restricted
+                allowForMe
+              />
+              <PrivateRoute
+                path={`${homepage}/edit-avatar/:userId`}
+                component={AvatarEditor}
                 restricted
                 allowForMe
               />
