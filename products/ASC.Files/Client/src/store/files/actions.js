@@ -334,6 +334,14 @@ export function fetchCommonFolder(dispatch) {
   });
 }
 
+export function fetchFavoritesFolder(dispatch) {
+  return files.getFavoritesFolderList().then(data => {
+    dispatch(setFolders(data.folders));
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder(data.current));
+  });
+}
+
 export function fetchProjectsFolder(dispatch) {
   return files.getProjectsFolderList().then(data => {
     dispatch(setFolders(data.folders));

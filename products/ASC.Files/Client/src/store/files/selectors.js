@@ -399,9 +399,11 @@ export const getFolderType = (id, treeFolders) => {
   const indexOfShare = 1;
   const indexOfCommon = 2;
   const indexOfTrash = 3;
+  const indexOfFavorites = 4;
 
   if(checkFolderType(id, indexOfMy, treeFolders)) { return "My"; }
   else if(checkFolderType(id, indexOfShare, treeFolders)) { return "Share"; }
   else if(checkFolderType(id, indexOfCommon, treeFolders)) { return "Common"; }
   else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
+  else if(checkFolderType(id, indexOfFavorites, treeFolders)) { return "Favorites"; }
 }
