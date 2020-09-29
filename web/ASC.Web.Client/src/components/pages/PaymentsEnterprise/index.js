@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { PageLayout, utils, store } from "asc-web-common";
-import { Loader, utils as Utils, toastr } from "asc-web-components";
+import { Loader, utils as Utils } from "asc-web-components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
@@ -10,10 +10,7 @@ import HeaderContainer from "./sub-components/headerContainer";
 import AdvantagesContainer from "./sub-components/advantagesContainer";
 import ButtonContainer from "./sub-components/buttonContainer";
 import ContactContainer from "./sub-components/contactContainer";
-import {
-  setPaymentsLicense,
-  getSettingsPayment,
-} from "../../../store/payments/actions";
+import { getSettingsPayment } from "../../../store/payments/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
@@ -60,26 +57,6 @@ class Body extends React.Component {
     getSettingsPayment();
   }
 
-  onClickUpload = (file) => {
-    const { setPaymentsLicense, t } = this.props;
-
-    let fd = new FormData();
-    fd.append("files", file);
-
-    setPaymentsLicense(null, fd)
-      .then(() => {
-        toastr.success(t("LoadingLicenseSuccess"), "");
-      })
-      .catch((error) => {
-        toastr.error(t("LoadingLicenseError"), t("LicenseIsNotValid"), 0, true);
-        console.log(error);
-      });
-  };
-
-  onClickBuy = (e) => {
-    window.open(e.target.value, "_blank");
-  };
-
   render() {
     const { isLoaded } = this.props;
 
@@ -89,10 +66,7 @@ class Body extends React.Component {
       <StyledBody>
         <HeaderContainer />
         <AdvantagesContainer />
-        <ButtonContainer
-          onClickBuy={this.onClickBuy}
-          onClickUpload={this.onClickUpload}
-        />
+        <ButtonContainer />
         <ContactContainer />
       </StyledBody>
     );
@@ -119,16 +93,13 @@ PaymentsEnterprise.propTypes = {
 
 function mapStateToProps({ auth, payments }) {
   const { isLoaded } = auth;
-  const { organizationName } = auth.settings;
   const { licenseUpload } = payments;
   return {
     isLoaded,
     licenseUpload,
-    organizationName,
   };
 }
 export default connect(mapStateToProps, {
-  setPaymentsLicense,
   setCurrentProductId,
   getSettingsPayment,
 })(withRouter(PaymentsEnterprise));
