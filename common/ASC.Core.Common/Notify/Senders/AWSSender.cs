@@ -86,9 +86,9 @@ namespace ASC.Core.Notify.Senders
 
                     if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
-                        _useCoreSettings = true;
+                        UseCoreSettings = true;
                         result = base.Send(m);
-                        _useCoreSettings = false;
+                        UseCoreSettings = false;
                     }
                     else
                     {

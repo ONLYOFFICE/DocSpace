@@ -1049,8 +1049,8 @@ namespace ASC.Files.Core.Data
             return dbFiles
                 .Select(r => new DbFolderQuery
                 {
-                    folder = r,
-                    root = FilesDbContext.Folders
+                    Folder = r,
+                    Root = FilesDbContext.Folders
                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
                             .Where(x => x.folder.TenantId == r.TenantId)
                             .Where(x => x.tree.FolderId == r.ParentId)
@@ -1058,7 +1058,7 @@ namespace ASC.Files.Core.Data
                             .Select(r => r.folder)
                             .Take(1)
                             .FirstOrDefault(),
-                    shared = FilesDbContext.Security
+                    Shared = FilesDbContext.Security
                             .Where(r => r.EntryType == FileEntryType.Folder)
                             .Where(x => x.EntryId == r.Id.ToString())
                             .Any()
@@ -1070,8 +1070,8 @@ namespace ASC.Files.Core.Data
             return dbFiles
                 .Select(r => new DbFolderQuery
                 {
-                    folder = r,
-                    root = FilesDbContext.Folders
+                    Folder = r,
+                    Root = FilesDbContext.Folders
                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
                             .Where(x => x.folder.TenantId == r.TenantId)
                             .Where(x => x.tree.FolderId == r.ParentId)
@@ -1079,7 +1079,7 @@ namespace ASC.Files.Core.Data
                             .Select(x => x.folder)
                             .Take(1)
                             .FirstOrDefault(),
-                    shared = true
+                    Shared = true
                 });
         }
 
@@ -1087,20 +1087,20 @@ namespace ASC.Files.Core.Data
         {
             if (r == null) return null;
             var result = ServiceProvider.GetService<Folder<int>>();
-            result.ID = r.folder.Id;
-            result.ParentFolderID = r.folder.ParentId;
-            result.Title = r.folder.Title;
-            result.CreateOn = TenantUtil.DateTimeFromUtc(r.folder.CreateOn);
-            result.CreateBy = r.folder.CreateBy;
-            result.ModifiedOn = TenantUtil.DateTimeFromUtc(r.folder.ModifiedOn);
-            result.ModifiedBy = r.folder.ModifiedBy;
-            result.FolderType = r.folder.FolderType;
-            result.TotalSubFolders = r.folder.FoldersCount;
-            result.TotalFiles = r.folder.FilesCount;
-            result.RootFolderType = r.root?.FolderType ?? default;
-            result.RootFolderCreator = r.root?.CreateBy ?? default;
-            result.RootFolderId = r.root?.Id ?? default;
-            result.Shared = r.shared;
+            result.ID = r.Folder.Id;
+            result.ParentFolderID = r.Folder.ParentId;
+            result.Title = r.Folder.Title;
+            result.CreateOn = TenantUtil.DateTimeFromUtc(r.Folder.CreateOn);
+            result.CreateBy = r.Folder.CreateBy;
+            result.ModifiedOn = TenantUtil.DateTimeFromUtc(r.Folder.ModifiedOn);
+            result.ModifiedBy = r.Folder.ModifiedBy;
+            result.FolderType = r.Folder.FolderType;
+            result.TotalSubFolders = r.Folder.FoldersCount;
+            result.TotalFiles = r.Folder.FilesCount;
+            result.RootFolderType = r.Root?.FolderType ?? default;
+            result.RootFolderCreator = r.Root?.CreateBy ?? default;
+            result.RootFolderId = r.Root?.Id ?? default;
+            result.Shared = r.Shared;
 
             switch (result.FolderType)
             {
@@ -1192,7 +1192,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.FolderType == FolderType.DEFAULT);
 
             var q4 = FromQuery(q3)
-                .Join(FilesDbContext.Security.DefaultIfEmpty(), r => r.folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
+                .Join(FilesDbContext.Security.DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
                 .Where(r => r.Security.TenantId == tenant)
                 .Where(r => r.Security.EntryType == FileEntryType.Folder)
                 .Where(r => r.Security.Security == FileShare.Restrict)
@@ -1280,9 +1280,9 @@ namespace ASC.Files.Core.Data
 
     public class DbFolderQuery
     {
-        public DbFolder folder { get; set; }
-        public DbFolder root { get; set; }
-        public bool shared { get; set; }
+        public DbFolder Folder { get; set; }
+        public DbFolder Root { get; set; }
+        public bool Shared { get; set; }
     }
 
     public class DbFolderQueryWithSecurity
