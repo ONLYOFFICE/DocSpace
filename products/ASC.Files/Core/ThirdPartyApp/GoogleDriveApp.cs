@@ -920,7 +920,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             if (extTitle != correctExt)
             {
-                title = title + correctExt;
+                title += correctExt;
             }
             return title;
         }
