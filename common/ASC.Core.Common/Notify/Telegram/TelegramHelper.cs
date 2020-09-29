@@ -137,11 +137,9 @@ namespace ASC.Core.Common.Notify
 
             var buf = id.Concat(d).ToArray();
 
-            using (var sha = new SHA256CryptoServiceProvider())
-            {
-                return Convert.ToBase64String(sha.ComputeHash(buf))
-                    .Replace('+', '-').Replace('/', '_').Replace("=", ""); // make base64 url safe
-            }
+            using var sha = new SHA256CryptoServiceProvider();
+            return Convert.ToBase64String(sha.ComputeHash(buf))
+                .Replace('+', '-').Replace('/', '_').Replace("=", ""); // make base64 url safe
         }
 
         private string GetLink(string token)
