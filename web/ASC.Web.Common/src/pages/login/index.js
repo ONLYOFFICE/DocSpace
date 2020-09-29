@@ -179,7 +179,10 @@ class Form extends Component {
     } else {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
-        .then(res => toastr.success(res), message => toastr.error(message))
+        .then(
+          res => toastr.success(res),
+          message => toastr.error(message)
+        )
         .finally(this.onDialogClose());
     }
   };
@@ -220,8 +223,6 @@ class Form extends Component {
     this.setState({ isLoading: true });
     login(userName, pass)
       .then(() => {
-        //debugger;
-
         if (!redirectToDefaultPage()) {
           setIsLoaded(true);
         }
@@ -480,7 +481,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { login, setIsLoaded }
-)(withRouter(LoginForm));
+export default connect(mapStateToProps, { login, setIsLoaded })(
+  withRouter(LoginForm)
+);
