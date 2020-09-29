@@ -7,11 +7,7 @@ import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
-import {
-  fetchMyFolder,
-  fetchTreeFolders,
-  //fetchFiles,
-} from "./store/files/actions";
+import { fetchTreeFolders } from "./store/files/actions";
 import config from "../package.json";
 
 import {
@@ -40,23 +36,6 @@ const {
   getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
-
-// const withStudioLayout = Component => props => (
-//   <StudioLayout>
-//     <Component {...props} />
-//   </StudioLayout>
-// );
-
-// const LoaderPage = props => {
-//   console.log("LoaderPage render", props);
-//   return (
-//     <PageLayout>
-//       <PageLayout.SectionBody>
-//         <Loader className="pageLoader" type="rombs" size="40px" />
-//       </PageLayout.SectionBody>
-//     </PageLayout>
-//   );
-// };
 
 class App extends React.Component {
   componentDidMount() {
@@ -102,7 +81,9 @@ class App extends React.Component {
 
     return navigator.onLine ? (
       <Router history={history}>
-        <NavMenu />
+        {!window.location.pathname.startsWith(`${homepage}/doceditor`) && (
+          <NavMenu />
+        )}
         <Main>
           <Switch>
             <Redirect exact from="/" to={`${homepage}`} />

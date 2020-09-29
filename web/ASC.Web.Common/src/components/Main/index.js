@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledMain = styled.main`
   height: 100vh;
-  padding: ${props => (props.fullscreen ? "0" : "56px 0 0 0")};
+  /*padding: ${props => (props.fullscreen ? "0" : "56px 0 0 0")};*/
   width: 100vw;
   z-index: 0;
   display: flex;
@@ -16,9 +16,9 @@ const Main = React.memo(props => {
   return <StyledMain {...props} />;
 });
 
-Main.defaultProps = {
+/*Main.defaultProps = {
   fullscreen: false
-};
+};*/
 
 Main.displayName = "Main";
 

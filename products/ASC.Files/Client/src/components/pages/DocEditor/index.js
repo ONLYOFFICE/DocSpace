@@ -8,7 +8,7 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DocEditor",
-  localesPath: "pages/DocEditor"
+  localesPath: "pages/DocEditor",
 });
 
 const { changeLanguage, getObjectByLocation } = utils;
@@ -19,11 +19,11 @@ class PureEditor extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: false
+      isLoading: false,
     };
   }
 
-  onLoading = status => {
+  onLoading = (status) => {
     this.setState({ isLoading: status });
   };
 
@@ -35,14 +35,15 @@ class PureEditor extends React.Component {
     const fileId = urlParams.fileId || null;
 
     const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-    
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+
     const wrapperStyle = {
-      height: "100vh",
-      height: "calc(var(--vh, 1vh) * 100)"
+      //height: "100vh",
+      height: "calc(var(--vh, 1vh) * 100)",
+      width: "100vw",
     };
 
-    files.openEdit(fileId).then(config => {
+    files.openEdit(fileId).then((config) => {
       if (window.innerWidth < 720) {
         config.type = "mobile";
       }
@@ -69,7 +70,7 @@ class PureEditor extends React.Component {
 
 const EditorContainer = withTranslation()(PureEditor);
 
-const DocEditor = props => {
+const DocEditor = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -83,14 +84,14 @@ const DocEditor = props => {
 DocEditor.propTypes = {
   files: PropTypes.array,
   history: PropTypes.object,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
   return {
     files: state.files.files,
     folders: state.files.folders,
-    isLoaded: state.auth.isLoaded
+    isLoaded: state.auth.isLoaded,
   };
 }
 

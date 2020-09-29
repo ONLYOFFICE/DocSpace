@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import { utils } from "asc-web-components";
@@ -13,8 +12,8 @@ const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: flex;
-  z-index: 185;
-  position: absolute;
+  /*z-index: 185;*/
+  /*position: absolute;*/
   width: 100vw;
   height: 56px;
   .header-logo-wrapper {
