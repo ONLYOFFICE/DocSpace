@@ -122,7 +122,7 @@ namespace ASC.Core.Common.Notify
 
         private bool IsAwaitingRegistration(Guid userId, int tenantId)
         {
-            return GetCurrentToken(userId, tenantId) == null ? false : true;
+            return GetCurrentToken(userId, tenantId) != null;
         }
 
         private string GetCurrentToken(Guid userId, int tenantId)

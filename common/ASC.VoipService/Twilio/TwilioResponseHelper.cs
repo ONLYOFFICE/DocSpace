@@ -61,7 +61,7 @@ namespace ASC.VoipService.Twilio
         public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
         {
             var agent = agentTuple?.Item1;
-            var anyOnline = agentTuple != null ? agentTuple.Item2 : false;
+            var anyOnline = agentTuple != null && agentTuple.Item2;
             var response = new VoiceResponse();
 
             if (settings.WorkingHours != null && settings.WorkingHours.Enabled)
