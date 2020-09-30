@@ -199,7 +199,7 @@ namespace ASC.Core.Caching
                                 var cachedRows = rows[p.Key];
                                 foreach (var r in p.Value)
                                 {
-                                    cachedRows.RemoveAll(c => c.Path == r.Path);
+                                    _ = cachedRows.RemoveAll(c => c.Path == r.Path);
                                     cachedRows.Add(r);
                                 }
                             }
@@ -244,15 +244,15 @@ namespace ASC.Core.Caching
         {
             if (services.TryAddScoped<DbQuotaService>())
             {
-                services.TryAddScoped<IQuotaService, CachedQuotaService>();
+                _ = services.TryAddScoped<IQuotaService, CachedQuotaService>();
 
-                services.TryAddScoped<IConfigureOptions<DbQuotaService>, ConfigureDbQuotaService>();
-                services.TryAddScoped<IConfigureOptions<CachedQuotaService>, ConfigureCachedQuotaService>();
+                _ = services.TryAddScoped<IConfigureOptions<DbQuotaService>, ConfigureDbQuotaService>();
+                _ = services.TryAddScoped<IConfigureOptions<CachedQuotaService>, ConfigureCachedQuotaService>();
 
-                services.AddCoreDbContextService();
+                _ = services.AddCoreDbContextService();
 
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.TryAddSingleton<QuotaServiceCache>();
+                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                _ = services.TryAddSingleton<QuotaServiceCache>();
             }
 
             return services;

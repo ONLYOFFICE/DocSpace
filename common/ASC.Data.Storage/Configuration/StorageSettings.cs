@@ -167,7 +167,7 @@ namespace ASC.Data.Storage.Configuration
         {
             baseStorageSettings.Module = null;
             baseStorageSettings.Props = null;
-            Save(baseStorageSettings);
+            _ = Save(baseStorageSettings);
         }
 
         private DataStoreConsumer dataStoreConsumer;
@@ -227,10 +227,10 @@ namespace ASC.Data.Storage.Configuration
     {
         public static DIHelper AddBaseStorageSettingsService(this DIHelper services)
         {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            services.TryAddSingleton<BaseStorageSettingsListener>();
-            services.TryAddScoped<BaseStorageSettingsListenerScope>();
-            services.TryAddScoped<CdnStorageSettings>();
+            _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            _ = services.TryAddSingleton<BaseStorageSettingsListener>();
+            _ = services.TryAddScoped<BaseStorageSettingsListenerScope>();
+            _ = services.TryAddScoped<CdnStorageSettings>();
             return services
                 .AddStorageFactoryConfigService()
                 .AddPathUtilsService()

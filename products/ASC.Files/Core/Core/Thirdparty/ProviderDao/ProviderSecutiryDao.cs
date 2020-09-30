@@ -201,7 +201,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public static DIHelper AddProviderSecurityDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ISecurityDao<string>, ProviderSecurityDao>();
+            _ = services.TryAddScoped<ISecurityDao<string>, ProviderSecurityDao>();
 
             return services
                 .AddProviderDaoBaseService();

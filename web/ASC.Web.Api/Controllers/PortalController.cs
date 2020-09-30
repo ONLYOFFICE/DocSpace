@@ -189,7 +189,7 @@ namespace ASC.Web.Api.Controllers
             {
                 var settings = SettingsManager.LoadForCurrentUser<OpensourcePresentSettings>();
                 settings.Readed = true;
-                SettingsManager.SaveForCurrentUser(settings);
+                _ = SettingsManager.SaveForCurrentUser(settings);
             }
             catch (Exception ex)
             {

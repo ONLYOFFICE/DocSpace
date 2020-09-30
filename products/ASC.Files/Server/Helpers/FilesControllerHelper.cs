@@ -239,7 +239,7 @@ namespace ASC.Files.Helpers
 
         public Configuration<T> OpenEdit(T fileId, int version, string doc)
         {
-            DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
+            _ = DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
             configuration.EditorType = EditorType.External;
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
@@ -382,10 +382,10 @@ namespace ASC.Files.Helpers
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
             if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId, title);
+                _ = FileStorageService.FileRename(fileId, title);
 
             if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId, lastVersion);
+                _ = FileStorageService.UpdateToVersion(fileId, lastVersion);
 
             return GetFileInfo(fileId);
         }
@@ -575,7 +575,7 @@ namespace ASC.Files.Helpers
                     Aces = list,
                     Message = sharingMessage
                 };
-                FileStorageService.SetAceObject(aceCollection, notify);
+                _ = FileStorageService.SetAceObject(aceCollection, notify);
             }
             return GetFileSecurityInfo(fileId);
         }
@@ -591,7 +591,7 @@ namespace ASC.Files.Helpers
                     Aces = list,
                     Message = sharingMessage
                 };
-                FileStorageService.SetAceObject(aceCollection, notify);
+                _ = FileStorageService.SetAceObject(aceCollection, notify);
             }
 
             return GetFolderSecurityInfo(folderId);
@@ -631,7 +631,7 @@ namespace ASC.Files.Helpers
                     Entries = new ItemList<string> { objectId },
                     Aces = list
                 };
-                FileStorageService.SetAceObject(aceCollection, false);
+                _ = FileStorageService.SetAceObject(aceCollection, false);
                 sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             }
 
@@ -1005,7 +1005,7 @@ namespace ASC.Files.Helpers
         {
             if (services.TryAddScoped<FilesControllerHelper<string>>())
             {
-                services.TryAddScoped<FilesControllerHelper<int>>();
+                _ = services.TryAddScoped<FilesControllerHelper<int>>();
 
                 return services
                     .AddEasyBibHelperService()

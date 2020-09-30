@@ -159,7 +159,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var logger = options.CurrentValue;
             try
             {
-                tenantManager.SetCurrentTenant(TenantId);
+                _ = tenantManager.SetCurrentTenant(TenantId);
 
                 Status = ReportStatus.Started;
                 PublishTaskInfo(logger);
@@ -171,8 +171,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 //        new HttpResponse(new System.IO.StringWriter()));
                 //}
 
-                tenantManager.SetCurrentTenant(TenantId);
-                securityContext.AuthenticateMe(UserId);
+                _ = tenantManager.SetCurrentTenant(TenantId);
+                _ = securityContext.AuthenticateMe(UserId);
 
                 BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
 

@@ -55,7 +55,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static void AddDbTenant(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenant>()
+            _ = modelBuilder.Entity<DbTenant>()
                 .HasOne(r => r.Partner)
                 .WithOne(r => r.Tenant)
                 .HasForeignKey<DbTenantPartner>(r => new { r.TenantId })

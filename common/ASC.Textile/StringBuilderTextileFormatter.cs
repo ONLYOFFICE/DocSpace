@@ -43,12 +43,12 @@ namespace Textile
 
         public void Write(string text)
         {
-            m_stringBuilder.Append(text);
+            _ = m_stringBuilder.Append(text);
         }
 
         public void WriteLine(string line)
         {
-            m_stringBuilder.AppendLine(line);
+            _ = m_stringBuilder.AppendLine(line);
         }
 
         #endregion

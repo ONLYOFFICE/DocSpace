@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         public static DIHelper AddOneDriveSecurityDaoService(this DIHelper services)
         {
-            services.TryAddScoped<OneDriveSecurityDao>();
+            _ = services.TryAddScoped<OneDriveSecurityDao>();
 
             return services;
         }

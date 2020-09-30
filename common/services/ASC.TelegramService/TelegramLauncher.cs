@@ -52,7 +52,7 @@ namespace ASC.TelegramService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Task.Run(CreateClients);
+            _ = Task.Run(CreateClients);
             TelegramListener.Start();
             return Task.CompletedTask;
         }
@@ -104,8 +104,8 @@ namespace ASC.TelegramService
     {
         public static DIHelper AddTelegramLauncher(this DIHelper services)
         {
-            services.TryAddSingleton<TelegramLauncher>();
-            services.TryAddScoped<ScopeTelegramLauncher>();
+            _ = services.TryAddSingleton<TelegramLauncher>();
+            _ = services.TryAddScoped<ScopeTelegramLauncher>();
             return services.AddTelegramService()
                 .AddTelegramListenerService()
                 .AddTelegramHandlerService()

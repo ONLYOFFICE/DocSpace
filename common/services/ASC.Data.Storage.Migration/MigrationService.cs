@@ -110,7 +110,7 @@ namespace ASC.Data.Storage.Migration
         {
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(tenantId);
+            _ = tenantManager.SetCurrentTenant(tenantId);
 
             StaticUploader.UploadDir(relativePath, mappedPath);
             Log.DebugFormat("UploadDir {0}", mappedPath);
@@ -133,8 +133,8 @@ namespace ASC.Data.Storage.Migration
         {
             if (services.TryAddScoped<MigrationService>())
             {
-                services.TryAddSingleton<MigrationServiceListener>();
-                services.TryAddSingleton<StorageUploader>();
+                _ = services.TryAddSingleton<MigrationServiceListener>();
+                _ = services.TryAddSingleton<StorageUploader>();
 
                 return services
                     .AddStaticUploaderService()

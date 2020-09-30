@@ -66,7 +66,7 @@ namespace ASC.Core.Notify.Senders
             {
                 using var scope = ServiceProvider.CreateScope();
                 var service = scope.ServiceProvider.GetService<JabberServiceClient>();
-                service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
+                _ = service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
             }
             catch (Exception e)
             {
@@ -81,7 +81,7 @@ namespace ASC.Core.Notify.Senders
     {
         public static DIHelper AddJabberSenderService(this DIHelper services)
         {
-            services.TryAddSingleton<JabberSender>();
+            _ = services.TryAddSingleton<JabberSender>();
             return services.AddJabberServiceClient();
         }
     }

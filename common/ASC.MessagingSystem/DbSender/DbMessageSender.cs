@@ -72,9 +72,9 @@ namespace ASC.MessagingSystem.DbSender
     {
         public static DIHelper AddDbMessageSenderService(this DIHelper services)
         {
-            services.TryAddSingleton<DbMessageSender>();
-            services.TryAddSingleton<MessagesRepository>();
-            services.AddMessagesContextService();
+            _ = services.TryAddSingleton<DbMessageSender>();
+            _ = services.TryAddSingleton<MessagesRepository>();
+            _ = services.AddMessagesContextService();
 
             return services;
         }

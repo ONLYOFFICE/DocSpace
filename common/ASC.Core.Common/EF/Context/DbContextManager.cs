@@ -75,9 +75,9 @@ namespace ASC.Core.Common.EF
         {
             if (services.TryAddScoped<DbContextManager<T>>())
             {
-                services.TryAddScoped<MultiRegionalDbContextManager<T>>();
-                services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
-                services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
+                _ = services.TryAddScoped<MultiRegionalDbContextManager<T>>();
+                _ = services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
+                _ = services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
 
                 return services.AddLoggerService();
             }

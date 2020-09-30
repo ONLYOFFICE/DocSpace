@@ -107,7 +107,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     m.HashId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var securityForUpdate = Query(FilesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
@@ -118,7 +118,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     s.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var linkForUpdate = Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
@@ -129,7 +129,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     l.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
             }
 
             tx.Commit();

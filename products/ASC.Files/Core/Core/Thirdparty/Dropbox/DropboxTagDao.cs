@@ -196,7 +196,7 @@ namespace ASC.Files.Thirdparty.Dropbox
     {
         public static DIHelper AddDropboxTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<DropboxTagDao>();
+            _ = services.TryAddScoped<DropboxTagDao>();
 
             return services;
         }

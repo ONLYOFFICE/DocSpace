@@ -217,7 +217,7 @@ namespace ASC.Data.Backup
                     using (var stream = reader.GetEntry(string.Format("{0}\\{1}\\{2}", Name, dbName, table).ToLower()))
                     {
                         var data = new DataTable();
-                        data.ReadXml(stream);
+                        _ = data.ReadXml(stream);
                         dbHelper.SetTable(data);
                     }
                     processedTables.Add(table);
@@ -231,7 +231,7 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddDbBackupProvider(this DIHelper services)
         {
-            services.TryAddScoped<DbBackupProvider>();
+            _ = services.TryAddScoped<DbBackupProvider>();
             return services;
         }
     }

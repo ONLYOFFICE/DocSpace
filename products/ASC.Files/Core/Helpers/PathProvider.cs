@@ -188,7 +188,7 @@ namespace ASC.Web.Files.Classes
             var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);
             var path = Path.Combine("temp_stream", fileName);
 
-            store.Save(
+            _ = store.Save(
                 FileConstant.StorageDomainTmp,
                 path,
                 stream,

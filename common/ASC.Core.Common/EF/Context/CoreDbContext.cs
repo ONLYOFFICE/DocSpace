@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .AddAcl()
                 .AddDbButton()
                 .AddDbQuotaRow();

@@ -63,7 +63,7 @@ namespace ASC.Web.Studio.Core.Notify
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
             var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
-            tenantManager.SetCurrentTenant(item.TenantId);
+            _ = tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
@@ -77,7 +77,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                securityContext.AuthenticateMe(Guid.Parse(item.UserId));
+                _ = securityContext.AuthenticateMe(Guid.Parse(item.UserId));
                 var user = userManager.GetUsers(userId);
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {
@@ -215,8 +215,8 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
         {
-            services.TryAddSingleton<StudioNotifyServiceSender>();
-            services.TryAddScoped<StudioNotifyServiceSenderScope>();
+            _ = services.TryAddSingleton<StudioNotifyServiceSender>();
+            _ = services.TryAddScoped<StudioNotifyServiceSenderScope>();
 
             return services
                 .AddStudioPeriodicNotify()

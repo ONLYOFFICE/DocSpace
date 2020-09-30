@@ -116,7 +116,7 @@ namespace ASC.MessagingSystem
     {
         public static DIHelper AddMessageTargetService(this DIHelper services)
         {
-            services.TryAddSingleton<MessageTarget>();
+            _ = services.TryAddSingleton<MessageTarget>();
 
             return services;
         }

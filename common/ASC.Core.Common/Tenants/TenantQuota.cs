@@ -208,7 +208,7 @@ namespace ASC.Core.Tenants
             {
                 var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
                 var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
-                features.Remove(portals);
+                _ = features.Remove(portals);
                 if (value > 0)
                 {
                     features.Add("portals:" + value);
@@ -254,7 +254,7 @@ namespace ASC.Core.Tenants
             }
             else if (!set && features.Contains(feature))
             {
-                features.Remove(feature);
+                _ = features.Remove(feature);
             }
             Features = string.Join(",", features.ToArray());
         }

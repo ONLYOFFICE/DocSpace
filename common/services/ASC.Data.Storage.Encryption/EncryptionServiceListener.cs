@@ -67,7 +67,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionServiceListener(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionServiceListener>();
+            _ = services.TryAddSingleton<EncryptionServiceListener>();
             return services.AddEncryptionWorkerService();
         }
     }

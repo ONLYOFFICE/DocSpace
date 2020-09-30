@@ -32,7 +32,7 @@ namespace ASC.Core.Common.EF
     {
         public static void AddUserGroup(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserGroup>()
+            _ = modelBuilder.Entity<UserGroup>()
                 .HasKey(c => new { c.Tenant, c.UserId, c.GroupId, c.RefType });
         }
     }

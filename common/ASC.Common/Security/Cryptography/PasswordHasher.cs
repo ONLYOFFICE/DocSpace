@@ -99,7 +99,7 @@ namespace ASC.Security.Cryptography
     {
         public static DIHelper AddPasswordHasherService(this DIHelper services)
         {
-            services.TryAddSingleton<PasswordHasher>();
+            _ = services.TryAddSingleton<PasswordHasher>();
 
             return services.AddMachinePseudoKeysService();
         }

@@ -125,10 +125,10 @@ namespace ASC.Core.Common.Notify.Telegram
             if (services.TryAddScoped<TelegramDao>())
             {
 
-                services.TryAddScoped<IConfigureOptions<TelegramDao>, ConfigureTelegramDaoService>();
-                services.TryAddScoped<IConfigureOptions<CachedTelegramDao>, ConfigureCachedTelegramDao>();
+                _ = services.TryAddScoped<IConfigureOptions<TelegramDao>, ConfigureTelegramDaoService>();
+                _ = services.TryAddScoped<IConfigureOptions<CachedTelegramDao>, ConfigureCachedTelegramDao>();
 
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                 return services.AddTelegramDbContextService();
             }

@@ -172,7 +172,7 @@ namespace ASC.Data.Storage.Encryption
 
         public void WriteToStream(Stream stream)
         {
-            stream.Seek(0, SeekOrigin.Begin);
+            _ = stream.Seek(0, SeekOrigin.Begin);
 
             stream.Write(Prefix, 0, prefixLength);
             stream.Write(Version, 0, versionLength);
@@ -199,7 +199,7 @@ namespace ASC.Data.Storage.Encryption
         {
             HmacHash = ComputeHmacHash(stream);
 
-            stream.Seek(metadataLength - ivLength - hmacHashLength, SeekOrigin.Begin); // Move position to hmac
+            _ = stream.Seek(metadataLength - ivLength - hmacHashLength, SeekOrigin.Begin); // Move position to hmac
 
             stream.Write(HmacHash, 0, hmacHashLength); // Replace empty hmac with computed
         }
@@ -219,7 +219,7 @@ namespace ASC.Data.Storage.Encryption
                 throw new IntegrityProtectionException("Invalid signature");
             }
 
-            stream.Seek(metadataLength, SeekOrigin.Begin); // Move position to encrypted data
+            _ = stream.Seek(metadataLength, SeekOrigin.Begin); // Move position to encrypted data
         }
 
         public byte GetCryptoVersion()
@@ -278,7 +278,7 @@ namespace ASC.Data.Storage.Encryption
         {
             var hmacHash = new byte[hmacHashLength];
 
-            stream.Seek(metadataLength - ivLength, SeekOrigin.Begin); // Move position to (IV + encrypted data)
+            _ = stream.Seek(metadataLength - ivLength, SeekOrigin.Begin); // Move position to (IV + encrypted data)
 
             using (var hmac = new HMACSHA256(HmacKey))
             {

@@ -25,7 +25,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFilesBunchObjects(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFilesBunchObjects>()
+            _ = modelBuilder.Entity<DbFilesBunchObjects>()
                 .HasKey(c => new { c.TenantId, c.RightNode });
 
             return modelBuilder;

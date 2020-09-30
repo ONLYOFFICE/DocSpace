@@ -118,7 +118,7 @@ namespace ASC.Api.Settings.Smtp
             Logger = options.CurrentValue;
         }
 
-        public void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
             try
             {
@@ -126,11 +126,11 @@ namespace ASC.Api.Settings.Smtp
 
                 SetProgress(5, "Setup tenant");
 
-                TenantManager.SetCurrentTenant(CurrentTenant);
+                _ = TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SetProgress(10, "Setup user");
 
-                SecurityContext.AuthenticateMe(CurrentUser); //Core.Configuration.Constants.CoreSystem);
+                _ = SecurityContext.AuthenticateMe(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
                 SetProgress(15, "Find user data");
 

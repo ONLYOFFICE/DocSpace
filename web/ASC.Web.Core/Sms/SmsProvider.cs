@@ -464,7 +464,7 @@ namespace ASC.Web.Core.Sms
         {
             try
             {
-                new VoipService.Twilio.TwilioProvider(Key, Secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetExistingPhoneNumbers();
+                _ = new VoipService.Twilio.TwilioProvider(Key, Secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetExistingPhoneNumbers();
                 return true;
             }
             catch (Exception)
@@ -542,8 +542,8 @@ namespace ASC.Web.Core.Sms
         {
             if (services.TryAddScoped<TwilioProvider>())
             {
-                services.TryAddScoped<TwilioProviderCleaner>();
-                services.TryAddScoped<TwilioSaaSProvider>();
+                _ = services.TryAddScoped<TwilioProviderCleaner>();
+                _ = services.TryAddScoped<TwilioSaaSProvider>();
                 return services
                     .AddVoipDaoService()
                     .AddTenantManagerService()

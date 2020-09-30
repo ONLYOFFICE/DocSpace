@@ -24,7 +24,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilder AddSubscription(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Subscription>()
+            _ = modelBuilder.Entity<Subscription>()
                 .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient, c.Object });
 
             return modelBuilder;

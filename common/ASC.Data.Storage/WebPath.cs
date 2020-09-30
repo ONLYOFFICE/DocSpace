@@ -263,7 +263,7 @@ namespace ASC.Data.Storage
 
         public static DIHelper AddWebPathSettingsService(this DIHelper services)
         {
-            services.TryAddSingleton<WebPathSettings>();
+            _ = services.TryAddSingleton<WebPathSettings>();
 
             return services.AddStorage();
         }

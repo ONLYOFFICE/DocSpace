@@ -270,7 +270,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             }
             if (table.Name == "files_folder" && (columnName == "create_by" || columnName == "modified_by"))
             {
-                base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+                _ = base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
                 return true;
             }
 

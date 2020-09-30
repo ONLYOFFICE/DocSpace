@@ -90,7 +90,7 @@ namespace ASC.ApiSystem.Classes
 
             try
             {
-                Context.Request.Headers.TryGetValue("Authorization", out var headers);
+                _ = Context.Request.Headers.TryGetValue("Authorization", out var headers);
 
                 var header = headers.FirstOrDefault();
 

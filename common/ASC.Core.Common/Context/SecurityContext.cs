@@ -165,7 +165,7 @@ namespace ASC.Core
                             return false;
                         }
 
-                        AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
+                        _ = AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
 
                         return true;
                     }
@@ -392,7 +392,7 @@ namespace ASC.Core
         }
         public static DIHelper AddAuthContextService(this DIHelper services)
         {
-            services.TryAddScoped<AuthContext>();
+            _ = services.TryAddScoped<AuthContext>();
             return services;
         }
 

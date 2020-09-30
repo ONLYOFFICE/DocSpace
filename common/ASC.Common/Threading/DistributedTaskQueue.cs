@@ -211,7 +211,7 @@ namespace ASC.Common.Threading
                     distributedTask.Status = DistributedTaskStatus.Canceled;
                 }
 
-                cancelations.TryRemove(id, out _);
+                _ = cancelations.TryRemove(id, out _);
 
                 distributedTask.PublishChanges();
             }

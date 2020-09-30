@@ -96,7 +96,7 @@ namespace ASC.Common.Caching
         public void Remove(string key)
         {
             var cache = GetCache();
-            cache.Remove(key);
+            _ = cache.Remove(key);
         }
 
         public void Remove(Regex pattern)
@@ -108,7 +108,7 @@ namespace ASC.Common.Caching
             var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
             foreach (var key in keys)
             {
-                cache.Remove(key);
+                _ = cache.Remove(key);
             }
         }
 
@@ -146,10 +146,10 @@ namespace ASC.Common.Caching
             }
             else if (dic != null)
             {
-                dic.Remove(field);
+                _ = dic.Remove(field);
                 if (dic.Count == 0)
                 {
-                    cache.Remove(key);
+                    _ = cache.Remove(key);
                 }
                 else
                 {

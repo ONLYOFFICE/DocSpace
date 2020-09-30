@@ -115,8 +115,8 @@ namespace ASC.VoipService.Dao
     {
         public static DIHelper AddVoipDaoService(this DIHelper services)
         {
-            services.TryAddScoped<VoipDao, CachedVoipDao>();
-            services.TryAddSingleton<VoipDaoCache>();
+            _ = services.TryAddScoped<VoipDao, CachedVoipDao>();
+            _ = services.TryAddSingleton<VoipDaoCache>();
 
             return services
                 .AddDbContextManagerService<VoipDbContext>()

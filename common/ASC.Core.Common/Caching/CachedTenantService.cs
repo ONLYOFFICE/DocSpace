@@ -89,7 +89,7 @@ namespace ASC.Core.Caching
                 Tenant t;
                 lock (locker)
                 {
-                    byId.TryGetValue(id, out t);
+                    _ = byId.TryGetValue(id, out t);
                 }
                 return t;
             }
@@ -101,7 +101,7 @@ namespace ASC.Core.Caching
                 Tenant t;
                 lock (locker)
                 {
-                    byDomain.TryGetValue(domain, out t);
+                    _ = byDomain.TryGetValue(domain, out t);
                 }
                 return t;
             }
@@ -130,11 +130,11 @@ namespace ASC.Core.Caching
                 {
                     lock (locker)
                     {
-                        byId.Remove(id);
-                        byDomain.Remove(t.TenantAlias);
+                        _ = byId.Remove(id);
+                        _ = byDomain.Remove(t.TenantAlias);
                         if (!string.IsNullOrEmpty(t.MappedDomain))
                         {
-                            byDomain.Remove(t.MappedDomain);
+                            _ = byDomain.Remove(t.MappedDomain);
                         }
                     }
                 }
@@ -309,15 +309,15 @@ namespace ASC.Core.Caching
         {
             if (services.TryAddScoped<DbTenantService>())
             {
-                services.TryAddScoped<ITenantService, CachedTenantService>();
+                _ = services.TryAddScoped<ITenantService, CachedTenantService>();
 
-                services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
-                services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();
+                _ = services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
+                _ = services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();
 
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.TryAddSingleton<TenantDomainValidator>();
-                services.TryAddSingleton<TimeZoneConverter>();
-                services.TryAddSingleton<TenantServiceCache>();
+                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                _ = services.TryAddSingleton<TenantDomainValidator>();
+                _ = services.TryAddSingleton<TimeZoneConverter>();
+                _ = services.TryAddSingleton<TenantServiceCache>();
 
                 return services
                     .AddCoreBaseSettingsService()

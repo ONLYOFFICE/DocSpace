@@ -146,7 +146,7 @@ namespace ASC.ApiSystem.Classes
     {
         public static DIHelper AddTimeZonesProvider(this DIHelper services)
         {
-            services.TryAddSingleton<TimeZonesProvider>();
+            _ = services.TryAddSingleton<TimeZonesProvider>();
 
             return services;
         }

@@ -153,7 +153,7 @@ namespace ASC.Core.Tenants
         {
             if (services.TryAddScoped<TenantUtil>())
             {
-                services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();
+                _ = services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();
                 return services.AddTenantManagerService();
             }
 

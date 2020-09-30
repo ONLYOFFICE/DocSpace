@@ -107,8 +107,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionWorkerService(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionWorker>();
-            services.TryAddSingleton<FactoryOperation>();
+            _ = services.TryAddSingleton<EncryptionWorker>();
+            _ = services.TryAddSingleton<FactoryOperation>();
             return services.AddEncryptionOperationService();
         }
     }

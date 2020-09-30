@@ -192,7 +192,7 @@ namespace ASC.Web.Api.Models
                 IsSSO = userInfo.IsSSO()
             };
 
-            Init(result, userInfo);
+            _ = Init(result, userInfo);
 
             if (userInfo.Sex.HasValue)
             {

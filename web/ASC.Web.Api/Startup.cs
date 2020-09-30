@@ -25,11 +25,11 @@ namespace ASC.Web.Api
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();
+            _ = services.AddMemoryCache();
 
             var diHelper = new DIHelper(services);
 
-            diHelper
+            _ = diHelper
                 .AddAuthenticationController()
                 .AddModulesController()
                 .AddPortalController()
@@ -37,7 +37,7 @@ namespace ASC.Web.Api
                 .AddSmtpSettingsController();
 
             base.ConfigureServices(services);
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            _ = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
         }
     }

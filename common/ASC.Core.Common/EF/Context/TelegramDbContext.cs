@@ -18,7 +18,7 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddTelegramUsers();
+            _ = modelBuilder.AddTelegramUsers();
         }
     }
 

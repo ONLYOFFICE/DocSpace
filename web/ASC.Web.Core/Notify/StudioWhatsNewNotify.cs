@@ -104,7 +104,7 @@ namespace ASC.Web.Studio.Core.Notify
                             continue;
                         }
 
-                        securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
+                        _ = securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
@@ -367,8 +367,8 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioWhatsNewNotify(this DIHelper services)
         {
-            services.TryAddSingleton<StudioWhatsNewNotify>();
-            services.TryAddScoped<StudioWhatsNewNotifyScope>();
+            _ = services.TryAddSingleton<StudioWhatsNewNotify>();
+            _ = services.TryAddScoped<StudioWhatsNewNotifyScope>();
             return services
                 .AddWebItemManager()
                 .AddFeedAggregateDataProvider()

@@ -398,7 +398,7 @@ namespace ASC.ElasticSearch
 
             }, TaskCreationOptions.LongRunning);
 
-            task.ConfigureAwait(false);
+            _ = task.ConfigureAwait(false);
             task.Start(Scheduler);
             return task;
         }
@@ -410,7 +410,7 @@ namespace ASC.ElasticSearch
 
         public void ReIndex()
         {
-            Indexer.ReIndex();
+            _ = Indexer.ReIndex();
         }
 
         public bool Support(T t)
@@ -594,7 +594,7 @@ namespace ASC.ElasticSearch
         {
             if (services.TryAddScoped<FactoryIndexer>())
             {
-                services.TryAddSingleton<FactoryIndexerHelper>();
+                _ = services.TryAddSingleton<FactoryIndexerHelper>();
                 return services
                     .AddClientService()
                     .AddCoreBaseSettingsService();
@@ -607,7 +607,7 @@ namespace ASC.ElasticSearch
         {
             if (addBase)
             {
-                services.TryAddScoped<FactoryIndexer<T>>();
+                _ = services.TryAddScoped<FactoryIndexer<T>>();
             }
 
             if (services.TryAddScoped<Selector<T>>())

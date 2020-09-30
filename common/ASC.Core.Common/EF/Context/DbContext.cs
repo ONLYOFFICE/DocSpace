@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddMobileAppInstall();
+            _ = modelBuilder.AddMobileAppInstall();
         }
     }
 

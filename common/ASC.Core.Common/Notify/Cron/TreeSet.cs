@@ -59,7 +59,7 @@ namespace ASC.Notify.Cron
 
         public TreeSet(ICollection c)
         {
-            AddAll(c);
+            _ = AddAll(c);
         }
 
         public TreeSet(IComparer c)
@@ -121,7 +121,7 @@ namespace ASC.Notify.Cron
             }
             for (; i < Count; i++)
             {
-                newList.Add(this[i]);
+                _ = newList.Add(this[i]);
             }
             return newList;
         }
@@ -142,7 +142,7 @@ namespace ASC.Notify.Cron
             bool inserted;
             if (!(inserted = Contains(obj)))
             {
-                base.Add(obj);
+                _ = base.Add(obj);
             }
             return !inserted;
         }

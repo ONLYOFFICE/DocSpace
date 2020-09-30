@@ -177,7 +177,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     {
         public static DIHelper AddGoogleDriveTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<GoogleDriveTagDao>();
+            _ = services.TryAddScoped<GoogleDriveTagDao>();
 
             return services;
         }

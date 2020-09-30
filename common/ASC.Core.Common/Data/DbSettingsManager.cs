@@ -195,7 +195,7 @@ namespace ASC.Core.Data
 
                     if (s != null)
                     {
-                        WebstudioDbContext.WebstudioSettings.Remove(s);
+                        _ = WebstudioDbContext.WebstudioSettings.Remove(s);
                     }
                 }
                 else
@@ -208,10 +208,10 @@ namespace ASC.Core.Data
                         Data = data
                     };
 
-                    WebstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
+                    _ = WebstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
                 }
 
-                WebstudioDbContext.SaveChanges();
+                _ = WebstudioDbContext.SaveChanges();
                 tr.Commit();
 
                 DbSettingsManagerCache.Remove(key);
@@ -336,8 +336,8 @@ namespace ASC.Core.Data
         {
             if (services.TryAddScoped<DbSettingsManager>())
             {
-                services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
-                services.TryAddSingleton<DbSettingsManagerCache>();
+                _ = services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
+                _ = services.TryAddSingleton<DbSettingsManagerCache>();
 
                 return services.AddWebstudioDbContextService();
             }

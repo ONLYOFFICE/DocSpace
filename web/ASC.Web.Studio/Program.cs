@@ -18,7 +18,7 @@ namespace ASC.Web.Studio
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(w =>
                 {
-                    w.UseStartup<Startup>();
+                    _ = w.UseStartup<Startup>();
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -28,8 +28,8 @@ namespace ASC.Web.Studio
                     {
                         path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    config.SetBasePath(path);
-                    config
+                    _ = config.SetBasePath(path);
+                    _ = config
                         .AddInMemoryCollection(new Dictionary<string, string>
                         {
                             {"pathToConf", path}

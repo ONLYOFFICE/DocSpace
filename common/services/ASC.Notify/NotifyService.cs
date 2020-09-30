@@ -73,7 +73,7 @@ namespace ASC.Notify
         {
             try
             {
-                Db.SaveMessage(notifyMessage);
+                _ = Db.SaveMessage(notifyMessage);
             }
             catch (Exception e)
             {
@@ -107,9 +107,9 @@ namespace ASC.Notify
 
             var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
             var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
-            tenantManager.SetCurrentTenant(tenant);
+            _ = tenantManager.SetCurrentTenant(tenant);
             tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
-            methodInfo.Invoke(instance, parameters.ToArray());
+            _ = methodInfo.Invoke(instance, parameters.ToArray());
         }
 
         public void Dispose()
@@ -144,9 +144,9 @@ namespace ASC.Notify
     {
         public static DIHelper AddNotifyService(this DIHelper services)
         {
-            services.TryAddSingleton<NotifyService>();
-            services.TryAddScoped<NotifyServiceScope>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            _ = services.TryAddSingleton<NotifyService>();
+            _ = services.TryAddScoped<NotifyServiceScope>();
+            _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             return services
                 .AddDbWorker();

@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddFeedUsers(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FeedUsers>()
+            _ = modelBuilder.Entity<FeedUsers>()
                 .HasKey(c => new { c.FeedId, c.UserId });
 
             return modelBuilder;

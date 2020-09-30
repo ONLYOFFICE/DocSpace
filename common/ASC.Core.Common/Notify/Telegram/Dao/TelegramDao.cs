@@ -80,8 +80,8 @@ namespace ASC.Core.Common.Notify.Telegram
                 TelegramUserId = telegramId
             };
 
-            TelegramDbContext.AddOrUpdate(r => r.Users, user);
-            TelegramDbContext.SaveChanges();
+            _ = TelegramDbContext.AddOrUpdate(r => r.Users, user);
+            _ = TelegramDbContext.SaveChanges();
         }
 
         public TelegramUser GetUser(Guid userId, int tenantId)
@@ -109,7 +109,7 @@ namespace ASC.Core.Common.Notify.Telegram
                 .ToList();
 
             TelegramDbContext.Users.RemoveRange(toRemove);
-            TelegramDbContext.SaveChanges();
+            _ = TelegramDbContext.SaveChanges();
         }
 
         public void Delete(int telegramId)
@@ -119,7 +119,7 @@ namespace ASC.Core.Common.Notify.Telegram
                 .ToList();
 
             TelegramDbContext.Users.RemoveRange(toRemove);
-            TelegramDbContext.SaveChanges();
+            _ = TelegramDbContext.SaveChanges();
         }
     }
 }

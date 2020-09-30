@@ -63,7 +63,7 @@ namespace ASC.ElasticSearch
             Notify = cacheNotify;
             Notify.Subscribe((a) =>
             {
-                IsExist.AddOrUpdate(a.Id, false, (q, w) => false);
+                _ = IsExist.AddOrUpdate(a.Id, false, (q, w) => false);
             }, CacheNotifyAction.Any);
         }
 
@@ -113,7 +113,7 @@ namespace ASC.ElasticSearch
         internal void Index(T data, bool immediately = true)
         {
             CreateIfNotExist(data);
-            Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
+            _ = Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
         }
 
         internal void Index(List<T> data, bool immediately = true)
@@ -171,7 +171,7 @@ namespace ASC.ElasticSearch
                     if (runBulk)
                     {
                         var portion1 = portion;
-                        Client.Instance.Bulk(r => r.IndexMany(portion1, GetMeta));
+                        _ = Client.Instance.Bulk(r => r.IndexMany(portion1, GetMeta));
                         for (var j = portionStart; j < i; j++)
                         {
                             if (data[j] is ISearchItemDocument doc && doc.Document != null)
@@ -190,52 +190,52 @@ namespace ASC.ElasticSearch
             }
             else
             {
-                Client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
+                _ = Client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
             }
         }
 
         internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             CreateIfNotExist(data);
-            Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
+            _ = Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
         }
 
         internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
             CreateIfNotExist(data);
-            Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
+            _ = Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             CreateIfNotExist(data);
-            Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
+            _ = Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
             CreateIfNotExist(data);
-            Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
+            _ = Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
         }
 
         internal void Delete(T data, bool immediately = true)
         {
-            Client.Instance.Delete<T>(data, r => GetMetaForDelete(r, immediately));
+            _ = Client.Instance.Delete<T>(data, r => GetMetaForDelete(r, immediately));
         }
 
         internal void Delete(Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true)
         {
-            Client.Instance.DeleteByQuery(GetDescriptorForDelete(expression, tenantId, immediately));
+            _ = Client.Instance.DeleteByQuery(GetDescriptorForDelete(expression, tenantId, immediately));
         }
 
         public void Flush()
         {
-            Client.Instance.Indices.Flush(new FlushRequest(IndexName));
+            _ = Client.Instance.Indices.Flush(new FlushRequest(IndexName));
         }
 
         public void Refresh()
         {
-            Client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
+            _ = Client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
         }
 
         internal bool CheckExist(T data)
@@ -275,13 +275,13 @@ namespace ASC.ElasticSearch
 
             if (index != null)
             {
-                WebstudioDbContext.WebstudioIndex.Remove(index);
+                _ = WebstudioDbContext.WebstudioIndex.Remove(index);
             }
 
-            WebstudioDbContext.SaveChanges();
+            _ = WebstudioDbContext.SaveChanges();
 
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
-            Client.Instance.Indices.Delete(Wrapper.IndexName);
+            _ = Client.Instance.Indices.Delete(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
             CreateIfNotExist(Wrapper);
         }
@@ -317,7 +317,7 @@ namespace ASC.ElasticSearch
                         foreach (var c in Enum.GetNames(typeof(Analyzer)))
                         {
                             var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                            _ = b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
                         }
 
                         foreach (var c in Enum.GetNames(typeof(CharFilter)))
@@ -326,12 +326,12 @@ namespace ASC.ElasticSearch
 
                             var charFilters = new List<string>() { CharFilter.io.ToString(), c };
                             var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
+                            _ = b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
                         }
 
                         if (data is ISearchItemDocument)
                         {
-                            b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                            _ = b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
                         }
 
                         return b;
@@ -360,12 +360,12 @@ namespace ASC.ElasticSearch
 
             if (immediately)
             {
-                result.Refresh(Elasticsearch.Net.Refresh.True);
+                _ = result.Refresh(Elasticsearch.Net.Refresh.True);
             }
 
             if (data is ISearchItemDocument)
             {
-                result.Pipeline("attachments");
+                _ = result.Pipeline("attachments");
             }
 
             return result;
@@ -376,7 +376,7 @@ namespace ASC.ElasticSearch
 
             if (data is ISearchItemDocument)
             {
-                result.Pipeline("attachments");
+                _ = result.Pipeline("attachments");
             }
 
             return result;
@@ -388,16 +388,16 @@ namespace ASC.ElasticSearch
 
             if (fields.Any())
             {
-                result.Script(GetScriptUpdateByQuery(data, fields));
+                _ = result.Script(GetScriptUpdateByQuery(data, fields));
             }
             else
             {
-                result.Doc(data);
+                _ = result.Doc(data);
             }
 
             if (immediately)
             {
-                result.Refresh(Elasticsearch.Net.Refresh.True);
+                _ = result.Refresh(Elasticsearch.Net.Refresh.True);
             }
 
             return result;
@@ -434,12 +434,12 @@ namespace ASC.ElasticSearch
                 {
                     if (newValue == default(T))
                     {
-                        source.AppendFormat("ctx._source.remove('{0}');", sourceExprText.Substring(1));
+                        _ = source.AppendFormat("ctx._source.remove('{0}');", sourceExprText.Substring(1));
                     }
                     else
                     {
                         var pkey = "p" + sourceExprText.Replace(".", "");
-                        source.AppendFormat("ctx._source{0} = params.{1};", sourceExprText, pkey);
+                        _ = source.AppendFormat("ctx._source{0} = params.{1};", sourceExprText, pkey);
                         parameters.Add(pkey, newValue);
                     }
                 }
@@ -456,7 +456,7 @@ namespace ASC.ElasticSearch
 
             if (immediately)
             {
-                result.Refresh(Elasticsearch.Net.Refresh.True);
+                _ = result.Refresh(Elasticsearch.Net.Refresh.True);
             }
 
             return result;
@@ -496,18 +496,18 @@ namespace ASC.ElasticSearch
                     for (var i = 0; i < newValue.Count; i++)
                     {
                         parameters.Add(paramKey + i, newValue[i]);
-                        source.AppendFormat("if (!ctx._source{0}.contains(params.{1})){{ctx._source{0}.add(params.{1})}}", key, paramKey + i);
+                        _ = source.AppendFormat("if (!ctx._source{0}.contains(params.{1})){{ctx._source{0}.add(params.{1})}}", key, paramKey + i);
                     }
                     break;
                 case UpdateAction.Replace:
                     parameters.Add(paramKey, newValue);
-                    source.AppendFormat("ctx._source{0} = params.{1};", key, paramKey);
+                    _ = source.AppendFormat("ctx._source{0} = params.{1};", key, paramKey);
                     break;
                 case UpdateAction.Remove:
                     for (var i = 0; i < newValue.Count; i++)
                     {
                         parameters.Add(paramKey + i, newValue[i]);
-                        source.AppendFormat("ctx._source{0}.removeIf(item -> item.id == params.{1}.id)", key, paramKey + i);
+                        _ = source.AppendFormat("ctx._source{0}.removeIf(item -> item.id == params.{1}.id)", key, paramKey + i);
                     }
                     break;
                 default:
@@ -534,7 +534,7 @@ namespace ASC.ElasticSearch
             var result = request.Index(IndexName);
             if (immediately)
             {
-                result.Refresh(Elasticsearch.Net.Refresh.True);
+                _ = result.Refresh(Elasticsearch.Net.Refresh.True);
             }
             return result;
         }
@@ -595,13 +595,13 @@ namespace ASC.ElasticSearch
             }
 
 
-            WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
+            _ = WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
             {
                 IndexName = Wrapper.IndexName,
                 LastModified = DateTime.UtcNow
             });
 
-            WebstudioDbContext.SaveChanges();
+            _ = WebstudioDbContext.SaveChanges();
 
             Log.Debug($"index completed {Wrapper.IndexName}");
         }
@@ -627,7 +627,7 @@ namespace ASC.ElasticSearch
     {
         public static DIHelper AddBaseIndexerHelperService(this DIHelper services)
         {
-            services.TryAddSingleton<BaseIndexerHelper>();
+            _ = services.TryAddSingleton<BaseIndexerHelper>();
             return services.AddKafkaService();
         }
 

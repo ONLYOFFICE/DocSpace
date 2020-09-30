@@ -29,9 +29,9 @@ namespace ASC.Notify
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    config.SetBasePath(path);
+                    _ = config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
+                    _ = config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -51,23 +51,23 @@ namespace ASC.Notify
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    _ = diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
-                    services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-                    diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
+                    _ = services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
+                    _ = diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
-                    diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
+                    _ = diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
+                    _ = diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
 
-                    diHelper.AddNotifyServiceLauncher();
-                    services.AddHostedService<NotifyServiceLauncher>();
+                    _ = diHelper.AddNotifyServiceLauncher();
+                    _ = services.AddHostedService<NotifyServiceLauncher>();
 
-                    diHelper
+                    _ = diHelper
                     .AddJabberSenderService()
                     .AddSmtpSenderService()
                     .AddAWSSenderService();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

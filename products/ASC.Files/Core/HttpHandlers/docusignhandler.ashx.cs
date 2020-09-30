@@ -241,7 +241,7 @@ namespace ASC.Web.Files.HttpHandlers
                 throw new Exception("DocuSign incorrect User ID: " + userIdString);
             }
 
-            SecurityContext.AuthenticateMe(userId);
+            _ = SecurityContext.AuthenticateMe(userId);
         }
 
         private static XmlNode GetSingleNode(XmlNode node, string xpath, XmlNamespaceManager mgr, bool canMiss = false)

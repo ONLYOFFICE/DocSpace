@@ -266,13 +266,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
                     fileStream.CopyTo(tempBuffer);
                     tempBuffer.Flush();
-                    tempBuffer.Seek(offset, SeekOrigin.Begin);
+                    _ = tempBuffer.Seek(offset, SeekOrigin.Begin);
 
                     fileStream.Dispose();
                     return tempBuffer;
                 }
 
-                fileStream.Seek(offset, SeekOrigin.Begin);
+                _ = fileStream.Seek(offset, SeekOrigin.Begin);
             }
 
             return fileStream;
@@ -337,7 +337,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (file.ID != null && !entry.Name.Equals(file.Title))
             {
                 file.Title = GetAvailableTitle(file.Title, entry.Parent, IsExist);
-                ProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
+                _ = ProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
             }
 
             return ToFile(entry);
@@ -366,7 +366,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .ToList();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -377,19 +377,19 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 tx.Commit();
             }
 
             if (!(file is ErrorEntry))
-                ProviderInfo.Storage.DeleteFileSystemEntry(file);
+                _ = ProviderInfo.Storage.DeleteFileSystemEntry(file);
         }
 
         public bool IsExist(string title, object folderId)
@@ -724,7 +724,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public static DIHelper AddSharpBoxFileDaoService(this DIHelper services)
         {
-            services.TryAddScoped<SharpBoxFileDao>();
+            _ = services.TryAddScoped<SharpBoxFileDao>();
 
             return services;
         }

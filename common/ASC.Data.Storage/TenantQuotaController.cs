@@ -57,7 +57,7 @@ namespace ASC.Data.Storage
             if (UsedInQuota(dataTag))
             {
                 QuotaUsedCheck(size);
-                Interlocked.Add(ref currentSize, size);
+                _ = Interlocked.Add(ref currentSize, size);
             }
             SetTenantQuotaRow(module, domain, size, dataTag, true);
         }
@@ -67,7 +67,7 @@ namespace ASC.Data.Storage
             size = -Math.Abs(size);
             if (UsedInQuota(dataTag))
             {
-                Interlocked.Add(ref currentSize, size);
+                _ = Interlocked.Add(ref currentSize, size);
             }
             SetTenantQuotaRow(module, domain, size, dataTag, true);
         }
@@ -77,7 +77,7 @@ namespace ASC.Data.Storage
             size = Math.Max(0, size);
             if (UsedInQuota(dataTag))
             {
-                Interlocked.Exchange(ref currentSize, size);
+                _ = Interlocked.Exchange(ref currentSize, size);
             }
             SetTenantQuotaRow(module, domain, size, dataTag, false);
         }

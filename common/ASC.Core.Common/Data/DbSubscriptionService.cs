@@ -114,8 +114,8 @@ namespace ASC.Core.Data
                 Tenant = s.Tenant
             };
 
-            UserDbContext.AddOrUpdate(r => r.Subscriptions, subs);
-            UserDbContext.SaveChanges();
+            _ = UserDbContext.AddOrUpdate(r => r.Subscriptions, subs);
+            _ = UserDbContext.SaveChanges();
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
@@ -143,7 +143,7 @@ namespace ASC.Core.Data
 
             if (sub != null)
             {
-                UserDbContext.Subscriptions.Remove(sub);
+                _ = UserDbContext.Subscriptions.Remove(sub);
             }
 
             tr.Commit();
@@ -186,7 +186,7 @@ namespace ASC.Core.Data
                 {
                     if (common.TryGetValue(key, out var r))
                     {
-                        result.Remove(r);
+                        _ = result.Remove(r);
                     }
                 }
             }
@@ -211,7 +211,7 @@ namespace ASC.Core.Data
 
                 if (sm != null)
                 {
-                    UserDbContext.SubscriptionMethods.Remove(sm);
+                    _ = UserDbContext.SubscriptionMethods.Remove(sm);
                 }
             }
             else
@@ -224,10 +224,10 @@ namespace ASC.Core.Data
                     Tenant = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
-                UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
+                _ = UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
             }
 
-            UserDbContext.SaveChanges();
+            _ = UserDbContext.SaveChanges();
             tr.Commit();
         }
 
@@ -264,7 +264,7 @@ namespace ASC.Core.Data
                 {
                     if (common.TryGetValue(key, out var r))
                     {
-                        result.Remove(r);
+                        _ = result.Remove(r);
                     }
                 }
             }

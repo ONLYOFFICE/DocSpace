@@ -275,7 +275,7 @@ namespace ASC.Api.Core
         {
             if (services.TryAddScoped<ApiContext>())
             {
-                services
+                _ = services
                     .AddTenantManagerService()
                     .AddSecurityContextService();
             }

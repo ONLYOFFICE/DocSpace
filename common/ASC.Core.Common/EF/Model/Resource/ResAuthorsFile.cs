@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF.Model.Resource
     {
         public static ModelBuilder AddResAuthorsFile(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ResAuthorsFile>()
+            _ = modelBuilder.Entity<ResAuthorsFile>()
                 .HasKey(c => new { c.AuthorLogin, c.FileId });
 
             return modelBuilder;

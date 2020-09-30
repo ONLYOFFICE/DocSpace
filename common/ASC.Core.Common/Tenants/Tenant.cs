@@ -146,7 +146,7 @@ namespace ASC.Core.Tenants
 
         internal string GetTrustedDomains()
         {
-            TrustedDomains.RemoveAll(d => string.IsNullOrEmpty(d));
+            _ = TrustedDomains.RemoveAll(d => string.IsNullOrEmpty(d));
             if (TrustedDomains.Count == 0) return null;
             return string.Join("|", TrustedDomains.ToArray());
         }

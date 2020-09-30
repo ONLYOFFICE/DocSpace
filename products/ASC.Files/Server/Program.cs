@@ -18,7 +18,7 @@ namespace ASC.Files
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    _ = webBuilder.UseStartup<Startup>();
                 })
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
@@ -29,8 +29,8 @@ namespace ASC.Files
                     path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
                 }
 
-                config.SetBasePath(path);
-                config
+                _ = config.SetBasePath(path);
+                _ = config
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
                         {"pathToConf", path}

@@ -94,8 +94,8 @@ namespace ASC.Files.Thirdparty
                     TenantId = TenantID
                 };
 
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
+                _ = FilesDbContext.SaveChanges();
             }
             return result;
         }

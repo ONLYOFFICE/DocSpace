@@ -125,7 +125,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             command.CommandText = insertCommantText;
             foreach (var parameter in valuesForInsert)
             {
-                AddParameter(command, parameter.Key, parameter.Value);
+                _ = AddParameter(command, parameter.Key, parameter.Value);
             }
             return command;
         }
@@ -139,7 +139,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
             p.Value = GetParameterValue(value);
 
-            command.Parameters.Add(p);
+            _ = command.Parameters.Add(p);
             return command;
         }
 

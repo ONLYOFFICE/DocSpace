@@ -23,7 +23,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilder AddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbSubscriptionMethod>()
+            _ = modelBuilder.Entity<DbSubscriptionMethod>()
                 .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient });
 
             return modelBuilder;

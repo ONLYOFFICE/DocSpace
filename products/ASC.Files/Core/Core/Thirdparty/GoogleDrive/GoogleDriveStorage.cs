@@ -229,7 +229,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 {
                     str.CopyTo(tempBuffer);
                     tempBuffer.Flush();
-                    tempBuffer.Seek(offset, SeekOrigin.Begin);
+                    _ = tempBuffer.Seek(offset, SeekOrigin.Begin);
                 }
             }
 
@@ -263,7 +263,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public void DeleteEntry(string entryId)
         {
-            _driveService.Files.Delete(entryId).Execute();
+            _ = _driveService.Files.Delete(entryId).Execute();
         }
 
         public DriveFile InsertEntryIntoFolder(DriveFile entry, string folderId)

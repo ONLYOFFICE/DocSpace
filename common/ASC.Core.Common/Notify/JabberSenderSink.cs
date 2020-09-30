@@ -78,7 +78,7 @@ namespace ASC.Core.Notify
                     var tenant = tenantManager.GetCurrentTenant(false);
                     m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-                    sender.Send(m);
+                    _ = sender.Send(m);
                 }
                 return new SendResponse(message, senderName, result);
             }
@@ -108,7 +108,7 @@ namespace ASC.Core.Notify
     {
         public static DIHelper AddJabberSenderSinkService(this DIHelper services)
         {
-            services.TryAddScoped<JabberSenderSinkScope>();
+            _ = services.TryAddScoped<JabberSenderSinkScope>();
             return services;
         }
     }

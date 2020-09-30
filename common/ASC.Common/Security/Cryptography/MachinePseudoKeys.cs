@@ -80,7 +80,7 @@ namespace ASC.Security.Cryptography
     {
         public static DIHelper AddMachinePseudoKeysService(this DIHelper services)
         {
-            services.TryAddSingleton<MachinePseudoKeys>();
+            _ = services.TryAddSingleton<MachinePseudoKeys>();
 
             return services;
         }

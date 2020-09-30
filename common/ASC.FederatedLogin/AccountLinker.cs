@@ -176,8 +176,8 @@ namespace ASC.FederatedLogin
                 Linked = DateTime.UtcNow
             };
 
-            AccountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
-            AccountLinkContext.SaveChanges();
+            _ = AccountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
+            _ = AccountLinkContext.SaveChanges();
 
             AccountLinkerStorage.RemoveFromCache(obj);
         }
@@ -208,7 +208,7 @@ namespace ASC.FederatedLogin
             if (!string.IsNullOrEmpty(hashId)) accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
 
             var accountLink = accountLinkQuery.FirstOrDefault();
-            AccountLinks.Remove(accountLink);
+            _ = AccountLinks.Remove(accountLink);
 
             tr.Commit();
             AccountLinkerStorage.RemoveFromCache(obj);
@@ -219,8 +219,8 @@ namespace ASC.FederatedLogin
     {
         public static DIHelper AddAccountLinkerStorageService(this DIHelper services)
         {
-            services.TryAddSingleton<AccountLinkerStorage>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            _ = services.TryAddSingleton<AccountLinkerStorage>();
+            _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             return services;
         }
@@ -232,7 +232,7 @@ namespace ASC.FederatedLogin
         {
             if (services.TryAddScoped<AccountLinker>())
             {
-                services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
+                _ = services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
 
                 return services
                     .AddAccountLinkContextService()

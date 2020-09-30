@@ -112,7 +112,7 @@ namespace ASC.Web.Core
         {
             get
             {
-                items.TryGetValue(id, out var i);
+                _ = items.TryGetValue(id, out var i);
                 return i;
             }
         }
@@ -268,7 +268,7 @@ namespace ASC.Web.Core
     {
         public static DIHelper AddWebItemManager(this DIHelper services)
         {
-            services.TryAddSingleton<WebItemManager>();
+            _ = services.TryAddSingleton<WebItemManager>();
             return services;
         }
         public static DIHelper AddWebItemManagerSecurity(this DIHelper services)

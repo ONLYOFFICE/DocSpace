@@ -96,7 +96,7 @@ namespace ASC.Notify.Engine
 
                 requests.Enqueue(request);
             }
-            requestsEvent.Set();
+            _ = requestsEvent.Set();
         }
 
 
@@ -113,10 +113,10 @@ namespace ASC.Notify.Engine
                     notifyScheduler.Start();
                 }
 
-                sendMethods.Remove(w);
+                _ = sendMethods.Remove(w);
                 sendMethods.Add(w);
             }
-            methodsEvent.Set();
+            _ = methodsEvent.Set();
         }
 
         internal void UnregisterSendMethod(Action<DateTime> method)
@@ -125,7 +125,7 @@ namespace ASC.Notify.Engine
 
             lock (sendMethods)
             {
-                sendMethods.Remove(new SendMethodWrapper(method, null, log));
+                _ = sendMethods.Remove(new SendMethodWrapper(method, null, log));
             }
         }
 
@@ -149,7 +149,7 @@ namespace ASC.Notify.Engine
                         {
                             lock (sendMethods)
                             {
-                                sendMethods.Remove(w);
+                                _ = sendMethods.Remove(w);
                             }
                         }
 
@@ -182,7 +182,7 @@ namespace ASC.Notify.Engine
                     {
                         wait = TimeSpan.FromTicks(int.MaxValue);
                     }
-                    methodsEvent.WaitOne(wait, false);
+                    _ = methodsEvent.WaitOne(wait, false);
                 }
             }
             catch (ThreadAbortException)
@@ -216,7 +216,7 @@ namespace ASC.Notify.Engine
                         AfterTransferRequest?.Invoke(this, request, scope);
                         try
                         {
-                            SendNotify(request, scope);
+                            _ = SendNotify(request, scope);
                         }
                         catch (Exception e)
                         {
@@ -225,7 +225,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        requestsEvent.WaitOne();
+                        _ = requestsEvent.WaitOne();
                     }
                 }
             }

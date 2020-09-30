@@ -245,7 +245,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .ToList();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -256,19 +256,19 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 tx.Commit();
             }
 
             if (!(folder is ErrorEntry))
-                ProviderInfo.Storage.DeleteFileSystemEntry(folder);
+                _ = ProviderInfo.Storage.DeleteFileSystemEntry(folder);
         }
 
         public bool IsExist(string title, ICloudDirectoryEntry folder)
@@ -568,7 +568,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public static DIHelper AddSharpBoxFolderDaoService(this DIHelper services)
         {
-            services.TryAddScoped<SharpBoxFileDao>();
+            _ = services.TryAddScoped<SharpBoxFileDao>();
 
             return services;
         }

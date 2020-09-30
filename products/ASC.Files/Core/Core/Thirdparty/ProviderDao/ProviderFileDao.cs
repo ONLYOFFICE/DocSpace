@@ -529,8 +529,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             if (services.TryAddScoped<ProviderFileDao>())
             {
-                services.TryAddScoped<File<string>>();
-                services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
+                _ = services.TryAddScoped<File<string>>();
+                _ = services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
 
                 return services
                     .AddProviderDaoBaseService();

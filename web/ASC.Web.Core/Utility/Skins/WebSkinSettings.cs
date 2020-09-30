@@ -51,7 +51,7 @@ namespace ASC.Web.Core.Utility.Skins
 
                 foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))
                 {
-                    BaseCultureCss.Add(Path.GetFileName(f).Split('.')[1]);
+                    _ = BaseCultureCss.Add(Path.GetFileName(f).Split('.')[1]);
                 }
             }
             catch

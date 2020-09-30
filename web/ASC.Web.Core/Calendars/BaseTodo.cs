@@ -80,21 +80,21 @@ namespace ASC.Web.Core.Calendars
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("BEGIN:TODO");
-            sb.AppendLine(string.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));
-            sb.AppendLine(string.Format("SUMMARY:{0}", this.Name));
+            _ = sb.AppendLine("BEGIN:TODO");
+            _ = sb.AppendLine(string.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));
+            _ = sb.AppendLine(string.Format("SUMMARY:{0}", this.Name));
 
             if (!string.IsNullOrEmpty(this.Description))
-                sb.AppendLine(string.Format("DESCRIPTION:{0}", this.Description.Replace("\n", "\\n")));
+                _ = sb.AppendLine(string.Format("DESCRIPTION:{0}", this.Description.Replace("\n", "\\n")));
 
 
             if (this.UtcStartDate != DateTime.MinValue)
-                sb.AppendLine(string.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
+                _ = sb.AppendLine(string.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
 
             if (this.Completed != DateTime.MinValue)
-                sb.AppendLine(string.Format("COMPLETED:{0}", this.Completed.ToString("yyyyMMdd'T'HHmmss'Z'")));
+                _ = sb.AppendLine(string.Format("COMPLETED:{0}", this.Completed.ToString("yyyyMMdd'T'HHmmss'Z'")));
 
-            sb.Append("END:TODO");
+            _ = sb.Append("END:TODO");
             return sb.ToString();
         }
 

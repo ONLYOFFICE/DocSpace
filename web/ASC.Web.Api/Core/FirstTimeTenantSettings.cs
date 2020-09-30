@@ -155,7 +155,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                     currentUser.Email = email;
                     currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
                 }
-                UserManager.SaveUserInfo(currentUser);
+                _ = UserManager.SaveUserInfo(currentUser);
 
                 if (!string.IsNullOrWhiteSpace(promocode))
                 {
@@ -183,13 +183,13 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                     settings.Analytics = analytics;
                 }
                 settings.Completed = true;
-                SettingsManager.Save(settings);
+                _ = SettingsManager.Save(settings);
 
                 TrySetLanguage(tenant, lng);
 
                 tenant.TimeZone = TimeZoneConverter.GetTimeZone(timeZone).Id;
 
-                TenantManager.SaveTenant(tenant);
+                _ = TenantManager.SaveTenant(tenant);
 
                 StudioNotifyService.SendCongratulations(currentUser);
                 StudioNotifyService.SendRegData(currentUser);
@@ -305,7 +305,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                         {
                             {"query", Signature.Create(q, "4be71393-0c90-41bf-b641-a8d9523fba5c")}
                         };
-                webClient.UploadValues(url, values);
+                _ = webClient.UploadValues(url, values);
             }
             catch (Exception error)
             {
@@ -363,7 +363,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
     {
         public static DIHelper AddFirstTimeTenantSettings(this DIHelper services)
         {
-            services.TryAddTransient<FirstTimeTenantSettings>();
+            _ = services.TryAddTransient<FirstTimeTenantSettings>();
 
             return services
                 .AddTenantManagerService()

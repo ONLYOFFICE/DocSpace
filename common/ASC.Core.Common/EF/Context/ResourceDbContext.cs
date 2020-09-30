@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .AddResAuthorsLang()
                 .AddResAuthorsFile();
         }

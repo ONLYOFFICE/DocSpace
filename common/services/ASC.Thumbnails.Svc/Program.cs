@@ -52,9 +52,9 @@ namespace ASC.Thumbnails.Svc
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    config.SetBasePath(path);
+                    _ = config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
+                    _ = config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -73,11 +73,11 @@ namespace ASC.Thumbnails.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.Thumbnails.Svc");
-                    services.AddHostedService<ThumbnailsServiceLauncher>();
-                    diHelper.AddThumbnailsServiceLauncher();
+                    _ = diHelper.AddNLogManager("ASC.Thumbnails.Svc");
+                    _ = services.AddHostedService<ThumbnailsServiceLauncher>();
+                    _ = diHelper.AddThumbnailsServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

@@ -32,7 +32,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFolderTree(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFolderTree>()
+            _ = modelBuilder.Entity<DbFolderTree>()
                 .HasKey(c => new { c.ParentId, c.FolderId });
 
             return modelBuilder;

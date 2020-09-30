@@ -52,8 +52,8 @@ namespace ASC.TelegramService.Commands
             var user = MemoryCache.Default.Get(token);
             if (user != null)
             {
-                MemoryCache.Default.Remove(token);
-                MemoryCache.Default.Remove((string)user);
+                _ = MemoryCache.Default.Remove(token);
+                _ = MemoryCache.Default.Remove((string)user);
                 var split = ((string)user).Split(':');
 
                 var guid = Guid.Parse(split[0]);
@@ -75,7 +75,7 @@ namespace ASC.TelegramService.Commands
     {
         public static DIHelper AddUserCommandsService(this DIHelper services)
         {
-            services.TryAddScoped<UserCommands>();
+            _ = services.TryAddScoped<UserCommands>();
             return services.AddCachedTelegramDaoService();
         }
     }

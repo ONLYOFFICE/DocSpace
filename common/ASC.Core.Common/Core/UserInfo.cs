@@ -168,7 +168,7 @@ namespace ASC.Core.Users
             var sBuilder = new StringBuilder();
             foreach (var contact in ContactsList)
             {
-                sBuilder.AppendFormat("{0}|", contact);
+                _ = sBuilder.AppendFormat("{0}|", contact);
             }
             return sBuilder.ToString();
         }

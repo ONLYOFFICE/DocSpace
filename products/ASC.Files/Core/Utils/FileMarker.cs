@@ -136,7 +136,7 @@ namespace ASC.Web.Files.Utils
 
         internal void ExecMarkFileAsNew<T>(AsyncTaskData<T> obj)
         {
-            TenantManager.SetCurrentTenant(Convert.ToInt32(obj.TenantID));
+            _ = TenantManager.SetCurrentTenant(Convert.ToInt32(obj.TenantID));
 
             var folderDao = DaoFactory.GetFolderDao<T>();
             T parentFolderId;
@@ -309,7 +309,7 @@ namespace ASC.Web.Files.Utils
             if (updateTags.Any())
                 tagDao.UpdateNewTags(updateTags);
             if (newTags.Any())
-                tagDao.SaveTags(newTags);
+                _ = tagDao.SaveTags(newTags);
         }
 
         public void MarkAsNew<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
@@ -384,7 +384,7 @@ namespace ASC.Web.Files.Utils
 
                     foreach (var providerFolderTag in providerFolderTags)
                     {
-                        listTags.Remove(providerFolderTag.Key);
+                        _ = listTags.Remove(providerFolderTag.Key);
                         listTags.AddRange(tagDao.GetNewTags(userID, providerFolderTag.Value, true));
                     }
                 }
@@ -535,7 +535,7 @@ namespace ASC.Web.Files.Utils
             }
 
             tags = tags.Distinct().ToList();
-            tags.RemoveAll(tag => Equals(tag.EntryId, folder.ID));
+            _ = tags.RemoveAll(tag => Equals(tag.EntryId, folder.ID));
             tags = tags.Where(t => t.EntryType == FileEntryType.Folder)
                         .Concat(tags.Where(t => t.EntryType == FileEntryType.File)).ToList();
 
@@ -597,7 +597,7 @@ namespace ASC.Web.Files.Utils
                                             ? tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolder(GlobalFolder.GetFolderShare<T>(DaoFactory))).FirstOrDefault()
                                             : totalTags.FirstOrDefault(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.ID));
 
-                totalTags.Remove(parentFolderTag);
+                _ = totalTags.Remove(parentFolderTag);
                 var countSubNew = 0;
                 totalTags.ForEach(tag => countSubNew += tag.Count);
 
@@ -616,7 +616,7 @@ namespace ASC.Web.Files.Utils
                         parentFolderTag.Count -= diff;
                         if (parentFolderTag.Id == -1)
                         {
-                            tagDao.SaveTags(parentFolderTag);
+                            _ = tagDao.SaveTags(parentFolderTag);
                         }
                         else
                         {
@@ -626,7 +626,7 @@ namespace ASC.Web.Files.Utils
                         var cacheFolderId = parent.ID;
                         var parentsList = DaoFactory.GetFolderDao<T>().GetParentFolders(parent.ID);
                         parentsList.Reverse();
-                        parentsList.Remove(parent);
+                        _ = parentsList.Remove(parent);
 
                         if (parentsList.Any())
                         {
@@ -653,7 +653,7 @@ namespace ASC.Web.Files.Utils
                                 {
                                     if (fileSecurity.CanRead(folderFromList))
                                     {
-                                        tagDao.SaveTags(Tag.New(AuthContext.CurrentAccount.ID, folderFromList, -diff));
+                                        _ = tagDao.SaveTags(Tag.New(AuthContext.CurrentAccount.ID, folderFromList, -diff));
                                     }
                                 }
                                 else
@@ -751,12 +751,12 @@ namespace ASC.Web.Files.Utils
 
         public static DIHelper AddFileMarkerService<T>(this DIHelper services)
         {
-            services.TryAddTransient<AsyncTaskData<T>>();
-            services.TryAddScoped<FileMarker>();
-            services.TryAddSingleton<FileMarkerHelper<T>>();
-            services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>();
-            services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
-            services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
+            _ = services.TryAddTransient<AsyncTaskData<T>>();
+            _ = services.TryAddScoped<FileMarker>();
+            _ = services.TryAddSingleton<FileMarkerHelper<T>>();
+            _ = services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>();
+            _ = services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
+            _ = services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
 
             _ = services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
 

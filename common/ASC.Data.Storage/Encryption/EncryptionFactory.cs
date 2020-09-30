@@ -58,9 +58,9 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionFactoryService(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionFactory>();
-            services.TryAddTransient<Crypt>();
-            services.TryAddTransient<Metadata>();
+            _ = services.TryAddSingleton<EncryptionFactory>();
+            _ = services.TryAddTransient<Crypt>();
+            _ = services.TryAddTransient<Metadata>();
             return services;
         }
     }

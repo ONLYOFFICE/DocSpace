@@ -32,7 +32,7 @@ namespace ASC.FederatedLogin.Helpers
     {
         public static TValue Get<T, TValue>(this IDictionary<T, TValue> disct, T key)
         {
-            disct.TryGetValue(key, out var def);
+            _ = disct.TryGetValue(key, out var def);
             return def;
         }
     }

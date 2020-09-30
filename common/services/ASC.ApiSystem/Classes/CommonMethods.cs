@@ -254,7 +254,7 @@ namespace ASC.ApiSystem.Controllers
 
             ipAttemptsCount++;
 
-            MemoryCache.Set(
+            _ = MemoryCache.Set(
                 // String that represents the name of the cache item,
                 // could be any string
                 cacheKey,

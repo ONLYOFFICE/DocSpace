@@ -26,9 +26,9 @@ namespace ASC.Data.Storage.Migration
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    config.SetBasePath(path);
+                    _ = config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
+                    _ = config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -48,14 +48,14 @@ namespace ASC.Data.Storage.Migration
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddNLogManager("ASC.Data.Storage.Migration", "ASC.Migration");
+                    _ = diHelper.AddNLogManager("ASC.Data.Storage.Migration", "ASC.Migration");
 
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
+                    _ = diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
 
-                    diHelper.AddMigrationServiceLauncher();
-                    services.AddHostedService<MigrationServiceLauncher>();
+                    _ = diHelper.AddMigrationServiceLauncher();
+                    _ = services.AddHostedService<MigrationServiceLauncher>();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build()

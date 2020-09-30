@@ -214,7 +214,7 @@ namespace ASC.Common.Tests.Security.Authorizing
             var r = new PermissionRecord(subject.ID, action.ID, AzObjectIdHelper.GetFullObjectId(objectId), reaction);
             if (permRecords.ContainsKey(r.Id))
             {
-                permRecords.Remove(r.Id);
+                _ = permRecords.Remove(r.Id);
             }
         }
 

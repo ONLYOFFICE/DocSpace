@@ -148,7 +148,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
 
             if (fileStream != null && offset > 0)
-                fileStream.Seek(offset, SeekOrigin.Begin);
+                _ = fileStream.Seek(offset, SeekOrigin.Begin);
 
             return fileStream;
         }
@@ -182,7 +182,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public void DeleteItem(Item item)
         {
-            OnedriveClient
+            _ = OnedriveClient
                 .Drive
                 .Items[item.Id]
                 .Request()

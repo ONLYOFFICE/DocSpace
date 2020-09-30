@@ -144,7 +144,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             if (props.ContainsKey("lower"))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                _ = bool.TryParse(props["lower"], out _lowerCasing);
             }
 
             if (props.ContainsKey("subdir"))
@@ -229,7 +229,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             outputStream.Position = 0;
 
-            if (0 < offset) outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
+            if (0 < offset) _ = outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
 
             return outputStream;
         }

@@ -133,7 +133,7 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (string.IsNullOrEmpty(code)) throw new Exception(Resource.ActivateTfaAppEmptyCode);
 
-            int.TryParse(Cache.Get<string>("tfa/" + user.ID), out var counter);
+            _ = int.TryParse(Cache.Get<string>("tfa/" + user.ID), out var counter);
             if (++counter > SetupInfo.LoginThreshold)
             {
                 throw new BruteForceCredentialException(Resource.TfaTooMuchError);
@@ -162,7 +162,7 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
             {
-                GenerateBackupCodes(user);
+                _ = GenerateBackupCodes(user);
                 return true;
             }
 
@@ -189,7 +189,7 @@ namespace ASC.Web.Studio.Core.TFA
                     var result = new StringBuilder(length);
                     foreach (var b in data)
                     {
-                        result.Append(alphabet[b % (alphabet.Length)]);
+                        _ = result.Append(alphabet[b % (alphabet.Length)]);
                     }
 
                     list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));
@@ -197,7 +197,7 @@ namespace ASC.Web.Studio.Core.TFA
             }
             var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
             settings.CodesSetting = list;
-            SettingsManager.SaveForCurrentUser(settings);
+            _ = SettingsManager.SaveForCurrentUser(settings);
 
             return list;
         }

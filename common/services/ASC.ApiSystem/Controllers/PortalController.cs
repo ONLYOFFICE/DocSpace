@@ -342,7 +342,7 @@ namespace ASC.ApiSystem.Controllers
 
                     settings.Completed = false;
 
-                    SettingsManager.Save(settings);
+                    _ = SettingsManager.Save(settings);
                 }
                 catch (Exception e)
                 {
@@ -435,7 +435,7 @@ namespace ASC.ApiSystem.Controllers
 
             tenant.SetStatus(active);
 
-            HostedSolution.SaveTenant(tenant);
+            _ = HostedSolution.SaveTenant(tenant);
 
             return Ok(new
             {

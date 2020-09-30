@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddTelegramUsers(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TelegramUser>()
+            _ = modelBuilder.Entity<TelegramUser>()
                 .HasKey(c => new { c.TenantId, c.PortalUserId });
 
             return modelBuilder;

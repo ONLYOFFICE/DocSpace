@@ -57,7 +57,7 @@ namespace ASC.Common.Logging
 
                 if (variable != null && !string.IsNullOrEmpty(variable.Text))
                 {
-                    int.TryParse(variable.Text, out value);
+                    _ = int.TryParse(variable.Text, out value);
                 }
             }
 

@@ -90,7 +90,7 @@ namespace ASC.Data.Backup.Storage
                 case BackupStorageType.ThirdPartyConsumer:
                     {
                         if (storageParams == null) return null;
-                        TenantManager.SetCurrentTenant(tenantId);
+                        _ = TenantManager.SetCurrentTenant(tenantId);
                         ConsumerBackupStorage.Init(storageParams);
                         return ConsumerBackupStorage;
                     }

@@ -105,8 +105,8 @@ namespace ASC.Web.Files.Core.Search
     {
         public static DIHelper AddFactoryIndexerFolderService(this DIHelper services)
         {
-            services.TryAddTransient<DbFolder>();
-            services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
+            _ = services.TryAddTransient<DbFolder>();
+            _ = services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
 
             return services
                 .AddFactoryIndexerService<DbFolder>(false)

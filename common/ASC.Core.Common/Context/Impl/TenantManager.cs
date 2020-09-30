@@ -222,7 +222,7 @@ namespace ASC.Core
             if (tenant.Version != version)
             {
                 tenant.Version = version;
-                SaveTenant(tenant);
+                _ = SaveTenant(tenant);
             }
             else
             {
@@ -387,7 +387,7 @@ namespace ASC.Core
         {
             if (services.TryAddScoped<TenantManager>())
             {
-                services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
+                _ = services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
 
                 return services
                     .AddTenantService()

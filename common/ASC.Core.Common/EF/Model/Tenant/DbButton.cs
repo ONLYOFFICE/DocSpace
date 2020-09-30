@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilder AddDbButton(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbButton>()
+            _ = modelBuilder.Entity<DbButton>()
                 .HasKey(c => new { c.TariffId, c.PartnerId });
 
             return modelBuilder;

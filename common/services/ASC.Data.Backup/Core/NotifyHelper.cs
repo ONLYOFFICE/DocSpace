@@ -172,8 +172,8 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddNotifyHelperService(this DIHelper services)
         {
-            services.TryAddSingleton<NotifyHelper>();
-            services.TryAddScoped<NotifyHelperScope>();
+            _ = services.TryAddSingleton<NotifyHelper>();
+            _ = services.TryAddScoped<NotifyHelperScope>();
 
             return services
                 .AddNotifyConfiguration()

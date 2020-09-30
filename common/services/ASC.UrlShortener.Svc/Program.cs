@@ -52,9 +52,9 @@ namespace ASC.UrlShortener.Svc
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    config.SetBasePath(path);
+                    _ = config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
+                    _ = config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -72,11 +72,11 @@ namespace ASC.UrlShortener.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.UrlShortener.Svc");
-                    services.AddHostedService<UrlShortenerServiceLauncher>();
-                    diHelper.AddUrlShortenerServiceLauncher();
+                    _ = diHelper.AddNLogManager("ASC.UrlShortener.Svc");
+                    _ = services.AddHostedService<UrlShortenerServiceLauncher>();
+                    _ = diHelper.AddUrlShortenerServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

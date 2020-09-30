@@ -45,7 +45,7 @@ namespace ASC.Common.Utils
                 var data = charset.GetBytes(mimeHeaderValue);
                 var maxEncodedTextSize = split ? 75 - ("=?" + charset.WebName + "?" + "B"/*Base64 encode*/ + "?" + "?=").Length : int.MaxValue;
 
-                result.Append("=?" + charset.WebName + "?B?");
+                _ = result.Append("=?" + charset.WebName + "?B?");
                 var stored = 0;
                 var base64 = Convert.ToBase64String(data);
                 for (var i = 0; i < base64.Length; i += 4)
@@ -53,14 +53,14 @@ namespace ASC.Common.Utils
                     // Encoding buffer full, create new encoded-word.
                     if (stored + 4 > maxEncodedTextSize)
                     {
-                        result.Append("?=\r\n =?" + charset.WebName + "?B?");
+                        _ = result.Append("?=\r\n =?" + charset.WebName + "?B?");
                         stored = 0;
                     }
 
-                    result.Append(base64, i, 4);
+                    _ = result.Append(base64, i, 4);
                     stored += 4;
                 }
-                result.Append("?=");
+                _ = result.Append("?=");
                 return result.ToString();
             }
             return mimeHeaderValue;

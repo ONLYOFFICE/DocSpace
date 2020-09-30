@@ -99,7 +99,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             try
             {
-                Storage.GetUsedSpace();
+                _ = Storage.GetUsedSpace();
             }
             catch (AggregateException)
             {
@@ -285,8 +285,8 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (services.TryAddScoped<DropboxProviderInfo>())
             {
-                services.TryAddScoped<DropboxStorageDisposableWrapper>();
-                services.TryAddSingleton<DropboxProviderInfoHelper>();
+                _ = services.TryAddScoped<DropboxStorageDisposableWrapper>();
+                _ = services.TryAddSingleton<DropboxProviderInfoHelper>();
             }
 
             return services;

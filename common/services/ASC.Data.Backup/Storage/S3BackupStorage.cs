@@ -92,13 +92,13 @@ namespace ASC.Data.Backup.Storage
 
             using var s3 = GetClient();
             using var response = s3.GetObjectAsync(request).Result;
-            response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
+            _ = response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
         }
 
         public void Delete(string storagePath)
         {
             using var s3 = GetClient();
-            s3.DeleteObjectAsync(new DeleteObjectRequest
+            _ = s3.DeleteObjectAsync(new DeleteObjectRequest
             {
                 BucketName = bucket,
                 Key = GetKey(storagePath)

@@ -67,7 +67,7 @@ namespace ASC.Common.Utils
         {
             var nvelocityContext = new VelocityContext();
             foreach (var tagValue in values)
-                nvelocityContext.Put(tagValue.Key, tagValue.Value);
+                _ = nvelocityContext.Put(tagValue.Key, tagValue.Value);
             return FormatText(templateText, nvelocityContext);
         }
 
@@ -89,7 +89,7 @@ namespace ASC.Common.Utils
             if (!patterns.TryGetValue(key, out var template))
             {
                 template = Velocity.GetTemplate(templateText);
-                patterns.TryAdd(key, template);
+                _ = patterns.TryAdd(key, template);
             }
             template.Merge(context, writer);
             return writer.GetStringBuilder().ToString();

@@ -35,7 +35,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFilesSecurity(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFilesSecurity>()
+            _ = modelBuilder.Entity<DbFilesSecurity>()
                 .HasKey(c => new { c.TenantId, c.EntryId, c.EntryType, c.Subject });
 
             return modelBuilder;

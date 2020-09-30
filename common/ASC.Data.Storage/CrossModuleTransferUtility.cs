@@ -64,7 +64,7 @@ namespace ASC.Data.Storage
             using var stream = source.GetReadStream(srcDomain, srcPath);
             if (stream.Length < maxChunkUploadSize)
             {
-                destination.Save(destDomain, destPath, stream);
+                _ = destination.Save(destDomain, destPath, stream);
             }
             else
             {
@@ -78,7 +78,7 @@ namespace ASC.Data.Storage
                     {
                         while (GetStream(stream, out memstream))
                         {
-                            memstream.Seek(0, SeekOrigin.Begin);
+                            _ = memstream.Seek(0, SeekOrigin.Begin);
                             holder.UploadChunk(session, memstream, chunksize);
                             memstream.Dispose();
                             memstream = null;
@@ -93,7 +93,7 @@ namespace ASC.Data.Storage
                     }
 
                     holder.Finalize(session);
-                    destination.Move(destDomain, session.TempPath, destDomain, destPath);
+                    _ = destination.Move(destDomain, session.TempPath, destDomain, destPath);
                 }
                 catch (Exception ex)
                 {

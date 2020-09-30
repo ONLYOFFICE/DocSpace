@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddFeedReaded(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FeedReaded>()
+            _ = modelBuilder.Entity<FeedReaded>()
                 .HasKey(c => new { c.Tenant, c.UserId, c.Module });
 
             return modelBuilder;

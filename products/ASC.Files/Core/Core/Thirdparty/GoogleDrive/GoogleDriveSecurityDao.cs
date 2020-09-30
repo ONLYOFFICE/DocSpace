@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     {
         public static DIHelper AddGoogleDriveSecurityDaoService(this DIHelper services)
         {
-            services.TryAddScoped<GoogleDriveSecurityDao>();
+            _ = services.TryAddScoped<GoogleDriveSecurityDao>();
 
             return services;
         }

@@ -149,7 +149,7 @@ namespace ASC.Core.Users
     {
         public static DIHelper AddConstantsService(this DIHelper services)
         {
-            services.TryAddSingleton<Constants>();
+            _ = services.TryAddSingleton<Constants>();
             return services;
         }
     }

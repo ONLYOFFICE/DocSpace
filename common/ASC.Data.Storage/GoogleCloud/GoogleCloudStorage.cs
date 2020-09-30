@@ -117,7 +117,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             if (props.ContainsKey("lower"))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                _ = bool.TryParse(props["lower"], out _lowerCasing);
             }
 
             _json = props["json"];
@@ -220,7 +220,7 @@ namespace ASC.Data.Storage.GoogleCloud
             storage.DownloadObject(_bucket, MakePath(domain, path), tempStream, null, null);
 
             if (offset > 0)
-                tempStream.Seek(offset, SeekOrigin.Begin);
+                _ = tempStream.Seek(offset, SeekOrigin.Begin);
 
             tempStream.Position = 0;
 
@@ -302,7 +302,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 uploaded.ContentDisposition = "attachment";
             }
 
-            storage.UpdateObject(uploaded);
+            _ = storage.UpdateObject(uploaded);
 
             //           InvalidateCloudFront(MakePath(domain, path));
 
@@ -436,7 +436,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             foreach (var obj in objects)
             {
-                storage.CopyObject(_bucket, srckey, _bucket, dstkey, new CopyObjectOptions
+                _ = storage.CopyObject(_bucket, srckey, _bucket, dstkey, new CopyObjectOptions
                 {
                     DestinationPredefinedAcl = GetDomainACL(newdomain)
                 });
@@ -454,7 +454,7 @@ namespace ASC.Data.Storage.GoogleCloud
             var dstKey = MakePath(newdomain, newpath);
             var size = GetFileSize(srcdomain, srcpath);
 
-            storage.CopyObject(_bucket, srcKey, _bucket, dstKey, new CopyObjectOptions
+            _ = storage.CopyObject(_bucket, srcKey, _bucket, dstKey, new CopyObjectOptions
             {
                 DestinationPredefinedAcl = GetDomainACL(newdomain)
             });
@@ -614,7 +614,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 DestinationPredefinedAcl = GetDomainACL(newdomain)
             };
 
-            storage.CopyObject(_bucket, MakePath(srcdomain, srcpath), _bucket, MakePath(newdomain, newpath), options);
+            _ = storage.CopyObject(_bucket, MakePath(srcdomain, srcpath), _bucket, MakePath(newdomain, newpath), options);
 
             QuotaUsedAdd(newdomain, size);
 
@@ -636,7 +636,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             foreach (var obj in objects)
             {
-                storage.CopyObject(_bucket, srckey, _bucket, dstkey, new CopyObjectOptions
+                _ = storage.CopyObject(_bucket, srckey, _bucket, dstkey, new CopyObjectOptions
                 {
                     DestinationPredefinedAcl = GetDomainACL(newdomain)
                 });
@@ -671,7 +671,7 @@ namespace ASC.Data.Storage.GoogleCloud
             uploaded.Metadata["Expires"] = DateTime.UtcNow.Add(TimeSpan.FromDays(5)).ToString("R");
             uploaded.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
 
-            storage.UpdateObject(uploaded);
+            _ = storage.UpdateObject(uploaded);
 
             using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
             var preSignedURL = FromServiceAccountData(mStream).Sign(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), UrlSigner.Options.FromExpiration(expires));

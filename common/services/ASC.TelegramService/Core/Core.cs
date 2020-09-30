@@ -150,7 +150,7 @@ namespace ASC.TelegramService.Core
                 context.Context = cmd;
                 context.Client = client;
                 context.TenantId = tenantId;
-                await Task.FromResult(command.Invoke(context, param));
+                _ = await Task.FromResult(command.Invoke(context, param));
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace ASC.TelegramService.Core
 
         protected async Task ReplyAsync(string message)
         {
-            await Client.SendTextMessageAsync(Context.Chat, message);
+            _ = await Client.SendTextMessageAsync(Context.Chat, message);
         }
     }
 
@@ -196,7 +196,7 @@ namespace ASC.TelegramService.Core
     {
         public static DIHelper AddCommandModuleService(this DIHelper services)
         {
-            services.TryAddSingleton<CommandModule>();
+            _ = services.TryAddSingleton<CommandModule>();
             return services.AddUserCommandsService();
         }
     }

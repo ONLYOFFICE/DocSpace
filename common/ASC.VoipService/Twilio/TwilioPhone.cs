@@ -119,7 +119,7 @@ namespace ASC.VoipService.Twilio
             var calls = QueueCalls(queueId);
             if (calls.Contains(callId))
             {
-                MemberResource.Update(queueId, callId, new System.Uri(Settings.Dequeue(reject)), HttpMethod.Post,
+                _ = MemberResource.Update(queueId, callId, new System.Uri(Settings.Dequeue(reject)), HttpMethod.Post,
                     client: twilio);
             }
         }

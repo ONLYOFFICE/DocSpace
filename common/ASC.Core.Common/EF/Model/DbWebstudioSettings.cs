@@ -23,7 +23,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddWebstudioSettings(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbWebstudioSettings>()
+            _ = modelBuilder.Entity<DbWebstudioSettings>()
                 .HasKey(c => new { c.TenantId, c.Id, c.UserId });
 
             return modelBuilder;

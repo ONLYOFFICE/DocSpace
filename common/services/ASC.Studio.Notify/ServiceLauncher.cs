@@ -69,7 +69,7 @@ namespace ASC.Notify
     {
         public static DIHelper AddServiceLauncher(this DIHelper services)
         {
-            services.TryAddSingleton<StudioNotifyServiceSender>();
+            _ = services.TryAddSingleton<StudioNotifyServiceSender>();
 
             return services
                 .AddWebItemManager()

@@ -57,24 +57,24 @@ namespace ASC.ApiSystem
         {
             var diHelper = new DIHelper(services);
 
-            services.AddHttpContextAccessor();
+            _ = services.AddHttpContextAccessor();
 
-            services.AddControllers()
+            _ = services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.WriteIndented = false;
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
 
-            services.AddMemoryCache();
+            _ = services.AddMemoryCache();
 
-            services.AddAuthentication()
+            _ = services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
-            diHelper.AddNLogManager("ASC.Apisystem");
+            _ = diHelper.AddNLogManager("ASC.Apisystem");
 
-            diHelper
+            _ = diHelper
                 .AddPortalController()
                 .AddCoreSettingsController()
                 .AddCalDavController()
@@ -82,7 +82,7 @@ namespace ASC.ApiSystem
                 .AddSettingsController()
                 .AddTariffController();
 
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
+            _ = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,29 +90,29 @@ namespace ASC.ApiSystem
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                _ = app.UseDeveloperExceptionPage();
             }
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            _ = app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            app.UseCors(builder =>
+            _ = app.UseCors(builder =>
                 builder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
-            app.UseRouting();
+            _ = app.UseRouting();
 
-            app.UseAuthentication();
+            _ = app.UseAuthentication();
 
-            app.UseAuthorization();
+            _ = app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            _ = app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                _ = endpoints.MapControllers();
             });
         }
     }

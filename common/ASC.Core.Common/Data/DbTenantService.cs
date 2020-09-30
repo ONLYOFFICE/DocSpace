@@ -220,7 +220,7 @@ namespace ASC.Core.Data
 
                 //new password
                 result = result.Concat(q.Select(FromTenantUserToTenant)).ToList();
-                result.Distinct();
+                _ = result.Distinct();
 
                 return result;
             }
@@ -307,7 +307,7 @@ namespace ASC.Core.Data
                 };
 
                 tenant = TenantDbContext.Tenants.Add(tenant).Entity;
-                TenantDbContext.SaveChanges();
+                _ = TenantDbContext.SaveChanges();
                 t.TenantId = tenant.Id;
             }
             else
@@ -336,7 +336,7 @@ namespace ASC.Core.Data
                     tenant.Spam = t.Spam;
                     tenant.Calls = t.Calls;
                 }
-                TenantDbContext.SaveChanges();
+                _ = TenantDbContext.SaveChanges();
             }
 
             if (string.IsNullOrEmpty(t.PartnerId) && string.IsNullOrEmpty(t.AffiliateId) && string.IsNullOrEmpty(t.Campaign))
@@ -347,7 +347,7 @@ namespace ASC.Core.Data
 
                 if (p != null)
                 {
-                    TenantDbContext.TenantPartner.Remove(p);
+                    _ = TenantDbContext.TenantPartner.Remove(p);
                 }
             }
             else
@@ -360,7 +360,7 @@ namespace ASC.Core.Data
                     Campaign = t.Campaign
                 };
 
-                TenantDbContext.TenantPartner.Add(tenantPartner);
+                _ = TenantDbContext.TenantPartner.Add(tenantPartner);
             }
 
             tx.Commit();
@@ -394,7 +394,7 @@ namespace ASC.Core.Data
                 tenant.LastModified = DateTime.UtcNow;
             }
 
-            TenantDbContext.SaveChanges();
+            _ = TenantDbContext.SaveChanges();
 
             tx.Commit();
         }
@@ -430,7 +430,7 @@ namespace ASC.Core.Data
 
                 if (settings != null)
                 {
-                    TenantDbContext.CoreSettings.Remove(settings);
+                    _ = TenantDbContext.CoreSettings.Remove(settings);
                 }
             }
             else
@@ -442,9 +442,9 @@ namespace ASC.Core.Data
                     Value = data,
                     LastModified = DateTime.UtcNow
                 };
-                TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
+                _ = TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
             }
-            TenantDbContext.SaveChanges();
+            _ = TenantDbContext.SaveChanges();
             tx.Commit();
         }
 

@@ -63,7 +63,7 @@ namespace ASC.Core.Configuration
                     foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                     {
                         tenant.MappedDomain = dnsname;
-                        tenantManager.SaveTenant(tenant);
+                        _ = tenantManager.SaveTenant(tenant);
                     }
                 }
             }

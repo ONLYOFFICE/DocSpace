@@ -31,7 +31,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbEncryptedData(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbEncryptedData>()
+            _ = modelBuilder.Entity<DbEncryptedData>()
                 .HasKey(c => new { c.PublicKey, c.FileHash });
 
             return modelBuilder;

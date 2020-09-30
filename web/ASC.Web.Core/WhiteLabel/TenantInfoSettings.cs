@@ -94,7 +94,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var currentTenant = TenantManager.GetCurrentTenant();
             currentTenant.Name = Configuration["web:portal-name"] ?? "Cloud Office Applications";
-            TenantManager.SaveTenant(currentTenant);
+            _ = TenantManager.SaveTenant(currentTenant);
         }
 
         public void RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
@@ -132,8 +132,8 @@ namespace ASC.Web.Core.WhiteLabel
             using (var image = Image.FromStream(memory))
             {
                 tenantInfoSettings.CompanyLogoSize = image.Size;
-                memory.Seek(0, SeekOrigin.Begin);
-                store.Save(companyLogoFileName, memory);
+                _ = memory.Seek(0, SeekOrigin.Begin);
+                _ = store.Save(companyLogoFileName, memory);
                 tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
             }
             tenantInfoSettings.IsDefault = false;

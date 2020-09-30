@@ -174,7 +174,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
-                dbDao.UpdateProviderInfo(id, authData);
+                _ = dbDao.UpdateProviderInfo(id, authData);
             }
         }
 
@@ -263,9 +263,9 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             if (services.TryAddScoped<OneDriveProviderInfo>())
             {
-                services.TryAddScoped<OneDriveStorageDisposableWrapper>();
-                services.TryAddScoped<OneDriveStorage>();
-                services.TryAddSingleton<OneDriveProviderInfoHelper>();
+                _ = services.TryAddScoped<OneDriveStorageDisposableWrapper>();
+                _ = services.TryAddScoped<OneDriveStorage>();
+                _ = services.TryAddSingleton<OneDriveProviderInfoHelper>();
             }
 
             return services;

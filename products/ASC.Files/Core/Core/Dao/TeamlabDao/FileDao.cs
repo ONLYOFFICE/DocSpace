@@ -410,7 +410,7 @@ namespace ASC.Files.Core.Data
                 if (toUpdate != null)
                 {
                     toUpdate.CurrentVersion = false;
-                    FilesDbContext.SaveChanges();
+                    _ = FilesDbContext.SaveChanges();
                 }
 
                 toInsert = new DbFile
@@ -434,8 +434,8 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.Files.Add(toInsert);
+                _ = FilesDbContext.SaveChanges();
 
                 tx.Commit();
 
@@ -460,7 +460,7 @@ namespace ASC.Files.Core.Data
                         f.ModifiedBy = file.ModifiedBy;
                     }
 
-                    FilesDbContext.SaveChanges();
+                    _ = FilesDbContext.SaveChanges();
                 }
 
                 toInsert.Folders = parentFolders;
@@ -499,7 +499,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(InitDocument(toInsert));
+            _ = FactoryIndexer.IndexAsync(InitDocument(toInsert));
 
             return GetFile(file.ID);
         }
@@ -560,7 +560,7 @@ namespace ASC.Files.Core.Data
                 toUpdate.Encrypted = file.Encrypted;
                 toUpdate.Forcesave = file.Forcesave;
 
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 tx.Commit();
 
@@ -584,7 +584,7 @@ namespace ASC.Files.Core.Data
                         f.ModifiedBy = file.ModifiedBy;
                     }
 
-                    FilesDbContext.SaveChanges();
+                    _ = FilesDbContext.SaveChanges();
                 }
 
                 toUpdate.Folders = parentFolders;
@@ -607,7 +607,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(InitDocument(toUpdate));
+            _ = FactoryIndexer.IndexAsync(InitDocument(toUpdate));
 
             return GetFile(file.ID);
         }
@@ -625,9 +625,9 @@ namespace ASC.Files.Core.Data
 
             if (toDelete != null)
             {
-                FilesDbContext.Files.Remove(toDelete);
+                _ = FilesDbContext.Files.Remove(toDelete);
             }
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
 
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
@@ -635,7 +635,7 @@ namespace ASC.Files.Core.Data
                 .FirstOrDefault();
 
             toUpdate.CurrentVersion = true;
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
         }
 
         private void DeleteVersionStream(File<int> file)
@@ -645,7 +645,7 @@ namespace ASC.Files.Core.Data
 
         private void SaveFileStream(File<int> file, Stream stream)
         {
-            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
+            _ = GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
 
         public void DeleteFile(int fileId)
@@ -669,7 +669,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var d in toDeleteFiles)
             {
-                FactoryIndexer.DeleteAsync(d);
+                _ = FactoryIndexer.DeleteAsync(d);
             }
 
             var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
@@ -685,7 +685,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.EntryType == FileEntryType.File);
 
             FilesDbContext.Security.RemoveRange(securityToDelete);
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
 
             tx.Commit();
 
@@ -697,7 +697,7 @@ namespace ASC.Files.Core.Data
             var toDeleteFile = toDeleteFiles.FirstOrDefault(r => r.CurrentVersion);
             if (toDeleteFile != null)
             {
-                FactoryIndexer.DeleteAsync(toDeleteFile);
+                _ = FactoryIndexer.DeleteAsync(toDeleteFile);
             }
         }
 
@@ -760,7 +760,7 @@ namespace ASC.Files.Core.Data
                     }
                 }
 
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
                 tx.Commit();
 
                 fromFolders.ForEach(folderId => RecalculateFilesCount(folderId));
@@ -859,9 +859,9 @@ namespace ASC.Files.Core.Data
             toUpdate.ModifiedOn = DateTime.UtcNow;
             toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
 
-            FactoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn);
+            _ = FactoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn);
 
             return file.ID;
         }
@@ -878,7 +878,7 @@ namespace ASC.Files.Core.Data
 
             toUpdate.Comment = comment;
 
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
 
             return comment;
         }
@@ -894,7 +894,7 @@ namespace ASC.Files.Core.Data
                 f.VersionGroup += 1;
             }
 
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
         }
 
         public void ContinueVersion(int fileId, int fileVersion)
@@ -918,7 +918,7 @@ namespace ASC.Files.Core.Data
                 f.VersionGroup -= 1;
             }
 
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
 
             tx.Commit();
         }
@@ -993,7 +993,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder.FinalizeUploadSession(uploadSession);
 
             var file = GetFileForCommit(uploadSession);
-            SaveFile(file, null);
+            _ = SaveFile(file, null);
             ChunkedUploadSessionHolder.Move(uploadSession, GetUniqFilePath(file));
 
             return file;
@@ -1041,7 +1041,7 @@ namespace ASC.Files.Core.Data
                 f.CreateBy = newOwnerId;
             }
 
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
         }
 
         public List<File<int>> GetFiles(int[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
@@ -1156,9 +1156,9 @@ namespace ASC.Files.Core.Data
                 f.Changes = changes;
             }
 
-            FilesDbContext.SaveChanges();
+            _ = FilesDbContext.SaveChanges();
 
-            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
+            _ = GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
         }
 
         public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1268,11 +1268,11 @@ namespace ASC.Files.Core.Data
                {
                    if (withSubfolders)
                    {
-                       result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
+                       _ = result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                    }
                    else
                    {
-                       result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
+                       _ = result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                    }
                }
 
@@ -1281,19 +1281,19 @@ namespace ASC.Files.Core.Data
                    switch (orderBy.SortedBy)
                    {
                        case SortedByType.Author:
-                           result.Sort(r => r.CreateBy, orderBy.IsAsc);
+                           _ = result.Sort(r => r.CreateBy, orderBy.IsAsc);
                            break;
                        case SortedByType.Size:
-                           result.Sort(r => r.ContentLength, orderBy.IsAsc);
+                           _ = result.Sort(r => r.ContentLength, orderBy.IsAsc);
                            break;
                        //case SortedByType.AZ:
                        //    result.Sort(r => r.Title, orderBy.IsAsc);
                        //    break;
                        case SortedByType.DateAndTime:
-                           result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
+                           _ = result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
                            break;
                        case SortedByType.DateAndTimeCreation:
-                           result.Sort(r => r.CreateOn, orderBy.IsAsc);
+                           _ = result.Sort(r => r.CreateOn, orderBy.IsAsc);
                            break;
                    }
                }
@@ -1303,11 +1303,11 @@ namespace ASC.Files.Core.Data
                    if (subjectGroup)
                    {
                        var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
-                       result.In(r => r.CreateBy, users);
+                       _ = result.In(r => r.CreateBy, users);
                    }
                    else
                    {
-                       result.Where(r => r.CreateBy, subjectID);
+                       _ = result.Where(r => r.CreateBy, subjectID);
                    }
                }
 
@@ -1319,7 +1319,7 @@ namespace ASC.Files.Core.Data
                    case FilterType.SpreadsheetsOnly:
                    case FilterType.ArchiveOnly:
                    case FilterType.MediaOnly:
-                       result.Where(r => r.Category, (int)filterType);
+                       _ = result.Where(r => r.Category, (int)filterType);
                        break;
                }
 
@@ -1454,8 +1454,8 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFileDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFileDao<int>, FileDao>();
-            services.TryAddTransient<File<int>>();
+            _ = services.TryAddScoped<IFileDao<int>, FileDao>();
+            _ = services.TryAddTransient<File<int>>();
 
             return services
                 .AddFilesDbContextService()

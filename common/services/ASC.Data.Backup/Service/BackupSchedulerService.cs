@@ -131,7 +131,7 @@ namespace ASC.Data.Backup.Service
                 Log.Info("stoping backup scheduler service...");
                 if (SchedulerTimer != null)
                 {
-                    SchedulerTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    _ = SchedulerTimer.Change(Timeout.Infinite, Timeout.Infinite);
                     SchedulerTimer.Dispose();
                     SchedulerTimer = null;
                 }
@@ -168,7 +168,7 @@ namespace ASC.Data.Backup.Service
         {
             if (services.TryAddScoped<BackupSchedulerServiceHelper>())
             {
-                services.TryAddSingleton<BackupSchedulerService>();
+                _ = services.TryAddSingleton<BackupSchedulerService>();
 
                 return services
                     .AddPaymentManagerService()

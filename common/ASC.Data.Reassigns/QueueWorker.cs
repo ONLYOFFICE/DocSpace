@@ -146,9 +146,9 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<QueueWorkerRemove>())
             {
-                services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+                _ = services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
+                _ = services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+                _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
             }
 
             return services;
@@ -157,9 +157,9 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<QueueWorkerReassign>())
             {
-                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+                _ = services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+                _ = services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+                _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
 
                 return services
                     .AddQueueWorkerRemoveService();

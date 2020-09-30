@@ -457,7 +457,7 @@ namespace ASC.Web.Core
         }
         public static DIHelper AddWebItemSecurityCache(this DIHelper services)
         {
-            services.TryAddSingleton<WebItemSecurityCache>();
+            _ = services.TryAddSingleton<WebItemSecurityCache>();
             return services;
         }
     }

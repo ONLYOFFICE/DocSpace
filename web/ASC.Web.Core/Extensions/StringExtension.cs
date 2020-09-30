@@ -87,13 +87,13 @@ namespace System
                     var xBuilder = new StringBuilder();
                     while (xIndex < x.Length && char.IsDigit(x[xIndex]))
                     {
-                        xBuilder.Append(x[xIndex++]);
+                        _ = xBuilder.Append(x[xIndex++]);
                     }
 
                     var yBuilder = new StringBuilder();
                     while (yIndex < y.Length && char.IsDigit(y[yIndex]))
                     {
-                        yBuilder.Append(y[yIndex++]);
+                        _ = yBuilder.Append(y[yIndex++]);
                     }
 
                     long xValue;

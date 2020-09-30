@@ -195,8 +195,8 @@ namespace ASC.Web.Files.HttpHandlers
         {
             if (request.Type(InstanceCrypto) == ChunkedRequestType.Initiate)
             {
-                TenantManager.SetCurrentTenant(request.TenantId);
-                SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, request.AuthKey(InstanceCrypto)));
+                _ = TenantManager.SetCurrentTenant(request.TenantId);
+                _ = SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, request.AuthKey(InstanceCrypto)));
                 var cultureInfo = request.CultureInfo(SetupInfo);
                 if (cultureInfo != null)
                     Thread.CurrentThread.CurrentUICulture = cultureInfo;
@@ -208,8 +208,8 @@ namespace ASC.Web.Files.HttpHandlers
                 var uploadSession = ChunkedUploadSessionHolder.GetSession(request.UploadId);
                 if (uploadSession != null)
                 {
-                    TenantManager.SetCurrentTenant(uploadSession.TenantId);
-                    SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
+                    _ = TenantManager.SetCurrentTenant(uploadSession.TenantId);
+                    _ = SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
                     var culture = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
                     if (culture != null)
                         Thread.CurrentThread.CurrentUICulture = culture;
@@ -334,7 +334,7 @@ namespace ASC.Web.Files.HttpHandlers
             {
                 if (!_fileContentLength.HasValue)
                 {
-                    long.TryParse(_request.Query["fileSize"], out var v);
+                    _ = long.TryParse(_request.Query["fileSize"], out var v);
                     _fileContentLength = v;
                 }
                 return _fileContentLength.Value;

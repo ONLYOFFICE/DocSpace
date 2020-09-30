@@ -370,7 +370,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var docKey = GetDocKey(fileStable);
-            DropUser(docKey, usersDrop, file.ID);
+            _ = DropUser(docKey, usersDrop, file.ID);
         }
 
         public bool DropUser(string docKeyForTrack, string[] users, object fileId = null)

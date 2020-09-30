@@ -50,24 +50,24 @@ namespace ASC.Web.Studio.Core.Quota
             ServiceProvider = serviceProvider;
         }
         
-        public void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
             var (tenantManager, storageFactoryConfig, storageFactory) = scopeClass;
-            tenantManager.SetCurrentTenant(TenantId);
+            _ = tenantManager.SetCurrentTenant(TenantId);
 
             var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();
 
             foreach (var module in storageModules)
             {
                 var storage = storageFactory.GetStorage(TenantId.ToString(), module);
-                storage.ResetQuota("");
+                _ = storage.ResetQuota("");
 
                 var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
-                    storage.ResetQuota(domain);
+                    _ = storage.ResetQuota(domain);
                 }
 
             }

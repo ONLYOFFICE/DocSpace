@@ -372,7 +372,7 @@ namespace ASC.Core
     {
         public static DIHelper AddCoreBaseSettingsService(this DIHelper services)
         {
-            services.TryAddSingleton<CoreBaseSettings>();
+            _ = services.TryAddSingleton<CoreBaseSettings>();
             return services;
         }
 
@@ -380,8 +380,8 @@ namespace ASC.Core
         {
             if (services.TryAddScoped<CoreSettings>())
             {
-                services.TryAddScoped<CoreConfiguration>();
-                services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
+                _ = services.TryAddScoped<CoreConfiguration>();
+                _ = services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
 
                 return services
                     .AddCoreBaseSettingsService()
@@ -392,7 +392,7 @@ namespace ASC.Core
         }
         public static DIHelper AddCoreConfigurationService(this DIHelper services)
         {
-            services.TryAddScoped<CoreConfiguration>();
+            _ = services.TryAddScoped<CoreConfiguration>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

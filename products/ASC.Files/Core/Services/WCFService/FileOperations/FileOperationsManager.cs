@@ -237,13 +237,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (services.TryAddScoped<FileOperationsManagerHelper>())
             {
-                services.TryAddSingleton<DistributedTaskCacheNotify>();
-                services.TryAddSingleton<FileOperationsManager>();
-                services.TryAddScoped<FileDeleteOperationScope>();
-                services.TryAddScoped<FileMarkAsReadOperationScope>();
-                services.TryAddScoped<FileMoveCopyOperationScope>();
-                services.TryAddScoped<FileOperationScope>();
-                services.TryAddScoped<FileDownloadOperationScope>();
+                _ = services.TryAddSingleton<DistributedTaskCacheNotify>();
+                _ = services.TryAddSingleton<FileOperationsManager>();
+                _ = services.TryAddScoped<FileDeleteOperationScope>();
+                _ = services.TryAddScoped<FileMarkAsReadOperationScope>();
+                _ = services.TryAddScoped<FileMoveCopyOperationScope>();
+                _ = services.TryAddScoped<FileOperationScope>();
+                _ = services.TryAddScoped<FileDownloadOperationScope>();
 
                 return services
                     .AddAuthContextService()

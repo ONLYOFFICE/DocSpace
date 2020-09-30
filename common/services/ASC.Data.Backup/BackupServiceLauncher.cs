@@ -102,7 +102,7 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupServiceLauncher(this DIHelper services)
         {
-            services.TryAddSingleton<BackupServiceLauncher>();
+            _ = services.TryAddSingleton<BackupServiceLauncher>();
             return services
                 .AddBackupCleanerService()
                 .AddBackupSchedulerService()

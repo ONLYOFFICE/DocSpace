@@ -236,7 +236,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                     .ToList();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -247,13 +247,13 @@ namespace ASC.Files.Thirdparty.Dropbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                _ = FilesDbContext.SaveChanges();
 
                 tx.Commit();
             }
@@ -545,7 +545,7 @@ namespace ASC.Files.Thirdparty.Dropbox
     {
         public static DIHelper AddDropboxFolderDaoService(this DIHelper services)
         {
-            services.TryAddScoped<DropboxFolderDao>();
+            _ = services.TryAddScoped<DropboxFolderDao>();
 
             return services;
         }

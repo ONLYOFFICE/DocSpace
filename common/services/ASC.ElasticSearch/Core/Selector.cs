@@ -301,7 +301,7 @@ namespace ASC.ElasticSearch
                     .Index(indexer.IndexName);
                 if (immediately)
                 {
-                    result.Refresh();
+                    _ = result.Refresh();
                 }
                 return result;
             };
@@ -318,7 +318,7 @@ namespace ASC.ElasticSearch
 
                 if (immediately)
                 {
-                    result.Refresh();
+                    _ = result.Refresh();
                 }
 
                 return result;

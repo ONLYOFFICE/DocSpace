@@ -23,7 +23,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFilesThirdpartyIdMapping(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFilesThirdpartyIdMapping>()
+            _ = modelBuilder.Entity<DbFilesThirdpartyIdMapping>()
                 .HasKey(c => new { c.HashId });
 
             return modelBuilder;

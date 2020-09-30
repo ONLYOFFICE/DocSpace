@@ -22,9 +22,9 @@ namespace ASC.Core.Common.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLoggerFactory(LoggerFactory);
-            optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+            _ = optionsBuilder.UseLoggerFactory(LoggerFactory);
+            _ = optionsBuilder.EnableSensitiveDataLogging();
+            _ = optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
         }
     }
 

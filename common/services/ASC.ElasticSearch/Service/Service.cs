@@ -83,13 +83,13 @@ namespace ASC.ElasticSearch.Service
 
             if (!tasks.Any()) return;
 
-            Task.WhenAll(tasks).ContinueWith(r =>
+            _ = Task.WhenAll(tasks).ContinueWith(r =>
             {
                 using var scope = ServiceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<ServiceScope>();
                 var (tenantManager, settingsManager) = scopeClass;
-                tenantManager.SetCurrentTenant(tenant);
+                _ = tenantManager.SetCurrentTenant(tenant);
                 settingsManager.ClearCache<SearchSettings>();
             });
         }

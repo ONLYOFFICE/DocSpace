@@ -38,13 +38,13 @@ namespace ASC.Api.Core
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
+            _ = services.AddHttpContextAccessor();
 
             var diHelper = new DIHelper(services);
 
             if (AddControllers)
             {
-                services.AddControllers()
+                _ = services.AddControllers()
                     .AddXmlSerializerFormatters()
                     .AddJsonOptions(options =>
                     {
@@ -62,7 +62,7 @@ namespace ASC.Api.Core
                     });
             }
 
-            diHelper
+            _ = diHelper
                 .AddCultureMiddleware()
                 .AddIpSecurityFilter()
                 .AddPaymentFilter()
@@ -85,44 +85,44 @@ namespace ASC.Api.Core
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            diHelper.AddCookieAuthHandler();
+            _ = diHelper.AddCookieAuthHandler();
             var authBuilder = services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             if (ConfirmAddScheme)
             {
-                authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+                _ = authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
             }
 
             if (LogParams != null)
             {
-                diHelper.AddNLogManager(LogParams);
+                _ = diHelper.AddNLogManager(LogParams);
             }
 
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            _ = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            _ = app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            app.UseRouting();
+            _ = app.UseRouting();
 
-            app.UseAuthentication();
+            _ = app.UseAuthentication();
 
-            app.UseAuthorization();
+            _ = app.UseAuthorization();
 
-            app.UseCultureMiddleware();
+            _ = app.UseCultureMiddleware();
 
-            app.UseDisposeMiddleware();
+            _ = app.UseDisposeMiddleware();
 
-            app.UseEndpoints(endpoints =>
+            _ = app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
-                endpoints.MapCustom();
+                _ = endpoints.MapControllers();
+                _ = endpoints.MapCustom();
             });
         }
     }

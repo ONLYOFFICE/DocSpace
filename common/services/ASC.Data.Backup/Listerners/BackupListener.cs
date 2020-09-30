@@ -43,7 +43,7 @@ namespace ASC.Data.Backup.Listerners
     {
         public static DIHelper AddBackupListenerService(this DIHelper services)
         {
-            services.TryAddSingleton<BackupListener>();
+            _ = services.TryAddSingleton<BackupListener>();
             return services.AddBackupService();
         }
     }

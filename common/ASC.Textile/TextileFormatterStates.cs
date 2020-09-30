@@ -57,7 +57,7 @@ namespace Textile
         private void SwitchFormatterState(Type type, bool onOff)
         {
             if (onOff)
-                m_disabledFormatterStates.Remove(type);
+                _ = m_disabledFormatterStates.Remove(type);
             else if (!m_disabledFormatterStates.Contains(type))
                 m_disabledFormatterStates.Add(type);
         }
@@ -80,7 +80,7 @@ namespace Textile
         private void PopState()
         {
             m_stackOfStates.Peek().Exit();
-            m_stackOfStates.Pop();
+            _ = m_stackOfStates.Pop();
         }
 
         /// <summary>

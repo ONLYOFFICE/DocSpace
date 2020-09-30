@@ -15,7 +15,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddFilesConverts(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FilesConverts>()
+            _ = modelBuilder.Entity<FilesConverts>()
                 .HasKey(c => new { c.Input, c.Ouput });
 
             return modelBuilder;

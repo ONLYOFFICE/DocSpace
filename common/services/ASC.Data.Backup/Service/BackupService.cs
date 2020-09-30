@@ -294,7 +294,7 @@ namespace ASC.Data.Backup.Service
         {
             if (services.TryAddScoped<BackupService>())
             {
-                services.TryAddSingleton<BackupServiceNotifier>();
+                _ = services.TryAddSingleton<BackupServiceNotifier>();
                 return services
                     .AddBackupWorkerService()
                     .AddBackupStorageFactory()

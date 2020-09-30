@@ -25,7 +25,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static void AddCoreSettings(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbCoreSettings>()
+            _ = modelBuilder.Entity<DbCoreSettings>()
                 .HasKey(c => new { c.Tenant, c.Id });
         }
     }

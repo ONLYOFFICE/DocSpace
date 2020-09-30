@@ -93,7 +93,7 @@ namespace ASC.IPSecurity
         {
             if (services.TryAddScoped<IPRestrictionsService>())
             {
-                services.TryAddSingleton<IPRestrictionsServiceCache>();
+                _ = services.TryAddSingleton<IPRestrictionsServiceCache>();
 
                 return services.AddIPRestrictionsRepositoryService();
             }

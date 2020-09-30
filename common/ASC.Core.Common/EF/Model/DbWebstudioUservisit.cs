@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddWebstudioUserVisit(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbWebstudioUserVisit>()
+            _ = modelBuilder.Entity<DbWebstudioUserVisit>()
                 .HasKey(c => new { c.TenantId, c.VisitDate, c.ProductId, c.UserId });
 
             return modelBuilder;

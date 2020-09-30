@@ -180,7 +180,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public static DIHelper AddSharpBoxTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<SharpBoxTagDao>();
+            _ = services.TryAddScoped<SharpBoxTagDao>();
 
             return services;
         }

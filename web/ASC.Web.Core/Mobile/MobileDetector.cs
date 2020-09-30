@@ -87,7 +87,7 @@ namespace ASC.Web.Core.Mobile
     {
         public static DIHelper AddMobileDetectorService(this DIHelper services)
         {
-            services.TryAddScoped<MobileDetector>();
+            _ = services.TryAddScoped<MobileDetector>();
             return services;
         }
     }

@@ -156,7 +156,7 @@ namespace ASC.Core.Billing
 
             if (licenseStream.CanSeek)
             {
-                licenseStream.Seek(0, SeekOrigin.Begin);
+                _ = licenseStream.Seek(0, SeekOrigin.Begin);
             }
 
             using var fs = File.Open(path, FileMode.Create);
@@ -199,7 +199,7 @@ namespace ASC.Core.Billing
 
         private void LicenseToDB(License license)
         {
-            Validate(license);
+            _ = Validate(license);
 
             CustomerId = license.CustomerId;
 
@@ -240,7 +240,7 @@ namespace ASC.Core.Billing
                 quota.CountPortals = Math.Max(defaultQuota.CountPortals, quota.CountPortals);
             }
 
-            TenantManager.SaveTenantQuota(quota);
+            _ = TenantManager.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -254,7 +254,7 @@ namespace ASC.Core.Billing
             {
                 var tenant = TenantManager.GetCurrentTenant();
                 tenant.AffiliateId = license.AffiliateId;
-                TenantManager.SaveTenant(tenant);
+                _ = TenantManager.SaveTenant(tenant);
             }
         }
 

@@ -102,7 +102,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFiles(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFile>()
+            _ = modelBuilder.Entity<DbFile>()
                 .HasKey(c => new { c.TenantId, c.Id, c.Version });
 
             return modelBuilder;

@@ -45,7 +45,7 @@ namespace Textile
         public void SwitchBlockModifier(Type type, bool onOff)
         {
             if (onOff)
-                m_disabledBlockModifiers.Remove(type);
+                _ = m_disabledBlockModifiers.Remove(type);
             else if (!m_disabledBlockModifiers.Contains(type))
                 m_disabledBlockModifiers.Add(type);
         }

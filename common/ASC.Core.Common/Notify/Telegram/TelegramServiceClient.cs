@@ -99,7 +99,7 @@ namespace ASC.Core.Common.Notify
     {
         public static DIHelper AddTelegramServiceClient(this DIHelper services)
         {
-            services.TryAddSingleton<TelegramServiceClient>();
+            _ = services.TryAddSingleton<TelegramServiceClient>();
             return services;
         }
     }

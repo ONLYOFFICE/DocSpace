@@ -30,7 +30,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFilesThirdpartyApp(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFilesThirdpartyApp>()
+            _ = modelBuilder.Entity<DbFilesThirdpartyApp>()
                 .HasKey(c => new { c.UserId, c.App });
 
             return modelBuilder;

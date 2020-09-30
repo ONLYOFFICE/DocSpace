@@ -135,7 +135,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 {
                     str.CopyTo(tempBuffer);
                     tempBuffer.Flush();
-                    tempBuffer.Seek(offset, SeekOrigin.Begin);
+                    _ = tempBuffer.Seek(offset, SeekOrigin.Begin);
                 }
             }
             return tempBuffer;

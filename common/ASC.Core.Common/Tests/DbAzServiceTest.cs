@@ -51,10 +51,10 @@ namespace ASC.Core.Common.Tests
         public void AceRecords()
         {
             var ar1 = new AzRecord(Guid.Empty, Guid.Empty, AceType.Allow);
-            Service.SaveAce(Tenant, ar1);
+            _ = Service.SaveAce(Tenant, ar1);
 
             var ar2 = new AzRecord(new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000002"), AceType.Allow);
-            Service.SaveAce(Tenant, ar2);
+            _ = Service.SaveAce(Tenant, ar2);
 
             var list = Service.GetAces(Tenant, default).ToList();
 

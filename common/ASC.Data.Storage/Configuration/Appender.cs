@@ -14,7 +14,7 @@ namespace ASC.Data.Storage.Configuration
     {
         public static DIHelper AddStorage(this DIHelper services)
         {
-            services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
+            _ = services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
             return services;
         }
     }

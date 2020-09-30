@@ -34,7 +34,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionServiceNotifierService(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionServiceNotifier>();
+            _ = services.TryAddSingleton<EncryptionServiceNotifier>();
             return services;
         }
     }

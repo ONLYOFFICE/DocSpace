@@ -93,8 +93,8 @@ namespace ASC.Web.Files.Core.Search
                 {
                     data.ForEach(r =>
                     {
-                        TenantManager.SetCurrentTenant(r.TenantId);
-                        fileDao.InitDocument(r);
+                        _ = TenantManager.SetCurrentTenant(r.TenantId);
+                        _ = fileDao.InitDocument(r);
                         TenantManager.CurrentTenant = null;
                     });
                     Index(data);
@@ -117,8 +117,8 @@ namespace ASC.Web.Files.Core.Search
     {
         public static DIHelper AddFactoryIndexerFileService(this DIHelper services)
         {
-            services.TryAddTransient<DbFile>();
-            services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
+            _ = services.TryAddTransient<DbFile>();
+            _ = services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
 
             return services
                 .AddFactoryIndexerService<DbFile>(false);

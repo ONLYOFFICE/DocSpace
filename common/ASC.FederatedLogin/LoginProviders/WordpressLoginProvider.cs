@@ -84,7 +84,7 @@ namespace ASC.FederatedLogin.LoginProviders
                         { "Authorization", "bearer " + token.AccessToken }
                     };
 
-                RequestHelper.PerformRequest(uri, contentType, method, body, headers);
+                _ = RequestHelper.PerformRequest(uri, contentType, method, body, headers);
                 return true;
             }
             catch (Exception)

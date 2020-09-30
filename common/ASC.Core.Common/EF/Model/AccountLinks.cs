@@ -24,7 +24,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static void AddAccountLinks(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AccountLinks>()
+            _ = modelBuilder.Entity<AccountLinks>()
                         .HasKey(c => new { c.Id, c.UId });
         }
     }

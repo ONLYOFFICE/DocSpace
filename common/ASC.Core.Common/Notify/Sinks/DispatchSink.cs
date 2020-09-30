@@ -49,7 +49,7 @@ namespace ASC.Notify.Sinks
 
         public override void ProcessMessageAsync(INoticeMessage message)
         {
-            dispatcher.Dispatch(message, senderName);
+            _ = dispatcher.Dispatch(message, senderName);
         }
     }
 }

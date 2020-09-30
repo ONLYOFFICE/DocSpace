@@ -71,7 +71,7 @@ namespace ASC.Data.Backup.Storage
     {
         public static DIHelper AddLocalBackupStorage(this DIHelper services)
         {
-            services.TryAddScoped<LocalBackupStorage>();
+            _ = services.TryAddScoped<LocalBackupStorage>();
             return services;
         }
     }

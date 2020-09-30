@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilder AddAcl(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Acl>()
+            _ = modelBuilder.Entity<Acl>()
                 .HasKey(c => new { c.Tenant, c.Subject, c.Action, c.Object });
 
             return modelBuilder;

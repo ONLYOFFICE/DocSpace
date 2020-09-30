@@ -70,7 +70,7 @@ namespace ASC.Core.ChunkedUploader
         public void Store(CommonChunkedUploadSession s)
         {
             using var stream = s.Serialize();
-            DataStore.SavePrivate(Domain, GetPathWithId(s.Id), stream, s.Expired);
+            _ = DataStore.SavePrivate(Domain, GetPathWithId(s.Id), stream, s.Expired);
         }
 
         public void Remove(CommonChunkedUploadSession s)
@@ -107,12 +107,12 @@ namespace ASC.Core.ChunkedUploader
                 .Select((x, i) => new KeyValuePair<int, string>(i + 1, x))
                 .ToDictionary(x => x.Key, x => x.Value);
 
-            DataStore.FinalizeChunkedUpload(Domain, tempPath, uploadId, eTags);
+            _ = DataStore.FinalizeChunkedUpload(Domain, tempPath, uploadId, eTags);
         }
 
         public void Move(CommonChunkedUploadSession chunkedUploadSession, string newPath)
         {
-            DataStore.Move(Domain, chunkedUploadSession.TempPath, string.Empty, newPath);
+            _ = DataStore.Move(Domain, chunkedUploadSession.TempPath, string.Empty, newPath);
         }
 
         public void Abort(CommonChunkedUploadSession uploadSession)

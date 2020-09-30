@@ -89,7 +89,7 @@ namespace ASC.ApiSystem.Classes
     {
         public static DIHelper AddCommonConstants(this DIHelper services)
         {
-            services.TryAddSingleton<CommonConstants>();
+            _ = services.TryAddSingleton<CommonConstants>();
 
             return services;
         }

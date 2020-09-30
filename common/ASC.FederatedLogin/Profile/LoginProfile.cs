@@ -250,7 +250,7 @@ namespace ASC.FederatedLogin.Profile
             {
                 if (_fields.ContainsKey(name))
                 {
-                    _fields.Remove(name);
+                    _ = _fields.Remove(name);
                 }
             }
         }
@@ -307,7 +307,7 @@ namespace ASC.FederatedLogin.Profile
             var query = new StringBuilder();
             foreach (var key in queryString.AllKeys)
             {
-                query.AppendFormat("{0}={1}&", key,
+                _ = query.AppendFormat("{0}={1}&", key,
                                    queryString[key]);
             }
             var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
@@ -318,7 +318,7 @@ namespace ASC.FederatedLogin.Profile
         {
             //gen key
             var key = HashHelper.MD5(Transport());
-            memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
+            _ = memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
             return AppendQueryParam(uri, QuerySessionParamName, key);
         }
 

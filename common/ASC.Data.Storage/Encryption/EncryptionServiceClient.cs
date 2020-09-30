@@ -58,7 +58,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionServiceClient(this DIHelper services)
         {
-            services.TryAddScoped<EncryptionServiceClient>();
+            _ = services.TryAddScoped<EncryptionServiceClient>();
             return services;
         }
     }

@@ -64,7 +64,7 @@ namespace ASC.Notify
 
         public void Stop()
         {
-            stop.Set();
+            _ = stop.Set();
             CancellationTokenSource.Cancel();
         }
 
@@ -86,7 +86,7 @@ namespace ASC.Notify
                     dbContext.NotifyInfo.RemoveRange(info);
                     dbContext.NotifyQueue.RemoveRange(queue);
 
-                    dbContext.SaveChanges();
+                    _ = dbContext.SaveChanges();
                     tx.Commit();
 
                     log.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
@@ -112,7 +112,7 @@ namespace ASC.Notify
     {
         public static DIHelper AddNotifyCleaner(this DIHelper services)
         {
-            services.TryAddSingleton<NotifyCleaner>();
+            _ = services.TryAddSingleton<NotifyCleaner>();
 
             return services.AddNotifyDbContext();
         }

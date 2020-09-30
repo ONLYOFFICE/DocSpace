@@ -249,10 +249,10 @@ namespace ASC.Data.Backup.Tasks
 
             if (db)
             {
-                args.AppendFormat("-D {0} ", connectionString["database"]);
+                _ = args.AppendFormat("-D {0} ", connectionString["database"]);
             }
 
-            args.AppendFormat("-e \" source {0}\"", file);
+            _ = args.AppendFormat("-e \" source {0}\"", file);
             Logger.DebugFormat("run mysql file {0} {1}", file, args.ToString());
 
             var startInfo = new ProcessStartInfo
@@ -306,7 +306,7 @@ namespace ASC.Data.Backup.Tasks
                     using var connection = DbFactory.OpenConnection();
                     var command = connection.CreateCommand();
                     command.CommandText = commandText;
-                    await command.ExecuteNonQueryAsync();
+                    _ = await command.ExecuteNonQueryAsync();
                     //  await dbManager.ExecuteNonQueryAsync(commandText, null);
                 }
                 catch (Exception e)

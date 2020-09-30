@@ -253,7 +253,7 @@ namespace ASC.Core.Caching
             var users = GetUsers(tenant);
             lock (users)
             {
-                users.TryGetValue(id, out var u);
+                _ = users.TryGetValue(id, out var u);
                 return u;
             }
         }
@@ -345,7 +345,7 @@ namespace ASC.Core.Caching
             var groups = GetGroups(tenant);
             lock (groups)
             {
-                groups.TryGetValue(id, out var g);
+                _ = groups.TryGetValue(id, out var g);
                 return g;
             }
         }
@@ -526,15 +526,15 @@ namespace ASC.Core.Caching
         {
             if (services.TryAddScoped<EFUserService>())
             {
-                services.TryAddScoped<IUserService, CachedUserService>();
+                _ = services.TryAddScoped<IUserService, CachedUserService>();
 
-                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
-                services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
+                _ = services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
+                _ = services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
 
-                services.TryAddSingleton<UserServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                _ = services.TryAddSingleton<UserServiceCache>();
+                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-                services
+                _ = services
                     .AddCoreSettingsService()
                     .AddLoggerService()
                     .AddUserDbContextService()

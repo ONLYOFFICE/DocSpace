@@ -26,9 +26,9 @@ namespace ASC.Studio.Notify
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    config.SetBasePath(path);
+                    _ = config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
+                    _ = config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -47,11 +47,11 @@ namespace ASC.Studio.Notify
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
-                    services.AddHostedService<ServiceLauncher>();
-                    diHelper.AddServiceLauncher();
+                    _ = diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    _ = services.AddHostedService<ServiceLauncher>();
+                    _ = diHelper.AddServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

@@ -222,7 +222,7 @@ namespace ASC.Data.Backup.Tasks
                 commandText += (" and " + whereCondition);
             var command = connection.CreateCommand();
             command.CommandText = commandText;
-            command.WithTimeout(120).ExecuteNonQuery();
+            _ = command.WithTimeout(120).ExecuteNonQuery();
         }
 
         private string GetTenantAlias(DbFactory dbFactory)
@@ -243,7 +243,7 @@ namespace ASC.Data.Backup.Tasks
         private string GetBackupFilePath(string tenantAlias)
         {
             if (!Directory.Exists(BackupDirectory ?? DefaultDirectoryName))
-                Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
+                _ = Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
 
             return Path.Combine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
         }
@@ -254,7 +254,7 @@ namespace ASC.Data.Backup.Tasks
     {
         public static DIHelper AddTransferPortalTaskService(this DIHelper services)
         {
-            services.TryAddScoped<TransferPortalTask>();
+            _ = services.TryAddScoped<TransferPortalTask>();
             return services
                 .AddStorageFactoryConfigService()
                 .AddBackupPortalTaskService()

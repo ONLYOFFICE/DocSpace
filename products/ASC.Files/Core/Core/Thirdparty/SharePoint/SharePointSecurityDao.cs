@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.SharePoint
     {
         public static DIHelper AddSharePointSecurityDaoService(this DIHelper services)
         {
-            services.TryAddScoped<SharePointSecurityDao>();
+            _ = services.TryAddScoped<SharePointSecurityDao>();
 
             return services;
         }

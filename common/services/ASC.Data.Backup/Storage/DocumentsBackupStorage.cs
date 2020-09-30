@@ -68,15 +68,15 @@ namespace ASC.Data.Backup.Storage
         }
         public string Upload(string folderId, string localPath, Guid userId)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _ = TenantManager.SetCurrentTenant(TenantId);
             if (!userId.Equals(Guid.Empty))
             {
-                SecurityContext.AuthenticateMe(userId);
+                _ = SecurityContext.AuthenticateMe(userId);
             }
             else
             {
                 var tenant = TenantManager.GetTenant(TenantId);
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
+                _ = SecurityContext.AuthenticateMe(tenant.OwnerId);
             }
 
             if (int.TryParse(folderId, out var fId))
@@ -89,7 +89,7 @@ namespace ASC.Data.Backup.Storage
 
         public void Download(string fileId, string targetLocalPath)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _ = TenantManager.SetCurrentTenant(TenantId);
 
             if (int.TryParse(fileId, out var fId))
             {
@@ -102,7 +102,7 @@ namespace ASC.Data.Backup.Storage
 
         public void Delete(string fileId)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _ = TenantManager.SetCurrentTenant(TenantId);
 
             if (int.TryParse(fileId, out var fId))
             {
@@ -115,7 +115,7 @@ namespace ASC.Data.Backup.Storage
 
         public bool IsExists(string fileId)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _ = TenantManager.SetCurrentTenant(TenantId);
             if (int.TryParse(fileId, out var fId))
             {
                 return IsExistsDao(fId);
@@ -153,7 +153,7 @@ namespace ASC.Data.Backup.Storage
 
         private void DownloadDao<T>(T fileId, string targetLocalPath)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _ = TenantManager.SetCurrentTenant(TenantId);
             var fileDao = GetFileDao<T>();
             var file = fileDao.GetFile(fileId);
             if (file == null)
@@ -196,7 +196,7 @@ namespace ASC.Data.Backup.Storage
         {
             // hack: create storage using webConfigPath and put it into DataStoreCache
             // FileDao will use this storage and will not try to create the new one from service config
-            StorageFactory.GetStorage(WebConfigPath, TenantId.ToString(), "files");
+            _ = StorageFactory.GetStorage(WebConfigPath, TenantId.ToString(), "files");
             return DaoFactory.GetFileDao<T>();
         }
     }

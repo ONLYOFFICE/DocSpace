@@ -177,7 +177,7 @@ namespace ASC.Files.Thirdparty.Box
     {
         public static DIHelper AddBoxTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<BoxTagDao>();
+            _ = services.TryAddScoped<BoxTagDao>();
 
             return services;
         }

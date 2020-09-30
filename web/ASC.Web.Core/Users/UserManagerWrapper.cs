@@ -207,40 +207,40 @@ namespace ASC.Web.Core.Users
 
             if (CoreBaseSettings.CustomMode)
             {
-                pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
+                _ = pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
 
                 if (passwordSettings.Digits)
-                    pwdBuilder.Append(@"(?=.*\d)");
+                    _ = pwdBuilder.Append(@"(?=.*\d)");
 
                 if (passwordSettings.UpperCase)
-                    pwdBuilder.Append(@"(?=.*[A-Z])");
+                    _ = pwdBuilder.Append(@"(?=.*[A-Z])");
 
                 if (passwordSettings.SpecSymbols)
-                    pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
+                    _ = pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
 
-                pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
+                _ = pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
             }
             else
             {
-                pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
+                _ = pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
 
                 if (passwordSettings.Digits)
-                    pwdBuilder.Append(@"(?=.*\d)");
+                    _ = pwdBuilder.Append(@"(?=.*\d)");
 
                 if (passwordSettings.UpperCase)
-                    pwdBuilder.Append(@"(?=.*\p{Lu})");
+                    _ = pwdBuilder.Append(@"(?=.*\p{Lu})");
 
                 if (passwordSettings.SpecSymbols)
-                    pwdBuilder.Append(@"(?=.*[\W])");
+                    _ = pwdBuilder.Append(@"(?=.*[\W])");
 
-                pwdBuilder.Append(@".");
+                _ = pwdBuilder.Append(@".");
             }
 
-            pwdBuilder.Append(@"{");
-            pwdBuilder.Append(passwordSettings.MinLength);
-            pwdBuilder.Append(@",");
-            pwdBuilder.Append(PasswordSettings.MaxLength);
-            pwdBuilder.Append(@"}$");
+            _ = pwdBuilder.Append(@"{");
+            _ = pwdBuilder.Append(passwordSettings.MinLength);
+            _ = pwdBuilder.Append(@",");
+            _ = pwdBuilder.Append(PasswordSettings.MaxLength);
+            _ = pwdBuilder.Append(@"}$");
 
             return pwdBuilder.ToString();
         }
@@ -311,14 +311,14 @@ namespace ASC.Web.Core.Users
         {
             var error = new StringBuilder();
 
-            error.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
-            error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
+            _ = error.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
+            _ = error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+                _ = error.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
             if (passwordSettings.Digits)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+                _ = error.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
             if (passwordSettings.SpecSymbols)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+                _ = error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
 
             return error.ToString();
         }
@@ -327,14 +327,14 @@ namespace ASC.Web.Core.Users
         {
             var info = new StringBuilder();
             var passwordSettings = SettingsManager.Load<PasswordSettings>();
-            info.AppendFormat("{0} ", Resource.ErrorPasswordMessageStart);
-            info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
+            _ = info.AppendFormat("{0} ", Resource.ErrorPasswordMessageStart);
+            _ = info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+                _ = info.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
             if (passwordSettings.Digits)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+                _ = info.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
             if (passwordSettings.SpecSymbols)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+                _ = info.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
 
             return info.ToString();
         }

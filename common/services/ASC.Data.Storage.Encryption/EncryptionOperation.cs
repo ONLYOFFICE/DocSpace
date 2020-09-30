@@ -101,7 +101,7 @@ namespace ASC.Data.Storage.Encryption
                     {
                         dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
                     }
-                    Parallel.ForEach(dictionary, (elem) =>
+                    _ = Parallel.ForEach(dictionary, (elem) =>
                     {
                         EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                     });
@@ -298,7 +298,7 @@ namespace ASC.Data.Storage.Encryption
                     tenantManager.SetCurrentTenant(tenant);
 
                     tenant.SetStatus(TenantStatus.Active);
-                    tenantManager.SaveTenant(tenant);
+                    _ = tenantManager.SaveTenant(tenant);
                     log.DebugFormat("Tenant {0} SetStatus Active", tenant.TenantAlias);
 
                     if (!HasErrors)
@@ -384,8 +384,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionOperationService(this DIHelper services)
         {
-            services.TryAddTransient<EncryptionOperation>();
-            services.TryAddTransient<EncryptionOperationScope>();
+            _ = services.TryAddTransient<EncryptionOperation>();
+            _ = services.TryAddTransient<EncryptionOperationScope>();
             return services
                 .AddStorageFactoryConfigService()
                 .AddStorageFactoryService()

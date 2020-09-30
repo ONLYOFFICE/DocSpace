@@ -44,7 +44,7 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(0);
+            _ = tenantManager.SetCurrentTenant(0);
 
             paymentManager.ActivateKey("IAALKCPBRY9ZSDLJZ4E2");
         }

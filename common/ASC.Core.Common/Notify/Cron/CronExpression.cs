@@ -133,7 +133,7 @@ namespace ASC.Notify.Cron
         public TimeSpan? Period()
         {
             var date = new DateTime(2014, 1, 1);
-            DateTime.SpecifyKind(date, DateTimeKind.Utc);
+            _ = DateTime.SpecifyKind(date, DateTimeKind.Utc);
             var after = GetTimeAfter(date);
             if (!after.HasValue) return null;
             return after.Value.Subtract(date);
@@ -218,7 +218,7 @@ namespace ASC.Notify.Cron
         {
             try
             {
-                new CronExpression(cronExpression);
+                _ = new CronExpression(cronExpression);
             }
             catch (FormatException)
             {
@@ -588,7 +588,7 @@ namespace ASC.Notify.Cron
                                                             "'L' option is not valid here. (pos={0})", i));
                 }
                 var data = GetSet(type);
-                data.Add(val);
+                _ = data.Add(val);
                 i++;
                 return i;
             }
@@ -604,7 +604,7 @@ namespace ASC.Notify.Cron
                                                             "'W' option is not valid here. (pos={0})", i));
                 }
                 var data = GetSet(type);
-                data.Add(val);
+                _ = data.Add(val);
                 i++;
                 return i;
             }
@@ -630,7 +630,7 @@ namespace ASC.Notify.Cron
                         "A numeric value between 1 and 5 must follow the '#' option");
                 }
                 var data = GetSet(type);
-                data.Add(val);
+                _ = data.Add(val);
                 i++;
                 return i;
             }
@@ -650,7 +650,7 @@ namespace ASC.Notify.Cron
                                                             "'C' option is not valid here. (pos={0})", i));
                 }
                 var data = GetSet(type);
-                data.Add(val);
+                _ = data.Add(val);
                 i++;
                 return i;
             }
@@ -740,45 +740,45 @@ namespace ASC.Notify.Cron
         public virtual string GetExpressionSummary()
         {
             var buf = new StringBuilder();
-            buf.Append("seconds: ");
-            buf.Append(GetExpressionSetSummary(seconds));
-            buf.Append("\n");
-            buf.Append("minutes: ");
-            buf.Append(GetExpressionSetSummary(minutes));
-            buf.Append("\n");
-            buf.Append("hours: ");
-            buf.Append(GetExpressionSetSummary(hours));
-            buf.Append("\n");
-            buf.Append("daysOfMonth: ");
-            buf.Append(GetExpressionSetSummary(daysOfMonth));
-            buf.Append("\n");
-            buf.Append("months: ");
-            buf.Append(GetExpressionSetSummary(months));
-            buf.Append("\n");
-            buf.Append("daysOfWeek: ");
-            buf.Append(GetExpressionSetSummary(daysOfWeek));
-            buf.Append("\n");
-            buf.Append("lastdayOfWeek: ");
-            buf.Append(lastdayOfWeek);
-            buf.Append("\n");
-            buf.Append("nearestWeekday: ");
-            buf.Append(nearestWeekday);
-            buf.Append("\n");
-            buf.Append("NthDayOfWeek: ");
-            buf.Append(nthdayOfWeek);
-            buf.Append("\n");
-            buf.Append("lastdayOfMonth: ");
-            buf.Append(lastdayOfMonth);
-            buf.Append("\n");
-            buf.Append("calendardayOfWeek: ");
-            buf.Append(calendardayOfWeek);
-            buf.Append("\n");
-            buf.Append("calendardayOfMonth: ");
-            buf.Append(calendardayOfMonth);
-            buf.Append("\n");
-            buf.Append("years: ");
-            buf.Append(GetExpressionSetSummary(years));
-            buf.Append("\n");
+            _ = buf.Append("seconds: ");
+            _ = buf.Append(GetExpressionSetSummary(seconds));
+            _ = buf.Append("\n");
+            _ = buf.Append("minutes: ");
+            _ = buf.Append(GetExpressionSetSummary(minutes));
+            _ = buf.Append("\n");
+            _ = buf.Append("hours: ");
+            _ = buf.Append(GetExpressionSetSummary(hours));
+            _ = buf.Append("\n");
+            _ = buf.Append("daysOfMonth: ");
+            _ = buf.Append(GetExpressionSetSummary(daysOfMonth));
+            _ = buf.Append("\n");
+            _ = buf.Append("months: ");
+            _ = buf.Append(GetExpressionSetSummary(months));
+            _ = buf.Append("\n");
+            _ = buf.Append("daysOfWeek: ");
+            _ = buf.Append(GetExpressionSetSummary(daysOfWeek));
+            _ = buf.Append("\n");
+            _ = buf.Append("lastdayOfWeek: ");
+            _ = buf.Append(lastdayOfWeek);
+            _ = buf.Append("\n");
+            _ = buf.Append("nearestWeekday: ");
+            _ = buf.Append(nearestWeekday);
+            _ = buf.Append("\n");
+            _ = buf.Append("NthDayOfWeek: ");
+            _ = buf.Append(nthdayOfWeek);
+            _ = buf.Append("\n");
+            _ = buf.Append("lastdayOfMonth: ");
+            _ = buf.Append(lastdayOfMonth);
+            _ = buf.Append("\n");
+            _ = buf.Append("calendardayOfWeek: ");
+            _ = buf.Append(calendardayOfWeek);
+            _ = buf.Append("\n");
+            _ = buf.Append("calendardayOfMonth: ");
+            _ = buf.Append(calendardayOfMonth);
+            _ = buf.Append("\n");
+            _ = buf.Append("years: ");
+            _ = buf.Append(GetExpressionSetSummary(years));
+            _ = buf.Append("\n");
             return buf.ToString();
         }
 
@@ -799,9 +799,9 @@ namespace ASC.Notify.Cron
                 var val = iVal.ToString(CultureInfo.InvariantCulture);
                 if (!first)
                 {
-                    buf.Append(",");
+                    _ = buf.Append(",");
                 }
-                buf.Append(val);
+                _ = buf.Append(val);
                 first = false;
             }
             return buf.ToString();
@@ -874,11 +874,11 @@ namespace ASC.Notify.Cron
             {
                 if (val != -1)
                 {
-                    data.Add(val);
+                    _ = data.Add(val);
                 }
                 else
                 {
-                    data.Add(NoSpec);
+                    _ = data.Add(NoSpec);
                 }
                 return;
             }
@@ -887,7 +887,7 @@ namespace ASC.Notify.Cron
             if (val == AllSpecInt && incr <= 0)
             {
                 incr = 1;
-                data.Add(AllSpec);
+                _ = data.Add(AllSpec);
             }
             if (type == Second || type == Minute)
             {
@@ -976,7 +976,7 @@ namespace ASC.Notify.Cron
             {
                 if (max == -1)
                 {
-                    data.Add(i);
+                    _ = data.Add(i);
                 }
                 else
                 {
@@ -986,7 +986,7 @@ namespace ASC.Notify.Cron
                     {
                         i2 = max;
                     }
-                    data.Add(i2);
+                    _ = data.Add(i2);
                 }
             }
         }

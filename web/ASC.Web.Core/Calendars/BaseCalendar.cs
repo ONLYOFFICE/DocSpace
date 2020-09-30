@@ -85,18 +85,18 @@ namespace ASC.Web.Core.Calendars
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("BEGIN:VCALENDAR");
-            sb.AppendLine("PRODID:TeamLab Calendar");
-            sb.AppendLine("VERSION:2.0");
+            _ = sb.AppendLine("BEGIN:VCALENDAR");
+            _ = sb.AppendLine("PRODID:TeamLab Calendar");
+            _ = sb.AppendLine("VERSION:2.0");
 
-            sb.AppendLine("METHOD:PUBLISH");
-            sb.AppendLine("CALSCALE:GREGORIAN");
-            sb.AppendLine(string.Format("X-WR-CALNAME:{0}", Name));
-            sb.AppendLine(string.Format("X-WR-TIMEZONE:{0}", TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)));
+            _ = sb.AppendLine("METHOD:PUBLISH");
+            _ = sb.AppendLine("CALSCALE:GREGORIAN");
+            _ = sb.AppendLine(string.Format("X-WR-CALNAME:{0}", Name));
+            _ = sb.AppendLine(string.Format("X-WR-TIMEZONE:{0}", TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)));
             //tz
-            sb.AppendLine("BEGIN:VTIMEZONE");
-            sb.AppendLine(string.Format("TZID:{0}", TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)));
-            sb.AppendLine("END:VTIMEZONE");
+            _ = sb.AppendLine("BEGIN:VTIMEZONE");
+            _ = sb.AppendLine(string.Format("TZID:{0}", TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)));
+            _ = sb.AppendLine("END:VTIMEZONE");
 
             //events
             foreach (var e in LoadEvents(AuthContext.CurrentAccount.ID, DateTime.MinValue, DateTime.MaxValue))
@@ -104,10 +104,10 @@ namespace ASC.Web.Core.Calendars
                 if (e is BaseEvent && e.GetType().GetCustomAttributes(typeof(AllDayLongUTCAttribute), true).Length == 0)
                     (e as BaseEvent).TimeZone = TimeZone;
 
-                sb.AppendLine(e.ToiCalFormat());
+                _ = sb.AppendLine(e.ToiCalFormat());
             }
 
-            sb.Append("END:VCALENDAR");
+            _ = sb.Append("END:VCALENDAR");
 
             return sb.ToString();
         }

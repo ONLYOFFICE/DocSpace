@@ -68,7 +68,7 @@ namespace ASC.MessagingSystem
     {
         public static DIHelper AddMessagePolicyService(this DIHelper services)
         {
-            services.TryAddSingleton<MessagePolicy>();
+            _ = services.TryAddSingleton<MessagePolicy>();
 
             return services;
         }

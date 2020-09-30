@@ -262,7 +262,7 @@ namespace ASC.Web.Files
                     if (readStream.CanSeek)
                     {
                         length = ProcessRangeHeader(context, readStream.Length, ref offset);
-                        readStream.Seek(offset, SeekOrigin.Begin);
+                        _ = readStream.Seek(offset, SeekOrigin.Begin);
                     }
 
                     flushed = await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ".zip", readStream, flushed);
@@ -388,7 +388,7 @@ namespace ASC.Web.Files
 
                                     Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.ID);
                                     var stream = FFmpegService.Convert(fileStream, ext);
-                                    store.Save(string.Empty, mp4Path, stream, mp4Name);
+                                    _ = store.Save(string.Empty, mp4Path, stream, mp4Name);
                                 }
 
                                 var fullLength = store.GetFileSize(string.Empty, mp4Path);
@@ -415,7 +415,7 @@ namespace ASC.Web.Files
                                     {
                                         var fullLength = file.ContentLength;
                                         length = ProcessRangeHeader(context, fullLength, ref offset);
-                                        fileStream.Seek(offset, SeekOrigin.Begin);
+                                        _ = fileStream.Seek(offset, SeekOrigin.Begin);
                                     }
                                     else
                                     {
@@ -449,7 +449,7 @@ namespace ASC.Web.Files
                             if (fileStream.CanSeek)
                             {
                                 length = ProcessRangeHeader(context, file.ContentLength, ref offset);
-                                fileStream.Seek(offset, SeekOrigin.Begin);
+                                _ = fileStream.Seek(offset, SeekOrigin.Begin);
                             }
 
                             flushed = await SendStreamByChunksAsync(context, length, title, fileStream, flushed);
@@ -874,7 +874,7 @@ namespace ASC.Web.Files
             try
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version);
+                _ = int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version);
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
 
                 var linkRight = FileShareLink.Check(doc, fileDao, out var file);
@@ -1040,7 +1040,7 @@ namespace ASC.Web.Files
             if (!string.IsNullOrEmpty(docType))
             {
                 var tmpFileType = Configuration<T>.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
-                FileUtility.InternalExtension.TryGetValue(tmpFileType.Key, out var tmpFileExt);
+                _ = FileUtility.InternalExtension.TryGetValue(tmpFileType.Key, out var tmpFileExt);
                 if (!string.IsNullOrEmpty(tmpFileExt))
                     fileExt = tmpFileExt;
             }

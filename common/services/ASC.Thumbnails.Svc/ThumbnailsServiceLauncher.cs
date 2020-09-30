@@ -96,7 +96,7 @@ namespace ASC.Thumbnails.Svc
                 if (Proc != null && !Proc.HasExited)
                 {
                     Proc.Kill();
-                    Proc.WaitForExit(10000);
+                    _ = Proc.WaitForExit(10000);
 
                     Proc.Close();
                     Proc.Dispose();
@@ -112,7 +112,7 @@ namespace ASC.Thumbnails.Svc
 
         private void StartNode(CancellationToken cancellationToken)
         {
-            StopAsync(cancellationToken);
+            _ = StopAsync(cancellationToken);
             Proc = Process.Start(StartInfo);
         }
     }
@@ -120,7 +120,7 @@ namespace ASC.Thumbnails.Svc
     {
         public static DIHelper AddThumbnailsServiceLauncher(this DIHelper services)
         {
-            services.TryAddScoped<ThumbnailsServiceLauncher>();
+            _ = services.TryAddScoped<ThumbnailsServiceLauncher>();
             return services;
         }
     }

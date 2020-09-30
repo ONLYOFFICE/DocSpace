@@ -266,7 +266,7 @@ namespace ASC.Security.Cryptography
         {
             if (services.TryAddScoped<EmailValidationKeyProvider>())
             {
-                services.TryAddTransient<EmailValidationKeyModel>();
+                _ = services.TryAddTransient<EmailValidationKeyModel>();
 
                 return services
                     .AddTenantManagerService()

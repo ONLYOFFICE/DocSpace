@@ -65,7 +65,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionServiceLauncher(this DIHelper services)
         {
-            services.TryAddSingleton<EncryptionServiceLauncher>();
+            _ = services.TryAddSingleton<EncryptionServiceLauncher>();
             return services.AddEncryptionServiceListener();
         }
     }

@@ -50,11 +50,11 @@ namespace ASC.Notify.Patterns
         protected override void BeforeFormat(INoticeMessage message, ITagValue[] tagsValues)
         {
             _nvelocityContext = new VelocityContext();
-            _nvelocityContext.AttachEventCartridge(new EventCartridge());
+            _ = _nvelocityContext.AttachEventCartridge(new EventCartridge());
             _nvelocityContext.EventCartridge.ReferenceInsertion += EventCartridgeReferenceInsertion;
             foreach (var tagValue in tagsValues)
             {
-                _nvelocityContext.Put(tagValue.Tag, tagValue.Value);
+                _ = _nvelocityContext.Put(tagValue.Tag, tagValue.Value);
             }
             base.BeforeFormat(message, tagsValues);
         }

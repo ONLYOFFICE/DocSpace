@@ -158,7 +158,7 @@ namespace ASC.Data.Storage
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
 
-                securityContext.AuthenticateMe(tenant.OwnerId);
+                _ = securityContext.AuthenticateMe(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
@@ -199,9 +199,9 @@ namespace ASC.Data.Storage
                     MigrationPublish();
                 }
 
-                settingsManager.Save(settings);
+                _ = settingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
-                tenantManager.SaveTenant(tenant);
+                _ = tenantManager.SaveTenant(tenant);
             }
             catch (Exception e)
             {

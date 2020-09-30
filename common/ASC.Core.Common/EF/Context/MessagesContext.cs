@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.AddDbFunction();
-            modelBuilder.AddWebstudioSettings();
+            _ = modelBuilder.AddWebstudioSettings();
         }
     }
 

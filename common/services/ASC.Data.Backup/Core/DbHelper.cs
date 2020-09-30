@@ -49,7 +49,7 @@ namespace ASC.Data.Backup
             mysql = connectionString.ProviderName.ToLower().Contains("mysql");
             if (mysql)
             {
-                CreateCommand("set @@session.sql_mode = concat(@@session.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')").ExecuteNonQuery();
+                _ = CreateCommand("set @@session.sql_mode = concat(@@session.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')").ExecuteNonQuery();
             }
 
             columns = connect.GetSchema("Columns");
@@ -130,7 +130,7 @@ namespace ASC.Data.Backup
 
                 log.Debug(adapter.SelectCommand.CommandText);
 
-                adapter.Fill(dataTable);
+                _ = adapter.Fill(dataTable);
                 return dataTable;
             }
             catch (Exception error)
@@ -152,8 +152,8 @@ namespace ASC.Data.Backup
                     var tenant = backupsContext.Tenants.LastOrDefault();
                     if (tenant != null)
                     {
-                        backupsContext.Tenants.Remove(tenant);
-                        backupsContext.SaveChanges();
+                        _ = backupsContext.Tenants.Remove(tenant);
+                        _ = backupsContext.SaveChanges();
                     }
                     /*  var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar();
                          CreateCommand("delete from tenants_tenants where id = " + tenantid).ExecuteNonQuery();*/
@@ -168,7 +168,7 @@ namespace ASC.Data.Backup
                                 tariff.Tenant = (int)r[table.Columns["id"]];
                                 //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
                                 backupsContext.Entry(tariff).State = EntityState.Modified;
-                                backupsContext.SaveChanges();
+                                _ = backupsContext.SaveChanges();
                             }
                         }
                     }
@@ -181,17 +181,17 @@ namespace ASC.Data.Backup
                     .ToList();
 
                 tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
-                sql.Replace(", ", ") values (", sql.Length - 2, 2);
+                _ = sql.Replace(", ", ") values (", sql.Length - 2, 2);
 
                 var insert = connect.CreateCommand();
                 tableColumns.ForEach(column =>
                 {
-                    sql.AppendFormat("@{0}, ", column);
+                    _ = sql.AppendFormat("@{0}, ", column);
                     var p = insert.CreateParameter();
                     p.ParameterName = "@" + column;
-                    insert.Parameters.Add(p);
+                    _ = insert.Parameters.Add(p);
                 });
-                sql.Replace(", ", ")", sql.Length - 2, 2);
+                _ = sql.Replace(", ", ")", sql.Length - 2, 2);
                 insert.CommandText = sql.ToString();
 
                 foreach (var r in table.Rows.Cast<DataRow>())
@@ -200,7 +200,7 @@ namespace ASC.Data.Backup
                     {
                         ((IDbDataParameter)insert.Parameters["@" + c]).Value = r[c];
                     }
-                    insert.ExecuteNonQuery();
+                    _ = insert.ExecuteNonQuery();
                 }
 
                 tx.Commit();
@@ -273,7 +273,7 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddDbHelper(this DIHelper services)
         {
-            services.TryAddScoped<DbHelper>();
+            _ = services.TryAddScoped<DbHelper>();
             return services;
         }
     }

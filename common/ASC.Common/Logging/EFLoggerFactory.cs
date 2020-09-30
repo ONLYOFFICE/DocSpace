@@ -121,7 +121,7 @@ namespace ASC.Common.Logging
         {
             if (services.TryAddScoped<EFLoggerFactory>())
             {
-                services.TryAddScoped<EFLoggerProvider>();
+                _ = services.TryAddScoped<EFLoggerProvider>();
             }
 
             return services;

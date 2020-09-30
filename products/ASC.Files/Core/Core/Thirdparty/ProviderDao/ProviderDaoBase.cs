@@ -131,7 +131,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(TenantID);
+            _ = tenantManager.SetCurrentTenant(TenantID);
 
             return CrossDao.PerformCrossDaoFileCopy(
                 fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,

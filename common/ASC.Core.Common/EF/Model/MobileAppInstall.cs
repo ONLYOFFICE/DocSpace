@@ -25,7 +25,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilder AddMobileAppInstall(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MobileAppInstall>()
+            _ = modelBuilder.Entity<MobileAppInstall>()
                 .HasKey(c => new { c.UserEmail, c.AppType });
 
             return modelBuilder;

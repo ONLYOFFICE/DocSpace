@@ -140,7 +140,7 @@ namespace ASC.Data.Backup.Tasks
     {
         public static DIHelper AddDbFactoryService(this DIHelper services)
         {
-            services.TryAddScoped<DbFactory>();
+            _ = services.TryAddScoped<DbFactory>();
             return services;
         }
     }

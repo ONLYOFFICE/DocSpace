@@ -70,7 +70,7 @@ namespace ASC.Web.Studio.UserControls.Management
         {
             var tariffSettings = settingsManager.LoadForCurrentUser<TariffSettings>();
             tariffSettings.HideNotifySetting = newVal;
-            settingsManager.SaveForCurrentUser(tariffSettings);
+            _ = settingsManager.SaveForCurrentUser(tariffSettings);
         }
 
         public static bool GetHidePricingPage(SettingsManager settingsManager)
@@ -82,7 +82,7 @@ namespace ASC.Web.Studio.UserControls.Management
         {
             var tariffSettings = settingsManager.Load<TariffSettings>();
             tariffSettings.HidePricingPageForUsers = newVal;
-            settingsManager.Save<TariffSettings>(tariffSettings);
+            _ = settingsManager.Save<TariffSettings>(tariffSettings);
         }
 
         public static bool GetLicenseAccept(SettingsManager settingsManager)
@@ -96,7 +96,7 @@ namespace ASC.Web.Studio.UserControls.Management
             if (DateTime.MinValue.ToString(CultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
             {
                 tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(CultureInfo);
-                settingsManager.SaveForDefaultTenant(tariffSettings);
+                _ = settingsManager.SaveForDefaultTenant(tariffSettings);
             }
         }
     }

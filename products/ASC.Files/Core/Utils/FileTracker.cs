@@ -57,7 +57,7 @@ namespace ASC.Web.Files.Utils
         public static Guid Add<T>(Guid userId, T fileId)
         {
             var tabId = Guid.NewGuid();
-            ProlongEditing(fileId, tabId, userId);
+            _ = ProlongEditing(fileId, tabId, userId);
             return tabId;
         }
 
@@ -94,7 +94,7 @@ namespace ASC.Web.Files.Utils
             {
                 if (tabId != default)
                 {
-                    tracker._editingBy.Remove(tabId);
+                    _ = tracker._editingBy.Remove(tabId);
                     SetTracker(fileId, tracker);
                     return;
                 }
@@ -105,7 +105,7 @@ namespace ASC.Web.Files.Utils
                                                .ToList();
                     foreach (var editTab in listForRemove)
                     {
-                        tracker._editingBy.Remove(editTab.Key);
+                        _ = tracker._editingBy.Remove(editTab.Key);
                     }
                     SetTracker(fileId, tracker);
                     return;
@@ -127,7 +127,7 @@ namespace ASC.Web.Files.Utils
                 {
                     foreach (var forRemove in listForRemove)
                     {
-                        tracker._editingBy.Remove(forRemove.Key);
+                        _ = tracker._editingBy.Remove(forRemove.Key);
                     }
                     SetTracker(fileId, tracker);
                     return;
@@ -146,7 +146,7 @@ namespace ASC.Web.Files.Utils
                                            .ToList();
                 foreach (var editTab in listForRemove)
                 {
-                    tracker._editingBy.Remove(editTab.Key);
+                    _ = tracker._editingBy.Remove(editTab.Key);
                 }
 
                 if (tracker._editingBy.Count == 0)

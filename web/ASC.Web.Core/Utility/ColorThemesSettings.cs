@@ -113,7 +113,7 @@ namespace ASC.Web.Core.Utility
             if (colorTheme.FirstRequest)
             {
                 colorTheme.FirstRequest = false;
-                SettingsManager.Save(colorTheme);
+                _ = SettingsManager.Save(colorTheme);
             }
 
             return colorThemeName;
@@ -130,7 +130,7 @@ namespace ASC.Web.Core.Utility
                 var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (Directory.Exists(filePath))
                 {
-                    SettingsManager.Save(settings);
+                    _ = SettingsManager.Save(settings);
                 }
             }
             catch (Exception)

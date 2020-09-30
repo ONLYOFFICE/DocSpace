@@ -41,7 +41,7 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilder AddDbFilesTagLink(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbFilesTagLink>()
+            _ = modelBuilder.Entity<DbFilesTagLink>()
                 .HasKey(c => new { c.TenantId, c.TagId, c.EntryId, c.EntryType });
 
             return modelBuilder;

@@ -158,12 +158,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 if (_providerKey != nSupportedCloudConfigurations.BoxNet)
                 {
                     var token = storage.DeserializeSecurityTokenFromBase64(_authData.Token);
-                    storage.Open(config, token);
+                    _ = storage.Open(config, token);
                 }
             }
             else
             {
-                storage.Open(config, new GenericNetworkCredentials { Password = _authData.Password, UserName = _authData.Login });
+                _ = storage.Open(config, new GenericNetworkCredentials { Password = _authData.Password, UserName = _authData.Login });
             }
             return storage;
         }
@@ -182,8 +182,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public static DIHelper AddSharpBoxProviderInfoService(this DIHelper services)
         {
-            services.TryAddScoped<SharpBoxProviderInfo>();
-            services.TryAddScoped<SharpBoxStorageDisposableWrapper>();
+            _ = services.TryAddScoped<SharpBoxProviderInfo>();
+            _ = services.TryAddScoped<SharpBoxStorageDisposableWrapper>();
 
             return services;
         }

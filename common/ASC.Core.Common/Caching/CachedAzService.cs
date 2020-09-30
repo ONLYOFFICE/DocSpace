@@ -125,10 +125,10 @@ namespace ASC.Core.Caching
         {
             if (services.TryAddScoped<DbAzService>())
             {
-                services.TryAddScoped<IAzService, CachedAzService>();
-                services.TryAddSingleton<AzServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.AddCoreDbContextService();
+                _ = services.TryAddScoped<IAzService, CachedAzService>();
+                _ = services.TryAddSingleton<AzServiceCache>();
+                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                _ = services.AddCoreDbContextService();
             }
 
             return services;

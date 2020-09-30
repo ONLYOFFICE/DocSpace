@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilder AddDbQuotaRow(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbQuotaRow>()
+            _ = modelBuilder.Entity<DbQuotaRow>()
                 .HasKey(c => new { c.Tenant, c.Path });
 
             return modelBuilder;

@@ -76,9 +76,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             get { return FileOperationType.Download; }
         }
 
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
-            base.RunJob(_, cancellationToken);
+            base.RunJob(distributedTask, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
@@ -100,7 +100,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 stream.Position = 0;
                 const string fileName = FileConstant.DownloadTitle + ".zip";
                 var store = globalStore.GetStore();
-                store.Save(
+                _ = store.Save(
                     FileConstant.StorageDomainTmp,
                     string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                     stream,
@@ -170,7 +170,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     stream.Position = 0;
                     const string fileName = FileConstant.DownloadTitle + ".zip";
                     var store = globalStore.GetStore();
-                    store.Save(
+                    _ = store.Save(
                         FileConstant.StorageDomainTmp,
                         string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                         stream,
@@ -324,7 +324,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                     }
 
-                    zip.PutNextEntry(newtitle);
+                    _ = zip.PutNextEntry(newtitle);
 
                     if (!entryId.Equals(default(T)) && file != null)
                     {
@@ -432,7 +432,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public void Remove(string name)
         {
-            dic.Remove(name);
+            _ = dic.Remove(name);
         }
     }
 

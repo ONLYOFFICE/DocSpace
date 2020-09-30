@@ -15,7 +15,7 @@ namespace ASC.Core.Common.EF.Model.Resource
     {
         public static ModelBuilder AddResAuthorsLang(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ResAuthorsLang>()
+            _ = modelBuilder.Entity<ResAuthorsLang>()
                 .HasKey(c => new { c.AuthorLogin, c.CultureTitle });
 
             return modelBuilder;

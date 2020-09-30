@@ -760,12 +760,12 @@ namespace ASC.Web.Files.Services.WCFService
                 app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
                 if (app == null)
                 {
-                    DocumentServiceHelper.GetParams(fileId.ToString(), -1, doc, true, true, false, out configuration);
+                    _ = DocumentServiceHelper.GetParams(fileId.ToString(), -1, doc, true, true, false, out configuration);
                 }
                 else
                 {
                     var file = app.GetFile(fileId.ToString(), out var editable);
-                    DocumentServiceHelper.GetParams(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false, out configuration);
+                    _ = DocumentServiceHelper.GetParams(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false, out configuration);
                 }
 
                 ErrorIf(!configuration.EditorConfig.ModeWrite
@@ -911,7 +911,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     tagLocked = new Tag("locked", TagType.Locked, AuthContext.CurrentAccount.ID, 0).AddEntry(file);
 
-                    tagDao.SaveTags(tagLocked);
+                    _ = tagDao.SaveTags(tagLocked);
                 }
 
                 var usersDrop = FileTracker.GetEditingBy(file.ID).Where(uid => uid != AuthContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
@@ -919,7 +919,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStable(file.ID, file.Version);
                     var docKey = DocumentServiceHelper.GetDocKey(fileStable);
-                    DocumentServiceHelper.DropUser(docKey, usersDrop, file.ID);
+                    _ = DocumentServiceHelper.DropUser(docKey, usersDrop, file.ID);
                 }
 
                 FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
@@ -936,7 +936,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!file.ProviderEntry)
                 {
                     file = EntryManager.CompleteVersionFile(file.ID, 0, false);
-                    UpdateComment(file.ID, file.Version, FilesCommonResource.UnlockComment);
+                    _ = UpdateComment(file.ID, file.Version, FilesCommonResource.UnlockComment);
                 }
             }
 
@@ -1096,7 +1096,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (!result.Any())
                 {
-                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(folderId.ToString()).RootElement }, new List<JsonElement>() { }); //TODO
+                    _ = MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(folderId.ToString()).RootElement }, new List<JsonElement>() { }); //TODO
                 }
 
 
@@ -1272,7 +1272,7 @@ namespace ASC.Web.Files.Services.WCFService
                     || !ThirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             var token = ConsumerFactory.Get<DocuSignLoginProvider>().GetAccessToken(code);
-            DocuSignHelper.ValidateToken(token);
+            _ = DocuSignHelper.ValidateToken(token);
             DocuSignToken.SaveToken(token);
             return true;
         }
@@ -1527,7 +1527,7 @@ namespace ASC.Web.Files.Services.WCFService
                 foreach (var commonProviderInfo in commonProvidersInfo)
                 {
                     Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
-                    providerDao.UpdateProviderInfo(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
+                    _ = providerDao.UpdateProviderInfo(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
                 }
             }
 
@@ -1644,7 +1644,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var tags = entries.Select(entry => Tag.Favorite(AuthContext.CurrentAccount.ID, entry));
 
-            tagDao.SaveTags(tags);
+            _ = tagDao.SaveTags(tags);
 
             return new ItemList<FileEntry<T>>(entries);
         }
@@ -1689,7 +1689,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var tags = files.Select(file => Tag.Template(AuthContext.CurrentAccount.ID, file));
 
-            tagDao.SaveTags(tags);
+            _ = tagDao.SaveTags(tags);
 
             return new ItemList<FileEntry<T>>(files);
         }
@@ -2256,7 +2256,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             if (services.TryAddScoped<FileStorageService<string>>())
             {
-                services.TryAddScoped<FileStorageService<int>>();
+                _ = services.TryAddScoped<FileStorageService<int>>();
                 //services.TryAddScoped<IFileStorageService, FileStorageService>();
                 return services
                     .AddGlobalService()
