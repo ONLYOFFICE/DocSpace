@@ -4,6 +4,11 @@ import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import { utils } from "asc-web-components";
+import { connect } from "react-redux";
+import {
+  getCurrentProduct,
+  getTotalNotificationsCount
+} from "../../../store/auth/selectors";
 const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
@@ -12,38 +17,43 @@ const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: flex;
-  /*z-index: 185;*/
-  /*position: absolute;*/
   width: 100vw;
   height: 56px;
+
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
+
   .header-module-title {
     display: block;
     font-size: 21px;
     line-height: 0;
+
     @media ${desktop} {
       display: none;
     }
   }
+
   .header-logo-min_icon {
     display: none;
     cursor: pointer;
 
     width: 24px;
     height: 24px;
+
     @media (max-width: 620px) {
       padding: 0 12px 0 0;
       display: ${props => props.module && "block"};
     }
   }
+
   .header-logo-icon {
     width: 146px;
     height: 24px;
     position: relative;
     padding: 4px 20px 0 6px;
     cursor: pointer;
+
     @media (max-width: 620px) {
       display: ${props => (props.module ? "none" : "block")};
       padding: 0px 20px 0 6px;
@@ -51,44 +61,56 @@ const Header = styled.header`
   }
 `;
 
-const HeaderComponent = React.memo(
-  ({ currentModule, badgeNumber, onClick, defaultPage }) => {
-    //console.log("Header render");
-    const currentModuleName = (currentModule && currentModule.title) || "";
-    return (
-      <Header module={currentModuleName}>
-        <NavItem
-          iconName="MenuIcon"
-          badgeNumber={badgeNumber}
-          onClick={onClick}
-          noHover={true}
+const HeaderComponent = ({
+  currentProductName,
+  totalNotifications,
+  onClick,
+  defaultPage
+}) => {
+  //console.log("Header render");
+
+  return (
+    <Header module={currentProductName}>
+      <NavItem
+        iconName="MenuIcon"
+        badgeNumber={totalNotifications}
+        onClick={onClick}
+        noHover={true}
+      />
+      <a className="header-logo-wrapper" href={defaultPage}>
+        <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
+        <img
+          className="header-logo-icon"
+          src="images/nav.logo.opened.react.svg"
         />
-        <a className="header-logo-wrapper" href={defaultPage}>
-          <img
-            className="header-logo-min_icon"
-            src="images/nav.logo.react.svg"
-          />
-          <img
-            className="header-logo-icon"
-            src="images/nav.logo.opened.react.svg"
-          />
-        </a>
-        <Headline className="header-module-title" type="header" color="#FFF">
-          {currentModuleName}
-        </Headline>
-      </Header>
-    );
-  }
-);
+      </a>
+      <Headline className="header-module-title" type="header" color="#FFF">
+        {currentProductName}
+      </Headline>
+    </Header>
+  );
+};
 
 HeaderComponent.displayName = "Header";
 
 HeaderComponent.propTypes = {
-  badgeNumber: PropTypes.number,
+  totalNotifications: PropTypes.number,
   onClick: PropTypes.func,
-  onLogoClick: PropTypes.func,
-  currentModule: PropTypes.object,
+  currentProductName: PropTypes.string,
   defaultPage: PropTypes.string
 };
 
-export default HeaderComponent;
+const mapStateToProps = state => {
+  const { settings } = state.auth;
+  const { defaultPage } = settings;
+
+  const currentProduct = getCurrentProduct(state);
+
+  return {
+    defaultPage,
+    totalNotifications: getTotalNotificationsCount(state),
+    currentProductName: (currentProduct && currentProduct.title) || ""
+  };
+};
+
+export default connect(mapStateToProps)(HeaderComponent);

@@ -1,158 +1,71 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Toast /*Aside*/, utils } from "asc-web-components";
+import { Backdrop, Toast, Aside } from "asc-web-components";
 import Header from "./sub-components/header";
 import Nav from "./sub-components/nav";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";
 import NavItem from "./sub-components/nav-item";
-//import HeaderUnAuth from "./sub-components/header-unauth";
+import HeaderUnAuth from "./sub-components/header-unauth";
 
-import { withTranslation } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { connect } from "react-redux";
-import { AUTH_KEY } from "../../constants";
 
 import { withRouter } from "react-router";
 import { logout } from "../../store/auth/actions";
+import {
+  getCurrentUser,
+  getLanguage,
+  getIsolateModules,
+  getMainModules,
+  getCurrentProduct
+} from "../../store/auth/selectors";
 
 class NavMenu extends React.Component {
   constructor(props) {
     super(props);
     this.timeout = null;
-    this.state = this.mapPropsToState(props);
-  }
 
-  /*shouldComponentUpdate() {
-    return false;
-  }*/
+    const {
+      isBackdropVisible,
+      isNavHoverEnabled,
+      isNavOpened,
+      isAsideVisible
+    } = props;
 
-  componentDidUpdate(prevProps) {
-    //console.log("NavMenu componentDidUpdate");
-    let currentHash = this.getPropsHash(this.props);
-    let prevHash = this.getPropsHash(prevProps);
-    if (currentHash !== prevHash) {
-      //console.log("NavMenu componentDidUpdate hasChanges");
-      this.setState(this.mapPropsToState(this.props));
-    }
-  }
-
-  getPropsHash = props => {
-    let hash = "";
-    if (props.currentModuleId) {
-      hash += props.currentModuleId;
-    }
-    if (props.currentUser) {
-      const {
-        id,
-        displayName,
-        email,
-        avatarSmall,
-        cultureName
-      } = props.currentUser;
-      hash += id + displayName + email + avatarSmall + cultureName;
-    }
-    if (props.availableModules) {
-      for (let i = 0, l = props.availableModules.length; i < l; i++) {
-        let item = props.availableModules[i];
-        hash += item.id + item.notifications;
-      }
-    }
-    if (props.availableModules && this.state.availableModules) {
-      hash += utils.array.isArrayEqual(
-        this.state.availableModules,
-        props.availableModules
-      );
-    }
-    return hash;
-  };
-
-  mapPropsToState = props => {
-    let currentModule = null,
-      isolateModules = [],
-      mainModules = [],
-      totalNotifications = 0,
-      item = null;
-
-    for (let i = 0, l = props.availableModules.length; i < l; i++) {
-      item = props.availableModules[i];
-
-      if (item.id == props.currentModuleId) currentModule = item;
-
-      if (item.isolateMode) {
-        isolateModules.push(item);
-      } else {
-        mainModules.push(item);
-        if (item.separator) continue;
-        totalNotifications += item.notifications;
-      }
-    }
-
-    const newState = {
-      isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
-      isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
-      authHeader: localStorage.getItem(AUTH_KEY) ? true : false,
-      isNavAvailable: mainModules.length > 0,
-      isAsideAvailable: !!props.asideContent,
-
-      isBackdropVisible: props.isBackdropVisible,
-      isNavHoverEnabled: props.isNavHoverEnabled,
-      isNavOpened: props.isNavOpened,
-      isAsideVisible: props.isAsideVisible,
-
-      onLogoClick: undefined,
-      asideContent: props.asideContent,
-
-      currentUser: props.currentUser,
-      currentUserActions: undefined,
-
-      availableModules: props.availableModules,
-      isolateModules: isolateModules,
-      mainModules: mainModules,
-
-      currentModule: currentModule,
-      currentModuleId: props.currentModuleId,
-
-      totalNotifications: totalNotifications
+    this.state = {
+      isBackdropVisible,
+      isNavOpened,
+      isAsideVisible,
+      isNavHoverEnabled
     };
+  }
 
-    const { hasChanges } = props;
+  getCurrentUserActions = () => {
+    const { t } = this.props;
 
-    if (hasChanges) {
-      const { t, currentUser } = props;
-
-      const isUserDefined =
-        Object.entries(currentUser).length > 0 &&
-        currentUser.constructor === Object;
-
-      const userActionProfileView = {
+    const currentUserActions = [
+      {
         key: "ProfileBtn",
         label: t("Profile"),
         onClick: this.onProfileClick,
         url: "/products/people/view/@self"
-      };
+      },
+      {
+        key: "AboutBtn",
+        label: t("AboutCompanyTitle"),
+        onClick: this.onAboutClick,
+        url: "/about"
+      },
+      {
+        key: "LogoutBtn",
+        label: t("LogoutButton"),
+        onClick: this.onLogoutClick
+      }
+    ];
 
-      const currentUserActions = [
-        {
-          key: "AboutBtn",
-          label: t("AboutCompanyTitle"),
-          onClick: this.onAboutClick,
-          url: "/about"
-        },
-        {
-          key: "LogoutBtn",
-          label: t("LogoutButton"),
-          onClick: this.onLogoutClick
-        }
-      ];
-
-      isUserDefined && currentUserActions.unshift(userActionProfileView);
-
-      newState.currentUserActions = currentUserActions;
-      newState.onLogoClick = this.onLogoClick;
-    }
-
-    return newState;
+    return currentUserActions;
   };
 
   backdropClick = () => {
@@ -211,8 +124,8 @@ class NavMenu extends React.Component {
   };
 
   onProfileClick = () => {
-    const { history, settings } = this.props;
-    if (settings.homepage == "/products/people") {
+    const { history, homepage } = this.props;
+    if (homepage == "/products/people") {
       history.push("/products/people/view/@self");
     } else {
       window.open("/products/people/view/@self", "_self");
@@ -227,75 +140,79 @@ class NavMenu extends React.Component {
     this.props.logout();
   };
 
-  onLogoClick = () => {
-    window.open("/", "_self");
-  };
-
   render() {
-    //console.log("NavMenu render");
+    const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
+
+    const {
+      isAuthenticated,
+      isLoaded,
+      isolateModules,
+      mainModules,
+      currentUser,
+      asideContent,
+      currentProduct
+    } = this.props;
+
+    const isBackdropAvailable = mainModules.length > 0 || !!asideContent;
+    const isNavAvailable = mainModules.length > 0;
+    const isAsideAvailable = !!asideContent;
+
+    console.log("NavMenu render", this.state, this.props);
 
     return (
       <>
         <Toast />
-        {this.state.isBackdropAvailable && (
-          <Backdrop
-            visible={this.state.isBackdropVisible}
-            onClick={this.backdropClick}
-          />
+        {isBackdropAvailable && (
+          <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
         )}
 
-        <HeaderNav
-          modules={this.state.isolateModules}
-          user={this.state.currentUser}
-          userActions={this.state.currentUserActions}
-        />
+        {isAuthenticated ? (
+          <>
+            <HeaderNav
+              modules={isolateModules}
+              user={currentUser}
+              userActions={this.getCurrentUserActions()}
+            />
+            <Header onClick={this.showNav} />
+          </>
+        ) : (
+          isLoaded && <HeaderUnAuth />
+        )}
 
-        <Header
-          badgeNumber={this.state.totalNotifications}
-          onClick={this.showNav}
-          onLogoClick={this.state.onLogoClick}
-          currentModule={this.state.currentModule}
-          defaultPage={this.props.defaultPage}
-        />
-
-        <Nav
-          opened={this.state.isNavOpened}
-          onMouseEnter={this.handleNavMouseEnter}
-          onMouseLeave={this.handleNavMouseLeave}
-        >
-          <NavLogoItem
-            opened={this.state.isNavOpened}
-            onClick={this.state.onLogoClick}
-          />
-          {this.state.mainModules.map(item => (
-            <NavItem
-              separator={!!item.separator}
-              key={item.id}
-              opened={this.state.isNavOpened}
-              active={item.id == this.state.currentModuleId}
-              iconName={item.iconName}
-              iconUrl={item.iconUrl}
-              badgeNumber={item.notifications}
-              onClick={item.onClick}
-              onBadgeClick={e => {
-                this.toggleAside();
-                item.onBadgeClick(e);
-              }}
-              url={item.url}
-            >
-              {item.title}
-            </NavItem>
-          ))}
-        </Nav>
-
-        {/* {this.state.isAsideAvailable && (
-          <Aside
-            visible={this.state.isAsideVisible}
-            onClick={this.backdropClick}
+        {isNavAvailable && (
+          <Nav
+            opened={isNavOpened}
+            onMouseEnter={this.handleNavMouseEnter}
+            onMouseLeave={this.handleNavMouseLeave}
           >
-            {this.state.asideContent}
+            <NavLogoItem opened={isNavOpened} onClick={this.onLogoClick} />
+            {mainModules.map(item => (
+              <NavItem
+                separator={!!item.separator}
+                key={item.id}
+                opened={isNavOpened}
+                active={item.id == currentProduct.id}
+                iconName={item.iconName}
+                iconUrl={item.iconUrl}
+                badgeNumber={item.notifications}
+                onClick={item.onClick}
+                onBadgeClick={e => {
+                  this.toggleAside();
+                  item.onBadgeClick(e);
+                }}
+                url={item.url}
+              >
+                {item.title}
+              </NavItem>
+            ))}
+          </Nav>
+        )}
+
+        {isAsideAvailable && (
+          <Aside visible={isAsideVisible} onClick={this.backdropClick}>
+            {asideContent}
           </Aside>
-        )} */}
+        )}
       </>
     );
   }
@@ -307,22 +224,22 @@ NavMenu.propTypes = {
   isNavOpened: PropTypes.bool,
   isAsideVisible: PropTypes.bool,
 
-  onLogoClick: PropTypes.func,
   asideContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
 
   currentUser: PropTypes.object,
-  currentUserActions: PropTypes.array,
-  availableModules: PropTypes.array,
-  currentModuleId: PropTypes.string,
-  defaultPage: PropTypes.string,
-  t: PropTypes.func
+  homepage: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
+  isLoaded: PropTypes.bool,
+  isolateModules: PropTypes.array,
+  mainModules: PropTypes.array,
+  currentProduct: PropTypes.object,
+
+  history: PropTypes.object,
+  t: PropTypes.func,
+  logout: PropTypes.func
 };
 
 NavMenu.defaultProps = {
@@ -331,9 +248,7 @@ NavMenu.defaultProps = {
   isNavOpened: false,
   isAsideVisible: false,
 
-  currentUser: null,
-  currentUserActions: [],
-  availableModules: []
+  currentUser: null
 };
 
 const NavMenuTranslationWrapper = withTranslation()(NavMenu);
@@ -345,82 +260,31 @@ const NavMenuWrapper = props => {
     i18n.changeLanguage(language);
   }, [language]);
 
-  return <NavMenuTranslationWrapper i18n={i18n} {...props} />;
+  return (
+    <I18nextProvider i18n={i18n}>
+      <NavMenuTranslationWrapper {...props} />
+    </I18nextProvider>
+  );
 };
 
 NavMenuWrapper.propTypes = {
   language: PropTypes.string.isRequired
 };
 
-const getSeparator = id => {
-  return {
-    separator: true,
-    id: id
-  };
-};
-
-const toModuleWrapper = (item, iconName) => {
-  return {
-    id: item.id,
-    title: item.title,
-    iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
-    iconUrl: item.iconUrl,
-    notifications: 0,
-    url: item.link,
-    onClick: e => {
-      if (e) {
-        window.open(item.link, "_self");
-        e.preventDefault();
-      }
-    },
-    onBadgeClick: e => console.log(iconName + " Badge Clicked", e)
-  };
-};
-
-const getCustomModules = isAdmin => {
-  if (!isAdmin) {
-    return [];
-  } // Temporarily hiding the settings module
-
-  /*  const separator = getSeparator("nav-modules-separator");
-    const settingsModuleWrapper = toModuleWrapper(
-      {
-        id: "settings",
-        title: i18n.t('Settings'),
-        link: "/settings"
-      },
-      "SettingsIcon"
-    );
-  
-    return [separator, settingsModuleWrapper];*/ return [];
-};
-
-const getAvailableModules = (modules, currentUser) => {
-  if (!modules.length) {
-    return [];
-  }
-
-  const isUserAdmin = currentUser.isAdmin;
-  const customModules = getCustomModules(isUserAdmin);
-  const separator = getSeparator("nav-products-separator");
-  const products = modules.map(m => toModuleWrapper(m));
-
-  return [separator, ...products, ...customModules];
-};
-
 function mapStateToProps(state) {
-  const { user, isAuthenticated, isLoaded, modules, settings } = state.auth;
-  const { defaultPage, currentProductId } = settings;
+  const { isAuthenticated, isLoaded, settings } = state.auth;
+  const { defaultPage, homepage } = settings;
 
   return {
-    hasChanges: isAuthenticated && isLoaded,
-    availableModules: getAvailableModules(modules, user),
-    currentUser: user,
-    currentModuleId: currentProductId,
-    settings: settings,
-    modules: modules,
+    isAuthenticated,
+    isLoaded,
+    homepage,
     defaultPage: defaultPage || "/",
-    language: user.cultureName || settings.culture
+    currentUser: getCurrentUser(state),
+    currentProduct: getCurrentProduct(state),
+    isolateModules: getIsolateModules(state),
+    mainModules: getMainModules(state),
+    language: getLanguage(state)
   };
 }
 

@@ -38,6 +38,7 @@
     "react-svg": "^11.0.9",
     "react-viewer": "^3.2.1",
     "react-window-infinite-loader": "^1.0.5",
+    "reselect": "^4.0.0",
     "screenfull": "^5.0.2"
   },
   "devDependencies": {
