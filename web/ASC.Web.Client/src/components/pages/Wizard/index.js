@@ -34,7 +34,7 @@ import {
 } from "../../../store/wizard/actions";
 
 const { tablet } = utils.device;
-const { changeLanguage, createHashPassword } = commonUtils;
+const { changeLanguage, createPasswordHash } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -218,7 +218,7 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) {
-      const { setPortalOwner, wizardToken, passwordHash } = this.props;
+      const { setPortalOwner, wizardToken, hashSettings } = this.props;
 
       const {
         password,
@@ -234,7 +234,7 @@ class Body extends Component {
       const analytics = true;
 
       // console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, analytics, wizardToken);
-      const hash = createHashPassword(password, passwordHash);
+      const hash = createPasswordHash(password, hashSettings);
 
       setPortalOwner(
         emailTrim,
@@ -538,7 +538,7 @@ function mapStateToProps({ wizard, auth }) {
     timezones,
     timezone,
     urlLicense,
-    passwordHash,
+    hashSettings,
   } = auth.settings;
 
   return {
@@ -554,7 +554,7 @@ function mapStateToProps({ wizard, auth }) {
     urlLicense,
     isLicenseRequired,
     licenseUpload,
-    passwordHash,
+    hashSettings,
   };
 }
 

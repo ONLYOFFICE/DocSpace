@@ -1,9 +1,9 @@
 import { request, setAuthorizationToken } from "../client";
 
-export function login(userName, hash) {
+export function login(userName, passwordHash) {
   const data = {
     userName,
-    passwordHash: hash
+    passwordHash
   };
 
   return request({

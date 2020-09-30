@@ -41,8 +41,8 @@ export function changeLanguage(i18n) {
     : i18n.changeLanguage("en");
 }
 
-export function createHashPassword(password, settings) {
-  const { size, iterations, salt } = settings;
+export function createPasswordHash(password, hashSettings) {
+  const { size, iterations, salt } = hashSettings;
 
   let bits = sjcl.misc.pbkdf2(password, salt, iterations);
   bits = bits.slice(0, size / 32);
