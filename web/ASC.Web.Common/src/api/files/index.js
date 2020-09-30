@@ -423,3 +423,25 @@ export function thirdParty(val) {
 export function getSettingsFiles() {
   return request({ method: "get", url: `/files/settings` }); 
 }
+
+export function markAsFavorite(ids) {
+  const data = { fileIds: ids };
+  const options = {
+    method: "post",
+    url: "/files/favorites",
+    data
+  };
+
+  return request(options);
+}
+
+export function removeFromFavorite(ids) {
+  const data = { fileIds: ids };
+  const options = {
+    method: "delete",
+    url: "/files/favorites",
+    data
+  };
+
+  return request(options);
+}
