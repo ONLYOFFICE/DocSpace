@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Progress;
+using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.DiscStorage;
@@ -43,7 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptionOperation : ProgressBase
+    public class EncryptionOperation : DistributedTaskProgress
     {
         private const string ConfigPath = "";
         private bool HasErrors = false;
@@ -61,8 +61,9 @@ namespace ASC.Data.Storage.Encryption
             ServiceProvider = serviceProvider;
         }
 
-        public void Init(EncryptionSettingsProto encryptionSettingsProto)
+        public void Init(EncryptionSettingsProto encryptionSettingsProto, string id)
         {
+            Id = id;
             EncryptionSettings = new EncryptionSettings(encryptionSettingsProto);
             IsEncryption = EncryptionSettings.Status == EncryprtionStatus.EncryptionStarted;
             ServerRootPath = encryptionSettingsProto.ServerRootPath;
@@ -79,7 +80,9 @@ namespace ASC.Data.Storage.Encryption
             UseProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
             Percentage = 10;
-            GetProgress(progressEncryption);
+            PublishProgress(progressEncryption);
+            PublishChanges();
+
             try
             {
                 if (!coreBaseSettings.Standalone)
@@ -92,11 +95,14 @@ namespace ASC.Data.Storage.Encryption
                     log.Debug("Storage already " + EncryptionSettings.Status);
                     return;
                 }
+
                 Percentage = 30;
-                GetProgress(progressEncryption);
+                PublishProgress(progressEncryption);
+                PublishChanges();
+
                 foreach (var tenant in Tenants)
                 {
-                    Dictionary<string, DiscDataStore> dictionary = new Dictionary<string, DiscDataStore>();
+                    var dictionary = new Dictionary<string, DiscDataStore>();
                     foreach (var module in Modules)
                     {
                         dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
@@ -106,22 +112,30 @@ namespace ASC.Data.Storage.Encryption
                         EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                     });
                 }
+
                 Percentage = 70;
-                GetProgress(progressEncryption);
+                PublishProgress(progressEncryption);
+                PublishChanges();
+
                 if (!HasErrors)
                 {
                     DeleteProgressFiles(storageFactory);
                     SaveNewSettings(encryptionSettingsHelper, log);
                 }
+
                 Percentage = 90;
-                GetProgress(progressEncryption);
+                PublishProgress(progressEncryption);
+                PublishChanges();
+
                 ActivateTenants(tenantManager, log, notifyHelper);
+
                 Percentage = 100;
-                GetProgress(progressEncryption);
+                PublishProgress(progressEncryption);
+                PublishChanges();
             }
             catch (Exception e)
             {
-                Error = e;
+                Exception = e;
                 log.Error(e);
             }
         }
@@ -181,12 +195,13 @@ namespace ASC.Data.Storage.Encryption
             return encryptedFiles;
         }
 
-        public void GetProgress(ICacheNotify<ProgressEncryption> progress)
+        public void PublishProgress(ICacheNotify<ProgressEncryption> progress)
         {
             var progressEncryption = new ProgressEncryption()
             {
                 Progress = Percentage
             };
+
             progress.Publish(progressEncryption, CacheNotifyAction.Insert);
         }
 
