@@ -24,12 +24,12 @@ const textStyle = {
 };
 
 const SectionHeaderContent = props => {
-  const { history, settings } = props;
+  const { history, settings, profile } = props;
   const { t } = useTranslation();
 
   const onClickBack = useCallback(() => {
-    history.push(settings.homepage);
-  }, [history, settings]);
+    history.push(`${settings.homepage}/edit/${profile.userName}`);
+  }, [history, settings, profile]);
 
   return (
     <Wrapper>

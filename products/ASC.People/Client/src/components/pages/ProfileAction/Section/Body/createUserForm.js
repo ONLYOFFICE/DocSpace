@@ -6,7 +6,8 @@ import {
   Button,
   Textarea,
   AvatarEditor,
-  Text
+  Text,
+  utils
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
@@ -33,7 +34,9 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { api, toastr } from "asc-web-common";
+import { isMobile } from "react-device-detect";
 const { createThumbnailsAvatar, loadAvatar } = api.people;
+const { isTablet } = utils.device;
 
 class CreateUserForm extends React.Component {
   constructor(props) {
@@ -60,6 +63,7 @@ class CreateUserForm extends React.Component {
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.createAvatar = this.createAvatar.bind(this);
@@ -107,6 +111,10 @@ class CreateUserForm extends React.Component {
     this.setState({
       visibleAvatarEditor: true
     });
+  }
+
+  openAvatarEditorPage() {
+    this.props.history.push(`${this.props.settings.homepage}/edit-avatar/${this.props.profile.userName}`);
   }
 
   onLoadFileAvatar(file) {
@@ -165,6 +173,12 @@ class CreateUserForm extends React.Component {
     if (this.props.match.params.type !== prevProps.match.params.type) {
       this.setState(this.mapPropsToState(this.props));
     }
+
+    const isMobileDevice = isMobile || isTablet()
+
+    if(prevState.isMobile !== isMobileDevice){
+      this.setState({ isMobile: isMobileDevice });
+    }
   }
 
   mapPropsToState = props => {
@@ -200,7 +214,8 @@ class CreateUserForm extends React.Component {
         y: 0,
         width: 0,
         height: 0
-      }
+      },
+      isMobile: isMobile || isTablet
     };
   };
 
@@ -352,7 +367,7 @@ class CreateUserForm extends React.Component {
     this.setState({ errors: { ...this.state.errors, email: !value.isValid } });
 
   render() {
-    const { isLoading, errors, profile, selector } = this.state;
+    const { isLoading, errors, profile, selector, isMobile } = this.state;
     const { t, settings, i18n } = this.props;
     const {
       regDateCaption,
@@ -373,7 +388,7 @@ class CreateUserForm extends React.Component {
               editing={true}
               source={this.state.croppedAvatarImage}
               editLabel={t("AddButton")}
-              editAction={this.openAvatarEditor}
+              editAction={isMobile ? this.openAvatarEditorPage : this.openAvatarEditor}
             />
             <AvatarEditor
               image={this.state.avatar.image}

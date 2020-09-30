@@ -7,7 +7,8 @@ import {
   Textarea,
   Text,
   AvatarEditor,
-  Link
+  Link,
+  utils
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
@@ -43,7 +44,9 @@ import {
   ChangePasswordDialog,
   ChangePhoneDialog
 } from "../../../../dialogs";
+import { isMobile } from "react-device-detect";
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
+const { isTablet } = utils.device;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -83,6 +86,7 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
@@ -99,6 +103,12 @@ class UpdateUserForm extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
       this.setState(this.mapPropsToState(this.props));
+    }
+
+    const isMobileDevice = isMobile || isTablet()
+
+    if(prevState.isMobile !== isMobileDevice){
+      this.setState({ isMobile: isMobileDevice });
     }
   }
 
@@ -152,7 +162,8 @@ class UpdateUserForm extends React.Component {
         [dialogsDataset.changePhone]: false,
         [dialogsDataset.changeEmail]: false,
         currentDialog: ""
-      }
+      },
+      isMobile: isMobile || isTablet
     };
 
     //Set unique contacts id
@@ -305,6 +316,10 @@ class UpdateUserForm extends React.Component {
     });
   }
 
+  openAvatarEditorPage() {
+    this.props.history.push(`${this.props.settings.homepage}/edit-avatar/${this.props.profile.userName}`);
+  }
+
   onLoadFileAvatar(file, callback) {
     this.setState({ isLoading: true });
     let data = new FormData();
@@ -426,7 +441,7 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
+    const { isLoading, errors, profile, selector, dialogsVisible, isMobile } = this.state;
     const { t, i18n, settings } = this.props;
     const {
       guestCaption,
@@ -525,7 +540,7 @@ class UpdateUserForm extends React.Component {
               userName={profile.displayName}
               editing={true}
               editLabel={t("editAvatar")}
-              editAction={this.openAvatarEditor}
+              editAction={isMobile ? this.openAvatarEditorPage : this.openAvatarEditor}
             />
             <AvatarEditor
               image={this.state.avatar.image}
