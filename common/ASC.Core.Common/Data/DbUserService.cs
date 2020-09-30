@@ -572,7 +572,8 @@ namespace ASC.Core.Data
                 Tenant = tenant,
                 UserId = id,
                 PwdHash = h1,
-                PwdHashSha512 = null //todo: remove
+                PwdHashSha512 = null,//todo: remove
+                LastModified = DateTime.UtcNow
             };
 
             UserDbContext.AddOrUpdate(r => r.UserSecurity, us);
