@@ -354,9 +354,20 @@ namespace ASC.Web.Files.Services.DocumentService
         private int TenantId { get; set; }
         private Guid UserId { get; set; }
 
-        public void Enqueue(ReportState state) => DocbuilderReportsUtility.Enqueue(state);
-        public void Terminate(ReportOrigin origin) => DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
-        public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+        public void Enqueue(ReportState state)
+        {
+            DocbuilderReportsUtility.Enqueue(state);
+        }
+
+        public void Terminate(ReportOrigin origin)
+        {
+            DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
+        }
+
+        public ReportState Status(ReportOrigin origin)
+        {
+            return DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+        }
     }
 
     public class ReportStateScope

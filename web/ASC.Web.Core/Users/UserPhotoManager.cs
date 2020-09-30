@@ -429,8 +429,9 @@ namespace ASC.Web.Core.Users
             return GetDefaultPhotoAbsoluteWebPath(size);
         }
 
-        private string GetDefaultPhotoAbsoluteWebPath(Size size) =>
-            size switch
+        private string GetDefaultPhotoAbsoluteWebPath(Size size)
+        {
+            return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultRetinaAvatar),
                 Size(var w, var h) when w == MaxFotoSize.Width && h == MaxFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar),
@@ -439,6 +440,7 @@ namespace ASC.Web.Core.Users
                 Size(var w, var h) when w == MediumFotoSize.Width && h == MediumFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultMediumAvatar),
                 _ => GetDefaultPhotoAbsoluteWebPath()
             };
+        }
 
         private static readonly HashSet<int> TenantDiskCache = new HashSet<int>();
         private static readonly object DiskCacheLoaderLock = new object();
@@ -858,8 +860,9 @@ namespace ASC.Web.Core.Users
             return dataStore ??= StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos");
         }
 
-        public static CacheSize ToCache(Size size) =>
-            size switch
+        public static CacheSize ToCache(Size size)
+        {
+            return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => CacheSize.Retina,
                 Size(var w, var h) when w == MaxFotoSize.Width && h == MaxFotoSize.Height => CacheSize.Max,
@@ -868,6 +871,7 @@ namespace ASC.Web.Core.Users
                 Size(var w, var h) when w == MediumFotoSize.Width && h == MediumFotoSize.Height => CacheSize.Medium,
                 _ => CacheSize.Original
             };
+        }
     }
 
     #region Exception Classes
@@ -992,8 +996,10 @@ namespace ASC.Web.Core.Users
 
     public static class SizeExtend
     {
-        public static void Deconstruct(this Size size, out int w, out int h) =>
+        public static void Deconstruct(this Size size, out int w, out int h)
+        {
             (w, h) = (size.Width, size.Height);
+        }
     }
 
     public static class ResizeWorkerItemExtension

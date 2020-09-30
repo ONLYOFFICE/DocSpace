@@ -14,33 +14,35 @@ namespace ASC.Web.Studio
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(w =>
                 {
-                    _ = w.UseStartup<Startup>();
+                _ = w.UseStartup<Startup>();
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    var buided = config.Build();
-                    var path = buided["pathToConf"];
-                    if (!Path.IsPathRooted(path))
-                    {
-                        path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
-                    }
-                    _ = config.SetBasePath(path);
-                    _ = config
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                        {
-                            {"pathToConf", path}
-                        })
-                        .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args);
+                var buided = config.Build();
+                var path = buided["pathToConf"];
+                if (!Path.IsPathRooted(path))
+                {
+                path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
+                }
+                _ = config.SetBasePath(path);
+                _ = config
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                                            {"pathToConf", path}
+                })
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                .AddJsonFile("storage.json")
+                .AddJsonFile("kafka.json")
+                .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(args);
                 });
+        }
     }
 }

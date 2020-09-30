@@ -359,7 +359,10 @@ namespace ASC.Api.Core
             TimeZoneConverter = timeZoneConverter;
         }
 
-        public ApiDateTime Get(DateTime? from) => ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
+        public ApiDateTime Get(DateTime? from)
+        {
+            return ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
+        }
     }
 
     public static class ApiDateTimeHelperExtension

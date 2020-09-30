@@ -101,7 +101,9 @@ namespace ASC.Core.Notify
         }
 
         public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
-             => (userManager, tenantManager) = (UserManager, TenantManager);
+        {
+            (userManager, tenantManager) = (UserManager, TenantManager);
+        }
     }
 
     public static class JabberSenderSinkExtension

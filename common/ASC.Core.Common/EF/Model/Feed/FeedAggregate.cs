@@ -29,6 +29,9 @@ namespace ASC.Core.Common.EF.Model
         public string Json { get; set; }
         public string Keywords { get; set; }
 
-        public override object[] GetKeys() => new object[] { Id };
+        public override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     }
 }

@@ -36,6 +36,9 @@ namespace ASC.Files.Core.EF
         [Column("tenant_id")]
         public int TenantId { get; set; }
 
-        public override object[] GetKeys() => new object[] { Id };
+        public override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     };
 }

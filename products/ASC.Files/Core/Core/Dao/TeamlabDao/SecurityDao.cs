@@ -340,15 +340,18 @@ namespace ASC.Files.Core.Data
                 .ToList();
         }
 
-        private FileShareRecord ToFileShareRecord(DbFilesSecurity r) => new FileShareRecord
+        private FileShareRecord ToFileShareRecord(DbFilesSecurity r)
         {
-            Tenant = r.TenantId,
-            EntryId = MappingID(r.EntryId),
-            EntryType = r.EntryType,
-            Subject = r.Subject,
-            Owner = r.Owner,
-            Share = r.Security
-        };
+            return new FileShareRecord
+            {
+                Tenant = r.TenantId,
+                EntryId = MappingID(r.EntryId),
+                EntryType = r.EntryType,
+                Subject = r.Subject,
+                Owner = r.Owner,
+                Share = r.Security
+            };
+        }
 
         private FileShareRecord ToFileShareRecord(SecurityTreeRecord r)
         {

@@ -818,8 +818,10 @@ namespace ASC.Web.Files.Utils
             return newFile;
         }
 
-        private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
-
+        private FileConverterQueue<T> GetFileConverter<T>()
+        {
+            return ServiceProvider.GetService<FileConverterQueue<T>>();
+        }
     }
 
     internal class FileComparer<T> : IEqualityComparer<File<T>>

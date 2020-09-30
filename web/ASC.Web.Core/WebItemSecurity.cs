@@ -72,7 +72,11 @@ namespace ASC.Web.Core
             CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, CacheNotifyAction.Any);
         }
 
-        public Dictionary<string, bool> Get(int tenantId) => Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
+        public Dictionary<string, bool> Get(int tenantId)
+        {
+            return Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
+        }
+
         public Dictionary<string, bool> GetOrInsert(int tenantId)
         {
 

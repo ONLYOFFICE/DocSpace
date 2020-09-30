@@ -14,6 +14,9 @@ namespace ASC.Core.Common.EF.Model
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
 
-        public override object[] GetKeys() => new[] { IndexName };
+        public override object[] GetKeys()
+        {
+            return new[] { IndexName };
+        }
     }
 }

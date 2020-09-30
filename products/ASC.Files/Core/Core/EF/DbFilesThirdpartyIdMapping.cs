@@ -16,7 +16,10 @@ namespace ASC.Files.Core.EF
         public string HashId { get; set; }
         public string Id { get; set; }
 
-        public override object[] GetKeys() => new object[] { Id };
+        public override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     }
 
     public static class DbDbFilesThirdpartyIdMapping

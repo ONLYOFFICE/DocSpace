@@ -76,7 +76,11 @@ namespace ASC.Data.Storage.Configuration
 
         public Dictionary<string, string> Props { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider) => new T();
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return new T();
+        }
+
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
         internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }

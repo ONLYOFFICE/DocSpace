@@ -242,7 +242,9 @@ namespace ASC.Core.Notify.Senders
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-            => (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+        {
+            (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+        }
     }
 
     public static class AWSSenderExtension

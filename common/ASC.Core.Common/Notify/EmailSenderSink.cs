@@ -181,7 +181,9 @@ namespace ASC.Core.Notify
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
-            => (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+        {
+            (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+        }
     }
 
     public static class EmailSenderSinkExtension

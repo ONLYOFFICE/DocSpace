@@ -621,11 +621,30 @@ namespace ASC.Web.Files.Classes
         public int FolderFavorites => GlobalFolder.GetFolderFavorites(DaoFactory);
         public int FolderTemplates => GlobalFolder.GetFolderTemplates(DaoFactory);
 
-        public T GetFolderMy<T>() => (T)Convert.ChangeType(FolderMy, typeof(T));
-        public T GetFolderCommon<T>() => (T)Convert.ChangeType(FolderCommon, typeof(T));
-        public T GetFolderProjects<T>() => (T)Convert.ChangeType(FolderProjects, typeof(T));
-        public T GetFolderTrash<T>() => (T)Convert.ChangeType(FolderTrash, typeof(T));
-        public T GetFolderPrivacy<T>() => (T)Convert.ChangeType(FolderPrivacy, typeof(T));
+        public T GetFolderMy<T>()
+        {
+            return (T)Convert.ChangeType(FolderMy, typeof(T));
+        }
+
+        public T GetFolderCommon<T>()
+        {
+            return (T)Convert.ChangeType(FolderCommon, typeof(T));
+        }
+
+        public T GetFolderProjects<T>()
+        {
+            return (T)Convert.ChangeType(FolderProjects, typeof(T));
+        }
+
+        public T GetFolderTrash<T>()
+        {
+            return (T)Convert.ChangeType(FolderTrash, typeof(T));
+        }
+
+        public T GetFolderPrivacy<T>()
+        {
+            return (T)Convert.ChangeType(FolderPrivacy, typeof(T));
+        }
 
         public void SetFolderMy<T>(T val)
         {

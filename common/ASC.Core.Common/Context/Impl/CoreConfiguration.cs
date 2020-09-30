@@ -311,9 +311,15 @@ namespace ASC.Core
 
         #region Methods Get/Save Setting
 
-        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.SaveSetting(key, value, tenant);
+        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
+        {
+            CoreSettings.SaveSetting(key, value, tenant);
+        }
 
-        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.GetSetting(key, tenant);
+        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT)
+        {
+            return CoreSettings.GetSetting(key, tenant);
+        }
 
         #endregion
 

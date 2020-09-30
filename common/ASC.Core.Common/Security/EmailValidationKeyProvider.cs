@@ -257,7 +257,9 @@ namespace ASC.Security.Cryptography
         }
 
         public void Deconstruct(out string key, out string email, out EmployeeType? employeeType, out Guid? userId, out ConfirmType? confirmType, out int? p)
-            => (key, email, employeeType, userId, confirmType, p) = (Key, Email, EmplType, UiD, Type, P);
+        {
+            (key, email, employeeType, userId, confirmType, p) = (Key, Email, EmplType, UiD, Type, P);
+        }
     }
 
     public static class EmailValidationKeyProviderExtension

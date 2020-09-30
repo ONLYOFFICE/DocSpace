@@ -27,7 +27,10 @@ namespace ASC.Data.Storage.Encryption
             return Cache.Get<ProgressEncryption>(GetCacheKey(tenantId));
         }
 
-        private string GetCacheKey(int tenantId) => $"encryption{tenantId}";
+        private string GetCacheKey(int tenantId)
+        {
+            return $"encryption{tenantId}";
+        }
     }
 
     public static class EncryptionServiceNotifierExtension

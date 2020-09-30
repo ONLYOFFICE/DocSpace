@@ -23,7 +23,10 @@ namespace ASC.Files.Core.EF
         [Column("modified_on")]
         public DateTime ModifiedOn { get; set; }
 
-        public override object[] GetKeys() => new object[] { UserId, App };
+        public override object[] GetKeys()
+        {
+            return new object[] { UserId, App };
+        }
     }
 
     public static class DbFilesThirdpartyAppExtension
