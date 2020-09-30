@@ -163,6 +163,7 @@ namespace ASC.Api.Settings
         private BackupServiceNotifier BackupServiceNotifier { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
         private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
+        private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
 
@@ -225,7 +226,8 @@ namespace ASC.Api.Settings
             EncryptionSettingsHelper encryptionSettingsHelper,
             BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-            EncryptionServiceNotifier encryptionServiceNotifier)
+            EncryptionServiceNotifier encryptionServiceNotifier,
+            PasswordHasher passwordHasher)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -283,6 +285,7 @@ namespace ASC.Api.Settings
             BackupServiceNotifier = backupServiceNotifier;
             CacheDeleteSchedule = cacheDeleteSchedule;
             EncryptionServiceNotifier = encryptionServiceNotifier;
+            PasswordHasher = passwordHasher;
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
@@ -326,6 +329,8 @@ namespace ASC.Api.Settings
                 settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
+
+                settings.PasswordHash = PasswordHasher;
             }
 
             return settings;
@@ -2455,7 +2460,8 @@ namespace ASC.Api.Settings
                 .AddBackupService()
                 .AddEncryptionServiceNotifierService()
                 .AddTelegramLoginProviderService()
-                .AddTelegramHelperSerivce();
+                .AddTelegramHelperSerivce()
+                .AddPasswordHasherService();
         }
     }
 }
