@@ -67,7 +67,6 @@ namespace ASC.Core.Data
     public class EFUserService : IUserService
     {
         public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
-        public Expression<Func<DbUserSecurity, UserInfo>> FromDbUserSecurityToUserInfo { get; set; }
         public Func<UserInfo, User> FromUserInfoToUser { get; set; }
         public Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
         public Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
@@ -110,9 +109,6 @@ namespace ASC.Core.Data
                 WorkFromDate = user.WorkFromDate,
                 Contacts = user.Contacts
             };
-
-            var fromUserToUserInfo = FromUserToUserInfo.Compile();
-            FromDbUserSecurityToUserInfo = r => fromUserToUserInfo(r.User);
 
             FromUserInfoToUser = user => new User
             {
@@ -246,7 +242,7 @@ namespace ASC.Core.Data
                     q = q.Where(r => r.User.Tenant == tenant);
                 }
 
-                return q.Select(FromDbUserSecurityToUserInfo).FirstOrDefault();
+                return q.Select(r => r.User).Select(FromUserToUserInfo).FirstOrDefault();
             }
             else
             {
