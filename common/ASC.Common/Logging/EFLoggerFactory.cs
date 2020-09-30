@@ -99,7 +99,8 @@ namespace ASC.Common.Logging
                             new KeyValuePair<string, object>("sqlParams", parameters ?? "")
                         );
                     }
-                    string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
+
+                    static string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
                     {
                         return keyValuePair.Key == key ? keyValuePair.Value.ToString() : currentVal;
                     }
