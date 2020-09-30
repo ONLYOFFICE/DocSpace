@@ -19,10 +19,14 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-import { login, setIsLoaded } from "../../store/auth/actions";
+import {
+  login,
+  setIsLoaded,
+  reloadPortalSettings
+} from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
-import { createHashPassword } from "../../utils";
+import { createPasswordHash } from "../../utils";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -198,7 +202,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history, passwordHash } = this.props;
+    const { login, setIsLoaded, history, hashSettings } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -221,7 +225,7 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
 
-    const hash = createHashPassword(pass, passwordHash);
+    const hash = createPasswordHash(pass, hashSettings);
 
     login(userName, hash)
       .then(() => {
@@ -233,8 +237,8 @@ class Form extends Component {
       });
   };
 
-  async componentDidMount() {
-    const { match, t } = this.props;
+  componentDidMount() {
+    const { match, t, hashSettings, reloadPortalSettings } = this.props;
     const { error, confirmedEmail } = match.params;
 
     document.title = `${t("Authorization")} – ${t("OrganizationName")}`;
@@ -242,6 +246,10 @@ class Form extends Component {
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
+
+    if (!hashSettings) {
+      reloadPortalSettings();
+    }
   }
 
   componentWillUnmount() {
@@ -466,11 +474,12 @@ function mapStateToProps(state) {
     language: state.auth.user.cultureName || state.auth.settings.culture,
     greetingTitle: state.auth.settings.greetingSettings,
     enabledJoin: state.auth.settings.enabledJoin,
-    passwordHash: state.auth.settings.passwordHash
+    hashSettings: state.auth.settings.hashSettings
   };
 }
 
 export default connect(mapStateToProps, {
   login,
-  setIsLoaded
+  setIsLoaded,
+  reloadPortalSettings
 })(withRouter(LoginForm));

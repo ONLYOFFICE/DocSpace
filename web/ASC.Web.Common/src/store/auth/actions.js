@@ -189,3 +189,7 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
     dispatch(setPasswordSettings(settings));
   });
 }
+
+export const reloadPortalSettings = () => {
+  return dispatch => getPortalSettings(dispatch);
+};
