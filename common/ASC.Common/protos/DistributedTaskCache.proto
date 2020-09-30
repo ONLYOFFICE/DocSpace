@@ -9,6 +9,9 @@ message DistributedTaskCache {
 	string Exception = 4;
 	repeated DistributedTaskCacheProp Props = 5;
 	string Key = 6;
+	double Percentage = 7;
+	bool IsCompleted = 8;
+	int32 StepCount = 9;
 
 	message DistributedTaskCacheProp
 	{

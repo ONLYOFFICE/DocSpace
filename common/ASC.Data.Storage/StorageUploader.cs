@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
@@ -84,9 +85,12 @@ namespace ASC.Data.Storage
             }
         }
 
-        public void Stop(int tenantId)
+        public void Stop()
         {
-            Queue.CancelTask(GetCacheKey(tenantId));
+            foreach (var task in Queue.GetTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
+            {
+                Queue.CancelTask(task.Id);
+            }
         }
 
         private static string GetCacheKey(int tenantId)
@@ -155,7 +159,7 @@ namespace ASC.Data.Storage
                     var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility (options, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)
@@ -203,10 +207,10 @@ namespace ASC.Data.Storage
             MigrationPublish();
         }
 
-		public object Clone()
+        public object Clone()
         {
             return MemberwiseClone();
-		}
+        }
 
         private void MigrationPublish()
         {
@@ -218,6 +222,14 @@ namespace ASC.Data.Storage
                 IsCompleted = IsCompleted
             },
             CacheNotifyAction.Insert);
+        }
+
+        protected void StepDone()
+        {
+            if (StepCount > 0)
+            {
+                Percentage += 100.0 / StepCount;
+            }
         }
     }
 
@@ -232,8 +244,8 @@ namespace ASC.Data.Storage
 
         public MigrateOperationScope(TenantManager tenantManager,
             SecurityContext securityContext,
-            StorageFactory storageFactory, 
-            IOptionsMonitor<ILog> options, 
+            StorageFactory storageFactory,
+            IOptionsMonitor<ILog> options,
             StorageSettingsHelper storageSettingsHelper,
             SettingsManager settingsManager)
         {
@@ -247,10 +259,10 @@ namespace ASC.Data.Storage
 
         public void Deconstruct(out TenantManager tenantManager,
             out SecurityContext securityContext,
-            out StorageFactory storageFactory, 
+            out StorageFactory storageFactory,
             out IOptionsMonitor<ILog> options,
             out StorageSettingsHelper storageSettingsHelper,
-            out SettingsManager settingsManager )
+            out SettingsManager settingsManager)
         {
             tenantManager = TenantManager;
             securityContext = SecurityContext;

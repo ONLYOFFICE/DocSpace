@@ -1,10 +1,6 @@
 ﻿
-using System;
-
 using ASC.Api.Core;
 using ASC.Common;
-using ASC.Common.Threading.Workers;
-using ASC.Data.Reassigns;
 using ASC.Employee.Core.Controllers;
 
 using Microsoft.Extensions.Configuration;
@@ -25,9 +21,6 @@ namespace ASC.People
         public override void ConfigureServices(IServiceCollection services)
         {
             var diHelper = new DIHelper(services);
-
-            diHelper.AddProgressQueue<RemoveProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
-            diHelper.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
 
             diHelper
                 .AddPeopleController()

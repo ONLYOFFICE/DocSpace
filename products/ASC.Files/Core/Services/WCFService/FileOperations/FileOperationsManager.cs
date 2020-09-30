@@ -47,7 +47,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public FileOperationsManager(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
-            tasks = distributedTaskQueueOptionsManager.Get("fileOperations");
+            tasks = distributedTaskQueueOptionsManager.Get(nameof(FileOperationsManager));
             ServiceProvider = serviceProvider;
         }
 
@@ -239,7 +239,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 services.TryAddSingleton<FileOperationsManager>();
                 services.TryAddSingleton<DistributedTaskCacheNotify>();
-                services.AddDistributedTaskQueueService("fileOperations", 10);
+                services.AddDistributedTaskQueueService<FileOperationsManager>(10);
                 services.TryAddScoped<FileDeleteOperationScope>();
                 services.TryAddScoped<FileMarkAsReadOperationScope>();
                 services.TryAddScoped<FileMoveCopyOperationScope>();

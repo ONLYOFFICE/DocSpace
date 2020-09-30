@@ -49,7 +49,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
-    public class ReassignProgressItem : DistributedTask, IProgressItem
+    public class ReassignProgressItem : DistributedTaskProgress
     {
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
@@ -60,9 +60,6 @@ namespace ASC.Data.Reassigns
         //private readonly IFileStorageService _docService;
         //private readonly ProjectsReassign _projectsReassign;
 
-        public object Error { get; set; }
-        public double Percentage { get; set; }
-        public bool IsCompleted { get; set; }
         public Guid FromUser { get; private set; }
         public Guid ToUser { get; private set; }
         private IServiceProvider ServiceProvider { get; }
@@ -79,11 +76,6 @@ namespace ASC.Data.Reassigns
 
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_projectsReassign = new ProjectsReassign();
-
-            Status = DistributedTaskStatus.Created;
-            Error = null;
-            Percentage = 0;
-            IsCompleted = false;
         }
 
         public void Init(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
@@ -99,12 +91,12 @@ namespace ASC.Data.Reassigns
 
             Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId, typeof(ReassignProgressItem));
             Status = DistributedTaskStatus.Created;
-            Error = null;
+            Exception = null;
             Percentage = 0;
             IsCompleted = false;
         }
 
-        public void RunJob()
+        protected override void DoJob()
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
@@ -123,19 +115,21 @@ namespace ASC.Data.Reassigns
 
                 logger.Info("reassignment of data from documents");
 
-                Percentage = 33;
+
                 //_docService.ReassignStorage(_fromUserId, _toUserId);
+                Percentage = 33;
+                PublishChanges();
 
                 logger.Info("reassignment of data from projects");
 
-                Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
+                Percentage = 66;
+                PublishChanges();
 
                 if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 
-                    Percentage = 99;
                     //using (var scope = DIHelper.Resolve(_tenantId))
                     //{
                     //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
@@ -144,6 +138,8 @@ namespace ASC.Data.Reassigns
                     //    crmDaoFactory.TaskDao.ReassignTasksResponsible(_fromUserId, _toUserId);
                     //    crmDaoFactory.CasesDao.ReassignCasesResponsible(_fromUserId, _toUserId);
                     //}
+                    Percentage = 99;
+                    PublishChanges();
                 }
 
                 SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
@@ -160,7 +156,7 @@ namespace ASC.Data.Reassigns
             {
                 logger.Error(ex);
                 Status = DistributedTaskStatus.Failted;
-                Error = ex.Message;
+                Exception = ex;
                 SendErrorNotify(userManager, studioNotifyService, ex.Message);
             }
             finally
@@ -168,6 +164,7 @@ namespace ASC.Data.Reassigns
                 logger.Info("data reassignment is complete");
                 IsCompleted = true;
             }
+            PublishChanges();
         }
 
         public object Clone()
@@ -251,16 +248,16 @@ namespace ASC.Data.Reassigns
             Options = options;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, 
+        public void Deconstruct(out TenantManager tenantManager,
             out CoreBaseSettings coreBaseSettings,
             out MessageService messageService,
             out StudioNotifyService studioNotifyService,
             out SecurityContext securityContext,
-            out UserManager userManager, 
+            out UserManager userManager,
             out UserPhotoManager userPhotoManager,
-            out DisplayUserSettingsHelper displayUserSettingsHelper, 
-            out MessageTarget messageTarget, 
-            out IOptionsMonitor<ILog> optionsMonitor )
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out MessageTarget messageTarget,
+            out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             coreBaseSettings = CoreBaseSettings;
@@ -279,10 +276,7 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddReassignProgressItemService(this DIHelper services)
         {
-            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.TryAddScoped<ReassignProgressItemScope>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            services.TryAddScoped<ReassignProgressItem>();
             return services;
         }
     }

@@ -60,7 +60,7 @@ namespace ASC.Web.Files.Utils
         {
             ServiceProvider = serviceProvider;
             Log = optionsMonitor.CurrentValue;
-            Tasks = distributedTaskQueueOptionsManager.Get("FileMarkerHelper");
+            Tasks = distributedTaskQueueOptionsManager.Get(nameof(FileMarker));
         }
 
         internal void Add(AsyncTaskData<T> taskData)
@@ -745,7 +745,7 @@ namespace ASC.Web.Files.Utils
             if (services.TryAddScoped<FileMarker>())
             {
                 return services
-                    .AddDistributedTaskQueueService("FileMarkerHelper", 1)
+                    .AddDistributedTaskQueueService<FileMarker>(1)
                     .AddTenantManagerService()
                     .AddUserManagerService()
                     .AddDaoFactoryService()

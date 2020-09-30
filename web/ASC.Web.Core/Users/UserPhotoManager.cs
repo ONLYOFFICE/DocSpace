@@ -219,7 +219,7 @@ namespace ASC.Web.Core.Users
             SettingsManager settingsManager,
             IServiceProvider serviceProvider)
         {
-            ResizeQueue = optionsQueue.Get("ResizeWorker");
+            ResizeQueue = optionsQueue.Get(nameof(ResizeWorkerItem));
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             TenantManager = tenantManager;
@@ -1012,7 +1012,7 @@ namespace ASC.Web.Core.Users
                     .AddWebImageSupplierService()
                     .AddUserManagerService()
                     .AddTenantManagerService()
-                    .AddDistributedTaskQueueService("ResizeWorker", 2);
+                    .AddDistributedTaskQueueService<ResizeWorkerItem>(2);
             }
 
             return services;

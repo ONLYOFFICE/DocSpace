@@ -72,13 +72,13 @@ namespace ASC.Common.Threading
             }
         }
 
-        public AggregateException Exception
+        public Exception Exception
         {
             get
             {
-                return new AggregateException(DistributedTaskCache.Exception);
+                return new Exception(DistributedTaskCache.Exception);
             }
-            internal set
+            set
             {
                 DistributedTaskCache.Exception = value?.ToString() ?? "";
             }

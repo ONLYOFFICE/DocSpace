@@ -74,7 +74,7 @@ namespace ASC.Data.Backup.Service
             FactoryProgressItem factoryProgressItem)
         {
             Log = options.CurrentValue;
-            ProgressQueue = progressQueue.Get("backup");
+            ProgressQueue = progressQueue.Get(nameof(BackupProgressItem));
             CacheBackupProgress = cacheBackupProgress;
             FactoryProgressItem = factoryProgressItem;
         }
@@ -914,9 +914,6 @@ namespace ASC.Data.Backup.Service
             services.TryAddTransient<TransferProgressItem>();
             services.TryAddTransient<RestoreProgressItem>();
             services.TryAddScoped<BackupWorkerScope>();
-            services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
 
             return services
                 .AddTenantManagerService()
@@ -928,7 +925,7 @@ namespace ASC.Data.Backup.Service
                 .AddBackupPortalTaskService()
                 .AddDbFactoryService()
                 .AddRestorePortalTaskService()
-                .AddDistributedTaskQueueService("backup", 5)
+                .AddDistributedTaskQueueService<BackupProgressItem>(5)
                 .AddTransferPortalTaskService();
         }
     }

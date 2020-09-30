@@ -300,15 +300,15 @@ namespace ASC.Common.Threading
 
     public static class DistributedTaskQueueExtention
     {
-        public static DIHelper AddDistributedTaskQueueService(this DIHelper services, string name, int maxThreadsCount)
+        public static DIHelper AddDistributedTaskQueueService<T>(this DIHelper services, int maxThreadsCount)
         {
             services.TryAddSingleton<DistributedTaskCacheNotify>();
             services
                 .TryAddSingleton<DistributedTaskQueueOptionsManager>()
-                .TryAddSingleton<DistributedTaskQueue>()
+                .TryAddSingleton<DistributedTaskQueue>() //check
                 .AddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
 
-            _ = services.Configure<DistributedTaskQueue>(name, r =>
+            _ = services.Configure<DistributedTaskQueue>(typeof(T).Name, r =>
             {
                 r.MaxThreadsCount = maxThreadsCount;
                 //r.errorCount = 1;

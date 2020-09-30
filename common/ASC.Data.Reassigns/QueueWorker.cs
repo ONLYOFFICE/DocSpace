@@ -45,7 +45,7 @@ namespace ASC.Data.Reassigns
             return httpRequest?.Headers;
         }
     }
-    public class QueueWorker<T> where T : DistributedTask, IProgressItem
+    public class QueueWorker<T> where T : DistributedTaskProgress
     {
         protected readonly DistributedTaskQueue Queue;
 
@@ -61,7 +61,7 @@ namespace ASC.Data.Reassigns
         {
             HttpContextAccessor = httpContextAccessor;
             ServiceProvider = serviceProvider;
-            Queue = options.Get(nameof(T));
+            Queue = options.Get(typeof(T).Name);
         }
 
         public static string GetProgressItemId(int tenantId, Guid userId, Type type)
@@ -85,7 +85,7 @@ namespace ASC.Data.Reassigns
             }
         }
 
-        protected IProgressItem Start(int tenantId, Guid userId, Func<T> constructor)
+        protected DistributedTaskProgress Start(int tenantId, Guid userId, Func<T> constructor)
         {
             lock (SynchRoot)
             {
@@ -110,15 +110,12 @@ namespace ASC.Data.Reassigns
 
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
-        private QueueWorkerRemove QueueWorkerRemove { get; }
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            QueueWorkerRemove queueWorkerRemove,
             DistributedTaskQueueOptionsManager options) :
             base(httpContextAccessor, serviceProvider, options)
         {
-            QueueWorkerRemove = queueWorkerRemove;
         }
 
         public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
@@ -161,7 +158,7 @@ namespace ASC.Data.Reassigns
             {
                 return services
                     .AddRemoveProgressItemService()
-                    .AddDistributedTaskQueueService(nameof(RemoveProgressItem), 1);
+                    .AddDistributedTaskQueueService<RemoveProgressItem>(1);
             }
 
             return services;
@@ -174,7 +171,7 @@ namespace ASC.Data.Reassigns
                 return services
                     .AddReassignProgressItemService()
                     .AddQueueWorkerRemoveService()
-                    .AddDistributedTaskQueueService(nameof(ReassignProgressItem), 1);
+                    .AddDistributedTaskQueueService<ReassignProgressItem>(1);
             }
 
             return services;

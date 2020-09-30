@@ -51,7 +51,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
-    public class RemoveProgressItem : DistributedTask, IProgressItem
+    public class RemoveProgressItem : DistributedTaskProgress
     {
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
@@ -61,13 +61,9 @@ namespace ASC.Data.Reassigns
 
         //private readonly IFileStorageService _docService;
         //private readonly MailGarbageEngine _mailEraser;
-
-        public object Error { get; set; }
-        public double Percentage { get; set; }
-        public bool IsCompleted { get; set; }
-        public Guid FromUser { get; }
+        public Guid FromUser { get; private set; }
         private IServiceProvider ServiceProvider { get; }
-        public UserInfo User { get; }
+        public UserInfo User { get; private set; }
 
         public RemoveProgressItem(
             IServiceProvider serviceProvider,
@@ -79,12 +75,6 @@ namespace ASC.Data.Reassigns
 
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_mailEraser = new MailGarbageEngine();
-
-
-            Status = DistributedTaskStatus.Created;
-            Error = null;
-            Percentage = 0;
-            IsCompleted = false;
         }
 
         public void Init(int tenantId, UserInfo user, Guid currentUserId, bool notify)
@@ -94,12 +84,17 @@ namespace ASC.Data.Reassigns
             FromUser = user.ID;
             _currentUserId = currentUserId;
             _notify = notify;
+
             Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser, typeof(RemoveProgressItem));
+            Status = DistributedTaskStatus.Created;
+            Exception = null;
+            Percentage = 0;
+            IsCompleted = false;
         }
 
-        public void RunJob()
+        protected override void DoJob()
         {
-            using var scope = ServiceProvider.CreateScope();   
+            using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
@@ -120,35 +115,40 @@ namespace ASC.Data.Reassigns
 
                 logger.Info("deleting of data from documents");
 
-                Percentage = 25;
                 //_docService.DeleteStorage(_userId);
+                Percentage = 25;
+                PublishChanges();
 
                 if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("deleting of data from crm");
 
-                    Percentage = 50;
+
                     //using (var scope = DIHelper.Resolve(_tenantId))
                     //{
                     //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
                     crmSpace = 0;// crmDaoFactory.ReportDao.GetFiles(_userId).Sum(file => file.ContentLength);
-                    //    crmDaoFactory.ReportDao.DeleteFiles(_userId);
-                    //}
+                                 //    crmDaoFactory.ReportDao.DeleteFiles(_userId);
+                                 //}
+                    Percentage = 50;
                 }
                 else
                 {
                     crmSpace = 0;
                 }
 
+                PublishChanges();
+
                 logger.Info("deleting of data from mail");
 
-                Percentage = 75;
                 //_mailEraser.ClearUserMail(_userId);
+                Percentage = 75;
+                PublishChanges();
 
                 logger.Info("deleting of data from talk");
-
-                Percentage = 99;
                 DeleteTalkStorage(storageFactory);
+                Percentage = 99;
+                PublishChanges();
 
                 SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
 
@@ -159,13 +159,14 @@ namespace ASC.Data.Reassigns
             {
                 logger.Error(ex);
                 Status = DistributedTaskStatus.Failted;
-                Error = ex.Message;
+                Exception = ex;
                 SendErrorNotify(studioNotifyService, ex.Message, userName);
             }
             finally
             {
                 logger.Info("data deletion is complete");
                 IsCompleted = true;
+                PublishChanges();
             }
         }
 
@@ -290,15 +291,15 @@ namespace ASC.Data.Reassigns
 
         public void Deconstruct(out TenantManager tenantManager,
             out CoreBaseSettings coreBaseSettings,
-            out MessageService messageService, 
-            out StudioNotifyService studioNotifyService, 
-            out SecurityContext securityContext, 
-            out UserManager userManager, 
-            out MessageTarget messageTarget, 
+            out MessageService messageService,
+            out StudioNotifyService studioNotifyService,
+            out SecurityContext securityContext,
+            out UserManager userManager,
+            out MessageTarget messageTarget,
             out WebItemManagerSecurity webItemManagerSecurity,
-            out StorageFactory storageFactory, 
+            out StorageFactory storageFactory,
             out UserFormatter userFormatter,
-            out IOptionsMonitor<ILog>  optionsMonitor )
+            out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             coreBaseSettings = CoreBaseSettings;
