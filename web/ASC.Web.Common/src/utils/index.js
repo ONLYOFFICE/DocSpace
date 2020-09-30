@@ -1,4 +1,5 @@
-import { LANGUAGE } from '../constants';
+import { LANGUAGE } from "../constants";
+import sjcl from "sjcl";
 
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -13,7 +14,7 @@ export const toUrlParams = (obj, skipNull) => {
   }
 
   return str;
-}
+};
 
 export function getObjectByLocation(location) {
   if (!location.search || !location.search.length) return null;
@@ -33,9 +34,19 @@ export function getObjectByLocation(location) {
 
 export function changeLanguage(i18n) {
   const currentLng = localStorage.getItem(LANGUAGE);
-  return currentLng 
-  ? (i18n.language !== currentLng 
-    ? i18n.changeLanguage(currentLng)
-    : Promise.resolve((...args) => i18n.t(...args)))
-  : i18n.changeLanguage('en');
+  return currentLng
+    ? i18n.language !== currentLng
+      ? i18n.changeLanguage(currentLng)
+      : Promise.resolve((...args) => i18n.t(...args))
+    : i18n.changeLanguage("en");
+}
+
+export function createHashPassword(password, settings) {
+  const { size, iterations, salt } = settings;
+
+  let bits = sjcl.misc.pbkdf2(password, salt, iterations);
+  bits = bits.slice(0, size / 32);
+  const hash = sjcl.codec.hex.fromBits(bits);
+
+  return hash;
 }
