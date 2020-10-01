@@ -110,24 +110,29 @@ const ArticleMainButtonContentContainer = withTranslation()(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = (props) => {
+const ArticleMainButtonContent = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
+
   return (
     <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...props} />
+      <ArticleMainButtonContentContainer {...rest} />
     </I18nextProvider>
   );
 };
 
 ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
+  language: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {
+  const { culture } = state.auth.settings;
+  const { cultureName } = state.auth.user;
   return {
     settings: state.auth.settings,
+    language: cultureName || culture || "en-US",
   };
 };
 

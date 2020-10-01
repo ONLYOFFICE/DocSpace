@@ -98,14 +98,14 @@ class PureProfile extends React.Component {
 
 const ProfileContainer = withTranslation()(withRouter(PureProfile));
 
-const Profile = (props) => {
+const Profile = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ProfileContainer {...props} />
+      <ProfileContainer {...rest} />
     </I18nextProvider>
   );
 };
@@ -117,9 +117,12 @@ Profile.propTypes = {
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   isAdmin: PropTypes.bool,
+  language: PropTypes.string,
 };
 
 function mapStateToProps(state) {
+  const { cultureName } = state.auth.user;
+  const { culture } = state.auth.settings;
   const { user, isLoaded } = state.auth;
   const { targetUser } = state.profile;
   return {
@@ -127,6 +130,7 @@ function mapStateToProps(state) {
     isVisitor: user.isVisitor,
     isAdmin: isAdmin(user),
     isLoaded,
+    language: cultureName || culture || "en-US",
   };
 }
 

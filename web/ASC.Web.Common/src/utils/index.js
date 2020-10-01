@@ -31,8 +31,7 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(i18n) {
-  const currentLng = localStorage.getItem(LANGUAGE);
+export function changeLanguage(i18n, currentLng = localStorage.getItem(LANGUAGE)) {
   return currentLng
     ? i18n.language !== currentLng
       ? i18n.changeLanguage(currentLng)
