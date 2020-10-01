@@ -10,7 +10,7 @@ import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
   page: "Article",
-  localesPath: "Article"
+  localesPath: "Article",
 });
 
 const { changeLanguage } = utils;
@@ -19,11 +19,11 @@ class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogVisible: false
+      dialogVisible: false,
     };
   }
 
-  onDropDownItemClick = link => {
+  onDropDownItemClick = (link) => {
     this.props.history.push(link);
   };
 
@@ -42,7 +42,7 @@ class PureArticleMainButtonContent extends React.Component {
     history.push(`${settings.homepage}/group/create`);
   };
 
-  onNotImplementedClick = text => {
+  onNotImplementedClick = (text) => {
     toastr.success(text);
   };
 
@@ -110,24 +110,29 @@ const ArticleMainButtonContentContainer = withTranslation()(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = props => {
+const ArticleMainButtonContent = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
+
   return (
     <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...props} />
+      <ArticleMainButtonContentContainer {...rest} />
     </I18nextProvider>
   );
 };
 
 ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  language: PropTypes.string,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
+  const { culture } = state.auth.settings;
+  const { cultureName } = state.auth.user;
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    language: cultureName || culture || "en-US",
   };
 };
 
