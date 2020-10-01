@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils, store, toastr, constants } from "asc-web-common";
+import { PageLayout, utils, store, toastr } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
