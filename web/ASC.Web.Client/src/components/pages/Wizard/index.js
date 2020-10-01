@@ -439,7 +439,6 @@ class Body extends Component {
           <form className="wizard-form">
             <InputContainer
               t={t}
-              s
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
               password={password}
