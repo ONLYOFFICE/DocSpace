@@ -1,10 +1,12 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
+
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
 {
-    public partial class FilesDbContextNpgsql : Migration
+    public partial class FilesDbContextNpgsql : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -214,7 +216,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                     table.PrimaryKey("files_thirdparty_id_mapping_pkey", x => x.hash_id);
                 });
 
-            
+
 
             migrationBuilder.CreateIndex(
                 name: "tenant_id_encrypted_data",
@@ -300,7 +302,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 table: "files_thirdparty_id_mapping",
                 columns: new[] { "tenant_id", "hash_id" });
 
-            
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
