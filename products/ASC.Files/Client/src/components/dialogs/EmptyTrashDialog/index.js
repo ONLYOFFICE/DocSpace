@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import { fetchFiles } from "../../../store/files/actions";
-import store from "../../../store/store";
+import { fetchFiles, setProgressBarData, clearProgressData } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -24,7 +25,8 @@ const EmptyTrashDialogComponent = props => {
     currentFolderId,
     setProgressBarData,
     isLoading,
-    clearProgressData
+    clearProgressData,
+    fetchFiles
   } = props;
 
   useEffect(() => {
@@ -46,7 +48,7 @@ const EmptyTrashDialogComponent = props => {
             setProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
           } else {
-            fetchFiles(currentFolderId, filter, store.dispatch)
+            fetchFiles(currentFolderId, filter)
               .then(() => {
                 setProgressBarData({
                   visible: true,
@@ -67,7 +69,7 @@ const EmptyTrashDialogComponent = props => {
           clearProgressData();
         });
     },
-    [t, currentFolderId, filter, setProgressBarData, clearProgressData]
+    [t, currentFolderId, filter, setProgressBarData, clearProgressData, fetchFiles]
   );
 
   const onEmptyTrash = useCallback(() => {
@@ -129,4 +131,15 @@ const EmptyTrashDialog = props => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-export default EmptyTrashDialog;
+const mapStateToProps = state => {
+  const { selectedFolder, filter, isLoading } = state.files;
+  return {
+    currentFolderId: selectedFolder.id,
+    filter,
+    isLoading
+  };
+};
+
+export default connect(mapStateToProps,
+  { setProgressBarData, clearProgressData, fetchFiles }
+)(withRouter(EmptyTrashDialog));

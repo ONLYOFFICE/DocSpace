@@ -19,7 +19,6 @@ import {
   clearProgressData,
   setIsLoading,
 } from "../../../../../store/files/actions";
-import { default as filesStore } from "../../../../../store/store";
 import {
   EmptyTrashDialog,
   DeleteDialog,
@@ -210,13 +209,13 @@ class SectionHeaderContent extends React.Component {
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
-          setTimeout(() => this.props.clearProgressData(filesStore.dispatch), 5000);
+          setTimeout(() => this.props.clearProgressData(), 5000);
           return window.open(url, "_blank");
         }
       })
       .catch((err) => {
         toastr.error(err);
-        this.props.clearProgressData(filesStore.dispatch);
+        this.props.clearProgressData();
       });
   };
 
@@ -249,7 +248,7 @@ class SectionHeaderContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData(filesStore.dispatch);
+        clearProgressData();
       });
   };
 
@@ -317,9 +316,9 @@ class SectionHeaderContent extends React.Component {
   };
 
   onBackToParentFolder = () => {
-    const { setIsLoading, parentId, filter } = this.props;
+    const { setIsLoading, parentId, filter, fetchFiles } = this.props;
     setIsLoading(true);
-    fetchFiles(parentId, filter, filesStore.dispatch).finally(() =>
+    fetchFiles(parentId, filter).finally(() =>
       setIsLoading(false)
     );
   };
@@ -345,13 +344,8 @@ class SectionHeaderContent extends React.Component {
       folder,
       onCheck,
       title,
-      currentFolderId,
-      setIsLoading,
-      isLoading,
       loopFilesOperations,
-      setProgressBarData,
-      isCanCreate,
-      clearProgressData
+      isCanCreate
     } = this.props;
 
     const {
@@ -469,12 +463,6 @@ class SectionHeaderContent extends React.Component {
       menuItems.splice(1, 1);
     }
 
-    const operationsPanelProps = {
-      setIsLoading,
-      isLoading,
-      loopFilesOperations,
-    };
-
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -562,7 +550,7 @@ class SectionHeaderContent extends React.Component {
 
         {showDeleteDialog && (
           <DeleteDialog
-            {...operationsPanelProps}
+            loopFilesOperations={loopFilesOperations}
             isRecycleBinFolder={isRecycleBinFolder}
             visible={showDeleteDialog}
             onClose={this.onDeleteAction}
@@ -572,10 +560,7 @@ class SectionHeaderContent extends React.Component {
 
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
-            {...operationsPanelProps}
-            setProgressBarData={setProgressBarData}
-            clearProgressData={clearProgressData}
-            currentFolderId={currentFolderId}
+            loopFilesOperations={loopFilesOperations}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
           />
@@ -590,7 +575,7 @@ class SectionHeaderContent extends React.Component {
 
         {showMoveToPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
+            loopFilesOperations={loopFilesOperations}
             isCopy={false}
             visible={showMoveToPanel}
             onClose={this.onMoveAction}
@@ -599,7 +584,7 @@ class SectionHeaderContent extends React.Component {
 
         {showCopyPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
+            loopFilesOperations={loopFilesOperations}
             isCopy={true}
             visible={showCopyPanel}
             onClose={this.onCopyAction}
@@ -624,7 +609,6 @@ const mapStateToProps = (state) => {
     selection,
     treeFolders,
     filter,
-    isLoading,
   } = state.files;
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
@@ -642,7 +626,6 @@ const mapStateToProps = (state) => {
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     currentFolderId: id,
-    isLoading,
     isCanCreate: isCanCreate(selectedFolder, user),
   };
 };
@@ -651,5 +634,6 @@ export default connect(mapStateToProps, {
   setAction,
   setProgressBarData,
   setIsLoading,
-  clearProgressData
+  clearProgressData,
+  fetchFiles
 })(withTranslation()(withRouter(SectionHeaderContent)));

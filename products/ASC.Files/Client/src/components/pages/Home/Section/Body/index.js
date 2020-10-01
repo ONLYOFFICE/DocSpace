@@ -47,7 +47,6 @@ import {
   isSound,
   isVideo,
 } from "../../../../../store/files/selectors";
-import store from "../../../../../store/store";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -241,6 +240,7 @@ class SectionBodyContent extends React.Component {
       treeFolders,
       setTreeFolders,
       setIsLoading,
+      fetchFiles
     } = this.props;
     const items = [...folders, ...files];
     const itemId = e && e.currentTarget.dataset.itemid;
@@ -251,7 +251,7 @@ class SectionBodyContent extends React.Component {
       fileAction.type === FileAction.Rename
     ) {
       setIsLoading(true);
-      fetchFiles(folderId, filter, store.dispatch)
+      fetchFiles(folderId, filter)
         .then((data) => {
           const newItem = item.id === -1 ? null : item;
           if (!item.fileExst) {
@@ -305,6 +305,7 @@ class SectionBodyContent extends React.Component {
       currentFolderType,
       t,
       setProgressBarData,
+      fetchFiles
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
@@ -321,7 +322,7 @@ class SectionBodyContent extends React.Component {
           percent: 100,
           label: t("DeleteOperation"),
         });
-        fetchFiles(folderId, filter, store.dispatch)
+        fetchFiles(folderId, filter)
           .then((data) => {
             if (currentFolderType !== "Trash" && isFolder) {
               const path = data.selectedFolder.pathParts.slice(0);
@@ -408,6 +409,7 @@ class SectionBodyContent extends React.Component {
       /*files,*/ selectedFolderId,
       filter,
       setIsLoading,
+      fetchFiles
     } = this.props;
     const file = selection[0];
 
@@ -416,14 +418,14 @@ class SectionBodyContent extends React.Component {
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
       setIsLoading(true);
-      fetchFiles(selectedFolderId, filter, store.dispatch)
+      fetchFiles(selectedFolderId, filter)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     });
   };
 
   finalizeVersion = (e) => {
-    const { selectedFolderId, filter, setIsLoading } = this.props;
+    const { selectedFolderId, filter, setIsLoading, fetchFiles } = this.props;
 
     const fileId = e.currentTarget.dataset.id;
     //const version = (e.currentTarget.dataset.version)++;
@@ -436,8 +438,7 @@ class SectionBodyContent extends React.Component {
         //console.log("api.files.finalizeVersion", data);
         return fetchFiles(
           selectedFolderId,
-          filter,
-          store.dispatch
+          filter
         ).catch((err) => toastr.error(err));
       })
       .finally(() => setIsLoading(false));
@@ -683,28 +684,28 @@ class SectionBodyContent extends React.Component {
   };
 
   onResetFilter = () => {
-    const { selectedFolderId, setIsLoading } = this.props;
+    const { selectedFolderId, setIsLoading, fetchFiles } = this.props;
     setIsLoading(true);
     const newFilter = FilesFilter.getDefault();
-    fetchFiles(selectedFolderId, newFilter, store.dispatch)
+    fetchFiles(selectedFolderId, newFilter)
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
 
   onGoToMyDocuments = () => {
-    const { filter, myDocumentsId, setIsLoading } = this.props;
+    const { filter, myDocumentsId, setIsLoading, fetchFiles } = this.props;
     const newFilter = filter.clone();
     setIsLoading(true);
-    fetchFiles(myDocumentsId, newFilter, store.dispatch).finally(() =>
+    fetchFiles(myDocumentsId, newFilter).finally(() =>
       setIsLoading(false)
     );
   };
 
   onBackToParentFolder = () => {
-    const { filter, parentId, setIsLoading } = this.props;
+    const { filter, parentId, setIsLoading, fetchFiles } = this.props;
     const newFilter = filter.clone();
     setIsLoading(true);
-    fetchFiles(parentId, newFilter, store.dispatch).finally(() =>
+    fetchFiles(parentId, newFilter).finally(() =>
       setIsLoading(false)
     );
   };

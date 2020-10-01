@@ -239,7 +239,6 @@ class PureHome extends React.Component {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
-    console.log("loopFilesOperations");
     const {
       currentFolderId,
       filter,
@@ -593,7 +592,7 @@ const mapDispatchToProps = (dispatch) => {
     //startUpload: () => dispatch(),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
+    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     clearProgressData: () => dispatch(clearProgressData())
   };
 };

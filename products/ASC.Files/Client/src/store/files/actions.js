@@ -283,25 +283,27 @@ export function setFilterUrl(filter) {
 }
 
 // TODO: similar to fetchFolder, remove one
-export function fetchFiles(folderId, filter, dispatch) {
-  const filterData = filter ? filter.clone() : FilesFilter.getDefault();
-  filterData.folder = folderId;
-  return files.getFolder(folderId, filter).then(data => {
-    filterData.treeFolders = getTreeFolders(data.pathParts, filterData);
-    filterData.total = data.total;
-    dispatch(setFilesFilter(filterData));
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    dispatch(setSelected("close"));
-    return dispatch(
-      setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: data.pathParts,
-        ...{ new: data.new }
-      })
-    );
-  });
+export function fetchFiles(folderId, filter) {
+  return dispatch => {
+    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+    filterData.folder = folderId;
+    return files.getFolder(folderId, filter).then(data => {
+      filterData.treeFolders = getTreeFolders(data.pathParts, filterData);
+      filterData.total = data.total;
+      dispatch(setFilesFilter(filterData));
+      dispatch(setFolders(data.folders));
+      dispatch(setFiles(data.files));
+      dispatch(setSelected("close"));
+      return dispatch(
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: data.pathParts,
+          ...{ new: data.new }
+        })
+      );
+    });
+  };
 }
 
 export function fetchFolders() {

@@ -39,7 +39,6 @@ import {
   setNewRowItems,
   setIsLoading
 } from "../../../store/files/actions";
-import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "NewFilesPanel",
@@ -136,10 +135,10 @@ class NewFilesPanelComponent extends React.Component {
 
   onFilesClick = item => {
     const { id, fileExst, viewUrl } = item;
-    const { filter, setMediaViewerData } = this.props;
+    const { filter, setMediaViewerData, fetchFiles } = this.props;
 
     if (!fileExst) {
-      fetchFiles(id, filter, store.dispatch).catch(err => toastr.error(err));
+      fetchFiles(id, filter).catch(err => toastr.error(err));
     } else {
       if (canWebEdit(fileExst)) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
@@ -297,5 +296,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems, setIsLoading }
+  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems, setIsLoading, fetchFiles }
 )(withRouter(NewFilesPanel));

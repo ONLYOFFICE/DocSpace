@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
 import { Paging } from "asc-web-components";
 import { useTranslation } from 'react-i18next';
-import store from "../../../../../store/store";
 
 const SectionPagingContent = ({
   filter,
+  fetchFiles,
   setIsLoading,
   selectedCount,
   selectedFolderId
@@ -24,10 +24,10 @@ const SectionPagingContent = ({
       newFilter.page++;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      fetchFiles(selectedFolderId, newFilter)
         .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, setIsLoading]
+    [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
 
   const onPrevClick = useCallback(
@@ -43,10 +43,10 @@ const SectionPagingContent = ({
       newFilter.page--;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      fetchFiles(selectedFolderId, newFilter)
         .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, setIsLoading]
+    [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
 
   const onChangePageSize = useCallback(
@@ -58,10 +58,10 @@ const SectionPagingContent = ({
       newFilter.pageCount = pageItem.key;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      fetchFiles(selectedFolderId, newFilter)
         .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, setIsLoading]
+    [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
 
   const onChangePage = useCallback(
@@ -72,10 +72,10 @@ const SectionPagingContent = ({
       newFilter.page = pageItem.key;
 
       setIsLoading(true);
-      fetchFiles(selectedFolderId, newFilter, store.dispatch)
+      fetchFiles(selectedFolderId, newFilter)
         .finally(() => setIsLoading(false));
     },
-    [filter, selectedFolderId, setIsLoading]
+    [filter, selectedFolderId, setIsLoading, fetchFiles]
   );
 
   const countItems = useMemo(

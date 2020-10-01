@@ -19,7 +19,6 @@ import {
   setNewTreeFilesBadge
 } from "../../../store/files/actions";
 import { loopTreeFolders } from "../../../store/files/selectors";
-import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteDialog",
@@ -61,7 +60,8 @@ class DeleteDialogComponent extends React.Component {
       isRecycleBinFolder,
       setProgressBarData,
       clearProgressData,
-      t
+      t,
+      fetchFiles
     } = this.props;
     const successMessage = "Files and folders was deleted";
     api.files.getProgress()
@@ -81,7 +81,7 @@ class DeleteDialogComponent extends React.Component {
             visible: true
           });
           setTimeout(() => clearProgressData(), 5000);
-          fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
+          fetchFiles(currentFolderId, filter).then(data => {
             if (!isRecycleBinFolder) {
               const path = data.selectedFolder.pathParts.slice(0);
               const newTreeFolders = treeFolders;
@@ -272,5 +272,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge }
+  { setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, fetchFiles }
 )(withRouter(DeleteDialog));

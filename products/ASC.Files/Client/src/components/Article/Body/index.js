@@ -15,7 +15,6 @@ import {
   setIsLoading,
   setSelectedNode,
 } from "../../../store/files/actions";
-import store from "../../../store/store";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 
@@ -92,7 +91,7 @@ class ArticleBodyContent extends React.Component {
         ? setDocumentTitle(selectedFolderTitle)
         : setDocumentTitle();
 
-      fetchFiles(data[0], newFilter, store.dispatch)
+      fetchFiles(data[0], newFilter)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     }
@@ -259,7 +258,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setNewTreeFilesBadge(updateTreeNew)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-    fetchFiles: (folderId, filter) => fetchFiles(folderId, filter, dispatch),
+    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
   };
 };
 

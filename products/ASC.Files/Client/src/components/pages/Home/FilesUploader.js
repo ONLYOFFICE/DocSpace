@@ -141,7 +141,7 @@ const startSessionFunc = (indexOfFile) => {
     )
     .catch((err) => {
       toastr.error(err);
-      clearProgressData(store.dispatch);
+      store.dispatch(clearProgressData());
     });
 };
 
@@ -210,12 +210,7 @@ const updateFiles = (folderId) => {
   const { filter, treeFolders, selectedFolder } = state;
 
   if (selectedFolder.id === folderId) {
-    return fetchFiles(
-      selectedFolder.id,
-      filter.clone(),
-      store.dispatch,
-      treeFolders
-    )
+    return store.dispatch(fetchFiles(selectedFolder.id, filter.clone()))
       .then((data) => {
         const path = data.selectedFolder.pathParts;
         const newTreeFolders = treeFolders;
@@ -225,7 +220,8 @@ const updateFiles = (folderId) => {
         store.dispatch(setTreeFolders(newTreeFolders));
       })
       .catch((err) => toastr.error(err))
-      .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
+      .finally(() => setTimeout(() => store.dispatch(clearProgressData()), 5000))
+    ;
     //.finally(() => this.setState({ uploaded: true }));
   } else {
     return api.files
@@ -239,7 +235,7 @@ const updateFiles = (folderId) => {
         store.dispatch(setTreeFolders(newTreeFolders));
       })
       .catch((err) => toastr.error(err))
-      .finally(() => setTimeout(() => clearProgressData(store.dispatch), 5000));
+      .finally(() => setTimeout(() => store.dispatch(clearProgressData()), 5000));
     //.finally(() => this.setState({ uploaded: true }));
   }
 };
@@ -294,7 +290,7 @@ const updateConvertProgress = (newState, uploadStatus) => {
     })
   );
   if (!progressVisible) {
-    setTimeout(() => clearProgressData(store.dispatch), 5000);
+    setTimeout(() => store.dispatch(clearProgressData()), 5000);
   }
 };
 
@@ -309,7 +305,7 @@ export const setDialogVisible = () => {
     updateState({uploadedFiles: 0, percent: 0});
     updateFiles(uploadToFolder);
   } else if (!files.length) {
-    clearProgressData(store.dispatch);
+    store.dispatch(clearProgressData());
   } else {
     store.dispatch(setProgressBarData({ label, percent, visible: true }));
     updateState({ uploadStatus: "cancel", totalFiles: files.length });

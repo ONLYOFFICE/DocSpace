@@ -8,7 +8,6 @@ import { RowContent, Link, Text, Icons, IconButton, Badge } from "asc-web-compon
 import { constants, api, toastr } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
 import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
-import store from "../../../../../store/store";
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
@@ -158,7 +157,7 @@ class FilesRowContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, setIsLoading, onMediaFileClick } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles } = this.props;
     if (!fileExst) {
       setIsLoading(true);
       const newFilter = filter.clone();
@@ -166,7 +165,7 @@ class FilesRowContent extends React.PureComponent {
         newFilter.treeFolders.push(parentFolder.toString());
       }
 
-      fetchFiles(id, newFilter, store.dispatch)
+      fetchFiles(id, newFilter)
         .catch(err => {
           toastr.error(err);
           setIsLoading(false);
@@ -267,7 +266,7 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ showConvertDialog: !this.state.showConvertDialog });
 
   getConvertProgress = fileId => {
-    const { selectedFolder, filter, setIsLoading, setProgressBarData, t, clearProgressData } = this.props;
+    const { selectedFolder, filter, setIsLoading, setProgressBarData, t, clearProgressData, fetchFiles } = this.props;
     api.files.getConvertFile(fileId).then(res => {
       if (res && res[0] && res[0].progress !== 100) {
         setProgressBarData({ visible: true, percent: res[0].progress, label: t("Convert") });
@@ -280,7 +279,7 @@ class FilesRowContent extends React.PureComponent {
           setProgressBarData({ visible: true, percent: 100, label: t("Convert") });
           setTimeout(() => clearProgressData(), 5000)
           const newFilter = filter.clone();
-          fetchFiles(selectedFolder.id, newFilter, store.dispatch)
+          fetchFiles(selectedFolder.id, newFilter)
             .catch(err => toastr.error(err))
             .finally(() => setIsLoading(false));
         }
@@ -548,5 +547,6 @@ export default connect(mapStateToProps, {
   setNewTreeFilesBadge,
   setNewRowItems,
   setIsLoading,
-  clearProgressData
+  clearProgressData,
+  fetchFiles
 })(withRouter(withTranslation()(FilesRowContent)));
