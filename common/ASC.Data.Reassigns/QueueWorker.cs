@@ -44,6 +44,7 @@ namespace ASC.Data.Reassigns
             return httpRequest?.Headers;
         }
     }
+
     public class QueueWorker<T> where T : DistributedTaskProgress
     {
         protected readonly DistributedTaskQueue Queue;
@@ -63,14 +64,14 @@ namespace ASC.Data.Reassigns
             Queue = options.Get(typeof(T).Name);
         }
 
-        public static string GetProgressItemId(int tenantId, Guid userId, Type type)
+        public static string GetProgressItemId(int tenantId, Guid userId)
         {
-            return string.Format("{0}_{1}_{2}", tenantId, userId, type.Name);
+            return string.Format("{0}_{1}_{2}", tenantId, userId, typeof(T).Name);
         }
 
         public T GetProgressItemStatus(int tenantId, Guid userId)
         {
-            var id = GetProgressItemId(tenantId, userId, typeof(T));
+            var id = GetProgressItemId(tenantId, userId);
             return Queue.GetTask<T>(id);
         }
 

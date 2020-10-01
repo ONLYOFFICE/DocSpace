@@ -88,7 +88,7 @@ namespace ASC.Data.Reassigns
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_projectsReassign = new ProjectsReassign();
 
-            Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId, typeof(ReassignProgressItem));
+            Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
             Status = DistributedTaskStatus.Created;
             Exception = null;
             Percentage = 0;

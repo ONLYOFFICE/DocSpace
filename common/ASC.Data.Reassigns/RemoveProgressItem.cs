@@ -84,7 +84,7 @@ namespace ASC.Data.Reassigns
             _currentUserId = currentUserId;
             _notify = notify;
 
-            Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser, typeof(RemoveProgressItem));
+            Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser);
             Status = DistributedTaskStatus.Created;
             Exception = null;
             Percentage = 0;

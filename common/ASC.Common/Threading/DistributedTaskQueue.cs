@@ -305,7 +305,7 @@ namespace ASC.Common.Threading
             services.TryAddSingleton<DistributedTaskCacheNotify>();
             services
                 .TryAddSingleton<DistributedTaskQueueOptionsManager>()
-                .TryAddSingleton<DistributedTaskQueue>() //check
+                .TryAddSingleton<DistributedTaskQueue>()
                 .AddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
 
             _ = services.Configure<DistributedTaskQueue>(typeof(T).Name, r =>
