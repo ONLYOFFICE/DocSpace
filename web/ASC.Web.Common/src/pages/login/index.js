@@ -19,9 +19,14 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-import { login, setIsLoaded } from "../../store/auth/actions";
+import {
+  login,
+  setIsLoaded,
+  reloadPortalSettings
+} from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
+import { createPasswordHash } from "../../utils";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -33,11 +38,11 @@ const LoginContainer = styled.div`
   @media (max-width: 768px) {
     padding: 0 16px;
     max-width: 475px;
-    }
+  }
   @media (max-width: 375px) {
     margin: 72px auto 0 auto;
     max-width: 311px;
-    }
+  }
 
   .greeting-title {
     width: 100%;
@@ -56,11 +61,11 @@ const LoginContainer = styled.div`
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
-      width: 100%
+      width: 100%;
     }
     @media (max-width: 375px) {
       margin: 32px 0 0 0;
-      width: 100%
+      width: 100%;
     }
 
     .login-forgot-wrapper {
@@ -73,48 +78,48 @@ const LoginContainer = styled.div`
 
         .login-checkbox {
           float: left;
-           span {
+          span {
             font-size: 12px;
-           }
-         }
+          }
+        }
 
-          .login-tooltip {
-            display: inline-flex;
+        .login-tooltip {
+          display: inline-flex;
 
-             @media(min-width: 1025px) {
-               margin-left: 8px;
-               margin-top: 4px;
-             }
-             @media(max-width: 1024px) {
-               padding: 4px 8px 8px 8px;
-             }
+          @media (min-width: 1025px) {
+            margin-left: 8px;
+            margin-top: 4px;
+          }
+          @media (max-width: 1024px) {
+            padding: 4px 8px 8px 8px;
+          }
+        }
       }
-    }
 
       .login-link {
         float: right;
         line-height: 16px;
       }
-  }
+    }
 
-  .login-button {
-    margin-bottom: 16px;
-  }
+    .login-button {
+      margin-bottom: 16px;
+    }
 
-  .login-button-dialog {
-    margin-right: 8px;
-  }
+    .login-button-dialog {
+      margin-right: 8px;
+    }
 
-  .login-bottom-border {
-    width: 100%;
-    height: 1px;
-    background: #ECEEF1;
-  }
+    .login-bottom-border {
+      width: 100%;
+      height: 1px;
+      background: #eceef1;
+    }
 
-  .login-bottom-text {
-    margin: 0 8px;
+    .login-bottom-text {
+      margin: 0 8px;
+    }
   }
-}
 `;
 
 class Form extends Component {
@@ -174,8 +179,7 @@ class Form extends Component {
   onSendPasswordInstructions = () => {
     if (!this.state.email.trim()) {
       this.setState({ emailError: true });
-    }
-    else {
+    } else {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
         .then(
@@ -198,7 +202,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history } = this.props;
+    const { login, setIsLoaded, history, hashSettings } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -221,7 +225,9 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
 
-    login(userName, pass)
+    const hash = createPasswordHash(pass, hashSettings);
+
+    login(userName, hash)
       .then(() => {
         setIsLoaded(true);
         history.push("/");
@@ -232,7 +238,7 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    const { match, t } = this.props;
+    const { match, t, hashSettings, reloadPortalSettings } = this.props;
     const { error, confirmedEmail } = match.params;
 
     document.title = `${t("Authorization")} – ${t("OrganizationName")}`;
@@ -240,6 +246,10 @@ class Form extends Component {
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
+
+    if (!hashSettings) {
+      reloadPortalSettings();
+    }
   }
 
   componentWillUnmount() {
@@ -251,7 +261,7 @@ class Form extends Component {
     upperCase: false,
     digits: false,
     specSymbols: false
-  }
+  };
 
   render() {
     const { greetingTitle, match, t } = this.props;
@@ -276,16 +286,16 @@ class Form extends Component {
     return (
       <>
         <LoginContainer>
-
-          <Text fontSize="32px"
+          <Text
+            fontSize="32px"
             fontWeight={600}
             textAlign="center"
-            className="greeting-title">
+            className="greeting-title"
+          >
             {greetingTitle}
           </Text>
 
           <form className="auth-form-container">
-
             <FieldContainer
               isVertical={true}
               labelVisible={false}
@@ -338,19 +348,19 @@ class Form extends Component {
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={this.onChangeCheckbox}
-                  label={<Text fontSize='13px'>{t("Remember")}</Text>}
+                  label={<Text fontSize="13px">{t("Remember")}</Text>}
                 />
                 <HelpButton
                   className="login-tooltip"
                   helpButtonHeaderContent={t("CookieSettingsTitle")}
                   tooltipContent={
-                    <Text fontSize='12px'>{t("RememberHelper")}</Text>
+                    <Text fontSize="12px">{t("RememberHelper")}</Text>
                   }
                 />
               </div>
 
               <Link
-                fontSize='13px'
+                fontSize="13px"
                 color="#316DAA"
                 className="login-link"
                 type="page"
@@ -361,7 +371,7 @@ class Form extends Component {
               </Link>
             </div>
 
-            {openDialog &&
+            {openDialog && (
               <ForgotPasswordModalDialog
                 openDialog={openDialog}
                 isLoading={isLoading}
@@ -372,7 +382,7 @@ class Form extends Component {
                 onDialogClose={this.onDialogClose}
                 t={t}
               />
-            }
+            )}
 
             <Button
               id="button"
@@ -388,25 +398,25 @@ class Form extends Component {
             />
 
             {params.confirmedEmail && (
-              <Text isBold={true} fontSize='16px'>
+              <Text isBold={true} fontSize="16px">
                 {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
               </Text>
             )}
-            <Text fontSize='14px' color="#c30">
+            <Text fontSize="14px" color="#c30">
               {errorText}
             </Text>
 
-            {socialButtons.length ? (<Box displayProp="flex" alignItems="center">
-              <div className="login-bottom-border"></div>
-              <Text className="login-bottom-text" color="#A3A9AE">{t("Or")}</Text>
-              <div className="login-bottom-border"></div>
-            </Box>
+            {socialButtons.length ? (
+              <Box displayProp="flex" alignItems="center">
+                <div className="login-bottom-border"></div>
+                <Text className="login-bottom-text" color="#A3A9AE">
+                  {t("Or")}
+                </Text>
+                <div className="login-bottom-border"></div>
+              </Box>
             ) : null}
-
           </form>
-
         </LoginContainer>
-
       </>
     );
   }
@@ -440,13 +450,14 @@ const LoginForm = props => {
 
   return (
     <>
-      {isLoaded && <>
-        <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
-        {enabledJoin &&
-          <RegisterWrapper i18n={i18n} {...props} />
-        }
-      </>
-      }
+      {isLoaded && (
+        <>
+          <PageLayout
+            sectionBodyContent={<FormWrapper i18n={i18n} {...props} />}
+          />
+          {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+        </>
+      )}
     </>
   );
 };
@@ -462,10 +473,13 @@ function mapStateToProps(state) {
     isLoaded: state.auth.isLoaded,
     language: state.auth.user.cultureName || state.auth.settings.culture,
     greetingTitle: state.auth.settings.greetingSettings,
-    enabledJoin: state.auth.settings.enabledJoin
+    enabledJoin: state.auth.settings.enabledJoin,
+    hashSettings: state.auth.settings.hashSettings
   };
 }
 
-export default connect(mapStateToProps, { login, setIsLoaded })(
-  withRouter(LoginForm)
-);
+export default connect(mapStateToProps, {
+  login,
+  setIsLoaded,
+  reloadPortalSettings
+})(withRouter(LoginForm));

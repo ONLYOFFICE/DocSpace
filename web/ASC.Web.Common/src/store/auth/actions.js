@@ -15,7 +15,7 @@ export const SET_CURRENT_PRODUCT_ID = "SET_CURRENT_PRODUCT_ID";
 export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
-export const SET_WIZARD_COMPLETED ="SET_WIZARD_COMPLETED";
+export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
 
 export function setCurrentUser(user) {
   return {
@@ -44,7 +44,6 @@ export function setIsLoaded(isLoaded) {
     isLoaded
   };
 }
-
 
 export function setLogout() {
   return {
@@ -118,28 +117,34 @@ export function setCustomNames(customNames) {
 export function setWizardComplete() {
   return {
     type: SET_WIZARD_COMPLETED
-  }
+  };
 }
 
 export function getUser(dispatch) {
-  return api.people.getUser()
+  return api.people
+    .getUser()
     .then(user => dispatch(setCurrentUser(user)))
     .catch(err => dispatch(setCurrentUser({})));
 }
 
 export function getPortalSettings(dispatch) {
-  return api.settings
-    .getSettings()
-    .then(settings => {
-      dispatch(setSettings(settings));
-      settings.nameSchemaId && getCurrentCustomSchema(dispatch, settings.nameSchemaId);
-    });
+  return api.settings.getSettings().then(settings => {
+    const { passwordHash: hashSettings, ...otherSettings } = settings;
+
+    dispatch(
+      setSettings(
+        hashSettings ? { ...otherSettings, hashSettings } : otherSettings
+      )
+    );
+
+    otherSettings.nameSchemaId &&
+      getCurrentCustomSchema(dispatch, otherSettings.nameSchemaId);
+  });
 }
 export function getCurrentCustomSchema(dispatch, id) {
-
-    return api.settings
+  return api.settings
     .getCurrentCustomSchema(id)
-    .then(customNames =>   dispatch(setCustomNames(customNames)));
+    .then(customNames => dispatch(setCustomNames(customNames)));
 }
 
 export function getModules(dispatch) {
@@ -156,17 +161,19 @@ export function getUserInfo(dispatch) {
   return getUser(dispatch).finally(() => loadInitInfo(dispatch));
 }
 
-export function login(user, pass) {
+export function login(user, hash) {
   return dispatch => {
-    return api.user.login(user, pass)
-    .then(() => dispatch(setIsLoaded(false)))
-    .then(() => getUserInfo(dispatch));
+    return api.user
+      .login(user, hash)
+      .then(() => dispatch(setIsLoaded(false)))
+      .then(() => getUserInfo(dispatch));
   };
 }
 
 export function logout() {
   return dispatch => {
-    return api.user.logout()
+    return api.user
+      .logout()
       .then(() => dispatch(setLogout()))
       .then(() => dispatch(setIsLoaded(true)));
   };
@@ -189,3 +196,7 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
     dispatch(setPasswordSettings(settings));
   });
 }
+
+export const reloadPortalSettings = () => {
+  return dispatch => getPortalSettings(dispatch);
+};
