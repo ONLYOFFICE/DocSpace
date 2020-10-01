@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 
 namespace ASC.Api.Settings
 {
@@ -58,6 +59,8 @@ namespace ASC.Api.Settings
         public bool? ThirdpartyEnable { get; set; }
 
         public string WizardToken { get; set; }
+
+        public PasswordHasher PasswordHash { get; set; }
 
         public static SettingsWrapper GetSample()
         {

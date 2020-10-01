@@ -82,6 +82,7 @@ using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
 using ASC.Web.Studio.UserControls.FirstTime;
+using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
@@ -162,6 +163,7 @@ namespace ASC.Api.Settings
         private BackupServiceNotifier BackupServiceNotifier { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
         private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
+        private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
 
@@ -224,7 +226,8 @@ namespace ASC.Api.Settings
             EncryptionSettingsHelper encryptionSettingsHelper,
             BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-            EncryptionServiceNotifier encryptionServiceNotifier)
+            EncryptionServiceNotifier encryptionServiceNotifier,
+            PasswordHasher passwordHasher)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -282,6 +285,7 @@ namespace ASC.Api.Settings
             BackupServiceNotifier = backupServiceNotifier;
             CacheDeleteSchedule = cacheDeleteSchedule;
             EncryptionServiceNotifier = encryptionServiceNotifier;
+            PasswordHasher = passwordHasher;
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
@@ -325,6 +329,8 @@ namespace ASC.Api.Settings
                 settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
+
+                settings.PasswordHash = PasswordHasher;
             }
 
             return settings;
@@ -1474,6 +1480,38 @@ namespace ASC.Api.Settings
             return true;
         }
 
+        [Create("license/accept", Check = false)]
+        public object AcceptLicense()
+        {
+            if (!CoreBaseSettings.Standalone) return "";
+
+            TariffSettings.SetLicenseAccept(SettingsManager);
+            MessageService.Send(MessageAction.LicenseKeyUploaded);
+
+            try
+            {
+                LicenseReader.RefreshLicense();
+            }
+            catch (BillingNotFoundException)
+            {
+                return UserControlsCommonResource.LicenseKeyNotFound;
+            }
+            catch (BillingNotConfiguredException)
+            {
+                return UserControlsCommonResource.LicenseKeyNotCorrect;
+            }
+            catch (BillingException)
+            {
+                return UserControlsCommonResource.LicenseException;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            return "";
+        }
+
         [AllowAnonymous]
         [Read("license/required", Check = false)]
         public bool RequestLicense()
@@ -1483,15 +1521,16 @@ namespace ASC.Api.Settings
 
 
         [Create("license", Check = false)]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
         public object UploadLicense([FromForm] UploadLicenseModel model)
         {
             try
             {
+                ApiContext.AuthByClaim();
                 if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
                 if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
 
-                ApiContext.AuthByClaim();
+
 
                 var licenseFile = model.Files.First();
                 var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
@@ -2283,7 +2322,7 @@ namespace ASC.Api.Settings
             return changed;
         }
 
-        [Read("payment")]
+        [Read("payment", Check = false)]
         public object PaymentSettings()
         {
             var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
@@ -2421,7 +2460,8 @@ namespace ASC.Api.Settings
                 .AddBackupService()
                 .AddEncryptionServiceNotifierService()
                 .AddTelegramLoginProviderService()
-                .AddTelegramHelperSerivce();
+                .AddTelegramHelperSerivce()
+                .AddPasswordHasherService();
         }
     }
 }
