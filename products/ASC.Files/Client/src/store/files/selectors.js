@@ -5,11 +5,11 @@ const { FileType, FilterType, FolderType } = constants;
 const { isAdmin } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
-  const result = array.findIndex(item => item === search);
+  const result = array.findIndex((item) => item === search);
   return result === -1 ? false : true;
 };
 
-export const canWebEdit = extension => {
+export const canWebEdit = (extension) => {
   const formats = [
     ".pptx",
     ".pptm",
@@ -46,12 +46,12 @@ export const canWebEdit = extension => {
     ".rtf",
     ".mht",
     ".html",
-    ".htm"
+    ".htm",
   ];
   return presentInArray(formats, extension);
 };
 
-export const canConvert = extension => {
+export const canConvert = (extension) => {
   const formats = [
     ".pptm",
     ".ppt",
@@ -79,12 +79,12 @@ export const canConvert = extension => {
     ".odt",
     ".fodt",
     ".ott",
-    ".rtf"
+    ".rtf",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isArchive = extension => {
+export const isArchive = (extension) => {
   const formats = [
     ".zip",
     ".rar",
@@ -108,12 +108,12 @@ export const isArchive = extension => {
     ".uue",
     ".xxe",
     ".z",
-    ".zoo"
+    ".zoo",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isImage = extension => {
+export const isImage = (extension) => {
   const formats = [
     ".bmp",
     ".cod",
@@ -134,12 +134,12 @@ export const isImage = extension => {
     ".xwd",
     ".png",
     ".ai",
-    ".jpeg"
+    ".jpeg",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isSound = extension => {
+export const isSound = (extension) => {
   const formats = [
     ".aac",
     ".ac3",
@@ -159,12 +159,12 @@ export const isSound = extension => {
     ".ra",
     ".raw",
     ".wav",
-    ".wma"
+    ".wma",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isVideo = extension => {
+export const isVideo = (extension) => {
   const formats = [
     ".3gp",
     ".asf",
@@ -184,22 +184,22 @@ export const isVideo = extension => {
     ".svi",
     ".vob",
     ".webm",
-    ".wmv"
+    ".wmv",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isHtml = extension => {
+export const isHtml = (extension) => {
   const formats = [".htm", ".mht", ".html"];
   return presentInArray(formats, extension);
 };
 
-export const isEbook = extension => {
+export const isEbook = (extension) => {
   const formats = [".fb2", ".ibk", ".prc", ".epub"];
   return presentInArray(formats, extension);
 };
 
-export const isDocument = extension => {
+export const isDocument = (extension) => {
   const formats = [
     ".doc",
     ".docx",
@@ -222,12 +222,12 @@ export const isDocument = extension => {
     ".xps",
     ".doct",
     ".docy",
-    ".gdoc"
+    ".gdoc",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isPresentation = extension => {
+export const isPresentation = (extension) => {
   const formats = [
     ".pps",
     ".ppsx",
@@ -243,12 +243,12 @@ export const isPresentation = extension => {
     ".otp",
     ".pptt",
     ".ppty",
-    ".gslides"
+    ".gslides",
   ];
   return presentInArray(formats, extension);
 };
 
-export const isSpreadsheet = extension => {
+export const isSpreadsheet = (extension) => {
   const formats = [
     ".xls",
     ".xlsx",
@@ -263,13 +263,13 @@ export const isSpreadsheet = extension => {
     ".xlst",
     ".xlsy",
     ".xlsb",
-    ".gsheet"
+    ".gsheet",
   ];
   return presentInArray(formats, extension);
 };
 
 export function getSelectedFile(selection, fileId, parentId) {
-  return find(selection, function(obj) {
+  return find(selection, function (obj) {
     return obj.id === fileId && obj.parentId === parentId;
   });
 }
@@ -279,14 +279,14 @@ export function isFileSelected(selection, fileId, parentId) {
 }
 
 export function skipFile(selection, fileId) {
-  return filter(selection, function(obj) {
+  return filter(selection, function (obj) {
     return obj.id !== fileId;
   });
 }
 
 export function getFilesBySelected(files, selected) {
   let newSelection = [];
-  files.forEach(file => {
+  files.forEach((file) => {
     const checked = getFilesChecked(file, selected);
 
     if (checked) newSelection.push(file);
@@ -321,12 +321,9 @@ const getFilesChecked = (file, selected) => {
   }
 };
 
-export const getTitleWithoutExst = item => {
+export const getTitleWithoutExst = (item) => {
   return item.fileExst
-    ? item.title
-        .split(".")
-        .slice(0, -1)
-        .join(".")
+    ? item.title.split(".").slice(0, -1).join(".")
     : item.title;
 };
 
@@ -339,16 +336,16 @@ export const getTreeFolders = (pathParts, filterData) => {
   }
   if (treeFolders.length > 0) {
     treeFolders = treeFolders.concat(
-      filterData.treeFolders.filter(x => !treeFolders.includes(x))
+      filterData.treeFolders.filter((x) => !treeFolders.includes(x))
     );
   }
   return treeFolders;
 };
 
 const renameTreeFolder = (folders, newItems, currentFolder) => {
-  const newItem = folders.find(x => x.id === currentFolder.id);
+  const newItem = folders.find((x) => x.id === currentFolder.id);
   const oldItemIndex = newItems.folders.findIndex(
-    x => x.id === currentFolder.id
+    (x) => x.id === currentFolder.id
   );
   newItem.folders = newItems.folders[oldItemIndex].folders;
   newItems.folders[oldItemIndex] = newItem;
@@ -361,11 +358,11 @@ const removeTreeFolder = (folders, newItems, foldersCount) => {
   for (let folder of newFolders) {
     let currentFolder;
     if (folders) {
-      currentFolder = folders.find(x => x.id === folder.id);
+      currentFolder = folders.find((x) => x.id === folder.id);
     }
 
     if (!currentFolder) {
-      const arrayFolders = newItems.folders.filter(x => x.id !== folder.id);
+      const arrayFolders = newItems.folders.filter((x) => x.id !== folder.id);
       newItems.folders = arrayFolders;
       newItems.foldersCount = foldersCount;
     }
@@ -378,7 +375,7 @@ const addTreeFolder = (folders, newItems, foldersCount) => {
   for (let folder of folders) {
     let currentFolder;
     if (newItemFolders) {
-      currentFolder = newItemFolders.find(x => x.id === folder.id);
+      currentFolder = newItemFolders.find((x) => x.id === folder.id);
     }
 
     if (folders.length < 1 || !currentFolder) {
@@ -401,7 +398,7 @@ export const loopTreeFolders = (
 ) => {
   const newPath = path;
   while (path.length !== 0) {
-    const newItems = item.find(x => x.id === path[0]);
+    const newItems = item.find((x) => x.id === path[0]);
     if (!newItems) {
       return;
     }
@@ -433,7 +430,7 @@ export const loopTreeFolders = (
 export const isCanCreate = (selectedFolder, user) => {
   if (!selectedFolder || !selectedFolder.id) return false;
 
-  const admin = isAdmin(user);
+  const admin = isAdmin({ auth: { user } }); //TODO: Need refactoring
   const rootFolderType = selectedFolder.rootFolderType;
 
   switch (rootFolderType) {
@@ -453,7 +450,7 @@ export const isCanCreate = (selectedFolder, user) => {
 };
 
 export const isCanBeDeleted = (selectedFolder, user) => {
-  const admin = isAdmin(user);
+  const admin = isAdmin({ auth: { user } }); //TODO: Need refactoring
   const rootFolderType = selectedFolder.rootFolderType;
 
   switch (rootFolderType) {
@@ -471,13 +468,13 @@ export const isCanBeDeleted = (selectedFolder, user) => {
 };
 
 //TODO: Get the whole list of extensions
-export const getAccessOption = selection => {
-  const isFolder = selection.find(x => x.fileExst === undefined);
+export const getAccessOption = (selection) => {
+  const isFolder = selection.find((x) => x.fileExst === undefined);
   const isMedia = selection.find(
-    x => isSound(x.fileExst) || isVideo(x.fileExst)
+    (x) => isSound(x.fileExst) || isVideo(x.fileExst)
   );
   const isPresentationOrTable = selection.find(
-    x => isSpreadsheet(x.fileExst) || isPresentation(x.fileExst)
+    (x) => isSpreadsheet(x.fileExst) || isPresentation(x.fileExst)
   );
 
   if (isFolder || isMedia) {
@@ -491,7 +488,7 @@ export const getAccessOption = selection => {
       "DenyAccess",
       "Comment",
       "Review",
-      "FormFilling"
+      "FormFilling",
     ];
   }
 };

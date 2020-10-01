@@ -128,7 +128,7 @@ function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user),
+    isAdmin: isAdmin(state),
   };
 }
 

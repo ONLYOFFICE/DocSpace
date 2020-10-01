@@ -128,7 +128,7 @@ function mapStateToProps(state) {
   return {
     profile: targetUser,
     isVisitor: user.isVisitor,
-    isAdmin: isAdmin(user),
+    isAdmin: isAdmin(state),
     isLoaded,
     language: cultureName || culture || "en-US",
   };

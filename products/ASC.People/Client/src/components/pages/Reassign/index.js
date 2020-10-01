@@ -5,7 +5,7 @@ import { PageLayout, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 // import { SectionHeaderContent } from './Section';
 // import { fetchProfile } from '../../../store/profile/actions';
@@ -14,7 +14,7 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "Reassign",
-  localesPath: "pages/Reassign"
+  localesPath: "pages/Reassign",
 });
 const { isAdmin } = store.auth.selectors;
 
@@ -88,12 +88,9 @@ Reassign.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state),
     // profile: state.profile.targetUser
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {}
-)(Reassign);
+export default connect(mapStateToProps, {})(Reassign);

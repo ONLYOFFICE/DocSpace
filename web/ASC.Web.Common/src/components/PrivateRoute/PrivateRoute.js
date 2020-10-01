@@ -75,7 +75,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 function mapStateToProps(state) {
   const { user, isLoaded, isAuthenticated } = state.auth;
   return {
-    isAdmin: isAdmin(user),
+    isAdmin: isAdmin(state),
     user,
     isAuthenticated: !(
       !localStorage.getItem(AUTH_KEY) ||

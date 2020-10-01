@@ -100,7 +100,9 @@ class PureHome extends React.Component {
       isHeaderChecked,
       selected,
     } = this.state;
+
     const { isAdmin } = this.props;
+
     return (
       <>
         {/* <RequestLoader
@@ -183,6 +185,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { isLoaded, settings } = state.auth;
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     users,
@@ -190,9 +193,9 @@ function mapStateToProps(state) {
     selected,
     selectedGroup,
     groups,
-    isLoaded: state.auth.isLoaded,
-    organizationName: state.auth.settings.organizationName,
-    isAdmin: isAdmin(state.auth.user),
+    isLoaded,
+    organizationName: settings.organizationName,
+    isAdmin: isAdmin(state),
   };
 }
 

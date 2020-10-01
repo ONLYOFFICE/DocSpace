@@ -473,7 +473,7 @@ const mapStateToProps = (state) => {
   return {
     group: getSelectedGroup(groups, selectedGroup),
     selection,
-    isAdmin: isAdmin(user),
+    isAdmin: isAdmin(state),
     filter,
     settings: settings,
 
