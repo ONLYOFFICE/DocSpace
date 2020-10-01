@@ -53,6 +53,8 @@ namespace ASC.Data.Backup.Tasks
 {
     public class BackupPortalTask : PortalTaskBase
     {
+        private const int MaxLength = 250;
+
         private const int BatchLimit = 5000;
         public string BackupFilePath { get; private set; }
         public int Limit { get; private set; }
@@ -327,36 +329,33 @@ namespace ASC.Data.Backup.Tasks
 
                 var path = Path.Combine(dir, t);
 
-                using (var fs = File.OpenWrite(path))
+                var offset = 0;
+
+                do
                 {
-                    var offset = 0;
+                    List<object[]> result;
 
-                    do
+                    if (searchWithPrimary)
                     {
-                        List<object[]> result;
+                        result = GetDataWithPrimary(t, columns, primaryIndex, primaryIndexStart, primaryIndexStep);
+                        primaryIndexStart += primaryIndexStep;
+                    }
+                    else
+                    {
+                        result = GetData(t, columns, offset);
+                    }
 
-                        if (searchWithPrimary)
-                        {
-                            result = GetDataWithPrimary(t, columns, primaryIndex, primaryIndexStart, primaryIndexStep);
-                            primaryIndexStart += primaryIndexStep;
-                        }
-                        else
-                        {
-                            result = GetData(t, columns, offset);
-                        }
+                    offset += Limit;
 
-                        offset += Limit;
+                    var resultCount = result.Count;
 
-                        var resultCount = result.Count;
+                    if (resultCount == 0) break;
 
-                        if (resultCount == 0) break;
+                    SaveToFile(path, t, columns, result);
 
-                        SaveToFile(fs, t, columns, result);
+                    if (resultCount < Limit) break;
 
-                        if (resultCount < Limit) break;
-
-                    } while (true);
-                }
+                } while (true);
 
 
                 SetStepCompleted();
@@ -386,14 +385,13 @@ namespace ASC.Data.Backup.Tasks
             return ExecuteList(command);
         }
 
-        private void SaveToFile(Stream fs, string t, IReadOnlyCollection<string> columns, List<object[]> data)
+        private void SaveToFile(string path, string t, IReadOnlyCollection<string> columns, List<object[]> data)
         {
             Logger.DebugFormat("save to file {0}", t);
             List<object[]> portion;
             while ((portion = data.Take(BatchLimit).ToList()).Any())
             {
-                var creates = new StringBuilder();
-                using (var sw = new StringWriter(creates))
+                using (var sw = new StreamWriter(path, true))
                 using (var writer = new JsonTextWriter(sw))
                 {
                     writer.QuoteChar = '\'';
@@ -437,10 +435,6 @@ namespace ASC.Data.Backup.Tasks
                         }
                         sw.WriteLine();
                     }
-
-                    var fileData = creates.ToString();
-                    var bytes = Encoding.UTF8.GetBytes(fileData);
-                    fs.Write(bytes, 0, bytes.Length);
                 }
                 data = data.Skip(BatchLimit).ToList();
             }
@@ -507,6 +501,12 @@ namespace ASC.Data.Backup.Tasks
             {
                 Directory.CreateDirectory(dirName);
             }
+
+            if (!WorkContext.IsMono && filePath.Length > MaxLength)
+            {
+                filePath = @"\\?\" + filePath;
+            }
+
             using (var fileStream = storage.GetReadStream(file.Domain, file.Path))
             using (var tmpFile = File.OpenWrite(filePath))
             {
@@ -521,8 +521,13 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("archive dir start {0}", subDir);
             foreach (var enumerateFile in Directory.EnumerateFiles(subDir, "*", SearchOption.AllDirectories))
             {
-                writer.WriteEntry(enumerateFile.Substring(subDir.Length), enumerateFile);
-                File.Delete(enumerateFile);
+                var f = enumerateFile;
+                if (!WorkContext.IsMono && enumerateFile.Length > MaxLength)
+                {
+                    f = @"\\?\" + f;
+                }
+                writer.WriteEntry(enumerateFile.Substring(subDir.Length), f);
+                File.Delete(f);
                 SetStepCompleted();
             }
             Logger.DebugFormat("archive dir end {0}", subDir);

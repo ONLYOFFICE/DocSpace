@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using NLog;
 using NLog.Common;
 using NLog.Targets;
@@ -122,7 +123,17 @@ namespace ASC.Common.Logging
                 Clean();
             }
 
-            base.Write(logEvents);
+            var buffer = new List<AsyncLogEventInfo>();
+
+            foreach (var logEvent in logEvents)
+            {
+                buffer.Add(logEvent);
+                if (buffer.Count < 10) continue;
+                base.Write(buffer);
+                buffer.Clear();
+            }
+
+            base.Write(buffer);
         }
 
         protected override void Write(LogEventInfo logEvent)

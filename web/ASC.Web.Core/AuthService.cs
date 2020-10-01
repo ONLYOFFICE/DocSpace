@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using ASC.Core.Common.Configuration;
 using ASC.Web.Core.PublicResources;
 
@@ -54,7 +55,7 @@ namespace ASC.Web.Studio.UserControls.Management
             Consumer = consumer;
             Title = consumer.GetResourceString(consumer.Name) ?? consumer.Name;
             Description = consumer.GetResourceString(consumer.Name + "Description");
-            Instruction = consumer.GetResourceString(consumer.Name + "Instruction");
+            Instruction = consumer.GetResourceString(consumer.Name + "InstructionV11");
             Props = new List<AuthKey>();
 
             foreach (var item in consumer.ManagedKeys)

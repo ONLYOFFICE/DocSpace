@@ -20,6 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="protos\EncryptionSettingsProto.proto" />
+    <None Remove="protos\EncryptionStop.proto" />
+    <None Remove="protos\MigrationCache.proto" />
+    <None Remove="protos\MigrationProgress.proto" />
+    <None Remove="protos\MigrationUploadCdn.proto" />
+    <None Remove="protos\ProgressEncryption.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Api.Gax" Version="3.0.0" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="3.0.0" />
     <PackageReference Include="Google.Apis" Version="1.46.0" />
@@ -42,6 +51,12 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
+    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
+    <Protobuf Include="protos\EncryptionStop.proto" />
+    <Protobuf Include="protos\MigrationCache.proto" />
+    <Protobuf Include="protos\MigrationProgress.proto" />
+    <Protobuf Include="protos\MigrationUploadCdn.proto" />
+    <Protobuf Include="protos\ProgressEncryption.proto" />
   </ItemGroup>
   
 </Project>

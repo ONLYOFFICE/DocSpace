@@ -27,7 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using ASC.FederatedLogin;
+
 using Dropbox.Api;
 using Dropbox.Api.Files;
 
@@ -41,7 +43,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public bool IsOpened { get; private set; }
 
-        public long MaxChunkedUploadFileSize = 20L*1024L*1024L*1024L;
+        public long MaxChunkedUploadFileSize = 20L * 1024L * 1024L * 1024L;
 
         public void Open(OAuth20Token token)
         {

@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Security
             }
         }
 
-        public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity): base(claimsIdentity)
+        public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity) : base(claimsIdentity)
         {
             this.identity = identity;
         }

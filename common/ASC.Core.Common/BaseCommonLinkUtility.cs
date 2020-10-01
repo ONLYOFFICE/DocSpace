@@ -223,6 +223,10 @@ namespace ASC.Core.Common
 
             //--remove redundant slashes
             var uri = new Uri(url);
+
+            if (uri.Scheme == "mailto")
+                return uri.OriginalString;
+
             var baseUri = new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri;
             baseUri = uri.Segments.Aggregate(baseUri, (current, segment) => new Uri(current, segment));
             //--

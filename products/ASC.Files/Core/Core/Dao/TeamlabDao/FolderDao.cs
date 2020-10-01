@@ -37,9 +37,9 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
-using ASC.Files.Core.Resources;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
@@ -57,6 +57,10 @@ namespace ASC.Files.Core.Data
         private const string my = "my";
         private const string common = "common";
         private const string share = "share";
+        private const string recent = "recent";
+        private const string favorites = "favorites";
+        private const string templates = "templates";
+        private const string privacy = "privacy";
         private const string trash = "trash";
         private const string projects = "projects";
 
@@ -730,7 +734,7 @@ namespace ASC.Files.Core.Data
 
         public bool UseTrashForRemove(Folder<int> folder)
         {
-            return folder.RootFolderType != FolderType.TRASH && folder.FolderType != FolderType.BUNCH;
+            return folder.RootFolderType != FolderType.TRASH && folder.RootFolderType != FolderType.Privacy && folder.FolderType != FolderType.BUNCH;
         }
 
         public bool UseRecursiveOperation(int folderId, string toRootFolderId)
@@ -853,6 +857,22 @@ namespace ASC.Files.Core.Data
                             folder.FolderType = FolderType.SHARE;
                             folder.Title = share;
                             break;
+                        case recent:
+                            folder.FolderType = FolderType.Recent;
+                            folder.Title = recent;
+                            break;
+                        case favorites:
+                            folder.FolderType = FolderType.Favorites;
+                            folder.Title = favorites;
+                            break;
+                        case templates:
+                            folder.FolderType = FolderType.Templates;
+                            folder.Title = templates;
+                            break;
+                        case privacy:
+                            folder.FolderType = FolderType.Privacy;
+                            folder.Title = privacy;
+                            break;
                         case projects:
                             folder.FolderType = FolderType.Projects;
                             folder.Title = projects;
@@ -924,6 +944,23 @@ namespace ASC.Files.Core.Data
                         folder.FolderType = FolderType.SHARE;
                         folder.Title = share;
                         break;
+                    case recent:
+                        folder.FolderType = FolderType.Recent;
+                        folder.Title = recent;
+                        break;
+                    case favorites:
+                        folder.FolderType = FolderType.Favorites;
+                        folder.Title = favorites;
+                        break;
+                    case templates:
+                        folder.FolderType = FolderType.Templates;
+                        folder.Title = templates;
+                        break;
+                    case privacy:
+                        folder.FolderType = FolderType.Privacy;
+                        folder.Title = privacy;
+                        folder.CreateBy = new Guid(data);
+                        break;
                     case projects:
                         folder.FolderType = FolderType.Projects;
                         folder.Title = projects;
@@ -975,6 +1012,27 @@ namespace ASC.Files.Core.Data
         {
             return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, share, null, createIfNotExists);
         }
+
+        public int GetFolderIDRecent(bool createIfNotExists)
+        {
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, recent, null, createIfNotExists);
+        }
+
+        public int GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, favorites, null, createIfNotExists);
+        }
+
+        public int GetFolderIDTemplates(bool createIfNotExists)
+        {
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, templates, null, createIfNotExists);
+        }
+
+        public int GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
+        {
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        }
+
 
         #endregion
 
@@ -1057,8 +1115,17 @@ namespace ASC.Files.Core.Data
                 case FolderType.SHARE:
                     result.Title = FilesUCResource.SharedForMe;
                     break;
+                case FolderType.Recent:
+                    result.Title = FilesUCResource.Recent;
+                    break;
+                case FolderType.Favorites:
+                    result.Title = FilesUCResource.Favorites;
+                    break;
                 case FolderType.TRASH:
                     result.Title = FilesUCResource.Trash;
+                    break;
+                case FolderType.Privacy:
+                    result.Title = FilesUCResource.PrivacyRoom;
                     break;
                 case FolderType.Projects:
                     result.Title = FilesUCResource.ProjectFiles;
@@ -1068,7 +1135,7 @@ namespace ASC.Files.Core.Data
                     {
                         result.Title = GetProjectTitle(result.ID);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         //Global.Logger.Error(e);
                     }

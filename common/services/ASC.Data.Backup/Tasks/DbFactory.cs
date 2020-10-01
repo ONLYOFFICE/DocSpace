@@ -29,10 +29,12 @@ using System.Configuration;
 using System.Data;
 using System.Data.Common;
 
-using Microsoft.Extensions.Configuration;
-using ASC.Common.Utils;
-using MySql.Data.MySqlClient;
 using ASC.Common;
+using ASC.Common.Utils;
+
+using Microsoft.Extensions.Configuration;
+
+using MySql.Data.MySqlClient;
 
 namespace ASC.Data.Backup.Tasks
 {
@@ -46,18 +48,22 @@ namespace ASC.Data.Backup.Tasks
         private string ConnectionString { get; set; }
         private string Path { get; set; }
 
-        internal ConnectionStringSettings ConnectionStringSettings { get {
+        internal ConnectionStringSettings ConnectionStringSettings
+        {
+            get
+            {
 
                 if (string.IsNullOrEmpty(ConnectionString))
                 {
-                    return  ConfigurationExtension.GetConnectionStrings(Configuration, DefaultConnectionStringName);
+                    return ConfigurationExtension.GetConnectionStrings(Configuration, DefaultConnectionStringName);
                 }
                 else
                 {
                     return ConfigurationExtension.GetConnectionStrings(Configuration, ConnectionString);
                 }
 
-            } }
+            }
+        }
 
         private DbProviderFactory DbProviderFactory
         {
@@ -120,7 +126,7 @@ namespace ASC.Data.Backup.Tasks
             }
             return command;
         }
-        
+
         private static string EnsureConnectionTimeout(string connectionString)
         {
             if (!connectionString.Contains("Connection Timeout"))

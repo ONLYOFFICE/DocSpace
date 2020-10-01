@@ -115,6 +115,1356 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to S3 accesskey.
+        /// </summary>
+        public static string Consumersacesskey {
+            get {
+                return ResourceManager.GetString("Consumersacesskey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rackspace apiKey.
+        /// </summary>
+        public static string ConsumersapiKey {
+            get {
+                return ResourceManager.GetString("ConsumersapiKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selectel authPwd.
+        /// </summary>
+        public static string ConsumersauthPwd {
+            get {
+                return ResourceManager.GetString("ConsumersauthPwd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selectel authUser.
+        /// </summary>
+        public static string ConsumersauthUser {
+            get {
+                return ResourceManager.GetString("ConsumersauthUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitly.
+        /// </summary>
+        public static string ConsumersBitly {
+            get {
+                return ResourceManager.GetString("ConsumersBitly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to login.
+        /// </summary>
+        public static string ConsumersbitlyClientId {
+            get {
+                return ResourceManager.GetString("ConsumersbitlyClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to apiKey.
+        /// </summary>
+        public static string ConsumersbitlyClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersbitlyClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this application to shorten portal invitation links and shared links in the Documents module with the Bitly service..
+        /// </summary>
+        public static string ConsumersBitlyDescription {
+            get {
+                return ResourceManager.GetString("ConsumersBitlyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add the Bitly service you will get shortened links to invite new users to the ONLYOFFICE™ portal and shortened links to documents in the Documents module that have been shared with external users..
+        /// </summary>
+        public static string ConsumersBitlyInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersBitlyInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:.
+        /// </summary>
+        public static string ConsumersBitlyInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersBitlyInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Box Key.
+        /// </summary>
+        public static string ConsumersBox {
+            get {
+                return ResourceManager.GetString("ConsumersBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Box ID.
+        /// </summary>
+        public static string ConsumersboxClientId {
+            get {
+                return ResourceManager.GetString("ConsumersboxClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Box Key.
+        /// </summary>
+        public static string ConsumersboxClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersboxClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the application to manage Box files and folders..
+        /// </summary>
+        public static string ConsumersBoxDescription {
+            get {
+                return ResourceManager.GetString("ConsumersBoxDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        /// </summary>
+        public static string ConsumersBoxInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersBoxInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersBoxInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersBoxInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clickatell.
+        /// </summary>
+        public static string ConsumersClickatell {
+            get {
+                return ResourceManager.GetString("ConsumersClickatell", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to apiKey.
+        /// </summary>
+        public static string ConsumersclickatellapiKey {
+            get {
+                return ResourceManager.GetString("ConsumersclickatellapiKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application for the two-factor authentication via Clickatell..
+        /// </summary>
+        public static string ConsumersClickatellDescription {
+            get {
+                return ResourceManager.GetString("ConsumersClickatellDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding the Clickatell service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal..
+        /// </summary>
+        public static string ConsumersClickatellInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersClickatellInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
+        /// </summary>
+        public static string ConsumersClickatellInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersClickatellInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocuSign.
+        /// </summary>
+        public static string ConsumersDocuSign {
+            get {
+                return ResourceManager.GetString("ConsumersDocuSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocuSign Key.
+        /// </summary>
+        public static string ConsumersdocuSignClientId {
+            get {
+                return ResourceManager.GetString("ConsumersdocuSignClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocuSign Secret.
+        /// </summary>
+        public static string ConsumersdocuSignClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersdocuSignClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the application to add the DocuSign electronic sign to documents..
+        /// </summary>
+        public static string ConsumersDocuSignDescription {
+            get {
+                return ResourceManager.GetString("ConsumersDocuSignDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocuSign authentication endpoint.
+        /// </summary>
+        public static string ConsumersdocuSignHost {
+            get {
+                return ResourceManager.GetString("ConsumersdocuSignHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the DocuSign service you will be able to sign files from the Documents module. This will allow to send a file for electronic signature to the ONLYOFFICE™ portal employees via the DocuSugn service. The signed file will be saved in the ONLYOFFICE™ Documents module..
+        /// </summary>
+        public static string ConsumersDocuSignInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersDocuSignInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersDocuSignInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersDocuSignInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DropBox.
+        /// </summary>
+        public static string ConsumersDropBox {
+            get {
+                return ResourceManager.GetString("ConsumersDropBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to manage Dropbox files and folders..
+        /// </summary>
+        public static string ConsumersDropBoxDescription {
+            get {
+                return ResourceManager.GetString("ConsumersDropBoxDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the Dropbox service you will be able to connect your Dropbox account in the Documents module. This will allow to upload and create new files in Dropbox, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        /// </summary>
+        public static string ConsumersDropBoxInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersDropBoxInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersDropBoxInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersDropBoxInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DropBox ID.
+        /// </summary>
+        public static string ConsumersDropBoxKey {
+            get {
+                return ResourceManager.GetString("ConsumersDropBoxKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DropBox Key.
+        /// </summary>
+        public static string ConsumersDropBoxSecret {
+            get {
+                return ResourceManager.GetString("ConsumersDropBoxSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EasyBib.
+        /// </summary>
+        public static string ConsumersEasyBib {
+            get {
+                return ResourceManager.GetString("ConsumersEasyBib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App key.
+        /// </summary>
+        public static string ConsumerseasyBibappkey {
+            get {
+                return ResourceManager.GetString("ConsumerseasyBibappkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this application to create bibliographic lists in documents with EasyBib..
+        /// </summary>
+        public static string ConsumersEasyBibDescription {
+            get {
+                return ResourceManager.GetString("ConsumersEasyBibDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add the EasyBib application, you can easily create bibliographic lists in your documents..
+        /// </summary>
+        public static string ConsumersEasyBibInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersEasyBibInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook.
+        /// </summary>
+        public static string ConsumersFacebook {
+            get {
+                return ResourceManager.GetString("ConsumersFacebook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Token.
+        /// </summary>
+        public static string ConsumersfacebookAccessToken_Default {
+            get {
+                return ResourceManager.GetString("ConsumersfacebookAccessToken_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook ID.
+        /// </summary>
+        public static string ConsumersfacebookClientId {
+            get {
+                return ResourceManager.GetString("ConsumersfacebookClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook Key.
+        /// </summary>
+        public static string ConsumersfacebookClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersfacebookClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Facebook account and search for contacts..
+        /// </summary>
+        public static string ConsumersFacebookDescription {
+            get {
+                return ResourceManager.GetString("ConsumersFacebookDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the Facebook service you will be able to connect your Facebook account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Facebook account of a contact in the CRM module and link it on the &apos;Edit person/company&apos; page..
+        /// </summary>
+        public static string ConsumersFacebookInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersFacebookInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersFacebookInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersFacebookInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firebase.
+        /// </summary>
+        public static string ConsumersFirebase {
+            get {
+                return ResourceManager.GetString("ConsumersFirebase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web API key.
+        /// </summary>
+        public static string Consumersfirebase_apiKey {
+            get {
+                return ResourceManager.GetString("Consumersfirebase_apiKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server key.
+        /// </summary>
+        public static string Consumersfirebase_authorization {
+            get {
+                return ResourceManager.GetString("Consumersfirebase_authorization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sender ID.
+        /// </summary>
+        public static string Consumersfirebase_messagingSenderId {
+            get {
+                return ResourceManager.GetString("Consumersfirebase_messagingSenderId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project ID.
+        /// </summary>
+        public static string Consumersfirebase_projectId {
+            get {
+                return ResourceManager.GetString("Consumersfirebase_projectId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Firebase Cloud Messaging service to receive notifications about the messages sent to you..
+        /// </summary>
+        public static string ConsumersFirebaseDescription {
+            get {
+                return ResourceManager.GetString("ConsumersFirebaseDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you connect Firebase Cloud Messaging you will be able to receive notifications about the messages sent to you even when you are offline..
+        /// </summary>
+        public static string ConsumersFirebaseInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersFirebaseInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Key.
+        /// </summary>
+        public static string ConsumersGoogle {
+            get {
+                return ResourceManager.GetString("ConsumersGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google ID.
+        /// </summary>
+        public static string ConsumersgoogleClientId {
+            get {
+                return ResourceManager.GetString("ConsumersgoogleClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Key.
+        /// </summary>
+        public static string ConsumersgoogleClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersgoogleClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Storage.
+        /// </summary>
+        public static string ConsumersGoogleCloud {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleCloud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bucket.
+        /// </summary>
+        public static string ConsumersGoogleCloudbucket {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleCloudbucket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the name of the Google Cloud bucket where you want to store your backups..
+        /// </summary>
+        public static string ConsumersGoogleCloudbucketDescription {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleCloudbucketDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Google Cloud Storage service to backup and store data from your portal..
+        /// </summary>
+        public static string ConsumersGoogleCloudDescription {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleCloudDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add Google Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        /// </summary>
+        public static string ConsumersGoogleCloudInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleCloudInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GoogleCloud json.
+        /// </summary>
+        public static string ConsumersGoogleCloudjson {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleCloudjson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the project to sign in to the portal using a Google account and manage Google Drive files and folders..
+        /// </summary>
+        public static string ConsumersGoogleDescription {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add a project of the Google service you will be able to connect your Google account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it as well as connect your Google Drive account in the Documents module. This will allow to upload and create new files in Google Drive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        /// </summary>
+        public static string ConsumersGoogleInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersGoogleInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersGoogleInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linkedin Key.
+        /// </summary>
+        public static string ConsumersLinkedIn {
+            get {
+                return ResourceManager.GetString("ConsumersLinkedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a LinkedIn account..
+        /// </summary>
+        public static string ConsumersLinkedInDescription {
+            get {
+                return ResourceManager.GetString("ConsumersLinkedInDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the LinkedIn service you will be able to connect your LinkedIn account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it..
+        /// </summary>
+        public static string ConsumersLinkedInInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersLinkedInInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersLinkedInInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersLinkedInInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linkedin ID.
+        /// </summary>
+        public static string ConsumersLinkedInKey {
+            get {
+                return ResourceManager.GetString("ConsumersLinkedInKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linkedin Key.
+        /// </summary>
+        public static string ConsumersLinkedInSecret {
+            get {
+                return ResourceManager.GetString("ConsumersLinkedInSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mail.ru.
+        /// </summary>
+        public static string ConsumersMailru {
+            get {
+                return ResourceManager.GetString("ConsumersMailru", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID.
+        /// </summary>
+        public static string ConsumersMailruClientId {
+            get {
+                return ResourceManager.GetString("ConsumersMailruClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secret key.
+        /// </summary>
+        public static string ConsumersMailruClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersMailruClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Mail.ru account..
+        /// </summary>
+        public static string ConsumersMailruDescription {
+            get {
+                return ResourceManager.GetString("ConsumersMailruDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add the Mail.ru application you can enable signing in to the portal using the Mail.ru account on your profile page..
+        /// </summary>
+        public static string ConsumersMailruInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersMailruInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rackspace Cloud Storage.
+        /// </summary>
+        public static string ConsumersRackspace {
+            get {
+                return ResourceManager.GetString("ConsumersRackspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Rackspace Cloud Storage service to backup and store data from your portal..
+        /// </summary>
+        public static string ConsumersRackspaceDescription {
+            get {
+                return ResourceManager.GetString("ConsumersRackspaceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add Rackspace Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        /// </summary>
+        public static string ConsumersRackspaceInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersRackspaceInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private Container.
+        /// </summary>
+        public static string ConsumersRackspaceprivate_container {
+            get {
+                return ResourceManager.GetString("ConsumersRackspaceprivate_container", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the URL address of the Rackspace private container where you want to store your backups..
+        /// </summary>
+        public static string ConsumersRackspaceprivate_containerDescription {
+            get {
+                return ResourceManager.GetString("ConsumersRackspaceprivate_containerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public Container.
+        /// </summary>
+        public static string ConsumersRackspacepublic_container {
+            get {
+                return ResourceManager.GetString("ConsumersRackspacepublic_container", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the URL address of the Rackspace public container where you want to store your backups..
+        /// </summary>
+        public static string ConsumersRackspacepublic_containerDescription {
+            get {
+                return ResourceManager.GetString("ConsumersRackspacepublic_containerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string ConsumersRackspaceregion {
+            get {
+                return ResourceManager.GetString("ConsumersRackspaceregion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the region where your Rackspace containers are located..
+        /// </summary>
+        public static string ConsumersRackspaceregionDescription {
+            get {
+                return ResourceManager.GetString("ConsumersRackspaceregionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amazon AWS S3.
+        /// </summary>
+        public static string ConsumersS3 {
+            get {
+                return ResourceManager.GetString("ConsumersS3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bucket.
+        /// </summary>
+        public static string ConsumersS3bucket {
+            get {
+                return ResourceManager.GetString("ConsumersS3bucket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the unique name of the Amazon bucket where you want to store your backups..
+        /// </summary>
+        public static string ConsumersS3bucketDescription {
+            get {
+                return ResourceManager.GetString("ConsumersS3bucketDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Amazon AWS S3 to backup and store data from your portal..
+        /// </summary>
+        public static string ConsumersS3Description {
+            get {
+                return ResourceManager.GetString("ConsumersS3Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add Amazon AWS S3 to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        /// </summary>
+        public static string ConsumersS3Instruction {
+            get {
+                return ResourceManager.GetString("ConsumersS3Instruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string ConsumersS3region {
+            get {
+                return ResourceManager.GetString("ConsumersS3region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the AWS region where your Amazon bucket resides..
+        /// </summary>
+        public static string ConsumersS3regionDescription {
+            get {
+                return ResourceManager.GetString("ConsumersS3regionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to S3 secret access key.
+        /// </summary>
+        public static string Consumerssecretaccesskey {
+            get {
+                return ResourceManager.GetString("Consumerssecretaccesskey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selectel Cloud Storage.
+        /// </summary>
+        public static string ConsumersSelectel {
+            get {
+                return ResourceManager.GetString("ConsumersSelectel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password to access the storage.
+        /// </summary>
+        public static string ConsumersSelectelauthPwd {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelauthPwd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auth User.
+        /// </summary>
+        public static string ConsumersSelectelauthUser {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelauthUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Selectel Cloud Storage service to backup and store data from your portal..
+        /// </summary>
+        public static string ConsumersSelectelDescription {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        /// </summary>
+        public static string ConsumersSelectelInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private container.
+        /// </summary>
+        public static string ConsumersSelectelprivate_container {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelprivate_container", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the name of the Selectel private container where you want to store your backups..
+        /// </summary>
+        public static string ConsumersSelectelprivate_containerDescription {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelprivate_containerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public container.
+        /// </summary>
+        public static string ConsumersSelectelpublic_container {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelpublic_container", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the name of the Selectel public container where you want to store your backups..
+        /// </summary>
+        public static string ConsumersSelectelpublic_containerDescription {
+            get {
+                return ResourceManager.GetString("ConsumersSelectelpublic_containerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OneDrive.
+        /// </summary>
+        public static string ConsumersSkyDrive {
+            get {
+                return ResourceManager.GetString("ConsumersSkyDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OneDrive ID.
+        /// </summary>
+        public static string Consumersskydriveappkey {
+            get {
+                return ResourceManager.GetString("Consumersskydriveappkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OneDrive Key.
+        /// </summary>
+        public static string Consumersskydriveappsecret {
+            get {
+                return ResourceManager.GetString("Consumersskydriveappsecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to manage OneDrive files and folders..
+        /// </summary>
+        public static string ConsumersSkyDriveDescription {
+            get {
+                return ResourceManager.GetString("ConsumersSkyDriveDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the OneDrive service you will be able to connect your OneDrive account in the Documents module. This will allow to upload and create new files in OneDrive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        /// </summary>
+        public static string ConsumersSkyDriveInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersSkyDriveInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersSkyDriveInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersSkyDriveInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMS Center.
+        /// </summary>
+        public static string ConsumersSmsc {
+            get {
+                return ResourceManager.GetString("ConsumersSmsc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application for the two-factor authentication via SMS Center..
+        /// </summary>
+        public static string ConsumersSmscDescription {
+            get {
+                return ResourceManager.GetString("ConsumersSmscDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding the SMS Center service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal. SMS Center application is useful as a provider for CIS countries..
+        /// </summary>
+        public static string ConsumersSmscInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersSmscInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:.
+        /// </summary>
+        public static string ConsumersSmscInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersSmscInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string Consumerssmsclogin {
+            get {
+                return ResourceManager.GetString("Consumerssmsclogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password or password MD5 hash in lowercase.
+        /// </summary>
+        public static string Consumerssmscpsw {
+            get {
+                return ResourceManager.GetString("Consumerssmscpsw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twilio.
+        /// </summary>
+        public static string ConsumersTwilio {
+            get {
+                return ResourceManager.GetString("ConsumersTwilio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account Sid.
+        /// </summary>
+        public static string ConsumerstwilioAccountSid {
+            get {
+                return ResourceManager.GetString("ConsumerstwilioAccountSid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auth Token.
+        /// </summary>
+        public static string ConsumerstwilioAuthToken {
+            get {
+                return ResourceManager.GetString("ConsumerstwilioAuthToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this application to call CRM contacts with Twilio..
+        /// </summary>
+        public static string ConsumersTwilioDescription {
+            get {
+                return ResourceManager.GetString("ConsumersTwilioDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After you add Twilio, you will be able to call any CRM contact right from the browser..
+        /// </summary>
+        public static string ConsumersTwilioInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersTwilioInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:.
+        /// </summary>
+        public static string ConsumersTwilioInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersTwilioInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number from Twilio (required for SMS authorization).
+        /// </summary>
+        public static string Consumerstwiliosender {
+            get {
+                return ResourceManager.GetString("Consumerstwiliosender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Key.
+        /// </summary>
+        public static string ConsumersTwitter {
+            get {
+                return ResourceManager.GetString("ConsumersTwitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access Token.
+        /// </summary>
+        public static string ConsumerstwitterAccessToken_Default {
+            get {
+                return ResourceManager.GetString("ConsumerstwitterAccessToken_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access Token Secret.
+        /// </summary>
+        public static string ConsumerstwitterAccessTokenSecret_Default {
+            get {
+                return ResourceManager.GetString("ConsumerstwitterAccessTokenSecret_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Twitter account and search for contacts..
+        /// </summary>
+        public static string ConsumersTwitterDescription {
+            get {
+                return ResourceManager.GetString("ConsumersTwitterDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you add an application of the Twitter service you will be able to connect your Twitter account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Twitter account of a person in the CRM module and link it on the &apos;Edit person/company&apos; page and then view Twitter news feed..
+        /// </summary>
+        public static string ConsumersTwitterInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersTwitterInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersTwitterInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersTwitterInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter ID.
+        /// </summary>
+        public static string ConsumersTwitterKey {
+            get {
+                return ResourceManager.GetString("ConsumersTwitterKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Key.
+        /// </summary>
+        public static string ConsumersTwitterSecret {
+            get {
+                return ResourceManager.GetString("ConsumersTwitterSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rackspace username.
+        /// </summary>
+        public static string Consumersusername {
+            get {
+                return ResourceManager.GetString("Consumersusername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VK.
+        /// </summary>
+        public static string ConsumersVk {
+            get {
+                return ResourceManager.GetString("ConsumersVk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application ID.
+        /// </summary>
+        public static string ConsumersVkClientId {
+            get {
+                return ResourceManager.GetString("ConsumersVkClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secret key.
+        /// </summary>
+        public static string ConsumersVkClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersVkClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a VK account..
+        /// </summary>
+        public static string ConsumersVkDescription {
+            get {
+                return ResourceManager.GetString("ConsumersVkDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add the VK application you can enable signing in to the portal using the VK account on your profile page..
+        /// </summary>
+        public static string ConsumersVkInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersVkInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WordPress.
+        /// </summary>
+        public static string ConsumersWordpress {
+            get {
+                return ResourceManager.GetString("ConsumersWordpress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to publish documents directly in WordPress..
+        /// </summary>
+        public static string ConsumersWordpressDescription {
+            get {
+                return ResourceManager.GetString("ConsumersWordpressDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding the WordPress application you can easily publish the documents on your WordPress website, saving their formatting..
+        /// </summary>
+        public static string ConsumersWordpressInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersWordpressInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WordPress Key.
+        /// </summary>
+        public static string ConsumerswpClientId {
+            get {
+                return ResourceManager.GetString("ConsumerswpClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WordPress Secret.
+        /// </summary>
+        public static string ConsumerswpClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumerswpClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yahoo.
+        /// </summary>
+        public static string ConsumersYahoo {
+            get {
+                return ResourceManager.GetString("ConsumersYahoo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client ID.
+        /// </summary>
+        public static string ConsumersyahooClientId {
+            get {
+                return ResourceManager.GetString("ConsumersyahooClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client Secret.
+        /// </summary>
+        public static string ConsumersyahooClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersyahooClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to import users from the Yahoo service..
+        /// </summary>
+        public static string ConsumersYahooDescription {
+            get {
+                return ResourceManager.GetString("ConsumersYahooDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding the Yahoo service application you will be able to add ONLYOFFICE portal new users from the contact list..
+        /// </summary>
+        public static string ConsumersYahooInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersYahooInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersYahooInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersYahooInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yandex.
+        /// </summary>
+        public static string ConsumersYandex {
+            get {
+                return ResourceManager.GetString("ConsumersYandex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID.
+        /// </summary>
+        public static string ConsumersYandexClientId {
+            get {
+                return ResourceManager.GetString("ConsumersYandexClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string ConsumersYandexClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersYandexClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Yandex account..
+        /// </summary>
+        public static string ConsumersYandexDescription {
+            get {
+                return ResourceManager.GetString("ConsumersYandexDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you add the Yandex application you can enable signing in to the portal using the Yandex account on your profile page..
+        /// </summary>
+        public static string ConsumersYandexInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersYandexInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password recovery operation is prohibited for an LDAP user.
         /// </summary>
         public static string CouldNotRecoverPasswordForLdapUser {
@@ -183,6 +1533,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorAccessRestricted {
             get {
                 return ResourceManager.GetString("ErrorAccessRestricted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bad keys.
+        /// </summary>
+        public static string ErrorBadKeys {
+            get {
+                return ResourceManager.GetString("ErrorBadKeys", resourceCulture);
             }
         }
         
@@ -511,6 +1870,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If a user with the {0} email exists, the password change instruction has been sent to this email address..
+        /// </summary>
+        public static string MessageYourPasswordSendedToEmail {
+            get {
+                return ResourceManager.GetString("MessageYourPasswordSendedToEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The password change instructions have been sent to the {0} email address..
         /// </summary>
         public static string MessageYourPasswordSuccessfullySendedToEmail {
@@ -723,6 +2091,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string TfaTooMuchError {
             get {
                 return ResourceManager.GetString("TfaTooMuchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial.
+        /// </summary>
+        public static string Trial {
+            get {
+                return ResourceManager.GetString("Trial", resourceCulture);
             }
         }
         

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.Tasks.Data;
@@ -40,7 +41,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         public TenantsModuleSpecifics(CoreSettings coreSettings, Helpers helpers)
             : base(helpers)
         {
-            
+
             this.coreSettings = coreSettings;
         }
         private readonly TableInfo[] _tables = new[]
@@ -103,7 +104,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
         {
             //we insert tenant as suspended so it can't be accessed before restore operation is finished
-            if (table.Name.Equals("tenants_tenants", StringComparison.InvariantCultureIgnoreCase) && 
+            if (table.Name.Equals("tenants_tenants", StringComparison.InvariantCultureIgnoreCase) &&
                 columnName.Equals("status", StringComparison.InvariantCultureIgnoreCase))
             {
                 value = (int)TenantStatus.Restoring;

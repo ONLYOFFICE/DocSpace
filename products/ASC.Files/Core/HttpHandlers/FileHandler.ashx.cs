@@ -960,6 +960,16 @@ namespace ASC.Web.Files
 
         private async Task CreateFile(HttpContext context)
         {
+            if (!SecurityContext.IsAuthenticated)
+            {
+                //var refererURL = context.Request.GetUrlRewriter().AbsoluteUri;
+
+                //context.Session["refererURL"] = refererURL;
+                var authUrl = "~/Auth.aspx";
+                context.Response.Redirect(authUrl, true);
+                return;
+            }
+
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
             {
@@ -1019,7 +1029,7 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? PathProvider.GetFolderUrl(file.FolderID)
+                    ? PathProvider.GetFolderUrlById(file.FolderID)
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
@@ -1117,7 +1127,7 @@ namespace ASC.Web.Files
             {
                 try
                 {
-                    urlRedirect = PathProvider.GetFolderUrl(folderId);
+                    urlRedirect = PathProvider.GetFolderUrlById(folderId);
                 }
                 catch (ArgumentNullException e)
                 {

@@ -41,9 +41,9 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
-using ASC.Files.Core.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
@@ -504,6 +504,26 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public string GetFolderIDShare(bool createIfNotExists)
         {
             return null;
+        }
+
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
+        {
+            throw new NotImplementedException();
         }
 
         public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)

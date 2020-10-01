@@ -68,7 +68,8 @@ namespace ASC.Web.Studio.Utility
         FullTextSearch = 18,
         WhiteLabel = 19,
         MailService = 20,
-        Storage = 21
+        Storage = 21,
+        PrivacyRoom = 22
     }
 
     public class CommonLinkUtility : BaseCommonLinkUtility
@@ -392,7 +393,7 @@ namespace ASC.Web.Studio.Utility
                 name = GetProductNameFromUrl(url);
                 if (string.IsNullOrEmpty(name))
                 {
-                    return GetAddonNameFromUrl(name);
+                    return GetAddonNameFromUrl(url);
                 }
 
             }
@@ -488,7 +489,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetHelpLink(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
         {
-            if (!AdditionalWhiteLabelSettings.Instance(settingsManager).HelpCenterEnabled)
+            if (!settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().HelpCenterEnabled)
                 return string.Empty;
 
             var url = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl;
@@ -539,11 +540,6 @@ namespace ASC.Web.Studio.Utility
             if (userId != default)
             {
                 link += $"&uid={userId}";
-            }
-
-            if (postfix != null)
-            {
-                link += "&p=1";
             }
 
             return link;

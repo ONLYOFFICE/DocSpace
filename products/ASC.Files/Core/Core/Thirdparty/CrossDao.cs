@@ -47,6 +47,8 @@ namespace ASC.Files.Core.Thirdparty
             var fromFileShareRecords = securityDao.GetPureShareRecords(fromFile).Where(x => x.EntryType == FileEntryType.File);
             var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFile).ToList();
             var fromFileLockTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Locked).FirstOrDefault();
+            var fromFileFavoriteTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Favorite);
+            var fromFileTemplateTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Template);
 
             var toFile = ServiceProvider.GetService<File<TTo>>();
 
@@ -76,6 +78,8 @@ namespace ASC.Files.Core.Thirdparty
 
                 var fromFileTags = fromFileNewTags;
                 if (fromFileLockTag != null) fromFileTags.Add(fromFileLockTag);
+                if (fromFileFavoriteTag != null) fromFileTags.AddRange(fromFileFavoriteTag);
+                if (fromFileTemplateTag != null) fromFileTags.AddRange(fromFileTemplateTag);
 
                 if (fromFileTags.Any())
                 {

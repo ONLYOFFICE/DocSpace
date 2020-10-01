@@ -35,7 +35,7 @@ namespace ASC.Data.Backup
         void WriteEntry(string key, string source);
     }
 
-	public interface IDataReadOperator : IDisposable
+    public interface IDataReadOperator : IDisposable
     {
         Stream GetEntry(string key);
         List<string> Entries { get; }

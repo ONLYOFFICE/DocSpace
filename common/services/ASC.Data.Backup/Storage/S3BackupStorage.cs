@@ -27,12 +27,13 @@
 using System;
 using System.IO;
 
-using ASC.Common.Logging;
-
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+
+using ASC.Common.Logging;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Storage
@@ -46,7 +47,7 @@ namespace ASC.Data.Backup.Storage
 
         private readonly ILog log;
 
-        public S3BackupStorage(IOptionsMonitor<ILog> options ,string accessKeyId, string secretAccessKey, string bucket, string region)
+        public S3BackupStorage(IOptionsMonitor<ILog> options, string accessKeyId, string secretAccessKey, string bucket, string region)
         {
             log = options.CurrentValue;
             this.accessKeyId = accessKeyId;
@@ -61,8 +62,8 @@ namespace ASC.Data.Backup.Storage
 
             if (String.IsNullOrEmpty(storageBasePath))
                 key = "backup/" + Path.GetFileName(localPath);
-            else                        
-                key = String.Concat(storageBasePath.Trim(new char[] {' ', '/', '\\'}), "/", Path.GetFileName(localPath));
+            else
+                key = String.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
 
             using (var fileTransferUtility = new TransferUtility(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region)))
             {
@@ -84,15 +85,15 @@ namespace ASC.Data.Backup.Storage
         public void Download(string storagePath, string targetLocalPath)
         {
             var request = new GetObjectRequest
-                {
-                    BucketName = bucket,
-                    Key = GetKey(storagePath),
-                };
+            {
+                BucketName = bucket,
+                Key = GetKey(storagePath),
+            };
 
             using (var s3 = GetClient())
             using (var response = s3.GetObjectAsync(request).Result)
             {
-               response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
+                response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
             }
         }
 
@@ -100,11 +101,11 @@ namespace ASC.Data.Backup.Storage
         {
             using (var s3 = GetClient())
             {
-               s3.DeleteObjectAsync(new DeleteObjectRequest
-                    {
-                        BucketName = bucket,
-                        Key = GetKey(storagePath)
-                    });
+                s3.DeleteObjectAsync(new DeleteObjectRequest
+                {
+                    BucketName = bucket,
+                    Key = GetKey(storagePath)
+                });
             }
         }
 
@@ -115,7 +116,7 @@ namespace ASC.Data.Backup.Storage
                 try
                 {
                     var request = new ListObjectsRequest { BucketName = bucket, Prefix = GetKey(storagePath) };
-                    var response =  s3.ListObjectsAsync(request).Result;
+                    var response = s3.ListObjectsAsync(request).Result;
                     return response.S3Objects.Count > 0;
                 }
                 catch (AmazonS3Exception ex)
@@ -133,18 +134,18 @@ namespace ASC.Data.Backup.Storage
             {
                 return s3.GetPreSignedURL(
                     new GetPreSignedUrlRequest
-                        {
-                            BucketName = bucket,
-                            Key = GetKey(storagePath),
-                            Expires = DateTime.UtcNow.AddDays(1),
-                            Verb = HttpVerb.GET
-                        });
+                    {
+                        BucketName = bucket,
+                        Key = GetKey(storagePath),
+                        Expires = DateTime.UtcNow.AddDays(1),
+                        Verb = HttpVerb.GET
+                    });
             }
         }
 
         private string GetKey(string fileName)
         {
-           // return "backup/" + Path.GetFileName(fileName);
+            // return "backup/" + Path.GetFileName(fileName);
             return fileName;
         }
 

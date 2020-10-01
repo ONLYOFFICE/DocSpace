@@ -577,16 +577,17 @@ namespace ASC.Core.Billing
             {
                 tariff.State = TariffState.NotPaid;
 
-                if ((q == null || !q.Trial) && CoreBaseSettings.Standalone)
+                if (CoreBaseSettings.Standalone)
                 {
                     if (q != null)
                     {
                         var defaultQuota = QuotaService.GetTenantQuota(Tenant.DEFAULT_TENANT);
-                        if (defaultQuota.CountPortals != q.CountPortals)
-                        {
-                            defaultQuota.CountPortals = q.CountPortals;
-                            QuotaService.SaveTenantQuota(defaultQuota);
-                        }
+                        defaultQuota.Name = "overdue";
+
+                        defaultQuota.Features = q.Features;
+                        defaultQuota.Support = false;
+
+                        QuotaService.SaveTenantQuota(defaultQuota);
                     }
 
                     var unlimTariff = Tariff.CreateDefault();

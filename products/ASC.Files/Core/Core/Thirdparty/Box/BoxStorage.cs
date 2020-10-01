@@ -28,11 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+
 using ASC.FederatedLogin;
+
 using Box.V2;
 using Box.V2.Auth;
 using Box.V2.Config;
 using Box.V2.Models;
+
 using BoxSDK = Box.V2;
 
 namespace ASC.Files.Thirdparty.Box
@@ -47,7 +50,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public bool IsOpened { get; private set; }
 
-        public long MaxChunkedUploadFileSize = 250L*1024L*1024L;
+        public long MaxChunkedUploadFileSize = 250L * 1024L * 1024L;
 
         public void Open(OAuth20Token token)
         {
@@ -84,8 +87,7 @@ namespace ASC.Files.Thirdparty.Box
             }
             catch (Exception ex)
             {
-                var boxException = (BoxSDK.Exceptions.BoxException)ex.InnerException;
-                if (boxException != null && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
+                if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
                 {
                     return null;
                 }
@@ -101,8 +103,7 @@ namespace ASC.Files.Thirdparty.Box
             }
             catch (Exception ex)
             {
-                var boxException = (BoxSDK.Exceptions.BoxException)ex.InnerException;
-                if (boxException != null && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
+                if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
                 {
                     return null;
                 }
@@ -121,10 +122,10 @@ namespace ASC.Files.Thirdparty.Box
 
             if (offset > 0 && file.Size.HasValue)
             {
-                return _boxClient.FilesManager.DownloadStreamAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1).Result;
+                return _boxClient.FilesManager.DownloadAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1).Result;
             }
 
-            var str = _boxClient.FilesManager.DownloadStreamAsync(file.Id).Result;
+            var str = _boxClient.FilesManager.DownloadAsync(file.Id).Result;
             if (offset == 0)
             {
                 return str;
@@ -146,26 +147,26 @@ namespace ASC.Files.Thirdparty.Box
         public BoxFolder CreateFolder(string title, string parentId)
         {
             var boxFolderRequest = new BoxFolderRequest
+            {
+                Name = title,
+                Parent = new BoxRequestEntity
                 {
-                    Name = title,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = parentId
-                        }
-                };
+                    Id = parentId
+                }
+            };
             return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields).Result;
         }
 
         public BoxFile CreateFile(Stream fileStream, string title, string parentId)
         {
             var boxFileRequest = new BoxFileRequest
+            {
+                Name = title,
+                Parent = new BoxRequestEntity
                 {
-                    Name = title,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = parentId
-                        }
-                };
+                    Id = parentId
+                }
+            };
             return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false).Result;
         }
 
@@ -184,56 +185,56 @@ namespace ASC.Files.Thirdparty.Box
         public BoxFolder MoveFolder(string boxFolderId, string newFolderName, string toFolderId)
         {
             var boxFolderRequest = new BoxFolderRequest
+            {
+                Id = boxFolderId,
+                Name = newFolderName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFolderId,
-                    Name = newFolderName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields).Result;
         }
 
         public BoxFile MoveFile(string boxFileId, string newFileName, string toFolderId)
         {
             var boxFileRequest = new BoxFileRequest
+            {
+                Id = boxFileId,
+                Name = newFileName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFileId,
-                    Name = newFileName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields).Result;
         }
 
         public BoxFolder CopyFolder(string boxFolderId, string newFolderName, string toFolderId)
         {
             var boxFolderRequest = new BoxFolderRequest
+            {
+                Id = boxFolderId,
+                Name = newFolderName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFolderId,
-                    Name = newFolderName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields).Result;
         }
 
         public BoxFile CopyFile(string boxFileId, string newFileName, string toFolderId)
         {
             var boxFileRequest = new BoxFileRequest
+            {
+                Id = boxFileId,
+                Name = newFileName,
+                Parent = new BoxRequestEntity
                 {
-                    Id = boxFileId,
-                    Name = newFileName,
-                    Parent = new BoxRequestEntity
-                        {
-                            Id = toFolderId
-                        }
-                };
+                    Id = toFolderId
+                }
+            };
             return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields).Result;
         }
 
@@ -256,7 +257,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public long GetMaxUploadSize()
         {
-            var boxUser = _boxClient.UsersManager.GetCurrentUserInformationAsync(new[] { "max_upload_size" }).Result;
+            var boxUser = _boxClient.UsersManager.GetCurrentUserInformationAsync(new List<string>() { "max_upload_size" }).Result;
             var max = boxUser.MaxUploadSize.HasValue ? boxUser.MaxUploadSize.Value : MaxChunkedUploadFileSize;
 
             //todo: without chunked uploader:

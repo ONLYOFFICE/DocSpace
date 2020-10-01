@@ -31,6 +31,38 @@
 		  }
 	  }
     },    
+    {
+      "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Telegram",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Telegram",
+		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Telegram",
+		  "order": "13",
+		  "props": {
+			"telegramBotToken": "",
+			"telegramBotName": ""
+		  },
+		  "additional": {
+			"telegramAuthTokenLifespan" : 20,
+			"telegramProxy": ""
+		  }
+	  }
+    },    
 	{
       "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -41,11 +73,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "box",
+		  "key": "Box",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "box",
+		  "key": "Box",
 		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -191,11 +223,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "facebook",
+		  "key": "Facebook",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "facebook",
+		  "key": "Facebook",
 		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -252,11 +284,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "google",
+		  "key": "Google",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "google",
+		  "key": "Google",
 		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -283,11 +315,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "linkedin",
+		  "key": "LinkedIn",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "linkedin",
+		  "key": "LinkedIn",
 		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -301,6 +333,37 @@
 		  },
 		  "additional": {
 			"linkedInRedirectUrl" : ""
+		  }
+	  }
+    },
+		{
+      "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Mailru",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Mailru",
+		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Mailru",
+		  "order": "4",
+		  "props": {
+			"mailRuClientId": "",
+			"mailRuClientSecret": ""
+		  },
+		  "additional": {
+			"mailRuRedirectUrl" : ""
 		  }
 	  }
     },
@@ -406,11 +469,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "twitter",
+		  "key": "Twitter",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "twitter",
+		  "key": "Twitter",
 		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -461,6 +524,37 @@
 	  }
     },
 	{
+      "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Vk",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Vk",
+		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Vk",
+		  "order": "14",
+		  "props": {
+			"vkClientId": "",
+			"vkClientSecret": ""
+		  },
+		  "additional": {
+			"vkRedirectUrl" : ""
+		  }
+	  }
+    },
+	{
       "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin",
       "services": [
         {
@@ -488,6 +582,37 @@
 		  },
 		  "additional": {
 			"wpRedirectUrl" : ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Yandex",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Yandex",
+		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Yandex",
+		  "order": "15",
+		  "props": {
+			"yandexClientId": "",
+			"yandexClientSecret": ""
+		  },
+		  "additional": {
+			"yandexRedirectUrl" : ""
 		  }
 	  }
     },
@@ -520,7 +645,12 @@
 		  "additional": {
 			"handlerType" : "ASC.Data.Storage.S3.S3Storage, ASC.Data.Storage",
 			"bucket" : "",
-			"region" : ""
+			"region" : "",
+			"serviceurl": "",
+			"forcepathstyle": "",
+			"usehttp": "",
+			"sse": "",
+			"cdn": "S3Cdn"
 		  }
 	  }
     },

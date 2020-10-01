@@ -81,6 +81,10 @@ namespace ASC.Web.Files.Classes
                         GlobalFolder.UserRootFolderCache.Clear();
                         GlobalFolder.CommonFolderCache.Clear();
                         GlobalFolder.ShareFolderCache.Clear();
+                        GlobalFolder.RecentFolderCache.Clear();
+                        GlobalFolder.FavoritesFolderCache.Clear();
+                        GlobalFolder.TemplatesFolderCache.Clear();
+                        GlobalFolder.PrivacyFolderCache.Clear();
                         GlobalFolder.TrashFolderCache.Clear();
                     }
                     catch (Exception e)
@@ -333,6 +337,24 @@ namespace ASC.Web.Files.Classes
             UserRootFolderCache.Remove(cacheKey);
         }
 
+        public bool IsFirstVisit(IDaoFactory daoFactory)
+        {
+            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+
+            if (!UserRootFolderCache.TryGetValue(cacheKey, out var _))
+            {
+                var folderDao = daoFactory.GetFolderDao<int>();
+                var myFolderId = folderDao.GetFolderIDUser(false);
+
+                if (Equals(myFolderId, 0))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         internal static readonly IDictionary<int, int> CommonFolderCache =
                 new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
@@ -378,6 +400,93 @@ namespace ASC.Web.Files.Classes
             return (T)Convert.ChangeType(GetFolderShare(daoFactory), typeof(T));
         }
 
+        internal static readonly IDictionary<int, int> RecentFolderCache =
+    new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
+
+        public int GetFolderRecent(IDaoFactory daoFactory)
+        {
+            if (!AuthContext.IsAuthenticated) return 0;
+            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
+
+            if (!RecentFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var recentFolderId))
+            {
+                var folderDao = daoFactory.GetFolderDao<int>();
+                recentFolderId = folderDao.GetFolderIDRecent(true);
+
+                if (!recentFolderId.Equals(0))
+                    RecentFolderCache[TenantManager.GetCurrentTenant().TenantId] = recentFolderId;
+            }
+
+            return recentFolderId;
+        }
+
+        internal static readonly IDictionary<int, int> FavoritesFolderCache =
+            new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
+
+        public int GetFolderFavorites(IDaoFactory daoFactory)
+        {
+            if (!AuthContext.IsAuthenticated) return 0;
+            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
+
+            if (!FavoritesFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var favoriteFolderId))
+            {
+                var folderDao = daoFactory.GetFolderDao<int>();
+                favoriteFolderId = folderDao.GetFolderIDFavorites(true);
+
+                if (!favoriteFolderId.Equals(0))
+                    FavoritesFolderCache[TenantManager.GetCurrentTenant().TenantId] = favoriteFolderId;
+            }
+
+            return favoriteFolderId;
+        }
+
+        internal static readonly IDictionary<int, int> TemplatesFolderCache =
+            new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
+
+        public int GetFolderTemplates(IDaoFactory daoFactory)
+        {
+            if (!AuthContext.IsAuthenticated) return 0;
+            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
+
+            if (!TemplatesFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var templatesFolderId))
+            {
+                var folderDao = daoFactory.GetFolderDao<int>();
+                templatesFolderId = folderDao.GetFolderIDTemplates(true);
+
+                if (!templatesFolderId.Equals(0))
+                    TemplatesFolderCache[TenantManager.GetCurrentTenant().TenantId] = templatesFolderId;
+            }
+
+            return templatesFolderId;
+        }
+
+        internal static readonly IDictionary<string, int> PrivacyFolderCache =
+            new ConcurrentDictionary<string, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
+
+        public T GetFolderPrivacy<T>(IDaoFactory daoFactory)
+        {
+            return (T)Convert.ChangeType(GetFolderPrivacy(daoFactory), typeof(T));
+        }
+
+        public int GetFolderPrivacy(IDaoFactory daoFactory)
+        {
+            if (!AuthContext.IsAuthenticated) return 0;
+            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
+
+            var cacheKey = string.Format("privacy/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+
+            if (!PrivacyFolderCache.TryGetValue(cacheKey, out var privacyFolderId))
+            {
+                var folderDao = daoFactory.GetFolderDao<int>();
+                privacyFolderId = folderDao.GetFolderIDPrivacy(true);
+
+                if (!Equals(privacyFolderId, 0))
+                    PrivacyFolderCache[cacheKey] = privacyFolderId;
+            }
+            return privacyFolderId;
+        }
+
+
         internal static readonly IDictionary<string, object> TrashFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
@@ -417,7 +526,7 @@ namespace ASC.Web.Files.Classes
                 id = my ? folderDao.GetFolderIDUser(true) : folderDao.GetFolderIDCommon(true);
 
                 //Copy start document
-                if (AdditionalWhiteLabelSettings.Instance(SettingsManager).StartDocsEnabled)
+                if (SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
                 {
                     try
                     {
@@ -507,11 +616,16 @@ namespace ASC.Web.Files.Classes
         public int FolderProjects => GlobalFolder.GetFolderProjects(DaoFactory);
         public int FolderCommon => GlobalFolder.GetFolderCommon(FileMarker, DaoFactory);
         public int FolderMy => GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
+        public int FolderPrivacy => GlobalFolder.GetFolderPrivacy(DaoFactory);
+        public int FolderRecent => GlobalFolder.GetFolderRecent(DaoFactory);
+        public int FolderFavorites => GlobalFolder.GetFolderFavorites(DaoFactory);
+        public int FolderTemplates => GlobalFolder.GetFolderTemplates(DaoFactory);
 
         public T GetFolderMy<T>() => (T)Convert.ChangeType(FolderMy, typeof(T));
         public T GetFolderCommon<T>() => (T)Convert.ChangeType(FolderCommon, typeof(T));
         public T GetFolderProjects<T>() => (T)Convert.ChangeType(FolderProjects, typeof(T));
         public T GetFolderTrash<T>() => (T)Convert.ChangeType(FolderTrash, typeof(T));
+        public T GetFolderPrivacy<T>() => (T)Convert.ChangeType(FolderPrivacy, typeof(T));
 
         public void SetFolderMy<T>(T val)
         {

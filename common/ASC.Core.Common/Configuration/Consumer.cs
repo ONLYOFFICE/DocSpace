@@ -144,7 +144,7 @@ namespace ASC.Core.Common.Configuration
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
         {
             Name = name;
@@ -363,6 +363,7 @@ namespace ASC.Core.Common.Configuration
         private DataStoreConsumer GetCdn(string cdn)
         {
             var fromConfig = ConsumerFactory.GetByKey<Consumer>(cdn);
+            if (string.IsNullOrEmpty(fromConfig.Name)) return null;
 
             var props = ManagedKeys.ToDictionary(prop => prop, prop => this[prop]);
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);

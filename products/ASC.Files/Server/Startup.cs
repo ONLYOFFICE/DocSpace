@@ -10,6 +10,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,11 +43,12 @@ namespace ASC.Files
             diHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
-                .AddEncryptionControllerService()
+                .AddPrivacyRoomApiService()
                 .AddFileHandlerService()
                 .AddChunkedUploaderHandlerService()
                 .AddThirdPartyAppHandlerService()
-                .AddDocuSignHandlerService();
+                .AddDocuSignHandlerService()
+                .AddNotifyConfiguration();
 
             base.ConfigureServices(services);
         }

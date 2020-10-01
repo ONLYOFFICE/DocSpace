@@ -42,7 +42,7 @@ namespace ASC.Data.Backup.Extensions
         }
 
         public TreeNode(TEntry entry)
-            :this()
+            : this()
         {
             Entry = entry;
             Parent = null;

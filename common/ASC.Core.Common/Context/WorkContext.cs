@@ -27,16 +27,20 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Core.Common.Notify;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
 using ASC.Notify.Messages;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
@@ -98,12 +102,15 @@ namespace ASC.Core
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
+                var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
                 var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+                var telegramHelper = serviceProvider.GetService<TelegramHelper>();
 
                 NotifyContext = new NotifyContext(serviceProvider);
 
-                INotifySender jabberSender = new NotifyServiceSender(cacheNotify);
-                INotifySender emailSender = new NotifyServiceSender(cacheNotify);
+                INotifySender jabberSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
+                INotifySender emailSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
+                INotifySender telegramSender = new TelegramSender(options, telegramHelper);
 
                 var postman = configuration["core:notify:postman"];
 
@@ -129,8 +136,9 @@ namespace ASC.Core
                     emailSender.Init(properties);
                 }
 
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider, options));
                 NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, serviceProvider));
 
                 NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
                 NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;

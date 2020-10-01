@@ -144,19 +144,9 @@ namespace ASC.Web.Files.Utils
             if (Monitor.TryEnter(singleThread))
             {
                 using var scope = ServiceProvider.CreateScope();
-                var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                UserManager userManager;
-                SecurityContext securityContext;
-                IDaoFactory daoFactory;
-                FileSecurity fileSecurity;
-                PathProvider pathProvider;
-                SetupInfo setupInfo;
-                FileUtility fileUtility;
-                DocumentServiceHelper documentServiceHelper;
-                DocumentServiceConnector documentServiceConnector;
-                EntryManager entryManager;
-                FileConverter fileConverter;
+                var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
+                var (options, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
+                var logger = options.CurrentValue;
 
                 try
                 {
@@ -223,18 +213,6 @@ namespace ASC.Web.Files.Utils
                             }
 
                             tenantManager.SetCurrentTenant(tenantId);
-
-                            userManager = scope.ServiceProvider.GetService<UserManager>();
-                            securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                            daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-                            fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
-                            pathProvider = scope.ServiceProvider.GetService<PathProvider>();
-                            setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-                            fileUtility = scope.ServiceProvider.GetService<FileUtility>();
-                            documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
-                            documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
-                            entryManager = scope.ServiceProvider.GetService<EntryManager>();
-                            fileConverter = scope.ServiceProvider.GetService<FileConverter>();
 
                             securityContext.AuthenticateMe(account);
 
@@ -421,6 +399,83 @@ namespace ASC.Web.Files.Utils
                                       FileJson = JsonSerializer.Serialize(file, options)
                                   }, options);
         }
+    }
+
+    public class FileConverterQueueScope
+    {
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private IDaoFactory DaoFactory { get; }
+        private FileSecurity FileSecurity { get; }
+        private PathProvider PathProvider { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileUtility FileUtility { get; }
+        private DocumentServiceHelper DocumentServiceHelper { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private EntryManager EntryManager { get; }
+        private FileConverter FileConverter { get; }
+
+        public FileConverterQueueScope(IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            UserManager userManager,
+            SecurityContext securityContext,
+            IDaoFactory daoFactory,
+            FileSecurity fileSecurity,
+            PathProvider pathProvider,
+            SetupInfo setupInfo,
+            FileUtility fileUtility,
+            DocumentServiceHelper documentServiceHelper,
+            DocumentServiceConnector documentServiceConnector,
+            EntryManager entryManager,
+            FileConverter fileConverter)
+        {
+            Options = options;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            DaoFactory = daoFactory;
+            FileSecurity = fileSecurity;
+            PathProvider = pathProvider;
+            SetupInfo = setupInfo;
+            FileUtility = fileUtility;
+            DocumentServiceHelper = documentServiceHelper;
+            DocumentServiceConnector = documentServiceConnector;
+            EntryManager = entryManager;
+            FileConverter = fileConverter;
+        }
+
+
+        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantManager tenantManager,
+            out UserManager userManager,
+            out SecurityContext securityContext,
+            out IDaoFactory daoFactory,
+            out FileSecurity fileSecurity,
+            out PathProvider pathProvider,
+            out SetupInfo setupInfo,
+            out FileUtility fileUtility,
+            out DocumentServiceHelper documentServiceHelper,
+            out DocumentServiceConnector documentServiceConnector,
+            out EntryManager entryManager,
+            out FileConverter fileConverter)
+        {
+            optionsMonitor = Options;
+            tenantManager = TenantManager;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            daoFactory = DaoFactory;
+            fileSecurity = FileSecurity;
+            pathProvider = PathProvider;
+            setupInfo = SetupInfo;
+            fileUtility = FileUtility;
+            documentServiceHelper = DocumentServiceHelper;
+            documentServiceConnector = DocumentServiceConnector;
+            entryManager = EntryManager;
+            fileConverter = FileConverter;
+        }
+
     }
 
     public class FileJsonSerializerData<T>
@@ -664,12 +719,15 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
             File<T> newFile = null;
+            var markAsTemplate = false;
             var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetInternalExtension(file.Title));
 
             if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit(file))
             {
                 newFile = (File<T>)file.Clone();
                 newFile.Version++;
+                markAsTemplate = FileUtility.ExtsTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase)
+                              && FileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(newFileTitle), StringComparer.CurrentCultureIgnoreCase);
             }
             else
             {
@@ -754,10 +812,16 @@ namespace ASC.Web.Files.Utils
                 tagDao.SaveTags(tags);
             }
 
+            if (markAsTemplate)
+            {
+                tagDao.SaveTags(Tag.Template(AuthContext.CurrentAccount.ID, newFile));
+            }
+
             return newFile;
         }
 
         private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
+
     }
 
     internal class FileComparer<T> : IEqualityComparer<File<T>>
@@ -792,6 +856,8 @@ namespace ASC.Web.Files.Utils
             {
                 services.TryAddSingleton<FileConverterQueue<string>>();
                 services.TryAddSingleton<FileConverterQueue<int>>();
+                services.TryAddScoped<FileConverterQueueScope>();
+
                 return services
                     .AddFilesLinkUtilityService()
                     .AddFileUtilityService()

@@ -29,8 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Files.Core;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.ModuleManagement.Common;
 using ASC.Web.Core.Utility.Skins;
@@ -113,7 +113,7 @@ namespace ASC.Web.Files.Configuration
             result = folderDao.Search(text).Where(security.CanRead);
 
             if (ThirdpartyConfiguration.SupportInclusion
-                && (Global.IsAdministrator || FilesSettingsHelper.EnableThirdParty))
+                && FilesSettingsHelper.EnableThirdParty)
             {
                 var id = GlobalFolderHelper.FolderMy;
                 if (!Equals(id, 0))

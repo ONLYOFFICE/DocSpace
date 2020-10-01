@@ -80,7 +80,6 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-
         private static void NotifyClientRegisterCallback(Context context, INotifyClient client)
         {
             #region url correction
@@ -131,12 +130,10 @@ namespace ASC.Web.Studio.Core.Notify
                  InterceptorLifetime.Global,
                  (r, p, scope) =>
                  {
+                     var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+                     var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
                      try
                      {
-                         //fix
-                         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                         var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
-                         var userManager = scope.ServiceProvider.GetService<UserManager>();
                          // culture
                          var u = Constants.LostUser;
                          var tenant = tenantManager.GetCurrentTenant();
@@ -201,7 +198,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
+                         options.CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -241,15 +238,14 @@ namespace ASC.Web.Studio.Core.Notify
             #endregion
         }
 
-
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
-            var tenant = serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
-            var authContext = serviceScope.ServiceProvider.GetService<AuthContext>();
-            var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
-            var displayUserSettingsHelper = serviceScope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var tenant = scope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
+            var authContext = scope.ServiceProvider.GetService<AuthContext>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
 
             if (authContext.IsAuthenticated)
             {
@@ -262,19 +258,9 @@ namespace ASC.Web.Studio.Core.Notify
                         .Replace("<", "&#60");
                 }
             }
-            using var scope = ServiceProvider.CreateScope();
-            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
-            var webItemManager = scope.ServiceProvider.GetService<WebItemManager>();
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
-            var additionalWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettingsHelper>();
-            var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+            var (_, _, _, options, tenantExtra, _, webItemManager, configuration, tenantLogoManager, additionalWhiteLabelSettingsHelper, tenantUtil, coreBaseSettings, commonLinkUtility, settingsManager, studioNotifyHelper) = scopeClass;
+            var log = options.CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
@@ -370,27 +356,120 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    public class NotifyConfigurationScope
+    {
+        private TenantManager TenantManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private UserManager UserManager { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantExtra TenantExtra { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private WebItemManager WebItemManager { get; }
+        private IConfiguration Configuration { get; }
+        private TenantLogoManager TenantLogoManager { get; }
+        private AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private SettingsManager SettingsManager { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+
+        public NotifyConfigurationScope(TenantManager tenantManager,
+            WebItemSecurity webItemSecurity,
+            UserManager userManager,
+            IOptionsMonitor<ILog> options,
+            TenantExtra tenantExtra,
+            WebItemManagerSecurity webItemManagerSecurity,
+            WebItemManager webItemManager,
+            IConfiguration configuration,
+            TenantLogoManager tenantLogoManager,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility,
+            SettingsManager settingsManager,
+            StudioNotifyHelper studioNotifyHelper
+            )
+        {
+            TenantManager = tenantManager;
+            WebItemSecurity = webItemSecurity;
+            UserManager = userManager;
+            Options = options;
+            TenantExtra = tenantExtra;
+            WebItemManagerSecurity = webItemManagerSecurity;
+            WebItemManager = webItemManager;
+            Configuration = configuration;
+            TenantLogoManager = tenantLogoManager;
+            AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+            TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
+            CommonLinkUtility = commonLinkUtility;
+            SettingsManager = settingsManager;
+            StudioNotifyHelper = studioNotifyHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out WebItemSecurity webItemSecurity,
+            out UserManager userManager,
+            out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantExtra tenantExtra,
+            out WebItemManagerSecurity webItemManagerSecurity,
+            out WebItemManager webItemManager,
+            out IConfiguration configuration,
+            out TenantLogoManager tenantLogoManager,
+            out AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            out TenantUtil tenantUtil,
+            out CoreBaseSettings coreBaseSettings,
+            out CommonLinkUtility commonLinkUtility,
+            out SettingsManager settingsManager,
+            out StudioNotifyHelper studioNotifyHelper)
+        {
+            tenantManager = TenantManager;
+            webItemSecurity = WebItemSecurity;
+            userManager = UserManager;
+            optionsMonitor = Options;
+            tenantExtra = TenantExtra;
+            webItemManagerSecurity = WebItemManagerSecurity;
+            webItemManager = WebItemManager;
+            configuration = Configuration;
+            tenantLogoManager = TenantLogoManager;
+            additionalWhiteLabelSettingsHelper = AdditionalWhiteLabelSettingsHelper;
+            tenantUtil = TenantUtil;
+            coreBaseSettings = CoreBaseSettings;
+            commonLinkUtility = CommonLinkUtility;
+            settingsManager = SettingsManager;
+            studioNotifyHelper = StudioNotifyHelper;
+        }
+    }
+
     public static class NotifyConfigurationExtension
     {
         public static DIHelper AddNotifyConfiguration(this DIHelper services)
         {
-            return services
-                .AddJabberStylerService()
-                .AddTextileStylerService()
-                .AddPushStylerService()
-                .AddTenantManagerService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddDisplayUserSettingsService()
-                .AddTenantExtraService()
-                .AddWebItemManagerSecurity()
-                .AddWebItemManager()
-                .AddTenantLogoManagerService()
-                .AddTenantUtilService()
-                .AddCoreBaseSettingsService()
-                .AddAdditionalWhiteLabelSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddMailWhiteLabelSettingsService();
+            if (services.TryAddScoped<NotifyConfigurationScope>())
+            {
+
+                return services
+                    .AddJabberStylerService()
+                    .AddTextileStylerService()
+                    .AddPushStylerService()
+                    .AddTenantManagerService()
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddDisplayUserSettingsService()
+                    .AddTenantExtraService()
+                    .AddWebItemManagerSecurity()
+                    .AddWebItemManager()
+                    .AddTenantLogoManagerService()
+                    .AddTenantUtilService()
+                    .AddCoreBaseSettingsService()
+                    .AddAdditionalWhiteLabelSettingsService()
+                    .AddCommonLinkUtilityService()
+                    .AddMailWhiteLabelSettingsService()
+                    .AddStudioNotifyHelperService();
+            }
+
+            return services;
         }
     }
 }
