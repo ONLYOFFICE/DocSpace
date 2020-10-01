@@ -38,7 +38,7 @@ namespace ASC.Files
             services.AddMemoryCache();
 
             var diHelper = new DIHelper(services);
-            
+
             diHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
@@ -50,72 +50,10 @@ namespace ASC.Files
 
             base.ConfigureServices(services);
         }
-        public void Migrations(IApplicationBuilder app)
-        {
-            using (var Service = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-               
-                using (var Base = Service.ServiceProvider.GetService<DbContextManager<AccountLinkContext>>())
-                {
-                    Base.Value.Database.Migrate();
-                }
-                using (var Base = Service.ServiceProvider.GetService<DbContextManager<FilesDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<CoreDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<TenantDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<UserDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<WebstudioDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<FeedDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<ASC.Core.Common.EF.Context.DbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<ResourceDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<VoipDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<MessagesContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-                 using (var Base = Service.ServiceProvider.GetService<DbContextManager<ASC.Files.Core.EF.FilesDbContext>>())
-                 {
-                     Base.Value.Database.Migrate();
-                 }
-            }
-        }
-        
+
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
             base.Configure(app, env);
-
-            Migrations(app);
 
             app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),

@@ -1,5 +1,7 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
+
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
@@ -66,7 +68,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                schema: "onlyoffice",
                table: "core_user",
                columns: new[] { "id", "firstname", "lastname", "username", "tenant", "email", "workfromdate", "last_modified", "status", "activation_status", "phone_activation", "removed" },
-               values: new object[] { new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),"Administrator", "", "administrator", 1, " ", new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), 1, 0, 0, false });
+               values: new object[] { new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), "Administrator", "", "administrator", 1, " ", new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), 1, 0, 0, false });
 
             migrationBuilder.CreateTable(
                 name: "tenants_forbiden",
@@ -160,7 +162,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 constraints: table =>
                 {
                     table.PrimaryKey("core_usergroup_pkey", x => new { x.tenant, x.userid, x.groupid, x.ref_type });
-                    
+
                 });
             migrationBuilder.InsertData(
                schema: "onlyoffice",
@@ -181,15 +183,15 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 constraints: table =>
                 {
                     table.PrimaryKey("core_usersecurity_pkey", x => x.userid);
-                   
+
                 });
             migrationBuilder.InsertData(
                schema: "onlyoffice",
                table: "core_usersecurity",
                columns: new[] { "userid", "tenant", "pwdhash", "pwdhashsha512" },
-               values: new object[] { new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), 1, "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=", "l/DFJ5yg4oh1F6Qp7uDhBw=="});
+               values: new object[] { new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), 1, "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", "USubvPlB+ogq0Q1trcSupg==" });
 
-            
+
             migrationBuilder.CreateTable(
                 name: "tenants_partners",
                 schema: "onlyoffice",
@@ -203,7 +205,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 constraints: table =>
                 {
                     table.PrimaryKey("tenants_partners_pkey", x => x.tenant_id);
-                    
+
                 });
 
             migrationBuilder.InsertData(

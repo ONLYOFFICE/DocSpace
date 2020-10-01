@@ -41,8 +41,8 @@ namespace ASC.Core.Common.EF
                 {
                     Tenant = 1,
                     UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
-                    PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
-                    PwdHashSha512 = "l/DFJ5yg4oh1F6Qp7uDhBw=="
+                    PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
+                    PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg=="
                 }
                 );
         }

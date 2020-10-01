@@ -17,7 +17,6 @@ namespace ASC.Core.Common.EF.Context
 
         public DbContext(DbContextOptions options) : base(options)
         {
-            Database.Migrate();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +25,7 @@ namespace ASC.Core.Common.EF.Context
                    .AddMobileAppInstall()
                    .AddDbipLocation()
                    .Finish();
-            
+
             OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
