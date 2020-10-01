@@ -276,28 +276,15 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            switch (orderBy.SortedBy)
+            q = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    q = orderBy.IsAsc ? q.OrderBy(r => r.CreateBy) : q.OrderByDescending(r => r.CreateBy);
-                    break;
-                case SortedByType.Size:
-                    q = orderBy.IsAsc ? q.OrderBy(r => r.ContentLength) : q.OrderByDescending(r => r.ContentLength);
-                    break;
-                case SortedByType.AZ:
-                    q = orderBy.IsAsc ? q.OrderBy(r => r.Title) : q.OrderByDescending(r => r.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    q = orderBy.IsAsc ? q.OrderBy(r => r.ModifiedOn) : q.OrderByDescending(r => r.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    q = orderBy.IsAsc ? q.OrderBy(r => r.CreateOn) : q.OrderByDescending(r => r.CreateOn);
-                    break;
-                default:
-                    q = q.OrderBy(r => r.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? q.OrderBy(r => r.CreateBy) : q.OrderByDescending(r => r.CreateBy),
+                SortedByType.Size => orderBy.IsAsc ? q.OrderBy(r => r.ContentLength) : q.OrderByDescending(r => r.ContentLength),
+                SortedByType.AZ => orderBy.IsAsc ? q.OrderBy(r => r.Title) : q.OrderByDescending(r => r.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? q.OrderBy(r => r.ModifiedOn) : q.OrderByDescending(r => r.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? q.OrderBy(r => r.CreateOn) : q.OrderByDescending(r => r.CreateOn),
+                _ => q.OrderBy(r => r.Title),
+            };
             if (subjectID != Guid.Empty)
             {
                 if (subjectGroup)
