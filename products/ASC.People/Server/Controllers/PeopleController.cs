@@ -464,19 +464,22 @@ namespace ASC.Employee.Core.Controllers
 
             var user = new UserInfo();
 
-            memberModel.Password = (memberModel.Password ?? "").Trim();
-
-            if (string.IsNullOrEmpty(memberModel.Password))
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
             {
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
-            }
-            else
-            {
-                UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
-            }
+                memberModel.Password = (memberModel.Password ?? "").Trim();
 
-            var passwordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                if (string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.Password = UserManagerWrapper.GeneratePassword();
+                }
+                else
+                {
+                    UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                }
 
+                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+            }
 
             //Validate email
             var address = new MailAddress(memberModel.Email);
@@ -496,7 +499,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, passwordHash, false, false, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, false, false, memberModel.IsVisitor);
 
             user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -982,11 +985,20 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(memberModel.Password))
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
             {
-                var passwordHash = PasswordHasher.GetClientPassword(memberModel.Password);
-                SecurityContext.SetUserPasswordHash(userid, passwordHash);
+                memberModel.Password = (memberModel.Password ?? "").Trim();
 
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                SecurityContext.SetUserPasswordHash(userid, memberModel.PasswordHash);
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
                 CookiesManager.ResetUserCookie(userid);

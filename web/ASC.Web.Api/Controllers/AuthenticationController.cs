@@ -57,7 +57,7 @@ namespace ASC.Web.Api.Controllers
         public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
+            var user = GetUser(tenant.TenantId, auth);
 
             try
             {
@@ -91,13 +91,24 @@ namespace ASC.Web.Api.Controllers
             return model.Validate();
         }
 
-        private UserInfo GetUser(int tenantId, string userName, string password)
+        private UserInfo GetUser(int tenantId, AuthModel memberModel)
         {
-            var passwordHash = PasswordHasher.GetClientPassword(password);
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
             var user = UserManager.GetUsersByPasswordHash(
                 tenantId,
-                userName,
-                passwordHash);
+                memberModel.UserName,
+                memberModel.PasswordHash);
 
             if (user == null || !UserManager.UserExists(user))
             {
