@@ -129,9 +129,11 @@ export function getUser(dispatch) {
 
 export function getPortalSettings(dispatch) {
   return api.settings.getSettings().then(settings => {
-    dispatch(setSettings(settings));
-    settings.nameSchemaId &&
-      getCurrentCustomSchema(dispatch, settings.nameSchemaId);
+    const { passwordHash: hashSettings, ...otherSettings } = settings;
+    const newSettings = { ...otherSettings, hashSettings };
+    dispatch(setSettings(newSettings));
+    newSettings.nameSchemaId &&
+      getCurrentCustomSchema(dispatch, newSettings.nameSchemaId);
   });
 }
 export function getCurrentCustomSchema(dispatch, id) {
