@@ -221,7 +221,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Calls)
                     .HasColumnName("calls")
-                    .HasDefaultValueSql("1");
+                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.CreationDateTime).HasColumnName("creationdatetime");
 
@@ -267,7 +267,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Spam)
                     .HasColumnName("spam")
-                    .HasDefaultValueSql("1");
+                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.Status).HasColumnName("status");
 

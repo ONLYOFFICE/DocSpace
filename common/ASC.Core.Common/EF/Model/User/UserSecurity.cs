@@ -44,7 +44,8 @@ namespace ASC.Core.Common.EF
                     Tenant = 1,
                     UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                     PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                    PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg=="
+                    PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
+                    LastModified = DateTime.UtcNow
                 }
                 );
         }
@@ -68,6 +69,11 @@ namespace ASC.Core.Common.EF
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModified)
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(e => e.PwdHash)
                     .HasColumnName("pwdhash")
@@ -102,6 +108,8 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasMaxLength(38);
+
+                entity.Property(e => e.LastModified).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.PwdHash)
                     .HasColumnName("pwdhash")

@@ -26,6 +26,13 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddWebstudioUserVisit, Provider.Postrge);
             return modelBuilder;
         }
+        public static void WebstudioUserVisitData (this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbWebstudioUserVisit>().HasData(
+                new DbWebstudioUserVisit { TenantId = 1, VisitDate = DateTime.UtcNow, ProductId = Guid.Parse("00000000-0000-0000-0000-000000000000"), UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), VisitCount = 3, FirstVisitTime = DateTime.UtcNow, LastVisitTime = DateTime.UtcNow },
+                new DbWebstudioUserVisit { TenantId = 1, VisitDate = DateTime.UtcNow, ProductId = Guid.Parse("00000000-0000-0000-0000-000000000000"), UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), VisitCount = 2, FirstVisitTime = DateTime.UtcNow, LastVisitTime = DateTime.UtcNow },
+                new DbWebstudioUserVisit { TenantId = 1, VisitDate = DateTime.UtcNow, ProductId = Guid.Parse("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"), UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), VisitCount = 1, FirstVisitTime = DateTime.UtcNow, LastVisitTime = DateTime.UtcNow });
+        }
         public static void MySqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioUserVisit>(entity =>

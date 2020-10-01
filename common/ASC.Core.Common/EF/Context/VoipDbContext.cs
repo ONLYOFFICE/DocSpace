@@ -10,6 +10,7 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<VoipNumber> VoipNumbers { get; set; }
         public DbSet<DbVoipCall> VoipCalls { get; set; }
         public DbSet<CrmContact> CrmContact { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper

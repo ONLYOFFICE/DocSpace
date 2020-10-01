@@ -50,6 +50,14 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
                     table.PrimaryKey("notify_queue_pkey", x => x.notify_id);
                 });
 
+            migrationBuilder.AddColumn<string>(
+                name: "auto_submitted",
+                schema: "onlyoffice",
+                table: "notify_queue",
+                maxLength: 64,
+                nullable: true,
+                defaultValueSql: "NULL");
+
             migrationBuilder.CreateIndex(
                 name: "state",
                 schema: "onlyoffice",

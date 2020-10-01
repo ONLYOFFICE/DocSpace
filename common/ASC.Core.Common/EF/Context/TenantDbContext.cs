@@ -38,6 +38,8 @@ namespace ASC.Core.Common.EF.Context
                 .AddDbTenantVersion()
                 .Finish();
 
+            modelBuilder.CoreSettingsData();
+
             modelBuilder.DbTenantForbidenData();
             modelBuilder.TenantData();
 

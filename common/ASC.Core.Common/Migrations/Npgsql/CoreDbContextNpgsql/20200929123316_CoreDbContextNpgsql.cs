@@ -63,6 +63,12 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     table.PrimaryKey("tenants_quota_pkey", x => x.tenant);
                 });
 
+            migrationBuilder.InsertData(
+                schema: "onlyoffice",
+                table: "tenants_quota",
+                columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "visible" },
+                values: new object[] { -1, 10000, "0", null, "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", 102400L, 10995116277760L, "default", false });
+
             migrationBuilder.CreateTable(
                 name: "tenants_quotarow",
                 schema: "onlyoffice",
@@ -198,6 +204,12 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
             migrationBuilder.DropTable(
                 name: "tenants_quota",
                 schema: "onlyoffice");
+
+            migrationBuilder.DeleteData(
+                schema: "onlyoffice",
+                table: "tenants_quota",
+                keyColumn: "tenant",
+                keyValue: -1);
 
             migrationBuilder.DropTable(
                 name: "tenants_quotarow",

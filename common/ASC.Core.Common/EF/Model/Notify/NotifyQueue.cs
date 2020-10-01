@@ -59,6 +59,12 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
+                entity.Property(e => e.AutoSubmitted)
+                    .HasColumnName("auto_submitted")
+                    .HasColumnType("varchar(64)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasColumnType("text")
@@ -120,6 +126,11 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.NotifyId).HasColumnName("notify_id");
 
                 entity.Property(e => e.Attachments).HasColumnName("attachments");
+
+                entity.Property(e => e.AutoSubmitted)
+                    .HasColumnName("auto_submitted")
+                    .HasMaxLength(64)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Content).HasColumnName("content");
 
