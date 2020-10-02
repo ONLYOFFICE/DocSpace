@@ -46,6 +46,8 @@ namespace ASC.Common.Threading
             {
                 Percentage += 100.0 / StepCount;
             }
+
+            PublishChanges();
         }
 
         public void RunJob()
@@ -53,16 +55,19 @@ namespace ASC.Common.Threading
             try
             {
                 Percentage = 0;
+                Status = DistributedTaskStatus.Running;
                 DoJob();
             }
             catch (AggregateException e)
             {
+                Status = DistributedTaskStatus.Failted;
                 Exception = e;
             }
             finally
             {
                 Percentage = 100;
                 IsCompleted = true;
+                Status = DistributedTaskStatus.Completed;
                 PublishChanges();
             }
         }

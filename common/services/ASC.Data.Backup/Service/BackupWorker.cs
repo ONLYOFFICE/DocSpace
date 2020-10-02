@@ -127,10 +127,10 @@ namespace ASC.Data.Backup.Service
                 if (item == null)
                 {
                     item = FactoryProgressItem.CreateBackupProgressItem(request, false, TempFolder, Limit, CurrentRegion, ConfigPaths);
-                    ProgressQueue.QueueTask((a, b) => item.RunJob(), item);
+                    ProgressQueue.QueueTask(item);
                 }
 
-                PublishProgress(item);
+                item.PublishChanges();
 
                 return ToBackupProgress(item);
             }
@@ -149,7 +149,7 @@ namespace ASC.Data.Backup.Service
                 if (item == null)
                 {
                     item = FactoryProgressItem.CreateBackupProgressItem(schedule, false, TempFolder, Limit, CurrentRegion, ConfigPaths);
-                    ProgressQueue.QueueTask((a, b) => item.RunJob(), item);
+                    ProgressQueue.QueueTask(item);
                 }
             }
         }
@@ -185,7 +185,7 @@ namespace ASC.Data.Backup.Service
                 var progress = ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
                 if (progress != null)
                 {
-                    progress.Error = null;
+                    progress.Exception = null;
                 }
             }
         }
@@ -197,7 +197,7 @@ namespace ASC.Data.Backup.Service
                 var progress = ProgressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
                 if (progress != null)
                 {
-                    progress.Error = null;
+                    progress.Exception = null;
                 }
             }
         }
@@ -215,7 +215,7 @@ namespace ASC.Data.Backup.Service
                 if (item == null)
                 {
                     item = FactoryProgressItem.CreateRestoreProgressItem(request, TempFolder, UpgradesPath, CurrentRegion, ConfigPaths);
-                    ProgressQueue.QueueTask((a, b) => item.RunJob(), item);
+                    ProgressQueue.QueueTask(item);
                 }
                 return ToBackupProgress(item);
             }
@@ -235,7 +235,7 @@ namespace ASC.Data.Backup.Service
                 if (item == null)
                 {
                     item = FactoryProgressItem.CreateTransferProgressItem(targetRegion, transferMail, tenantId, TempFolder, Limit, notify, CurrentRegion, ConfigPaths);
-                    ProgressQueue.QueueTask((a, b) => item.RunJob(), item);
+                    ProgressQueue.QueueTask(item);
                 }
 
                 return ToBackupProgress(item);
@@ -253,7 +253,7 @@ namespace ASC.Data.Backup.Service
             {
                 IsCompleted = progressItem.IsCompleted,
                 Progress = (int)progressItem.Percentage,
-                Error = progressItem.Error != null ? ((Exception)progressItem.Error).Message : "",
+                Error = progressItem.Exception != null ? ((Exception)progressItem.Exception).Message : "",
                 TenantId = progressItem.TenantId,
                 BackupProgressEnum = progressItem.BackupProgressItemEnum.Convert()
             };
@@ -273,11 +273,6 @@ namespace ASC.Data.Backup.Service
             return progress;
         }
 
-
-        internal void PublishProgress(BaseBackupProgressItem progress)
-        {
-            progress.PublishChanges();
-        }
     }
 
     public enum BackupProgressItemEnum
@@ -299,50 +294,8 @@ namespace ASC.Data.Backup.Service
             };
     }
 
-    public abstract class BaseBackupProgressItem : DistributedTask, IProgressItem
+    public abstract class BaseBackupProgressItem : DistributedTaskProgress
     {
-        public object error;
-        public object Error
-        {
-            get
-            {
-                return error ?? GetProperty<object>(nameof(error));
-            }
-            set
-            {
-                error = value;
-                SetProperty(nameof(error), value);
-            }
-        }
-
-        public double? percentage;
-        public double Percentage
-        {
-            get
-            {
-                return percentage ?? GetProperty<double>(nameof(percentage));
-            }
-            set
-            {
-                percentage = value;
-                SetProperty(nameof(percentage), value);
-            }
-        }
-
-        public bool? isCompleted;
-        public bool IsCompleted
-        {
-            get
-            {
-                return isCompleted ?? GetProperty<bool>(nameof(isCompleted));
-            }
-            set
-            {
-                isCompleted = value;
-                SetProperty(nameof(isCompleted), value);
-            }
-        }
-
         private int? tenantId;
         public int TenantId
         {
@@ -360,8 +313,6 @@ namespace ASC.Data.Backup.Service
         public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
 
         public abstract object Clone();
-
-        public abstract void RunJob();
     }
 
     public class BackupProgressItem : BaseBackupProgressItem
@@ -420,7 +371,7 @@ namespace ASC.Data.Backup.Service
             ConfigPaths = configPaths;
         }
 
-        public override void RunJob()
+        protected override void DoJob()
         {
             if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
             {
@@ -450,7 +401,7 @@ namespace ASC.Data.Backup.Service
                 backupTask.ProgressChanged += (sender, args) =>
                 {
                     Percentage = 0.9 * args.Progress;
-                    backupWorker.PublishProgress(this);
+                    PublishChanges();
                 };
 
                 backupTask.RunJob();
@@ -486,19 +437,19 @@ namespace ASC.Data.Backup.Service
                 }
 
                 IsCompleted = true;
-                backupWorker.PublishProgress(this);
+                PublishChanges();
             }
             catch (Exception error)
             {
                 Log.ErrorFormat("RunJob - Params: {0}, Error = {1}", new { Id, Tenant = TenantId, File = tempFile, BasePath = StorageBasePath, }, error);
-                Error = error;
+                Exception = error;
                 IsCompleted = true;
             }
             finally
             {
                 try
                 {
-                    backupWorker.PublishProgress(this);
+                    PublishChanges();
                 }
                 catch (Exception error)
                 {
@@ -558,7 +509,7 @@ namespace ASC.Data.Backup.Service
             ConfigPaths = configPaths;
         }
 
-        public override void RunJob()
+        protected override void DoJob()
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
@@ -586,7 +537,7 @@ namespace ASC.Data.Backup.Service
                 restoreTask.ProgressChanged += (sender, args) =>
                 {
                     Percentage = Percentage = (10d + 0.65 * args.Progress);
-                    backupWorker.PublishProgress(this);
+                    PublishChanges();
                 };
                 restoreTask.RunJob();
 
@@ -626,17 +577,17 @@ namespace ASC.Data.Backup.Service
 
                 Percentage = 75;
 
-                backupWorker.PublishProgress(this);
+                PublishChanges();
 
                 File.Delete(tempFile);
 
                 Percentage = 100;
-                backupWorker.PublishProgress(this);
+                PublishChanges();
             }
             catch (Exception error)
             {
                 Log.Error(error);
-                Error = error;
+                Exception = error;
 
                 if (tenant != null)
                 {
@@ -648,7 +599,7 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    backupWorker.PublishProgress(this);
+                    PublishChanges();
                 }
                 catch (Exception error)
                 {
@@ -716,7 +667,7 @@ namespace ASC.Data.Backup.Service
 
         }
 
-        public override void RunJob()
+        protected override void DoJob()
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
@@ -733,7 +684,7 @@ namespace ASC.Data.Backup.Service
                 transferProgressItem.ProgressChanged += (sender, args) =>
                 {
                     Percentage = args.Progress;
-                    backupWorker.PublishProgress(this);
+                    PublishChanges();
                 };
                 if (!TransferMail)
                 {
@@ -743,12 +694,12 @@ namespace ASC.Data.Backup.Service
 
                 Link = GetLink(alias, false);
                 notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
-                backupWorker.PublishProgress(this);
+                PublishChanges();
             }
             catch (Exception error)
             {
                 Log.Error(error);
-                Error = error;
+                Exception = error;
 
                 Link = GetLink(alias, true);
                 notifyHelper.SendAboutTransferError(tenant, TargetRegion, Link, !Notify);
@@ -757,7 +708,7 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    backupWorker.PublishProgress(this);
+                    PublishChanges();
                 }
                 catch (Exception error)
                 {

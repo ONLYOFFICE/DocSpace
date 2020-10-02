@@ -152,6 +152,11 @@ namespace ASC.Common.Threading
         }
 
 
+        public void QueueTask(DistributedTaskProgress taskProgress)
+        {
+            QueueTask(() => taskProgress.RunJob(), taskProgress);
+        }
+
         public void QueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
         {
             if (distributedTask == null)

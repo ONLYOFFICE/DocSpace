@@ -54,7 +54,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 if (Queue.GetTask<EncryptionOperation>(GetCacheKey()) != null) return;
                 encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheKey());
-                Queue.QueueTask((a, b) => encryptionOperation.RunJob(), encryptionOperation);
+                Queue.QueueTask(encryptionOperation);
             }
         }
 

@@ -73,7 +73,7 @@ namespace ASC.Data.Storage
                 if (migrateOperation != null) return;
 
                 migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig);
-                Queue.QueueTask((a, b) => migrateOperation.RunJob(), migrateOperation);
+                Queue.QueueTask(migrateOperation);
             }
         }
 
@@ -99,14 +99,13 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class MigrateOperation : DistributedTask, IProgressItem
+    public class MigrateOperation : DistributedTaskProgress
     {
         private readonly ILog Log;
         private static readonly string ConfigPath;
         private readonly IEnumerable<string> Modules;
         private readonly StorageSettings settings;
         private readonly int tenantId;
-        private readonly int StepCount;
 
         static MigrateOperation()
         {
@@ -132,13 +131,7 @@ namespace ASC.Data.Storage
         private StorageFactoryConfig StorageFactoryConfig { get; }
         private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
 
-        public object Error { get; set; }
-
-        public double Percentage { get; set; }
-
-        public bool IsCompleted { get; set; }
-
-        public void RunJob()
+        protected override void DoJob()
         {
             try
             {
@@ -195,12 +188,13 @@ namespace ASC.Data.Storage
                 settingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
+
                 Status = DistributedTaskStatus.Completed;
             }
             catch (Exception e)
             {
                 Status = DistributedTaskStatus.Failted;
-                Error = e;
+                Exception = e;
                 Log.Error(e);
             }
 
@@ -218,18 +212,10 @@ namespace ASC.Data.Storage
             {
                 TenantId = tenantId,
                 Progress = Percentage,
-                Error = Error.ToString(),
+                Error = Exception.ToString(),
                 IsCompleted = IsCompleted
             },
             CacheNotifyAction.Insert);
-        }
-
-        protected void StepDone()
-        {
-            if (StepCount > 0)
-            {
-                Percentage += 100.0 / StepCount;
-            }
         }
     }
 

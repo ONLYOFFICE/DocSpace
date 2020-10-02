@@ -117,7 +117,7 @@ namespace ASC.Data.Storage
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-                var(tenantManager, staticUploader, _, _, _) = scopeClass;
+                var (tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
@@ -143,8 +143,8 @@ namespace ASC.Data.Storage
                 uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(this, key, tenant.TenantId, relativePath, mappedPath);
-                Queue.QueueTask((a, b) => uploadOperation.RunJob(), uploadOperation);
+                uploadOperation = new UploadOperationProgress(key, tenant.TenantId, relativePath, mappedPath);
+                Queue.QueueTask(uploadOperation);
             }
         }
 
@@ -164,12 +164,12 @@ namespace ASC.Data.Storage
             TokenSource.Cancel();
         }
 
-        public static UploadOperationProgress GetProgress(int tenantId)
+        public UploadOperationProgress GetProgress(int tenantId)
         {
             lock (Locker)
             {
                 var key = typeof(UploadOperationProgress).FullName + tenantId;
-                return Cache.Get<UploadOperationProgress>(key);
+                return Queue.GetTask<UploadOperationProgress>(key);
             }
         }
 
@@ -232,28 +232,20 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class UploadOperationProgress : DistributedTask, IProgressItem
+    public class UploadOperationProgress : DistributedTaskProgress
     {
         private readonly string relativePath;
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
-        private readonly int StepCount;
 
         private IServiceProvider ServiceProvider { get; }
-        private StaticUploader StaticUploader { get; }
         public int TenantId { get; }
-        public object Error { get; set; }
 
-        public double Percentage { get; set; }
-
-        public bool IsCompleted { get; set; }
-
-        public UploadOperationProgress(StaticUploader staticUploader, string key, int tenantId, string relativePath, string mappedPath)
+        public UploadOperationProgress(string key, int tenantId, string relativePath, string mappedPath)
         {
             Id = key;
             Status = DistributedTaskStatus.Created;
 
-            StaticUploader = staticUploader;
             TenantId = tenantId;
             this.relativePath = relativePath;
             this.mappedPath = mappedPath;
@@ -268,45 +260,28 @@ namespace ASC.Data.Storage
             StepCount = directoryFiles.Count();
         }
 
-        protected async Task RunJobAsync()
-        {
-            var tasks = new List<Task>();
-            foreach (var file in directoryFiles)
-            {
-                var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                tasks.Add(StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()));
-            }
-
-            await Task.WhenAll(tasks);
-        }
-
-        public void RunJob()
+        protected override void DoJob()
         {
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
             var tenant = tenantManager.GetTenant(TenantId);
             tenantManager.SetCurrentTenant(tenant);
 
             tenant.SetStatus(TenantStatus.Migrating);
             tenantManager.SaveTenant(tenant);
+            PublishChanges();
 
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
+                staticUploader.UploadFile(Path.Combine(relativePath, filePath), file, (res) => StepDone());
             }
 
             tenant.SetStatus(Core.Tenants.TenantStatus.Active);
             tenantManager.SaveTenant(tenant);
         }
 
-        protected void StepDone()
-        {
-            if (StepCount > 0)
-            {
-                Percentage += 100.0 / StepCount;
-            }
-        }
         public object Clone()
         {
             return MemberwiseClone();

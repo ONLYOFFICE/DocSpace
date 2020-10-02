@@ -100,7 +100,7 @@ namespace ASC.Data.Reassigns
                 if (task == null)
                 {
                     task = constructor();
-                    Queue.QueueTask((a, b) => task.RunJob(), task);
+                    Queue.QueueTask(task);
                 }
 
                 return task;
