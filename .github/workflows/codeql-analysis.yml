@@ -59,7 +59,17 @@ jobs:
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.2
 
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.7.2
+  
+    - name: Build
+      run: |
+        dotnet build ASC.Web.sln
+    
+    
     #- run: |
     #   make bootstrap
     #   make release
