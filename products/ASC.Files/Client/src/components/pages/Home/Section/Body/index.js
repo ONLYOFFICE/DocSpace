@@ -22,10 +22,12 @@ import Tile from './Tile';
 
 import { api, constants, MediaViewer, toastr } from 'asc-web-common';
 import {
+  updateFile,
   deleteFile,
   deleteFolder,
   markItemAsFavorite,
   removeItemFromFavorite,
+  fetchFavoritesFolder,
   deselectFile,
   fetchFiles,
   selectFile,
@@ -176,17 +178,17 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickFavorite = e => {
-    const { markItemAsFavorite, removeItemFromFavorite, fetchFavoritesFolder, updateFile } = this.props;
-    const { id } = e.currentTarget.dataset;
-    const { action } = e.currentTarget.dataset;
-
+    const { markItemAsFavorite, removeItemFromFavorite, updateFile, fetchFavoritesFolder } = this.props;
+    const { action, id, title } = e.currentTarget.dataset;
     switch (action) {
       case "mark":
         return markItemAsFavorite(+id)
+        .then(() => updateFile(id, title))
         .then(() => toastr.success("Added to favorites"))
         .catch(e => toastr.error(e))
       case "remove":
         return removeItemFromFavorite(+id)
+        .then(() => fetchFavoritesFolder())
         .then(() => toastr.success("Removed from favorites"))
         .catch(e => toastr.error(e))
       default:
@@ -393,6 +395,7 @@ class SectionBodyContent extends React.Component {
     const isFile = !!item.fileExst;
     const isSharable = item.access !== 1 && item.access !== 0;
     const isMediaOrImage = this.isMediaOrImage(item.fileExst);
+    const isFavorite = item.fileStatus === 32 && true;
 
     if (item.id <= 0) return [];
 
@@ -477,7 +480,7 @@ class SectionBodyContent extends React.Component {
           'data-id': item.id
         }
         : null,
-      isFile ?
+      isFile && !isFavorite ?
          {
           key: "mark-as-favorite",
           label: t("MarkAsFavorite"),
@@ -485,6 +488,7 @@ class SectionBodyContent extends React.Component {
           onClick: this.onClickFavorite,
           disabled: false,
           'data-id': item.id,
+          'data-title': item.title,
           'data-action': "mark"
         }
         : null,
@@ -541,11 +545,12 @@ class SectionBodyContent extends React.Component {
         onClick: this.onClickDelete,
         disabled: false
       },
-      {
+      isFavorite ? {
         key: "sep3",
         isSeparator: true
-      },
-      isFile ?
+      }
+      : null,
+      isFile && isFavorite ?
       {
        key: "remove-from-favorites",
        label: t("RemoveFromFavorites"),
@@ -553,6 +558,7 @@ class SectionBodyContent extends React.Component {
        onClick: this.onClickFavorite,
        disabled: false,
        'data-id': item.id,
+       'data-title': item.title,
        'data-action': "remove"
      }
      : null
@@ -1426,10 +1432,12 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
+    updateFile,
     deleteFile,
     deleteFolder,
     markItemAsFavorite,
     removeItemFromFavorite,
+    fetchFavoritesFolder,
     deselectFile,
     fetchFiles,
     //fetchRootFolders,
