@@ -7,7 +7,24 @@ import styled from "styled-components";
 import { Link, Text, Icons, Badge } from "asc-web-components";
 import { constants, api, toastr } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setIsLoading } from '../../../../../store/files/actions';
-import { canWebEdit, isImage, isSound, isVideo, getTitleWithoutExst } from '../../../../../store/files/selectors';
+import { 
+  canWebEdit, 
+  getDragging, 
+  getFileAction, 
+  getFilter, 
+  getFolders, 
+  getIsLoading,
+  getNewRowItems,
+  getSelectedFolder,
+  getSelectedFolderNew,
+  getSelectedFolderParentId, 
+  getSettings,  
+  getTitleWithoutExst,
+  getTreeFolders,
+  isImage, 
+  isSound, 
+  isVideo, 
+} from '../../../../../store/files/selectors';
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from './TileContent';
@@ -367,21 +384,27 @@ class FilesTileContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders, folders } = state.files;
-  const { settings } = state.auth;
+  const selectedFolder = getSelectedFolder(state);
+  const treeFolders = getTreeFolders(state);
+
   const indexOfTrash = 3;
+  const isTrashFolder = treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id
+  const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
 
   return {
-    filter,
-    fileAction,
-    parentFolder: selectedFolder.id,
-    isTrashFolder: treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id,
-    settings,
+    filter: getFilter(state),
+    fileAction: getFileAction(state),
+    parentFolder: getSelectedFolderParentId(state),
+    isTrashFolder,
+    settings: getSettings(state),
     treeFolders,
-    rootFolderId: selectedFolder.pathParts[0],
-    newItems: selectedFolder.new,
+    rootFolderId,
+    newItems: getSelectedFolderNew(state),
     selectedFolder,
-    folders
+    folders: getFolders(state),
+    newRowItems: getNewRowItems(state),
+    dragging: getDragging(state),
+    isLoading: getIsLoading(state)
   }
 }
 

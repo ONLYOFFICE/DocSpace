@@ -327,7 +327,7 @@ export const getTitleWithoutExst = (item) => {
     : item.title;
 };
 
-export const getTreeFolders = (pathParts, filterData) => {
+export const createTreeFolders = (pathParts, filterData) => {
   let treeFolders = [];
   if (pathParts.length > 0) {
     for (let item of pathParts) {
@@ -594,7 +594,10 @@ export const checkFolderType = (id, index, treeFolders) => {
   return treeFolders.length && treeFolders[index].id === id;
 };
 
-export const getFolderType = (id, treeFolders) => {
+export const getSelectedFolderType = state => {
+  const { selectedFolder, treeFolders } = state.files;
+  const id = selectedFolder.id;
+
   const indexOfMy = 0;
   const indexOfShare = 1;
   const indexOfCommon = 2;
@@ -610,3 +613,104 @@ export const getFolderType = (id, treeFolders) => {
     return "Trash";
   }
 };
+
+export const getFileAction = state => {
+  return state.files.fileAction;
+}
+
+export const getFiles = state => {
+  return state.files.files;
+}
+
+export const getFolders = state => {
+  return state.files.folders;
+}
+
+export const getFilter = state => {
+  return state.files.filter;
+}
+
+export const getSelectedFolder = state => {
+  return state.files.selectedFolder;
+}
+
+export const getNewRowItems = state => {
+  return state.files.newRowItems;
+}
+
+export const getSelectedFolderId = state => {
+  return state.files.selectedFolder.id;
+}
+
+export const getSelectedFolderParentId = state => {
+  return state.files.selectedFolder.parentId;
+}
+
+export const getSelectedFolderNew = state => {
+  return state.files.selectedFolder.new;
+}
+
+export const getSelected = state => {
+  return state.files.selected;
+}
+
+export const getSelection = state => {
+  return state.files.selection;
+}
+
+export const getSettings = state => {
+  return state.auth.settings;
+}
+
+export const getViewer = state => {
+  return state.auth.user;
+}
+
+export const getViewAs = state => {
+  return state.files.viewAs;
+}
+
+export const getTreeFolders = state => {
+  return state.files.treeFolders;
+}
+
+export const getSelectedFolderTitle = state => {
+  return state.files.selectedFolder.title;
+}
+
+export const getCurrentFolderCount = state => {
+  const { filesCount, foldersCount } = state.files.selectedFolder;
+  return filesCount + foldersCount;
+}
+
+export const getDragItem = state => {
+  return state.files.dragItem;
+}
+
+export const getIsAdmin = state => {
+  return state.auth.user.isAdmin;
+}
+
+export const getMediaViewerVisibility = state => {
+  return state.files.mediaViewerData.visible;
+}
+
+export const getMediaViewerId = state => {
+  return state.files.mediaViewerData.id;
+}
+
+export const getDragging = state => {
+  return state.files.dragging;
+}
+
+export const getIsLoading = state => {
+  return state.files.isLoading;
+}
+
+export const getFirstLoad = state => {
+  return state.files.firstLoad;
+}
+
+export const getPathParts = state => {
+  return state.files.selectedFolder.pathParts;
+}

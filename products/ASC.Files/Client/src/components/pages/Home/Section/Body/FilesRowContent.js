@@ -7,7 +7,25 @@ import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge } from "asc-web-components";
 import { constants, api, toastr } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
-import { canWebEdit, isImage, isSound, isVideo, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
+import { 
+  canConvert, 
+  canWebEdit, 
+  getDragging, 
+  getFileAction, 
+  getFilter, 
+  getFolders, 
+  getIsLoading,
+  getNewRowItems,
+  getSelectedFolder,
+  getSelectedFolderNew,
+  getSelectedFolderParentId, 
+  getSettings, 
+  getTitleWithoutExst, 
+  getTreeFolders, 
+  isImage, 
+  isSound, 
+  isVideo,
+} from '../../../../../store/files/selectors';
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
@@ -515,25 +533,27 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging, isLoading } = state.files;
-  const { settings } = state.auth;
+  const selectedFolder = getSelectedFolder(state);
+  const treeFolders = getTreeFolders(state);
+
   const indexOfTrash = 3;
+  const isTrashFolder = treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
 
   return {
-    filter,
-    fileAction,
-    parentFolder: selectedFolder.id,
-    isTrashFolder: treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id,
-    settings,
+    filter: getFilter(state),
+    fileAction: getFileAction(state),
+    parentFolder: getSelectedFolderParentId(state),
+    isTrashFolder,
+    settings: getSettings(state),
     treeFolders,
     rootFolderId,
-    newItems: selectedFolder.new,
+    newItems: getSelectedFolderNew(state),
     selectedFolder,
-    folders,
-    newRowItems,
-    dragging,
-    isLoading
+    folders: getFolders(state),
+    newRowItems: getNewRowItems(state),
+    dragging: getDragging(state),
+    isLoading: getIsLoading(state)
   }
 }
 

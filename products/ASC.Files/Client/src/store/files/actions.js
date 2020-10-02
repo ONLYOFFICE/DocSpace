@@ -14,7 +14,7 @@ import {
   PREVIEW
 } from "../../helpers/constants";
 import config from "../../../package.json";
-import { getTreeFolders } from "./selectors";
+import { createTreeFolders } from "./selectors";
 
 const { files, FilesFilter } = api;
 
@@ -288,7 +288,7 @@ export function fetchFiles(folderId, filter) {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
     return files.getFolder(folderId, filter).then(data => {
-      filterData.treeFolders = getTreeFolders(data.pathParts, filterData);
+      filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
       filterData.total = data.total;
       dispatch(setFilesFilter(filterData));
       dispatch(setFolders(data.folders));
