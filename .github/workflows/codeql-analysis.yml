@@ -67,6 +67,7 @@ jobs:
   
     - name: Build
       run: |
+        dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
         dotnet build ASC.Web.sln
     
     
