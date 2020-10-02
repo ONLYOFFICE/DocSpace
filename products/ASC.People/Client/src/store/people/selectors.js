@@ -191,40 +191,14 @@ export function filterGroupSelectorOptions(options, template) {
   });
 }
 
-export function getUserType(users, status, currentUserId) {
-  return users.filter(
-    (x) =>
-      !x.isAdmin &&
-      !x.isOwner &&
-      x.isVisitor === status &&
-      x.status !== 2 &&
-      x.id !== currentUserId
-  );
-}
-
-export function getUsersStatus(users, status, currentUserId) {
-  return users.filter(
-    (x) => !x.isOwner && x.status !== status && x.id !== currentUserId
-  );
-}
-
-export function getInactiveUsers(users) {
-  return users.filter((x) => x.activationStatus === 2 && x.status === 1);
-}
-
-export function getDeleteUsers(users) {
-  return users.filter((x) => x.status === 2);
-}
-
-export function getUsersIds(selections) {
-  return selections.map((user) => {
-    return user.id;
-  });
-}
-
 export const getUsers = (state) => state.people.users || [];
 
 export const getSelection = (state) => state.people.selection;
+
+export const isAnythingSelected = createSelector(
+  [getSelection],
+  (selection) => selection && selection.length > 0
+);
 
 const getUserContextOptions = (isMySelf, isOwner, status, haveMobileNumber) => {
   // let status = "";
@@ -265,8 +239,9 @@ const getUserContextOptions = (isMySelf, isOwner, status, haveMobileNumber) => {
       break;
     case "disabled":
       options.push("enable");
-      options.push("reassign-data");
-      options.push("delete-personal-data");
+      //TODO: Need implementation
+      /*options.push("reassign-data");
+      options.push("delete-personal-data");*/
       options.push("delete-profile");
       break;
     case "pending":
@@ -290,15 +265,16 @@ const getUserContextOptions = (isMySelf, isOwner, status, haveMobileNumber) => {
   return options;
 };
 
-export const isMySelf = (user) => {
-  return createSelector(getCurrentUser, (viewer) =>
-    isMe(user, viewer.userName)
-  );
-};
+// export const isMySelf = (user) => {
+//   return createSelector([getCurrentUser], (viewer) => {
+//     const isMySelf = isMe(user, viewer.userName);
+//     return isMySelf;
+//   });
+// };
 
 export const getPeopleList = createSelector(
-  [getUsers, getSelection, isAdmin],
-  (users, selection, isAdmin) => {
+  [getUsers, getSelection, isAdmin, getCurrentUser],
+  (users, selection, isAdmin, viewer) => {
     return users.map((user) => {
       const {
         id,
@@ -311,8 +287,10 @@ export const getPeopleList = createSelector(
       } = user;
       const status = getUserStatus(user);
       const role = getUserRole(user);
+      const isMySelf = isMe(user, viewer.userName);
+
       const options = getUserContextOptions(
-        isMySelf(user),
+        isMySelf,
         isOwner,
         status,
         !!mobilePhone
@@ -332,4 +310,127 @@ export const getPeopleList = createSelector(
       };
     });
   }
+);
+
+export const getEmployees = createSelector(
+  [getUsers, getCurrentUser],
+  (users, currentUser) => {
+    return users.filter(
+      (x) =>
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor === false &&
+        x.status !== 2 &&
+        x.id !== currentUser.Id
+    );
+  }
+);
+
+export const getEmployeesIds = createSelector([getEmployees], (users) => {
+  return users.map((user) => {
+    return user.id;
+  });
+});
+
+export const isEmployeesSelected = createSelector(
+  [getEmployeesIds],
+  (employeesIds) => employeesIds && employeesIds.length > 0
+);
+
+export const getGuests = createSelector(
+  [getUsers, getCurrentUser],
+  (users, currentUser) => {
+    return users.filter(
+      (x) =>
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor === false &&
+        x.status !== 2 &&
+        x.id !== currentUser.Id
+    );
+  }
+);
+
+export const getGuestsIds = createSelector([getGuests], (guests) => {
+  return guests.map((user) => {
+    return user.id;
+  });
+});
+
+export const isGuestsSelected = createSelector(
+  [getGuestsIds],
+  (guestsIds) => guestsIds && guestsIds.length > 0
+);
+
+export const getActiveUsers = createSelector(
+  [getUsers, getCurrentUser],
+  (users, currentUser) => {
+    return users.filter(
+      (x) => !x.isOwner && x.status !== 1 && x.id !== currentUser.Id
+    );
+  }
+);
+
+export const getActiveUsersIds = createSelector([getActiveUsers], (users) => {
+  return users.map((user) => {
+    return user.id;
+  });
+});
+
+export const isActiveSelected = createSelector(
+  [getGuestsIds],
+  (activeUsersIds) => activeUsersIds && activeUsersIds.length > 0
+);
+
+export const getDisableUsers = createSelector(
+  [getUsers, getCurrentUser],
+  (users, currentUser) => {
+    return users.filter(
+      (x) => !x.isOwner && x.status !== 2 && x.id !== currentUser.Id
+    );
+  }
+);
+
+export const getDisableUsersIds = createSelector([getDisableUsers], (users) => {
+  return users.map((user) => {
+    return user.id;
+  });
+});
+
+export const isDisableSelected = createSelector(
+  [getGuestsIds],
+  (disableUsersIds) => disableUsersIds && disableUsersIds.length > 0
+);
+
+export const getInactiveUsers = createSelector([getUsers], (users) => {
+  return users.filter((x) => x.activationStatus === 2 && x.status === 1);
+});
+
+export const getInactiveUsersIds = createSelector(
+  [getInactiveUsers],
+  (users) => {
+    return users.map((user) => {
+      return user.id;
+    });
+  }
+);
+
+export const isInactiveSelected = createSelector(
+  [getInactiveUsersIds],
+  (inactiveUsersIds) => inactiveUsersIds && inactiveUsersIds.length > 0
+);
+
+export const getDeleteUsers = createSelector([getUsers], (users) => {
+  return users.filter((x) => x.status === 2);
+});
+
+export const getDeleteUsersIds = createSelector([getDeleteUsers], (users) => {
+  return users.map((user) => {
+    return user.id;
+  });
+});
+
+export const isDeleteSelected = createSelector(
+  [getDeleteUsersIds],
+  (deleteUsersIds) => deleteUsersIds && deleteUsersIds.length > 0
 );
