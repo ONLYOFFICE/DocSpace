@@ -27,7 +27,6 @@ import {
   SET_FILES_SETTINGS,
   SET_FILES_SETTING,
   SET_IS_ERROR_SETTINGS,
-  SET_FAVORITES,
   MARK_AS_FAVORITE,
   REMOVE_FROM_FAVORITES
 } from "./actions";
@@ -42,7 +41,6 @@ const initialState = {
   files: null,
   filter: FilesFilter.getDefault(),
   folders: null,
-  favorites: [],
   treeFolders: [],
   selected: "none",
   viewAs: "row",
@@ -219,21 +217,6 @@ const filesReducer = (state = initialState, action) => {
           isErrorSettings: action.isError
         }
       })
-    case SET_FAVORITES:
-      return {
-        ...state,
-        favorites: action.favoriteIds
-      }
-    case MARK_AS_FAVORITE:
-      return {
-        ...state,
-        favorites: [...state.favorites, action.id]
-      }
-    case REMOVE_FROM_FAVORITES:
-      return {
-        ...state,
-        favorites: [...state.favorites, state.favorites.filter(id => id !== action.id)]
-      }
     default:
       return state;
   }
