@@ -227,12 +227,12 @@ const filesReducer = (state = initialState, action) => {
     case MARK_AS_FAVORITE:
       return {
         ...state,
-        favorites: action.id
+        favorites: [...state.favorites, action.id]
       }
     case REMOVE_FROM_FAVORITES:
       return {
         ...state,
-        favorites: action.id
+        favorites: [...state.favorites, state.favorites.filter(id => id !== action.id)]
       }
     default:
       return state;
