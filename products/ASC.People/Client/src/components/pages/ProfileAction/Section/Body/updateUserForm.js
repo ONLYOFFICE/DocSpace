@@ -7,7 +7,7 @@ import {
   Textarea,
   Text,
   AvatarEditor,
-  Link
+  Link,
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
@@ -17,17 +17,18 @@ import {
   getUserContacts,
   mapGroupsToGroupSelectorOptions,
   mapGroupSelectorOptionsToGroups,
-  filterGroupSelectorOptions
+  filterGroupSelectorOptions,
 } from "../../../../../store/people/selectors";
 import {
   updateProfile,
   getUserPhoto,
-  fetchProfile
+  fetchProfile,
 } from "../../../../../store/profile/actions";
+import { updateProfileInUsers } from "../../../../../store/people/actions";
 import {
   MainContainer,
   AvatarContainer,
-  MainFieldsContainer
+  MainFieldsContainer,
 } from "./FormFields/Form";
 import TextField from "./FormFields/TextField";
 import TextChangeField from "./FormFields/TextChangeField";
@@ -41,14 +42,14 @@ import { api, toastr } from "asc-web-common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
-  ChangePhoneDialog
+  ChangePhoneDialog,
 } from "../../../../dialogs";
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
   changePassword: "changePassword",
-  changePhone: "changePhone"
+  changePhone: "changePhone",
 };
 
 const Table = styled.table`
@@ -102,12 +103,12 @@ class UpdateUserForm extends React.Component {
     }
   }
 
-  mapPropsToState = props => {
+  mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups);
 
-    getUserPhoto(profile.id).then(userPhotoData => {
+    getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -120,8 +121,8 @@ class UpdateUserForm extends React.Component {
                 ? userPhotoData.original.indexOf("default_user_photo") !== -1
                   ? null
                   : userPhotoData.original
-                : null
-            }
+                : null,
+            },
           });
         }
       }
@@ -131,7 +132,7 @@ class UpdateUserForm extends React.Component {
       isLoading: false,
       errors: {
         firstName: false,
-        lastName: false
+        lastName: false,
       },
       profile: profile,
       visibleAvatarEditor: false,
@@ -139,20 +140,20 @@ class UpdateUserForm extends React.Component {
         visible: false,
         allOptions: allOptions,
         options: [...allOptions],
-        selected: selected
+        selected: selected,
       },
       avatar: {
         tmpFile: "",
         image: null,
         defaultWidth: 0,
-        defaultHeight: 0
+        defaultHeight: 0,
       },
       dialogsVisible: {
         [dialogsDataset.changePassword]: false,
         [dialogsDataset.changePhone]: false,
         [dialogsDataset.changeEmail]: false,
-        currentDialog: ""
-      }
+        currentDialog: "",
+      },
     };
 
     //Set unique contacts id
@@ -171,7 +172,7 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
-  toggleDialogsVisible = e => {
+  toggleDialogsVisible = (e) => {
     const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
     const selectedDialog = e ? e.target.dataset.dialog : e;
     if (selectedDialog) {
@@ -206,7 +207,7 @@ class UpdateUserForm extends React.Component {
     const { profile } = this.state;
     const errors = {
       firstName: !profile.firstName.trim(),
-      lastName: !profile.lastName.trim()
+      lastName: !profile.lastName.trim(),
     };
     const hasError = errors.firstName || errors.lastName;
 
@@ -227,13 +228,14 @@ class UpdateUserForm extends React.Component {
 
     this.props
       .updateProfile(this.state.profile)
-      .then(profile => {
+      .then((profile) => {
+        this.props.updateProfileInUsers(profile);
         toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(
           `${this.props.settings.homepage}/view/${profile.userName}`
         );
       })
-      .catch(error => {
+      .catch((error) => {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
@@ -248,7 +250,7 @@ class UpdateUserForm extends React.Component {
     stateCopy.profile.contacts.push({
       id: new Date().getTime().toString(),
       type: item.value,
-      value: ""
+      value: "",
     });
     this.setState(stateCopy);
   }
@@ -256,7 +258,7 @@ class UpdateUserForm extends React.Component {
   onContactsItemTypeChange(item) {
     const id = item.key.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.contacts.forEach(element => {
+    stateCopy.profile.contacts.forEach((element) => {
       if (element.id === id) element.type = item.value;
     });
     this.setState(stateCopy);
@@ -265,7 +267,7 @@ class UpdateUserForm extends React.Component {
   onContactsItemTextChange(event) {
     const id = event.target.name.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.contacts.forEach(element => {
+    stateCopy.profile.contacts.forEach((element) => {
       if (element.id === id) element.value = event.target.value;
     });
     this.setState(stateCopy);
@@ -274,7 +276,7 @@ class UpdateUserForm extends React.Component {
   onContactsItemRemove(event) {
     const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
-    const filteredArray = stateCopy.profile.contacts.filter(element => {
+    const filteredArray = stateCopy.profile.contacts.filter((element) => {
       return element.id !== id;
     });
     stateCopy.profile.contacts = filteredArray;
@@ -296,12 +298,12 @@ class UpdateUserForm extends React.Component {
           tmpFile: this.state.avatar.tmpFile,
           image: this.state.avatar.image,
           defaultWidth: avatarDefaultSizes[1],
-          defaultHeight: avatarDefaultSizes[2]
-        }
+          defaultHeight: avatarDefaultSizes[2],
+        },
       });
     }
     this.setState({
-      visibleAvatarEditor: true
+      visibleAvatarEditor: true,
     });
   }
 
@@ -312,15 +314,15 @@ class UpdateUserForm extends React.Component {
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
-      .then(response => {
+      .then((response) => {
         var img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
             image: response.data,
             defaultWidth: img.width,
-            defaultHeight: img.height
+            defaultHeight: img.height,
           };
           _this.setState(stateCopy);
           _this.setState({ isLoading: false });
@@ -328,7 +330,7 @@ class UpdateUserForm extends React.Component {
         };
         img.src = response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
@@ -346,9 +348,9 @@ class UpdateUserForm extends React.Component {
         ),
         width: result.width,
         height: result.height,
-        tmpFile: this.state.avatar.tmpFile
+        tmpFile: this.state.avatar.tmpFile,
       })
-        .then(response => {
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = "";
@@ -360,7 +362,7 @@ class UpdateUserForm extends React.Component {
           this.setState({ isLoading: false });
           this.setState(stateCopy);
         })
-        .catch(error => {
+        .catch((error) => {
           toastr.error(error);
           this.setState({ isLoading: false });
         })
@@ -368,20 +370,20 @@ class UpdateUserForm extends React.Component {
         .then(() => this.props.fetchProfile(this.state.profile.id));
     } else {
       deleteAvatar(this.state.profile.id)
-        .then(response => {
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
         })
-        .catch(error => toastr.error(error));
+        .catch((error) => toastr.error(error));
     }
   }
 
   onCloseAvatarEditor() {
     this.setState({
-      visibleAvatarEditor: false
+      visibleAvatarEditor: false,
     });
   }
 
@@ -417,10 +419,10 @@ class UpdateUserForm extends React.Component {
   onRemoveGroup(id) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = stateCopy.profile.groups.filter(
-      group => group.id !== id
+      (group) => group.id !== id
     );
     stateCopy.selector.selected = stateCopy.selector.selected.filter(
-      option => option.key !== id
+      (option) => option.key !== id
     );
     this.setState(stateCopy);
   }
@@ -433,7 +435,7 @@ class UpdateUserForm extends React.Component {
       userCaption,
       regDateCaption,
       userPostCaption,
-      groupCaption
+      groupCaption,
     } = settings.customNames;
 
     const pattern = getUserContactsPattern();
@@ -562,7 +564,8 @@ class UpdateUserForm extends React.Component {
                     case of loss of the password and send notifications.
                     <p
                       style={{
-                        margin: "1rem 0" /*, height: "0", visibility: "hidden"*/
+                        margin:
+                          "1rem 0" /*, height: "0", visibility: "hidden"*/,
                       }}
                     >
                       You can create a new mail on the domain as the primary. In
@@ -636,7 +639,7 @@ class UpdateUserForm extends React.Component {
               radioValue={profile.sex}
               radioOptions={[
                 { value: "male", label: t("MaleSexStatus") },
-                { value: "female", label: t("FemaleSexStatus") }
+                { value: "female", label: t("FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -647,7 +650,7 @@ class UpdateUserForm extends React.Component {
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
                 { value: "true", label: guestCaption },
-                { value: "false", label: userCaption }
+                { value: "false", label: userCaption },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
@@ -778,18 +781,16 @@ class UpdateUserForm extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     profile: state.profile.targetUser,
     settings: state.auth.settings,
-    groups: state.people.groups
+    groups: state.people.groups,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    updateProfile,
-    fetchProfile
-  }
-)(withRouter(withTranslation()(UpdateUserForm)));
+export default connect(mapStateToProps, {
+  updateProfile,
+  fetchProfile,
+  updateProfileInUsers,
+})(withRouter(withTranslation()(UpdateUserForm)));

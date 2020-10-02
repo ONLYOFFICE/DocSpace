@@ -9,8 +9,10 @@ import {
   SORT_BY,
   SORT_ORDER,
   PAGE,
-  PAGE_COUNT
+  PAGE_COUNT,
 } from "../../helpers/constants";
+import { getUserByUserName } from "../people/selectors";
+
 const { EmployeeStatus } = constants;
 const { Filter } = api;
 
@@ -28,35 +30,35 @@ export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
 export function setUser(user) {
   return {
     type: SET_USER,
-    user
+    user,
   };
 }
 
 export function setUsers(users) {
   return {
     type: SET_USERS,
-    users
+    users,
   };
 }
 
 export function setGroups(groups) {
   return {
     type: SET_GROUPS,
-    groups
+    groups,
   };
 }
 
 export function setSelection(selection) {
   return {
     type: SET_SELECTION,
-    selection
+    selection,
   };
 }
 
 export function setSelected(selected) {
   return {
     type: SET_SELECTED,
-    selected
+    selected,
   };
 }
 
@@ -75,14 +77,14 @@ export function selectGroup(groupId) {
 export function selectUser(user) {
   return {
     type: SELECT_USER,
-    user
+    user,
   };
 }
 
 export function deselectUser(user) {
   return {
     type: DESELECT_USER,
-    user
+    user,
   };
 }
 
@@ -120,7 +122,7 @@ export function setFilterUrl(filter) {
 
   //const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
   //if (params.length > 0 && !isProfileView) {
-    history.push(`${config.homepage}/filter?${params.join("&")}`);
+  history.push(`${config.homepage}/filter?${params.join("&")}`);
   //}
 }
 
@@ -128,20 +130,20 @@ export function setFilter(filter) {
   setFilterUrl(filter);
   return {
     type: SET_FILTER,
-    filter
+    filter,
   };
 }
 
 export function setSelectorUsers(users) {
   return {
     type: SET_SELECTOR_USERS,
-    users
+    users,
   };
 }
 
 export function fetchSelectorUsers() {
-  return dispatch => {
-    api.people.getSelectorUserList().then(data => {
+  return (dispatch) => {
+    api.people.getSelectorUserList().then((data) => {
       const users = data.items;
       return dispatch(setSelectorUsers(users));
     });
@@ -149,10 +151,10 @@ export function fetchSelectorUsers() {
 }
 
 export function fetchGroups(dispatchFunc = null) {
-  return api.groups.getGroupList().then(groups => {
+  return api.groups.getGroupList().then((groups) => {
     return dispatchFunc
       ? dispatchFunc(setGroups(groups))
-      : Promise.resolve(dispatch => dispatch(setGroups(groups)));
+      : Promise.resolve((dispatch) => dispatch(setGroups(groups)));
   });
 }
 
@@ -160,21 +162,22 @@ export function fetchPeople(filter, dispatchFunc = null) {
   return dispatchFunc
     ? fetchPeopleByFilter(dispatchFunc, filter)
     : (dispatch, getState) => {
-      if (filter) {
-        return fetchPeopleByFilter(dispatch, filter);
-      } else {
-        const { people } = getState();
-        const { filter } = people;
-        return fetchPeopleByFilter(dispatch, filter);
-      }
-    };
+        if (filter) {
+          return fetchPeopleByFilter(dispatch, filter);
+        } else {
+          const { people } = getState();
+          const { filter } = people;
+          return fetchPeopleByFilter(dispatch, filter);
+        }
+      };
 }
 
 export function removeUser(userId, filter) {
-  return dispatch => {
-    return api.people.deleteUsers(userId)
-      .then(() => fetchPeople(filter, dispatch))
-  }
+  return (dispatch) => {
+    return api.people
+      .deleteUsers(userId)
+      .then(() => fetchPeople(filter, dispatch));
+  };
 }
 
 function fetchPeopleByFilter(dispatch, filter) {
@@ -185,12 +188,12 @@ function fetchPeopleByFilter(dispatch, filter) {
     filterData.employeeStatus = EmployeeStatus.Active;
   }
 
-  return api.people.getUserList(filterData).then(data => {
+  return api.people.getUserList(filterData).then((data) => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
     dispatch({
       type: SELECT_GROUP,
-      groupId: filterData.group
+      groupId: filterData.group,
     });
     return dispatch(setUsers(data.items));
   });
@@ -198,21 +201,20 @@ function fetchPeopleByFilter(dispatch, filter) {
 
 export function updateUserStatus(status, userIds, isRefetchPeople = false) {
   return (dispatch, getState) => {
-    return api.people.updateUserStatus(status, userIds)
-      .then(users => {
-        const { people } = getState();
-        const { filter } = people;
-        return isRefetchPeople
-          ? fetchPeople(filter, dispatch)
-          : Promise.resolve();
-      });
+    return api.people.updateUserStatus(status, userIds).then((users) => {
+      const { people } = getState();
+      const { filter } = people;
+      return isRefetchPeople
+        ? fetchPeople(filter, dispatch)
+        : Promise.resolve();
+    });
   };
 }
 
 export function updateUserType(type, userIds) {
-  return dispatch => {
-    return api.people.updateUserType(type, userIds).then(users => {
-      users.forEach(user => {
+  return (dispatch) => {
+    return api.people.updateUserType(type, userIds).then((users) => {
+      users.forEach((user) => {
         dispatch(setUser(user));
       });
     });
@@ -227,5 +229,42 @@ export function resetFilter() {
     const newFilter = filter.clone(true);
 
     return fetchPeople(newFilter, dispatch);
+  };
+}
+
+export function updateProfileInUsers(updatedProfile) {
+  return (dispatch, getState) => {
+    const { userName } = updatedProfile;
+    const { people } = getState();
+    const { users } = people;
+
+    if (!users) {
+      const { filter } = people;
+      return fetchPeople(filter, dispatch);
+    }
+
+    const oldProfile = getUserByUserName(users, userName);
+    const newProfile = {};
+
+    for (let key in oldProfile) {
+      if (
+        updatedProfile.hasOwnProperty(key) &&
+        updatedProfile[key] !== oldProfile[key]
+      ) {
+        newProfile[key] = updatedProfile[key];
+      } else {
+        newProfile[key] = oldProfile[key];
+      }
+    }
+
+    const updatedUsers = users.map((user) => {
+      if (user.id === newProfile.id) {
+        return newProfile;
+      } else {
+        return user;
+      }
+    });
+    console.log(updatedUsers);
+    return dispatch(setUsers(updatedUsers));
   };
 }
