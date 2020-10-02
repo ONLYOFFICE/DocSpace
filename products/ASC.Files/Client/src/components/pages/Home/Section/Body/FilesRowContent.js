@@ -402,6 +402,14 @@ class FilesRowContent extends React.PureComponent {
                       color='#A3A9AE'
                     />
                   }
+                  {true && 
+                  <span 
+                  style={{cursor: "pointer"}} 
+                  onClick={() => console.log(item.id)}
+                  >
+                    ⭐
+                  </span>
+                  }
                   {fileStatus === 1 &&
                     <Icons.FileActionsConvertEditDocIcon
                       className='badge'
