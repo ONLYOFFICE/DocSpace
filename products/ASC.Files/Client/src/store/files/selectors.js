@@ -269,7 +269,7 @@ export const isSpreadsheet = extension => {
 };
 
 export function getSelectedFile(selection, fileId, parentId) {
-  return find(selection, function(obj) {
+  return find(selection, function (obj) {
     return obj.id === fileId && obj.parentId === parentId;
   });
 }
@@ -279,7 +279,7 @@ export function isFileSelected(selection, fileId, parentId) {
 }
 
 export function skipFile(selection, fileId) {
-  return filter(selection, function(obj) {
+  return filter(selection, function (obj) {
     return obj.id !== fileId;
   });
 }
@@ -324,13 +324,13 @@ const getFilesChecked = (file, selected) => {
 export const getTitleWithoutExst = item => {
   return item.fileExst
     ? item.title
-        .split(".")
-        .slice(0, -1)
-        .join(".")
+      .split(".")
+      .slice(0, -1)
+      .join(".")
     : item.title;
 };
 
-export const getTreeFolders = (pathParts, filterData) => {
+export const createTreeFolders = (pathParts, filterData) => {
   let treeFolders = [];
   if (pathParts.length > 0) {
     for (let item of pathParts) {
@@ -597,7 +597,10 @@ export const checkFolderType = (id, index, treeFolders) => {
   return treeFolders.length && treeFolders[index].id === id;
 };
 
-export const getFolderType = (id, treeFolders) => {
+export const getSelectedFolderType = state => {
+  const { selectedFolder, treeFolders } = state.files;
+  const id = selectedFolder.id;
+
   const indexOfMy = 0;
   const indexOfShare = 1;
   const indexOfCommon = 2;
@@ -613,3 +616,92 @@ export const getFolderType = (id, treeFolders) => {
     return "Trash";
   }
 };
+
+export const getFileAction = state => {
+  return state.files.fileAction;
+}
+
+export const getFiles = state => {
+  return state.files.files;
+}
+
+export const getFolders = state => {
+  return state.files.folders;
+}
+
+export const getFilter = state => {
+  return state.files.filter;
+}
+
+export const getFolderId = state => {
+  return state.files.selectedFolder.id;
+}
+
+export const getParentId = state => {
+  return state.files.selectedFolder.parentId;
+}
+
+export const getSelected = state => {
+  return state.files.selected;
+}
+
+export const getSelection = state => {
+  return state.files.selection;
+}
+
+export const getSettings = state => {
+  return state.auth.settings;
+}
+
+export const getViewer = state => {
+  return state.auth.user;
+}
+
+export const getViewAs = state => {
+  return state.files.viewAs;
+}
+
+export const getTreeFolders = state => {
+  return state.files.treeFolders;
+}
+
+export const getSelectedFolderTitle = state => {
+  return state.files.selectedFolder.title;
+}
+
+export const getCurrentFolderCount = state => {
+  const { filesCount, foldersCount } = state.files.selectedFolder;
+  return filesCount + foldersCount;
+}
+
+export const getDragItem = state => {
+  return state.files.dragItem;
+}
+
+export const getIsAdmin = state => {
+  return state.auth.user.isAdmin;
+}
+
+export const getMediaViewerVisibility = state => {
+  return state.files.mediaViewerData.visible;
+}
+
+export const getMediaViewerId = state => {
+  return state.files.mediaViewerData.id;
+}
+
+export const getDragging = state => {
+  return state.files.dragging;
+}
+
+export const getIsLoading = state => {
+  return state.files.isLoading;
+}
+
+export const getFirstLoad = state => {
+  return state.files.firstLoad;
+}
+
+export const getPathParts = state => {
+  return state.files.selectedFolder.pathParts;
+}

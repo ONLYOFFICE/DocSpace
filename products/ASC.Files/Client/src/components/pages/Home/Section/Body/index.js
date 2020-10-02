@@ -22,30 +22,52 @@ import Tile from "./Tile";
 
 import { api, constants, MediaViewer, toastr, Loaders } from "asc-web-common";
 import {
+  clearProgressData,
   deselectFile,
   fetchFiles,
   selectFile,
   setAction,
-  setTreeFolders,
   setDragging,
   setDragItem,
-  setMediaViewerData,
-  setProgressBarData,
-  clearProgressData,
-  setSelection,
-  setSelected,
-  setNewTreeFilesBadge,
   setIsLoading,
+  setMediaViewerData,
+  setNewTreeFilesBadge,
+  setProgressBarData,
+  setSelected,
+  setSelection,
+  setTreeFolders
 } from "../../../../../store/files/actions";
 import {
-  isFileSelected,
+  getCurrentFolderCount,
+  getDragging,
+  getDragItem,
+  getFileAction, 
   getFileIcon,
+  getFiles, 
+  getFilter, 
+  getFirstLoad,
   getFolderIcon,
-  getFolderType,
-  loopTreeFolders,
+  getFolderId, 
+  getFolders, 
+  getIsAdmin,
+  getIsLoading,
+  getMediaViewerId,
+  getMediaViewerVisibility,
+  getParentId, 
+  getPathParts,
+  getSelected, 
+  getSelectedFolderTitle, 
+  getSelectedFolderType,
+  getSelection, 
+  getSettings, 
+  getTreeFolders, 
+  getViewAs, 
+  getViewer, 
+  isFileSelected,
   isImage,
   isSound,
-  isVideo,
+  isVideo, 
+  loopTreeFolders
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -375,13 +397,11 @@ class SectionBodyContent extends React.Component {
     copy(
       isFile
         ? this.isMediaOrImage(item.fileExst)
-          ? `${window.location.origin + settings.homepage}/filter?folder=${
-              item.folderId
-            }&preview=${item.id}`
+          ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId
+          }&preview=${item.id}`
           : item.webUrl
-        : `${window.location.origin + settings.homepage}/filter?folder=${
-            item.id
-          }`
+        : `${window.location.origin + settings.homepage}/filter?folder=${item.id
+        }`
     );
 
     toastr.success(t("LinkCopySuccess"));
@@ -483,35 +503,35 @@ class SectionBodyContent extends React.Component {
 
     const versionHistoryMenu = isFile
       ? [
-          {
-            key: "show-version-history",
-            label: t("ShowVersionHistory"),
-            icon: "HistoryIcon",
-            onClick: this.showVersionHistory,
-            disabled: false,
-            "data-id": item.id,
-          },
-          {
-            key: "finalize-version",
-            label: t("FinalizeVersion"),
-            icon: "HistoryFinalizedIcon",
-            onClick: this.finalizeVersion,
-            disabled: false,
-            "data-id": item.id,
-            "data-version": item.version,
-          },
-          {
-            key: "block-unblock-version",
-            label: t("UnblockVersion"),
-            icon: "LockIcon",
-            onClick: this.lockFile,
-            disabled: false,
-          },
-          {
-            key: "sep2",
-            isSeparator: true,
-          },
-        ]
+        {
+          key: "show-version-history",
+          label: t("ShowVersionHistory"),
+          icon: "HistoryIcon",
+          onClick: this.showVersionHistory,
+          disabled: false,
+          "data-id": item.id,
+        },
+        {
+          key: "finalize-version",
+          label: t("FinalizeVersion"),
+          icon: "HistoryFinalizedIcon",
+          onClick: this.finalizeVersion,
+          disabled: false,
+          "data-id": item.id,
+          "data-version": item.version,
+        },
+        {
+          key: "block-unblock-version",
+          label: t("UnblockVersion"),
+          icon: "LockIcon",
+          onClick: this.lockFile,
+          disabled: false,
+        },
+        {
+          key: "sep2",
+          isSeparator: true,
+        },
+      ]
       : [];
 
     const menu = [
@@ -524,11 +544,11 @@ class SectionBodyContent extends React.Component {
       },
       isFile
         ? {
-            key: "send-by-email",
-            label: t("SendByEmail"),
-            icon: "MailIcon",
-            disabled: true,
-          }
+          key: "send-by-email",
+          label: t("SendByEmail"),
+          icon: "MailIcon",
+          disabled: true,
+        }
         : null,
       {
         key: "link-for-portal-users",
@@ -544,41 +564,41 @@ class SectionBodyContent extends React.Component {
       ...versionHistoryMenu,
       isFile && !isMediaOrImage
         ? {
-            key: "edit",
-            label: t("Edit"),
-            icon: "AccessEditIcon",
-            onClick: this.onClickLinkEdit,
-            disabled: false,
-            "data-id": item.id,
-          }
+          key: "edit",
+          label: t("Edit"),
+          icon: "AccessEditIcon",
+          onClick: this.onClickLinkEdit,
+          disabled: false,
+          "data-id": item.id,
+        }
         : null,
       isFile && !isMediaOrImage
         ? {
-            key: "preview",
-            label: t("Preview"),
-            icon: "EyeIcon",
-            onClick: this.onClickLinkEdit,
-            disabled: true,
-            "data-id": item.id,
-          }
+          key: "preview",
+          label: t("Preview"),
+          icon: "EyeIcon",
+          onClick: this.onClickLinkEdit,
+          disabled: true,
+          "data-id": item.id,
+        }
         : null,
       isFile && isMediaOrImage
         ? {
-            key: "view",
-            label: t("View"),
-            icon: "EyeIcon",
-            onClick: this.onMediaFileClick,
-            disabled: false,
-          }
+          key: "view",
+          label: t("View"),
+          icon: "EyeIcon",
+          onClick: this.onMediaFileClick,
+          disabled: false,
+        }
         : null,
       isFile
         ? {
-            key: "download",
-            label: t("Download"),
-            icon: "DownloadIcon",
-            onClick: this.onClickDownload,
-            disabled: false,
-          }
+          key: "download",
+          label: t("Download"),
+          icon: "DownloadIcon",
+          onClick: this.onClickDownload,
+          disabled: false,
+        }
         : null,
       {
         key: "move",
@@ -980,8 +1000,8 @@ class SectionBodyContent extends React.Component {
     const mouseButton = e.which
       ? e.which !== 1
       : e.button
-      ? e.button !== 0
-      : false;
+        ? e.button !== 0
+        : false;
     const label = e.currentTarget.getAttribute("label");
     if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
       return;
@@ -1026,8 +1046,8 @@ class SectionBodyContent extends React.Component {
     const mouseButton = e.which
       ? e.which !== 1
       : e.button
-      ? e.button !== 0
-      : false;
+        ? e.button !== 0
+        : false;
     if (mouseButton || !this.tooltipRef.current || !dragging) {
       return;
     }
@@ -1353,207 +1373,207 @@ class SectionBodyContent extends React.Component {
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
-        this.renderEmptyFolderContainer()
-      )
+          this.renderEmptyFolderContainer()
+        )
     ) : !fileAction.id && items.length === 0 ? (
       firstLoad ? (
         <Loaders.Rows />
       ) : (
-        this.renderEmptyFilterContainer()
-      )
+          this.renderEmptyFilterContainer()
+        )
     ) : (
-      <>
-        {showMoveToPanel && (
-          <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={false}
-            visible={showMoveToPanel}
-            onClose={this.onMoveAction}
-          />
-        )}
+          <>
+            {showMoveToPanel && (
+              <OperationsPanel
+                {...operationsPanelProps}
+                isCopy={false}
+                visible={showMoveToPanel}
+                onClose={this.onMoveAction}
+              />
+            )}
 
-        {showCopyPanel && (
-          <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={true}
-            visible={showCopyPanel}
-            onClose={this.onCopyAction}
-          />
-        )}
-        <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
+            {showCopyPanel && (
+              <OperationsPanel
+                {...operationsPanelProps}
+                isCopy={true}
+                visible={showCopyPanel}
+                onClose={this.onCopyAction}
+              />
+            )}
+            <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
 
-        {viewAs === "tile" ? (
-          <TileContainer
-            className="tileContainer"
-            draggable
-            useReactWindow={false}
-            headingFolders={t("Folders")}
-            headingFiles={t("Files")}
-          >
-            {items.map((item) => {
-              const isEdit =
-                !!fileAction.type &&
-                editingId === item.id &&
-                item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
-              const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
-              const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
-              const element = this.getItemIcon(item, isEdit || item.id <= 0);
+            {viewAs === "tile" ? (
+              <TileContainer
+                className="tileContainer"
+                draggable
+                useReactWindow={false}
+                headingFolders={t("Folders")}
+                headingFiles={t("Files")}
+              >
+                {items.map((item) => {
+                  const isEdit =
+                    !!fileAction.type &&
+                    editingId === item.id &&
+                    item.fileExst === fileAction.extension;
+                  const contextOptions = this.getFilesContextOptions(
+                    item,
+                    viewer
+                  ).filter((o) => o);
+                  const contextOptionsProps =
+                    !contextOptions.length || isEdit ? {} : { contextOptions };
+                  const checked = isFileSelected(selection, item.id, item.parentId);
+                  const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
+                  const element = this.getItemIcon(item, isEdit || item.id <= 0);
 
-              const selectedItem = selection.find(
-                (x) => x.id === item.id && x.fileExst === item.fileExst
-              );
-              const isFolder = selectedItem
-                ? false
-                : item.fileExst
-                ? false
-                : true;
-              const draggable = selectedItem && currentFolderType !== "Trash";
-              let value = item.fileExst
-                ? `file_${item.id}`
-                : `folder_${item.id}`;
-              value += draggable ? "_draggable" : "";
-              const classNameProp =
-                isFolder && item.access < 2 ? { className: " dropable" } : {};
+                  const selectedItem = selection.find(
+                    (x) => x.id === item.id && x.fileExst === item.fileExst
+                  );
+                  const isFolder = selectedItem
+                    ? false
+                    : item.fileExst
+                      ? false
+                      : true;
+                  const draggable = selectedItem && currentFolderType !== "Trash";
+                  let value = item.fileExst
+                    ? `file_${item.id}`
+                    : `folder_${item.id}`;
+                  value += draggable ? "_draggable" : "";
+                  const classNameProp =
+                    isFolder && item.access < 2 ? { className: " dropable" } : {};
 
-              return (
-                <DragAndDrop
-                  {...classNameProp}
-                  onDrop={this.onDrop.bind(this, item)}
-                  onMouseDown={this.onMouseDown}
-                  dragging={dragging && isFolder && item.access < 2}
-                  key={`dnd-key_${item.id}`}
-                  {...contextOptionsProps}
-                  value={value}
-                  isFolder={!item.fileExst}
-                >
-                  <Tile
-                    key={item.id}
-                    item={item}
-                    isFolder={!item.fileExst}
-                    element={element}
-                    onSelect={this.onContentRowSelect}
-                    editing={editingId}
-                    viewAs={viewAs}
-                    {...checkedProps}
-                    {...contextOptionsProps}
-                    needForUpdate={this.needForUpdate}
-                  >
-                    <FilesTileContent
-                      item={item}
-                      viewer={viewer}
-                      culture={settings.culture}
-                      onEditComplete={this.onEditComplete}
-                      onMediaFileClick={this.onMediaFileClick}
-                    />
-                  </Tile>
-                </DragAndDrop>
-              );
-            })}
-          </TileContainer>
-        ) : (
-          <RowContainer draggable useReactWindow={false}>
-            {items.map((item) => {
-              const isEdit =
-                !!fileAction.type &&
-                editingId === item.id &&
-                item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
-              const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
-              const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
-              const element = this.getItemIcon(item, isEdit || item.id <= 0);
+                  return (
+                    <DragAndDrop
+                      {...classNameProp}
+                      onDrop={this.onDrop.bind(this, item)}
+                      onMouseDown={this.onMouseDown}
+                      dragging={dragging && isFolder && item.access < 2}
+                      key={`dnd-key_${item.id}`}
+                      {...contextOptionsProps}
+                      value={value}
+                      isFolder={!item.fileExst}
+                    >
+                      <Tile
+                        key={item.id}
+                        item={item}
+                        isFolder={!item.fileExst}
+                        element={element}
+                        onSelect={this.onContentRowSelect}
+                        editing={editingId}
+                        viewAs={viewAs}
+                        {...checkedProps}
+                        {...contextOptionsProps}
+                        needForUpdate={this.needForUpdate}
+                      >
+                        <FilesTileContent
+                          item={item}
+                          viewer={viewer}
+                          culture={settings.culture}
+                          onEditComplete={this.onEditComplete}
+                          onMediaFileClick={this.onMediaFileClick}
+                        />
+                      </Tile>
+                    </DragAndDrop>
+                  );
+                })}
+              </TileContainer>
+            ) : (
+                <RowContainer draggable useReactWindow={false}>
+                  {items.map((item) => {
+                    const isEdit =
+                      !!fileAction.type &&
+                      editingId === item.id &&
+                      item.fileExst === fileAction.extension;
+                    const contextOptions = this.getFilesContextOptions(
+                      item,
+                      viewer
+                    ).filter((o) => o);
+                    const contextOptionsProps =
+                      !contextOptions.length || isEdit ? {} : { contextOptions };
+                    const checked = isFileSelected(selection, item.id, item.parentId);
+                    const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
+                    const element = this.getItemIcon(item, isEdit || item.id <= 0);
 
-              const selectedItem = selection.find(
-                (x) => x.id === item.id && x.fileExst === item.fileExst
-              );
-              const isFolder = selectedItem
-                ? false
-                : item.fileExst
-                ? false
-                : true;
-              const draggable = selectedItem && currentFolderType !== "Trash";
-              let value = item.fileExst
-                ? `file_${item.id}`
-                : `folder_${item.id}`;
-              value += draggable ? "_draggable" : "";
-              const classNameProp =
-                isFolder && item.access < 2 ? { className: " dropable" } : {};
+                    const selectedItem = selection.find(
+                      (x) => x.id === item.id && x.fileExst === item.fileExst
+                    );
+                    const isFolder = selectedItem
+                      ? false
+                      : item.fileExst
+                        ? false
+                        : true;
+                    const draggable = selectedItem && currentFolderType !== "Trash";
+                    let value = item.fileExst
+                      ? `file_${item.id}`
+                      : `folder_${item.id}`;
+                    value += draggable ? "_draggable" : "";
+                    const classNameProp =
+                      isFolder && item.access < 2 ? { className: " dropable" } : {};
 
-              return (
-                <DragAndDrop
-                  {...classNameProp}
-                  onDrop={this.onDrop.bind(this, item)}
-                  onMouseDown={this.onMouseDown}
-                  dragging={dragging && isFolder && item.access < 2}
-                  key={`dnd-key_${item.id}`}
-                  {...contextOptionsProps}
-                  value={value}
-                >
-                  <SimpleFilesRow
-                    widthProp={widthProp}
-                    key={item.id}
-                    data={item}
-                    element={element}
-                    onSelect={this.onContentRowSelect}
-                    editing={editingId}
-                    {...checkedProps}
-                    {...contextOptionsProps}
-                    needForUpdate={this.needForUpdate}
-                    selectItem={this.onSelectItem.bind(this, item)}
-                  >
-                    <FilesRowContent
-                      widthProp={widthProp}
-                      isMobile={isMobile}
-                      item={item}
-                      viewer={viewer}
-                      culture={settings.culture}
-                      onEditComplete={this.onEditComplete}
-                      onMediaFileClick={this.onMediaFileClick}
-                    />
-                  </SimpleFilesRow>
-                </DragAndDrop>
-              );
-            })}
-          </RowContainer>
-        )}
-        {playlist.length > 0 && mediaViewerVisible && (
-          <MediaViewer
-            currentFileId={currentMediaFileId}
-            allowConvert={true} //TODO
-            canDelete={(fileId) => {
-              return true;
-            }} //TODO
-            canDownload={(fileId) => {
-              return true;
-            }} //TODO
-            visible={mediaViewerVisible}
-            playlist={playlist}
-            onDelete={this.onDeleteMediaFile}
-            onDownload={this.onDownloadMediaFile}
-            onClose={this.onMediaViewerClose}
-            onEmptyPlaylistError={this.onMediaViewerClose}
-            extsMediaPreviewed={extsMediaPreviewed} //TODO
-            extsImagePreviewed={extsImagePreviewed} //TODO
-          />
-        )}
-        {showSharingPanel && (
-          <SharingPanel
-            onClose={this.onClickShare}
-            visible={showSharingPanel}
-          />
-        )}
-      </>
-    );
+                    return (
+                      <DragAndDrop
+                        {...classNameProp}
+                        onDrop={this.onDrop.bind(this, item)}
+                        onMouseDown={this.onMouseDown}
+                        dragging={dragging && isFolder && item.access < 2}
+                        key={`dnd-key_${item.id}`}
+                        {...contextOptionsProps}
+                        value={value}
+                      >
+                        <SimpleFilesRow
+                          widthProp={widthProp}
+                          key={item.id}
+                          data={item}
+                          element={element}
+                          onSelect={this.onContentRowSelect}
+                          editing={editingId}
+                          {...checkedProps}
+                          {...contextOptionsProps}
+                          needForUpdate={this.needForUpdate}
+                          selectItem={this.onSelectItem.bind(this, item)}
+                        >
+                          <FilesRowContent
+                            widthProp={widthProp}
+                            isMobile={isMobile}
+                            item={item}
+                            viewer={viewer}
+                            culture={settings.culture}
+                            onEditComplete={this.onEditComplete}
+                            onMediaFileClick={this.onMediaFileClick}
+                          />
+                        </SimpleFilesRow>
+                      </DragAndDrop>
+                    );
+                  })}
+                </RowContainer>
+              )}
+            {playlist.length > 0 && mediaViewerVisible && (
+              <MediaViewer
+                currentFileId={currentMediaFileId}
+                allowConvert={true} //TODO
+                canDelete={(fileId) => {
+                  return true;
+                }} //TODO
+                canDownload={(fileId) => {
+                  return true;
+                }} //TODO
+                visible={mediaViewerVisible}
+                playlist={playlist}
+                onDelete={this.onDeleteMediaFile}
+                onDownload={this.onDownloadMediaFile}
+                onClose={this.onMediaViewerClose}
+                onEmptyPlaylistError={this.onMediaViewerClose}
+                extsMediaPreviewed={extsMediaPreviewed} //TODO
+                extsImagePreviewed={extsImagePreviewed} //TODO
+              />
+            )}
+            {showSharingPanel && (
+              <SharingPanel
+                onClose={this.onClickShare}
+                visible={showSharingPanel}
+              />
+            )}
+          </>
+        );
   }
 }
 
@@ -1562,23 +1582,13 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const {
-    selectedFolder,
-    treeFolders,
-    selection,
-    dragItem,
-    mediaViewerData,
-    dragging,
-    isLoading,
-    firstLoad,
-  } = state.files;
-  const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
-  const currentFolderType = getFolderType(id, treeFolders);
+  const pathParts = getPathParts(state);
+  const treeFolders = getTreeFolders(state);
 
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
   const commonFolderIndex = 2;
-  const currentFolderCount = filesCount + foldersCount;
+
   const myDocumentsId =
     treeFolders.length &&
     treeFolders[myFolderIndex] &&
@@ -1595,32 +1605,32 @@ const mapStateToProps = (state) => {
   const isCommon = pathParts && pathParts[0] === commonFolderId;
 
   return {
-    fileAction: state.files.fileAction,
-    files: state.files.files,
-    filter: state.files.filter,
-    folderId: state.files.selectedFolder.id,
-    folders: state.files.folders,
-    parentId: state.files.selectedFolder.parentId,
-    selected: state.files.selected,
-    selection,
-    settings: state.auth.settings,
-    viewer: state.auth.user,
-    viewAs: state.files.viewAs,
-    treeFolders,
-    currentFolderType,
-    title,
-    myDocumentsId,
-    currentFolderCount,
-    selectedFolderId: id,
-    dragItem,
-    isShare,
+    currentFolderCount: getCurrentFolderCount(state),
+    currentFolderType: getSelectedFolderType(state),
+    currentMediaFileId: getMediaViewerId(state),
+    dragging: getDragging(state),
+    dragItem: getDragItem(state),
+    fileAction: getFileAction(state),
+    files: getFiles(state),
+    filter: getFilter(state),
+    firstLoad: getFirstLoad(state),
+    folderId: getFolderId(state),
+    folders: getFolders(state),
+    isAdmin: getIsAdmin(state),
     isCommon,
-    isAdmin: state.auth.user.isAdmin,
-    mediaViewerVisible: mediaViewerData.visible,
-    currentMediaFileId: mediaViewerData.id,
-    dragging,
-    isLoading,
-    firstLoad,
+    isLoading: getIsLoading(state),
+    isShare,
+    mediaViewerVisible: getMediaViewerVisibility(state),
+    myDocumentsId,
+    parentId: getParentId(state),
+    selected: getSelected(state),
+    selectedFolderId: getFolderId(state),
+    selection: getSelection(state),
+    settings: getSettings(state),
+    title: getSelectedFolderTitle(state),
+    treeFolders,
+    viewAs: getViewAs(state),
+    viewer: getViewer(state)
   };
 };
 
