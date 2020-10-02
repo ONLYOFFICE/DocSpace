@@ -178,19 +178,21 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickFavorite = e => {
-    const { markItemAsFavorite, removeItemFromFavorite, updateFile, fetchFavoritesFolder } = this.props;
+    const { markItemAsFavorite, removeItemFromFavorite, updateFile, fetchFavoritesFolder, selectedTreeNode, treeFolders } = this.props;
     const { action, id, title } = e.currentTarget.dataset;
+    const isFavoriteDir = +selectedTreeNode === treeFolders.find(folder => folder.key === "0-4").id; // TODO: think how to improve
+
     switch (action) {
       case "mark":
         return markItemAsFavorite(+id)
         .then(() => updateFile(id, title))
         .then(() => toastr.success("Added to favorites"))
-        .catch(e => toastr.error(e))
+        .catch(e => toastr.error(e));
       case "remove":
         return removeItemFromFavorite(+id)
-        .then(() => fetchFavoritesFolder())
+        .then(() => (isFavoriteDir ? fetchFavoritesFolder() : updateFile(id, title)))
         .then(() => toastr.success("Removed from favorites"))
-        .catch(e => toastr.error(e))
+        .catch(e => toastr.error(e));
       default:
         return;
     }
@@ -1388,7 +1390,7 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData, dragging, isLoading } = state.files;
+  const { selectedFolder, treeFolders, selection, dragItem, mediaViewerData, dragging, isLoading, selectedTreeNode } = state.files;
   const { id, title, foldersCount, filesCount, pathParts } = selectedFolder;
   const currentFolderType = getFolderType(id, treeFolders);
 
@@ -1418,6 +1420,7 @@ const mapStateToProps = state => {
     myDocumentsId,
     currentFolderCount,
     selectedFolderId: id,
+    selectedTreeNode,
     dragItem,
     isShare,
     isCommon,
