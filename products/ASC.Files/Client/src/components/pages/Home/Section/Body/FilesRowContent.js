@@ -402,7 +402,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#A3A9AE'
                     />
                   }
-                  {true && 
+                  {fileStatus === 32 && 
                   <span 
                   style={{cursor: "pointer"}} 
                   onClick={() => console.log(item.id)}
