@@ -239,27 +239,6 @@ export function setIsErrorSettings(isError) {
   }
 }
 
-export function setFavorites(ids) {
-  return {
-    type: SET_FAVORITES,
-    ids
-  }
-}
-
-export function markAsFavorite(id) {
-  return {
-    type: MARK_AS_FAVORITE,
-    id
-  }
-}
-
-export function removeFromFavorites(id) {
-  return {
-    type: REMOVE_FROM_FAVORITES,
-    id
-  }
-}
-
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -358,27 +337,23 @@ export function fetchCommonFolder(dispatch) {
   });
 }
 
-// export function fetchFavoritesFolder() {
-//   return dispatch => {
-//     return files.getFavoritesFolderList().then(data => {
-//       dispatch(setFolders(data.folders));
-//       dispatch(setFiles(data.files));
-//       dispatch(setSelectedFolder());
-//     })}}
+export function fetchFavoritesFolder() {
+  return dispatch => {
+    return files.getFavoritesFolderList().then(data => {
+      dispatch(setFolders(data.folders));
+      dispatch(setFiles(data.files));
+      dispatch(setSelectedFolder(data.current));
+    })}}
 
 export function markItemAsFavorite(id) {
   return dispatch => {
-    return files.markAsFavorite(id).then(() => {
-      dispatch(markAsFavorite(id))
-    });
+    return files.markAsFavorite(id);
   }
 }
 
 export function removeItemFromFavorite(id) {
   return dispatch => {
-    return files.removeFromFavorite(id).then(() => {
-      dispatch(removeFromFavorites(id))
-    });
+    return files.removeFromFavorite(id);
   }
 }
 
