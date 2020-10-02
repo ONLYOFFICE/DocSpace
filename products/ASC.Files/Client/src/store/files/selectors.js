@@ -407,13 +407,3 @@ export const getFolderType = (id, treeFolders) => {
   else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
   else if(checkFolderType(id, indexOfFavorites, treeFolders)) { return "Favorites"; }
 }
-
-export const selectFavoriteFilesIds = (data) => {
-    return Object.values(data.files)
-    .map(item => item.id);
-}
-
-export const isFavorite = (data, id) => {
-  return selectFavoriteFilesIds(data)
-  .find(value => value === id)
-}
