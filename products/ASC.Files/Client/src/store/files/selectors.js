@@ -633,12 +633,24 @@ export const getFilter = state => {
   return state.files.filter;
 }
 
-export const getFolderId = state => {
+export const getSelectedFolder = state => {
+  return state.files.selectedFolder;
+}
+
+export const getNewRowItems = state => {
+  return state.files.newRowItems;
+}
+
+export const getSelectedFolderId = state => {
   return state.files.selectedFolder.id;
 }
 
-export const getParentId = state => {
+export const getSelectedFolderParentId = state => {
   return state.files.selectedFolder.parentId;
+}
+
+export const getSelectedFolderNew = state => {
+  return state.files.selectedFolder.new;
 }
 
 export const getSelected = state => {
