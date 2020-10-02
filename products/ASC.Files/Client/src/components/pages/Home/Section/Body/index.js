@@ -24,6 +24,8 @@ import { api, constants, MediaViewer, toastr } from 'asc-web-common';
 import {
   deleteFile,
   deleteFolder,
+  markItemAsFavorite,
+  removeItemFromFavorite,
   deselectFile,
   fetchFiles,
   selectFile,
@@ -171,6 +173,25 @@ class SectionBodyContent extends React.Component {
     }
 
     return false;
+  }
+
+  onClickFavorite = e => {
+    const { markItemAsFavorite, removeItemFromFavorite, fetchFavoritesFolder, updateFile } = this.props;
+    const { id } = e.currentTarget.dataset;
+    const { action } = e.currentTarget.dataset;
+
+    switch (action) {
+      case "mark":
+        return markItemAsFavorite(+id)
+        .then(() => toastr.success("Added to favorites"))
+        .catch(e => toastr.error(e))
+      case "remove":
+        return removeItemFromFavorite(+id)
+        .then(() => toastr.success("Removed from favorites"))
+        .catch(e => toastr.error(e))
+      default:
+        return;
+    }
   }
 
   onClickRename = () => {
@@ -461,9 +482,10 @@ class SectionBodyContent extends React.Component {
           key: "mark-as-favorite",
           label: t("MarkAsFavorite"),
           icon: 'FavoritesIcon',
-          onClick: null,
+          onClick: this.onClickFavorite,
           disabled: false,
-          'data-id': item.id
+          'data-id': item.id,
+          'data-action': "mark"
         }
         : null,
       (isFile && isMediaOrImage)
@@ -520,7 +542,7 @@ class SectionBodyContent extends React.Component {
         disabled: false
       },
       {
-        key: "sep",
+        key: "sep3",
         isSeparator: true
       },
       isFile ?
@@ -528,9 +550,10 @@ class SectionBodyContent extends React.Component {
        key: "remove-from-favorites",
        label: t("RemoveFromFavorites"),
        icon: 'FavoritesIcon',
-       onClick: null,
+       onClick: this.onClickFavorite,
        disabled: false,
-       'data-id': item.id
+       'data-id': item.id,
+       'data-action': "remove"
      }
      : null
     ];
@@ -1405,6 +1428,8 @@ export default connect(
   {
     deleteFile,
     deleteFolder,
+    markItemAsFavorite,
+    removeItemFromFavorite,
     deselectFile,
     fetchFiles,
     //fetchRootFolders,
