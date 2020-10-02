@@ -14,7 +14,7 @@ import {
   PREVIEW
 } from "../../helpers/constants";
 import config from "../../../package.json";
-import { getTreeFolders } from "./selectors";
+import { getTreeFolders, selectFavoriteFilesIds } from "./selectors";
 
 const { files, FilesFilter } = api;
 
@@ -358,12 +358,28 @@ export function fetchCommonFolder(dispatch) {
   });
 }
 
-export function fetchFavoritesFolder(dispatch) {
-  return files.getFavoritesFolderList().then(data => {
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
-  });
+// export function fetchFavoritesFolder() {
+//   return dispatch => {
+//     return files.getFavoritesFolderList().then(data => {
+//       dispatch(setFolders(data.folders));
+//       dispatch(setFiles(data.files));
+//       dispatch(setSelectedFolder());
+//     })}}
+
+export function markItemAsFavorite(id) {
+  return dispatch => {
+    return files.markAsFavorite(id).then(() => {
+      dispatch(markAsFavorite(id))
+    });
+  }
+}
+
+export function removeItemFromFavorite(id) {
+  return dispatch => {
+    return files.removeFromFavorite(id).then(() => {
+      dispatch(removeFromFavorites(id))
+    });
+  }
 }
 
 export function fetchProjectsFolder(dispatch) {
