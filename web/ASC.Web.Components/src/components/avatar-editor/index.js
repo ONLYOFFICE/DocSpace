@@ -57,8 +57,8 @@ class AvatarEditor extends React.Component {
   };
 
   onSaveButtonClick = () => {
-    this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
-    //this.saveAvatar();
+    //this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
+    this.saveAvatar();
   };
 
   saveAvatar = () => {
