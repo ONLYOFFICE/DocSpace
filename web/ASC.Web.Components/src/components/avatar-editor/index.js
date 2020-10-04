@@ -109,54 +109,77 @@ class AvatarEditor extends React.Component {
       maxSizeFileError,
       unknownError,
       saveButtonLabel,
-      saveButtonLoading
+      saveButtonLoading,
+      useModalDialog
     } = this.props;
 
     return (
-      <ModalDialog
-        visible={this.state.visible}
-        displayType={displayType}
-        scale={false}
-        contentHeight="initial"
-        contentWidth="initial"
-        onClose={this.onClose}
-        className={className}
-        id={id}
-        style={style}
-      >
-        <ModalDialog.Header>{headerLabel}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <AvatarEditorBody
-            ref={this.avatarEditorBodyRef}
-            visible={this.state.visible}
-            onImageChange={this.onImageChange}
-            onPositionChange={this.onPositionChange}
-            onSizeChange={this.onSizeChange}
-            onLoadFileError={this.onLoadFileError}
-            onLoadFile={this.onLoadFile}
-            deleteImage={this.onDeleteImage}
-            saveAvatar={this.saveAvatar}
-            maxSize={maxSize * 1000000} // megabytes to bytes
-            accept={accept}
-            image={image}
-            selectNewPhotoLabel={selectNewPhotoLabel}
-            orDropFileHereLabel={orDropFileHereLabel}
-            unknownTypeError={unknownTypeError}
-            maxSizeFileError={maxSizeFileError}
-            unknownError={unknownError}
-          />
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            key="SaveBtn"
-            label={saveButtonLabel}
-            isLoading={saveButtonLoading}
-            primary={true}
-            size="big"
-            onClick={this.onSaveButtonClick}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
+      useModalDialog ?
+        <ModalDialog
+          visible={this.state.visible}
+          displayType={displayType}
+          scale={false}
+          contentHeight="initial"
+          contentWidth="initial"
+          onClose={this.onClose}
+          className={className}
+          id={id}
+          style={style}
+        >
+          <ModalDialog.Header>{headerLabel}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <AvatarEditorBody
+              ref={this.avatarEditorBodyRef}
+              visible={this.state.visible}
+              onImageChange={this.onImageChange}
+              onPositionChange={this.onPositionChange}
+              onSizeChange={this.onSizeChange}
+              onLoadFileError={this.onLoadFileError}
+              onLoadFile={this.onLoadFile}
+              deleteImage={this.onDeleteImage}
+              saveAvatar={this.saveAvatar}
+              maxSize={maxSize * 1000000} // megabytes to bytes
+              accept={accept}
+              image={image}
+              selectNewPhotoLabel={selectNewPhotoLabel}
+              orDropFileHereLabel={orDropFileHereLabel}
+              unknownTypeError={unknownTypeError}
+              maxSizeFileError={maxSizeFileError}
+              unknownError={unknownError}
+            />
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              key="SaveBtn"
+              label={saveButtonLabel}
+              isLoading={saveButtonLoading}
+              primary={true}
+              size="big"
+              onClick={this.onSaveButtonClick}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
+      :
+        <AvatarEditorBody
+          ref={this.avatarEditorBodyRef}
+          visible={this.state.visible}
+          onImageChange={this.onImageChange}
+          onPositionChange={this.onPositionChange}
+          onSizeChange={this.onSizeChange}
+          onLoadFileError={this.onLoadFileError}
+          onLoadFile={this.onLoadFile}
+          deleteImage={this.onDeleteImage}
+          saveAvatar={this.saveAvatar}
+          maxSize={maxSize * 1000000} // megabytes to bytes
+          accept={accept}
+          image={image}
+          selectNewPhotoLabel={selectNewPhotoLabel}
+          orDropFileHereLabel={orDropFileHereLabel}
+          unknownTypeError={unknownTypeError}
+          maxSizeFileError={maxSizeFileError}
+          unknownError={unknownError}
+          useModalDialog={false}
+        />
     );
   }
 }
@@ -184,7 +207,8 @@ AvatarEditor.propTypes = {
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  useModalDialog: PropTypes.bool
 };
 
 AvatarEditor.defaultProps = {
@@ -193,7 +217,8 @@ AvatarEditor.defaultProps = {
   headerLabel: "Edit Photo",
   saveButtonLabel: "Save",
   accept: ["image/png", "image/jpeg"],
-  displayType: "auto"
+  displayType: "auto",
+  useModalDialog: true
 };
 
 export default AvatarEditor;

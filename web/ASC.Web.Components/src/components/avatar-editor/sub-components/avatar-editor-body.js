@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import Dropzone from "react-dropzone";
 import ReactAvatarEditor from "./react-avatar-editor";
 import PropTypes from "prop-types";
@@ -25,6 +25,10 @@ import Link from "../../link";
 const step = 0.01;
 const min = 1;
 const max = 5;
+
+const StyledAvatarEditorBody = styled.div`
+  max-width: 400px;
+`;
 
 const StyledErrorContainer = styled.div`
   p {
@@ -156,11 +160,45 @@ const DropZoneContainer = styled.div`
     @media ${tablet} {
       height: 426px;
     }
+  }
+`;
+
+const mobileStyles = css`
+.preview-container {
+  .editor-container {
+    display: grid;
+    grid-template-columns: 1fr 40px;
+    grid-template-rows: 1fr 56px;
+    gap: 0px 16px;
 
     @media ${mobile} {
-      height: 426px;
+    }
+
+    .react-avatar-editor{
+
+    }
+
+    .editor-buttons{
+      grid-template-columns: 1fr;
+      width: 40px;
+      grid-template-rows: repeat(4,1fr) 2fr 1fr;
+      height: 100%;
+      grid-gap: 8px 0;
+      background: none;
+
+      .editor-button{
+        background: #a3a9ae;
+        padding: 0 12px;
+        height: 40px;
+        border-radius: 6px;
+      }
+    }
+
+    .zoom-container{
+      
     }
   }
+}
 `;
 
 const StyledAvatarContainer = styled.div`
@@ -220,9 +258,6 @@ const StyledAvatarContainer = styled.div`
         }
       }
 
-      .react-avatar-editor {
-      }
-
       .editor-buttons {
         display: grid;
         grid-template-columns: repeat(4, 1fr) 2fr 1fr;
@@ -241,8 +276,7 @@ const StyledAvatarContainer = styled.div`
     }
   }
 
-  .link-container {
-  }
+  ${props => !props.useModalDialog && mobileStyles}
 `;
 
 class AvatarEditorBody extends React.Component {
@@ -526,7 +560,7 @@ class AvatarEditorBody extends React.Component {
   };
 
   render() {
-    const { maxSize, accept, role, title } = this.props;
+    const { maxSize, accept, role, title, useModalDialog } = this.props;
 
     const desktopMode = isDesktop();
     //const tabletMode = isTablet();
@@ -534,6 +568,11 @@ class AvatarEditorBody extends React.Component {
 
     let editorWidth = 174;
     let editorHeight = 174;
+
+    if(!useModalDialog) {
+      editorWidth = 270;
+      editorHeight = 270;
+    }
 
     /*if (tabletMode) {
       editorWidth = 320;
@@ -544,7 +583,7 @@ class AvatarEditorBody extends React.Component {
     }*/
 
     return (
-      <div
+      <StyledAvatarEditorBody
         onWheel={this.onWheel}
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
@@ -566,7 +605,7 @@ class AvatarEditorBody extends React.Component {
                   {this.renderLinkContainer()}
                 </Box>
               ) : (
-                <StyledAvatarContainer>
+                <StyledAvatarContainer useModalDialog={useModalDialog}>
                   <Box className="preview-container">
                     <Box className="editor-container">
                       <ReactAvatarEditor
@@ -592,6 +631,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={false}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                         <IconButton
                           size="16"
@@ -601,6 +641,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={false}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                         <IconButton
                           size="16"
@@ -610,6 +651,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={false}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                         <IconButton
                           size="16"
@@ -619,6 +661,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={false}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                         <Box></Box>
                         <IconButton
@@ -629,6 +672,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={true}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                       </Box>
                       <Box className="zoom-container">
@@ -660,7 +704,7 @@ class AvatarEditorBody extends React.Component {
                         />
                       </Box>
                     </Box>
-                    {desktopMode && (
+                    {desktopMode && useModalDialog && (
                       <Box className="avatar-container">
                         <Avatar
                           size="max"
@@ -710,7 +754,7 @@ class AvatarEditorBody extends React.Component {
             </Text>
           )}
         </StyledErrorContainer>
-      </div>
+      </StyledAvatarEditorBody>
     );
   }
 }
@@ -732,7 +776,8 @@ AvatarEditorBody.propTypes = {
   maxSizeFileError: PropTypes.string,
   unknownError: PropTypes.string,
   role: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
+  useModalDialog: PropTypes.bool
 };
 
 AvatarEditorBody.defaultProps = {
@@ -745,6 +790,7 @@ AvatarEditorBody.defaultProps = {
   maxSizeFileError: "Maximum file size exceeded",
   unknownError: "Error",
   role: "user",
-  title: "Sample title"
+  title: "Sample title",
+  useModalDialog: true
 };
 export default AvatarEditorBody;

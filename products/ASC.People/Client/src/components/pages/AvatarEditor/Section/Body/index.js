@@ -85,7 +85,7 @@ class SectionBodyContent extends React.PureComponent{
         tmpFile: this.state.avatar.tmpFile
       })
         .then(response => {
-          let stateCopy = Object.assign({}, this.state);
+          //let stateCopy = Object.assign({}, this.state);
           //stateCopy.avatar.tmpFile = "";
        /*   stateCopy.profile.avatarMax =
             response.max +
@@ -177,6 +177,7 @@ class SectionBodyContent extends React.PureComponent{
       <AvatarEditorBody>
         {t("UploadNewPhoto")}
         <AvatarEditor
+          useModalDialog={false}
           image={this.state.avatar.image}
           visible={true}
           onClose={this.onCloseAvatarEditor}
