@@ -30,19 +30,31 @@ class LeaveFormDialogComponent extends React.Component {
   };
 
   onSubmit = () => {
-    const { onContinue, setIsVisibleModalLeave, setIsEditingForm } = this.props;
+    const {
+      onContinue,
+      setIsVisibleModalLeave,
+      setIsEditingForm,
+      editingForm,
+    } = this.props;
 
-    setIsVisibleModalLeave(false);
+    setIsVisibleModalLeave(false, null);
     setIsEditingForm(false);
 
-    onContinue && onContinue();
+    if (editingForm.callback) {
+      editingForm.callback();
+    } else {
+      onContinue && onContinue();
+    }
   };
   render() {
-    const { t, isVisibleModalLeave } = this.props;
+    const { t, editingForm } = this.props;
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={isVisibleModalLeave} onClose={this.onClose}>
+        <ModalDialog
+          visible={editingForm.isVisibleModalLeave}
+          onClose={this.onClose}
+        >
           <ModalDialog.Header>{t("LeaveDialogHeader")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text fontSize="13px">{t("LeaveDialogBody")}</Text>
@@ -76,13 +88,13 @@ const LeaveFormDialog = (props) => (
 );
 
 LeaveFormDialog.propTypes = {
-  isVisibleModalLeave: PropTypes.bool.isRequired,
+  editingForm: PropTypes.object.isRequired,
   onContinue: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    isVisibleModalLeave: state.people.editingForm.isVisibleModalLeave,
+    editingForm: state.people.editingForm,
   };
 }
 

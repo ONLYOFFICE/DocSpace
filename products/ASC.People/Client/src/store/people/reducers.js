@@ -88,6 +88,7 @@ const peopleReducer = (state = initialState, action) => {
         editingForm: {
           ...state.editingForm,
           isVisibleModalLeave: action.isVisible,
+          callback: action.callback,
         },
       });
     case SET_IS_EDITING_FORM:

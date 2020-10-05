@@ -143,10 +143,11 @@ export function setSelectorUsers(users) {
   };
 }
 
-export function setIsVisibleModalLeave(isVisible) {
+export function setIsVisibleModalLeave(isVisible, callback) {
   return {
     type: SET_IS_VISIBLE_MODAL_LEAVE,
     isVisible,
+    callback,
   };
 }
 
