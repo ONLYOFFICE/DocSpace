@@ -26,6 +26,8 @@ export const SET_SELECTED = "SET_SELECTED";
 export const SET_FILTER = "SET_FILTER";
 export const SELECT_GROUP = "SELECT_GROUP";
 export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
+export const SET_IS_VISIBLE_MODAL_LEAVE = "SET_IS_VISIBLE_MODAL_LEAVE";
+export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
 
 export function setUser(user) {
   return {
@@ -141,6 +143,20 @@ export function setSelectorUsers(users) {
   };
 }
 
+export function setIsVisibleModalLeave(isVisible) {
+  return {
+    type: SET_IS_VISIBLE_MODAL_LEAVE,
+    isVisible,
+  };
+}
+
+export function setIsEditingForm(isEdit) {
+  return {
+    type: SET_IS_EDITING_FORM,
+    isEdit,
+  };
+}
+
 export function fetchSelectorUsers() {
   return (dispatch) => {
     api.people.getSelectorUserList().then((data) => {
@@ -245,12 +261,6 @@ export function resetFilter() {
 
 export function updateProfileInUsers(updatedProfile) {
   return (dispatch, getState) => {
-    if (!updatedProfile) {
-      const { profile } = getState();
-      updatedProfile = profile.targetUser;
-    }
-
-    const { userName } = updatedProfile;
     const { people } = getState();
     const { users } = people;
 
@@ -258,6 +268,12 @@ export function updateProfileInUsers(updatedProfile) {
       return updateUserList(dispatch);
     }
 
+    if (!updatedProfile) {
+      const { profile } = getState();
+      updatedProfile = profile.targetUser;
+    }
+
+    const { userName } = updatedProfile;
     const oldProfile = getUserByUserName(users, userName);
     const newProfile = {};
 

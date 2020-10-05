@@ -6,6 +6,11 @@ import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
+import {
+  setIsVisibleModalLeave,
+  setIsEditingForm,
+} from "../../../store/people/actions";
+
 const i18n = createI18N({
   page: "LeaveFormDialog",
   localesPath: "dialogs/LeaveFormDialog",
@@ -16,28 +21,28 @@ const { changeLanguage } = utils;
 class LeaveFormDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      visible: props.visible,
-    };
     changeLanguage(i18n);
   }
 
   onClose = () => {
-    this.setState({ visible: false });
+    const { setIsVisibleModalLeave } = this.props;
+    setIsVisibleModalLeave(false);
   };
 
-  onSubbmit = () => {
-    const { onContinue } = this.props;
+  onSubmit = () => {
+    const { onContinue, setIsVisibleModalLeave, setIsEditingForm } = this.props;
+
+    setIsVisibleModalLeave(false);
+    setIsEditingForm(false);
+
     onContinue && onContinue();
   };
   render() {
-    const { t } = this.props;
-    const { visible } = this.state;
+    const { t, isVisibleModalLeave } = this.props;
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={this.onClose}>
+        <ModalDialog visible={isVisibleModalLeave} onClose={this.onClose}>
           <ModalDialog.Header>{t("LeaveDialogHeader")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text fontSize="13px">{t("LeaveDialogBody")}</Text>
@@ -48,7 +53,7 @@ class LeaveFormDialogComponent extends React.Component {
               label={t("LeaveDialogLeaveBtn")}
               size="medium"
               primary={true}
-              onClick={this.onSubbmit}
+              onClick={this.onSubmit}
             />
             <Button
               className="button-dialog"
@@ -71,8 +76,17 @@ const LeaveFormDialog = (props) => (
 );
 
 LeaveFormDialog.propTypes = {
-  visible: PropTypes.bool.isRequired,
+  isVisibleModalLeave: PropTypes.bool.isRequired,
   onContinue: PropTypes.func.isRequired,
 };
 
-export default LeaveFormDialog;
+function mapStateToProps(state) {
+  return {
+    isVisibleModalLeave: state.people.editingForm.isVisibleModalLeave,
+  };
+}
+
+export default connect(mapStateToProps, {
+  setIsVisibleModalLeave,
+  setIsEditingForm,
+})(LeaveFormDialog);
