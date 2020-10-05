@@ -58,9 +58,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                     table.PrimaryKey("PK_login_events", x => x.id);
                 });
 
-            
-            
-
             migrationBuilder.CreateTable(
                 name: "tenants_partners",
                 columns: table => new

@@ -51,76 +51,83 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyQueue", b =>
-                {
-                    b.Property<int>("NotifyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("notify_id")
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+            {
+                b.Property<int>("NotifyId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("notify_id")
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Attachments")
-                        .HasColumnName("attachments")
-                        .HasColumnType("text");
+                b.Property<string>("Attachments")
+                    .HasColumnName("attachments")
+                    .HasColumnType("text");
 
-                    b.Property<string>("Content")
-                        .HasColumnName("content")
-                        .HasColumnType("text");
+                b.Property<string>("AutoSubmitted")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("auto_submitted")
+                    .HasColumnType("character varying(64)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(64);
 
-                    b.Property<string>("ContentType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("content_type")
-                        .HasColumnType("character varying(64)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(64);
+                b.Property<string>("Content")
+                    .HasColumnName("content")
+                    .HasColumnType("text");
 
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnName("creation_date")
-                        .HasColumnType("timestamp without time zone");
+                b.Property<string>("ContentType")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("content_type")
+                    .HasColumnType("character varying(64)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(64);
 
-                    b.Property<string>("Reciever")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("reciever")
-                        .HasColumnType("character varying(255)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(255);
+                b.Property<DateTime>("CreationDate")
+                    .HasColumnName("creation_date")
+                    .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("ReplyTo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("reply_to")
-                        .HasColumnType("character varying(1024)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(1024);
+                b.Property<string>("Reciever")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("reciever")
+                    .HasColumnType("character varying(255)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(255);
 
-                    b.Property<string>("Sender")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("sender")
-                        .HasColumnType("character varying(255)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(255);
+                b.Property<string>("ReplyTo")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("reply_to")
+                    .HasColumnType("character varying(1024)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(1024);
 
-                    b.Property<string>("SenderType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("sender_type")
-                        .HasColumnType("character varying(64)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(64);
+                b.Property<string>("Sender")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("sender")
+                    .HasColumnType("character varying(255)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(255);
 
-                    b.Property<string>("Subject")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("subject")
-                        .HasColumnType("character varying(1024)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(1024);
+                b.Property<string>("SenderType")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("sender_type")
+                    .HasColumnType("character varying(64)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(64);
 
-                    b.Property<int>("TenantId")
-                        .HasColumnName("tenant_id")
-                        .HasColumnType("integer");
+                b.Property<string>("Subject")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("subject")
+                    .HasColumnType("character varying(1024)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(1024);
 
-                    b.HasKey("NotifyId")
-                        .HasName("notify_queue_pkey");
+                b.Property<int>("TenantId")
+                    .HasColumnName("tenant_id")
+                    .HasColumnType("integer");
 
-                    b.ToTable("notify_queue","onlyoffice");
-                });
+                b.HasKey("NotifyId")
+                    .HasName("notify_queue_pkey");
+
+                b.ToTable("notify_queue", "onlyoffice");
+            });
 #pragma warning restore 612, 618
         }
     }

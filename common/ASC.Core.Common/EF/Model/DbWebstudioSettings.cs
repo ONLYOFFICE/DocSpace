@@ -31,7 +31,8 @@ namespace ASC.Core.Common.EF.Model
         public static void WebstudioSettingsData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioSettings>().HasData(
-                new DbWebstudioSettings { TenantId = 1, Id = Guid.Parse("9a925891-1f92-4ed7-b277-d6f649739f06"), UserId = Guid.Parse("00000000-0000-0000-0000-000000000000"), Data =  "{'Completed':false}" }
+                new DbWebstudioSettings { TenantId = 1, Id = Guid.Parse("9a925891-1f92-4ed7-b277-d6f649739f06"), UserId = Guid.Parse("00000000-0000-0000-0000-000000000000"), Data = "{'Analytics':true,'Completed':true}" },
+                new DbWebstudioSettings { TenantId = 1, Id = Guid.Parse("ab5b3c97-a972-475c-bb13-71936186c4e6"), UserId = Guid.Parse("00000000-0000-0000-0000-000000000000"), Data = "{'ColorThemeName':'pure - orange','FirstRequest':false}" }
                 );
         }
         public static void MySqlAddWebstudioSettings(this ModelBuilder modelBuilder)

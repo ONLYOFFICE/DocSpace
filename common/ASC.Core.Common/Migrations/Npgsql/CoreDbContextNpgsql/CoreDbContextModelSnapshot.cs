@@ -605,67 +605,82 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
-                {
-                    b.Property<int>("Tenant")
-                        .HasColumnName("tenant")
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Tenant")
+                    .HasColumnName("tenant")
+                    .HasColumnType("integer");
 
-                    b.Property<int>("ActiveUsers")
-                        .HasColumnName("active_users")
-                        .HasColumnType("integer");
+                b.Property<int>("ActiveUsers")
+                    .HasColumnName("active_users")
+                    .HasColumnType("integer");
 
-                    b.Property<string>("AvangateId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("avangate_id")
-                        .HasColumnType("character varying(128)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(128);
+                b.Property<string>("AvangateId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("avangate_id")
+                    .HasColumnType("character varying(128)")
+                    .HasDefaultValueSql("NULL")
+                    .HasMaxLength(128);
 
-                    b.Property<string>("Description")
-                        .HasColumnName("description")
-                        .HasColumnType("character varying");
+                b.Property<string>("Description")
+                    .HasColumnName("description")
+                    .HasColumnType("character varying");
 
-                    b.Property<string>("Features")
-                        .HasColumnName("features")
-                        .HasColumnType("text");
+                b.Property<string>("Features")
+                    .HasColumnName("features")
+                    .HasColumnType("text");
 
-                    b.Property<long>("MaxFileSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("max_file_size")
-                        .HasColumnType("bigint")
-                        .HasDefaultValueSql("'0'");
+                b.Property<long>("MaxFileSize")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("max_file_size")
+                    .HasColumnType("bigint")
+                    .HasDefaultValueSql("'0'");
 
-                    b.Property<long>("MaxTotalSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("max_total_size")
-                        .HasColumnType("bigint")
-                        .HasDefaultValueSql("'0'");
+                b.Property<long>("MaxTotalSize")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("max_total_size")
+                    .HasColumnType("bigint")
+                    .HasDefaultValueSql("'0'");
 
-                    b.Property<string>("Name")
-                        .HasColumnName("name")
-                        .HasColumnType("character varying");
+                b.Property<string>("Name")
+                    .HasColumnName("name")
+                    .HasColumnType("character varying");
 
-                    b.Property<decimal>("Price")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("price")
-                        .HasColumnType("numeric(10,2)")
-                        .HasDefaultValueSql("0.00");
+                b.Property<decimal>("Price")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("price")
+                    .HasColumnType("numeric(10,2)")
+                    .HasDefaultValueSql("0.00");
 
-                    b.Property<decimal>("Price2")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("price2")
-                        .HasColumnType("numeric(10,2)")
-                        .HasDefaultValueSql("0.00");
+                b.Property<decimal>("Price2")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("price2")
+                    .HasColumnType("numeric(10,2)")
+                    .HasDefaultValueSql("0.00");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnName("visible")
-                        .HasColumnType("boolean");
+                b.Property<bool>("Visible")
+                    .HasColumnName("visible")
+                    .HasColumnType("boolean");
 
-                    b.HasKey("Tenant")
-                        .HasName("tenants_quota_pkey");
+                b.HasKey("Tenant")
+                    .HasName("tenants_quota_pkey");
 
-                    b.ToTable("tenants_quota","onlyoffice");
-                });
+                b.ToTable("tenants_quota", "onlyoffice");
+
+                b.HasData(
+                    new
+                    {
+                        Tenant = -1,
+                        ActiveUsers = 10000,
+                        AvangateId = "0",
+                        Features = "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption",
+                        MaxFileSize = 102400L,
+                        MaxTotalSize = 10995116277760L,
+                        Name = "default",
+                        Price = 0.00m,
+                        Price2 = 0.00m,
+                        Visible = false
+                    });
+            });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuotaRow", b =>
                 {

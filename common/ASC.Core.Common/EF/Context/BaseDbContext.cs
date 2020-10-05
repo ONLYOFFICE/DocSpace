@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF
         public BaseDbContext() { }
         public BaseDbContext(DbContextOptions options) : base(options)
         {
-            Database.Migrate();
+            
         }
 
         internal ILoggerFactory LoggerFactory { get; set; }

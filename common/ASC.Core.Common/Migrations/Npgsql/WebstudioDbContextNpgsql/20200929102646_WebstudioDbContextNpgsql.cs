@@ -60,7 +60,21 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                 schema: "onlyoffice",
                 table: "webstudio_settings",
                 columns: new[] { "TenantID", "ID", "UserID", "Data" },
-                values: new object[] { 1, new Guid("9a925891-1f92-4ed7-b277-d6f649739f06"), new Guid("00000000-0000-0000-0000-000000000000"), "{'Completed':false}" });
+                values: new object[,] {
+                    { 1, new Guid("9a925891-1f92-4ed7-b277-d6f649739f06"), new Guid("00000000-0000-0000-0000-000000000000"), "{'Analytics':true,'Completed':true}" },
+                    { 1, new Guid("ab5b3c97-a972-475c-bb13-71936186c4e6"), new Guid("00000000-0000-0000-0000-000000000000"), "{'ColorThemeName':'pure - orange','FirstRequest':false}" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "onlyoffice",
+                table: "webstudio_uservisit",
+                columns: new[] { "tenantid", "visitdate", "productid", "userid", "firstvisittime", "lastvisittime", "visitcount" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2020, 10, 1, 16, 53, 22, 198, DateTimeKind.Utc).AddTicks(5709), new Guid("00000000-0000-0000-0000-000000000000"), new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), new DateTime(2020, 10, 1, 16, 53, 22, 198, DateTimeKind.Utc).AddTicks(9735), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(777), 3 },
+                    { 1, new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(1775), new Guid("00000000-0000-0000-0000-000000000000"), new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2002), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2025), 2 },
+                    { 1, new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2046), new Guid("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"), new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2061), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2065), 1 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "ID",
