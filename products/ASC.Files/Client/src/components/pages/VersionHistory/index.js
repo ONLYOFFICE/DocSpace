@@ -82,7 +82,7 @@ class PureVersionHistory extends React.Component {
             </PageLayout.ArticleHeader>
 
             <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent startUpload={this.startUpload} />
+              <ArticleMainButtonContent />
             </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>

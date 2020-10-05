@@ -28,6 +28,7 @@ import {
   SET_FILES_SETTING,
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
+  SET_UPLOAD_DATA
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -65,6 +66,17 @@ const initialState = {
     enableThirdParty: false,
     isErrorSettings: false,
   },
+  uploadData: {
+    files: [],
+    filesSize: 0,
+    convertFiles: [],
+    convertFilesSize: 0,
+    uploadStatus: null,
+    uploadToFolder: null,
+    uploadedFiles: 0,
+    percent: 0,
+    uploaded: true
+  }
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -230,6 +242,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_FIRST_LOAD:
       return Object.assign({}, state, {
         firstLoad: action.firstLoad,
+      });
+    case SET_UPLOAD_DATA:
+      return Object.assign({}, state, {
+        uploadData: action.uploadData,
       });
     default:
       return state;

@@ -5,7 +5,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
-import { setTreeFolders } from "../../../store/files/actions";
+import { setTreeFolders, setDialogVisible, onConvert } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "ConvertDialog",
@@ -46,13 +46,16 @@ class ConvertDialogComponent extends React.Component {
     return false;
   }
 
+  onConvert = () => this.props.onConvert(this.props.t);  
+  onClose = () =>  this.props.setDialogVisible(this.props.t);
+
   render() {
-    const { t, visible, onClose, onConvert } = this.props;
+    const { t, visible } = this.props;
     const { saveOriginalFormat, hideMessage } = this.state;
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog visible={visible} onClose={this.onClose}>
           <ModalDialog.Header>{t("ConversionTitle")}</ModalDialog.Header>
           <ModalDialog.Body>
             <div className="convert_dialog_content">
@@ -86,14 +89,14 @@ class ConvertDialogComponent extends React.Component {
                 label={t("ContinueButton")}
                 size="medium"
                 primary
-                onClick={onConvert}
+                onClick={this.onConvert}
               />
               <Button
                 className="convert_dialog_button"
                 key="CloseButton"
                 label={t("CloseButton")}
                 size="medium"
-                onClick={onClose}
+                onClick={this.onClose}
               />
             </div>
           </ModalDialog.Footer>
@@ -115,4 +118,4 @@ const mapStateToProps = state => {
   return {};
 };
 
-export default connect(mapStateToProps, { setTreeFolders })(withRouter(ConvertDialog));
+export default connect(mapStateToProps, { setTreeFolders, setDialogVisible, onConvert })(withRouter(ConvertDialog));

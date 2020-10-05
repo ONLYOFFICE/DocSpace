@@ -30,6 +30,7 @@ import {
   setTreeFolders,
   setIsLoading,
   setFirstLoad,
+  startUpload
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
@@ -37,7 +38,6 @@ import {
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
-import { startUpload, onConvert, setDialogVisible } from "./FilesUploader";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
@@ -186,7 +186,7 @@ class PureHome extends React.Component {
   };
 
   onDrop = (files, e, uploadToFolder) => {
-    const { t, currentFolderId } = this.props;
+    const { t, currentFolderId, startUpload } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
     this.props.setDragging(false);
@@ -419,7 +419,7 @@ class PureHome extends React.Component {
       progressData,
       viewAs,
       convertDialogVisible,
-      fileActionId,
+      fileActionId
     } = this.props;
 
     // const progressBarContent = (
@@ -447,8 +447,6 @@ class PureHome extends React.Component {
         {convertDialogVisible && (
           <ConvertDialog
             visible={convertDialogVisible}
-            onClose={setDialogVisible}
-            onConvert={onConvert}
           />
         )}
         {/* <RequestLoader
@@ -589,7 +587,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setProgressBarData(progressData)),
     setSelected: (selected) => dispatch(setSelected(selected)),
     setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-    //startUpload: () => dispatch(),
+    startUpload: (files, folderId, t) => dispatch(startUpload(files, folderId, t)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
