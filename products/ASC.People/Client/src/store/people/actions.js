@@ -245,12 +245,16 @@ export function resetFilter() {
 
 export function updateProfileInUsers(updatedProfile) {
   return (dispatch, getState) => {
+    if (!updatedProfile) {
+      const { profile } = getState();
+      updatedProfile = profile.targetUser;
+    }
+
     const { userName } = updatedProfile;
     const { people } = getState();
     const { users } = people;
 
     if (!users) {
-      const { filter } = people;
       return updateUserList(dispatch);
     }
 

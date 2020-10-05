@@ -22,7 +22,10 @@ import {
   createProfile,
   updateCreatedAvatar,
 } from "../../../../../store/profile/actions";
-import { setFilter } from "../../../../../store/people/actions";
+import {
+  setFilter,
+  updateProfileInUsers,
+} from "../../../../../store/people/actions";
 import {
   MainContainer,
   AvatarContainer,
@@ -82,6 +85,7 @@ class CreateUserForm extends React.Component {
     })
       .then((res) => {
         this.props.updateCreatedAvatar(res);
+        this.props.updateProfileInUsers();
         toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(
           `${this.props.settings.homepage}/view/${userName}`
@@ -602,4 +606,5 @@ export default connect(mapStateToProps, {
   createProfile,
   updateCreatedAvatar,
   setFilter,
+  updateProfileInUsers,
 })(withRouter(withTranslation()(CreateUserForm)));
