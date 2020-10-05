@@ -7,20 +7,25 @@ const phoneSize = 464;
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
-  padding: 50px 0;
+  padding: 64px 0;
 
   display: grid;
   grid-template-areas:
     "img header"
     ${props => props.subheadingText && `"img subheading"`}
-    "img desc"
+    ${props => props.descriptionText && `"img desc"`}
     "img button";
-  min-width: 320px;
-  max-width: 742px;
+
+  
+  max-width:  800px; 
+  min-width:343px;
+
+  grid-column-gap: 16px;
+  grid-row-gap: 12px;
 
   .ec-image {
     grid-area: img;
-    margin: auto 0;
+    margin: 0 0 0 auto;
   }
 
   .ec-header {
@@ -29,61 +34,56 @@ const EmptyContentBody = styled.div`
 
   .ec-subheading {
     grid-area: subheading;
-    padding: 8px 0;
   }
+  overflow-wrap: anywhere; 
 
   .ec-desc {
     grid-area: desc;
-    padding-top: 5px;
+
   }
 
   .ec-buttons {
     grid-area: button;
-    padding-top: 10px;
+  
   }
 
-  ${props =>
+  /* ${props =>
     props.widthProp <= phoneSize &&
     css`
       .ec-image {
         display: none;
       }
-    `}
+    `} */
 
   @media (orientation: portrait) {
-    @media (max-width: 700px) {
+    @media (max-width: 738px) {
+      
+      padding-top: 0px;
+      max-width: 496px;
+  
       .ec-image {
-        height: 21vw;
+        max-height: 100px;
       }
-
-      .ec-header {
-        font-size: 3.5vw;
-      }
-
-      .ec-subheading {
-        font-size: 2.9vw;
-      }
-
-      .ec-desc {
-        font-size: 2.4vw;
-      }
+ 
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 375px) {
+    
+      grid-template-areas:
+        "img"
+        "header"
+        ${props => props.subheadingText && `"subheading"`}
+        ${props => props.descriptionText && `"desc"`}
+        "button";
+      .ec-header,
+      .ec-subheading,
+      .ec-desc,
+      .ec-buttons {
+        padding-left: 16px;
+      }
       .ec-image {
-        display: none;
-      }
-
-      .ec-header {
-        font-size: 4.75vw;
-      }
-
-      .ec-subheading {
-        font-size: 4.15vw;
-      }
-
-      .ec-desc {
-        font-size: 3.7vw;
+       height: 75px;
+       margin-left: 0;
       }
     }
   }
