@@ -41,7 +41,7 @@ const SectionHeaderContent = (props) => {
     !profile
       ? setFilter(filter)
       : history.push(`/products/people/view/${profile.userName}`);
-  }, [history, profile, settings.homepage]);
+  }, [history, profile, setFilter, filter]);
 
   return (
     <Wrapper>
