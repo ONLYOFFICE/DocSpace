@@ -2,7 +2,14 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { constants, Headline, store, api, toastr, Loaders } from "asc-web-common";
+import {
+  constants,
+  Headline,
+  store,
+  api,
+  toastr,
+  Loaders,
+} from "asc-web-common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
@@ -318,9 +325,7 @@ class SectionHeaderContent extends React.Component {
   onBackToParentFolder = () => {
     const { setIsLoading, parentId, filter, fetchFiles } = this.props;
     setIsLoading(true);
-    fetchFiles(parentId, filter).finally(() =>
-      setIsLoading(false)
-    );
+    fetchFiles(parentId, filter).finally(() => setIsLoading(false));
   };
 
   onSelectorSelect = (item) => {
@@ -345,7 +350,7 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       loopFilesOperations,
-      isCanCreate
+      isCanCreate,
     } = this.props;
 
     const {
@@ -604,12 +609,7 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const {
-    selectedFolder,
-    selection,
-    treeFolders,
-    filter,
-  } = state.files;
+  const { selectedFolder, selection, treeFolders, filter } = state.files;
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
 
@@ -618,7 +618,7 @@ const mapStateToProps = (state) => {
 
   return {
     folder: parentId !== 0,
-    isAdmin: isAdmin(user),
+    isAdmin: isAdmin(state),
     isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
     parentId,
     selection,
@@ -635,5 +635,5 @@ export default connect(mapStateToProps, {
   setProgressBarData,
   setIsLoading,
   clearProgressData,
-  fetchFiles
+  fetchFiles,
 })(withTranslation()(withRouter(SectionHeaderContent)));

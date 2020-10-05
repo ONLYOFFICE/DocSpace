@@ -227,7 +227,7 @@ function mapStateToProps(state) {
       ? [state.people.selectedGroup]
       : ["root"],
     groups,
-    isAdmin: isAdmin(state.auth.user),
+    isAdmin: isAdmin(state),
     isLoaded,
   };
 }

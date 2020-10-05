@@ -117,7 +117,7 @@ function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
     group: state.group.targetGroup,
-    isAdmin: isAdmin(state.auth.user),
+    isAdmin: isAdmin(state),
   };
 }
 

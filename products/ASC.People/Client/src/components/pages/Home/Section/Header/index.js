@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import {
@@ -11,11 +11,13 @@ import { Headline, toastr, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
-  getUserType,
-  getUsersStatus,
-  getInactiveUsers,
-  getDeleteUsers,
-  getUsersIds,
+  isEmployeesSelected,
+  isGuestsSelected,
+  isActiveSelected,
+  isDisableSelected,
+  isInactiveSelected,
+  isDeleteSelected,
+  isAnythingSelected,
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
@@ -93,13 +95,13 @@ const StyledContainer = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [showDeleteDialog, setDeleteDialog] = useState(false);
-  const [showSendInviteDialog, setSendInviteDialog] = useState(false);
-  const [showDisableDialog, setShowDisableDialog] = useState(false);
-  const [showActiveDialog, setShowActiveDialog] = useState(false);
-  const [showGuestDialog, setShowGuestDialog] = useState(false);
-  const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
+  const [invitationDialogVisible, setInvitationDialogVisible] = useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [sendInviteDialogVisible, setSendInviteDialogVisible] = useState(false);
+  const [disableDialogVisible, setDisableDialogVisible] = useState(false);
+  const [activeDialogVisible, setActiveDialogVisible] = useState(false);
+  const [guestDialogVisible, setGuestDialogVisible] = useState(false);
+  const [employeeDialogVisible, setEmployeeDialogVisible] = useState(false);
 
   const {
     isHeaderVisible,
@@ -111,50 +113,64 @@ const SectionHeaderContent = (props) => {
     group,
     isAdmin,
     t,
-    filter,
     history,
-    settings,
+
+    customNames,
+    homepage,
+
     deleteGroup,
-    usersWithEmployeeType,
-    usersWithGuestType,
-    usersWithActiveStatus,
-    usersWithDisableStatus,
-    usersToInvite,
-    usersToRemove,
-    setSelected,
+
     selection,
+
+    isAnythingSelected,
+    isEmployeesSelected,
+    isGuestsSelected,
+    isActiveSelected,
+    isDisableSelected,
+    isInactiveSelected,
+    isDeleteSelected,
+
     isLoaded,
   } = props;
 
+  const {
+    userCaption,
+    guestCaption,
+    groupCaption,
+    groupsCaption,
+  } = customNames;
+
   //console.log("SectionHeaderContent render");
 
-  const onSetEmployee = useCallback(
-    () => setShowEmployeeDialog(!showEmployeeDialog),
-    [showEmployeeDialog]
+  const toggleEmployeeDialog = useCallback(
+    () => setEmployeeDialogVisible(!employeeDialogVisible),
+    [employeeDialogVisible]
   );
 
-  const onSetGuest = useCallback(() => setShowGuestDialog(!showGuestDialog), [
-    showGuestDialog,
-  ]);
-
-  const onSetActive = useCallback(
-    () => setShowActiveDialog(!showActiveDialog),
-    [showActiveDialog]
+  const toggleGuestDialog = useCallback(
+    () => setGuestDialogVisible(!guestDialogVisible),
+    [guestDialogVisible]
   );
 
-  const onSetDisabled = useCallback(
-    () => setShowDisableDialog(!showDisableDialog),
-    [showDisableDialog]
+  const toggleActiveDialog = useCallback(
+    () => setActiveDialogVisible(!activeDialogVisible),
+    [activeDialogVisible]
   );
 
-  const onSendInviteAgain = useCallback(
-    () => setSendInviteDialog(!showSendInviteDialog),
-    [showSendInviteDialog]
+  const toggleDisableDialog = useCallback(
+    () => setDisableDialogVisible(!disableDialogVisible),
+    [disableDialogVisible]
   );
 
-  const onDelete = useCallback(() => setDeleteDialog(!showDeleteDialog), [
-    showDeleteDialog,
-  ]);
+  const toggleSendInviteDialog = useCallback(
+    () => setSendInviteDialogVisible(!sendInviteDialogVisible),
+    [sendInviteDialogVisible]
+  );
+
+  const toggleDeleteDialog = useCallback(
+    () => setDeleteDialogVisible(!deleteDialogVisible),
+    [deleteDialogVisible]
+  );
 
   const onSendEmail = useCallback(() => {
     let str = "";
@@ -171,68 +187,90 @@ const SectionHeaderContent = (props) => {
     [onSelect]
   );
 
-  const menuItems = [
-    {
-      label: t("LblSelect"),
-      isDropdown: true,
-      isSeparator: true,
-      isSelect: true,
-      fontWeight: "bold",
-      children: [
-        <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
-        <DropDownItem
-          key="disabled"
-          label={t("LblTerminated")}
-          data-index={1}
-        />,
-        <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
-      ],
-      onSelect: onSelectorSelect,
-    },
-    {
-      label: t("ChangeToUser", {
-        userCaption: settings.customNames.userCaption,
-      }),
-      disabled: !usersWithEmployeeType.length,
-      onClick: onSetEmployee,
-    },
-    {
-      label: t("ChangeToGuest", {
-        guestCaption: settings.customNames.guestCaption,
-      }),
-      disabled: !usersWithGuestType.length,
-      onClick: onSetGuest,
-    },
-    {
-      label: t("LblSetActive"),
-      disabled: !usersWithActiveStatus.length,
-      onClick: onSetActive,
-    },
-    {
-      label: t("LblSetDisabled"),
-      disabled: !usersWithDisableStatus.length,
-      onClick: onSetDisabled,
-    },
-    {
-      label: t("LblInviteAgain"),
-      disabled: !usersToInvite.length,
-      onClick: onSendInviteAgain,
-    },
-    {
-      label: t("LblSendEmail"),
-      disabled: !selection.length,
-      onClick: onSendEmail,
-    },
-    {
-      label: t("DeleteButton"),
-      disabled: !usersToRemove.length,
-      onClick: onDelete,
-    },
-  ];
+  const menuItems = useMemo(
+    () => [
+      {
+        label: t("LblSelect"),
+        isDropdown: true,
+        isSeparator: true,
+        isSelect: true,
+        fontWeight: "bold",
+        children: [
+          <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
+          <DropDownItem
+            key="disabled"
+            label={t("LblTerminated")}
+            data-index={1}
+          />,
+          <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
+        ],
+        onSelect: onSelectorSelect,
+      },
+      {
+        label: t("ChangeToUser", {
+          userCaption,
+        }),
+        disabled: !isEmployeesSelected,
+        onClick: toggleEmployeeDialog,
+      },
+      {
+        label: t("ChangeToGuest", {
+          guestCaption,
+        }),
+        disabled: !isGuestsSelected,
+        onClick: toggleGuestDialog,
+      },
+      {
+        label: t("LblSetActive"),
+        disabled: !isActiveSelected,
+        onClick: toggleActiveDialog,
+      },
+      {
+        label: t("LblSetDisabled"),
+        disabled: !isDisableSelected,
+        onClick: toggleDisableDialog,
+      },
+      {
+        label: t("LblInviteAgain"),
+        disabled: !isInactiveSelected,
+        onClick: toggleSendInviteDialog,
+      },
+      {
+        label: t("LblSendEmail"),
+        disabled: !isAnythingSelected,
+        onClick: onSendEmail,
+      },
+      {
+        label: t("DeleteButton"),
+        disabled: !isDeleteSelected,
+        onClick: toggleDeleteDialog,
+      },
+    ],
+    [
+      t,
+      userCaption,
+      guestCaption,
+      onSelectorSelect,
+      toggleEmployeeDialog,
+      toggleGuestDialog,
+      toggleActiveDialog,
+      toggleDisableDialog,
+      toggleSendInviteDialog,
+      onSendEmail,
+      toggleDeleteDialog,
+      isAnythingSelected,
+      isEmployeesSelected,
+      isGuestsSelected,
+      isActiveSelected,
+      isDisableSelected,
+      isInactiveSelected,
+      isDeleteSelected,
+    ]
+  );
 
   const onEditGroup = useCallback(
-    () => history.push(`${settings.homepage}/group/edit/${group.id}`),
-    [history, settings, group]
+    () => history.push(`${homepage}/group/edit/${group.id}`),
+    [history, homepage, group]
   );
 
   const onDeleteGroup = useCallback(() => {
@@ -257,24 +295,23 @@ const SectionHeaderContent = (props) => {
   }, [t, onEditGroup, onDeleteGroup]);
 
   const goToEmployeeCreate = useCallback(() => {
-    history.push(`${settings.homepage}/create/user`);
-  }, [history, settings]);
+    history.push(`${homepage}/create/user`);
+  }, [history, homepage]);
 
   const goToGuestCreate = useCallback(() => {
-    history.push(`${settings.homepage}/create/guest`);
-  }, [history, settings]);
+    history.push(`${homepage}/create/guest`);
+  }, [history, homepage]);
 
   const goToGroupCreate = useCallback(() => {
-    history.push(`${settings.homepage}/group/create`);
-  }, [history, settings]);
+    history.push(`${homepage}/group/create`);
+  }, [history, homepage]);
 
   const onInvitationDialogClick = useCallback(
-    () => setDialogVisible(!dialogVisible),
-    [dialogVisible]
+    () => setInvitationDialogVisible(!invitationDialogVisible),
+    [invitationDialogVisible]
   );
 
   const getContextOptionsPlus = useCallback(() => {
-    const { guestCaption, userCaption, groupCaption } = settings.customNames;
     return [
       {
         key: "new-employee",
@@ -304,7 +341,9 @@ const SectionHeaderContent = (props) => {
       } */,
     ];
   }, [
-    settings,
+    userCaption,
+    guestCaption,
+    groupCaption,
     t,
     goToEmployeeCreate,
     goToGuestCreate,
@@ -319,66 +358,46 @@ const SectionHeaderContent = (props) => {
       isHeaderVisible={isHeaderVisible}
       isArticlePinned={isArticlePinned}
     >
-      {showEmployeeDialog && (
+      {employeeDialogVisible && (
         <ChangeUserTypeDialog
-          visible={showEmployeeDialog}
-          userIds={getUsersIds(usersWithEmployeeType)}
-          selectedUsers={selection}
-          onClose={onSetEmployee}
+          visible={employeeDialogVisible}
+          onClose={toggleEmployeeDialog}
           userType={EmployeeType.User}
-          setSelected={setSelected}
         />
       )}
 
-      {showGuestDialog && (
+      {guestDialogVisible && (
         <ChangeUserTypeDialog
-          visible={showGuestDialog}
-          userIds={getUsersIds(usersWithGuestType)}
-          selectedUsers={selection}
-          onClose={onSetGuest}
+          onClose={toggleGuestDialog}
           userType={EmployeeType.Guest}
-          setSelected={setSelected}
         />
       )}
-      {showActiveDialog && (
+      {activeDialogVisible && (
         <ChangeUserStatusDialog
-          visible={showActiveDialog}
-          userIds={getUsersIds(usersWithActiveStatus)}
-          selectedUsers={selection}
-          onClose={onSetActive}
+          visible={activeDialogVisible}
+          onClose={toggleActiveDialog}
           userStatus={EmployeeStatus.Active}
-          setSelected={setSelected}
         />
       )}
-      {showDisableDialog && (
+      {disableDialogVisible && (
         <ChangeUserStatusDialog
-          visible={showDisableDialog}
-          userIds={getUsersIds(usersWithDisableStatus)}
-          selectedUsers={selection}
-          onClose={onSetDisabled}
+          visible={disableDialogVisible}
+          onClose={toggleDisableDialog}
           userStatus={EmployeeStatus.Disabled}
-          setSelected={setSelected}
         />
       )}
 
-      {showSendInviteDialog && (
+      {sendInviteDialogVisible && (
         <SendInviteDialog
-          visible={showSendInviteDialog}
-          onClose={onSendInviteAgain}
-          userIds={getUsersIds(usersToInvite)}
-          selectedUsers={selection}
-          setSelected={setSelected}
+          visible={sendInviteDialogVisible}
+          onClose={toggleSendInviteDialog}
         />
       )}
 
-      {showDeleteDialog && (
+      {deleteDialogVisible && (
         <DeleteUsersDialog
-          visible={showDeleteDialog}
-          onClose={onDelete}
-          userIds={getUsersIds(usersToRemove)}
-          selectedUsers={selection}
-          filter={filter}
-          setSelected={setSelected}
+          visible={deleteDialogVisible}
+          onClose={toggleDeleteDialog}
         />
       )}
 
@@ -429,7 +448,7 @@ const SectionHeaderContent = (props) => {
                 truncate={true}
                 type="content"
               >
-                {settings.customNames.groupsCaption}
+                {groupsCaption}
               </Headline>
               {isAdmin && (
                 <>
@@ -443,9 +462,9 @@ const SectionHeaderContent = (props) => {
                     getData={getContextOptionsPlus}
                     isDisabled={false}
                   />
-                  {dialogVisible && (
+                  {invitationDialogVisible && (
                     <InviteDialog
-                      visible={dialogVisible}
+                      visible={invitationDialogVisible}
                       onClose={onInvitationDialogClick}
                       onCloseButton={onInvitationDialogClick}
                     />
@@ -461,40 +480,25 @@ const SectionHeaderContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { isLoaded, settings, user } = state.auth;
-  const { filter, groups, selection, selectedGroup } = state.people;
-
-  const activeUsers = 1;
-  const disabledUsers = 2;
-  const currentUserId = user && user.id;
-  const employeeStatus = true;
-  const guestStatus = false;
+  const { isLoaded, settings } = state.auth;
+  const { groups, selection, selectedGroup } = state.people;
+  const { homepage, customNames } = settings;
 
   return {
     group: getSelectedGroup(groups, selectedGroup),
+    isAdmin: isAdmin(state),
+    homepage,
+    customNames,
     selection,
-    isAdmin: isAdmin(user),
-    filter,
-    settings: settings,
 
-    usersWithEmployeeType: getUserType(
-      selection,
-      employeeStatus,
-      currentUserId
-    ),
-    usersWithGuestType: getUserType(selection, guestStatus, currentUserId),
-    usersWithActiveStatus: getUsersStatus(
-      selection,
-      activeUsers,
-      currentUserId
-    ),
-    usersWithDisableStatus: getUsersStatus(
-      selection,
-      disabledUsers,
-      currentUserId
-    ),
-    usersToInvite: getInactiveUsers(selection),
-    usersToRemove: getDeleteUsers(selection),
+    isAnythingSelected: isAnythingSelected(state),
+    isEmployeesSelected: isEmployeesSelected(state),
+    isGuestsSelected: isGuestsSelected(state),
+    isActiveSelected: isActiveSelected(state),
+    isDisableSelected: isDisableSelected(state),
+    isInactiveSelected: isInactiveSelected(state),
+    isDeleteSelected: isDeleteSelected(state),
+
     isLoaded,
   };
 };

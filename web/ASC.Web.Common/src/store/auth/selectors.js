@@ -1,8 +1,9 @@
 import { createSelector } from "reselect";
 import isEmpty from "lodash/isEmpty";
 
-export function isAdmin(user) {
-  let isPeopleAdmin = user.listAdminModules
+export function isAdmin(state) {
+  const { user } = state.auth;
+  const isPeopleAdmin = user.listAdminModules
     ? user.listAdminModules.includes("people")
     : false;
   return user.isAdmin || user.isOwner || isPeopleAdmin;
