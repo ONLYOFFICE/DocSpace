@@ -1,5 +1,5 @@
 import { getUserByUserName } from "../people/selectors";
-import { fetchPeople } from "../people/actions";
+import { fetchPeople, updateProfileInUsers } from "../people/actions";
 import { store, api } from "asc-web-common";
 const { setCurrentUser } = store.auth.actions;
 const { isMe } = store.auth.selectors;
@@ -56,18 +56,21 @@ export function createProfile(profile) {
     const member = employeeWrapperToMemberModel(profile);
     let result;
 
-    return api.people
-      .createUser(member)
-      .then((user) => {
-        result = user;
-        return dispatch(setProfile(user));
-      })
+    return (
+      api.people
+        .createUser(member)
+        .then((user) => {
+          result = user;
+          return dispatch(setProfile(user));
+        })
+        /*
       .then(() => {
         return fetchPeople(filter, dispatch);
-      })
-      .then(() => {
-        return Promise.resolve(result);
-      });
+      })*/
+        .then(() => {
+          return Promise.resolve(result);
+        })
+    );
   };
 }
 
@@ -106,4 +109,21 @@ export function updateProfileCulture(id, culture) {
 
 export function getUserPhoto(id) {
   return api.people.getUserPhoto(id);
+}
+
+export function updateCreatedAvatar(avatar) {
+  return (dispatch, getState) => {
+    const { big, max, medium, small } = avatar;
+    const { profile, people } = getState();
+    const { filter } = people;
+    const newProfile = {
+      ...profile.targetUser,
+      avatarMax: max,
+      avatarMedium: medium,
+      avatar: big,
+      avatarSmall: small,
+    };
+    //fetchPeople(filter);
+    return dispatch(setProfile(newProfile));
+  };
 }

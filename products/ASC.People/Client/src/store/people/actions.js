@@ -264,7 +264,6 @@ export function updateProfileInUsers(updatedProfile) {
         return user;
       }
     });
-    console.log(updatedUsers);
     return dispatch(setUsers(updatedUsers));
   };
 }
