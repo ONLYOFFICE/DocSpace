@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class VoipDbContext : BaseDbContext
+    public class VoipDbContext : BaseDbContext
     {
         public DbSet<VoipNumber> VoipNumbers { get; set; }
         public DbSet<DbVoipCall> VoipCalls { get; set; }
@@ -13,15 +13,12 @@ namespace ASC.Core.Common.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
-           .From(modelBuilder, Provider)
-           .AddVoipNumber()
-           .AddDbVoipCall()
-           .AddCrmContact()
-           .Finish();
-           
-            OnModelCreatingPartial(modelBuilder);
+               .From(modelBuilder, Provider)
+               .AddVoipNumber()
+               .AddDbVoipCall()
+               .AddCrmContact()
+               .Finish();
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class VoipDbExtension

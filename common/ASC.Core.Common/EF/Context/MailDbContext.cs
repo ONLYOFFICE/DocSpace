@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class MailDbContext : BaseDbContext
+    public class MailDbContext : BaseDbContext
     {
         public DbSet<MailboxServer> MailboxServer { get; set; }
         public DbSet<ServerServer> ServerServer { get; set; }
@@ -18,7 +18,7 @@ namespace ASC.Core.Common.EF.Context
         public MailDbContext() { }
         public MailDbContext(DbContextOptions options) : base(options)
         {
-           //Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,10 +31,7 @@ namespace ASC.Core.Common.EF.Context
 
             modelBuilder.MailboxServerData();
             modelBuilder.MailboxProviderData();
-
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
     public static class MailDbExtension
     {

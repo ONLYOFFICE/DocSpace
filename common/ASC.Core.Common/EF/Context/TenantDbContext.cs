@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class TenantDbContext : BaseDbContext
+    public class TenantDbContext : BaseDbContext
     {
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<User> Users { get; set; }
@@ -40,11 +40,7 @@ namespace ASC.Core.Common.EF.Context
 
             modelBuilder.DbTenantForbidenData();
             modelBuilder.TenantData();
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class TenantDbExtension

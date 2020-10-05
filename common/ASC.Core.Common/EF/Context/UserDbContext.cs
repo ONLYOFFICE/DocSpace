@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public partial class UserDbContext : BaseDbContext
+    public class UserDbContext : BaseDbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<UserSecurity> UserSecurity { get; set; }
@@ -19,7 +19,7 @@ namespace ASC.Core.Common.EF
         public UserDbContext() { }
         public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,10 +40,7 @@ namespace ASC.Core.Common.EF
             modelBuilder.UserData();
             modelBuilder.UserSecurityData();
             modelBuilder.UserGroupData();
-
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class UserDbExtension

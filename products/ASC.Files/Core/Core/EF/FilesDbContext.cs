@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    public partial class FilesDbContext : BaseDbContext
+    public class FilesDbContext : BaseDbContext
     {
         public DbSet<DbFile> Files { get; set; }
         public DbSet<DbFolder> Folders { get; set; }
@@ -18,13 +18,12 @@ namespace ASC.Files.Core.EF
         public DbSet<DbFilesTagLink> TagLink { get; set; }
         public DbSet<DbFilesTag> Tag { get; set; }
         public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
-        public DbSet<DbEncryptedData> EncryptedData { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
-                .From(modelBuilder, new Provider())
+                .From(modelBuilder, Provider)
                 .AddDbFiles()
                 .AddDbFolder()
                 .AddDbFolderTree()
@@ -35,13 +34,9 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesTagLink()
                 .AddDbFilesTag()
                 .AddDbDbFilesThirdpartyApp()
-                .AddDbEncryptedData()
                 .AddDbTenant()
                 .Finish();
-            
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class FilesDbExtension

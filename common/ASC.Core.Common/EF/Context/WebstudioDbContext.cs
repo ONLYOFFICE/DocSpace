@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class WebstudioDbContext : BaseDbContext
+    public class WebstudioDbContext : BaseDbContext
     {
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
         public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
@@ -21,9 +21,7 @@ namespace ASC.Core.Common.EF.Context
                 .Finish();
 
             modelBuilder.WebstudioSettingsData();
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class WebstudioDbExtension

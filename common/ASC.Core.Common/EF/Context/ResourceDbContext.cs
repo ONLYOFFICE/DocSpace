@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class ResourceDbContext : BaseDbContext
+    public class ResourceDbContext : BaseDbContext
     {
         public DbSet<ResAuthors> Authors { get; set; }
         public DbSet<ResAuthorsFile> ResAuthorsFiles { get; set; }
@@ -28,10 +28,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddResAuthors()
                 .AddResReserve()
                 .Finish();
-          
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class ResourceDbExtension

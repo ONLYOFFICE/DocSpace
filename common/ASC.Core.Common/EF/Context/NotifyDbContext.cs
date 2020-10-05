@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class NotifyDbContext : BaseDbContext
+    public class NotifyDbContext : BaseDbContext
     {
         public DbSet<NotifyInfo> NotifyInfo { get; set; }
         public DbSet<NotifyQueue> NotifyQueue { get; set; }
@@ -17,11 +17,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddNotifyInfo()
                 .AddNotifyQueue()
                 .Finish();
-            
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class NotifyDbExtension

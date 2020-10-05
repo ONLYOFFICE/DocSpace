@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class DbContext : BaseDbContext
+    public class DbContext : BaseDbContext
     {
         public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
         public DbSet<DbipLocation> DbipLocation { get; set; }
@@ -18,6 +18,7 @@ namespace ASC.Core.Common.EF.Context
         public DbContext(DbContextOptions options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -25,10 +26,7 @@ namespace ASC.Core.Common.EF.Context
                    .AddMobileAppInstall()
                    .AddDbipLocation()
                    .Finish();
-
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class DbContextExtension

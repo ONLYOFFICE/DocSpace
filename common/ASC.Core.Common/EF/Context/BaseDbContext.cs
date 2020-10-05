@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
 
         internal ILoggerFactory LoggerFactory { get; set; }
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
-        internal Provider Provider { get; set; }
+        protected internal Provider Provider { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

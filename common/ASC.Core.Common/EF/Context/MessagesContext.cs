@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
-    public partial class MessagesContext : BaseDbContext
+    public class MessagesContext : BaseDbContext
     {
         public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<LoginEvents> LoginEvents { get; set; }
@@ -15,9 +15,9 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
+
             modelBuilder.AddDbFunction();
-            
+
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddDbTenant()
@@ -25,10 +25,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddAuditEvent()
                 .AddLoginEvents()
                 .Finish();
-           
-            OnModelCreatingPartial(modelBuilder);
         }
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
     public static class MessagesContextExtension
