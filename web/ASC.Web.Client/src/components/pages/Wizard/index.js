@@ -1,7 +1,6 @@
 import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import i18n from "./i18n";
 import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -10,7 +9,6 @@ import {
   PageLayout,
   ErrorContainer,
   history,
-  constants,
   utils as commonUtils,
 } from "asc-web-common";
 import { Loader, utils } from "asc-web-components";
