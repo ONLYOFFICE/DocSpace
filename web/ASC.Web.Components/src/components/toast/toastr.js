@@ -84,7 +84,6 @@ const notify = (
   withCross = false,
   centerPosition = false
 ) => {
-  debugger;
   return toast(
     <>
       <IconWrapper>
