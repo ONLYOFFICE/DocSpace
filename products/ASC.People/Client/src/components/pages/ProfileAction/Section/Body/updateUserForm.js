@@ -24,7 +24,11 @@ import {
   getUserPhoto,
   fetchProfile,
 } from "../../../../../store/profile/actions";
-import { updateProfileInUsers } from "../../../../../store/people/actions";
+import {
+  updateProfileInUsers,
+  setIsVisibleModalLeave,
+  setIsEditingForm,
+} from "../../../../../store/people/actions";
 import {
   MainContainer,
   AvatarContainer,
@@ -38,6 +42,7 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
+import { LeaveFormDialog } from "../../../../dialogs";
 import { api, toastr } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -77,6 +82,7 @@ class UpdateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onCancelHandler = this.onCancelHandler.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
@@ -166,10 +172,16 @@ class UpdateUserForm extends React.Component {
     return newState;
   };
 
+  setIsEdit() {
+    const { editingForm, setIsEditingForm } = this.props;
+    if (!editingForm.isEdit) setIsEditingForm(true);
+  }
+
   onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   toggleDialogsVisible = (e) => {
@@ -189,18 +201,21 @@ class UpdateUserForm extends React.Component {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.isVisitor = event.target.value === "true";
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onBirthdayDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.birthday = value ? value.toJSON() : null;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onWorkFromDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   validate() {
@@ -240,6 +255,15 @@ class UpdateUserForm extends React.Component {
         this.setState({ isLoading: false });
       });
   }
+  onCancelHandler() {
+    const { editingForm, setIsVisibleModalLeave } = this.props;
+
+    if (editingForm.isEdit) {
+      setIsVisibleModalLeave(true);
+    } else {
+      this.onCancel();
+    }
+  }
 
   onCancel() {
     this.props.history.goBack();
@@ -253,6 +277,7 @@ class UpdateUserForm extends React.Component {
       value: "",
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemTypeChange(item) {
@@ -262,6 +287,7 @@ class UpdateUserForm extends React.Component {
       if (element.id === id) element.type = item.value;
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemTextChange(event) {
@@ -271,6 +297,7 @@ class UpdateUserForm extends React.Component {
       if (element.id === id) element.value = event.target.value;
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemRemove(event) {
@@ -281,6 +308,7 @@ class UpdateUserForm extends React.Component {
     });
     stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   openAvatarEditor() {
@@ -362,6 +390,7 @@ class UpdateUserForm extends React.Component {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState({ isLoading: false });
           this.setState(stateCopy);
+          this.setIsEdit();
         })
         .catch((error) => {
           toastr.error(error);
@@ -379,6 +408,7 @@ class UpdateUserForm extends React.Component {
           stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
+          this.setIsEdit();
         })
         .catch((error) => toastr.error(error));
     }
@@ -417,6 +447,7 @@ class UpdateUserForm extends React.Component {
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onRemoveGroup(id) {
@@ -428,6 +459,7 @@ class UpdateUserForm extends React.Component {
       (option) => option.key !== id
     );
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   render() {
@@ -522,6 +554,7 @@ class UpdateUserForm extends React.Component {
     return (
       <>
         <MainContainer>
+          <LeaveFormDialog onContinue={this.onCancel} />
           <AvatarContainer>
             <Avatar
               size="max"
@@ -748,7 +781,7 @@ class UpdateUserForm extends React.Component {
           />
           <Button
             label={t("CancelButton")}
-            onClick={this.onCancel}
+            onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
             style={{ marginLeft: "8px" }}
@@ -789,6 +822,7 @@ const mapStateToProps = (state) => {
     profile: state.profile.targetUser,
     settings: state.auth.settings,
     groups: state.people.groups,
+    editingForm: state.people.editingForm,
   };
 };
 
@@ -796,4 +830,6 @@ export default connect(mapStateToProps, {
   updateProfile,
   fetchProfile,
   updateProfileInUsers,
+  setIsVisibleModalLeave,
+  setIsEditingForm,
 })(withRouter(withTranslation()(UpdateUserForm)));
