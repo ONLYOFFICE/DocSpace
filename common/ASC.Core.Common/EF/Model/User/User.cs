@@ -85,13 +85,8 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUser, Provider.MySql)
-                .Add(PgSqlAddUser, Provider.Postrge);
-            return modelBuilder;
-        }
-
-        public static void UserData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>().HasData(
+                .Add(PgSqlAddUser, Provider.Postrge)
+                .HasData(
                 new User
                 {
                     Id = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
@@ -105,8 +100,11 @@ namespace ASC.Core.Common.EF
                     WorkFromDate = DateTime.UtcNow,
                     LastModified = DateTime.UtcNow
                 }
-                ) ;
+                );
+
+            return modelBuilder;
         }
+
         private static void MySqlAddUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.MySqlAddUserGroup();

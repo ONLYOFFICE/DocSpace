@@ -34,12 +34,6 @@ namespace ASC.Core.Common.EF
             .AddUserGroup()
             .AddSubscription()
             .Finish();
-
-            modelBuilder.Subcription();
-            modelBuilder.DbSubcriptionMethods();
-            modelBuilder.UserData();
-            modelBuilder.UserSecurityData();
-            modelBuilder.UserGroupData();
         }
     }
 

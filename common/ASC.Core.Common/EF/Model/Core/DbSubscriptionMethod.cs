@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -25,13 +27,9 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddSubscriptionMethod, Provider.MySql)
-                .Add(PgSqlAddSubscriptionMethod, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void DbSubcriptionMethods(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<DbSubscriptionMethod>().HasData(
-                new DbSubscriptionMethod { Source = "asc.web.studio", Action = "send_whats_new", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Sender = "email.sender", Tenant = -1 }, 
+                .Add(PgSqlAddSubscriptionMethod, Provider.Postrge)
+                .HasData(
+                new DbSubscriptionMethod { Source = "asc.web.studio", Action = "send_whats_new", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Sender = "email.sender", Tenant = -1 },
                 new DbSubscriptionMethod { Source = "6504977c-75af-4691-9099-084d3ddeea04", Action = "new feed", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Sender = "email.sender|messanger.sender", Tenant = -1 },
                 new DbSubscriptionMethod { Source = "6a598c74-91ae-437d-a5f4-ad339bd11bb2", Action = "new post", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Sender = "email.sender|messanger.sender", Tenant = -1 },
                 new DbSubscriptionMethod { Source = "853b6eb9-73ee-438d-9b09-8ffeedf36234", Action = "new topic in forum", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Sender = "email.sender|messanger.sender", Tenant = -1 },
@@ -64,7 +62,10 @@ namespace ASC.Core.Common.EF
                 new DbSubscriptionMethod { Source = "13ff36fb-0272-4887-b416-74f52b0d0b02", Action = "ResponsibleForOpportunity", Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0", Sender = "email.sender|messanger.sender", Tenant = -1 },
                 new DbSubscriptionMethod { Source = "asc.web.studio", Action = "periodic_notify", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Sender = "email.sender", Tenant = -1 }
                 );
+
+            return modelBuilder;
         }
+
         public static void MySqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbSubscriptionMethod>(entity =>

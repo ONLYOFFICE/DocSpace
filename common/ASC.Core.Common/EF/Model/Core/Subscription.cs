@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -26,12 +28,8 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddSubscription, Provider.MySql)
-                .Add(PgSqlAddSubscription, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void Subcription(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Subscription>().HasData(
+                .Add(PgSqlAddSubscription, Provider.Postrge)
+                .HasData(
                 new Subscription { Source = "asc.web.studio", Action = "send_whats_new", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
                 new Subscription { Source = "6504977c-75af-4691-9099-084d3ddeea04", Action = "new feed", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
                 new Subscription { Source = "6a598c74-91ae-437d-a5f4-ad339bd11bb2", Action = "new post", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
@@ -52,8 +50,11 @@ namespace ASC.Core.Common.EF
                 new Subscription { Source = "13ff36fb-0272-4887-b416-74f52b0d0b02", Action = "CreateNewContact", Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0", Object = "", Tenant = -1 },
                 new Subscription { Source = "13ff36fb-0272-4887-b416-74f52b0d0b02", Action = "ResponsibleForOpportunity", Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0", Object = "", Tenant = -1 },
                 new Subscription { Source = "asc.web.studio", Action = "periodic_notify", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 }
-            );
+                );
+
+            return modelBuilder;
         }
+
         public static void MySqlAddSubscription(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Subscription>(entity =>

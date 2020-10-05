@@ -36,12 +36,8 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserGroup, Provider.MySql)
-                .Add(PgSqlAddUserGroup, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void UserGroupData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UserGroup>().HasData(
+                .Add(PgSqlAddUserGroup, Provider.Postrge)
+                .HasData(
                 new UserGroup
                 {
                     Tenant = 1,
@@ -50,7 +46,10 @@ namespace ASC.Core.Common.EF
                     RefType = 0
                 }
                 );
+
+            return modelBuilder;
         }
+
         public static void MySqlAddUserGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserGroup>(entity =>

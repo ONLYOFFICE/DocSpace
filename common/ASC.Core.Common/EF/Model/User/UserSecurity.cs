@@ -33,12 +33,8 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserSecurity, Provider.MySql)
-                .Add(PgSqlAddUserSecurity, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void UserSecurityData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UserSecurity>().HasData(
+                .Add(PgSqlAddUserSecurity, Provider.Postrge)
+                .HasData(
                 new UserSecurity
                 {
                     Tenant = 1,
@@ -48,7 +44,10 @@ namespace ASC.Core.Common.EF
                     LastModified = DateTime.UtcNow
                 }
                 );
+
+            return modelBuilder;
         }
+
         public static void MySqlAddUserSecurity(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserSecurity>(entity =>

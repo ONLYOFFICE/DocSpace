@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
@@ -22,13 +23,8 @@ namespace ASC.Core.Common.EF.Model.Mail
         {
             modelBuilder
                 .Add(MySqlAddMailboxProvider, Provider.MySql)
-                .Add(PgSqlAddMailboxProvider, Provider.Postrge);
-            return modelBuilder;
-        }
-
-        public static void MailboxProviderData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<MailboxProvider>().HasData(
+                .Add(PgSqlAddMailboxProvider, Provider.Postrge)
+                .HasData(
                 new MailboxProvider { Id = 1, Name = "1und1.de", DisplayName = "1&1", DisplayShortName = "1&1", Documentation = "http://hilfe-center.1und1.de/access/search/go.php?t=e698123" },
                 new MailboxProvider { Id = 2, Name = "abc.plala.or.jp", DisplayName = "???", DisplayShortName = "???", Documentation = null },
                 new MailboxProvider { Id = 3, Name = "agate.plala.or.jp", DisplayName = "???", DisplayShortName = "???", Documentation = null },
@@ -249,7 +245,10 @@ namespace ASC.Core.Common.EF.Model.Mail
                 new MailboxProvider { Id = 219, Name = "fpl -technology.com", DisplayName = "fpl-technology.com", DisplayShortName = "fpl-technology.com", Documentation = "http://fpl-technology.com" },
                 new MailboxProvider { Id = 220, Name = "icloud.com", DisplayName = "Apple iCloud", DisplayShortName = "Apple", Documentation = null },
                 new MailboxProvider { Id = 221, Name = "office365.com", DisplayName = "Microsoft Office 365", DisplayShortName = "Office365", Documentation = "https://products.office.com" });
+
+            return modelBuilder;
         }
+
         public static void MySqlAddMailboxProvider(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MailboxProvider>(entity =>

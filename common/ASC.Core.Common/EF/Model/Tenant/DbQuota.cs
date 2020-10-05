@@ -1,7 +1,9 @@
-﻿using ASC.Core.Common.EF.Model;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -41,14 +43,14 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddDbQuota, Provider.MySql)
-                .Add(PgSqlAddDbQuota, Provider.Postrge);
+                .Add(PgSqlAddDbQuota, Provider.Postrge)
+                .HasData(
+                    new DbQuota { Tenant = -1, Name = "default", Description = null, MaxFileSize = 102400, MaxTotalSize = 10995116277760, ActiveUsers = 10000, Features = "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", Price = decimal.Parse("0,00"), Price2 = decimal.Parse("0,00"), AvangateId = "0", Visible = false }
+                );
+
             return modelBuilder;
         }
-        public static void DbQuotaData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<DbQuota>().HasData(
-                new DbQuota { Tenant = -1, Name = "default", Description = null, MaxFileSize = 102400, MaxTotalSize = 10995116277760, ActiveUsers = 10000, Features = "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", Price = decimal.Parse("0,00"), Price2 = decimal.Parse("0,00"), AvangateId = "0", Visible = false });
-        }
+
         public static void MySqlAddDbQuota(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuota>(entity =>

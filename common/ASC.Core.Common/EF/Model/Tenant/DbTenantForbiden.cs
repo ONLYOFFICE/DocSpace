@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
@@ -16,16 +17,14 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenantForbiden, Provider.MySql)
-                .Add(PgSqlAddDbTenantForbiden, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void DbTenantForbidenData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<DbTenantForbiden>().HasData(
+                .Add(PgSqlAddDbTenantForbiden, Provider.Postrge)
+                .HasData(
                 new DbTenantForbiden { Address = "controlpanel" },
                 new DbTenantForbiden { Address = "localhost" }
                 );
+            return modelBuilder;
         }
+
         public static void MySqlAddDbTenantForbiden(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantForbiden>(entity =>

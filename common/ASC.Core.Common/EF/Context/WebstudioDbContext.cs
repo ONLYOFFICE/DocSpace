@@ -19,8 +19,6 @@ namespace ASC.Core.Common.EF.Context
                 .AddWebstudioUserVisit()
                 .AddDbWebstudioIndex()
                 .Finish();
-            modelBuilder.WebstudioUserVisitData();
-            modelBuilder.WebstudioSettingsData();
         }
     }
 

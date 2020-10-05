@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
@@ -28,12 +29,8 @@ namespace ASC.Core.Common.EF.Model.Mail
         {
             modelBuilder
                 .Add(MySqlAddMailboxServer, Provider.MySql)
-                .Add(PgSqlAddMailboxServer, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void MailboxServerData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<FilesConverts>().HasData(
+                .Add(PgSqlAddMailboxServer, Provider.Postrge)
+                .HasData(
                 new MailboxServer { Id = 493, IdProvider = 1, Type = "imap", Hostname = "imap.1und1.de", Port = 993, SocketType = "SSL", UserName = "%EMAILADDRESS%", Authentication = "password-cleartext", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 494, IdProvider = 1, Type = "imap", Hostname = "imap.1und1.de", Port = 143, SocketType = "STARTTLS", UserName = "%EMAILADDRESS%", Authentication = "password-cleartext", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 495, IdProvider = 1, Type = "pop3", Hostname = "pop.1und1.de", Port = 995, SocketType = "SSL", UserName = "%EMAILADDRESS%", Authentication = "password-cleartext", IsUserData = bool.Parse("false") },
@@ -526,7 +523,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 new MailboxServer { Id = 982, IdProvider = 213, Type = "pop3", Hostname = "zmail.mail.plala.or.jp", Port = 110, SocketType = "plain", UserName = "%EMAILLOCALPART%", Authentication = "", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 983, IdProvider = 213, Type = "smtp", Hostname = "zmail.mail.plala.or.jp", Port = 587, SocketType = "plain", UserName = "%EMAILLOCALPART%", Authentication = "", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 984, IdProvider = 214, Type = "pop3", Hostname = "zpost.mail.plala.or.jp", Port = 110, SocketType = "plain", UserName = "%EMAILLOCALPART%", Authentication = "", IsUserData = bool.Parse("false") },
-                new MailboxServer { Id = 985, IdProvider = 214, Type = "smtp", Hostname = "zpost.mail.plala.or.jp", Port = 587, SocketType = "plain", UserName = "%EMAILLOCALPART%", Authentication = "", IsUserData = bool.Parse("false") }, 
+                new MailboxServer { Id = 985, IdProvider = 214, Type = "smtp", Hostname = "zpost.mail.plala.or.jp", Port = 587, SocketType = "plain", UserName = "%EMAILLOCALPART%", Authentication = "", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 988, IdProvider = 218, Type = "pop3", Hostname = "mail.ilearney.com", Port = 110, SocketType = "plain", UserName = "%EMAILADDRESS%", Authentication = "", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 989, IdProvider = 218, Type = "smtp", Hostname = "mail.ilearney.com", Port = 25, SocketType = "plain", UserName = "", Authentication = "none", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 990, IdProvider = 219, Type = "pop3", Hostname = "pop3s.aruba.it", Port = 995, SocketType = "SSL", UserName = "%EMAILADDRESS%", Authentication = "password-cleartext", IsUserData = bool.Parse("false") },
@@ -538,7 +535,9 @@ namespace ASC.Core.Common.EF.Model.Mail
                 new MailboxServer { Id = 996, IdProvider = 221, Type = "pop3", Hostname = "outlook.office365.com", Port = 995, SocketType = "SSL", UserName = "%EMAILADDRESS%", Authentication = "", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 997, IdProvider = 221, Type = "imap", Hostname = "outlook.office365.com", Port = 993, SocketType = "SSL", UserName = "%EMAILADDRESS%", Authentication = "", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 998, IdProvider = 221, Type = "smtp", Hostname = "smtp.office365.com", Port = 587, SocketType = "STARTTLS", UserName = "%EMAILADDRESS%", Authentication = "", IsUserData = bool.Parse("false") });
-                }
+
+            return modelBuilder;
+        }
 
         public static void MySqlAddMailboxServer(this ModelBuilder modelBuilder)
         {

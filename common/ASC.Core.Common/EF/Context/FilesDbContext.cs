@@ -14,8 +14,6 @@ namespace ASC.Core.Common.EF.Context
                 .From(modelBuilder, Provider)
                 .AddFilesConverts()
                 .Finish();
-
-            modelBuilder.FilesConvertsData();
         }
     }
 

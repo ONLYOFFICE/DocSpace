@@ -19,12 +19,8 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddFilesConverts, Provider.MySql)
-                .Add(PgSqlAddFilesConverts, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void FilesConvertsData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<FilesConverts>().HasData(
+                .Add(PgSqlAddFilesConverts, Provider.Postrge)
+                .HasData(
                new FilesConverts { Input = ".csv", Ouput = ".ods" },
                new FilesConverts { Input = ".csv", Ouput = ".pdf" },
                new FilesConverts { Input = ".csv", Ouput = ".xlsx" },
@@ -169,7 +165,10 @@ namespace ASC.Core.Common.EF.Model
                new FilesConverts { Input = ".xltx", Ouput = ".xlsx" },
                new FilesConverts { Input = ".xps", Ouput = ".pdf" }
                );
+
+            return modelBuilder;
         }
+
         public static void MySqlAddFilesConverts(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FilesConverts>(entity =>

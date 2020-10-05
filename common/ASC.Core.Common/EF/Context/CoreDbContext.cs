@@ -24,9 +24,6 @@ namespace ASC.Core.Common.EF
                   .AddDbQuota()
                   .AddDbTariff()
                   .Finish();
-
-            modelBuilder.DbQuotaData();
-            modelBuilder.AclData();
         }
     }
 

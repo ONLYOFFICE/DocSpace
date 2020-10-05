@@ -57,22 +57,20 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenant, Provider.MySql)
-                .Add(PgSqlAddDbTenant, Provider.Postrge);
-            return modelBuilder;
-        }
-        public static void TenantData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<DbTenant>().HasData(
+                .Add(PgSqlAddDbTenant, Provider.Postrge)
+                .HasData(
                 new DbTenant
                 {
-                    Id = 1, 
+                    Id = 1,
                     Alias = "localhost",
                     Name = "Web Office",
                     CreationDateTime = DateTime.UtcNow,
                     OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
                 }
                 );
+            return modelBuilder;
         }
+
         public static void MySqlAddDbTenant(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenant>()

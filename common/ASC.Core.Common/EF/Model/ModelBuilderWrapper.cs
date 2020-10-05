@@ -35,6 +35,13 @@ namespace ASC.Core.Common.EF.Model
             return this;
         }
 
+        public ModelBuilderWrapper HasData<T>(params T[] data) where T : class
+        {
+            ModelBuilder.Entity<T>().HasData(data);
+
+            return this;
+        }
+
         public void Finish()
         {
             if (Actions.ContainsKey(Provider))
