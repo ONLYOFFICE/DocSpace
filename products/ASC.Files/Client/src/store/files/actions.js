@@ -539,16 +539,6 @@ export function getFilesSettings() {
   };
 }
 
-
-/////////////////////
-
-//let state = { uploadedFiles: 0, percent: 0, uploaded: true };
-
-/*const updateState = (newState) => {
-  state = { ...state, ...newState };
-};*/
-
-
 export const startUpload = (uploadFiles, folderId, t) => {
   return (dispatch, getState) => {
     const newFiles = [];
@@ -635,8 +625,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
 
   const fileName = file.name;
   const fileSize = file.size;
-  const relativePath = file.relativePath
-    ? file.relativePath.slice(1, -file.name.length)
+  const relativePath = file.path
+    ? file.path.slice(1, -file.name.length)
     : file.webkitRelativePath
     ? file.webkitRelativePath.slice(0, -file.name.length)
     : "";
