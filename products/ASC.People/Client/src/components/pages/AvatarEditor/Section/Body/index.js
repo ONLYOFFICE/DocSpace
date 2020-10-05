@@ -191,6 +191,8 @@ class SectionBodyContent extends React.PureComponent{
           saveButtonLabel={
             this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
           }
+          cancelButtonLabel={t("CancelButton")}
+          
           saveButtonLoading={this.state.isLoading}
         />
 

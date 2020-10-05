@@ -6,5 +6,6 @@
     "maxSizeFileError": "Maximum file size exceeded",
     "editAvatar": "Edit",
     "SaveButton": "Save",
+    "CancelButton": "Cancel",
     "UpdatingProcess": "Updating..."
 }

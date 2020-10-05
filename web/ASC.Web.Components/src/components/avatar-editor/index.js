@@ -3,6 +3,16 @@ import PropTypes from "prop-types";
 import ModalDialog from "../modal-dialog";
 import Button from "../button";
 import AvatarEditorBody from "./sub-components/avatar-editor-body";
+import styled from "styled-components";
+
+const StyledButtonsWrapper = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 8px;
+    min-width: 208px;
+    max-width: 300px;
+    width: max-content;
+`;
 
 class AvatarEditor extends React.Component {
   constructor(props) {
@@ -110,7 +120,8 @@ class AvatarEditor extends React.Component {
       unknownError,
       saveButtonLabel,
       saveButtonLoading,
-      useModalDialog
+      useModalDialog,
+      cancelButtonLabel
     } = this.props;
 
     return (
@@ -181,14 +192,24 @@ class AvatarEditor extends React.Component {
             unknownError={unknownError}
             useModalDialog={false}
           />
-          <Button
-            key="SaveBtn"
-            label={saveButtonLabel}
-            isLoading={saveButtonLoading}
-            primary={true}
-            size="big"
-            onClick={this.onSaveButtonClick}
-          />
+          <StyledButtonsWrapper>
+            <Button
+              key="SaveBtn"
+              label={saveButtonLabel}
+              isLoading={saveButtonLoading}
+              primary={true}
+              size="big"
+              onClick={this.onSaveButtonClick}
+            />
+            <Button
+              key="CancelBtn"
+              label={cancelButtonLabel}
+              primary={false}
+              size="big"
+              onClick={this.onSaveButtonClick}
+            />
+          </StyledButtonsWrapper>
+          
         </>
     );
   }
@@ -201,6 +222,7 @@ AvatarEditor.propTypes = {
   orDropFileHereLabel: PropTypes.string,
 
   saveButtonLabel: PropTypes.string,
+  cancelButtonLabel: PropTypes.string,
   saveButtonLoading: PropTypes.bool,
   maxSizeFileError: PropTypes.string,
   image: PropTypes.string,
@@ -226,6 +248,7 @@ AvatarEditor.defaultProps = {
   maxSize: 10, //10MB
   headerLabel: "Edit Photo",
   saveButtonLabel: "Save",
+  cancelButtonLabel: "Cancel",
   accept: ["image/png", "image/jpeg"],
   displayType: "auto",
   useModalDialog: true
