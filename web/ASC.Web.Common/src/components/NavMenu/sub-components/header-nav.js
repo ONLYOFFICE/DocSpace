@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
+import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
 const { tablet } = utils.device;
+import { logout } from "../../../store/auth/actions";
+
+import {
+  getCurrentUser,
+  getLanguage,
+  getIsolateModules
+} from "../../../store/auth/selectors";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -34,34 +43,92 @@ const StyledNav = styled.nav`
     padding: 0 16px;
   }
 `;
-const HeaderNav = React.memo(props => {
-  //console.log("HeaderNav render");
-  return (
-    <StyledNav>
-      {props.modules.map(module => (
-        <NavItem
-          key={module.id}
-          iconName={module.iconName}
-          iconUrl={module.iconUrl}
-          badgeNumber={module.notifications}
-          onClick={module.onClick}
-          onBadgeClick={module.onBadgeClick}
-          noHover={true}
-        />
-      ))}
-      {props.user && (
-        <ProfileActions userActions={props.userActions} user={props.user} />
-      )}
-    </StyledNav>
-  );
-});
+const HeaderNav = React.memo(
+  ({ history, homepage, modules, user, logout, isAuthenticated }) => {
+    const { t } = useTranslation();
+
+    const onProfileClick = useCallback(() => {
+      if (homepage == "/products/people") {
+        history.push("/products/people/view/@self");
+      } else {
+        window.open("/products/people/view/@self", "_self");
+      }
+    }, []);
+
+    const onAboutClick = useCallback(() => window.open("/about", "_self"), []);
+
+    const onLogoutClick = useCallback(() => logout && logout(), [logout]);
+
+    const getCurrentUserActions = useCallback(() => {
+      const currentUserActions = [
+        {
+          key: "ProfileBtn",
+          label: t("Profile"),
+          onClick: onProfileClick,
+          url: "/products/people/view/@self"
+        },
+        {
+          key: "AboutBtn",
+          label: t("AboutCompanyTitle"),
+          onClick: onAboutClick,
+          url: "/about"
+        },
+        {
+          key: "LogoutBtn",
+          label: t("LogoutButton"),
+          onClick: onLogoutClick
+        }
+      ];
+
+      return currentUserActions;
+    }, [onProfileClick, onAboutClick, onLogoutClick]);
+
+    //console.log("HeaderNav render");
+    return (
+      <StyledNav>
+        {modules.map(module => (
+          <NavItem
+            key={module.id}
+            iconName={module.iconName}
+            iconUrl={module.iconUrl}
+            badgeNumber={module.notifications}
+            onClick={module.onClick}
+            onBadgeClick={module.onBadgeClick}
+            noHover={true}
+          />
+        ))}
+        {isAuthenticated && user && (
+          <ProfileActions userActions={getCurrentUserActions()} user={user} />
+        )}
+      </StyledNav>
+    );
+  }
+);
 
 HeaderNav.displayName = "HeaderNav";
 
 HeaderNav.propTypes = {
+  history: PropTypes.object,
+  homepage: PropTypes.string,
   modules: PropTypes.array,
   user: PropTypes.object,
-  userActions: PropTypes.array
+  logout: PropTypes.func,
+  isAuthenticated: PropTypes.bool
 };
 
-export default HeaderNav;
+function mapStateToProps(state) {
+  const { settings, isAuthenticated } = state.auth;
+  const { defaultPage, homepage } = settings;
+
+  return {
+    homepage,
+    defaultPage: defaultPage || "/",
+    user: getCurrentUser(state),
+    isAuthenticated,
+
+    modules: getIsolateModules(state),
+    language: getLanguage(state)
+  };
+}
+
+export default connect(mapStateToProps, { logout })(HeaderNav);

@@ -3,12 +3,17 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
+import Nav from "./nav";
+import NavLogoItem from "./nav-logo-item";
+
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
 import {
   getCurrentProduct,
+  getMainModules,
   getTotalNotificationsCount
 } from "../../../store/auth/selectors";
+
 const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
@@ -65,29 +70,93 @@ const HeaderComponent = ({
   currentProductName,
   totalNotifications,
   onClick,
-  defaultPage
+  onNavMouseEnter,
+  onNavMouseLeave,
+  defaultPage,
+  mainModules,
+  isNavOpened,
+  currentProduct,
+  toggleAside
 }) => {
   //console.log("Header render");
 
+  const isNavAvailable = mainModules.length > 0;
+
+  const onLogoClick = () => {
+    window.open(defaultPage, "_self");
+  };
+
+  const onBadgeClick = e => {
+    const item = mainModules.find(
+      module => module.id === e.currentTarget.dataset.id
+    );
+    toggleAside();
+
+    if (item) item.onBadgeClick(e);
+  };
+
   return (
-    <Header module={currentProductName}>
-      <NavItem
-        iconName="MenuIcon"
-        badgeNumber={totalNotifications}
-        onClick={onClick}
-        noHover={true}
-      />
-      <a className="header-logo-wrapper" href={defaultPage}>
-        <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
-        <img
-          className="header-logo-icon"
-          src="images/nav.logo.opened.react.svg"
+    <>
+      <Header module={currentProductName}>
+        <NavItem
+          iconName="MenuIcon"
+          badgeNumber={totalNotifications}
+          onClick={onClick}
+          noHover={true}
         />
-      </a>
-      <Headline className="header-module-title" type="header" color="#FFF">
-        {currentProductName}
-      </Headline>
-    </Header>
+
+        <a className="header-logo-wrapper" href={defaultPage}>
+          <img
+            className="header-logo-min_icon"
+            src="images/nav.logo.react.svg"
+          />
+          <img
+            className="header-logo-icon"
+            src="images/nav.logo.opened.react.svg"
+          />
+        </a>
+        <Headline className="header-module-title" type="header" color="#FFF">
+          {currentProductName}
+        </Headline>
+      </Header>
+      {isNavAvailable && (
+        <Nav
+          opened={isNavOpened}
+          onMouseEnter={onNavMouseEnter}
+          onMouseLeave={onNavMouseLeave}
+        >
+          <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
+          {mainModules.map(
+            ({
+              id,
+              separator,
+              iconName,
+              iconUrl,
+              notifications,
+              onClick,
+              url,
+              title
+            }) => (
+              <NavItem
+                separator={!!separator}
+                key={id}
+                data-id={id}
+                opened={isNavOpened}
+                active={id == currentProduct.id}
+                iconName={iconName}
+                iconUrl={iconUrl}
+                badgeNumber={notifications}
+                onClick={onClick}
+                onBadgeClick={onBadgeClick}
+                url={url}
+              >
+                {title}
+              </NavItem>
+            )
+          )}
+        </Nav>
+      )}
+    </>
   );
 };
 
@@ -97,7 +166,13 @@ HeaderComponent.propTypes = {
   totalNotifications: PropTypes.number,
   onClick: PropTypes.func,
   currentProductName: PropTypes.string,
-  defaultPage: PropTypes.string
+  defaultPage: PropTypes.string,
+  mainModules: PropTypes.array,
+  currentProduct: PropTypes.object,
+  isNavOpened: PropTypes.bool,
+  onNavMouseEnter: PropTypes.func,
+  onNavMouseLeave: PropTypes.func,
+  toggleAside: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -109,7 +184,9 @@ const mapStateToProps = state => {
   return {
     defaultPage,
     totalNotifications: getTotalNotificationsCount(state),
-    currentProductName: (currentProduct && currentProduct.title) || ""
+    currentProductName: (currentProduct && currentProduct.title) || "",
+    mainModules: getMainModules(state),
+    currentProduct: getCurrentProduct(state)
   };
 };
 

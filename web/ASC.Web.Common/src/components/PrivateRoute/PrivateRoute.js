@@ -2,12 +2,12 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
-import { Loader } from "asc-web-components";
-import PageLayout from "../PageLayout";
+//import { Loader } from "asc-web-components";
+//import PageLayout from "../PageLayout";
 import { isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
-import isEmpty from "lodash/isEmpty";
+//import isEmpty from "lodash/isEmpty";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -33,18 +33,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    const userLoaded = !isEmpty(user);
+    // const userLoaded = !isEmpty(user);
 
-    if (!userLoaded) {
-      console.log("PrivateRoute render Loader", rest);
-      return (
-        <PageLayout>
-          <PageLayout.SectionBody>
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          </PageLayout.SectionBody>
-        </PageLayout>
-      );
-    }
+    // if (!userLoaded) {
+    //   console.log("PrivateRoute render Loader", rest);
+    //   return (
+    //     <PageLayout>
+    //       <PageLayout.SectionBody>
+    //         <Loader className="pageLoader" type="rombs" size="40px" />
+    //       </PageLayout.SectionBody>
+    //     </PageLayout>
+    //   );
+    // }
 
     if (
       !restricted ||
