@@ -13,8 +13,7 @@ namespace ASC.Core.Common.EF.Context
         {
             ModelBuilderWrapper
                .From(modelBuilder, Provider)
-               .AddAccountLinks()
-               .Finish();
+               .AddAccountLinks();
         }
     }
 

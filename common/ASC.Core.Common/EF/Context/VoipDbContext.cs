@@ -17,8 +17,7 @@ namespace ASC.Core.Common.EF.Context
                .From(modelBuilder, Provider)
                .AddVoipNumber()
                .AddDbVoipCall()
-               .AddCrmContact()
-               .Finish();
+               .AddCrmContact();
         }
     }
 

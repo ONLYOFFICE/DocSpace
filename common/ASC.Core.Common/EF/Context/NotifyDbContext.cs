@@ -15,8 +15,7 @@ namespace ASC.Core.Common.EF.Context
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddNotifyInfo()
-                .AddNotifyQueue()
-                .Finish();
+                .AddNotifyQueue();
         }
     }
 

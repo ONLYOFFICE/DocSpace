@@ -24,8 +24,7 @@ namespace ASC.Core.Common.EF.Context
             ModelBuilderWrapper
                    .From(modelBuilder, Provider)
                    .AddMobileAppInstall()
-                   .AddDbipLocation()
-                   .Finish();
+                   .AddDbipLocation();
         }
     }
 

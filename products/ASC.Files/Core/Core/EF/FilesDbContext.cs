@@ -34,8 +34,7 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesTagLink()
                 .AddDbFilesTag()
                 .AddDbDbFilesThirdpartyApp()
-                .AddDbTenant()
-                .Finish();
+                .AddDbTenant();
         }
     }
 

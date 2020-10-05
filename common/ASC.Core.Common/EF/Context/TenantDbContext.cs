@@ -35,8 +35,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddDbTenantForbiden()
                 .AddTenantIpRestrictions()
                 .AddDbTenantPartner()
-                .AddDbTenantVersion()
-                .Finish();
+                .AddDbTenantVersion();
         }
     }
 

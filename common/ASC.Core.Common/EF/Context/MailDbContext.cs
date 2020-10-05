@@ -26,8 +26,7 @@ namespace ASC.Core.Common.EF.Context
                 .From(modelBuilder, Provider)
                 .AddMailbox()
                 .AddMailboxProvider()
-                .AddServerServer()
-                .Finish();
+                .AddServerServer();
         }
     }
     public static class MailDbExtension

@@ -26,8 +26,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddResFiles()
                 .AddResData()
                 .AddResAuthors()
-                .AddResReserve()
-                .Finish();
+                .AddResReserve();
         }
     }
 

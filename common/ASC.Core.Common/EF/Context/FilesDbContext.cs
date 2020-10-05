@@ -12,8 +12,7 @@ namespace ASC.Core.Common.EF.Context
         {
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
-                .AddFilesConverts()
-                .Finish();
+                .AddFilesConverts();
         }
     }
 

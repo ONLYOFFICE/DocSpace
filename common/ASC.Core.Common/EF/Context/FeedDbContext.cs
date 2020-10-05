@@ -19,8 +19,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddFeedUsers()
                 .AddFeedReaded()
                 .AddFeedAggregate()
-                .AddFeedLast()
-                .Finish();
+                .AddFeedLast();
         }
     }
 

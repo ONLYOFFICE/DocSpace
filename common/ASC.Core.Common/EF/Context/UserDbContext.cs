@@ -32,8 +32,7 @@ namespace ASC.Core.Common.EF
             .AddUserPhoto()
             .AddDbGroup()
             .AddUserGroup()
-            .AddSubscription()
-            .Finish();
+            .AddSubscription();
         }
     }
 

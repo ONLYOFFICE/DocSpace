@@ -23,8 +23,7 @@ namespace ASC.Core.Common.EF.Context
                 .AddDbTenant()
                 .AddWebstudioSettings()
                 .AddAuditEvent()
-                .AddLoginEvents()
-                .Finish();
+                .AddLoginEvents();
         }
     }
 

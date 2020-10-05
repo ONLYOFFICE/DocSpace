@@ -7,15 +7,13 @@ namespace ASC.Core.Common.EF.Model
 {
     public class ModelBuilderWrapper
     {
-        ModelBuilder ModelBuilder { get; set; }
-        Provider Provider { get; set; }
-        Dictionary<Provider, List<Action<ModelBuilder>>> Actions { get; set; }
+        private ModelBuilder ModelBuilder { get; set; }
+        private Provider Provider { get; set; }
 
         private ModelBuilderWrapper(ModelBuilder modelBuilder, Provider provider)
         {
             ModelBuilder = modelBuilder;
             Provider = provider;
-            Actions = new Dictionary<Provider, List<Action<ModelBuilder>>>();
         }
 
         public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider)
@@ -25,12 +23,10 @@ namespace ASC.Core.Common.EF.Model
 
         public ModelBuilderWrapper Add(Action<ModelBuilder> action, Provider provider)
         {
-            if (!Actions.ContainsKey(provider))
+            if (provider == Provider)
             {
-                Actions.Add(provider, new List<Action<ModelBuilder>>());
+                action(ModelBuilder);
             }
-
-            Actions[provider].Add(action);
 
             return this;
         }
@@ -40,17 +36,6 @@ namespace ASC.Core.Common.EF.Model
             ModelBuilder.Entity<T>().HasData(data);
 
             return this;
-        }
-
-        public void Finish()
-        {
-            if (Actions.ContainsKey(Provider))
-            {
-                foreach (var action in Actions[Provider])
-                {
-                    action(ModelBuilder);
-                }
-            }
         }
     }
 }

@@ -22,8 +22,7 @@ namespace ASC.Core.Common.EF
                   .AddDbButton()
                   .AddDbQuotaRow()
                   .AddDbQuota()
-                  .AddDbTariff()
-                  .Finish();
+                  .AddDbTariff();
         }
     }
 
