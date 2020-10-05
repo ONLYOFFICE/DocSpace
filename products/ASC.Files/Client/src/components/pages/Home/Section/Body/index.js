@@ -46,7 +46,17 @@ import {
   setNewTreeFilesBadge,
   setIsLoading
 } from '../../../../../store/files/actions';
-import { isFileSelected, getFileIcon, getFolderIcon, getFolderType, loopTreeFolders, isImage, isSound, isVideo } from '../../../../../store/files/selectors';
+import { 
+          isFileSelected, 
+          getFileIcon, 
+          getFolderIcon, 
+          getFolderType, 
+          loopTreeFolders, 
+          isImage, 
+          isSound, 
+          isVideo, 
+          selectFavoritesDirectoryId 
+} from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
@@ -178,9 +188,17 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickFavorite = e => {
-    const { markItemAsFavorite, removeItemFromFavorite, updateFile, fetchFavoritesFolder, selectedTreeNode, treeFolders } = this.props;
-    const { action, id, title } = e.currentTarget.dataset;
-    const isFavoriteDir = +selectedTreeNode === treeFolders.find(folder => folder.key === "0-4").id; // TODO: think how to improve
+    const { markItemAsFavorite, 
+            removeItemFromFavorite, 
+            updateFile, 
+            fetchFavoritesFolder, 
+            selectedTreeNode, 
+            favoritesNodeId } = this.props;
+    const { action, 
+            id, 
+            title } = e.currentTarget.dataset;
+
+    const isFavoritesDir = +selectedTreeNode === +favoritesNodeId;
 
     switch (action) {
       case "mark":
@@ -190,7 +208,7 @@ class SectionBodyContent extends React.Component {
         .catch(e => toastr.error(e));
       case "remove":
         return removeItemFromFavorite(+id)
-        .then(() => (isFavoriteDir ? fetchFavoritesFolder() : updateFile(id, title)))
+        .then(() => (isFavoritesDir ? fetchFavoritesFolder() : updateFile(id, title)))
         .then(() => toastr.success("Removed from favorites"))
         .catch(e => toastr.error(e));
       default:
@@ -1402,6 +1420,7 @@ const mapStateToProps = state => {
   const myDocumentsId = treeFolders.length && treeFolders[myFolderIndex].id;
   const isShare = pathParts && pathParts[0] === treeFolders[shareFolderIndex].id;
   const isCommon = pathParts && pathParts[0] === treeFolders[commonFolderIndex].id;
+  const favoritesNodeId = selectFavoritesDirectoryId(state);
 
   return {
     fileAction: state.files.fileAction,
@@ -1424,6 +1443,7 @@ const mapStateToProps = state => {
     selectedTreeNode,
     dragItem,
     isShare,
+    favoritesNodeId,
     isCommon,
     isAdmin: state.auth.user.isAdmin,
     mediaViewerVisible: mediaViewerData.visible,

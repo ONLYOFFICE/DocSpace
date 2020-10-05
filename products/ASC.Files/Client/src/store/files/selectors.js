@@ -1,5 +1,6 @@
 import { find, filter } from 'lodash';
 import { constants, store } from 'asc-web-common';
+import { createSelector } from 'reselect';
 
 const { FileType, FilterType, FolderType } = constants;
 const { isAdmin } = store.auth.selectors;
@@ -407,3 +408,10 @@ export const getFolderType = (id, treeFolders) => {
   else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
   else if(checkFolderType(id, indexOfFavorites, treeFolders)) { return "Favorites"; }
 }
+
+const selectAllDirectories = state => state.files.treeFolders
+
+export const selectFavoritesDirectoryId = createSelector(
+  selectAllDirectories,
+  allDirectories => allDirectories.find(dir => dir.key === "0-4").id
+)
