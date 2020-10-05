@@ -14,7 +14,7 @@ import {
   PREVIEW
 } from "../../helpers/constants";
 import config from "../../../package.json";
-import { getTreeFolders, selectFavoriteFilesIds } from "./selectors";
+import { getTreeFolders } from "./selectors";
 
 const { files, FilesFilter } = api;
 
@@ -46,9 +46,6 @@ export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
 export const SET_FILES_SETTINGS = "SET_FILES_SETTINGS";
 export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
-export const SET_FAVORITES = "SET_FAVORITES";
-export const MARK_AS_FAVORITE = "MARK_AS_FAVORITE";
-export const REMOVE_FROM_FAVORITES = "REMOVE_FROM_FAVORITES";
 
 export function setFile(file) {
   return {

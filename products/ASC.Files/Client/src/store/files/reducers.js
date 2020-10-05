@@ -26,9 +26,7 @@ import {
   SET_THIRD_PARTY,
   SET_FILES_SETTINGS,
   SET_FILES_SETTING,
-  SET_IS_ERROR_SETTINGS,
-  MARK_AS_FAVORITE,
-  REMOVE_FROM_FAVORITES
+  SET_IS_ERROR_SETTINGS
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
