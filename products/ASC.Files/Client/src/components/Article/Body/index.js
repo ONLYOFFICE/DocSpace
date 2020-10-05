@@ -18,7 +18,7 @@ import {
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 
-const { getCurrentModule } = initStore.auth.selectors;
+const { getCurrentModule, isAdmin } = initStore.auth.selectors;
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -237,7 +237,7 @@ function mapStateToProps(state) {
     myId,
     commonId,
     currentId: selectedFolder.id,
-    isAdmin: state.auth.user.isAdmin,
+    isAdmin: isAdmin(state),
     selection,
     dragging,
     updateTreeNew,
