@@ -5,7 +5,10 @@ import { withRouter } from "react-router";
 import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { useTranslation } from "react-i18next";
-import { setFilter } from "../../../../../store/people/actions";
+import {
+  setFilter,
+  setIsVisibleModalLeave,
+} from "../../../../../store/people/actions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,7 +27,16 @@ const Wrapper = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const { profile, history, match, settings, filter, setFilter } = props;
+  const {
+    profile,
+    history,
+    match,
+    settings,
+    filter,
+    editingForm,
+    setFilter,
+    setIsVisibleModalLeave,
+  } = props;
   const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
   const { t } = useTranslation();
@@ -37,7 +49,15 @@ const SectionHeaderContent = (props) => {
     ? `${t("EditUserDialogTitle")} (${profile.displayName})`
     : "";
 
+  const onClickBackHandler = () => {
+    if (editingForm.isEdit) {
+      setIsVisibleModalLeave(true, onClickBack);
+    } else {
+      onClickBack();
+    }
+  };
   const onClickBack = useCallback(() => {
+    console.log("callback");
     !profile
       ? setFilter(filter)
       : history.push(`/products/people/view/${profile.userName}`);
@@ -51,7 +71,7 @@ const SectionHeaderContent = (props) => {
         size="17"
         hoverColor="#657077"
         isFill={true}
-        onClick={onClickBack}
+        onClick={onClickBackHandler}
         className="arrow-button"
       />
       <Headline className="header-headline" type="content" truncate={true}>
@@ -66,9 +86,10 @@ function mapStateToProps(state) {
     profile: state.profile.targetUser,
     settings: state.auth.settings,
     filter: state.people.filter,
+    editingForm: state.people.editingForm,
   };
 }
 
-export default connect(mapStateToProps, { setFilter })(
+export default connect(mapStateToProps, { setFilter, setIsVisibleModalLeave })(
   withRouter(SectionHeaderContent)
 );

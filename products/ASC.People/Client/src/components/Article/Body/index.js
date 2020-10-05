@@ -106,18 +106,20 @@ class ArticleBodyContent extends React.Component {
     const { editingForm, setIsVisibleModalLeave } = this.props;
 
     if (editingForm.isEdit) {
-      setIsVisibleModalLeave(true);
+      setIsVisibleModalLeave(true, this.onSelect(data));
     } else {
-      this.onSelect(data);
+      this.onSelect(data)();
     }
   };
   onSelect = (data) => {
-    const { selectGroup } = this.props;
+    return () => {
+      const { selectGroup } = this.props;
 
-    this.changeTitleDocument(data);
-    selectGroup(
-      data && data.length === 1 && data[0] !== "root" ? data[0] : null
-    );
+      this.changeTitleDocument(data);
+      selectGroup(
+        data && data.length === 1 && data[0] !== "root" ? data[0] : null
+      );
+    };
   };
 
   switcherIcon = (obj) => {

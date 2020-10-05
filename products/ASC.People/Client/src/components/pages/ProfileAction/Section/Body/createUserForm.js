@@ -25,6 +25,8 @@ import {
 import {
   setFilter,
   updateProfileInUsers,
+  setIsVisibleModalLeave,
+  setIsEditingForm,
 } from "../../../../../store/people/actions";
 import {
   MainContainer,
@@ -39,6 +41,7 @@ import RadioField from "./FormFields/RadioField";
 import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
+import { LeaveFormDialog } from "../../../../dialogs";
 import { api, toastr } from "asc-web-common";
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 
@@ -54,6 +57,7 @@ class CreateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onCancelHandler = this.onCancelHandler.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
@@ -159,6 +163,7 @@ class CreateUserForm extends React.Component {
       stateCopy.avatar.height = result.height;
     }
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onCloseAvatarEditor() {
@@ -213,23 +218,30 @@ class CreateUserForm extends React.Component {
       },
     };
   };
+  setIsEdit() {
+    const { editingForm, setIsEditingForm } = this.props;
+    if (!editingForm.isEdit) setIsEditingForm(true);
+  }
 
   onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onBirthdayDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.birthday = value ? value.toJSON() : null;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onWorkFromDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   validate() {
@@ -276,6 +288,16 @@ class CreateUserForm extends React.Component {
       });
   }
 
+  onCancelHandler() {
+    const { editingForm, setIsVisibleModalLeave } = this.props;
+
+    if (editingForm.isEdit) {
+      setIsVisibleModalLeave(true);
+    } else {
+      this.onCancel();
+    }
+  }
+
   onCancel() {
     const { filter, setFilter } = this.props;
     setFilter(filter);
@@ -289,6 +311,7 @@ class CreateUserForm extends React.Component {
       value: "",
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemTypeChange(item) {
@@ -298,6 +321,7 @@ class CreateUserForm extends React.Component {
       if (element.id === id) element.type = item.value;
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemTextChange(event) {
@@ -307,6 +331,7 @@ class CreateUserForm extends React.Component {
       if (element.id === id) element.value = event.target.value;
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemRemove(event) {
@@ -317,6 +342,7 @@ class CreateUserForm extends React.Component {
     });
     stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onShowGroupSelector() {
@@ -346,6 +372,7 @@ class CreateUserForm extends React.Component {
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onRemoveGroup(id) {
@@ -377,6 +404,7 @@ class CreateUserForm extends React.Component {
     return (
       <>
         <MainContainer>
+          <LeaveFormDialog onContinue={this.onCancel} />
           <AvatarContainer>
             <Avatar
               size="max"
@@ -582,7 +610,7 @@ class CreateUserForm extends React.Component {
           />
           <Button
             label={t("CancelButton")}
-            onClick={this.onCancel}
+            onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
             style={{ marginLeft: "8px" }}
@@ -595,10 +623,13 @@ class CreateUserForm extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const { settings } = state.auth;
+  const { groups, filter, editingForm } = state.people;
   return {
-    settings: state.auth.settings,
-    groups: state.people.groups,
-    filter: state.people.filter,
+    settings,
+    groups,
+    filter,
+    editingForm,
   };
 };
 
@@ -607,4 +638,6 @@ export default connect(mapStateToProps, {
   updateCreatedAvatar,
   setFilter,
   updateProfileInUsers,
+  setIsVisibleModalLeave,
+  setIsEditingForm,
 })(withRouter(withTranslation()(CreateUserForm)));
