@@ -18,7 +18,7 @@ import {
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 
-const { getCurrentModule, isAdmin } = initStore.auth.selectors;
+const { getCurrentProduct, isAdmin } = initStore.auth.selectors;
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -184,10 +184,10 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { modules, settings } = state.auth;
-  const { organizationName, currentProductId } = settings;
+  const { settings } = state.auth;
+  const { organizationName } = settings;
 
-  const currentModule = getCurrentModule(modules, currentProductId);
+  const currentModule = getCurrentProduct(state);
 
   const {
     treeFolders,

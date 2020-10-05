@@ -13,10 +13,6 @@ export function isMe(user, userName) {
   return userName === "@self" || (user && userName === user.userName);
 }
 
-export function getCurrentModule(modules, currentModuleId) {
-  return modules.find(module => module.id === currentModuleId);
-}
-
 export const getLanguage = state => {
   const { user, settings } = state.auth;
 

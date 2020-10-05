@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { store, Headline, Loaders } from "asc-web-common";
 
-const { getCurrentModule } = store.auth.selectors;
+const { getCurrentProduct } = store.auth.selectors;
 
 const ArticleHeaderContent = ({ currentModuleName }) => {
   return currentModuleName ? (
@@ -13,10 +13,7 @@ const ArticleHeaderContent = ({ currentModuleName }) => {
 };
 
 const mapStateToProps = (state) => {
-  const currentModule = getCurrentModule(
-    state.auth.modules,
-    state.auth.settings.currentProductId
-  );
+  const currentModule = getCurrentProduct(state);
   return {
     currentModuleName: (currentModule && currentModule.title) || "",
   };
