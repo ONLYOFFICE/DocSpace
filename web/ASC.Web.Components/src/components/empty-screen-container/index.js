@@ -2,12 +2,14 @@ import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Text from "../text";
+import { mobile } from "../../utils/device";
 
 const phoneSize = 464;
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
   padding: 64px 0;
+  overflow-wrap: anywhere;
 
   display: grid;
   grid-template-areas:
@@ -16,12 +18,11 @@ const EmptyContentBody = styled.div`
     ${props => props.descriptionText && `"img desc"`}
     "img button";
 
-  
-  max-width:  800px; 
-  min-width:343px;
-
   grid-column-gap: 16px;
   grid-row-gap: 12px;
+
+  max-width:  800px; 
+  min-width:343px;
 
   .ec-image {
     grid-area: img;
@@ -35,16 +36,13 @@ const EmptyContentBody = styled.div`
   .ec-subheading {
     grid-area: subheading;
   }
-  overflow-wrap: anywhere; 
 
   .ec-desc {
     grid-area: desc;
-
   }
 
   .ec-buttons {
     grid-area: button;
-  
   }
 
   /* ${props =>
@@ -57,17 +55,21 @@ const EmptyContentBody = styled.div`
 
   @media (orientation: portrait) {
     @media (max-width: 738px) {
-      
+
       padding-top: 0px;
       max-width: 496px;
-  
+
+        .ec-header {
+        padding-top:16px;
+      }
+
       .ec-image {
         max-height: 100px;
       }
  
     }
 
-    @media (max-width: 375px) {
+    @media ${mobile} {
     
       grid-template-areas:
         "img"
@@ -75,6 +77,9 @@ const EmptyContentBody = styled.div`
         ${props => props.subheadingText && `"subheading"`}
         ${props => props.descriptionText && `"desc"`}
         "button";
+        .ec-header {
+        padding-top:0px;
+      }
       .ec-header,
       .ec-subheading,
       .ec-desc,
