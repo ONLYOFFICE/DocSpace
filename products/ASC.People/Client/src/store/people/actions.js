@@ -251,7 +251,7 @@ export function updateProfileInUsers(updatedProfile) {
 
     if (!users) {
       const { filter } = people;
-      return fetchPeople(filter, dispatch);
+      return updateUserList(dispatch);
     }
 
     const oldProfile = getUserByUserName(users, userName);

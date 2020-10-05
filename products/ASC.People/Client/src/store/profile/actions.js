@@ -72,9 +72,7 @@ export function createProfile(profile) {
 }
 
 export function updateProfile(profile) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { filter } = people;
+  return (dispatch) => {
     const member = employeeWrapperToMemberModel(profile);
     let result;
 

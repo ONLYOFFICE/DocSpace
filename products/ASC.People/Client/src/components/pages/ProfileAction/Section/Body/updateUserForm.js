@@ -358,6 +358,7 @@ class UpdateUserForm extends React.Component {
             response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
+
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState({ isLoading: false });
           this.setState(stateCopy);
@@ -366,8 +367,10 @@ class UpdateUserForm extends React.Component {
           toastr.error(error);
           this.setState({ isLoading: false });
         })
-        .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(this.state.profile.id));
+        .then(() => {
+          this.props.updateProfile(this.props.profile);
+          this.setState({ isLoading: false });
+        });
     } else {
       deleteAvatar(this.state.profile.id)
         .then((response) => {
