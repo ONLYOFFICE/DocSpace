@@ -1,16 +1,16 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import Text from '../text';
+import Text from "../text";
 
 const phoneSize = 464;
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
   padding: 50px 0;
-  
-	display: grid;
-	grid-template-areas: 
+
+  display: grid;
+  grid-template-areas:
     "img header"
     ${props => props.subheadingText && `"img subheading"`}
     "img desc"
@@ -26,19 +26,19 @@ const EmptyContentBody = styled.div`
   .ec-header {
     grid-area: header;
   }
-  
+
   .ec-subheading {
     grid-area: subheading;
     padding: 8px 0;
   }
 
   .ec-desc {
-    grid-area: desc; 
+    grid-area: desc;
     padding-top: 5px;
   }
 
   .ec-buttons {
-    grid-area: button; 
+    grid-area: button;
     padding-top: 10px;
   }
 
@@ -48,7 +48,7 @@ const EmptyContentBody = styled.div`
       .ec-image {
         display: none;
       }
-  `}
+    `}
 
   @media (orientation: portrait) {
     @media (max-width: 700px) {
@@ -83,7 +83,7 @@ const EmptyContentBody = styled.div`
       }
 
       .ec-desc {
-        font-size: 3.7vw; 
+        font-size: 3.7vw;
       }
     }
   }
@@ -97,31 +97,41 @@ const EmptyContentImage = styled.img.attrs(props => ({
 `;
 
 const EmptyScreenContainer = props => {
-  const { imageSrc, imageAlt, headerText, subheadingText, descriptionText, buttons } = props;
+  const {
+    imageSrc,
+    imageAlt,
+    headerText,
+    subheadingText,
+    descriptionText,
+    buttons
+  } = props;
   return (
-
     <EmptyContentBody {...props}>
-
-      <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} className="ec-image" />
+      <EmptyContentImage
+        imageSrc={imageSrc}
+        imageAlt={imageAlt}
+        className="ec-image"
+      />
 
       {headerText && (
-        <Text as="span" color="#333333" fontSize='24px' className="ec-header">{headerText}</Text>
+        <Text as="span" fontSize="19px" fontWeight="600" className="ec-header">
+          {headerText}
+        </Text>
       )}
 
       {subheadingText && (
-        <Text as="span" color="#737373" fontSize='18px' className="ec-subheading">{subheadingText}</Text>
+        <Text as="span" fontWeight="600" className="ec-subheading">
+          {subheadingText}
+        </Text>
       )}
 
       {descriptionText && (
-        <Text as="span" color="#737373" fontSize='14px' className="ec-desc">{descriptionText}</Text>
+        <Text as="span" color="#6A7378" fontSize="12px" className="ec-desc">
+          {descriptionText}
+        </Text>
       )}
 
-      {buttons && (
-        <div className="ec-buttons">
-          {buttons}
-        </div>
-      )}
-
+      {buttons && <div className="ec-buttons">{buttons}</div>}
     </EmptyContentBody>
   );
 };
