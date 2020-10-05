@@ -1,5 +1,5 @@
 import { getUserByUserName } from "../people/selectors";
-import { fetchPeople, updateProfileInUsers } from "../people/actions";
+import { updateUserList } from "../people/actions";
 import { store, api } from "asc-web-common";
 const { setCurrentUser } = store.auth.actions;
 const { isMe } = store.auth.selectors;
@@ -56,21 +56,18 @@ export function createProfile(profile) {
     const member = employeeWrapperToMemberModel(profile);
     let result;
 
-    return (
-      api.people
-        .createUser(member)
-        .then((user) => {
-          result = user;
-          return dispatch(setProfile(user));
-        })
-        /*
+    return api.people
+      .createUser(member)
+      .then((user) => {
+        result = user;
+        return dispatch(setProfile(user));
+      })
       .then(() => {
-        return fetchPeople(filter, dispatch);
-      })*/
-        .then(() => {
-          return Promise.resolve(result);
-        })
-    );
+        return updateUserList(dispatch, filter);
+      })
+      .then(() => {
+        return Promise.resolve(result);
+      });
   };
 }
 
@@ -81,20 +78,15 @@ export function updateProfile(profile) {
     const member = employeeWrapperToMemberModel(profile);
     let result;
 
-    return (
-      api.people
-        .updateUser(member)
-        .then((user) => {
-          result = user;
-          return Promise.resolve(dispatch(setProfile(user)));
-        })
-        /*.then(() => {
-            return fetchPeople(filter, dispatch);
-        })*/
-        .then(() => {
-          return Promise.resolve(result);
-        })
-    );
+    return api.people
+      .updateUser(member)
+      .then((user) => {
+        result = user;
+        return Promise.resolve(dispatch(setProfile(user)));
+      })
+      .then(() => {
+        return Promise.resolve(result);
+      });
   };
 }
 
@@ -114,8 +106,7 @@ export function getUserPhoto(id) {
 export function updateCreatedAvatar(avatar) {
   return (dispatch, getState) => {
     const { big, max, medium, small } = avatar;
-    const { profile, people } = getState();
-    const { filter } = people;
+    const { profile } = getState();
     const newProfile = {
       ...profile.targetUser,
       avatarMax: max,
@@ -123,7 +114,6 @@ export function updateCreatedAvatar(avatar) {
       avatar: big,
       avatarSmall: small,
     };
-    //fetchPeople(filter);
     return dispatch(setProfile(newProfile));
   };
 }

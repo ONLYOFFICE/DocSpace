@@ -180,6 +180,17 @@ export function removeUser(userId, filter) {
   };
 }
 
+export function updateUserList(dispatch, filter) {
+  let filterData = filter && filter.clone();
+  if (!filterData) {
+    filterData = Filter.getDefault();
+    filterData.employeeStatus = EmployeeStatus.Active;
+  }
+  return api.people.getUserList(filterData).then((data) => {
+    return dispatch(setUsers(data.items));
+  });
+}
+
 function fetchPeopleByFilter(dispatch, filter) {
   let filterData = filter && filter.clone();
 

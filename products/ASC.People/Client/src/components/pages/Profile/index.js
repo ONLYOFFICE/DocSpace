@@ -31,7 +31,7 @@ class PureProfile extends React.Component {
   }
 
   componentDidMount() {
-    const { match, fetchProfile, t } = this.props;
+    const { match, fetchProfile, profile, t } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
@@ -45,8 +45,9 @@ class PureProfile extends React.Component {
     if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t("ChangeEmailSuccess"));
     }
-
-    fetchProfile(userId);
+    if (!profile) {
+      fetchProfile(userId);
+    }
   }
 
   componentDidUpdate(prevProps) {
