@@ -152,7 +152,7 @@ class ProfileInfo extends React.PureComponent {
 
     updateProfileCulture(profile.id, language.key)
       .then(() => {
-        if (!nameSchemaId) return;
+        if (!nameSchemaId) return getModules();
         return axios.all([getModules(), getCurrentCustomSchema(nameSchemaId)]);
       })
       .catch((err) => console.log(err));
