@@ -19,9 +19,14 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-import { login, setIsLoaded } from "../../store/auth/actions";
+import {
+  login,
+  setIsLoaded,
+  reloadPortalSettings
+} from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
+import { createPasswordHash } from "../../utils";
 //import history from "../../history";
 import { redirectToDefaultPage } from "../../utils";
 
@@ -199,7 +204,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, homepage } = this.props;
+    const { login, setIsLoaded, history, hashSettings, homepage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -221,7 +226,9 @@ class Form extends Component {
     if (hasError) return false;
 
     this.setState({ isLoading: true });
-    login(userName, pass)
+    const hash = createPasswordHash(pass, hashSettings);
+
+    login(userName, hash)
       .then(() => {
         if (!redirectToDefaultPage()) {
           setIsLoaded(true);
@@ -234,7 +241,7 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    const { match, t, organizationName } = this.props;
+    const { match, t, hashSettings, reloadPortalSettings, organizationName } = this.props;
     const { error, confirmedEmail } = match.params;
 
     document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
@@ -242,6 +249,10 @@ class Form extends Component {
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
+
+    if (!hashSettings) {
+      reloadPortalSettings();
+  }
   }
 
   componentWillUnmount() {
@@ -470,17 +481,20 @@ LoginForm.propTypes = {
 
 function mapStateToProps(state) {
   const { isLoaded, user, settings } = state.auth;
-  const { greetingSettings, enabledJoin, organizationName, culture } = settings;
+  const { greetingSettings, enabledJoin, organizationName, culture, hashSettings } = settings;
 
   return {
     isLoaded,
     enabledJoin,
     organizationName,
     language: user.cultureName || culture,
-    greetingTitle: greetingSettings
+    greetingTitle: greetingSettings,
+    hashSettings  
   };
 }
 
-export default connect(mapStateToProps, { login, setIsLoaded })(
-  withRouter(LoginForm)
-);
+export default connect(mapStateToProps, {
+  login,
+  setIsLoaded,
+  reloadPortalSettings
+})(withRouter(LoginForm));

@@ -1,4 +1,5 @@
 import { AUTH_KEY, LANGUAGE } from "../constants";
+import sjcl from "sjcl";
 
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -51,6 +52,30 @@ export function redirectToDefaultPage() {
   }
 
   return false;
+}
+
+export function createPasswordHash(password, hashSettings) {
+  if (
+    !password ||
+    !hashSettings ||
+    typeof password !== "string" ||
+    typeof hashSettings !== "object" ||
+    !hashSettings.hasOwnProperty("salt") ||
+    !hashSettings.hasOwnProperty("size") ||
+    !hashSettings.hasOwnProperty("iterations") ||
+    typeof hashSettings.size !== "number" ||
+    typeof hashSettings.iterations !== "number" ||
+    typeof hashSettings.salt !== "string"
+  )
+    throw new Error("Invalid params.");
+
+  const { size, iterations, salt } = hashSettings;
+
+  let bits = sjcl.misc.pbkdf2(password, salt, iterations);
+  bits = bits.slice(0, size / 32);
+  const hash = sjcl.codec.hex.fromBits(bits);
+
+  return hash;
 }
 
 export function removeTempContent() {

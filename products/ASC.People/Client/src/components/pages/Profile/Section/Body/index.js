@@ -16,7 +16,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { store } from "asc-web-common";
 import styled from "styled-components";
-import { updateProfileCulture } from "../../../../../store/profile/actions";
+
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
@@ -102,14 +102,7 @@ class SectionBodyContent extends React.PureComponent {
     );
 
   render() {
-    const {
-      profile,
-      updateProfileCulture,
-      settings,
-      isAdmin,
-      viewer,
-      t,
-    } = this.props;
+    const { profile, settings, isAdmin, viewer, t } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -145,7 +138,6 @@ class SectionBodyContent extends React.PureComponent {
         </AvatarWrapper>
         <ProfileInfo
           profile={profile}
-          updateProfileCulture={updateProfileCulture}
           isSelf={isSelf}
           isAdmin={isAdmin}
           t={t}
@@ -201,6 +193,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { updateProfileCulture })(
+export default connect(mapStateToProps)(
   withRouter(withTranslation()(SectionBodyContent))
 );

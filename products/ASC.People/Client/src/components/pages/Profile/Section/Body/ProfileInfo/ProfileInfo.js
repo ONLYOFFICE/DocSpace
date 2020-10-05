@@ -9,11 +9,12 @@ import {
   HelpButton,
 } from "asc-web-components";
 import styled from "styled-components";
-import { history, api, store as commonStore, toastr, Loaders } from "asc-web-common";
+import { history, api, store, toastr, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
-import store from "../../../../../../store/store";
+import { updateProfileCulture } from "../../../../../../store/profile/actions";
+
 const { resendUserInvites } = api.people;
-const { getCurrentCustomSchema, getModules } = commonStore.auth.actions;
+const { getCurrentCustomSchema, getModules } = store.auth.actions;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -139,18 +140,20 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture, nameSchemaId } = this.props;
+    const {
+      profile,
+      updateProfileCulture,
+      nameSchemaId,
+      getModules,
+      getCurrentCustomSchema,
+    } = this.props;
 
     if (profile.cultureName === language.key) return;
 
     updateProfileCulture(profile.id, language.key)
       .then(() => {
-        if (!nameSchemaId) return;
-
-        return axios.all([
-          getModules(store.dispatch),
-          getCurrentCustomSchema(store.dispatch, nameSchemaId),
-        ]);
+        if (!nameSchemaId) return getModules();
+        return axios.all([getModules(), getCurrentCustomSchema(nameSchemaId)]);
       })
       .catch((err) => console.log(err));
   };
@@ -351,5 +354,12 @@ function mapStateToProps(state) {
     nameSchemaId,
   };
 }
-
-export default connect(mapStateToProps)(ProfileInfo);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getModules: () => getModules(dispatch),
+    getCurrentCustomSchema: (id) => getCurrentCustomSchema(dispatch, id),
+    updateProfileCulture: (id, culture) =>
+      dispatch(updateProfileCulture(id, culture)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfo);
