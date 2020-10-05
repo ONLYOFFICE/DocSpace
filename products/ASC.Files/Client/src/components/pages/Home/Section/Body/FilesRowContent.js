@@ -33,6 +33,10 @@ const SimpleFilesRowContent = styled(RowContent)`
   align-items: center;
 }
 
+.favorite {
+  cursor: pointer;
+}
+
 .share-icon {
   margin-top: -4px;
   padding-right: 8px;
@@ -403,12 +407,14 @@ class FilesRowContent extends React.PureComponent {
                     />
                   }
                   {fileStatus === 32 && 
-                  <span 
-                  style={{cursor: "pointer"}} 
-                  onClick={() => console.log(item.id)}
-                  >
-                    ⭐
-                  </span>
+                    <Icons.FavoriteIcon
+                      className='favorite'
+                      size='small'
+                      data-action='remove'
+                      data-id={item.id}
+                      data-title={item.title}
+                      onClick={this.props.onClickFavorite}
+                     />
                   }
                   {fileStatus === 1 &&
                     <Icons.FileActionsConvertEditDocIcon
