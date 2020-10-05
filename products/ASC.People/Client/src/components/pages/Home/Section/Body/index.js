@@ -32,12 +32,13 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import { getFilterByLocation } from "../../../../../helpers/converters";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
 });
 const { isArrayEqual } = utils.array;
-const { getCurrentUser, getSettings } = store.auth.selectors;
+const { getSettings } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 const { Filter } = api;
@@ -59,12 +60,9 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { isUsersLoaded, fetchPeople } = this.props;
+    const { isLoaded, fetchPeople, filter } = this.props;
 
-    if (isUsersLoaded) return;
-
-    const filter = Filter.getDefault();
-    filter.employeeStatus = EmployeeStatus.Active;
+    if (!isLoaded) return;
 
     fetchPeople(filter).catch((error) => toastr.error(error));
   }
@@ -353,7 +351,7 @@ class SectionBodyContent extends React.PureComponent {
   render() {
     //console.log("Home SectionBodyContent render()");
     const {
-      isUsersLoaded,
+      isLoaded,
       peopleList,
       history,
       settings,
@@ -366,7 +364,7 @@ class SectionBodyContent extends React.PureComponent {
 
     const { dialogsVisible, user } = this.state;
 
-    return !isUsersLoaded ? (
+    return !isLoaded ? (
       <Loaders.Rows />
     ) : peopleList.length > 0 ? (
       <>
@@ -478,9 +476,10 @@ class SectionBodyContent extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const { users, filter } = state.people;
+  const { isLoaded } = state.auth;
+  const { filter } = state.people;
   return {
-    isUsersLoaded: users !== null,
+    isLoaded,
     filter,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
