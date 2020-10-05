@@ -1,4 +1,10 @@
 {
     "AvatarEditor": "Avatar editor",
-    "UploadNewPhoto": "Upload new photo"
+    "UploadNewPhoto": "Upload new photo",
+    "selectNewPhotoLabel": "Select new photo",
+    "orDropFileHereLabel": "or drop file here",
+    "maxSizeFileError": "Maximum file size exceeded",
+    "editAvatar": "Edit",
+    "SaveButton": "Save",
+    "UpdatingProcess": "Updating..."
 }

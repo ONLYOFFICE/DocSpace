@@ -28,6 +28,7 @@ const max = 5;
 
 const StyledAvatarEditorBody = styled.div`
   max-width: 400px;
+  ${props => !props.useModalDialog && "margin-bottom: 40px;"}
 `;
 
 const StyledErrorContainer = styled.div`
@@ -164,41 +165,46 @@ const DropZoneContainer = styled.div`
 `;
 
 const mobileStyles = css`
-.preview-container {
-  .editor-container {
-    display: grid;
-    grid-template-columns: 1fr 40px;
-    grid-template-rows: 1fr 56px;
-    gap: 0px 16px;
+  grid-template-rows: 1fr auto;
 
-    @media ${mobile} {
-    }
+  .preview-container {
+    margin-bottom: 24px;
 
-    .react-avatar-editor{
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 40px;
+      grid-template-rows: 1fr auto;
+      gap: 0px 16px;
 
-    }
+      @media ${mobile} {
+      }
 
-    .editor-buttons{
-      grid-template-columns: 1fr;
-      width: 40px;
-      grid-template-rows: repeat(4,1fr) 2fr 1fr;
-      height: 100%;
-      grid-gap: 8px 0;
-      background: none;
+      .react-avatar-editor{
 
-      .editor-button{
-        background: #a3a9ae;
-        padding: 0 12px;
-        height: 40px;
-        border-radius: 6px;
+      }
+
+      .editor-buttons{
+        grid-template-columns: 1fr;
+        width: 40px;
+        grid-template-rows: repeat(4,40px) auto 40px;
+        height: 100%;
+        grid-gap: 8px 0;
+        background: none;
+
+        .editor-button{
+          background: #a3a9ae;
+          padding: 0 12px;
+          height: 40px;
+          border-radius: 6px;
+        }
+      }
+
+      .zoom-container{
+        height: 24px;
+        margin-top: 16px;
       }
     }
-
-    .zoom-container{
-      
-    }
   }
-}
 `;
 
 const StyledAvatarContainer = styled.div`
@@ -588,6 +594,7 @@ class AvatarEditorBody extends React.Component {
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
+        useModalDialog={useModalDialog}
       >
         <Dropzone
           ref={this.dropzoneRef}

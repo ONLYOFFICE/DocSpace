@@ -160,26 +160,36 @@ class AvatarEditor extends React.Component {
           </ModalDialog.Footer>
         </ModalDialog>
       :
-        <AvatarEditorBody
-          ref={this.avatarEditorBodyRef}
-          visible={this.state.visible}
-          onImageChange={this.onImageChange}
-          onPositionChange={this.onPositionChange}
-          onSizeChange={this.onSizeChange}
-          onLoadFileError={this.onLoadFileError}
-          onLoadFile={this.onLoadFile}
-          deleteImage={this.onDeleteImage}
-          saveAvatar={this.saveAvatar}
-          maxSize={maxSize * 1000000} // megabytes to bytes
-          accept={accept}
-          image={image}
-          selectNewPhotoLabel={selectNewPhotoLabel}
-          orDropFileHereLabel={orDropFileHereLabel}
-          unknownTypeError={unknownTypeError}
-          maxSizeFileError={maxSizeFileError}
-          unknownError={unknownError}
-          useModalDialog={false}
-        />
+        <>
+          <AvatarEditorBody
+            ref={this.avatarEditorBodyRef}
+            visible={this.state.visible}
+            onImageChange={this.onImageChange}
+            onPositionChange={this.onPositionChange}
+            onSizeChange={this.onSizeChange}
+            onLoadFileError={this.onLoadFileError}
+            onLoadFile={this.onLoadFile}
+            deleteImage={this.onDeleteImage}
+            saveAvatar={this.saveAvatar}
+            maxSize={maxSize * 1000000} // megabytes to bytes
+            accept={accept}
+            image={image}
+            selectNewPhotoLabel={selectNewPhotoLabel}
+            orDropFileHereLabel={orDropFileHereLabel}
+            unknownTypeError={unknownTypeError}
+            maxSizeFileError={maxSizeFileError}
+            unknownError={unknownError}
+            useModalDialog={false}
+          />
+          <Button
+            key="SaveBtn"
+            label={saveButtonLabel}
+            isLoading={saveButtonLoading}
+            primary={true}
+            size="big"
+            onClick={this.onSaveButtonClick}
+          />
+        </>
     );
   }
 }

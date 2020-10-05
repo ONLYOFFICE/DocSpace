@@ -175,7 +175,6 @@ class SectionBodyContent extends React.PureComponent{
 
     return(
       <AvatarEditorBody>
-        {t("UploadNewPhoto")}
         <AvatarEditor
           useModalDialog={false}
           image={this.state.avatar.image}
