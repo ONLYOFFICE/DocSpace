@@ -22,6 +22,7 @@ import {
   createProfile,
   updateCreatedAvatar,
 } from "../../../../../store/profile/actions";
+import { setFilter } from "../../../../../store/people/actions";
 import {
   MainContainer,
   AvatarContainer,
@@ -272,7 +273,8 @@ class CreateUserForm extends React.Component {
   }
 
   onCancel() {
-    this.props.history.push(this.props.settings.homepage);
+    const { filter, setFilter } = this.props;
+    setFilter(filter);
   }
 
   onContactsItemAdd(item) {
@@ -592,10 +594,12 @@ const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
     groups: state.people.groups,
+    filter: state.people.filter,
   };
 };
 
 export default connect(mapStateToProps, {
   createProfile,
   updateCreatedAvatar,
+  setFilter,
 })(withRouter(withTranslation()(CreateUserForm)));
