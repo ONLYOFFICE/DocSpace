@@ -54,8 +54,7 @@ const getFormatedGroups = (user, status, selectGroup) => {
 };
 
 const UserContent = ({ user, history, settings, selectGroup, widthProp, isMobile }) => {
-  const { userName, displayName, title, mobilePhone, email } = user;
-  const status = getUserStatus(user);
+  const { userName, displayName, title, mobilePhone, email, status } = user;
   const groups = getFormatedGroups(user, status, selectGroup);
 
   const onUserNameClick = useCallback(
