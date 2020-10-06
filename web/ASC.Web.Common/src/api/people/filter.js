@@ -74,7 +74,7 @@ class Filter {
       filtervalue: (search ?? "").trim(),
       groupId: group,
       fields:
-        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO"
+        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
     };
 
     switch (role) {
