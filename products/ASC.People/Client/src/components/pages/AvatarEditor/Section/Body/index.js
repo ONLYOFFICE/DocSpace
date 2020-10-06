@@ -1,24 +1,27 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import { AvatarEditor, utils } from "asc-web-components";
 import { api, toastr } from "asc-web-common";
-import { fetchProfile, updateProfile, getUserPhoto } from "../../../../../store/profile/actions";
-import { toEmployeeWrapper} from "../../../../../store/people/selectors";
+import {
+  fetchProfile,
+  updateProfile,
+  getUserPhoto,
+} from "../../../../../store/profile/actions";
+import { toEmployeeWrapper } from "../../../../../store/people/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 const { isTablet } = utils.device;
 
-
 const AvatarEditorBody = styled.div`
   margin-bottom: 24px;
 `;
 
-class SectionBodyContent extends React.PureComponent{
+class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -27,11 +30,11 @@ class SectionBodyContent extends React.PureComponent{
         tmpFile: "",
         image: null,
         defaultWidth: 0,
-        defaultHeight: 0
+        defaultHeight: 0,
       },
       isMobile: isMobile || isTablet,
-      isLoading: false
-    }
+      isLoading: false,
+    };
   }
 
   componentDidMount() {
@@ -54,27 +57,27 @@ class SectionBodyContent extends React.PureComponent{
       fetchProfile(userId);
     }
 
-    if(profile && !avatar.image){
+    if (profile && !avatar.image) {
       this.setUserPhotoToState();
     }
   }
 
   onBackClick = () => {
     this.returnToEditor();
-  }
+  };
 
   onCancel = () => {
     this.returnToEditor();
-  }
+  };
 
   returnToEditor = () => {
-    const {profile, settings} = this.props
-    this.props.history.push(`${settings.homepage}/edit/${profile.userName}`)
-  }
+    const { profile, settings } = this.props;
+    this.props.history.push(`${settings.homepage}/edit/${profile.userName}`);
+  };
 
   onSaveAvatar = (isUpdate, result) => {
     this.setState({ isLoading: true });
-    const { profile } = this.props
+    const { profile } = this.props;
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(
@@ -85,12 +88,12 @@ class SectionBodyContent extends React.PureComponent{
         ),
         width: result.width,
         height: result.height,
-        tmpFile: this.state.avatar.tmpFile
+        tmpFile: this.state.avatar.tmpFile,
       })
-        .then(response => {
+        .then((response) => {
           //let stateCopy = Object.assign({}, this.state);
           //stateCopy.avatar.tmpFile = "";
-       /*   stateCopy.profile.avatarMax =
+          /*   stateCopy.profile.avatarMax =
             response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));*/
@@ -98,7 +101,7 @@ class SectionBodyContent extends React.PureComponent{
           this.setState({ isLoading: false });
           //this.setState(stateCopy);
         })
-        .catch(error => {
+        .catch((error) => {
           toastr.error(error);
           this.setState({ isLoading: false });
         })
@@ -106,19 +109,19 @@ class SectionBodyContent extends React.PureComponent{
         .then(() => this.props.fetchProfile(profile.id));
     } else {
       deleteAvatar(profile.id)
-        .then(response => {
+        .then((response) => {
           //let stateCopy = Object.assign({}, this.state);
           //stateCopy.visibleAvatarEditor = false;
           //stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           //this.setState(stateCopy);
         })
-        .catch(error => toastr.error(error));
+        .catch((error) => toastr.error(error));
     }
-  }
+  };
 
   onLoadFileAvatar = (file, callback) => {
-    const { profile } = this.props
+    const { profile } = this.props;
 
     this.setState({ isLoading: true });
     let data = new FormData();
@@ -126,15 +129,15 @@ class SectionBodyContent extends React.PureComponent{
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(profile.id, data)
-      .then(response => {
+      .then((response) => {
         var img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
             image: response.data,
             defaultWidth: img.width,
-            defaultHeight: img.height
+            defaultHeight: img.height,
           };
           _this.setState(stateCopy);
           _this.setState({ isLoading: false });
@@ -142,16 +145,16 @@ class SectionBodyContent extends React.PureComponent{
         };
         img.src = response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
-  }
+  };
 
   setUserPhotoToState = () => {
-    const {profile} = this.props
+    const { profile } = this.props;
 
-    getUserPhoto(profile.id).then(userPhotoData => {
+    getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -164,19 +167,18 @@ class SectionBodyContent extends React.PureComponent{
                 ? userPhotoData.original.indexOf("default_user_photo") !== -1
                   ? null
                   : userPhotoData.original
-                : null
-            }
+                : null,
+            },
           });
         }
       }
-    })
-  }
+    });
+  };
 
-  render(){
+  render() {
+    const { t, profile } = this.props;
 
-    const {t, profile} = this.props
-
-    return(
+    return (
       <AvatarEditorBody>
         <AvatarEditor
           useModalDialog={false}
@@ -196,24 +198,20 @@ class SectionBodyContent extends React.PureComponent{
             this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
           }
           cancelButtonLabel={t("CancelButton")}
-          
           saveButtonLoading={this.state.isLoading}
         />
-
       </AvatarEditorBody>
-      
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
-    settings: state.auth.settings
+    settings: state.auth.settings,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { fetchProfile,updateProfile }
-  )(withTranslation()(withRouter(SectionBodyContent)));
+export default connect(mapStateToProps, { fetchProfile, updateProfile })(
+  withTranslation()(withRouter(SectionBodyContent))
+);
