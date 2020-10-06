@@ -25,7 +25,7 @@ import {
 import {
   setFilter,
   updateProfileInUsers,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
   setIsEditingForm,
 } from "../../../../../store/people/actions";
 import {
@@ -41,7 +41,7 @@ import RadioField from "./FormFields/RadioField";
 import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
-import { LeaveFormDialog } from "../../../../dialogs";
+import { DataLossWarningDialog } from "../../../../dialogs";
 import { api, toastr } from "asc-web-common";
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 
@@ -289,10 +289,10 @@ class CreateUserForm extends React.Component {
   }
 
   onCancelHandler() {
-    const { editingForm, setIsVisibleModalLeave } = this.props;
+    const { editingForm, setIsVisibleDataLossDialog } = this.props;
 
     if (editingForm.isEdit) {
-      setIsVisibleModalLeave(true);
+      setIsVisibleDataLossDialog(true);
     } else {
       this.onCancel();
     }
@@ -404,7 +404,7 @@ class CreateUserForm extends React.Component {
     return (
       <>
         <MainContainer>
-          <LeaveFormDialog onContinue={this.onCancel} />
+          <DataLossWarningDialog onContinue={this.onCancel} />
           <AvatarContainer>
             <Avatar
               size="max"
@@ -638,6 +638,6 @@ export default connect(mapStateToProps, {
   updateCreatedAvatar,
   setFilter,
   updateProfileInUsers,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
   setIsEditingForm,
 })(withRouter(withTranslation()(CreateUserForm)));

@@ -9,7 +9,7 @@ import {
   SELECT_GROUP,
   SET_USER,
   SET_SELECTOR_USERS,
-  SET_IS_VISIBLE_MODAL_LEAVE,
+  SET_IS_VISIBLE_DATA_LOSS_DIALOG,
   SET_IS_EDITING_FORM,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
@@ -28,7 +28,7 @@ const initialState = {
   },
   editingForm: {
     isEdit: false,
-    isVisibleModalLeave: false,
+    isVisibleDataLossDialog: false,
   },
 };
 
@@ -83,11 +83,11 @@ const peopleReducer = (state = initialState, action) => {
           users: action.users,
         }),
       });
-    case SET_IS_VISIBLE_MODAL_LEAVE:
+    case SET_IS_VISIBLE_DATA_LOSS_DIALOG:
       return Object.assign({}, state, {
         editingForm: {
           ...state.editingForm,
-          isVisibleModalLeave: action.isVisible,
+          isVisibleDataLossDialog: action.isVisible,
           callback: action.callback,
         },
       });

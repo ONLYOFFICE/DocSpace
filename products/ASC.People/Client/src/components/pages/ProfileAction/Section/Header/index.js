@@ -7,7 +7,7 @@ import { Headline } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import {
   setFilter,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
 } from "../../../../../store/people/actions";
 
 const Wrapper = styled.div`
@@ -35,7 +35,7 @@ const SectionHeaderContent = (props) => {
     filter,
     editingForm,
     setFilter,
-    setIsVisibleModalLeave,
+    setIsVisibleDataLossDialog,
   } = props;
   const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
@@ -51,7 +51,7 @@ const SectionHeaderContent = (props) => {
 
   const onClickBackHandler = () => {
     if (editingForm.isEdit) {
-      setIsVisibleModalLeave(true, onClickBack);
+      setIsVisibleDataLossDialog(true, onClickBack);
     } else {
       onClickBack();
     }
@@ -87,6 +87,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setIsVisibleModalLeave })(
-  withRouter(SectionHeaderContent)
-);
+export default connect(mapStateToProps, {
+  setFilter,
+  setIsVisibleDataLossDialog,
+})(withRouter(SectionHeaderContent));

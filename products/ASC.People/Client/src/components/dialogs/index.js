@@ -8,7 +8,7 @@ import InviteDialog from "./InviteDialog";
 import SendInviteDialog from "./SendInviteDialog";
 import ChangeUserStatusDialog from "./ChangeUserStatusDialog";
 import ChangeUserTypeDialog from "./ChangeUserTypeDialog";
-import LeaveFormDialog from "./LeaveFormDialog";
+import DataLossWarningDialog from "./DataLossWarningDialog";
 
 export {
   ChangeEmailDialog,
@@ -21,5 +21,5 @@ export {
   SendInviteDialog,
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
-  LeaveFormDialog,
+  DataLossWarningDialog,
 };

@@ -27,7 +27,7 @@ import {
 import {
   setFilter,
   updateProfileInUsers,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
   setIsEditingForm,
 } from "../../../../../store/people/actions";
 import {
@@ -43,7 +43,7 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
-import { LeaveFormDialog } from "../../../../dialogs";
+import { DataLossWarningDialog } from "../../../../dialogs";
 import { api, toastr } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -257,10 +257,10 @@ class UpdateUserForm extends React.Component {
       });
   }
   onCancelHandler() {
-    const { editingForm, setIsVisibleModalLeave } = this.props;
+    const { editingForm, setIsVisibleDataLossDialog } = this.props;
 
     if (editingForm.isEdit) {
-      setIsVisibleModalLeave(true);
+      setIsVisibleDataLossDialog(true);
     } else {
       this.onCancel();
     }
@@ -561,7 +561,7 @@ class UpdateUserForm extends React.Component {
     return (
       <>
         <MainContainer>
-          <LeaveFormDialog onContinue={this.onCancel} />
+          <DataLossWarningDialog onContinue={this.onCancel} />
           <AvatarContainer>
             <Avatar
               size="max"
@@ -838,7 +838,7 @@ export default connect(mapStateToProps, {
   updateProfile,
   fetchProfile,
   updateProfileInUsers,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
   setIsEditingForm,
   setFilter,
 })(withRouter(withTranslation()(UpdateUserForm)));

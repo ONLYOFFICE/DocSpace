@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
 import {
   selectGroup,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
 } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
@@ -103,10 +103,10 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
   onSelectHandler = (data) => {
-    const { editingForm, setIsVisibleModalLeave } = this.props;
+    const { editingForm, setIsVisibleDataLossDialog } = this.props;
 
     if (editingForm.isEdit) {
-      setIsVisibleModalLeave(true, this.onSelect(data));
+      setIsVisibleDataLossDialog(true, this.onSelect(data));
     } else {
       this.onSelect(data)();
     }
@@ -244,5 +244,5 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   selectGroup,
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
 })(BodyContent);

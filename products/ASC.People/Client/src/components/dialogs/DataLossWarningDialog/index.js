@@ -7,37 +7,37 @@ import { utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 import {
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
   setIsEditingForm,
 } from "../../../store/people/actions";
 
 const i18n = createI18N({
-  page: "LeaveFormDialog",
-  localesPath: "dialogs/LeaveFormDialog",
+  page: "DataLossWarningDialog",
+  localesPath: "dialogs/DataLossWarningDialog",
 });
 
 const { changeLanguage } = utils;
 
-class LeaveFormDialogComponent extends React.Component {
+class DataLossWarningDialogComponent extends React.Component {
   constructor(props) {
     super(props);
     changeLanguage(i18n);
   }
 
   onClose = () => {
-    const { setIsVisibleModalLeave } = this.props;
-    setIsVisibleModalLeave(false);
+    const { setIsVisibleDataLossDialog } = this.props;
+    setIsVisibleDataLossDialog(false);
   };
 
   onSubmit = () => {
     const {
       onContinue,
-      setIsVisibleModalLeave,
+      setIsVisibleDataLossDialog,
       setIsEditingForm,
       editingForm,
     } = this.props;
 
-    setIsVisibleModalLeave(false, null);
+    setIsVisibleDataLossDialog(false, null);
     setIsEditingForm(false);
 
     if (editingForm.callback) {
@@ -52,17 +52,17 @@ class LeaveFormDialogComponent extends React.Component {
     return (
       <ModalDialogContainer>
         <ModalDialog
-          visible={editingForm.isVisibleModalLeave}
+          visible={editingForm.isVisibleDataLossDialog}
           onClose={this.onClose}
         >
-          <ModalDialog.Header>{t("LeaveDialogHeader")}</ModalDialog.Header>
+          <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
           <ModalDialog.Body>
-            <Text fontSize="13px">{t("LeaveDialogBody")}</Text>
+            <Text fontSize="13px">{t("DataLossWarningBody")}</Text>
           </ModalDialog.Body>
           <ModalDialog.Footer>
             <Button
               key="LeaveForm"
-              label={t("LeaveDialogLeaveBtn")}
+              label={t("DataLossWarningLeaveBtn")}
               size="medium"
               primary={true}
               onClick={this.onSubmit}
@@ -70,7 +70,7 @@ class LeaveFormDialogComponent extends React.Component {
             <Button
               className="button-dialog"
               key="StayOnPage"
-              label={t("LeaveDialogCancelBtn")}
+              label={t("DataLossWarningCancelBtn")}
               size="medium"
               onClick={this.onClose}
             />
@@ -81,13 +81,15 @@ class LeaveFormDialogComponent extends React.Component {
   }
 }
 
-const LeaveFormDialogTranslated = withTranslation()(LeaveFormDialogComponent);
-
-const LeaveFormDialog = (props) => (
-  <LeaveFormDialogTranslated i18n={i18n} {...props} />
+const DataLossWarningDialogTranslated = withTranslation()(
+  DataLossWarningDialogComponent
 );
 
-LeaveFormDialog.propTypes = {
+const DataLossWarningDialog = (props) => (
+  <DataLossWarningDialogTranslated i18n={i18n} {...props} />
+);
+
+DataLossWarningDialog.propTypes = {
   editingForm: PropTypes.object.isRequired,
   onContinue: PropTypes.func.isRequired,
 };
@@ -99,6 +101,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  setIsVisibleModalLeave,
+  setIsVisibleDataLossDialog,
   setIsEditingForm,
-})(LeaveFormDialog);
+})(DataLossWarningDialog);
