@@ -7,5 +7,6 @@
     "editAvatar": "Edit",
     "SaveButton": "Save",
     "CancelButton": "Cancel",
-    "UpdatingProcess": "Updating..."
+    "UpdatingProcess": "Updating...",
+    "ChangesSavedSuccessfully": "Changes saved successfully"
 }

@@ -7,5 +7,6 @@
   "editAvatar": "Изменить",
   "SaveButton": "Сохранить",
   "CancelButton": "Отменить",
-  "UpdatingProcess": "Обновление..."
+  "UpdatingProcess": "Обновление...",
+  "ChangesSavedSuccessfully": "Изменения успешно сохранены"
 }
