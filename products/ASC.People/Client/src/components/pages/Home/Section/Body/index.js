@@ -32,7 +32,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { getFilterByLocation } from "../../../../../helpers/converters";
+
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -41,7 +41,6 @@ const { isArrayEqual } = utils.array;
 const { getSettings } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
-const { Filter } = api;
 
 const isRefetchPeople = true;
 class SectionBodyContent extends React.PureComponent {
