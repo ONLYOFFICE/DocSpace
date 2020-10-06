@@ -33,12 +33,14 @@ namespace ASC.AuditTrail
         private MessageTarget MessageTarget { get; set; }
         private UserFormatter UserFormatter { get; set; }
         private AuditTrailContext AuditTrailContext { get; }
+        private AuditActionMapper AuditActionMapper { get; }
 
-        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager)
+        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
         {
             MessageTarget = messageTarget;
             UserFormatter = userFormatter;
             AuditTrailContext = dbContextManager.Value;
+            AuditActionMapper = auditActionMapper;
         }
 
         public IEnumerable<AuditEvent> GetLast(int tenant, int chunk)
@@ -151,7 +153,8 @@ namespace ASC.AuditTrail
             return services
                 .AddUserFormatter()
                 .AddAuditTrailContextService()
-                .AddMessageTargetService();
+                .AddMessageTargetService()
+                .AddAuditActionMapperService();
         }
     }
 }

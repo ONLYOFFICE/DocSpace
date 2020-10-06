@@ -44,13 +44,13 @@ namespace ASC.AuditTrail.Data
     {
         private UserFormatter UserFormatter { get; }
         private AuditTrailContext AuditTrailContext { get; }
-        private ILog Log { get; }
+        private AuditActionMapper AuditActionMapper { get; }
 
-        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, IOptionsMonitor<ILog> options)
+        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
         {
             UserFormatter = userFormatter;
             AuditTrailContext = dbContextManager.Value;
-            Log = options.CurrentValue;
+            AuditActionMapper = auditActionMapper;
         }
 
         private class Query
@@ -142,7 +142,6 @@ namespace ASC.AuditTrail.Data
                 }
                 catch(Exception)
                 {
-                    Log.Error("Error while forming event from db: " + ex);
                 }
             });
             return loginsEvents;
@@ -156,7 +155,8 @@ namespace ASC.AuditTrail.Data
             _ = services.TryAddScoped<LoginEventsRepository>();
             return services
                 .AddUserFormatter()
-                .AddAuditTrailContextService();
+                .AddAuditTrailContextService()
+                .AddAuditActionMapperService();
         }
     }
 }

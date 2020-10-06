@@ -30,6 +30,7 @@ using ASC.MessagingSystem;
 using System.Linq;
 using Microsoft.Extensions.Options;
 using ASC.Common.Logging;
+using ASC.Common;
 
 namespace ASC.AuditTrail.Mappers
 {
@@ -38,7 +39,7 @@ namespace ASC.AuditTrail.Mappers
         private Dictionary<MessageAction, MessageMaps> Actions { get; }
         private ILog Log { get; }
 
-        AuditActionMapper(IOptionsMonitor<ILog> options)
+        public AuditActionMapper(IOptionsMonitor<ILog> options)
         {
             Actions = new Dictionary<MessageAction, MessageMaps>();
             Log = options.CurrentValue;
@@ -139,6 +140,15 @@ namespace ASC.AuditTrail.Mappers
         {
             if (text == null) return null;
             return text.Length < 50 ? text : string.Format("{0}...", text.Substring(0, 47));
+        }
+    }
+
+    public static class AuditActionMapperExtension
+    {
+        public static DIHelper AddAuditActionMapperService(this DIHelper services)
+        {
+            _ = services.TryAddSingleton<AuditActionMapper>();
+            return services;
         }
     }
 }
