@@ -48,8 +48,15 @@ const getCustomModules = isAdmin => {
       },
       "SettingsIcon"
     );
-  
-    return [separator, settingsModuleWrapper];*/ return [];
+   const paymentsModuleWrapper = toModuleWrapper(
+    {
+      id: "payments",
+      title: i18n.t("Payments"),
+      link: "/payments"
+    },
+    "PaymentsIcon"
+  );
+    return [separator, settingsModuleWrapper, paymentsModuleWrapper];*/ return [];
 };
 
 const getAvailableModules = (modules, currentUser) => {
@@ -70,8 +77,14 @@ const StudioLayoutContainer = withTranslation()(PureStudioLayout);
 class StudioLayout extends React.Component {
   constructor(props) {
     super(props);
-
     changeLanguage(i18n);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { language } = this.props;
+    if (language !== prevProps.language) {
+      changeLanguage(i18n);
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -92,8 +105,8 @@ StudioLayout.propTypes = {
 
 function mapStateToProps(state) {
   const { user, isAuthenticated, isLoaded, modules, settings } = state.auth;
-  const { defaultPage, currentProductId } = settings;
-
+  const { defaultPage, currentProductId, culture } = settings;
+  const { cultureName } = user;
   return {
     hasChanges: isAuthenticated && isLoaded,
     availableModules: getAvailableModules(modules, user),
@@ -101,11 +114,9 @@ function mapStateToProps(state) {
     currentModuleId: currentProductId,
     settings: settings,
     modules: modules,
-    defaultPage: defaultPage || "/"
+    defaultPage: defaultPage || "/",
+    language: cultureName || culture || "en-US"
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(withRouter(StudioLayout));
+export default connect(mapStateToProps, { logout })(withRouter(StudioLayout));

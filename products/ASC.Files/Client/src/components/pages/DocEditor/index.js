@@ -33,6 +33,10 @@ class PureEditor extends React.Component {
 
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
+
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    
     const wrapperStyle = {
       height: "100vh",
       height: "calc(var(--vh, 1vh) * 100)"

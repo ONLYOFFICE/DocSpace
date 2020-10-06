@@ -114,13 +114,17 @@ class FilesRowContent extends React.PureComponent {
     if (itemTitle.trim() === '')
       return this.completeAction(e);
 
+    let newTab = item.fileExst
+      ? window.open('about:blank', '_blank')
+      : null;
+
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
         .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
         .then((file) => {
-          window.open(file.webUrl, "_blank")
-          this.completeAction(e)
+          newTab.location = file.webUrl;
+          this.completeAction(e);
         }).finally(() => setIsLoading(false))
   }
 
@@ -147,11 +151,10 @@ class FilesRowContent extends React.PureComponent {
   }
 
   cancelUpdateItem = (e) => {
-    //this.setState({ loading: false });
     this.completeAction(e);
   }
 
-  onClickUpdateItem = () => {
+  onClickUpdateItem = (e) => {
     (this.props.fileAction.type === FileAction.Create)
       ? this.createItem()
       : this.updateItem();

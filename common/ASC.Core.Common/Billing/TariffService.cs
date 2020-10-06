@@ -465,7 +465,7 @@ namespace ASC.Core.Billing
             var r = CoreDbContext.Tariffs
                 .Where(r => r.Tenant == tenant)
                 .OrderByDescending(r => r.Id)
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             return r != null ? Tuple.Create(r.Tariff, r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue) : null;
         }

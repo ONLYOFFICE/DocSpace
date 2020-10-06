@@ -40,7 +40,7 @@ const i18n = createI18N({
 });
 
 const { tablet } = utils.device;
-const { changeLanguage } = commonUtils;
+const { changeLanguage, createPasswordHash } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -222,7 +222,7 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) {
-      const { setPortalOwner, wizardToken } = this.props;
+      const { setPortalOwner, wizardToken, hashSettings } = this.props;
 
       const {
         password,
@@ -238,10 +238,11 @@ class Body extends Component {
       const analytics = true;
 
       // console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, analytics, wizardToken);
+      const hash = createPasswordHash(password, hashSettings);
 
       setPortalOwner(
         emailTrim,
-        password,
+        hash,
         selectLanguage.key,
         selectTimezone.key,
         wizardToken,
@@ -442,7 +443,6 @@ class Body extends Component {
           <form className="wizard-form">
             <InputContainer
               t={t}
-              s
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
               password={password}
@@ -543,6 +543,7 @@ function mapStateToProps({ wizard, auth }) {
     timezones,
     timezone,
     urlLicense,
+    hashSettings,
   } = auth.settings;
 
   return {
@@ -558,6 +559,7 @@ function mapStateToProps({ wizard, auth }) {
     urlLicense,
     isLicenseRequired,
     licenseUpload,
+    hashSettings,
   };
 }
 
