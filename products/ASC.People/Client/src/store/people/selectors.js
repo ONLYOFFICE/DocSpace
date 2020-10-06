@@ -271,6 +271,7 @@ export const getPeopleList = createSelector(
         userName,
         activationStatus,
         status,
+        groups,
       } = user;
       const statusType = getUserStatus(user);
       const role = getUserRole(user);
@@ -300,6 +301,7 @@ export const getPeopleList = createSelector(
         userName,
         mobilePhone,
         options,
+        groups,
       };
     });
   }
