@@ -57,7 +57,6 @@ namespace ASC.Core.Common.EF
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
             Provider = GetProviderByConnectionString();
-
             switch (Provider)
             {
                 case Provider.MySql:

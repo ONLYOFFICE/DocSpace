@@ -1,11 +1,14 @@
 ﻿using ASC.Common;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF.Model.Resource;
-
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlResourceDbContext : ResourceDbContext { }
+    public class PostgreSqlResourceDbContext : ResourceDbContext { }
     public class ResourceDbContext : BaseDbContext
     {
         public DbSet<ResAuthors> Authors { get; set; }
@@ -15,7 +18,17 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<ResData> ResData { get; set; }
         public DbSet<ResFiles> ResFiles { get; set; }
         public DbSet<ResReserve> ResReserve { get; set; }
-
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlResourceDbContext() } ,
+                    { Provider.Postrge, () => new PostgreSqlResourceDbContext() } ,
+                };
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper

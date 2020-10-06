@@ -80,7 +80,7 @@ namespace ASC.Core.Common.EF.Model
 
             modelBuilder.Entity<DbTenant>(entity =>
             {
-                entity.ToTable("tenants_tenants", "onlyoffice");
+                entity.ToTable("tenants_tenants");
 
                 entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");

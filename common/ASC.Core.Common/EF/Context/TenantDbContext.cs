@@ -1,11 +1,13 @@
-﻿
-using ASC.Common;
+﻿using ASC.Common;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlTenantDbContext : TenantDbContext { }
+    public class PostgreSqlTenantDbContext : TenantDbContext { }
     public class TenantDbContext : BaseDbContext
     {
         public DbSet<DbTenant> Tenants { get; set; }
@@ -23,7 +25,17 @@ namespace ASC.Core.Common.EF.Context
         {
 
         }
-
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlTenantDbContext() } ,
+                    { Provider.Postrge, () => new PostgreSqlTenantDbContext() } ,
+                };
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
