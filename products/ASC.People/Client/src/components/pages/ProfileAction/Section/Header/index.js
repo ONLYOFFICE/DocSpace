@@ -57,10 +57,7 @@ const SectionHeaderContent = (props) => {
     }
   };
   const onClickBack = useCallback(() => {
-    console.log("callback");
-    !profile
-      ? setFilter(filter)
-      : history.push(`/products/people/view/${profile.userName}`);
+    !profile || !document.referrer ? setFilter(filter) : history.goBack();
   }, [history, profile, setFilter, filter]);
 
   return (

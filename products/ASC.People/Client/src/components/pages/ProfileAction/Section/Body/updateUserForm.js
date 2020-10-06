@@ -25,6 +25,7 @@ import {
   fetchProfile,
 } from "../../../../../store/profile/actions";
 import {
+  setFilter,
   updateProfileInUsers,
   setIsVisibleModalLeave,
   setIsEditingForm,
@@ -266,7 +267,13 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    this.props.history.goBack();
+    const { filter, setFilter } = this.props;
+    console.log(document.referrer);
+    if (document.referrer) {
+      this.props.history.goBack();
+    } else {
+      setFilter(filter);
+    }
   }
 
   onContactsItemAdd(item) {
@@ -823,6 +830,7 @@ const mapStateToProps = (state) => {
     settings: state.auth.settings,
     groups: state.people.groups,
     editingForm: state.people.editingForm,
+    filter: state.people.filter,
   };
 };
 
@@ -832,4 +840,5 @@ export default connect(mapStateToProps, {
   updateProfileInUsers,
   setIsVisibleModalLeave,
   setIsEditingForm,
+  setFilter,
 })(withRouter(withTranslation()(UpdateUserForm)));
