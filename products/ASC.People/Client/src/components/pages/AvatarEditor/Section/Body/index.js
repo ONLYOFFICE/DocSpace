@@ -90,16 +90,9 @@ class SectionBodyContent extends React.PureComponent {
         height: result.height,
         tmpFile: this.state.avatar.tmpFile,
       })
-        .then((response) => {
-          //let stateCopy = Object.assign({}, this.state);
-          //stateCopy.avatar.tmpFile = "";
-          /*   stateCopy.profile.avatarMax =
-            response.max +
-            "?_=" +
-            Math.floor(Math.random() * Math.floor(10000));*/
+        .then(() => {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState({ isLoading: false });
-          //this.setState(stateCopy);
         })
         .catch((error) => {
           toastr.error(error);
@@ -109,14 +102,13 @@ class SectionBodyContent extends React.PureComponent {
         .then(() => this.props.fetchProfile(profile.id));
     } else {
       deleteAvatar(profile.id)
-        .then((response) => {
-          //let stateCopy = Object.assign({}, this.state);
-          //stateCopy.visibleAvatarEditor = false;
-          //stateCopy.profile.avatarMax = response.big;
+        .then(() => {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          //this.setState(stateCopy);
+          this.setState({ isLoading: false });
         })
-        .catch((error) => toastr.error(error));
+        .catch((error) => toastr.error(error))
+        .then(() => this.props.updateProfile(this.props.profile))
+        .then(() => this.props.fetchProfile(profile.id));
     }
   };
 
