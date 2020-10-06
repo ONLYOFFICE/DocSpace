@@ -1,5 +1,6 @@
 import { find, filter } from "lodash";
 import { constants, store } from "asc-web-common";
+import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
 const { isAdmin } = store.auth.selectors;
@@ -709,4 +710,171 @@ export const getFirstLoad = (state) => {
 
 export const getPathParts = (state) => {
   return state.files.selectedFolder.pathParts;
-};
+}
+export const getMediaViewerFormats = () => { //TODO need add to state
+  const extsMediaPreviewed = [
+    ".aac",
+    ".flac",
+    ".m4a",
+    ".mp3",
+    ".oga",
+    ".ogg",
+    ".wav",
+    ".f4v",
+    ".m4v",
+    ".mov",
+    ".mp4",
+    ".ogv",
+    ".webm",
+    ".avi",
+    ".mpg",
+    ".mpeg",
+    ".wmv",
+  ];
+
+  const extsImagePreviewed = [
+    ".bmp",
+    ".gif",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".ico",
+    ".tif",
+    ".tiff",
+    ".webp",
+  ];
+  
+return {extsMediaPreviewed, extsImagePreviewed}
+}
+
+export const isMediaOrImage = fileExst => {
+  const formats = getMediaViewerFormats();
+
+  if (
+    formats.extsMediaPreviewed.includes(fileExst) ||
+    formats.extsImagePreviewed.includes(fileExst)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+const getFilesContextOptions = (item, viewer) => {
+  const options = [];
+
+  const isFile = !!item.fileExst;
+  const canOpenPlayer = isMediaOrImage(item.fileExst);
+
+  if (item.id <= 0) return [];
+
+  options.push("sharing-settings");
+
+  if (isFile) {
+    options.push("send-by-email");
+  }
+
+  options.push("link-for-portal-users");
+  options.push("separator0");
+
+  if (isFile) {
+    options.push("show-version-history");
+    options.push("finalize-version");
+    options.push("block-unblock-version");
+    options.push("separator1");
+
+    if (canOpenPlayer) {
+      options.push("view");
+    } else {
+      options.push("edit");
+      options.push("preview");
+    }
+
+    options.push("download");
+  }
+
+  options.push("move");
+  options.push("copy");
+
+  if (isFile) {
+    options.push("duplicate");
+  }
+
+  options.push("rename");
+  options.push("delete");
+
+  return options;
+}
+
+export const getItemsList = createSelector(
+  [getFolders, getFiles], (folders, files) => {
+    return folders && files ? [...folders, ...files] : [];
+  }
+)
+
+export const getFilesList = createSelector(
+  [getItemsList, getSelection, getSelectedFolderType, getViewer],
+  (items, selection, currentFolderType, viewer) => {
+    return items.map((item) => {
+      const {
+        id,
+        fileExst,
+        title,
+        parentId,
+        contentLength,
+        updated,
+        createdBy,
+        filesCount,
+        foldersCount,
+        fileStatus,
+        versionGroup,
+        locked,
+        access
+      } = item;
+
+      const contextOptions = getFilesContextOptions(item, viewer).filter((o) => o);
+      const checked = isFileSelected(selection, id, parentId);
+
+      const selectedItem = selection.find(
+        (x) => x.id === id && x.fileExst === fileExst
+      );
+
+      const isFolder = selectedItem
+        ? false
+        : fileExst
+          ? false
+          : true;
+
+      const draggable = selectedItem && currentFolderType !== "Trash";
+
+      let value = fileExst
+        ? `file_${id}`
+        : `folder_${id}`;
+
+      value += draggable
+        ? "_draggable"
+        : "";
+
+      return {
+        id,
+        fileExst,
+        title,
+        parentId,
+        contentLength,
+        updated,
+        createdBy,
+        filesCount,
+        foldersCount,
+        fileStatus,
+        versionGroup,
+        locked,
+        checked,
+        contextOptions,
+        value,
+        isFolder,
+        selectedItem,
+        access
+      };
+    });
+
+  })
