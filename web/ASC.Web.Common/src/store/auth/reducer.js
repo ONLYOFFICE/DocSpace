@@ -82,7 +82,10 @@ const authReducer = (state = initialState, action) => {
         localStorage.setItem(LANGUAGE, action.settings.culture);
       }
       return Object.assign({}, state, {
-        settings: { ...state.settings, ...action.settings }
+        settings: {
+          ...state.settings,
+          ...action.settings
+        }
       });
     case SET_PORTAL_CULTURES:
       return Object.assign({}, state, {
