@@ -370,7 +370,7 @@ class FilesTileContent extends React.PureComponent {
 function mapStateToProps(state) {
   const { filter, fileAction, selectedFolder, treeFolders, folders } = state.files;
   const { settings } = state.auth;
-  const indexOfTrash = 3;
+  const indexOfTrash = 4;
 
   return {
     filter,

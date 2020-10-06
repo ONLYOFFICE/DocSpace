@@ -456,7 +456,7 @@ function mapStateToProps(state) {
     isLoading
   } = state.files;
   const { id } = selectedFolder;
-  const indexOfTrash = 3;
+  const indexOfTrash = 4;
 
   return {
     convertDialogVisible,

@@ -44,13 +44,13 @@ export function getFolder(folderId, filter) {
 }
 
 export function getFoldersTree() {
-  const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@trash', '@favorites']; //TODO: need get from settings
+  const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@favorites' ,'@trash']; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}?filterType=2` }));
 
   return axios.all(requestsArray)
     .then(axios.spread((...responses) =>
       responses.map((data, index) => {
-        const trashIndex = 3;
+        const trashIndex = 4;
         return {
           id: data.current.id,
           key: `0-${index}`,

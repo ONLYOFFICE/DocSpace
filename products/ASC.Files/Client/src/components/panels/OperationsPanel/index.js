@@ -160,7 +160,7 @@ const OperationsPanel = props => (
 const mapStateToProps = state => {
   const { selectedFolder, selection, treeFolders, filter } = state.files;
   const { pathParts, id } = selectedFolder;
-  const indexOfTrash = 3;
+  const indexOfTrash = 4;
 
   return {
     treeFolders,

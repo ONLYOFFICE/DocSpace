@@ -399,19 +399,19 @@ export const getFolderType = (id, treeFolders) => {
   const indexOfMy = 0;
   const indexOfShare = 1;
   const indexOfCommon = 2;
-  const indexOfTrash = 3;
-  const indexOfFavorites = 4;
+  const indexOfFavorites = 3;
+  const indexOfTrash = 4;
 
   if(checkFolderType(id, indexOfMy, treeFolders)) { return "My"; }
   else if(checkFolderType(id, indexOfShare, treeFolders)) { return "Share"; }
   else if(checkFolderType(id, indexOfCommon, treeFolders)) { return "Common"; }
-  else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
   else if(checkFolderType(id, indexOfFavorites, treeFolders)) { return "Favorites"; }
+  else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
 }
 
 const selectAllDirectories = state => state.files.treeFolders
 
 export const selectFavoritesDirectoryId = createSelector(
   selectAllDirectories,
-  allDirectories => allDirectories.find(dir => dir.key === "0-4").id
+  allDirectories => allDirectories.find(dir => dir.key === "0-3").id
 )

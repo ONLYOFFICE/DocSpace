@@ -597,7 +597,7 @@ const mapStateToProps = state => {
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
 
-  const indexOfTrash = 3;
+  const indexOfTrash = 4;
   user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
 
   return {

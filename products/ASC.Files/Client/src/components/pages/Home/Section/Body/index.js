@@ -46,16 +46,16 @@ import {
   setNewTreeFilesBadge,
   setIsLoading
 } from '../../../../../store/files/actions';
-import { 
-          isFileSelected, 
-          getFileIcon, 
-          getFolderIcon, 
-          getFolderType, 
-          loopTreeFolders, 
-          isImage, 
-          isSound, 
-          isVideo, 
-          selectFavoritesDirectoryId 
+import {
+  isFileSelected,
+  getFileIcon,
+  getFolderIcon,
+  getFolderType,
+  loopTreeFolders,
+  isImage,
+  isSound,
+  isVideo,
+  selectFavoritesDirectoryId
 } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
@@ -188,29 +188,29 @@ class SectionBodyContent extends React.Component {
   }
 
   onClickFavorite = e => {
-    const { markItemAsFavorite, 
-            removeItemFromFavorite, 
-            updateFile, 
-            fetchFavoritesFolder, 
-            selectedTreeNode, 
-            favoritesNodeId } = this.props;
-    const { action, 
-            id, 
-            title } = e.currentTarget.dataset;
+    const { markItemAsFavorite,
+      removeItemFromFavorite,
+      updateFile,
+      fetchFavoritesFolder,
+      selectedTreeNode,
+      favoritesNodeId } = this.props;
+    const { action,
+      id,
+      title } = e.currentTarget.dataset;
 
     const isFavoritesDir = +selectedTreeNode === +favoritesNodeId;
 
     switch (action) {
       case "mark":
         return markItemAsFavorite(+id)
-        .then(() => updateFile(id, title))
-        .then(() => toastr.success("Added to favorites"))
-        .catch(e => toastr.error(e));
+          .then(() => updateFile(id, title))
+          .then(() => toastr.success("Added to favorites"))
+          .catch(e => toastr.error(e));
       case "remove":
         return removeItemFromFavorite(+id)
-        .then(() => (isFavoritesDir ? fetchFavoritesFolder() : updateFile(id, title)))
-        .then(() => toastr.success("Removed from favorites"))
-        .catch(e => toastr.error(e));
+          .then(() => (isFavoritesDir ? fetchFavoritesFolder() : updateFile(id, title)))
+          .then(() => toastr.success("Removed from favorites"))
+          .catch(e => toastr.error(e));
       default:
         return;
     }
@@ -501,7 +501,7 @@ class SectionBodyContent extends React.Component {
         }
         : null,
       isFile && !isFavorite ?
-         {
+        {
           key: "mark-as-favorite",
           label: t("MarkAsFavorite"),
           icon: 'FavoritesIcon',
@@ -569,19 +569,19 @@ class SectionBodyContent extends React.Component {
         key: "sep3",
         isSeparator: true
       }
-      : null,
+        : null,
       isFile && isFavorite ?
-      {
-       key: "remove-from-favorites",
-       label: t("RemoveFromFavorites"),
-       icon: 'FavoritesIcon',
-       onClick: this.onClickFavorite,
-       disabled: false,
-       'data-id': item.id,
-       'data-title': item.title,
-       'data-action': "remove"
-     }
-     : null
+        {
+          key: "remove-from-favorites",
+          label: t("RemoveFromFavorites"),
+          icon: 'FavoritesIcon',
+          onClick: this.onClickFavorite,
+          disabled: false,
+          'data-id': item.id,
+          'data-title': item.title,
+          'data-action': "remove"
+        }
+        : null
     ];
 
     return menu;
@@ -773,17 +773,6 @@ class SectionBodyContent extends React.Component {
             widthProp={widthProp}
           />
         );
-      case "Trash":
-        return (
-          <EmptyFolderContainer
-            headerText={title}
-            subheadingText={subheadingText}
-            descriptionText={trashDescription}
-            imageSrc="images/empty_screen_trash.png"
-            buttons={trashButtons}
-            widthProp={widthProp}
-          />
-        );
       case "Favorites":
         return (
           <EmptyFolderContainer
@@ -792,6 +781,17 @@ class SectionBodyContent extends React.Component {
             descriptionText={favoritesDescription}
             imageSrc="images/empty_screen_favorites.png"
             //buttons={null}
+            widthProp={widthProp}
+          />
+        );
+      case "Trash":
+        return (
+          <EmptyFolderContainer
+            headerText={title}
+            subheadingText={subheadingText}
+            descriptionText={trashDescription}
+            imageSrc="images/empty_screen_trash.png"
+            buttons={trashButtons}
             widthProp={widthProp}
           />
         );

@@ -532,7 +532,7 @@ class FilesRowContent extends React.PureComponent {
 function mapStateToProps(state) {
   const { filter, fileAction, selectedFolder, treeFolders, folders, newRowItems, dragging, isLoading } = state.files;
   const { settings } = state.auth;
-  const indexOfTrash = 3;
+  const indexOfTrash = 4;
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
 
   return {
