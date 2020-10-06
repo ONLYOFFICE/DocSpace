@@ -60,13 +60,16 @@ class SectionBodyContent extends React.PureComponent{
   }
 
   onBackClick = () => {
-    const {profile, settings} = this.props
-
-    this.props.history.push(`${settings.homepage}/edit/${profile.userName}`)
+    this.returnToEditor();
   }
 
-  onCloseAvatarEditor = () => {
-    console.log("onCloseAvatarEditor")
+  onCancel = () => {
+    this.returnToEditor();
+  }
+
+  returnToEditor = () => {
+    const {profile, settings} = this.props
+    this.props.history.push(`${settings.homepage}/edit/${profile.userName}`)
   }
 
   onSaveAvatar = (isUpdate, result) => {
@@ -181,6 +184,7 @@ class SectionBodyContent extends React.PureComponent{
           visible={true}
           onClose={this.onCloseAvatarEditor}
           onSave={this.onSaveAvatar}
+          onCancel={this.onCancel}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("EditPhoto")}
           selectNewPhotoLabel={t("selectNewPhotoLabel")}

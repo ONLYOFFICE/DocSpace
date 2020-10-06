@@ -71,6 +71,10 @@ class AvatarEditor extends React.Component {
     this.saveAvatar();
   };
 
+  onCancelButtonClick = () => {
+    this.props.onCancel();
+  }
+
   saveAvatar = () => {
     if (!this.state.existImage) {
       this.props.onSave(this.state.existImage);
@@ -206,7 +210,7 @@ class AvatarEditor extends React.Component {
               label={cancelButtonLabel}
               primary={false}
               size="big"
-              onClick={this.onSaveButtonClick}
+              onClick={this.onCancelButtonClick}
             />
           </StyledButtonsWrapper>
           
