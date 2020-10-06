@@ -195,31 +195,21 @@ export const getUsers = (state) => state.people.users || [];
 
 export const getSelection = (state) => state.people.selection;
 
-export const isAnythingSelected = createSelector(
-  [getSelection],
-  (selection) => selection && selection.length > 0
-);
-
-const getUserContextOptions = (isMySelf, isOwner, status, haveMobileNumber) => {
-  // let status = "";
-  // const { t, isAdmin } = this.props;
-
-  // const isSelf = isMe(user, viewer.userName);
-
-  // if (isAdmin || (!isAdmin && isSelf)) {
-  //   status = getUserStatus(user);
-  // }
-
-  //console.log("getUserContextOptions", user, viewer, status);
-
+const getUserContextOptions = (
+  isMySelf,
+  isOwner,
+  statusType,
+  status,
+  hasMobileNumber
+) => {
   const options = [];
 
-  switch (status) {
+  switch (statusType) {
     case "normal":
     case "unknown":
       options.push("send-email");
 
-      if (haveMobileNumber && isMobileOnly) {
+      if (hasMobileNumber && isMobileOnly) {
         options.push("send-message");
       }
 
@@ -265,16 +255,9 @@ const getUserContextOptions = (isMySelf, isOwner, status, haveMobileNumber) => {
   return options;
 };
 
-// export const isMySelf = (user) => {
-//   return createSelector([getCurrentUser], (viewer) => {
-//     const isMySelf = isMe(user, viewer.userName);
-//     return isMySelf;
-//   });
-// };
-
 export const getPeopleList = createSelector(
   [getUsers, getSelection, isAdmin, getCurrentUser],
-  (users, selection, isAdmin, viewer) => {
+  (users, selection, isViewerAdmin, viewer) => {
     return users.map((user) => {
       const {
         id,
@@ -282,25 +265,35 @@ export const getPeopleList = createSelector(
         avatar,
         email,
         isOwner,
+        isAdmin: isAdministrator,
+        isVisitor,
         mobilePhone,
         userName,
+        activationStatus,
+        status,
       } = user;
-      const status = getUserStatus(user);
+      const statusType = getUserStatus(user);
       const role = getUserRole(user);
       const isMySelf = isMe(user, viewer.userName);
 
       const options = getUserContextOptions(
         isMySelf,
         isOwner,
+        statusType,
         status,
         !!mobilePhone
       );
 
       return {
         id,
-        checked: isAdmin ? isUserSelected(selection, user.id) : undefined,
+        checked: isViewerAdmin ? isUserSelected(selection, user.id) : undefined,
         status,
+        activationStatus,
+        statusType,
         role,
+        isOwner,
+        isAdmin: isAdministrator,
+        isVisitor,
         displayName,
         avatar,
         email,
@@ -312,125 +305,126 @@ export const getPeopleList = createSelector(
   }
 );
 
-export const getEmployees = createSelector(
-  [getUsers, getCurrentUser],
-  (users, currentUser) => {
-    return users.filter(
+const getUsersIds = (users) => {
+  return users.map((user) => {
+    return user.id;
+  });
+};
+
+const hasAny = (users) => users && users.length > 0;
+
+export const hasAnybodySelected = createSelector([getSelection], hasAny);
+
+export const getUsersToMakeEmployees = createSelector(
+  [getSelection, getCurrentUser],
+  (selection, user) => {
+    //console.log("getUsersToMakeEmployees", selection, user);
+    return selection.filter(
       (x) =>
         !x.isAdmin &&
         !x.isOwner &&
-        x.isVisitor === false &&
-        x.status !== 2 &&
-        x.id !== currentUser.Id
+        x.isVisitor &&
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== user.id
     );
   }
 );
 
-export const getEmployeesIds = createSelector([getEmployees], (users) => {
-  return users.map((user) => {
-    return user.id;
-  });
-});
-
-export const isEmployeesSelected = createSelector(
-  [getEmployeesIds],
-  (employeesIds) => employeesIds && employeesIds.length > 0
+export const getUsersToMakeEmployeesIds = createSelector(
+  [getUsersToMakeEmployees],
+  getUsersIds
 );
 
-export const getGuests = createSelector(
-  [getUsers, getCurrentUser],
-  (users, currentUser) => {
-    return users.filter(
+export const hasUsersToMakeEmployees = createSelector(
+  [getUsersToMakeEmployees],
+  hasAny
+);
+
+export const getUsersToMakeGuests = createSelector(
+  [getSelection, getCurrentUser],
+  (selection, user) => {
+    //console.log("getUsersToMakeGuests", selection, user);
+    return selection.filter(
       (x) =>
         !x.isAdmin &&
         !x.isOwner &&
-        x.isVisitor === false &&
-        x.status !== 2 &&
-        x.id !== currentUser.Id
+        !x.isVisitor &&
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== user.id
     );
   }
 );
 
-export const getGuestsIds = createSelector([getGuests], (guests) => {
-  return guests.map((user) => {
-    return user.id;
-  });
-});
-
-export const isGuestsSelected = createSelector(
-  [getGuestsIds],
-  (guestsIds) => guestsIds && guestsIds.length > 0
+export const getUsersToMakeGuestsIds = createSelector(
+  [getUsersToMakeGuests],
+  getUsersIds
 );
 
-export const getActiveUsers = createSelector(
-  [getUsers, getCurrentUser],
-  (users, currentUser) => {
-    return users.filter(
-      (x) => !x.isOwner && x.status !== 1 && x.id !== currentUser.Id
+export const hasUsersToMakeGuests = createSelector(
+  [getUsersToMakeGuests],
+  hasAny
+);
+
+export const getUsersToActivate = createSelector(
+  [getSelection, getCurrentUser],
+  (selection, user) => {
+    //console.log("getUsersToActivate", selection, user);
+    return selection.filter(
+      (x) =>
+        !x.isOwner && x.status !== EmployeeStatus.Active && x.id !== user.id
     );
   }
 );
 
-export const getActiveUsersIds = createSelector([getActiveUsers], (users) => {
-  return users.map((user) => {
-    return user.id;
-  });
-});
-
-export const isActiveSelected = createSelector(
-  [getGuestsIds],
-  (activeUsersIds) => activeUsersIds && activeUsersIds.length > 0
+export const getUsersToActivateIds = createSelector(
+  [getUsersToActivate],
+  getUsersIds
 );
 
-export const getDisableUsers = createSelector(
-  [getUsers, getCurrentUser],
-  (users, currentUser) => {
-    return users.filter(
-      (x) => !x.isOwner && x.status !== 2 && x.id !== currentUser.Id
+export const hasUsersToActivate = createSelector([getUsersToActivate], hasAny);
+
+export const getUsersToDisable = createSelector(
+  [getSelection, getCurrentUser],
+  (selection, user) => {
+    //console.log("getUsersToDisable", selection, user);
+    return selection.filter(
+      (x) =>
+        !x.isOwner && x.status !== EmployeeStatus.Disabled && x.id !== user.id
     );
   }
 );
 
-export const getDisableUsersIds = createSelector([getDisableUsers], (users) => {
-  return users.map((user) => {
-    return user.id;
-  });
-});
-
-export const isDisableSelected = createSelector(
-  [getGuestsIds],
-  (disableUsersIds) => disableUsersIds && disableUsersIds.length > 0
+export const getUsersToDisableIds = createSelector(
+  [getUsersToDisable],
+  getUsersIds
 );
 
-export const getInactiveUsers = createSelector([getUsers], (users) => {
-  return users.filter((x) => x.activationStatus === 2 && x.status === 1);
+export const hasUsersToDisable = createSelector([getUsersToDisable], hasAny);
+
+export const getUsersToInvite = createSelector([getSelection], (selection) => {
+  //console.log("getUsersToInvite", selection);
+  return selection.filter(
+    (x) =>
+      x.activationStatus === EmployeeActivationStatus.Pending &&
+      x.status === EmployeeStatus.Active
+  );
 });
 
-export const getInactiveUsersIds = createSelector(
-  [getInactiveUsers],
-  (users) => {
-    return users.map((user) => {
-      return user.id;
-    });
-  }
+export const getUsersToInviteIds = createSelector(
+  [getUsersToInvite],
+  getUsersIds
 );
 
-export const isInactiveSelected = createSelector(
-  [getInactiveUsersIds],
-  (inactiveUsersIds) => inactiveUsersIds && inactiveUsersIds.length > 0
-);
+export const hasUsersToInvite = createSelector([getUsersToInvite], hasAny);
 
-export const getDeleteUsers = createSelector([getUsers], (users) => {
-  return users.filter((x) => x.status === 2);
+export const getUsersToRemove = createSelector([getSelection], (selection) => {
+  //console.log("getUsersToRemove", selection);
+  return selection.filter((x) => x.status === EmployeeStatus.Disabled);
 });
 
-export const getDeleteUsersIds = createSelector([getDeleteUsers], (users) => {
-  return users.map((user) => {
-    return user.id;
-  });
-});
-
-export const isDeleteSelected = createSelector(
-  [getDeleteUsersIds],
-  (deleteUsersIds) => deleteUsersIds && deleteUsersIds.length > 0
+export const getUsersToRemoveIds = createSelector(
+  [getUsersToRemove],
+  getUsersIds
 );
+
+export const hasUsersToRemove = createSelector([getUsersToRemove], hasAny);

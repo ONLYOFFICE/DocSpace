@@ -17,7 +17,10 @@ import { utils, toastr, constants } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { updateUserType, setSelected } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
-import { getEmployeesIds, getGuestsIds } from "../../../store/people/selectors";
+import {
+  getUsersToMakeEmployeesIds,
+  getUsersToMakeGuestsIds,
+} from "../../../store/people/selectors";
 
 const i18n = createI18N({
   page: "ChangeUserTypeDialog",
@@ -186,8 +189,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     userIds:
       userType === EmployeeType.User
-        ? getEmployeesIds(state)
-        : getGuestsIds(state),
+        ? getUsersToMakeEmployeesIds(state)
+        : getUsersToMakeGuestsIds(state),
     selectedUsers: selection,
   };
 };

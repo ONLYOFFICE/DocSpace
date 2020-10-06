@@ -11,13 +11,13 @@ import { Headline, toastr, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
-  isEmployeesSelected,
-  isGuestsSelected,
-  isActiveSelected,
-  isDisableSelected,
-  isInactiveSelected,
-  isDeleteSelected,
-  isAnythingSelected,
+  hasAnybodySelected,
+  hasUsersToMakeEmployees,
+  hasUsersToMakeGuests,
+  hasUsersToActivate,
+  hasUsersToDisable,
+  hasUsersToInvite,
+  hasUsersToRemove,
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
@@ -122,13 +122,13 @@ const SectionHeaderContent = (props) => {
 
     selection,
 
-    isAnythingSelected,
-    isEmployeesSelected,
-    isGuestsSelected,
-    isActiveSelected,
-    isDisableSelected,
-    isInactiveSelected,
-    isDeleteSelected,
+    hasAnybodySelected,
+    hasUsersToMakeEmployees,
+    hasUsersToMakeGuests,
+    hasUsersToActivate,
+    hasUsersToDisable,
+    hasUsersToInvite,
+    hasUsersToRemove,
 
     isLoaded,
   } = props;
@@ -210,39 +210,39 @@ const SectionHeaderContent = (props) => {
         label: t("ChangeToUser", {
           userCaption,
         }),
-        disabled: !isEmployeesSelected,
+        disabled: !hasUsersToMakeEmployees,
         onClick: toggleEmployeeDialog,
       },
       {
         label: t("ChangeToGuest", {
           guestCaption,
         }),
-        disabled: !isGuestsSelected,
+        disabled: !hasUsersToMakeGuests,
         onClick: toggleGuestDialog,
       },
       {
         label: t("LblSetActive"),
-        disabled: !isActiveSelected,
+        disabled: !hasUsersToActivate,
         onClick: toggleActiveDialog,
       },
       {
         label: t("LblSetDisabled"),
-        disabled: !isDisableSelected,
+        disabled: !hasUsersToDisable,
         onClick: toggleDisableDialog,
       },
       {
         label: t("LblInviteAgain"),
-        disabled: !isInactiveSelected,
+        disabled: !hasUsersToInvite,
         onClick: toggleSendInviteDialog,
       },
       {
         label: t("LblSendEmail"),
-        disabled: !isAnythingSelected,
+        disabled: !hasAnybodySelected,
         onClick: onSendEmail,
       },
       {
         label: t("DeleteButton"),
-        disabled: !isDeleteSelected,
+        disabled: !hasUsersToRemove,
         onClick: toggleDeleteDialog,
       },
     ],
@@ -258,13 +258,13 @@ const SectionHeaderContent = (props) => {
       toggleSendInviteDialog,
       onSendEmail,
       toggleDeleteDialog,
-      isAnythingSelected,
-      isEmployeesSelected,
-      isGuestsSelected,
-      isActiveSelected,
-      isDisableSelected,
-      isInactiveSelected,
-      isDeleteSelected,
+      hasAnybodySelected,
+      hasUsersToMakeEmployees,
+      hasUsersToMakeGuests,
+      hasUsersToActivate,
+      hasUsersToDisable,
+      hasUsersToInvite,
+      hasUsersToRemove,
     ]
   );
 
@@ -368,6 +368,7 @@ const SectionHeaderContent = (props) => {
 
       {guestDialogVisible && (
         <ChangeUserTypeDialog
+          visible={guestDialogVisible}
           onClose={toggleGuestDialog}
           userType={EmployeeType.Guest}
         />
@@ -490,16 +491,14 @@ const mapStateToProps = (state) => {
     homepage,
     customNames,
     selection,
-
-    isAnythingSelected: isAnythingSelected(state),
-    isEmployeesSelected: isEmployeesSelected(state),
-    isGuestsSelected: isGuestsSelected(state),
-    isActiveSelected: isActiveSelected(state),
-    isDisableSelected: isDisableSelected(state),
-    isInactiveSelected: isInactiveSelected(state),
-    isDeleteSelected: isDeleteSelected(state),
-
     isLoaded,
+    hasAnybodySelected: hasAnybodySelected(state),
+    hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
+    hasUsersToMakeGuests: hasUsersToMakeGuests(state),
+    hasUsersToActivate: hasUsersToActivate(state),
+    hasUsersToDisable: hasUsersToDisable(state),
+    hasUsersToInvite: hasUsersToInvite(state),
+    hasUsersToRemove: hasUsersToRemove(state),
   };
 };
 

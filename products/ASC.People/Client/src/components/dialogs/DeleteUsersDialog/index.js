@@ -17,7 +17,7 @@ import { api, utils, toastr } from "asc-web-common";
 import { removeUser, setSelected } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
-import { getDeleteUsersIds } from "../../../store/people/selectors";
+import { getUsersToRemoveIds } from "../../../store/people/selectors";
 const i18n = createI18N({
   page: "DeleteUsersDialog",
   localesPath: "dialogs/DeleteUsersDialog",
@@ -190,11 +190,11 @@ DeleteUsersDialog.propTypes = {
 const mapStateToProps = (state) => {
   const { filter, selection } = state.people;
 
-  const deleteUsersIds = getDeleteUsersIds(state);
+  const usersToRemoveIds = getUsersToRemoveIds(state);
 
   return {
     filter,
-    userIds: deleteUsersIds,
+    userIds: usersToRemoveIds,
     selectedUsers: selection,
   };
 };

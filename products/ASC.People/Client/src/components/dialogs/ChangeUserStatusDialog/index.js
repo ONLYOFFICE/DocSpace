@@ -19,8 +19,8 @@ import { updateUserStatus, setSelected } from "../../../store/people/actions";
 
 import { createI18N } from "../../../helpers/i18n";
 import {
-  getActiveUsersIds,
-  getDisableUsersIds,
+  getUsersToActivateIds,
+  getUsersToDisableIds,
 } from "../../../store/people/selectors";
 const i18n = createI18N({
   page: "ChangeUserStatusDialog",
@@ -197,13 +197,13 @@ ChangeUserStatusDialog.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const { selection } = state.people;
-  const { userType } = ownProps;
+  const { userStatus } = ownProps;
 
   return {
     userIds:
-      userType === EmployeeStatus.Active
-        ? getActiveUsersIds(state)
-        : getDisableUsersIds(state),
+      userStatus === EmployeeStatus.Active
+        ? getUsersToActivateIds(state)
+        : getUsersToDisableIds(state),
     selectedUsers: selection,
   };
 };

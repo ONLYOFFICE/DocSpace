@@ -16,7 +16,7 @@ import { api, utils, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 import { connect } from "react-redux";
-import { getInactiveUsersIds } from "../../../store/people/selectors";
+import { getUsersToInviteIds } from "../../../store/people/selectors";
 import { setSelected } from "../../../store/people/actions";
 
 const i18n = createI18N({
@@ -177,10 +177,10 @@ SendInviteDialog.propTypes = {
 
 const mapStateToProps = (state) => {
   const { selection } = state.people;
-  const inactiveUsersIds = getInactiveUsersIds(state);
+  const usersToInviteIds = getUsersToInviteIds(state);
 
   return {
-    userIds: inactiveUsersIds,
+    userIds: usersToInviteIds,
     selectedUsers: selection,
   };
 };
