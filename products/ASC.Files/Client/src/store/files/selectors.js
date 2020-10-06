@@ -406,12 +406,11 @@ export const loopTreeFolders = (
     newPath.shift();
     if (path.length === 0) {
       let foldersLength = newItems.folders ? newItems.folders.length : 0;
-      //new Date(prev.updated) > new Date(next.updated) ? -1 : 1;
       if (folders.length > foldersLength) {
         addTreeFolder(folders, newItems, foldersCount);
       } else if (folders.length < foldersLength) {
         removeTreeFolder(folders, newItems, foldersCount);
-      } else if (folders.length > 0 && newItems.length > 0) {
+      } else if (folders.length > 0 && newItems.folders.length > 0) {
         renameTreeFolder(folders, newItems, currentFolder);
       } else {
         return;
@@ -710,8 +709,9 @@ export const getFirstLoad = (state) => {
 
 export const getPathParts = (state) => {
   return state.files.selectedFolder.pathParts;
-}
-export const getMediaViewerFormats = () => { //TODO need add to state
+};
+export const getMediaViewerFormats = () => {
+  //TODO need add to state
   const extsMediaPreviewed = [
     ".aac",
     ".flac",
@@ -743,11 +743,11 @@ export const getMediaViewerFormats = () => { //TODO need add to state
     ".tiff",
     ".webp",
   ];
-  
-return {extsMediaPreviewed, extsImagePreviewed}
-}
 
-export const isMediaOrImage = fileExst => {
+  return { extsMediaPreviewed, extsImagePreviewed };
+};
+
+export const isMediaOrImage = (fileExst) => {
   const formats = getMediaViewerFormats();
 
   if (
@@ -758,7 +758,7 @@ export const isMediaOrImage = fileExst => {
   }
 
   return false;
-}
+};
 
 const getFilesContextOptions = (item, viewer) => {
   const options = [];
@@ -804,13 +804,14 @@ const getFilesContextOptions = (item, viewer) => {
   options.push("delete");
 
   return options;
-}
+};
 
 export const getItemsList = createSelector(
-  [getFolders, getFiles], (folders, files) => {
+  [getFolders, getFiles],
+  (folders, files) => {
     return folders && files ? [...folders, ...files] : [];
   }
-)
+);
 
 export const getFilesList = createSelector(
   [getItemsList, getSelection, getSelectedFolderType, getViewer],
@@ -829,31 +830,25 @@ export const getFilesList = createSelector(
         fileStatus,
         versionGroup,
         locked,
-        access
+        access,
       } = item;
 
-      const contextOptions = getFilesContextOptions(item, viewer).filter((o) => o);
+      const contextOptions = getFilesContextOptions(item, viewer).filter(
+        (o) => o
+      );
       const checked = isFileSelected(selection, id, parentId);
 
       const selectedItem = selection.find(
         (x) => x.id === id && x.fileExst === fileExst
       );
 
-      const isFolder = selectedItem
-        ? false
-        : fileExst
-          ? false
-          : true;
+      const isFolder = selectedItem ? false : fileExst ? false : true;
 
       const draggable = selectedItem && currentFolderType !== "Trash";
 
-      let value = fileExst
-        ? `file_${id}`
-        : `folder_${id}`;
+      let value = fileExst ? `file_${id}` : `folder_${id}`;
 
-      value += draggable
-        ? "_draggable"
-        : "";
+      value += draggable ? "_draggable" : "";
 
       return {
         id,
@@ -873,8 +868,48 @@ export const getFilesList = createSelector(
         value,
         isFolder,
         selectedItem,
-        access
+        access,
       };
     });
+  }
+);
 
-  })
+const getSelectedTreeNodeSelector = (state) => {
+  return state.files.selectedFolder.id;
+};
+
+export const getSelectedTreeNode = createSelector(
+  getSelectedTreeNodeSelector,
+  (id) => {
+    if (id) return [id.toString()];
+  }
+);
+
+export const getFileActionId = (state) => {
+  return state.files.fileAction.id;
+};
+
+export const getConvertDialogVisible = (state) => {
+  return state.files.convertDialogVisible;
+};
+
+export const getProgressData = (state) => {
+  return state.files.progressData;
+};
+
+export const getIsLoaded = (state) => {
+  return state.auth.isLoaded;
+};
+
+export const getHomePage = (state) => {
+  return state.auth.settings.homepage;
+};
+
+export const getUpdateTree = (state) => {
+  return state.files.updateTree;
+};
+
+export const getTest = createSelector(getTreeFolders, (treeFolders) => {
+  const treeFoldersItem = treeFolders.find((x) => x.rootFolderName === "@my");
+  if (treeFoldersItem) return treeFoldersItem.id;
+});
