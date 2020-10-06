@@ -4,10 +4,10 @@ import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
 //import PageLayout from "../PageLayout";
-import { isAdmin, isMe } from "../../store/auth/selectors.js";
+import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
-//import isEmpty from "lodash/isEmpty";
+import isEmpty from "lodash/isEmpty";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -33,7 +33,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    // const userLoaded = !isEmpty(user);
+    const userLoaded = !isEmpty(user);
+    if (!userLoaded) {
+      return <Component {...props} />;
+    }
 
     // if (!userLoaded) {
     //   console.log("PrivateRoute render Loader", rest);
@@ -73,10 +76,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 function mapStateToProps(state) {
-  const { user, isLoaded, isAuthenticated } = state.auth;
+  const { isLoaded, isAuthenticated } = state.auth;
   return {
     isAdmin: isAdmin(state),
-    user,
+    user: getCurrentUser(state),
     isAuthenticated: !(
       !localStorage.getItem(AUTH_KEY) ||
       (isLoaded && !isAuthenticated)
