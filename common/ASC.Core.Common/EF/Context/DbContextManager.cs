@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Logging;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -31,7 +33,7 @@ namespace ASC.Core.Common.EF
 
                 if (t is BaseDbContext dbContext)
                 {
-                    dbContext.Database.Migrate();
+                    dbContext.Migrate();
                 }
             }
 

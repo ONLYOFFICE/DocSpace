@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
@@ -27,7 +28,10 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => new { e.TenantId, e.Date })
                     .HasName("date");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity
+                .Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Action).HasColumnName("action");
 

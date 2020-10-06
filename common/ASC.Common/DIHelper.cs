@@ -38,6 +38,18 @@ namespace ASC.Common
             return false;
         }
 
+        public DIHelper TryAddScoped<TService>(Func<IServiceProvider, TService> implementationFactory) where TService : class
+        {
+            var serviceName = $"{typeof(TService)}";
+            if (!Scoped.Contains(serviceName))
+            {
+                Scoped.Add(serviceName);
+                ServiceCollection.TryAddScoped(implementationFactory);
+            }
+
+            return this;
+        }
+
         public DIHelper TryAddScoped<TService, TImplementation>() where TService : class where TImplementation : class, TService
         {
             var serviceName = $"{typeof(TService)}{typeof(TImplementation)}";
@@ -50,16 +62,17 @@ namespace ASC.Common
             return this;
         }
 
-        public DIHelper TryAddScoped<TService, TImplementation>(TService tservice, TImplementation tImplementation) where TService : Type where TImplementation : Type
+        public bool TryAddScoped<TService, TImplementation>(TService tservice, TImplementation tImplementation) where TService : Type where TImplementation : Type
         {
             var serviceName = $"{tservice}{tImplementation}";
             if (!Scoped.Contains(serviceName))
             {
                 Scoped.Add(serviceName);
                 ServiceCollection.TryAddScoped(tservice, tImplementation);
+                return true;
             }
 
-            return this;
+            return false;
         }
 
 

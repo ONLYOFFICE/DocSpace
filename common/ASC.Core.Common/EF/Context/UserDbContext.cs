@@ -1,10 +1,25 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
+    public class MySqlUserDbContext : UserDbContext
+    {
+
+    }
+
+    public class PostgreUserDbContext : UserDbContext
+    {
+
+    }
+
     public class UserDbContext : BaseDbContext
     {
         public DbSet<User> Users { get; set; }
@@ -16,10 +31,17 @@ namespace ASC.Core.Common.EF
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
 
-        public UserDbContext() { }
-        public UserDbContext(DbContextOptions<UserDbContext> options)
-            : base(options)
-        { }
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlUserDbContext() } ,
+                    { Provider.Postrge, () => new PostgreUserDbContext() } ,
+                };
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

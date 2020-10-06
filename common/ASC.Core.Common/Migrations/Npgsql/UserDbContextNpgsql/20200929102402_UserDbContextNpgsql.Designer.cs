@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
 {
-    [DbContext(typeof(UserDbContext))]
+    [DbContext(typeof(PostgreUserDbContext))]
     [Migration("20200929102402_UserDbContextNpgsql")]
     partial class UserDbContextNpgsql
     {
