@@ -1,23 +1,11 @@
 import { createSelector } from "reselect";
 import isEmpty from "lodash/isEmpty";
 
-export function isAdmin(state) {
-  const { user } = state.auth;
-  const isPeopleAdmin = user.listAdminModules
-    ? user.listAdminModules.includes("people")
-    : false;
-  return user.isAdmin || user.isOwner || isPeopleAdmin;
-}
-
 export function isMe(user, userName) {
-  return userName === "@self" || (user && userName === user.userName);
+  return (
+    user && user.id && (userName === "@self" || user.userName === userName)
+  );
 }
-
-export const getLanguage = state => {
-  const { user, settings } = state.auth;
-
-  return user.cultureName || settings.culture;
-};
 
 const toModuleWrapper = (item, iconName) => {
   return {
@@ -59,6 +47,58 @@ export const getCurrentUser = state => state.auth.user;
 
 export const getModules = state => state.auth.modules;
 
+export const getSettings = state => state.auth.settings;
+
+export const getDefaultPage = createSelector(
+  [getSettings],
+  settings => (settings && settings.defaultPage) || ""
+);
+
+export const getCurrentProductId = createSelector(
+  [getSettings],
+  settings => (settings && settings.currentProductId) || ""
+);
+
+export const getLanguage = createSelector(
+  [getCurrentUser, getSettings],
+  (user, settings) => {
+    return (
+      (user && user.cultureName) || (settings && settings.culture) || "en-US"
+    );
+  }
+);
+
+export const isVisitor = createSelector([getCurrentUser], currentUser => {
+  return (currentUser && currentUser.isVisitor) || false;
+});
+
+export const isAdmin = createSelector(
+  [getCurrentUser, getCurrentProductId],
+  (currentUser, currentProductId) => {
+    if (!currentUser || !currentUser.id) return false;
+
+    let productName = null;
+
+    switch (currentProductId) {
+      case "f4d98afd-d336-4332-8778-3c6945c81ea0":
+        productName = "people";
+        break;
+      case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
+        productName = "documents";
+        break;
+      default:
+        break;
+    }
+
+    const isProductAdmin =
+      currentUser.listAdminModules && productName
+        ? currentUser.listAdminModules.includes(productName)
+        : false;
+
+    return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
+  }
+);
+
 export const getAvailableModules = createSelector(
   [getCurrentUser, getModules],
   (user, modules) => {
@@ -98,13 +138,6 @@ export const getMainModules = createSelector(
     return mainModules;
   }
 );
-
-export const getSettings = state => state.auth.settings;
-
-export const getDefaultPage = state => state.auth.settings.defaultPage;
-
-export const getCurrentProductId = state =>
-  state.auth.settings.currentProductId;
 
 export const getCurrentProduct = createSelector(
   [getAvailableModules, getCurrentProductId],

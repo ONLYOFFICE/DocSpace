@@ -20,7 +20,7 @@ const i18n = createI18N({
   localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
 
 class PureProfile extends React.Component {
   componentDidMount() {
@@ -28,6 +28,7 @@ class PureProfile extends React.Component {
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
+
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>
@@ -121,16 +122,14 @@ Profile.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { cultureName } = state.auth.user;
-  const { culture } = state.auth.settings;
-  const { user, isLoaded } = state.auth;
+  const { isLoaded } = state.auth;
   const { targetUser } = state.profile;
   return {
     profile: targetUser,
-    isVisitor: user.isVisitor,
-    isAdmin: isAdmin(state),
     isLoaded,
-    language: cultureName || culture || "en-US",
+    isVisitor: isVisitor(state),
+    isAdmin: isAdmin(state),
+    language: getLanguage(state),
   };
 }
 
