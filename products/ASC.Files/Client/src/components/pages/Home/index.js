@@ -109,7 +109,7 @@ class PureHome extends React.Component {
 
     if (!filterObj) return;
 
-    let dataObj = filterObj;
+    let dataObj = {filter: filterObj};
 
     if (filterObj && filterObj.authorType) {
       const authorType = filterObj.authorType;
@@ -125,7 +125,7 @@ class PureHome extends React.Component {
         };
       } else {
         filterObj.authorType = null;
-        dataObj = filterObj;
+        dataObj = {filter: filterObj};
       }
     }
 
@@ -160,8 +160,9 @@ class PureHome extends React.Component {
           filter.selectedItem = selectedItem;
         }
 
-        if (filterObj) {
-          const folderId = filterObj.folder;
+        if (filter) {
+          const folderId = filter.folder;
+          console.log("filter", filter);
           return fetchFiles(folderId, filter);
         }
 
