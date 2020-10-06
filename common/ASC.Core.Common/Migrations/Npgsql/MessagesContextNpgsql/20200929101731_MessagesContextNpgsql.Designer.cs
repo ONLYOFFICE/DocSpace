@@ -4,12 +4,11 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
 {
-    [DbContext(typeof(MessagesContext))]
+    [DbContext(typeof(PostgreSqlMessagesContext))]
     [Migration("20200929101731_MessagesContextNpgsql")]
     partial class MessagesContextNpgsql
     {

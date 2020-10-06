@@ -3,12 +3,11 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.FilesDbContextNpgsql
 {
-    [DbContext(typeof(FilesDbContext))]
+    [DbContext(typeof(PostgreSqlFilesDbContext))]
     [Migration("20200929101551_FilesDbContextNpgsql")]
     partial class FilesDbContextNpgsql
     {

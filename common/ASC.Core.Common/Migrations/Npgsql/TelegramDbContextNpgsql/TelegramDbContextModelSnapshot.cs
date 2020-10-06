@@ -3,12 +3,11 @@ using System;
 using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.TelegramDbContextNpgsql
 {
-    [DbContext(typeof(TelegramDbContext))]
+    [DbContext(typeof(PostgreSqlTelegramDbContext))]
     partial class TelegramDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

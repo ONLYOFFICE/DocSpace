@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
 {
-    [DbContext(typeof(MailDbContext))]
+    [DbContext(typeof(PostgreSqlMailDbContext))]
     [Migration("20200929103811_MailDbContextNpgsql")]
     partial class MailDbContextNpgsql
     {

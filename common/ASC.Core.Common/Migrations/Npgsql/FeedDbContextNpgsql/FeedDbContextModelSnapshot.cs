@@ -3,12 +3,11 @@ using System;
 using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
 {
-    [DbContext(typeof(FeedDbContext))]
+    [DbContext(typeof(PostgreSqlFeedDbContext))]
     partial class FeedDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

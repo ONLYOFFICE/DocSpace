@@ -4,12 +4,11 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
 {
-    [DbContext(typeof(VoipDbContext))]
+    [DbContext(typeof(PostgreSqlVoipDbContext))]
     [Migration("20200929102524_VoipDbContextNpgsql")]
     partial class VoipDbContextNpgsql
     {

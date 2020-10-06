@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
 {
-    [DbContext(typeof(MailDbContext))]
+    [DbContext(typeof(PostgreSqlMailDbContext))]
     partial class BlogContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

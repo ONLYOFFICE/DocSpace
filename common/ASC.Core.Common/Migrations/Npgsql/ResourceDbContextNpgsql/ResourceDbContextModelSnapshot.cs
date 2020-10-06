@@ -3,12 +3,11 @@ using System;
 using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
 {
-    [DbContext(typeof(ResourceDbContext))]
+    [DbContext(typeof(PostgreSqlResourceDbContext))]
     partial class ResourceDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

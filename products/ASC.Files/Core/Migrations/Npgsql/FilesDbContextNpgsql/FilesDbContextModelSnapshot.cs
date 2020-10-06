@@ -3,12 +3,11 @@ using System;
 using ASC.Files.Core.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
 {
-    [DbContext(typeof(FilesDbContext))]
+    [DbContext(typeof(PostgreSqlFilesDbContext))]
     partial class FilesDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

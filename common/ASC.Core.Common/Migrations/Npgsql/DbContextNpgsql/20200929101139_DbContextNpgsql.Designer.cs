@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.Npgsql.DbContextNpgsql
 {
-    [DbContext(typeof(EF.Context.DbContext))]
+    [DbContext(typeof(EF.Context.PostgreSqlDbContext))]
     [Migration("20200929101139_DbContextNpgsql")]
     partial class DbContextNpgsql
     {

@@ -1,11 +1,14 @@
 ﻿using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace ASC.Files.Core.EF
 {
+    public class MySqlFilesDbContext : FilesDbContext { }
+    public class PostgreSqlFilesDbContext : FilesDbContext { }
     public class FilesDbContext : BaseDbContext
     {
         public DbSet<DbFile> Files { get; set; }
@@ -19,7 +22,17 @@ namespace ASC.Files.Core.EF
         public DbSet<DbFilesTag> Tag { get; set; }
         public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
-
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlFilesDbContext() } ,
+                    { Provider.Postrge, () => new PostgreSqlFilesDbContext() } ,
+                };
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
