@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
+    [DefaultRoute]
+    [ApiController]
     public class SecurityController : ControllerBase
     {
         private PermissionContext PermissionContext { get; }
@@ -56,7 +58,7 @@ namespace ASC.Web.Api.Controllers
             SettingsManager = settingsManager;
         }
 
-        [Read("/audit/login/last")]
+        [Read("audit/login/last")]
         public IEnumerable<LoginEventWrapper> GetLastLoginEvents()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -67,7 +69,7 @@ namespace ASC.Web.Api.Controllers
             return LoginEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new LoginEventWrapper(x));
         }
 
-        [Read("/audit/events/last")]
+        [Read("audit/events/last")]
         public IEnumerable<AuditEventWrapper> GetLastAuditEvents()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -78,8 +80,8 @@ namespace ASC.Web.Api.Controllers
             return AuditEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new AuditEventWrapper(x));
         }
 
-        [Create("/audit/login/report")]
-        public string CreateLoginHistoryReport()
+        [Create("audit/login/report")]
+        public object CreateLoginHistoryReport()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -101,8 +103,8 @@ namespace ASC.Web.Api.Controllers
             return result;
         }
 
-        [Create("/audit/events/report")]
-        public string CreateAuditTrailReport()
+        [Create("audit/events/report")]
+        public object CreateAuditTrailReport()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -125,7 +127,7 @@ namespace ASC.Web.Api.Controllers
             return result;
         }
 
-        [Read("/audit/settings/lifetime")]
+        [Read("audit/settings/lifetime")]
         public TenantAuditSettings GetAuditSettings()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -133,7 +135,7 @@ namespace ASC.Web.Api.Controllers
             return SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
         }
 
-        [Create("/audit/settings/lifetime")]
+        [Create("audit/settings/lifetime")]
         public TenantAuditSettings SetAuditSettings(TenantAuditSettings settings)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

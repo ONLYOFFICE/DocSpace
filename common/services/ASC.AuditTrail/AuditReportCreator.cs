@@ -66,7 +66,7 @@ namespace ASC.AuditTrail
                     csv.WriteRecords(events);
                     writer.Flush();
 
-                    var file = FileUploader.Exec(GlobalFolderHelper.FolderMy.ToString(), reportName, stream.Length, stream, true);
+                    var file = FileUploader.Exec(GlobalFolderHelper.FolderMy, reportName, stream.Length, stream, true);
                     var fileUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID));
 
                     fileUrl += string.Format("&options={{\"delimiter\":{0},\"codePage\":{1}}}",
