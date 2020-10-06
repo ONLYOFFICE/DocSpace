@@ -101,16 +101,26 @@ export const getMainModules = createSelector(
 
 export const getSettings = state => state.auth.settings;
 
-export const getCurrentProduct = createSelector(
-  [getAvailableModules, getSettings],
-  (availableModules, settings) => {
-    const { currentProductId } = settings;
+export const getDefaultPage = state => state.auth.settings.defaultPage;
 
+export const getCurrentProductId = state =>
+  state.auth.settings.currentProductId;
+
+export const getCurrentProduct = createSelector(
+  [getAvailableModules, getCurrentProductId],
+  (availableModules, currentProductId) => {
     if (!currentProductId) return null;
 
     const list = availableModules.filter(item => item.id == currentProductId);
 
     return list && list.length > 0 ? list[0] : null;
+  }
+);
+
+export const getCurrentProductName = createSelector(
+  [getCurrentProduct],
+  currentProduct => {
+    return (currentProduct && currentProduct.title) || "";
   }
 );
 

@@ -10,6 +10,9 @@ import { utils } from "asc-web-components";
 import { connect } from "react-redux";
 import {
   getCurrentProduct,
+  getCurrentProductId,
+  getCurrentProductName,
+  getDefaultPage,
   getMainModules,
   getTotalNotificationsCount
 } from "../../../store/auth/selectors";
@@ -75,7 +78,7 @@ const HeaderComponent = ({
   defaultPage,
   mainModules,
   isNavOpened,
-  currentProduct,
+  currentProductId,
   toggleAside
 }) => {
   //console.log("Header render");
@@ -142,7 +145,7 @@ const HeaderComponent = ({
                 key={id}
                 data-id={id}
                 opened={isNavOpened}
-                active={id == currentProduct.id}
+                active={id == currentProductId}
                 iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}
@@ -168,7 +171,7 @@ HeaderComponent.propTypes = {
   currentProductName: PropTypes.string,
   defaultPage: PropTypes.string,
   mainModules: PropTypes.array,
-  currentProduct: PropTypes.object,
+  currentProductId: PropTypes.string,
   isNavOpened: PropTypes.bool,
   onNavMouseEnter: PropTypes.func,
   onNavMouseLeave: PropTypes.func,
@@ -176,17 +179,12 @@ HeaderComponent.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { settings } = state.auth;
-  const { defaultPage } = settings;
-
-  const currentProduct = getCurrentProduct(state);
-
   return {
-    defaultPage,
+    defaultPage: getDefaultPage(state),
     totalNotifications: getTotalNotificationsCount(state),
-    currentProductName: (currentProduct && currentProduct.title) || "",
     mainModules: getMainModules(state),
-    currentProduct: getCurrentProduct(state)
+    currentProductName: getCurrentProductName(state),
+    currentProductId: getCurrentProductId(state)
   };
 };
 
