@@ -96,9 +96,8 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  completeAction = (e) => {
-    //this.setState({ loading: false }, () =>)
-    this.props.onEditComplete(e);
+  completeAction = (id) => {
+    this.props.onEditComplete(id);
   }
 
   updateItem = (e) => {
@@ -109,13 +108,13 @@ class FilesRowContent extends React.PureComponent {
 
     setIsLoading(true);
     if (originalTitle === itemTitle)
-      return this.completeAction(e);
+      return this.completeAction(fileAction.id);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
+        .then(() => this.completeAction(fileAction.id)).finally(() => setIsLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false));
+        .then(() => this.completeAction(fileAction.id)).finally(() => setIsLoading(false));
   };
 
   createItem = (e) => {
@@ -163,14 +162,14 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ itemTitle: e.target.value });
   }
 
-  cancelUpdateItem = (e) => {
+  cancelUpdateItem = e => {
     this.completeAction(e);
   }
 
-  onClickUpdateItem = (e) => {
+  onClickUpdateItem = e => {
     (this.props.fileAction.type === FileAction.Create)
-      ? this.createItem()
-      : this.updateItem();
+      ? this.createItem(e)
+      : this.updateItem(e);
   }
 
   onFilesClick = () => {
