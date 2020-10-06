@@ -441,9 +441,9 @@ function mapStateToProps(state) {
   const shareId = treeFolders[shareFolderIndex].id;
   const commonId = treeFolders[commonFolderIndex].id;
 
-  const isMy = selectedFolder.pathParts[0] === myId;
-  const isShare = selectedFolder.pathParts[0] === shareId;
-  const isCommon = selectedFolder.pathParts[0] === commonId;
+  const isMy = selectedFolder.length && selectedFolder.pathParts[0] === myId;
+  const isShare = selectedFolder.length && selectedFolder.pathParts[0] === shareId;
+  const isCommon = selectedFolder.length && selectedFolder.pathParts[0] === commonId;
 
   return {
     treeFolders: getTreeFolders(state),
