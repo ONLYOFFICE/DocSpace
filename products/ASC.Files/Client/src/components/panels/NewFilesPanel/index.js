@@ -35,7 +35,7 @@ import {
   fetchFiles,
   setMediaViewerData,
   setTreeFolders,
-  setNewTreeFilesBadge,
+  setUpdateTree,
   setNewRowItems,
   setIsLoading
 } from "../../../store/files/actions";
@@ -104,7 +104,7 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileIds)
       .then(() => {
-        this.props.setNewTreeFilesBadge(true);
+        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
       })
@@ -123,7 +123,7 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileId)
       .then(() => {
-        this.props.setNewTreeFilesBadge(true);
+        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
       })
@@ -296,5 +296,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems, setIsLoading, fetchFiles }
+  { setMediaViewerData, setTreeFolders, setUpdateTree, setNewRowItems, setIsLoading, fetchFiles }
 )(withRouter(NewFilesPanel));

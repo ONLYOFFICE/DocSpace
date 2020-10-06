@@ -1,14 +1,26 @@
 import React from "react";
-import {
-  TreeMenu,
-  TreeNode,
-  Icons,
-  utils,
-  Badge
-} from "asc-web-components";
+import { TreeMenu, TreeNode, Icons, Badge } from "asc-web-components";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { api, constants, toastr } from "asc-web-common";
+import { api, constants, toastr, store as initStore } from "asc-web-common";
+import { connect } from "react-redux";
+import {
+  setFilter,
+  setTreeFolders,
+  setDragItem,
+  setDragging,
+  setIsLoading,
+  setUpdateTree,
+} from "../../../store/files/actions";
+import {
+  getTreeFolders,
+  getFilter,
+  getDragging,
+  getUpdateTree,
+  getSelectedFolderId,
+} from "../../../store/files/selectors";
+const { isAdmin } = initStore.auth.selectors;
+
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
 
@@ -17,7 +29,7 @@ const backgroundDragEnterColor = "#F8F7BF";
 
 const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-node-content-wrapper {
-    background: ${props => !props.dragging && "none !important"};
+    background: ${(props) => !props.dragging && "none !important"};
   }
 
   .rc-tree-node-selected {
@@ -29,7 +41,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-treenode-disabled > a span {
     cursor: wait;
   }
-/*
+  /*
   span.rc-tree-iconEle {
     margin-left: 4px;
   }*/
@@ -57,14 +69,19 @@ class TreeFolders extends React.Component {
       //!utils.array.isArrayEqual(prevProps.data, data)) {
       this.setState({ treeData: data });
     }
+
+    if (this.props.updateTree) {
+      this.props.setUpdateTree(false);
+      this.forceUpdate();
+    }
   }
 
-  onBadgeClick = e => {
+  onBadgeClick = (e) => {
     const id = e.currentTarget.dataset.id;
     this.props.onBadgeClick && this.props.onBadgeClick(id);
   };
 
-  getFolderIcon = item => {
+  getFolderIcon = (item) => {
     const showItem = item.newItems
       ? item.newItems > 0 && this.props.needUpdate
       : false;
@@ -77,7 +94,7 @@ class TreeFolders extends React.Component {
       fontWeight: 800,
       borderRadius: "11px",
       padding: "0 5px",
-      style
+      style,
     };
 
     switch (item.key) {
@@ -120,7 +137,7 @@ class TreeFolders extends React.Component {
     }
   };
 
-  showDragItems = item => {
+  showDragItems = (item) => {
     const {
       isAdmin,
       myId,
@@ -128,7 +145,7 @@ class TreeFolders extends React.Component {
       isCommon,
       isMy,
       isShare,
-      currentId
+      currentId,
     } = this.props;
     if (item.id === currentId) {
       return false;
@@ -166,8 +183,8 @@ class TreeFolders extends React.Component {
     return false;
   };
 
-  getItems = data => {
-    return data.map(item => {
+  getItems = (data) => {
+    return data.map((item) => {
       const dragging = this.showDragItems(item);
 
       if (item.folders && item.folders.length > 0) {
@@ -196,7 +213,7 @@ class TreeFolders extends React.Component {
     });
   };
 
-  switcherIcon = obj => {
+  switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -210,11 +227,11 @@ class TreeFolders extends React.Component {
 
   loop = (data, curId, child, level) => {
     //if (level < 1 || curId.length - 3 > level * 2) return;
-    data.forEach(item => {
+    data.forEach((item) => {
       const itemId = item.id.toString();
       if (curId.indexOf(itemId) >= 0) {
         const listIds = curId;
-        const treeItem = listIds.find(x => x.toString() === itemId);
+        const treeItem = listIds.find((x) => x.toString() === itemId);
         if (treeItem === undefined) {
           listIds.push(itemId);
         }
@@ -235,7 +252,7 @@ class TreeFolders extends React.Component {
   setLeaf(treeData, curKey, level) {
     const loopLeaf = (data, lev) => {
       const l = lev - 1;
-      data.forEach(item => {
+      data.forEach((item) => {
         if (
           item.key.length > curKey.length
             ? item.key.indexOf(curKey) !== 0
@@ -253,7 +270,7 @@ class TreeFolders extends React.Component {
     loopLeaf(treeData, level + 1);
   }
 
-  generateTreeNodes = treeNode => {
+  generateTreeNodes = (treeNode) => {
     const folderId = treeNode.props.id;
     let arrayFolders;
 
@@ -264,7 +281,7 @@ class TreeFolders extends React.Component {
 
     return files
       .getFolder(folderId, newFilter)
-      .then(data => {
+      .then((data) => {
         arrayFolders = data.folders;
 
         let listIds = [];
@@ -281,15 +298,15 @@ class TreeFolders extends React.Component {
 
         return { folders: arrayFolders, listIds };
       })
-      .catch(err => toastr.error("Something went wrong", err));
+      .catch((err) => toastr.error("Something went wrong", err));
   };
 
-  onLoadData = treeNode => {
+  onLoadData = (treeNode) => {
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
 
     return this.generateTreeNodes(treeNode)
-      .then(data => {
+      .then((data) => {
         const itemId = treeNode.props.id.toString();
         const listIds = data.listIds;
         listIds.push(itemId);
@@ -299,7 +316,7 @@ class TreeFolders extends React.Component {
         this.props.needUpdate && this.props.setTreeFolders(treeData);
         this.setState({ treeData });
       })
-      .catch(err => toastr.error(err))
+      .catch((err) => toastr.error(err))
       .finally(() => this.props.setIsLoading && this.props.setIsLoading(false));
   };
 
@@ -318,7 +335,7 @@ class TreeFolders extends React.Component {
     this.setState({ expandedKeys: data });
   };
 
-  onMouseEnter = data => {
+  onMouseEnter = (data) => {
     if (this.props.dragging) {
       if (data.node.props.dragging) {
         this.props.setDragItem(data.node.props.id);
@@ -332,7 +349,7 @@ class TreeFolders extends React.Component {
     }
   };
 
-  onDragOver = data => {
+  onDragOver = (data) => {
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains(
       "rc-tree-node-content-wrapper"
@@ -345,7 +362,7 @@ class TreeFolders extends React.Component {
     }
   };
 
-  onDragLeave = data => {
+  onDragLeave = (data) => {
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains(
       "rc-tree-node-content-wrapper"
@@ -358,7 +375,7 @@ class TreeFolders extends React.Component {
     }
   };
 
-  onDrop = data => {
+  onDrop = (data) => {
     const { setDragging, onTreeDrop } = this.props;
     const { dragging, id } = data.node.props;
     setDragging(false);
@@ -373,7 +390,7 @@ class TreeFolders extends React.Component {
       isLoading,
       onSelect,
       needUpdate,
-      dragging
+      dragging,
     } = this.props;
     const { treeData, expandedKeys } = this.state;
     const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
@@ -410,7 +427,48 @@ class TreeFolders extends React.Component {
 
 TreeFolders.defaultProps = {
   selectedKeys: [],
-  needUpdate: true
+  needUpdate: true,
 };
 
-export default TreeFolders;
+function mapStateToProps(state) {
+  const { treeFolders, selectedFolder } = state.files;
+
+  const myFolderIndex = 0;
+  const shareFolderIndex = 1;
+  const commonFolderIndex = 2;
+
+  const myId = treeFolders[myFolderIndex].id;
+  const shareId = treeFolders[shareFolderIndex].id;
+  const commonId = treeFolders[commonFolderIndex].id;
+
+  const isMy = selectedFolder.pathParts[0] === myId;
+  const isShare = selectedFolder.pathParts[0] === shareId;
+  const isCommon = selectedFolder.pathParts[0] === commonId;
+
+  return {
+    treeFolders: getTreeFolders(state),
+    filter: getFilter(state),
+    isMy,
+    isCommon,
+    isShare,
+    myId,
+    commonId,
+    currentId: getSelectedFolderId(state),
+    isAdmin: isAdmin(state),
+    dragging: getDragging(state),
+    updateTree: getUpdateTree(state),
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFilter: (filter) => dispatch(setFilter(filter)),
+    setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
+    setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
+    setDragging: (dragging) => dispatch(setDragging(dragging)),
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TreeFolders);

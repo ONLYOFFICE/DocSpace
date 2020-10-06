@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge } from "asc-web-components";
 import { constants, api, toastr } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setUpdateTree, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
 import { 
   canConvert, 
   canWebEdit, 
@@ -96,9 +96,8 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  completeAction = (e) => {
-    //this.setState({ loading: false }, () =>)
-    this.props.onEditComplete(e);
+  completeAction = (id) => {
+    this.props.onEditComplete(id);
   }
 
   updateItem = (e) => {
@@ -109,13 +108,13 @@ class FilesRowContent extends React.PureComponent {
 
     setIsLoading(true);
     if (originalTitle === itemTitle)
-      return this.completeAction(e);
+      return this.completeAction(fileAction.id);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
+        .then(() => this.completeAction(fileAction.id)).finally(() => setIsLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false));
+        .then(() => this.completeAction(fileAction.id)).finally(() => setIsLoading(false));
   };
 
   createItem = (e) => {
@@ -163,14 +162,14 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ itemTitle: e.target.value });
   }
 
-  cancelUpdateItem = (e) => {
+  cancelUpdateItem = e => {
     this.completeAction(e);
   }
 
-  onClickUpdateItem = (e) => {
+  onClickUpdateItem = e => {
     (this.props.fileAction.type === FileAction.Create)
-      ? this.createItem()
-      : this.updateItem();
+      ? this.createItem(e)
+      : this.updateItem(e);
   }
 
   onFilesClick = () => {
@@ -252,7 +251,7 @@ class FilesRowContent extends React.PureComponent {
 
   onBadgeClick = () => {
     const { showNewFilesPanel } = this.state;
-    const { item, treeFolders, setTreeFolders, rootFolderId, newItems, setNewRowItems, setNewTreeFilesBadge } = this.props;
+    const { item, treeFolders, setTreeFolders, rootFolderId, newItems, setNewRowItems, setUpdateTree } = this.props;
     if (item.fileExst) {
       api.files
         .markAsRead([], [item.id])
@@ -260,7 +259,7 @@ class FilesRowContent extends React.PureComponent {
           const data = treeFolders;
           const dataItem = data.find((x) => x.id === rootFolderId);
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
-          setNewTreeFilesBadge(true);
+          setUpdateTree(true);
           setTreeFolders(data);
           setNewRowItems([`${item.id}`]);
         })
@@ -564,7 +563,7 @@ export default connect(mapStateToProps, {
   renameFolder,
   setTreeFolders,
   setProgressBarData,
-  setNewTreeFilesBadge,
+  setUpdateTree,
   setNewRowItems,
   setIsLoading,
   clearProgressData,

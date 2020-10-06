@@ -16,7 +16,7 @@ import {
   setTreeFolders,
   setProgressBarData,
   clearProgressData,
-  setNewTreeFilesBadge
+  setUpdateTree
 } from "../../../store/files/actions";
 import { loopTreeFolders } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
@@ -61,7 +61,8 @@ class DeleteDialogComponent extends React.Component {
       setProgressBarData,
       clearProgressData,
       t,
-      fetchFiles
+      fetchFiles,
+      setUpdateTree
     } = this.props;
     const successMessage = "Files and folders was deleted";
     api.files.getProgress()
@@ -88,7 +89,7 @@ class DeleteDialogComponent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              this.props.setNewTreeFilesBadge(true);
+              setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             toastr.success(successMessage);
@@ -272,5 +273,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setTreeFolders, setProgressBarData, clearProgressData, setNewTreeFilesBadge, fetchFiles }
+  { setTreeFolders, setProgressBarData, clearProgressData, setUpdateTree, fetchFiles }
 )(withRouter(DeleteDialog));

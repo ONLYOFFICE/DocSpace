@@ -24,7 +24,7 @@ import {
   selectFile,
   setDragging,
   setFilter,
-  setNewTreeFilesBadge,
+  setUpdateTree,
   setProgressBarData,
   setSelected,
   setTreeFolders,
@@ -34,7 +34,21 @@ import {
 } from "../../../store/files/actions";
 import {
   loopTreeFolders,
-  checkFolderType,
+  getConvertDialogVisible,
+  getSelectedFolderId,
+  getFileActionId,
+  getFiles,
+  getFilter,
+  getFolders,
+  getIsLoaded,
+  getProgressData,
+  getSelected,
+  getSelection,
+  getTreeFolders,
+  getViewAs,
+  getIsLoading,
+  getHomePage,
+  checkFolderType
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -244,7 +258,7 @@ class PureHome extends React.Component {
       filter,
       isRecycleBinFolder,
       progressData,
-      setNewTreeFilesBadge,
+      setUpdateTree,
       setProgressBarData,
       treeFolders,
       fetchFiles,
@@ -292,7 +306,7 @@ class PureHome extends React.Component {
                         folders,
                         foldersCount
                       );
-                      setNewTreeFilesBadge(true);
+                      setUpdateTree(true);
                       setTreeFolders(newTreeFolders);
                     }
                     this.setNewFilter();
@@ -309,7 +323,7 @@ class PureHome extends React.Component {
                   visible: true,
                 });
                 setTimeout(() => clearProgressData(), 5000);
-                setNewTreeFilesBadge(true);
+                setUpdateTree(true);
                 setTreeFolders(newTreeFolders);
               }
             })
@@ -406,6 +420,7 @@ class PureHome extends React.Component {
   }
 
   render() {
+    console.log("Home render");
     const {
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -470,7 +485,7 @@ class PureHome extends React.Component {
           //progressBarDropDownContent={progressBarContent}
           progressBarLabel={progressData.label}
           viewAs={viewAs}
-          hideAside={fileActionId || progressData.visible}
+          hideAside={!!fileActionId || progressData.visible}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -538,40 +553,25 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { homepage } = state.auth.settings;
-  const {
-    convertDialogVisible,
-    fileAction,
-    files,
-    filter,
-    folders,
-    progressData,
-    selected,
-    selectedFolder,
-    selection,
-    treeFolders,
-    viewAs,
-    isLoading,
-  } = state.files;
-  const { id } = selectedFolder;
+  const { selectedFolder, treeFolders } = state.files;
   const indexOfTrash = 3;
 
   return {
-    convertDialogVisible,
-    currentFolderId: id,
-    fileActionId: fileAction.id,
-    files,
-    filter,
-    folders,
-    isLoaded: state.auth.isLoaded,
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
-    progressData,
-    selected,
-    selection,
-    treeFolders,
-    viewAs,
-    isLoading,
-    homepage,
+    convertDialogVisible: getConvertDialogVisible(state),
+    currentFolderId: getSelectedFolderId(state),
+    fileActionId: getFileActionId(state),
+    files: getFiles(state),
+    filter: getFilter(state),
+    folders: getFolders(state),
+    isLoaded: getIsLoaded(state),
+    isRecycleBinFolder: checkFolderType(selectedFolder.id, indexOfTrash, treeFolders),
+    progressData: getProgressData(state),
+    selected: getSelected(state),
+    selection: getSelection(state),
+    treeFolders: getTreeFolders(state),
+    viewAs: getViewAs(state),
+    isLoading: getIsLoading(state),
+    homepage: getHomePage(state)
   };
 }
 
@@ -581,8 +581,8 @@ const mapDispatchToProps = (dispatch) => {
     selectFile: (file) => dispatch(selectFile(file)),
     setDragging: (dragging) => dispatch(setDragging(dragging)),
     setFilter: (filter) => dispatch(setFilter(filter)),
-    setNewTreeFilesBadge: (updateTreeNew) =>
-      dispatch(setNewTreeFilesBadge(updateTreeNew)),
+    setUpdateTree: (updateTree) =>
+      dispatch(setUpdateTree(updateTree)),
     setProgressBarData: (progressData) =>
       dispatch(setProgressBarData(progressData)),
     setSelected: (selected) => dispatch(setSelected(selected)),
