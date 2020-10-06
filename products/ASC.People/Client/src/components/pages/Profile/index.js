@@ -6,7 +6,7 @@ import { PageLayout, utils, store, toastr } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { fetchProfile, resetProfile } from "../../../store/profile/actions";
@@ -16,7 +16,7 @@ import { setDocumentTitle } from "../../../helpers/utils";
 
 const i18n = createI18N({
   page: "Profile",
-  localesPath: "pages/Profile"
+  localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
@@ -26,7 +26,7 @@ class PureProfile extends React.Component {
     super(props);
 
     this.state = {
-      queryString: `${props.location.search.slice(1)}`
+      queryString: `${props.location.search.slice(1)}`,
     };
   }
 
@@ -37,7 +37,7 @@ class PureProfile extends React.Component {
     setDocumentTitle(t("Profile"));
 
     const queryParams = this.state.queryString.split("&");
-    const arrayOfQueryParams = queryParams.map(queryParam =>
+    const arrayOfQueryParams = queryParams.map((queryParam) =>
       queryParam.split("=")
     );
     const linkParams = Object.fromEntries(arrayOfQueryParams);
@@ -74,7 +74,7 @@ class PureProfile extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
         )}
-        {(!isVisitor && isAdmin) && (
+        {!isVisitor && isAdmin && (
           <PageLayout.ArticleMainButton>
             <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
@@ -95,8 +95,8 @@ class PureProfile extends React.Component {
           {profile ? (
             <SectionBodyContent />
           ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            )}
+            <Loader className="pageLoader" type="rombs" size="40px" />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     );
@@ -105,14 +105,14 @@ class PureProfile extends React.Component {
 
 const ProfileContainer = withTranslation()(PureProfile);
 
-const Profile = props => {
+const Profile = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ProfileContainer {...props} />
+      <ProfileContainer {...rest} />
     </I18nextProvider>
   );
 };
@@ -123,21 +123,22 @@ Profile.propTypes = {
   isLoaded: PropTypes.bool,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
+  language: PropTypes.string,
 };
 
 function mapStateToProps(state) {
+  const { cultureName } = state.auth.user;
+  const { culture } = state.auth.settings;
   return {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
+    language: cultureName || culture || "en-US",
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchProfile,
-    resetProfile
-  }
-)(Profile);
+export default connect(mapStateToProps, {
+  fetchProfile,
+  resetProfile,
+})(Profile);
