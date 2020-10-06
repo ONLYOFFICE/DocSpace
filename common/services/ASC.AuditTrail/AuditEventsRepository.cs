@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using ASC.AuditTrail.Mappers;
 using System.Linq;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using Newtonsoft.Json;
@@ -78,30 +77,6 @@ namespace ASC.AuditTrail
             }
 
             return ToAuditEvent(query.ToList());
-            /*
-            var q = new SqlQuery("audit_events a")
-                .Select(auditColumns.Select(x => "a." + x).ToArray())
-                .LeftOuterJoin("core_user u", Exp.EqColumns("a.user_id", "u.id"))
-                .Select("u.firstname", "u.lastname")
-                .Where("a.tenant_id", tenant)
-                .OrderBy("a.date", false);
-
-            if (from.HasValue && to.HasValue)
-            {
-                q.Where(Exp.Between("a.date", from.Value, to.Value));
-            }
-            if (limit.HasValue)
-            {
-                q.SetMaxResults(limit.Value);
-            }
-
-            using (var db = new DbManager(dbid))
-            {
-                return db.ExecuteList(q)
-                    .Select(ToAuditEvent)
-                    .Where(x => x != null)
-                    .ToList();
-            }*/
         }
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
@@ -116,20 +91,6 @@ namespace ASC.AuditTrail
             }
 
             return query.Count();
-            /* var q = new SqlQuery("audit_events a")
-                 .SelectCount()
-                 .Where("a.tenant_id", tenant)
-                 .OrderBy("a.date", false);
-
-             if (from.HasValue && to.HasValue)
-             {
-                 q.Where(Exp.Between("a.date", from.Value, to.Value));
-             }
-
-             using (var db = new DbManager(dbid))
-             {
-                 return db.ExecuteScalar<int>(q);
-             }*/
         }
 
         private IEnumerable<AuditEvent> ToAuditEvent(List<Query> list)

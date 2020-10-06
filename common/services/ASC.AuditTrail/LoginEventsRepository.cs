@@ -1,32 +1,42 @@
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2020
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
+
 
 
 using System;
 using System.Collections.Generic;
 using ASC.AuditTrail.Mappers;
 using System.Linq;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Newtonsoft.Json;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF;
-using Microsoft.EntityFrameworkCore;
 using ASC.Common;
+using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ASC.AuditTrail.Data
 {
@@ -34,11 +44,13 @@ namespace ASC.AuditTrail.Data
     {
         private UserFormatter UserFormatter { get; }
         private AuditTrailContext AuditTrailContext { get; }
+        private ILog Log { get; }
 
-        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager)
+        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, IOptionsMonitor<ILog> options)
         {
             UserFormatter = userFormatter;
             AuditTrailContext = dbContextManager.Value;
+            Log = options.CurrentValue;
         }
 
         private class Query
@@ -49,14 +61,6 @@ namespace ASC.AuditTrail.Data
 
         public IEnumerable<LoginEvent> GetLast(int tenant, int chunk)
         {
-            /*
-               var query = BackupContext.Schedules.Join(BackupContext.Tenants,
-                s => s.TenantId,
-                t => t.Id,
-                (s, t) => new { schedule = s, tenant = t })
-                .Where(q => q.tenant.Status == TenantStatus.Active)
-                .Select(q => q.schedule);
-*/
             var query = AuditTrailContext.LoginEvents.Join(AuditTrailContext.User,
                 l => l.UserId,
                 u => u.Id,
@@ -79,18 +83,6 @@ namespace ASC.AuditTrail.Data
                .OrderBy(q => q.LoginEvents.Date);
 
             return ToLoginEvent(query.ToList());
-            /* var q = new SqlQuery("login_events au")
-                 .Select(auditColumns.Select(x => "au." + x).ToArray())
-                 .LeftOuterJoin("core_user u", Exp.EqColumns("au.user_id", "u.id"))
-                 .Select("u.firstname", "u.lastname")
-                 .Where("au.tenant_id", tenant)
-                 .Where(Exp.Between("au.date", from, to))
-                 .OrderBy("au.date", false);
-
-             using (var db = new DbManager(auditDbId))
-             {
-                 return db.ExecuteList(q).Select(ToLoginEvent).Where(x => x != null);
-             }*/
         }
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
@@ -104,20 +96,6 @@ namespace ASC.AuditTrail.Data
             }
 
             return query.Count();
-            /*
-            var q = new SqlQuery("login_events")
-                .SelectCount()
-                .Where("tenant_id", tenant);
-
-            if (from.HasValue && to.HasValue)
-            {
-                q.Where(Exp.Between("date", from.Value, to.Value));
-            }
-
-            using (var db = new DbManager(auditDbId))
-            {
-                return db.ExecuteScalar<int>(q);
-            }*/
         }
 
         private IEnumerable<LoginEvent> ToLoginEvent(List<Query> list)
@@ -164,7 +142,7 @@ namespace ASC.AuditTrail.Data
                 }
                 catch(Exception)
                 {
-                    //log.Error("Error while forming event from db: " + ex);
+                    Log.Error("Error while forming event from db: " + ex);
                 }
             });
             return loginsEvents;
