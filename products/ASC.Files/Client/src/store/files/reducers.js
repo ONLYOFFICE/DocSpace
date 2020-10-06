@@ -18,7 +18,7 @@ import {
   SET_MEDIA_VIEWER_VISIBLE,
   SET_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
-  SET_NEW_TREE_FILES,
+  SET_UPDATE_TREE,
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
   SET_EXPAND_SETTINGS_TREE,
@@ -51,7 +51,7 @@ const initialState = {
   mediaViewerData: { visible: false, id: null },
   progressData: { percent: 0, label: "", visible: false },
   convertDialogVisible: false,
-  updateTreeNew: false,
+  updateTree: false,
   newRowItems: [],
   selectedTreeNode: [],
   isLoading: false,
@@ -173,9 +173,9 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible,
       });
-    case SET_NEW_TREE_FILES:
+    case SET_UPDATE_TREE:
       return Object.assign({}, state, {
-        updateTreeNew: action.updateTreeNew,
+        updateTree: action.updateTree,
       });
     case SET_NEW_ROW_ITEMS:
       return Object.assign({}, state, {

@@ -37,7 +37,7 @@ export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
-export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
+export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
@@ -182,10 +182,10 @@ export function setConvertDialogVisible(convertDialogVisible) {
   };
 }
 
-export function setNewTreeFilesBadge(updateTreeNew) {
+export function setUpdateTree(updateTree) {
   return {
-    type: SET_NEW_TREE_FILES,
-    updateTreeNew
+    type: SET_UPDATE_TREE,
+    updateTree
   };
 }
 

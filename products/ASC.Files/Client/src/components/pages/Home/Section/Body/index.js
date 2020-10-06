@@ -38,7 +38,7 @@ import {
   setDragItem,
   setIsLoading,
   setMediaViewerData,
-  setNewTreeFilesBadge,
+  setUpdateTree,
   setProgressBarData,
   setSelected,
   setSelection,
@@ -243,6 +243,7 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       setIsLoading,
       fetchFiles,
+      setUpdateTree
     } = this.props;
     const items = [...folders, ...files];
     const item = items.filter((o) => o.id === id && !o.fileExst);
@@ -261,6 +262,7 @@ class SectionBodyContent extends React.Component {
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
             loopTreeFolders(path, newTreeFolders, folders, null, newItem);
+            setUpdateTree(true);
             setTreeFolders(newTreeFolders);
           }
         })
@@ -309,6 +311,7 @@ class SectionBodyContent extends React.Component {
       t,
       setProgressBarData,
       fetchFiles,
+      setUpdateTree
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
@@ -333,7 +336,7 @@ class SectionBodyContent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              this.props.setNewTreeFilesBadge(true);
+              setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             isFolder
@@ -1597,7 +1600,7 @@ export default connect(mapStateToProps, {
   setProgressBarData,
   setSelection,
   setSelected,
-  setNewTreeFilesBadge,
+  setUpdateTree,
   setIsLoading,
   clearProgressData,
 })(withRouter(withTranslation()(SectionBodyContent)));
