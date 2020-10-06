@@ -3,14 +3,13 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { AvatarEditor, utils } from "asc-web-components";
+import { AvatarEditor, utils, Loader } from "asc-web-components";
 import { api, toastr } from "asc-web-common";
 import {
   fetchProfile,
   updateProfile,
   getUserPhoto,
 } from "../../../../../store/profile/actions";
-import { toEmployeeWrapper } from "../../../../../store/people/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 
@@ -34,6 +33,7 @@ class SectionBodyContent extends React.PureComponent {
       },
       isMobile: isMobile || isTablet,
       isLoading: false,
+      pageIsLoaded: false,
     };
   }
 
@@ -172,13 +172,16 @@ class SectionBodyContent extends React.PureComponent {
           });
         }
       }
+
+      this.setState({ pageIsLoaded: true });
     });
   };
 
   render() {
-    const { t, profile } = this.props;
+    const { t } = this.props;
+    const { pageIsLoaded } = this.state;
 
-    return (
+    return pageIsLoaded ? (
       <AvatarEditorBody>
         <AvatarEditor
           useModalDialog={false}
@@ -201,6 +204,8 @@ class SectionBodyContent extends React.PureComponent {
           saveButtonLoading={this.state.isLoading}
         />
       </AvatarEditorBody>
+    ) : (
+      <Loader className="pageLoader" type="rombs" size="40px" />
     );
   }
 }
