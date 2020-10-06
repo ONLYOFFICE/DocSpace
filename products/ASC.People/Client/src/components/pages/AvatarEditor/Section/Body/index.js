@@ -27,7 +27,7 @@ class SectionBodyContent extends React.PureComponent {
     this.state = {
       avatar: {
         tmpFile: "",
-        image: null,
+        image: undefined,
         defaultWidth: 0,
         defaultHeight: 0,
       },
@@ -57,7 +57,7 @@ class SectionBodyContent extends React.PureComponent {
       fetchProfile(userId);
     }
 
-    if (profile && !avatar.image) {
+    if (profile && avatar.image === undefined) {
       this.setUserPhotoToState();
     }
   }
