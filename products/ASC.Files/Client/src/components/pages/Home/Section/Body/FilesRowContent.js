@@ -123,8 +123,10 @@ class FilesRowContent extends React.PureComponent {
 
     setIsLoading(true);
 
+    const itemId = e.currentTarget.dataset.itemid;
+
     if (itemTitle.trim() === '')
-      return this.completeAction(e);
+      return this.completeAction(itemId);
 
     let newTab = item.fileExst
       ? window.open('about:blank', '_blank')
@@ -132,11 +134,11 @@ class FilesRowContent extends React.PureComponent {
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-        .then(() => this.completeAction(e)).finally(() => setIsLoading(false))
+        .then(() => this.completeAction(itemId)).finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
         .then((file) => {
           newTab.location = file.webUrl;
-          this.completeAction(e);
+          this.completeAction(itemId);
         }).finally(() => setIsLoading(false))
   }
 

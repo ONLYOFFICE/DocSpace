@@ -246,8 +246,7 @@ class SectionBodyContent extends React.Component {
       setUpdateTree
     } = this.props;
     const items = [...folders, ...files];
-    const item = items.filter((o) => o.id === id && !o.fileExst);
-
+    const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
     if (
       fileAction.type === FileAction.Create ||
       fileAction.type === FileAction.Rename
@@ -255,9 +254,8 @@ class SectionBodyContent extends React.Component {
       setIsLoading(true);
       fetchFiles(folderId, filter)
         .then((data) => {
-          const newItem = item[0].id === -1 ? null : item[0];
-          console.log(newItem);
-          if (!item[0].fileExst) {
+          const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
+          if (item && !item.fileExst) {
             const path = data.selectedFolder.pathParts;
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
@@ -1307,7 +1305,7 @@ class SectionBodyContent extends React.Component {
     const items = filesList;
 
     const tooltipLabel = this.getTooltipLabel();
-
+    
     if (fileAction && fileAction.type === FileAction.Create) {
       items.unshift({
         id: -1,
