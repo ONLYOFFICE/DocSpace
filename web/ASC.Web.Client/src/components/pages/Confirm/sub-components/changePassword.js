@@ -161,7 +161,7 @@ class Form extends React.PureComponent {
             passwordSettings={settings}
             tooltipPasswordTitle="Password must contain:"
             tooltipPasswordLength={`${t("ErrorPasswordLength", {
-              fromNumber: 6,
+              fromNumber: settings.minLength,
               toNumber: 30
             })}:`}
             placeholder={t("PasswordCustomMode")}

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import { Router, Switch, Redirect } from "react-router-dom";
-//import { Loader } from "asc-web-components";
+import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -85,37 +85,43 @@ class App extends React.Component {
           <NavMenu />
         )}
         <Main>
-          <Switch>
-            <Redirect exact from="/" to={`${homepage}`} />
-            <PrivateRoute
-              exact
-              path={`${homepage}/settings/:setting`}
-              component={Settings}
-            />
-            <PrivateRoute
-              exact
-              path={`${homepage}/doceditor`}
-              component={DocEditor}
-            />
-            <PrivateRoute
-              exact
-              path={`${homepage}/:fileId/history`}
-              component={VersionHistory}
-            />
-            <PrivateRoute exact path={homepage} component={Home} />
-            <PrivateRoute path={`${homepage}/filter`} component={Home} />
-            <PublicRoute
-              exact
-              path={[
-                "/login",
-                "/login/error=:error",
-                "/login/confirmed-email=:confirmedEmail",
-              ]}
-              component={Login}
-            />
-            <PrivateRoute exact path={`/error=:error`} component={Error520} />
-            <PrivateRoute component={Error404} />
-          </Switch>
+          <Suspense
+            fallback={
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            }
+          >
+            <Switch>
+              <Redirect exact from="/" to={`${homepage}`} />
+              <PrivateRoute
+                exact
+                path={`${homepage}/settings/:setting`}
+                component={Settings}
+              />
+              <PrivateRoute
+                exact
+                path={`${homepage}/doceditor`}
+                component={DocEditor}
+              />
+              <PrivateRoute
+                exact
+                path={`${homepage}/:fileId/history`}
+                component={VersionHistory}
+              />
+              <PrivateRoute exact path={homepage} component={Home} />
+              <PrivateRoute path={`${homepage}/filter`} component={Home} />
+              <PublicRoute
+                exact
+                path={[
+                  "/login",
+                  "/login/error=:error",
+                  "/login/confirmed-email=:confirmedEmail",
+                ]}
+                component={Login}
+              />
+              <PrivateRoute exact path={`/error=:error`} component={Error520} />
+              <PrivateRoute component={Error404} />
+            </Switch>
+          </Suspense>
         </Main>
       </Router>
     ) : (

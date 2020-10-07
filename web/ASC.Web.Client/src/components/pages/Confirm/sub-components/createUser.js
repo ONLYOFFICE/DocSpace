@@ -293,7 +293,7 @@ class Confirm extends React.PureComponent {
                   clipEmailResource={`${t('Email')}: `}
                   clipPasswordResource={`${t('InvitePassword')}: `}
                   tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
-                  tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
+                  tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: settings.minLength, toNumber: 30 })}:`}
                   tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
                   tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
                   tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
