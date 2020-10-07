@@ -835,19 +835,17 @@ class SectionBodyContent extends React.Component {
     const buttons = (
       <>
         <div className="empty-folder_container-links">
-          <Box>
-            <Link
-              className="empty-folder_container_plus-image"
-              color="#83888d"
-              fontSize="26px"
-              fontWeight="800"
-              noHover
-              data-format="docx"
-              onClick={this.onCreate}
-            >
-              +
-            </Link>
-          </Box>
+          <Link
+            className="empty-folder_container_plus-image"
+            color="#83888d"
+            fontSize="26px"
+            fontWeight="800"
+            noHover
+            data-format="docx"
+            onClick={this.onCreate}
+          >
+            +
+          </Link>
 
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
