@@ -29,7 +29,12 @@ import {
   canWebEdit,
   isImage,
   isSound,
-  isVideo
+  isVideo,
+  getFilter,
+  getFiles,
+  getFolders,
+  getTreeFolders,
+  getSelectedFolder,
 } from "../../../store/files/selectors";
 import {
   fetchFiles,
@@ -290,8 +295,13 @@ const NewFilesPanel = props => (
 );
 
 const mapStateToProps = state => {
-  const { filter, files, folders, treeFolders, selectedFolder } = state.files;
-  return { filter, files, folders, treeFolders, selectedFolder };
+  return {
+    filter: getFilter(state),
+    files: getFiles(state),
+    folders: getFolders(state),
+    treeFolders: getTreeFolders(state),
+    selectedFolder: getSelectedFolder(state),
+  };
 };
 
 export default connect(
