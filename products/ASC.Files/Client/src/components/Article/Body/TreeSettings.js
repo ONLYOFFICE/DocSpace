@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { history, utils } from "asc-web-common";
+import { history, utils, store as initStore } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -13,6 +13,13 @@ import {
   setIsErrorSettings,
   getFilesSettings,
 } from "../../../store/files/actions";
+import {
+  getIsLoading,
+  getSettingsSelectedTreeNode,
+  getExpandedSetting,
+  getEnableThirdParty,
+} from "../../../store/files/selectors";
+const { isAdmin } = initStore.auth.selectors;
 
 const i18n = createI18N({
   page: "Settings",
@@ -170,18 +177,12 @@ const TreeSettings = (props) => {
 };
 
 function mapStateToProps(state) {
-  const { selectedTreeNode, settingsTree, isLoading } = state.files;
-
-  const { isAdmin } = state.auth.user;
-
-  const { expandedSetting, enableThirdParty } = settingsTree;
-
   return {
-    selectedTreeNode,
-    expandedSetting,
-    enableThirdParty,
-    isAdmin,
-    isLoading,
+    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    expandedSetting: getExpandedSetting(state),
+    enableThirdParty: getEnableThirdParty(state),
+    isAdmin: isAdmin(state),
+    isLoading: getIsLoading(state),
   };
 }
 
