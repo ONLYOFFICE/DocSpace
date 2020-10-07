@@ -602,6 +602,7 @@ export const getSelectedFolderType = (state) => {
   const indexOfShare = 1;
   const indexOfCommon = 2;
   const indexOfTrash = 3;
+  const indexOfRecent = 4;
 
   if (checkFolderType(id, indexOfMy, treeFolders)) {
     return "My";
@@ -611,6 +612,8 @@ export const getSelectedFolderType = (state) => {
     return "Common";
   } else if (checkFolderType(id, indexOfTrash, treeFolders)) {
     return "Trash";
+  } else if (checkFolderType(id, indexOfRecent, treeFolders)) {
+    return "Recent";
   }
 };
 

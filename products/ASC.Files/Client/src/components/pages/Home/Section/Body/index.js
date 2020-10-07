@@ -711,6 +711,7 @@ class SectionBodyContent extends React.Component {
     const shareDescription = t("SharedEmptyContainerDescription");
     const commonDescription = t("CommonEmptyContainerDescription");
     const trashDescription = t("TrashEmptyContainerDescription");
+    const recentDescription = t("RecentEmptyContainerDescription");
 
     const commonButtons = (
       <>
@@ -809,6 +810,17 @@ class SectionBodyContent extends React.Component {
             descriptionText={trashDescription}
             imageSrc="images/empty_screen_trash.png"
             buttons={trashButtons}
+            widthProp={widthProp}
+          />
+        );
+      case "Recent":
+        return (
+          <EmptyFolderContainer
+            headerText={title}
+            subheadingText={subheadingText}
+            descriptionText={recentDescription}
+            imageSrc="images/empty_screen_recent.png"
+            //buttons={recentButtons}
             widthProp={widthProp}
           />
         );
