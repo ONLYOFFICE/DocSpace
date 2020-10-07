@@ -18,7 +18,7 @@ import {
   SET_MEDIA_VIEWER_VISIBLE,
   SET_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
-  SET_NEW_TREE_FILES,
+  SET_UPDATE_TREE,
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
   SET_EXPAND_SETTINGS_TREE,
@@ -27,6 +27,8 @@ import {
   SET_FILES_SETTINGS,
   SET_FILES_SETTING,
   SET_IS_ERROR_SETTINGS,
+  SET_FIRST_LOAD,
+  SET_UPLOAD_DATA
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -49,10 +51,11 @@ const initialState = {
   mediaViewerData: { visible: false, id: null },
   progressData: { percent: 0, label: "", visible: false },
   convertDialogVisible: false,
-  updateTreeNew: false,
+  updateTree: false,
   newRowItems: [],
   selectedTreeNode: [],
   isLoading: false,
+  firstLoad: true,
   settingsTree: {
     expandedSetting: [],
     storeOriginalFiles: false,
@@ -63,6 +66,17 @@ const initialState = {
     enableThirdParty: false,
     isErrorSettings: false,
   },
+  uploadData: {
+    files: [],
+    filesSize: 0,
+    convertFiles: [],
+    convertFilesSize: 0,
+    uploadStatus: null,
+    uploadToFolder: null,
+    uploadedFiles: 0,
+    percent: 0,
+    uploaded: true
+  }
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -160,9 +174,9 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible,
       });
-    case SET_NEW_TREE_FILES:
+    case SET_UPDATE_TREE:
       return Object.assign({}, state, {
-        updateTreeNew: action.updateTreeNew,
+        updateTree: action.updateTree,
       });
     case SET_NEW_ROW_ITEMS:
       return Object.assign({}, state, {
@@ -225,6 +239,14 @@ const filesReducer = (state = initialState, action) => {
           ...state.settingsTree,
           isErrorSettings: action.isError,
         },
+      });
+    case SET_FIRST_LOAD:
+      return Object.assign({}, state, {
+        firstLoad: action.firstLoad,
+      });
+    case SET_UPLOAD_DATA:
+      return Object.assign({}, state, {
+        uploadData: action.uploadData,
       });
     default:
       return state;
