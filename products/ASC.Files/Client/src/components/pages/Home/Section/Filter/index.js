@@ -1,20 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchFiles, setViewAs, setIsLoading } from "../../../../../store/files/actions";
+import {
+  fetchFiles,
+  setViewAs,
+  setIsLoading,
+} from "../../../../../store/files/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { constants, FilterInput } from 'asc-web-common';
+import { constants, FilterInput } from "asc-web-common";
 import isEqual from "lodash/isEqual";
-import { isMobileOnly } from 'react-device-detect';
+import { isMobileOnly } from "react-device-detect";
 
 const { FilterType } = constants;
 
-const getFilterType = filterValues => {
+const getFilterType = (filterValues) => {
   const filterType = result(
-    find(filterValues, value => {
+    find(filterValues, (value) => {
       return value.group === "filter-filterType";
     }),
     "key"
@@ -23,9 +27,9 @@ const getFilterType = filterValues => {
   return filterType ? +filterType : null;
 };
 
-const getAuthorType = filterValues => {
+const getAuthorType = (filterValues) => {
   const authorType = result(
-    find(filterValues, value => {
+    find(filterValues, (value) => {
       return value.group === "filter-author";
     }),
     "key"
@@ -35,31 +39,30 @@ const getAuthorType = filterValues => {
 };
 
 const getSelectedItem = (filterValues, type) => {
-  const selectedItem = filterValues.find(item => item.key === type);
+  const selectedItem = filterValues.find((item) => item.key === type);
   return selectedItem || null;
 };
 
-const getSearchParams = filterValues => {
+const getSearchParams = (filterValues) => {
   const searchParams = result(
-    find(filterValues, value => {
+    find(filterValues, (value) => {
       return value.group === "filter-folders";
     }),
     "key"
   );
 
-  return searchParams || 'true';
+  return searchParams || "true";
 };
 
 class SectionFilterContent extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      isReady: false
-    }
+      isReady: false,
+    };
   }
 
-  onFilter = data => {
+  onFilter = (data) => {
     const { setIsLoading, filter, selectedFolderId, fetchFiles } = this.props;
 
     const filterType = getFilterType(data.filterValues) || null;
@@ -70,8 +73,9 @@ class SectionFilterContent extends React.Component {
     const authorType = getAuthorType(data.filterValues);
     const withSubfolders = getSearchParams(data.filterValues);
 
-
-    const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
+    const selectedItem = authorType
+      ? getSelectedItem(data.filterValues, authorType)
+      : null;
     const selectedFilterItem = {};
     if (selectedItem) {
       selectedFilterItem.key = selectedItem.selectedItem.key;
@@ -90,13 +94,12 @@ class SectionFilterContent extends React.Component {
     newFilter.selectedItem = selectedFilterItem;
 
     setIsLoading(true);
-    fetchFiles(selectedFolderId, newFilter)
-      .finally(() => setIsLoading(false));
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
   onChangeViewAs = (view) => {
-    this.props.setViewAs(view)
-  }
+    this.props.setViewAs(view);
+  };
 
   getData = () => {
     const { t, customNames, user, selectedItem } = this.props;
@@ -107,48 +110,48 @@ class SectionFilterContent extends React.Component {
         key: "filter-filterType",
         group: "filter-filterType",
         label: t("Type"),
-        isHeader: true
+        isHeader: true,
       },
       {
         key: FilterType.FoldersOnly.toString(),
         group: "filter-filterType",
-        label: t("Folders")
+        label: t("Folders"),
       },
       {
         key: FilterType.DocumentsOnly.toString(),
         group: "filter-filterType",
-        label: t("Documents")
+        label: t("Documents"),
       },
       {
         key: FilterType.PresentationsOnly.toString(),
         group: "filter-filterType",
-        label: t("Presentations")
+        label: t("Presentations"),
       },
       {
         key: FilterType.SpreadsheetsOnly.toString(),
         group: "filter-filterType",
-        label: t("Spreadsheets")
+        label: t("Spreadsheets"),
       },
       {
         key: FilterType.ImagesOnly.toString(),
         group: "filter-filterType",
-        label: t("Images")
+        label: t("Images"),
       },
       {
         key: FilterType.MediaOnly.toString(),
         group: "filter-filterType",
-        label: t("Media")
+        label: t("Media"),
       },
       {
         key: FilterType.ArchiveOnly.toString(),
         group: "filter-filterType",
-        label: t("Archives")
+        label: t("Archives"),
       },
       {
         key: FilterType.FilesOnly.toString(),
         group: "filter-filterType",
-        label: t("AllFiles")
-      }
+        label: t("AllFiles"),
+      },
     ];
 
     const filterOptions = [
@@ -168,7 +171,7 @@ class SectionFilterContent extends React.Component {
         defaultSelectLabel: t("LblSelect"),
         groupsCaption,
         defaultOption: user,
-        selectedItem
+        selectedItem,
       },
       {
         key: "group",
@@ -176,18 +179,18 @@ class SectionFilterContent extends React.Component {
         label: groupsCaption,
         defaultSelectLabel: t("LblSelect"),
         isSelector: true,
-        selectedItem
+        selectedItem,
       },
       {
         key: "filter-folders",
         group: "filter-folders",
         label: t("Folders"),
-        isHeader: true
+        isHeader: true,
       },
       {
         key: "false",
         group: "filter-folders",
-        label: t('NoSubfolders')
+        label: t("NoSubfolders"),
       },
     ];
 
@@ -200,20 +203,22 @@ class SectionFilterContent extends React.Component {
     const { t } = this.props;
 
     const commonOptions = [
-      { key: "lastModifiedDate", label: t("ByLastModifiedDate"), default: true },
-      { key: "creationDate", label: t("ByCreationDate"), default: true },
-      { key: "title", label: t("ByTitle"), default: true },
-      { key: "type", label: t("ByType"), default: true },
-      { key: "size", label: t("BySize"), default: true },
-      { key: "author", label: t("ByAuthor"), default: true }
+      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
+      { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
+      { key: "AZ", label: t("ByTitle"), default: true },
+      { key: "Type", label: t("ByType"), default: true },
+      { key: "Size", label: t("BySize"), default: true },
+      { key: "Author", label: t("ByAuthor"), default: true },
     ];
 
     const viewSettings = [
       { key: "row", label: t("ViewList"), isSetting: true, default: true },
-      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true }
+      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true },
     ];
     //TODO: Need use mobile detect for better result
-    return window.innerWidth < 460 ? [...commonOptions, ...viewSettings] : commonOptions;
+    return window.innerWidth < 460
+      ? [...commonOptions, ...viewSettings]
+      : commonOptions;
   };
 
   getSelectedFilterData = () => {
@@ -221,7 +226,7 @@ class SectionFilterContent extends React.Component {
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-      sortId: filter.sortBy
+      sortId: filter.sortBy,
     };
 
     selectedFilterData.inputValue = filter.search;
@@ -229,21 +234,21 @@ class SectionFilterContent extends React.Component {
     if (filter.filterType >= 0) {
       selectedFilterData.filterValues.push({
         key: `${filter.filterType}`,
-        group: "filter-filterType"
+        group: "filter-filterType",
       });
     }
 
     if (filter.authorType) {
       selectedFilterData.filterValues.push({
         key: `${filter.authorType}`,
-        group: "filter-author"
+        group: "filter-author",
       });
     }
 
-    if (filter.withSubfolders === 'false') {
+    if (filter.withSubfolders === "false") {
       selectedFilterData.filterValues.push({
         key: filter.withSubfolders,
-        group: "filter-folders"
+        group: "filter-folders",
       });
     }
 
@@ -264,16 +269,20 @@ class SectionFilterContent extends React.Component {
     return false;
   };
 
-
   shouldComponentUpdate(nextProps, nextState) {
-    return (!isEqual(this.props.filter, nextProps.filter) || this.props.selectedFolderId !== nextProps.selectedFolderId || this.state.isReady !== nextState.isReady || this.props.viewAs !== nextProps.viewAs);
+    return (
+      !isEqual(this.props.filter, nextProps.filter) ||
+      this.props.selectedFolderId !== nextProps.selectedFolderId ||
+      this.state.isReady !== nextState.isReady ||
+      this.props.viewAs !== nextProps.viewAs
+    );
   }
-
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, i18n } = this.props;
-    const filterColumnCount = window.innerWidth < 500 ? {} : { filterColumnCount: 3 }
+    const filterColumnCount =
+      window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
     return (
       <FilterInput
         getFilterData={this.getData}
@@ -281,7 +290,7 @@ class SectionFilterContent extends React.Component {
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={false}  // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs 
+        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
@@ -303,15 +312,12 @@ function mapStateToProps(state) {
     customNames: state.auth.settings.customNames,
     selectedFolderId: state.files.selectedFolder.id,
     selectedItem: state.files.filter.selectedItem,
-    viewAs: state.files.viewAs
+    viewAs: state.files.viewAs,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchFiles,
-    setViewAs,
-    setIsLoading
-  }
-)(withRouter(withTranslation()(SectionFilterContent)));
+export default connect(mapStateToProps, {
+  fetchFiles,
+  setViewAs,
+  setIsLoading,
+})(withRouter(withTranslation()(SectionFilterContent)));
