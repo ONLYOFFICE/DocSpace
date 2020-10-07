@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { fetchFiles, setViewAs, setIsLoading } from "../../../../../store/files/actions";
-import { getFilter, getSelectedFolderId, getViewAs, getFilterSelectedItem } from "../../../../../store/files/selection";
+import { getFilter, getSelectedFolderId, getViewAs, getFilterSelectedItem } from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
