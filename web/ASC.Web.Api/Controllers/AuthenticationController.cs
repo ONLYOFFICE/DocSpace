@@ -30,6 +30,7 @@ namespace ASC.Web.Api.Controllers
         private AuthManager AuthManager { get; }
         private CookiesManager CookiesManager { get; }
         public PasswordHasher PasswordHasher { get; }
+        public EmailValidationKeyModelHelper EmailValidationKeyModelHelper { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -40,7 +41,8 @@ namespace ASC.Web.Api.Controllers
             AuthContext authContext,
             AuthManager authManager,
             CookiesManager cookiesManager,
-            PasswordHasher passwordHasher)
+            PasswordHasher passwordHasher,
+            EmailValidationKeyModelHelper emailValidationKeyModelHelper)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -51,6 +53,7 @@ namespace ASC.Web.Api.Controllers
             AuthManager = authManager;
             CookiesManager = cookiesManager;
             PasswordHasher = passwordHasher;
+            EmailValidationKeyModelHelper = emailValidationKeyModelHelper;
         }
 
         [Create(false)]
@@ -88,7 +91,7 @@ namespace ASC.Web.Api.Controllers
         [Create("confirm", false)]
         public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
         {
-            return model.Validate();
+            return EmailValidationKeyModelHelper.Validate(model);
         }
 
         private UserInfo GetUser(int tenantId, AuthModel memberModel)
