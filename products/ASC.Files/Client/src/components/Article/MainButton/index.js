@@ -5,9 +5,11 @@ import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
-import { isCanCreate } from "../../../store/files/selectors";
-import { utils as commonUtils, constants } from "asc-web-common";
+import { isCanCreate, getFilter, getSelectedFolder } from "../../../store/files/selectors";
+import { utils as commonUtils, constants, store as initStore } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+
+const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article"
@@ -138,14 +140,14 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, filter } = state.files;
-  const { user, settings } = state.auth;
+  const { selectedFolder } = state.files;
+  const { user } = state.auth;
 
   return {
     isCanCreate: isCanCreate(selectedFolder, user),
-    settings,
-    filter,
-    selectedFolder
+    settings: getSettings(state),
+    filter: getFilter(state),
+    selectedFolder: getSelectedFolder(state)
   };
 };
 
