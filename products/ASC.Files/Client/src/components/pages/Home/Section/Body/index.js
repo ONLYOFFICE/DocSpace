@@ -56,17 +56,13 @@ import {
   getFolderIcon,
   getSelectedFolderId,
   getFolders,
-  getIsAdmin,
   getIsLoading,
   getMediaViewerId,
   getMediaViewerVisibility,
   getSelectedFolderParentId,
-  getPathParts,
   getSelected,
   getSelectedFolderTitle,
-  getSelectedFolderType,
   getSelection,
-  getSettings,
   getTreeFolders,
   getViewAs,
   getViewer,
@@ -78,9 +74,14 @@ import {
   getFilesList,
   isMediaOrImage,
   getMediaViewerFormats,
+  getIsShareFolder,
+  getIsCommonFolder,
+  getIsRecycleBinFolder,
+  getIsMyFolder,
+  getMyFolderId,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, getSettings } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -705,7 +706,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { currentFolderType, title, t, widthProp } = this.props;
+    const { isMy, isShare, isCommon, isRecycleBin, title, t, widthProp } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -768,52 +769,51 @@ class SectionBodyContent extends React.Component {
       </div>
     );
 
-    switch (currentFolderType) {
-      case "My":
-        return (
-          <EmptyFolderContainer
-            headerText={title}
-            subheadingText={subheadingText}
-            descriptionText={myDescription}
-            imageSrc="images/empty_screen.png"
-            buttons={commonButtons}
-            widthProp={widthProp}
-          />
-        );
-      case "Share":
-        return (
-          <EmptyFolderContainer
-            headerText={title}
-            subheadingText={subheadingText}
-            descriptionText={shareDescription}
-            imageSrc="images/empty_screen_forme.png"
-            widthProp={widthProp}
-          />
-        );
-      case "Common":
-        return (
-          <EmptyFolderContainer
-            headerText={title}
-            subheadingText={subheadingText}
-            descriptionText={commonDescription}
-            imageSrc="images/empty_screen_corporate.png"
-            buttons={commonButtons}
-            widthProp={widthProp}
-          />
-        );
-      case "Trash":
-        return (
-          <EmptyFolderContainer
-            headerText={title}
-            subheadingText={subheadingText}
-            descriptionText={trashDescription}
-            imageSrc="images/empty_screen_trash.png"
-            buttons={trashButtons}
-            widthProp={widthProp}
-          />
-        );
-      default:
-        return;
+    if(isMy) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={myDescription}
+          imageSrc="images/empty_screen.png"
+          buttons={commonButtons}
+          widthProp={widthProp}
+        />
+      );
+    } else if(isShare) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={shareDescription}
+          imageSrc="images/empty_screen_forme.png"
+          widthProp={widthProp}
+        />
+      )} else if(isCommon) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={commonDescription}
+          imageSrc="images/empty_screen_corporate.png"
+          buttons={commonButtons}
+          widthProp={widthProp}
+        />
+      );
+    } else if(isRecycleBin) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={trashDescription}
+          imageSrc="images/empty_screen_trash.png"
+          buttons={trashButtons}
+          widthProp={widthProp}
+        />
+      );
+    }
+    else {
+      return;
     }
   };
 
@@ -1284,7 +1284,7 @@ class SectionBodyContent extends React.Component {
       setIsLoading,
       isLoading,
       currentFolderCount,
-      currentFolderType,
+      isRecycleBin,
       dragging,
       mediaViewerVisible,
       currentMediaFileId,
@@ -1404,7 +1404,7 @@ class SectionBodyContent extends React.Component {
                 : item.fileExst
                 ? false
                 : true;
-              const draggable = selectedItem && currentFolderType !== "Trash";
+              const draggable = selectedItem && !isRecycleBin;
               let value = item.fileExst
                 ? `file_${item.id}`
                 : `folder_${item.id}`;
@@ -1536,31 +1536,8 @@ SectionBodyContent.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const pathParts = getPathParts(state);
-  const treeFolders = getTreeFolders(state);
-
-  const myFolderIndex = 0;
-  const shareFolderIndex = 1;
-  const commonFolderIndex = 2;
-
-  const myDocumentsId =
-    treeFolders.length &&
-    treeFolders[myFolderIndex] &&
-    treeFolders[myFolderIndex].id;
-  const shareFolderId =
-    treeFolders.length &&
-    treeFolders[shareFolderIndex] &&
-    treeFolders[shareFolderIndex].id;
-  const commonFolderId =
-    treeFolders.length &&
-    treeFolders[commonFolderIndex] &&
-    treeFolders[commonFolderIndex].id;
-  const isShare = pathParts && pathParts[0] === shareFolderId;
-  const isCommon = pathParts && pathParts[0] === commonFolderId;
-
   return {
     currentFolderCount: getCurrentFolderCount(state),
-    currentFolderType: getSelectedFolderType(state),
     currentMediaFileId: getMediaViewerId(state),
     dragging: getDragging(state),
     dragItem: getDragItem(state),
@@ -1571,22 +1548,24 @@ const mapStateToProps = (state) => {
     folderId: getSelectedFolderId(state),
     folders: getFolders(state),
     isAdmin: isAdmin(state),
-    isCommon,
+    isCommon: getIsCommonFolder(state),
     isLoading: getIsLoading(state),
-    isShare,
+    isShare: getIsShareFolder(state),
     mediaViewerVisible: getMediaViewerVisibility(state),
-    myDocumentsId,
+    myDocumentsId: getMyFolderId(state),
     parentId: getSelectedFolderParentId(state),
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),
     settings: getSettings(state),
     title: getSelectedFolderTitle(state),
-    treeFolders,
+    treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     viewer: getViewer(state),
     filesList: getFilesList(state),
-    mediaFormats: getMediaViewerFormats(state)
+    mediaFormats: getMediaViewerFormats(state),
+    isRecycleBin: getIsRecycleBinFolder(state),
+    isMy: getIsMyFolder(state),
   };
 };
 
