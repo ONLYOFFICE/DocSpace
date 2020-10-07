@@ -616,11 +616,6 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const selectedFolder = getSelectedFolder(state);
-  const { user } = state.auth;
-
-  user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
-
   return {
     isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
@@ -629,9 +624,9 @@ const mapStateToProps = (state) => {
     selection: getSelection(state),
     title: getSelectedFolderTitle(state),
     filter: getFilter(state),
-    deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
+    deleteDialogVisible: isCanBeDeleted(state),
     currentFolderId: getSelectedFolderId(state),
-    isCanCreate: isCanCreate(selectedFolder, user),
+    isCanCreate: isCanCreate(state),
   };
 };
 

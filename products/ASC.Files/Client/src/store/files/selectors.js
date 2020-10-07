@@ -427,45 +427,86 @@ export const loopTreeFolders = (
   }
 };
 
-export const isCanCreate = (selectedFolder, user) => {
-  if (!selectedFolder || !selectedFolder.id) return false;
-
-  const admin = isAdmin({ auth: { user } }); //TODO: Need refactoring
-  const rootFolderType = selectedFolder.rootFolderType;
-
-  switch (rootFolderType) {
-    case FolderType.USER:
-      return true;
-    case FolderType.SHARE:
-      const { pathParts, access } = selectedFolder;
-      const isNotRootFolder = pathParts.length > 1;
-      const canCreateInSharedFolder = access === 1;
-      return isNotRootFolder && canCreateInSharedFolder;
-    case FolderType.COMMON:
-      return admin;
-    case FolderType.TRASH:
-    default:
-      return false;
-  }
+export const getSelectedFolder = (state) => {
+  return state.files.selectedFolder;
 };
 
-export const isCanBeDeleted = (selectedFolder, user) => {
-  const admin = isAdmin({ auth: { user } }); //TODO: Need refactoring
-  const rootFolderType = selectedFolder.rootFolderType;
-
-  switch (rootFolderType) {
-    case FolderType.USER:
-      return true;
-    case FolderType.SHARE:
-      return false;
-    case FolderType.COMMON:
-      return admin;
-    case FolderType.TRASH:
-      return true;
-    default:
-      return false;
-  }
+export const getSelectedFolderId = (state) => {
+  return state.files.selectedFolder.id;
 };
+
+export const getSelectedFolderParentId = (state) => {
+  return state.files.selectedFolder.parentId;
+};
+
+export const getSelectedFolderNew = (state) => {
+  return state.files.selectedFolder.new;
+};
+
+export const getSelectedFolderTitle = (state) => {
+  return state.files.selectedFolder.title;
+};
+
+export const getPathParts = (state) => {
+  return state.files.selectedFolder.pathParts;
+};
+
+export const getSelectedFolderRootFolderType = (state) => {
+  return state.files.selectedFolder.rootFolderType;
+};
+
+const getSelectedFolderAccess = (state) => {
+  return state.files.selectedFolder.access;
+};
+
+export const getIsRootFolder = (state) => {
+  return state.files.selectedFolder.parentId === 0;
+};
+
+export const getRootFolderId = (state) => {
+  if (state.files.selectedFolder.pathParts)
+    return state.files.selectedFolder.pathParts[0];
+};
+
+export const isCanCreate = createSelector(
+  (getSelectedFolderRootFolderType,
+  isAdmin,
+  getPathParts,
+  getSelectedFolderAccess),
+  (folderType, isAdmin, pathParts, access) => {
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        const isNotRootFolder = pathParts.length > 1;
+        const canCreateInSharedFolder = access === 1;
+        return isNotRootFolder && canCreateInSharedFolder;
+      case FolderType.COMMON:
+        return isAdmin;
+      case FolderType.TRASH:
+      default:
+        return false;
+    }
+  }
+);
+
+export const isCanBeDeleted = createSelector(
+  (getSelectedFolderRootFolderType, isAdmin),
+  (folderType, isAdmin) => {
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return isAdmin;
+      case FolderType.TRASH:
+        return true;
+      default:
+        return false;
+    }
+  }
+);
 
 //TODO: Get the whole list of extensions
 export const getAccessOption = (selection) => {
@@ -606,24 +647,8 @@ export const getFilter = (state) => {
   return state.files.filter;
 };
 
-export const getSelectedFolder = (state) => {
-  return state.files.selectedFolder;
-};
-
 export const getNewRowItems = (state) => {
   return state.files.newRowItems;
-};
-
-export const getSelectedFolderId = (state) => {
-  return state.files.selectedFolder.id;
-};
-
-export const getSelectedFolderParentId = (state) => {
-  return state.files.selectedFolder.parentId;
-};
-
-export const getSelectedFolderNew = (state) => {
-  return state.files.selectedFolder.new;
 };
 
 export const getSelected = (state) => {
@@ -640,10 +665,6 @@ export const getViewAs = (state) => {
 
 export const getTreeFolders = (state) => {
   return state.files.treeFolders;
-};
-
-export const getSelectedFolderTitle = (state) => {
-  return state.files.selectedFolder.title;
 };
 
 export const getCurrentFolderCount = (state) => {
@@ -779,52 +800,77 @@ export const getItemsList = createSelector(
 );
 
 const getMyFolder = createSelector(getTreeFolders, (treeFolders) => {
-  return treeFolders.find(x => x.rootFolderName === "@my");
+  return treeFolders.find((x) => x.rootFolderName === "@my");
 });
 
 const getShareFolder = createSelector(getTreeFolders, (treeFolders) => {
-  return treeFolders.find(x => x.rootFolderName === "@share");
+  return treeFolders.find((x) => x.rootFolderName === "@share");
 });
 
 const getCommonFolder = createSelector(getTreeFolders, (treeFolders) => {
-  return treeFolders.find(x => x.rootFolderName === "@common");
+  return treeFolders.find((x) => x.rootFolderName === "@common");
 });
 
 const getRecycleBinFolder = createSelector(getTreeFolders, (treeFolders) => {
-  return treeFolders.find(x => x.rootFolderName === "@trash");
+  return treeFolders.find((x) => x.rootFolderName === "@trash");
 });
 
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
-  if(myFolder) return myFolder.id
+  if (myFolder) return myFolder.id;
 });
 
-export const getShareFolderId = createSelector(getShareFolder, (shareFolder) => {
-  if(shareFolder) return shareFolder.id
-});
+export const getShareFolderId = createSelector(
+  getShareFolder,
+  (shareFolder) => {
+    if (shareFolder) return shareFolder.id;
+  }
+);
 
-export const getCommonFolderId = createSelector(getCommonFolder, (commonFolder) => {
-  if(commonFolder) return commonFolder.id
-});
+export const getCommonFolderId = createSelector(
+  getCommonFolder,
+  (commonFolder) => {
+    if (commonFolder) return commonFolder.id;
+  }
+);
 
-export const getRecycleBinFolderId = createSelector(getRecycleBinFolder, (recycleBinFolder) => {
-  if(recycleBinFolder) return recycleBinFolder.id
-});
+export const getRecycleBinFolderId = createSelector(
+  getRecycleBinFolder,
+  (recycleBinFolder) => {
+    if (recycleBinFolder) return recycleBinFolder.id;
+  }
+);
 
-export const getIsMyFolder = createSelector(getMyFolder, getSelectedFolderId, (myFolder, id) => {
-  return myFolder && myFolder.id === id;
-});
+export const getIsMyFolder = createSelector(
+  getMyFolder,
+  getSelectedFolderId,
+  (myFolder, id) => {
+    return myFolder && myFolder.id === id;
+  }
+);
 
-export const getIsShareFolder = createSelector(getShareFolder, getSelectedFolderId, (shareFolder, id) => {
-  return shareFolder && shareFolder.id === id;
-});
+export const getIsShareFolder = createSelector(
+  getShareFolder,
+  getSelectedFolderId,
+  (shareFolder, id) => {
+    return shareFolder && shareFolder.id === id;
+  }
+);
 
-export const getIsCommonFolder = createSelector(getCommonFolder, getSelectedFolderId, (commonFolder, id) => {
-  return commonFolder && commonFolder.id === id;
-});
+export const getIsCommonFolder = createSelector(
+  getCommonFolder,
+  getSelectedFolderId,
+  (commonFolder, id) => {
+    return commonFolder && commonFolder.id === id;
+  }
+);
 
-export const getIsRecycleBinFolder = createSelector(getRecycleBinFolder, getSelectedFolderId, (recycleBinFolder, id) => {
-  return recycleBinFolder && recycleBinFolder.id === id;
-});
+export const getIsRecycleBinFolder = createSelector(
+  getRecycleBinFolder,
+  getSelectedFolderId,
+  (recycleBinFolder, id) => {
+    return recycleBinFolder && recycleBinFolder.id === id;
+  }
+);
 
 export const getFilesList = createSelector(
   [getItemsList, getSelection, getIsRecycleBinFolder, getCurrentUser],
@@ -887,12 +933,9 @@ export const getFilesList = createSelector(
   }
 );
 
-export const getSelectedTreeNode = createSelector(
-  getSelectedFolderId,
-  (id) => {
-    if (id) return [id.toString()];
-  }
-);
+export const getSelectedTreeNode = createSelector(getSelectedFolderId, (id) => {
+  if (id) return [id.toString()];
+});
 
 export const getFileActionId = (state) => {
   return state.files.fileAction.id;
@@ -946,19 +989,6 @@ export const getEnableThirdParty = (state) => {
   return state.files.settingsTree.enableThirdParty;
 };
 
-export const getPathParts = (state) => {
-  return state.files.selectedFolder.pathParts;
-};
-
 export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
-
-export const getRootFolderId = (state) => {
-  if(state.files.selectedFolder.pathParts)
-    return state.files.selectedFolder.pathParts[0];
-}
-
-export const getIsRootFolder = (state) => {
-  return state.files.selectedFolder.parentId === 0;
-}

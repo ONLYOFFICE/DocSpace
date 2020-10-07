@@ -140,11 +140,8 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder } = state.files;
-  const { user } = state.auth;
-
   return {
-    isCanCreate: isCanCreate(selectedFolder, user),
+    isCanCreate: isCanCreate(state),
     settings: getSettings(state),
     filter: getFilter(state),
     selectedFolder: getSelectedFolder(state)
