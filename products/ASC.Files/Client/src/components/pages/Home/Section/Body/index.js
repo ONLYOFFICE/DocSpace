@@ -65,7 +65,6 @@ import {
   getSelection,
   getTreeFolders,
   getViewAs,
-  getViewer,
   isFileSelected,
   isImage,
   isSound,
@@ -81,7 +80,7 @@ import {
   getMyFolderId,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-const { isAdmin, getSettings } = store.auth.selectors;
+const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -1561,7 +1560,7 @@ const mapStateToProps = (state) => {
     title: getSelectedFolderTitle(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
-    viewer: getViewer(state),
+    viewer: getCurrentUser(state),
     filesList: getFilesList(state),
     mediaFormats: getMediaViewerFormats(state),
     isRecycleBin: getIsRecycleBinFolder(state),

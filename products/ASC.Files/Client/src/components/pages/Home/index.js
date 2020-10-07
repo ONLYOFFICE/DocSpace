@@ -46,7 +46,6 @@ import {
   getTreeFolders,
   getViewAs,
   getIsLoading,
-  getHomePage,
   getIsRecycleBinFolder
 } from "../../../store/files/selectors";
 
@@ -59,7 +58,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getIsLoaded } = store.auth.selectors;
+const { getIsLoaded, getSettingsHomepage } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -569,7 +568,7 @@ function mapStateToProps(state) {
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
-    homepage: getHomePage(state)
+    homepage: getSettingsHomepage(state)
   };
 }
 

@@ -51,6 +51,8 @@ export const getModules = state => state.auth.modules;
 
 export const getSettings = state => state.auth.settings;
 
+export const getSettingsHomepage = state => state.auth.settings.homepage;
+
 export const getSettingsCustomNames = state => state.auth.settings.customNames;
 
 export const getSettingsCustomNamesGroupsCaption = state => state.auth.settings.customNames.groupsCaption;

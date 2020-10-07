@@ -3,7 +3,7 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, getCurrentUser } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -634,10 +634,6 @@ export const getSelection = (state) => {
   return state.files.selection;
 };
 
-export const getViewer = (state) => {
-  return state.auth.user;
-};
-
 export const getViewAs = (state) => {
   return state.files.viewAs;
 };
@@ -831,7 +827,7 @@ export const getIsRecycleBinFolder = createSelector(getRecycleBinFolder, getSele
 });
 
 export const getFilesList = createSelector(
-  [getItemsList, getSelection, getIsRecycleBinFolder, getViewer],
+  [getItemsList, getSelection, getIsRecycleBinFolder, getCurrentUser],
   (items, selection, isRecycleBin, viewer) => {
     return items.map((item) => {
       const {
@@ -908,10 +904,6 @@ export const getConvertDialogVisible = (state) => {
 
 export const getProgressData = (state) => {
   return state.files.progressData;
-};
-
-export const getHomePage = (state) => {
-  return state.auth.settings.homepage;
 };
 
 export const getUpdateTree = (state) => {
