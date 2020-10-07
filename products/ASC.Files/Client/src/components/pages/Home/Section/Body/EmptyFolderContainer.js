@@ -10,9 +10,9 @@ const EmptyFolderWrapper = styled.div`
 
     .empty-folder_container-links {
       display: grid;
-      margin: 12px 0;
+      margin: 8px 0;
       grid-template-columns: 12px 1fr;
-      grid-column-gap: 13px;
+      grid-column-gap: 8px;
     }
 
     .flex-wrapper_container {
@@ -27,7 +27,7 @@ const EmptyFolderWrapper = styled.div`
 
     .empty-folder_container_plus-image {
       display: flex;
-      margin: -8px 8px 0 0;
+      margin: -10px 8px 0 0;
       line-height: unset;
     }
 
