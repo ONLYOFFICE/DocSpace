@@ -117,7 +117,7 @@ export function getMachineName(confirmKey = null) {
 
 export function setPortalOwner(
   email,
-  pwd,
+  hash,
   lng,
   timeZone,
   confirmKey = null,
@@ -128,7 +128,7 @@ export function setPortalOwner(
     url: "/settings/wizard/complete.json",
     data: {
       email: email,
-      pwd: pwd,
+      PasswordHash: hash,
       lng: lng,
       timeZone: timeZone,
       analytics: analytics
