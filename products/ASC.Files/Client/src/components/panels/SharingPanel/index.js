@@ -16,7 +16,7 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, constants, toastr } from "asc-web-common";
+import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import { getShareUsers, setShareFiles, setIsLoading } from "../../../store/files/actions";
 import { getAccessOption } from "../../../store/files/selectors";
 import {
@@ -36,6 +36,7 @@ const i18n = createI18N({
 
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
+const { getCurrentUserId, getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -732,9 +733,9 @@ const SharingPanel = props => (
 
 const mapStateToProps = state => {
   return {
-    isMyId: state.auth.user.id,
-    selectedItems: state.files.selection,
-    groupsCaption: state.auth.settings.customNames.groupsCaption
+    isMyId: getCurrentUserId(state),
+    selectedItems: getSelection(state),
+    groupsCaption: getSettingsCustomNamesGroupsCaption(state)
   };
 };
 
