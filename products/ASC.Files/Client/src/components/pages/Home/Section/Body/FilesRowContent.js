@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge } from "asc-web-components";
-import { constants, api, toastr } from 'asc-web-common';
+import { constants, api, toastr, store as initStore } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setUpdateTree, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
 import { 
   canConvert, 
@@ -18,13 +18,13 @@ import {
   getNewRowItems,
   getSelectedFolder,
   getSelectedFolderNew,
-  getSelectedFolderParentId, 
-  getSettings, 
+  getSelectedFolderParentId,
   getTitleWithoutExst, 
   getTreeFolders, 
   isImage, 
   isSound, 
   isVideo,
+  getIsRecycleBinFolder,
 } from '../../../../../store/files/selectors';
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
@@ -32,6 +32,7 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
 const sideColor = '#A3A9AE';
+const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesRowContent = styled(RowContent)`
 .badge-ext {
@@ -535,22 +536,18 @@ class FilesRowContent extends React.PureComponent {
 
 function mapStateToProps(state) {
   const selectedFolder = getSelectedFolder(state);
-  const treeFolders = getTreeFolders(state);
-
-  const indexOfTrash = 3;
-  const isTrashFolder = treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id
   const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
 
   return {
     filter: getFilter(state),
     fileAction: getFileAction(state),
     parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder,
+    isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
-    treeFolders,
+    treeFolders: getTreeFolders(state),
     rootFolderId,
     newItems: getSelectedFolderNew(state),
-    selectedFolder,
+    selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
