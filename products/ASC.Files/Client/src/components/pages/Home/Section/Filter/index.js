@@ -1,16 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
 import { fetchFiles, setViewAs, setIsLoading } from "../../../../../store/files/actions";
+import { getFilter, getSelectedFolderId, getViewAs, getFilterSelectedItem } from "../../../../../store/files/selection";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { constants, FilterInput } from 'asc-web-common';
+import { constants, FilterInput, store } from 'asc-web-common';
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from 'react-device-detect';
 
 const { FilterType } = constants;
+const { getCurrentUser, getSettingsCustomNames } = store.auth.selectors;
 
 const getFilterType = filterValues => {
   const filterType = result(
@@ -298,12 +300,12 @@ class SectionFilterContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    user: state.auth.user,
-    filter: state.files.filter,
-    customNames: state.auth.settings.customNames,
-    selectedFolderId: state.files.selectedFolder.id,
-    selectedItem: state.files.filter.selectedItem,
-    viewAs: state.files.viewAs
+    user: getCurrentUser(state),
+    filter: getFilter(state),
+    customNames: getSettingsCustomNames(state),
+    selectedFolderId: getSelectedFolderId(state),
+    selectedItem: getFilterSelectedItem(state),
+    viewAs: getViewAs(state)
   };
 }
 
