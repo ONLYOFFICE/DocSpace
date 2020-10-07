@@ -41,21 +41,21 @@ const EditingWrapper = styled.div`
 const EditingWrapperComponent = props => {
   const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem, isLoading } = props;
 
-  const onUpdate = () => {
-    onClickUpdateItem();
+  const onUpdate = (e) => {
+    onClickUpdateItem(e);
   }
 
   const onCancel = (e) => {
     cancelUpdateItem(e);
   }
 
-  const onKeyUpUpdateItem = e => {
+  const onKeyUpUpdateItem = (e) => {
     if (e.keyCode === 13) {
-      onClickUpdateItem();
+      onClickUpdateItem(e);
     }
 
     if (e.keyCode === 27)
-      return cancelUpdateItem();
+      return cancelUpdateItem(e);
   }
 
   return (
@@ -70,6 +70,7 @@ const EditingWrapperComponent = props => {
         onChange={renameTitle}
         onKeyUp={onKeyUpUpdateItem}
         isDisabled={isLoading}
+        data-itemid={itemId}
       />
       <Button
         className='edit-button'
@@ -77,6 +78,7 @@ const EditingWrapperComponent = props => {
         isDisabled={isLoading}
         onClick={onUpdate}
         icon={okIcon}
+        data-itemid={itemId}
       />
       <Button
         className='edit-button'

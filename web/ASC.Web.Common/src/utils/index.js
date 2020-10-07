@@ -42,7 +42,9 @@ export function changeLanguage(i18n, currentLng = localStorage.getItem(LANGUAGE)
 
 export function redirectToDefaultPage() {
   if (
-    (window.location.pathname === "/" || window.location.pathname === "") &&
+    (window.location.pathname === "/" ||
+      window.location.pathname === "" ||
+      window.location.pathname === "/login") &&
     localStorage.getItem(AUTH_KEY) !== null
   ) {
     setTimeout(() => window.location.replace("/products/files"), 0);
@@ -74,4 +76,32 @@ export function createPasswordHash(password, hashSettings) {
   const hash = sjcl.codec.hex.fromBits(bits);
 
   return hash;
+}
+
+export function removeTempContent() {
+  const tempElm = document.getElementById("temp-content");
+  if (tempElm) {
+    tempElm.outerHTML = "";
+  }
+}
+
+export function hideLoader() {
+  const ele = document.getElementById("ipl-progress-indicator");
+  if (ele) {
+    // fade out
+    ele.classList.add("available");
+    ele.style.display = "";
+    // setTimeout(() => {
+    //   // remove from DOM
+    //   ele.outerHTML = "";
+    // }, 2000);
+  }
+}
+
+export function showLoader() {
+  const ele = document.getElementById("ipl-progress-indicator");
+  if (ele) {
+    ele.classList.remove("available");
+    ele.style.display = "block";
+  }
 }

@@ -72,9 +72,9 @@ class Filter {
       employeestatus: employeeStatus,
       activationstatus: activationStatus,
       filtervalue: (search ?? "").trim(),
-      groupId: group
-      //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,
-      //listAdminModules,birthday,title,location,isLDAP,isSSO"
+      groupId: group,
+      fields:
+        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
     };
 
     switch (role) {

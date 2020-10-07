@@ -4,9 +4,8 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { setAction } from "../../../store/files/actions";
+import { setAction, startUpload } from "../../../store/files/actions";
 import { isCanCreate } from "../../../store/files/selectors";
-import { startUpload } from "../../pages/Home/FilesUploader";
 import { utils as commonUtils, constants } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -135,7 +134,6 @@ const ArticleMainButtonContent = props => {
 };
 
 ArticleMainButtonContent.propTypes = {
-  isAdmin: PropTypes.bool,
   history: PropTypes.object.isRequired
 };
 

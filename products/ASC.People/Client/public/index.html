@@ -1,24 +1,31 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-    <meta name="theme-color" content="#000000">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+    />
+    <meta name="theme-color" content="#000000" />
     <base href="%PUBLIC_URL%/" />
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!-- Tell the browser it's a PWA -->
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes" />
     <!-- Tell iOS it's a PWA -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i' rel='stylesheet' type='text/css'></link>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i"
+      rel="stylesheet"
+      type="text/css"
+    />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -29,20 +36,328 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <style type="text/css">
-      body{height:100%;margin:0;padding:0;width:100%}body{font-family:'Open Sans',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased}.ipl-progress-indicator.available{opacity:0}.ipl-progress-indicator{background-color:#f5f5f5;width:100%;height:100%;position:fixed;opacity:1;pointer-events:none;-webkit-transition:opacity cubic-bezier(.4,0,.2,1) 436ms;-moz-transition:opacity cubic-bezier(.4,0,.2,1) 436ms;transition:opacity cubic-bezier(.4,0,.2,1) 436ms;z-index:9999}.insp-logo-frame{display:-webkit-flex;display:-moz-flex;display:flex;-webkit-flex-direction:column;-moz-flex-direction:column;flex-direction:column;-webkit-justify-content:center;-moz-justify-content:center;justify-content:center;-webkit-animation:fadein 436ms;-moz-animation:fadein 436ms;animation:fadein 436ms;height:98%}.insp-logo-frame-img{width:112px;height:112px;-webkit-align-self:center;-moz-align-self:center;align-self:center;border-radius:50%}.ipl-progress-indicator-head{background-color:#c6dafc;height:4px;overflow:hidden;position:relative}.ipl-progress-indicator .first-indicator,.ipl-progress-indicator .second-indicator{background-color:#056d8b;bottom:0;left:0;right:0;top:0;position:absolute;-webkit-transform-origin:left center;-moz-transform-origin:left center;transform-origin:left center;-webkit-transform:scaleX(0);-moz-transform:scaleX(0);transform:scaleX(0)}.ipl-progress-indicator .first-indicator{-webkit-animation:first-indicator 2s linear infinite;-moz-animation:first-indicator 2s linear infinite;animation:first-indicator 2s linear infinite}.ipl-progress-indicator .second-indicator{-webkit-animation:second-indicator 2s linear infinite;-moz-animation:second-indicator 2s linear infinite;animation:second-indicator 2s linear infinite}.ipl-progress-indicator .insp-logo{animation:App-logo-spin infinite 20s linear;border-radius:50%;-webkit-align-self:center;-moz-align-self:center;align-self:center}@keyframes App-logo-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@keyframes fadein{from{opacity:0}to{opacity:1}}@keyframes first-indicator{0%{transform:translate(0) scaleX(0)}25%{transform:translate(0) scaleX(.5)}50%{transform:translate(25%) scaleX(.75)}75%{transform:translate(100%) scaleX(0)}100%{transform:translate(100%) scaleX(0)}}@keyframes second-indicator{0%{transform:translate(0) scaleX(0)}60%{transform:translate(0) scaleX(0)}80%{transform:translate(0) scaleX(.6)}100%{transform:translate(100%) scaleX(.1)}}
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      body {
+        font-family: "Open Sans", sans-serif;
+        font-size: 13px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .ipl-progress-indicator.available {
+        opacity: 0;
+      }
+      .ipl-progress-indicator {
+        background-color: #f5f5f5;
+        width: 100%;
+        height: auto;
+        position: absolute;
+        opacity: 1;
+        pointer-events: none;
+        -webkit-transition: opacity cubic-bezier(0.4, 0, 0.2, 1) 436ms;
+        -moz-transition: opacity cubic-bezier(0.4, 0, 0.2, 1) 436ms;
+        transition: opacity cubic-bezier(0.4, 0, 0.2, 1) 436ms;
+        z-index: 9999;
+      }
+      .insp-logo-frame {
+        display: -webkit-flex;
+        display: -moz-flex;
+        display: flex;
+        -webkit-flex-direction: column;
+        -moz-flex-direction: column;
+        flex-direction: column;
+        -webkit-justify-content: center;
+        -moz-justify-content: center;
+        justify-content: center;
+        -webkit-animation: fadein 436ms;
+        -moz-animation: fadein 436ms;
+        animation: fadein 436ms;
+        height: 98%;
+      }
+      .insp-logo-frame-img {
+        width: 112px;
+        height: 112px;
+        -webkit-align-self: center;
+        -moz-align-self: center;
+        align-self: center;
+        border-radius: 50%;
+      }
+      .ipl-progress-indicator-head {
+        background-color: #c6dafc;
+        height: 4px;
+        overflow: hidden;
+        position: relative;
+      }
+      .ipl-progress-indicator .first-indicator,
+      .ipl-progress-indicator .second-indicator {
+        background-color: #056d8b;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        position: absolute;
+        -webkit-transform-origin: left center;
+        -moz-transform-origin: left center;
+        transform-origin: left center;
+        -webkit-transform: scaleX(0);
+        -moz-transform: scaleX(0);
+        transform: scaleX(0);
+      }
+      .ipl-progress-indicator .first-indicator {
+        -webkit-animation: first-indicator 2s linear infinite;
+        -moz-animation: first-indicator 2s linear infinite;
+        animation: first-indicator 2s linear infinite;
+      }
+      .ipl-progress-indicator .second-indicator {
+        -webkit-animation: second-indicator 2s linear infinite;
+        -moz-animation: second-indicator 2s linear infinite;
+        animation: second-indicator 2s linear infinite;
+      }
+      .ipl-progress-indicator .insp-logo {
+        animation: App-logo-spin infinite 20s linear;
+        border-radius: 50%;
+        -webkit-align-self: center;
+        -moz-align-self: center;
+        align-self: center;
+      }
+      @keyframes App-logo-spin {
+        from {
+          transform: rotate(0);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @-moz-keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes first-indicator {
+        0% {
+          transform: translate(0) scaleX(0);
+        }
+        25% {
+          transform: translate(0) scaleX(0.5);
+        }
+        50% {
+          transform: translate(25%) scaleX(0.75);
+        }
+        75% {
+          transform: translate(100%) scaleX(0);
+        }
+        100% {
+          transform: translate(100%) scaleX(0);
+        }
+      }
+      @keyframes second-indicator {
+        0% {
+          transform: translate(0) scaleX(0);
+        }
+        60% {
+          transform: translate(0) scaleX(0);
+        }
+        80% {
+          transform: translate(0) scaleX(0.6);
+        }
+        100% {
+          transform: translate(100%) scaleX(0.1);
+        }
+      }
+      .temp-header-container {
+        -webkit-box-align: center;
+        align-items: center;
+        background-color: rgb(15, 64, 113);
+        display: flex;
+        z-index: 185;
+        width: calc(100vw - 64px);
+        height: 56px;
+        padding: 0 32px;
+      }
+      .temp-header-container .header-items-wrapper {
+        width: 960px;
+      }
+      .temp-header-container .temp-header-logo-wrapper {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+      .temp-header-container .temp-header-logo-icon {
+        width: 146px;
+        height: 24px;
+        position: relative;
+        padding: 4px 20px 0 30px;
+        cursor: pointer;
+      }
+      .temp-content-loader {
+        padding: 16px;
+        height: calc(100vh - 91px);
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        grid-template-rows: calc(100vh - 91px);
+        grid-column-gap: 8px;
+      }
+      @media (max-width: 1024px) {
+        .temp-content-loader {
+          grid-template-columns: 1fr;
+        }
+        .temp-content__article {
+          display: none;
+        }
+      }
     </style>
     <title>ONLYOFFICE</title>
-</head>
-<body>
-    <noscript>
-        You need to enable JavaScript to run this app.
-    </noscript>
+  </head>
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+
     <div class="ipl-progress-indicator" id="ipl-progress-indicator">
       <div class="ipl-progress-indicator-head">
         <div class="first-indicator"></div>
         <div class="second-indicator"></div>
       </div>
     </div>
+
+    <div id="temp-content">
+      <header class="temp-header-container">
+        <a class="temp-header-logo-wrapper" href="/">
+          <img
+            class="temp-header-logo-icon"
+            src="images/nav.logo.opened.react.svg"
+          />
+        </a>
+      </header>
+
+      <div class="temp-content-loader">
+        <div class="temp-content__article">
+          <svg
+            role="img"
+            width="100%"
+            height="100%"
+            aria-labelledby="loading-aria1"
+            preserveAspectRatio="none"
+          >
+            <title id="loading-aria1">Loading...</title>
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              clip-path="url(#clip-path1)"
+              style="fill: url('#fill1')"
+            ></rect>
+            <defs>
+              <clipPath id="clip-path1">
+                <rect x="3" y="3" rx="5" ry="5" width="100%" />
+              </clipPath>
+              <linearGradient id="fill1">
+                <stop offset="0.599964" stop-color="#f3f3f3" stop-opacity="1">
+                  <animate
+                    attributeName="offset"
+                    values="-2; -2; 1"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  ></animate>
+                </stop>
+                <stop offset="1.59996" stop-color="#ecebeb" stop-opacity="1">
+                  <animate
+                    attributeName="offset"
+                    values="-1; -1; 2"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  ></animate>
+                </stop>
+                <stop offset="2.59996" stop-color="#f3f3f3" stop-opacity="1">
+                  <animate
+                    attributeName="offset"
+                    values="0; 0; 3"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  ></animate>
+                </stop>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <svg
+            role="img"
+            width="100%"
+            height="100%"
+            aria-labelledby="loading-aria2"
+            preserveAspectRatio="none"
+          >
+            <title id="loading-aria2">Loading...</title>
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              clip-path="url(#clip-path2)"
+              style="fill: url('#fill2')"
+            ></rect>
+            <defs>
+              <clipPath id="clip-path2">
+                <rect x="3" y="3" rx="5" ry="5" width="100%" />
+              </clipPath>
+              <linearGradient id="fill2">
+                <stop offset="0.599964" stop-color="#f3f3f3" stop-opacity="1">
+                  <animate
+                    attributeName="offset"
+                    values="-2; -2; 1"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  ></animate>
+                </stop>
+                <stop offset="1.59996" stop-color="#ecebeb" stop-opacity="1">
+                  <animate
+                    attributeName="offset"
+                    values="-1; -1; 2"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  ></animate>
+                </stop>
+                <stop offset="2.59996" stop-color="#f3f3f3" stop-opacity="1">
+                  <animate
+                    attributeName="offset"
+                    values="0; 0; 3"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  ></animate>
+                </stop>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+
     <div id="root"></div>
     <!--
       This HTML file is a template.

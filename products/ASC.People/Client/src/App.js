@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
-import axios from "axios";
 import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import Profile from "./components/pages/Profile";
@@ -15,10 +14,13 @@ import {
   Login,
   Error404,
   Error520,
-  StudioLayout,
-  Offline
+  Offline,
+  utils,
+  store as commonStore,
+  constants,
+  NavMenu,
+  Main,
 } from "asc-web-common";
-import { store as commonStore, constants } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
@@ -31,7 +33,7 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalPasswordSettings,
-  getPortalCultures
+  getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 
@@ -40,19 +42,11 @@ const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
 const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 class App extends React.Component {
-  removeLoader = () => {
-    const ele = document.getElementById("ipl-progress-indicator");
-    if (ele) {
-      // fade out
-      ele.classList.add("available");
-      setTimeout(() => {
-        // remove from DOM
-        ele.outerHTML = "";
-      }, 2000);
-    }
-  };
   componentDidMount() {
+    utils.removeTempContent();
+
     const {
+      setModuleInfo,
       getUser,
       getPortalSettings,
       getModules,
@@ -60,14 +54,15 @@ class App extends React.Component {
       getPortalCultures,
       fetchGroups,
       fetchPeople,
-      finalize,
-      setIsLoaded
+      setIsLoaded,
     } = this.props;
+
+    setModuleInfo();
 
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      this.removeLoader();
+      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -78,20 +73,22 @@ class App extends React.Component {
       getPortalPasswordSettings(),
       getPortalCultures(),
       fetchGroups(),
-      fetchPeople()
+      fetchPeople(),
     ];
 
-    axios.all(requests).then(() => {
-      this.removeLoader();
-      finalize();
+    Promise.all(requests).finally(() => {
+      utils.hideLoader();
+      setIsLoaded();
     });
   }
 
   render() {
-    const { homepage } = this.props.settings;
+    const { homepage } = this.props;
+    console.log("People App render", this.props);
     return navigator.onLine ? (
       <Router history={history}>
-        <StudioLayout>
+        <NavMenu />
+        <Main>
           <Suspense
             fallback={
               <Loader className="pageLoader" type="rombs" size="40px" />
@@ -101,45 +98,41 @@ class App extends React.Component {
               <Redirect exact from="/" to={`${homepage}`} />
               <PrivateRoute
                 exact
-                path={[homepage, `${homepage}/filter`]}
-                component={Home}
-              />
-              <PrivateRoute
                 path={`${homepage}/view/:userId`}
                 component={Profile}
               />
               <PrivateRoute
                 path={`${homepage}/edit/:userId`}
-                component={ProfileAction}
                 restricted
                 allowForMe
+                component={ProfileAction}
               />
               <PrivateRoute
                 path={`${homepage}/create/:type`}
+                restricted
                 component={ProfileAction}
-                restricted
               />
               <PrivateRoute
-                path={`${homepage}/group/edit/:groupId`}
-                component={GroupAction}
+                path={[
+                  `${homepage}/group/edit/:groupId`,
+                  `${homepage}/group/create`,
+                ]}
                 restricted
-              />
-              <PrivateRoute
-                path={`${homepage}/group/create`}
                 component={GroupAction}
-                restricted
               />
               <PrivateRoute
                 path={`${homepage}/reassign/:userId`}
-                component={Reassign}
                 restricted
+                component={Reassign}
               />
+              <PrivateRoute exact path={homepage} component={Home} />
+              <PrivateRoute path={`${homepage}/filter`} component={Home} />
               <PublicRoute
                 exact
                 path={[
                   "/login",
                   "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail"
+                  "/login/confirmed-email=:confirmedEmail",
                 ]}
                 component={Login}
               />
@@ -147,7 +140,7 @@ class App extends React.Component {
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
-        </StudioLayout>
+        </Main>
       </Router>
     ) : (
       <Offline />
@@ -155,14 +148,20 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
+  const { settings } = state.auth;
+  const { homepage } = settings;
   return {
-    settings: state.auth.settings
+    homepage: homepage || config.homepage,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
+    setModuleInfo: () => {
+      dispatch(setCurrentProductHomePage(config.homepage));
+      dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
+    },
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
@@ -180,16 +179,8 @@ const mapDispatchToProps = dispatch => {
 
       return Promise.resolve();
     },
-    finalize: () => {
-      dispatch(setCurrentProductHomePage(config.homepage));
-      dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
-      dispatch(setIsLoaded(true));
-    },
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

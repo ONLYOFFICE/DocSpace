@@ -5,6 +5,5 @@
 
   "EmptyTrashDialogQuestion": "Вы уверены, что хотите очистить корзину?",
   "EmptyTrashDialogMessage": "Замечание: Это действие не может быть отменено.",
-  "EmptyTrashDialogWarning": "Внимание: удаление из Вашего аккаунта будет нельзя отменить.",
   "DeleteOperation": "Удаление"
 }

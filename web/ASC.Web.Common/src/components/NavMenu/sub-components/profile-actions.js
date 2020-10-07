@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Avatar, DropDownItem, Link } from "asc-web-components";
-import ProfileMenu from "./../../ProfileMenu";
+import ProfileMenu from "../../ProfileMenu";
 
 class ProfileActions extends React.PureComponent {
   constructor(props) {
@@ -20,9 +20,8 @@ class ProfileActions extends React.PureComponent {
   };
 
   componentDidUpdate(prevProps) {
-
     if (this.props.user !== prevProps.user) {
-      this.setState({ user: this.props.user })
+      this.setState({ user: this.props.user });
     }
 
     if (this.props.opened !== prevProps.opened) {
@@ -39,23 +38,23 @@ class ProfileActions extends React.PureComponent {
     return "user";
   };
 
-  onClose = (e) => {
+  onClose = e => {
     if (this.ref.current.contains(e.target)) return;
 
     this.setOpened(!this.state.opened);
-  }
+  };
 
   onClick = (action, e) => {
     action.onClick && action.onClick(e);
 
     this.setOpened(!this.state.opened);
-  }
+  };
 
   onClickItemLink = e => {
     this.setOpened(!this.state.opened);
 
     e.preventDefault();
-  }
+  };
 
   render() {
     //console.log("Layout sub-component ProfileActions render");
@@ -80,7 +79,7 @@ class ProfileActions extends React.PureComponent {
           open={opened}
           clickOutsideAction={this.onClose}
         >
-          <div style={{paddingTop: '8px'}}>
+          <div style={{ paddingTop: "8px" }}>
             {this.props.userActions.map(action => (
               <Link
                 noHover={true}

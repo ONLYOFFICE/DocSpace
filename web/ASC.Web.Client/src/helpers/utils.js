@@ -1,31 +1,29 @@
-import { store as commonStore } from 'asc-web-common';
-import store from '../store/store';
+import { store as commonStore } from "asc-web-common";
+import store from "../store/store";
 
-const { getCurrentModule } = commonStore.auth.selectors;
+const { getCurrentProduct } = commonStore.auth.selectors;
 
-export const setDocumentTitle = (subTitle = null ) => {
-  const { auth: commonState } = store.getState();
+export const setDocumentTitle = (subTitle = null) => {
+  const state = store.getState();
+  const { auth: commonState } = state;
 
-  const { isAuthenticated, modules, settings } = commonState;
-  const { organizationName, currentProductId } = settings;
- 
-  let title, currentModule; 
+  const { isAuthenticated, settings } = commonState;
+  const { organizationName } = settings;
 
-  if(modules && currentProductId ){
-    currentModule = getCurrentModule(modules, currentProductId);
-  }
-  
+  let title;
+  const currentModule = getCurrentProduct(state);
+
   if (subTitle) {
     if (isAuthenticated && currentModule) {
-      title = subTitle + ' - ' + currentModule.title;
+      title = subTitle + " - " + currentModule.title;
     } else {
-      title = subTitle + ' - ' + organizationName;
+      title = subTitle + " - " + organizationName;
     }
   } else if (currentModule && organizationName) {
-    title = currentModule.title + ' - ' + organizationName; 
+    title = currentModule.title + " - " + organizationName;
   } else {
     title = organizationName;
   }
 
-  document.title = title; 
-}
+  document.title = title;
+};
