@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using ASC.Common;
 using ASC.Common.Logging;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -14,9 +11,8 @@ namespace ASC.Core.Common.EF
     {
         private Dictionary<string, T> Pairs { get; set; }
         private List<T> AsyncList { get; set; }
-
         public IOptionsFactory<T> Factory { get; }
-
+        public IConfiguration Configuration { get; }
         public BaseDbContextManager(IOptionsFactory<T> factory) : base(factory)
         {
             Pairs = new Dictionary<string, T>();
@@ -33,7 +29,10 @@ namespace ASC.Core.Common.EF
 
                 if (t is BaseDbContext dbContext)
                 {
-                    dbContext.Migrate();
+                    if (Configuration["migration:enabled"] == "true")
+                    {
+                        dbContext.Migrate();
+                    }
                 }
             }
 
