@@ -31,7 +31,7 @@ export function createConfirmUser(registerData, loginData, key) {
     return api.people
       .createUser(data, key)
       .then((user) => dispatch(setCurrentUser(user)))
-      .then(() => api.user.login(loginData.userName, loginData.hash))
+      .then(() => api.user.login(loginData.userName, loginData.password))
       .then(() => loadInitInfo(dispatch));
   };
 }
@@ -51,12 +51,12 @@ export function activateConfirmUser(
 
   return (dispatch) => {
     return api.people
-      .changePassword(userId, loginData.hash, key)
+      .changePassword(userId, loginData.password, key)
       .then((data) => {
         return api.people.updateActivationStatus(activationStatus, userId, key);
       })
       .then((data) => {
-        return dispatch(login(loginData.userName, loginData.hash));
+        return dispatch(login(loginData.userName, loginData.password));
       })
       .then((data) => {
         return api.people.updateUser(changedData);

@@ -127,7 +127,7 @@ class Confirm extends React.PureComponent {
 
       const loginData = {
         userName: this.state.email,
-        hash: hash,
+        password: hash,
       };
 
       const personalData = {
