@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, toastr, api } from "asc-web-common";
+import { PageLayout, utils, toastr, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -40,7 +40,6 @@ import {
   getFiles,
   getFilter,
   getFolders,
-  getIsLoaded,
   getProgressData,
   getSelected,
   getSelection,
@@ -48,7 +47,7 @@ import {
   getViewAs,
   getIsLoading,
   getHomePage,
-  checkFolderType
+  getIsRecycleBinFolder
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -60,6 +59,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
+const { getIsLoaded } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -257,7 +257,7 @@ class PureHome extends React.Component {
     const {
       currentFolderId,
       filter,
-      isRecycleBinFolder,
+      isRecycleBin,
       progressData,
       setUpdateTree,
       setProgressBarData,
@@ -296,7 +296,7 @@ class PureHome extends React.Component {
               if (!isCopy || destFolderId === currentFolderId) {
                 fetchFiles(currentFolderId, filter)
                   .then((data) => {
-                    if (!isRecycleBinFolder) {
+                    if (!isRecycleBin) {
                       newTreeFolders = treeFolders;
                       path = data.selectedFolder.pathParts.slice(0);
                       folders = data.selectedFolder.folders;
@@ -554,9 +554,6 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { selectedFolder, treeFolders } = state.files;
-  const indexOfTrash = 3;
-
   return {
     convertDialogVisible: getConvertDialogVisible(state),
     currentFolderId: getSelectedFolderId(state),
@@ -565,7 +562,7 @@ function mapStateToProps(state) {
     filter: getFilter(state),
     folders: getFolders(state),
     isLoaded: getIsLoaded(state),
-    isRecycleBinFolder: checkFolderType(selectedFolder.id, indexOfTrash, treeFolders),
+    isRecycleBin: getIsRecycleBinFolder(state),
     progressData: getProgressData(state),
     selected: getSelected(state),
     selection: getSelection(state),
