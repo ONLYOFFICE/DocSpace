@@ -188,7 +188,6 @@ function mapStateToProps(state) {
     forceSave,
     storeForceSave,
     enableThirdParty,
-    isErrorSettings,
   } = settingsTree;
 
   return {

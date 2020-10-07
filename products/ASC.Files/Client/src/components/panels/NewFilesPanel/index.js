@@ -35,11 +35,10 @@ import {
   fetchFiles,
   setMediaViewerData,
   setTreeFolders,
-  setNewTreeFilesBadge,
+  setUpdateTree,
   setNewRowItems,
   setIsLoading
 } from "../../../store/files/actions";
-import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "NewFilesPanel",
@@ -105,7 +104,7 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileIds)
       .then(() => {
-        this.props.setNewTreeFilesBadge(true);
+        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
       })
@@ -124,7 +123,7 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileId)
       .then(() => {
-        this.props.setNewTreeFilesBadge(true);
+        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
       })
@@ -136,10 +135,10 @@ class NewFilesPanelComponent extends React.Component {
 
   onFilesClick = item => {
     const { id, fileExst, viewUrl } = item;
-    const { filter, setMediaViewerData } = this.props;
+    const { filter, setMediaViewerData, fetchFiles } = this.props;
 
     if (!fileExst) {
-      fetchFiles(id, filter, store.dispatch).catch(err => toastr.error(err));
+      fetchFiles(id, filter).catch(err => toastr.error(err));
     } else {
       if (canWebEdit(fileExst)) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
@@ -297,5 +296,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems, setIsLoading }
+  { setMediaViewerData, setTreeFolders, setUpdateTree, setNewRowItems, setIsLoading, fetchFiles }
 )(withRouter(NewFilesPanel));

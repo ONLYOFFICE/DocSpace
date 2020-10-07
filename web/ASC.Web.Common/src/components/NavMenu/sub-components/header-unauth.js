@@ -4,6 +4,7 @@ import { Box } from "asc-web-components";
 import styled from "styled-components";
 import RecoverAccess from "./recover-access-container";
 import { connect } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const backgroundColor = "#0F4071";
 
@@ -11,11 +12,9 @@ const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: flex;
-  justify-content: center;
-  z-index: 185;
-  position: absolute;
   width: calc(100vw - 64px);
   height: 56px;
+  justify-content: center;
   padding: 0 32px;
 
   .header-items-wrapper {
@@ -49,17 +48,25 @@ const Header = styled.header`
   }
 `;
 
-const HeaderUnauth = ({ t, enableAdmMess, wizardToken }) => {
+const HeaderUnAuth = ({ enableAdmMess, wizardToken }) => {
+  //console.log("HeaderUnAuth render");
 
-  //console.log("Header render");
-
+  const { t } = useTranslation();
 
   return (
     <Header>
-      <Box displayProp="flex" justifyContent="space-between" alignItems="center" className="header-items-wrapper">
+      <Box
+        displayProp="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        className="header-items-wrapper"
+      >
         <div>
           <a className="header-logo-wrapper" href="/">
-            <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
+            <img
+              className="header-logo-min_icon"
+              src="images/nav.logo.react.svg"
+            />
             <img
               className="header-logo-icon"
               src="images/nav.logo.opened.react.svg"
@@ -67,27 +74,27 @@ const HeaderUnauth = ({ t, enableAdmMess, wizardToken }) => {
           </a>
         </div>
 
-        <div>
-          {(enableAdmMess && !wizardToken) && <RecoverAccess t={t} />}
-        </div>
+        <div>{enableAdmMess && !wizardToken && <RecoverAccess t={t} />}</div>
       </Box>
     </Header>
   );
 };
 
-HeaderUnauth.displayName = "Header";
+HeaderUnAuth.displayName = "Header";
 
-HeaderUnauth.propTypes = {
-  t: PropTypes.func.isRequired,
+HeaderUnAuth.propTypes = {
   enableAdmMess: PropTypes.bool,
   wizardToken: PropTypes.string
 };
 
-function mapStateToProps(state) {
-  return {
-    enableAdmMess: state.auth.settings.enableAdmMess,
-    wizardToken: state.auth.settings.wizardToken
-  };
-}
+const mapStateToProps = state => {
+  const { settings } = state.auth;
+  const { enableAdmMess, wizardToken } = settings;
 
-export default connect(mapStateToProps, null)(HeaderUnauth);
+  return {
+    enableAdmMess,
+    wizardToken
+  };
+};
+
+export default connect(mapStateToProps)(HeaderUnAuth);

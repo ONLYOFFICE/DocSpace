@@ -7,7 +7,6 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { constants, FilterInput } from 'asc-web-common';
-import store from "../../../../../store/store";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from 'react-device-detect';
 
@@ -61,7 +60,7 @@ class SectionFilterContent extends React.Component {
   }
 
   onFilter = data => {
-    const { setIsLoading, filter, selectedFolderId } = this.props;
+    const { setIsLoading, filter, selectedFolderId, fetchFiles } = this.props;
 
     const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
@@ -91,7 +90,7 @@ class SectionFilterContent extends React.Component {
     newFilter.selectedItem = selectedFilterItem;
 
     setIsLoading(true);
-    fetchFiles(selectedFolderId, newFilter, store.dispatch)
+    fetchFiles(selectedFolderId, newFilter)
       .finally(() => setIsLoading(false));
   };
 

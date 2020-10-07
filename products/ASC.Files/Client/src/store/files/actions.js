@@ -1,6 +1,6 @@
-import { api, history } from "asc-web-common";
+import { api, history, toastr } from "asc-web-common";
 import axios from "axios";
-import queryString from 'query-string';
+import queryString from "query-string";
 import {
   AUTHOR_TYPE,
   FILTER_TYPE,
@@ -14,7 +14,7 @@ import {
   PREVIEW
 } from "../../helpers/constants";
 import config from "../../../package.json";
-import { getTreeFolders } from "./selectors";
+import { createTreeFolders, canConvert, loopTreeFolders } from "./selectors";
 
 const { files, FilesFilter } = api;
 
@@ -37,7 +37,7 @@ export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
 export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
-export const SET_NEW_TREE_FILES = "SET_NEW_TREE_FILES";
+export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
 export const SET_EXPAND_SETTINGS_TREE = "SET_EXPAND_SETTINGS_TREE";
@@ -46,6 +46,8 @@ export const SET_THIRD_PARTY = "SET_THIRD_PARTY";
 export const SET_FILES_SETTINGS = "SET_FILES_SETTINGS";
 export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
+export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
+export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
 
 export function setFile(file) {
   return {
@@ -114,14 +116,14 @@ export function setDragging(dragging) {
   return {
     type: SET_DRAGGING,
     dragging
-  }
+  };
 }
 
 export function setDragItem(dragItem) {
   return {
     type: SET_DRAG_ITEM,
     dragItem
-  }
+  };
 }
 
 export function setFilesFilter(filter) {
@@ -136,7 +138,7 @@ export function setFilter(filter) {
     type: SET_FILTER,
     filter
   };
-};
+}
 
 export function setViewAs(viewAs) {
   return {
@@ -180,10 +182,10 @@ export function setConvertDialogVisible(convertDialogVisible) {
   };
 }
 
-export function setNewTreeFilesBadge(updateTreeNew) {
+export function setUpdateTree(updateTree) {
   return {
-    type: SET_NEW_TREE_FILES,
-    updateTreeNew
+    type: SET_UPDATE_TREE,
+    updateTree
   };
 }
 
@@ -198,54 +200,68 @@ export function setSelectedNode(node) {
   return {
     type: SET_SELECTED_NODE,
     node
-  }
+  };
 }
 
 export function setExpandSettingsTree(setting) {
   return {
     type: SET_EXPAND_SETTINGS_TREE,
     setting
-  }
+  };
 }
 
 export function setIsLoading(isLoading) {
   return {
     type: SET_IS_LOADING,
     isLoading
-  }
+  };
 }
 
 export function setFilesSettings(settings) {
-  return { 
+  return {
     type: SET_FILES_SETTINGS,
     settings
-  }
+  };
 }
 
 export function setFilesSetting(setting, val) {
   return {
     type: SET_FILES_SETTING,
-    setting, val
-  }
+    setting,
+    val
+  };
 }
 
 export function setIsErrorSettings(isError) {
   return {
     type: SET_IS_ERROR_SETTINGS,
     isError
-  }
+  };
 }
 
+export function setFirstLoad(firstLoad) {
+  return {
+    type: SET_FIRST_LOAD,
+    firstLoad
+  };
+}
+
+export function setUploadData(uploadData) {
+  return {
+    type: SET_UPLOAD_DATA,
+    uploadData
+  };
+}
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
-  const URLParams = queryString.parse(window.location.href)
+  const URLParams = queryString.parse(window.location.href);
 
   if (filter.filterType) {
     params.push(`${FILTER_TYPE}=${filter.filterType}`);
   }
 
-  if (filter.withSubfolders === 'false') {
+  if (filter.withSubfolders === "false") {
     params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
   }
 
@@ -263,7 +279,7 @@ export function setFilterUrl(filter) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
   }
 
-  if(URLParams.preview) {
+  if (URLParams.preview) {
     params.push(`${PREVIEW}=${URLParams.preview}`);
   }
 
@@ -275,18 +291,27 @@ export function setFilterUrl(filter) {
 }
 
 // TODO: similar to fetchFolder, remove one
-export function fetchFiles(folderId, filter, dispatch) {
-  const filterData = filter ? filter.clone() : FilesFilter.getDefault();
-  filterData.folder = folderId;
-  return files.getFolder(folderId, filter).then(data => {
-    filterData.treeFolders = getTreeFolders(data.pathParts, filterData);
-    filterData.total = data.total;
-    dispatch(setFilesFilter(filterData));
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    dispatch(setSelected("close"));
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts, ...{new: data.new} }));
-  })
+export function fetchFiles(folderId, filter) {
+  return dispatch => {
+    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+    filterData.folder = folderId;
+    return files.getFolder(folderId, filter).then(data => {
+      filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
+      filterData.total = data.total;
+      dispatch(setFilesFilter(filterData));
+      dispatch(setFolders(data.folders));
+      dispatch(setFiles(data.files));
+      dispatch(setSelected("close"));
+      return dispatch(
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: data.pathParts,
+          ...{ new: data.new }
+        })
+      );
+    });
+  };
 }
 
 export function fetchFolders() {
@@ -301,8 +326,14 @@ export function fetchFolder(folderId, dispatch) {
   return files.getFolder(folderId).then(data => {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));
-  })
+    return dispatch(
+      setSelectedFolder({
+        folders: data.folders,
+        ...data.current,
+        pathParts: data.pathParts
+      })
+    );
+  });
 }
 
 export function fetchMyFolder(dispatch) {
@@ -312,12 +343,6 @@ export function fetchMyFolder(dispatch) {
     return dispatch(setSelectedFolder(data.current));
   });
 }
-
-export function getFolder(folderId) {
-  return dispatch => {
-    return files.getFolder(folderId);
-  };
-};
 
 export function fetchTrashFolder(dispatch) {
   return files.getTrashFolderList().then(data => {
@@ -376,55 +401,48 @@ export function createFile(folderId, title) {
   return dispatch => {
     return files.createFile(folderId, title)
       .then(file => {
-        fetchFolder(folderId, dispatch);
+      fetchFolder(folderId, dispatch);
         return Promise.resolve(file)
-      });
+    });
   };
 }
 
 export function createFolder(parentFolderId, title) {
   return dispatch => {
-    return files.createFolder(parentFolderId, title)
-      .then(folder => {
-        fetchFolder(parentFolderId, dispatch);
-      });
+    return files.createFolder(parentFolderId, title).then(folder => {
+      fetchFolder(parentFolderId, dispatch);
+    });
   };
 }
 
 export function updateFile(fileId, title) {
   return dispatch => {
-    return files.updateFile(fileId, title)
-      .then(file => {
-        dispatch(setFile(file));
-      });
+    return files.updateFile(fileId, title).then(file => {
+      dispatch(setFile(file));
+    });
   };
 }
 
 export function renameFolder(folderId, title) {
   return dispatch => {
-    return files.renameFolder(folderId, title)
-      .then(folder => {
-        dispatch(setFolder(folder));
-      });
+    return files.renameFolder(folderId, title).then(folder => {
+      dispatch(setFolder(folder));
+    });
   };
 }
 
-export function deleteFile(fileId, deleteAfter, immediately) {
-  return dispatch => {
-    return files.deleteFile(fileId, deleteAfter, immediately)
-  }
-}
-
-export function deleteFolder(folderId, deleteAfter, immediately) {
-  return (dispatch) => api.files.deleteFolder(folderId, deleteAfter, immediately);
-}
-
-export function setShareFiles(folderIds, fileIds, share, notify, sharingMessage) {
-  const foldersRequests = folderIds.map((id) =>
+export function setShareFiles(
+  folderIds,
+  fileIds,
+  share,
+  notify,
+  sharingMessage
+) {
+  const foldersRequests = folderIds.map(id =>
     files.setShareFolder(id, share, notify, sharingMessage)
   );
 
-  const filesRequests = fileIds.map((id) =>
+  const filesRequests = fileIds.map(id =>
     files.setShareFiles(id, share, notify, sharingMessage)
   );
 
@@ -433,36 +451,20 @@ export function setShareFiles(folderIds, fileIds, share, notify, sharingMessage)
 }
 
 export function getShareUsers(folderIds, fileIds) {
-  const foldersRequests = folderIds.map(folderId => files.getShareFolders(folderId));
+  const foldersRequests = folderIds.map(folderId =>
+    files.getShareFolders(folderId)
+  );
   const filesRequests = fileIds.map(fileId => files.getShareFiles(fileId));
   const requests = [...foldersRequests, ...filesRequests];
 
   return axios.all(requests).then(res => res);
 }
 
-export function getProgress() {
+export function clearProgressData() {
   return dispatch => {
-    return files.getProgress();
-  };
-};
-
-export function copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
-  return dispatch => {
-    return files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
-  };
-};
-
-export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
-  return dispatch => {
-    return files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter);
-  };
-};
-
-export function clearProgressData(dispatch) {
-  const emptyProgressData = { visible: false, percent: 0, label: "" };
-  dispatch(setProgressBarData(emptyProgressData));
+    dispatch(setProgressBarData({ visible: false, percent: 0, label: "" }));
+  }
 }
-
 
 /*export function deleteGroup(id) {
   return (dispatch, getState) => {
@@ -483,49 +485,390 @@ export function clearProgressData(dispatch) {
 
 export function setUpdateIfExist(data, setting) {
   return dispatch => {
-    return files.updateIfExist(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .updateIfExist(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setStoreOriginal(data, setting) {
   return dispatch => {
-    return files.storeOriginal(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .storeOriginal(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setConfirmDelete(data, setting) {
   return dispatch => {
-    return files.changeDeleteConfirm(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .changeDeleteConfirm(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setStoreForceSave(data, setting) {
   return dispatch => {
-    return files.storeForceSave(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .storeForceSave(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setEnableThirdParty(data, setting) {
   return dispatch => {
-    return files.thirdParty(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .thirdParty(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function setForceSave(data, setting) {
   return dispatch => {
-    return files.forceSave(data)
-      .then( res => dispatch(setFilesSetting(setting, res)));
-  }
+    return files
+      .forceSave(data)
+      .then(res => dispatch(setFilesSetting(setting, res)));
+  };
 }
 
 export function getFilesSettings() {
   return dispatch => {
-    return files.getSettingsFiles()
-      .then( settings => dispatch(setFilesSettings(settings)));
+    return files
+      .getSettingsFiles()
+      .then(settings => dispatch(setFilesSettings(settings)));
+  };
+}
+
+export const startUpload = (uploadFiles, folderId, t) => {
+  return (dispatch, getState) => {
+    const newFiles = [];
+    let filesSize = 0;
+    const convertFiles = [];
+    let convertFilesSize = 0;
+
+    for (let index of Object.keys(uploadFiles)) {
+      const item = uploadFiles[index];
+      if (item.size !== 0) {
+        const parts = item.name.split(".");
+        const ext = parts.length > 1 ? "." + parts.pop() : "";
+        if (canConvert(ext)) {
+          convertFiles.push(item);
+          convertFilesSize += item.size;
+        } else {
+          newFiles.push(item);
+          filesSize += item.size;
+        }
+      } else {
+        toastr.error(t("ErrorUploadMessage"));
+      }
+    }
+
+    const uploadStatus = convertFiles.length ? "pending" : null;
+    const uploadToFolder = folderId;
+    const showConvertDialog = !!convertFiles.length;
+
+    const newUploadData = {
+      files: newFiles,
+      filesSize,
+      convertFiles,
+      convertFilesSize,
+      uploadStatus,
+      uploadToFolder,
+      uploadedFiles: 0,
+      percent: 0,
+      uploaded: false
+    }
+    dispatch(setUploadData(newUploadData));
+    
+    if(showConvertDialog) {
+      dispatch(setConvertDialogVisible(showConvertDialog));
+    }
+
+    startUploadFiles(t, newFiles.length, convertFiles.length, dispatch, getState);
+  };
+};
+
+const startUploadFiles = (t, filesLength, convertFilesLength, dispatch, getState) => {
+    if (filesLength > 0 || convertFilesLength > 0) {
+    const progressData = { visible: true, percent: 0, label: "" };
+    progressData.label = t("UploadingLabel", { file: 0, totalFiles: filesLength + convertFilesLength });
+    dispatch(setProgressBarData(progressData));
+    startSessionFunc(0, t, dispatch, getState);
+  }
+};
+
+const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
+  const state = getState();
+  const { uploadData } = state.files;
+  const { uploaded, uploadToFolder, files, convertFiles } = uploadData;
+
+  const currentFiles = uploaded ? convertFiles : files;
+
+  if (!uploaded && files.length === 0) {
+    uploadData.uploaded = true;
+    dispatch(setUploadData(uploadData));
+    return;
+  }
+
+  let file = files[indexOfFile];
+  let isLatestFile = indexOfFile === files.length - 1;
+
+  if (uploaded) {
+    if (convertFiles.length) {
+      file = convertFiles[indexOfFile];
+      isLatestFile = indexOfFile === convertFiles.length - 1;
+    } else {
+      //Test return empty convert files
+      return;
+    }
+  }
+
+  const fileName = file.name;
+  const fileSize = file.size;
+  const relativePath = file.path
+    ? file.path.slice(1, -file.name.length)
+    : file.webkitRelativePath
+    ? file.webkitRelativePath.slice(0, -file.name.length)
+    : "";
+
+  let location;
+  const requestsDataArray = [];
+  const chunkSize = 1024 * 1023; //~0.999mb
+  const chunks = Math.ceil(file.size / chunkSize, chunkSize);
+  let chunk = 0;
+
+  api.files
+    .startUploadSession(uploadToFolder, fileName, fileSize, relativePath)
+    .then((res) => {
+      location = res.data.location;
+      while (chunk < chunks) {
+        const offset = chunk * chunkSize;
+        const formData = new FormData();
+        formData.append("file", file.slice(offset, offset + chunkSize));
+        requestsDataArray.push(formData);
+        chunk++;
+      }
+    })
+    .then(() => sendChunk(currentFiles, location, requestsDataArray, isLatestFile, indexOfFile, t, dispatch, getState))
+    .catch((err) => {
+      toastr.error(err);
+      dispatch(clearProgressData());
+    });
+};
+
+const sendChunk = (
+  files,
+  location,
+  requestsDataArray,
+  isLatestFile,
+  indexOfFile,
+  t,
+  dispatch,
+  getState
+) => {
+  const state = getState();
+  const { uploadData } = state.files;
+  const { uploaded, percent, uploadedFiles, uploadToFolder, filesSize, convertFilesSize } = uploadData;
+  const totalSize = convertFilesSize + filesSize;
+  
+  const sendRequestFunc = (index) => {
+    api.files
+      .uploadFile(location, requestsDataArray[index])
+      .then(res => {
+        //percent problem? use getState()
+        const currentFile = files[indexOfFile];
+        const fileId = res.data.data.id;
+        const newPercent = percent + (currentFile.size / totalSize) * 100;
+
+        if (res.data.data && res.data.data.uploaded) {
+          //newState = { percent: newPercent };
+        }
+
+        if (index + 1 !== requestsDataArray.length) {
+          dispatch(setProgressBarData({ label: t("UploadingLabel", { file: uploadedFiles, totalFiles: files.length }), newPercent, visible: true }));
+          sendRequestFunc(index + 1);
+        } else if (uploaded) {
+          api.files.convertFile(fileId).then((convertRes) => {
+            if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
+              uploadData.percent = newPercent;
+              getConvertProgress(fileId, t, uploadData, isLatestFile, indexOfFile, dispatch, getState);
+            }
+          });
+        } else if (isLatestFile) {
+          if (uploaded) {
+            updateFiles(uploadToFolder, dispatch, getState);
+          } else {
+            const uploadStatus = getState().files.uploadData.uploadStatus;
+            if (uploadStatus === "convert") {
+              const newUploadData = {...getState().files.uploadData, ...{ uploadedFiles: uploadedFiles + 1, percent: newPercent, uploaded: true }};
+              updateConvertProgress(newUploadData, t, dispatch);
+              startSessionFunc(0, t, dispatch, getState);
+            } else if (uploadStatus === "pending") {
+              const stateUploadData = getState().files.uploadData;
+              const newUploadData = {...stateUploadData, ...{ uploadStatus: null, uploadedFiles: uploadedFiles + 1, percent: newPercent, uploaded: true }};
+              updateConvertProgress(newUploadData, t, dispatch);
+            } else {
+              const newUploadData = {...getState().files.uploadData, ...{ uploadedFiles: uploadedFiles + 1, percent: newPercent }};
+              updateConvertProgress(newUploadData, t, dispatch);
+              updateFiles(uploadToFolder, dispatch, getState);
+            }
+          }
+        } else {
+          const newUploadData = {...getState().files.uploadData, ...{ uploadedFiles: uploadedFiles + 1, percent: newPercent }};
+          updateConvertProgress(newUploadData, t, dispatch);
+          startSessionFunc(indexOfFile + 1, t, dispatch, getState);
+        }
+      })
+      .catch((err) => toastr.error(err));
+  };
+
+  sendRequestFunc(0);
+};
+
+const updateFiles = (folderId, dispatch, getState) => {
+  const { files } = getState();
+  const { filter, treeFolders, selectedFolder } = files;
+  const uploadData = {
+    files: [],
+    filesSize: 0,
+    convertFiles: [],
+    convertFilesSize: 0,
+    uploadStatus: null,
+    uploadToFolder: null,
+    uploadedFiles: 0,
+    percent: 0,
+    uploaded: true
+  }
+
+  if (selectedFolder.id === folderId) {
+    return dispatch(fetchFiles(selectedFolder.id, filter.clone()))
+      .then((data) => {
+        const path = data.selectedFolder.pathParts;
+        const newTreeFolders = treeFolders;
+        const folders = data.selectedFolder.folders;
+        const foldersCount = data.selectedFolder.foldersCount;
+        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+        dispatch(setTreeFolders(newTreeFolders));
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => setTimeout(() => { 
+        dispatch(clearProgressData());
+        dispatch(setUploadData(uploadData));
+      }, 5000))
+    ;
+    //.finally(() => this.setState({ uploaded: true }));
+  } else {
+    return api.files
+      .getFolder(folderId, filter.clone())
+      .then((data) => {
+        const path = data.pathParts;
+        const newTreeFolders = treeFolders;
+        const folders = data.folders;
+        const foldersCount = data.count;
+        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+        dispatch(setTreeFolders(newTreeFolders));
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => setTimeout(() => {
+        dispatch(clearProgressData());
+        dispatch(setUploadData(uploadData));
+      }, 5000));
+    //.finally(() => this.setState({ uploaded: true }));
+  }
+};
+
+const getConvertProgress = (fileId, t, uploadData, isLatestFile, indexOfFile, dispatch, getState) => {
+  const { uploadedFiles, uploadToFolder } = uploadData;
+  api.files.getConvertFile(fileId).then((res) => {
+    if (res && res[0] && res[0].progress !== 100) {
+      setTimeout(
+        () => getConvertProgress(fileId, t, uploadData, isLatestFile, indexOfFile, dispatch, getState),
+        1000
+      );
+    } else {
+      uploadData.uploadedFiles = uploadedFiles + 1;
+      updateConvertProgress(uploadData, t, dispatch);
+      !isLatestFile && startSessionFunc(indexOfFile + 1, t, dispatch, getState);
+
+      if (res[0].error) {
+        toastr.error(res[0].error);
+      }
+      if (isLatestFile) {
+        updateFiles(uploadToFolder, dispatch, getState);
+        return;
+      }
+    }
+  });
+};
+
+const updateConvertProgress = (uploadData, t, dispatch) => {
+  const { uploadedFiles, uploadStatus, files, convertFiles } = uploadData;
+  let progressVisible = true;
+  const file = uploadedFiles;
+  let percent = uploadData.percent;
+
+  const totalFiles =
+    uploadStatus === "cancel"
+      ? files.length
+      : files.length + convertFiles.length;
+
+  if (uploadedFiles === totalFiles) {
+    percent = 100;
+    uploadData.percent = 0;
+    uploadData.uploadedFiles = 0;
+    uploadData.uploadStatus = null;
+    progressVisible = false;
+  }
+
+  dispatch(setUploadData(uploadData));
+
+  dispatch(
+    setProgressBarData({
+      label: t("UploadingLabel", { file, totalFiles }),
+      percent,
+      visible: true,
+    })
+  );
+  if (!progressVisible) {
+    setTimeout(() => dispatch(clearProgressData()), 5000);
+  }
+};
+
+
+export const setDialogVisible = (t) => {
+  return (dispatch, getState) => {
+    const { uploadData } = getState().files;
+    const { files, uploadStatus, uploadToFolder, uploadedFiles, percent } = uploadData;
+
+    dispatch(setConvertDialogVisible(false));
+    const label = t("UploadingLabel", { file: uploadedFiles, totalFiles: files.length });
+  
+    if (uploadStatus === null) {
+      dispatch(setProgressBarData({ label, percent: 100, visible: true }));
+      uploadData.uploadedFiles = 0;
+      uploadData.percent = 0;
+      dispatch(setUploadData(uploadData));
+      updateFiles(uploadToFolder, dispatch, getState);
+    } else if (!files.length) {
+      dispatch(clearProgressData());
+    } else {
+      dispatch(setProgressBarData({ label, percent, visible: true }));
+      uploadData.uploadStatus = "cancel";
+      dispatch(setUploadData(uploadData));
+    }
+  }
+};
+
+export const onConvert = t => {
+  return (dispatch, getState) => {
+    const { uploadData } = getState().files;
+
+    if (uploadData.uploaded) {
+      startSessionFunc(0, t, dispatch, getState);
+    }
+
+    uploadData.uploadStatus = "convert";
+    dispatch(setUploadData(uploadData));
+    dispatch(setConvertDialogVisible(false));
   }
 }
