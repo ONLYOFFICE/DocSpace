@@ -8,7 +8,8 @@ import {
   SET_FILTER,
   SELECT_GROUP,
   SET_USER,
-  SET_SELECTOR_USERS
+  SET_SELECTOR_USERS,
+  TOGGLE_AVATAR_EDITOR
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
 import { api } from "asc-web-common";
@@ -21,9 +22,10 @@ const initialState = {
   selected: "none",
   selectedGroup: null,
   filter: Filter.getDefault(),
+  avatarEditorIsOpen: true,
   selector: {
     users: []
-  }
+  },
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -76,6 +78,10 @@ const peopleReducer = (state = initialState, action) => {
         selector: Object.assign({}, state.selector, { 
           users: action.users
         })
+      });
+    case TOGGLE_AVATAR_EDITOR:
+      return Object.assign({}, state, {
+        avatarEditorIsOpen: action.avatarEditorIsOpen
       });
     default:
       return state;

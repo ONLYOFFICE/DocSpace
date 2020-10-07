@@ -24,6 +24,7 @@ export const SET_SELECTED = "SET_SELECTED";
 export const SET_FILTER = "SET_FILTER";
 export const SELECT_GROUP = "SELECT_GROUP";
 export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
+export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR"
 
 export function setUser(user) {
   return {
@@ -83,6 +84,13 @@ export function deselectUser(user) {
   return {
     type: DESELECT_USER,
     user
+  };
+}
+
+export function toggleAvatarEditor(avatarEditorIsOpen) {
+  return {
+    type: TOGGLE_AVATAR_EDITOR,
+    avatarEditorIsOpen
   };
 }
 

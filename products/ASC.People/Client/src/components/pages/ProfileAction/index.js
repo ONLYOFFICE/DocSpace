@@ -51,7 +51,7 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     let loaded = false;
-    const { profile, isVisitor, match, isAdmin } = this.props;
+    const { profile, isVisitor, match, isAdmin, avatarEditorIsOpen } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -127,7 +127,8 @@ function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
+    avatarEditorIsOpen: state.people.avatarEditorIsOpen
   };
 }
 
