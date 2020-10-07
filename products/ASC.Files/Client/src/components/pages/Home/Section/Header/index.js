@@ -34,8 +34,13 @@ import {
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
-  checkFolderType,
+  getIsRecycleBinFolder,
   isCanCreate,
+  getSelectedFolderTitle,
+  getFilter,
+  getSelectedFolderId,
+  getSelection,
+  getSelectedFolderParentId,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -342,7 +347,7 @@ class SectionHeaderContent extends React.Component {
       selection,
       isHeaderVisible,
       onClose,
-      isRecycleBinFolder,
+      isRecycleBin,
       isHeaderChecked,
       isHeaderIndeterminate,
       deleteDialogVisible,
@@ -454,7 +459,7 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
-    if (isRecycleBinFolder) {
+    if (isRecycleBin) {
       menuItems.push({
         label: t("EmptyRecycleBin"),
         onClick: this.onEmptyTrashAction,
@@ -556,7 +561,7 @@ class SectionHeaderContent extends React.Component {
         {showDeleteDialog && (
           <DeleteDialog
             loopFilesOperations={loopFilesOperations}
-            isRecycleBinFolder={isRecycleBinFolder}
+            isRecycleBin={isRecycleBin}
             visible={showDeleteDialog}
             onClose={this.onDeleteAction}
             selection={selection}
@@ -609,23 +614,22 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { selectedFolder, selection, treeFolders, filter } = state.files;
-  const { parentId, title, id } = selectedFolder;
+  const { selectedFolder } = state.files;
+  const { parentId } = selectedFolder;
   const { user } = state.auth;
 
-  const indexOfTrash = 3;
   user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
 
   return {
     folder: parentId !== 0,
     isAdmin: isAdmin(state),
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
-    parentId,
-    selection,
-    title,
-    filter,
+    isRecycleBin: getIsRecycleBinFolder(state),
+    parentId: getSelectedFolderParentId(state),
+    selection: getSelection(state),
+    title: getSelectedFolderTitle(state),
+    filter: getFilter(state),
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    currentFolderId: id,
+    currentFolderId: getSelectedFolderId(state),
     isCanCreate: isCanCreate(selectedFolder, user),
   };
 };
