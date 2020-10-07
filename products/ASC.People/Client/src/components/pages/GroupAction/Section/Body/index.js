@@ -24,7 +24,11 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
-const { getCurrentProduct } = initStore.auth.selectors;
+const {
+  getCurrentProductName,
+  getSettings,
+  getCurrentUser,
+} = initStore.auth.selectors;
 
 const MainContainer = styled.div`
   display: flex;
@@ -473,17 +477,19 @@ const convertGroups = (groups) => {
 };
 
 function mapStateToProps(state) {
-  const currentModule = getCurrentProduct(state);
+  const currentModuleName = getCurrentProductName(state);
+  const settings = getSettings(state);
+  const { groupHeadCaption, groupsCaption, groupCaption } = settings;
   return {
-    settings: state.auth.settings,
+    settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
-    groupHeadCaption: state.auth.settings.customNames.groupHeadCaption,
-    groupsCaption: state.auth.settings.customNames.groupsCaption,
-    groupCaption: state.auth.settings.customNames.groupCaption,
-    me: state.auth.user,
-    currentModuleName: (currentModule && currentModule.title) || "",
+    groupHeadCaption,
+    groupsCaption,
+    groupCaption,
+    me: getCurrentUser(state),
+    currentModuleName,
   };
 }
 
