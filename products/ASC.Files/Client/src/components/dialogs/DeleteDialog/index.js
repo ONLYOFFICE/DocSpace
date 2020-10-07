@@ -18,7 +18,13 @@ import {
   clearProgressData,
   setUpdateTree
 } from "../../../store/files/actions";
-import { loopTreeFolders } from "../../../store/files/selectors";
+import {
+  loopTreeFolders,
+  getSelectedFolderId,
+  getFilter,
+  getTreeFolders,
+  getIsLoading,
+} from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteDialog",
@@ -262,12 +268,11 @@ const DeleteDialog = props => (
 );
 
 const mapStateToProps = state => {
-  const { selectedFolder, filter, treeFolders, isLoading } = state.files;
   return {
-    currentFolderId: selectedFolder.id,
-    filter,
-    treeFolders,
-    isLoading
+    currentFolderId: getSelectedFolderId(state),
+    filter: getFilter(state),
+    treeFolders: getTreeFolders(state),
+    isLoading: getIsLoading(state)
   };
 };
 
