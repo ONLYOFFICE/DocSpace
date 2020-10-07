@@ -3,9 +3,13 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
-import { utils, api } from "asc-web-common";
+import { utils, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+import { getFiles, getFolders } from "../../../store/files/selectors";
+
+const { getIsLoaded } = store.auth.selectors;
+
 const i18n = createI18N({
   page: "DocEditor",
   localesPath: "pages/DocEditor",
@@ -69,9 +73,9 @@ DocEditor.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    files: state.files.files,
-    folders: state.files.folders,
-    isLoaded: state.auth.isLoaded,
+    files: getFiles(state),
+    folders: getFolders(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 
