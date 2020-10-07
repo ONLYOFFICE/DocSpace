@@ -190,6 +190,8 @@ import OrigFlipVertical from "./flip.vertical.react.svg";
 import OrigRotateLeft from "./rotate.left.react.svg";
 import OrigRotateRight from "./rotate.right.react.svg";
 
+import OrigRecentIcon from "./catalog.recent.react.svg";
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -735,4 +737,8 @@ export const RotateLeftIcon = createStyledIcon(
 export const RotateRightIcon = createStyledIcon(
   OrigRotateRight,
   "RotateRightIcon"
+);
+export const CatalogRecentIcon = createStyledIcon(
+  OrigRecentIcon,
+  "CatalogRecentIcon"
 );
