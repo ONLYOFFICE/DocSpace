@@ -961,3 +961,8 @@ export const getPathParts = (state) => {
 export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
+
+export const getRootFolderId = (state) => {
+  if(state.files.selectedFolder.pathParts)
+    return state.files.selectedFolder.pathParts[0];
+}

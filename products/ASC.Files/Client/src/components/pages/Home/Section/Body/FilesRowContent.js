@@ -25,6 +25,7 @@ import {
   isSound, 
   isVideo,
   getIsRecycleBinFolder,
+  getRootFolderId,
 } from '../../../../../store/files/selectors';
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
@@ -535,9 +536,6 @@ class FilesRowContent extends React.PureComponent {
 };
 
 function mapStateToProps(state) {
-  const selectedFolder = getSelectedFolder(state);
-  const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
-
   return {
     filter: getFilter(state),
     fileAction: getFileAction(state),
@@ -545,7 +543,7 @@ function mapStateToProps(state) {
     isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    rootFolderId,
+    rootFolderId: getRootFolderId(state),
     newItems: getSelectedFolderNew(state),
     selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),

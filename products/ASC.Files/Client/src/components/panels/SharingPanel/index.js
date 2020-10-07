@@ -18,7 +18,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import { getShareUsers, setShareFiles, setIsLoading } from "../../../store/files/actions";
-import { getAccessOption } from "../../../store/files/selectors";
+import { getAccessOption, getSelection } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
   StyledContent,
