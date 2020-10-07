@@ -966,3 +966,7 @@ export const getRootFolderId = (state) => {
   if(state.files.selectedFolder.pathParts)
     return state.files.selectedFolder.pathParts[0];
 }
+
+export const getIsRootFolder = (state) => {
+  return state.files.selectedFolder.parentId === 0;
+}

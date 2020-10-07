@@ -41,6 +41,8 @@ import {
   getSelectedFolderId,
   getSelection,
   getSelectedFolderParentId,
+  getIsRootFolder,
+  getSelectedFolder,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -351,7 +353,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       deleteDialogVisible,
-      folder,
+      isRootFolder,
       onCheck,
       title,
       loopFilesOperations,
@@ -495,7 +497,7 @@ class SectionHeaderContent extends React.Component {
               <Loaders.Headline />
             ) : (
               <>
-                {folder && (
+                {!isRootFolder && (
                   <IconButton
                     iconName="ArrowPathIcon"
                     size="17"
@@ -513,7 +515,7 @@ class SectionHeaderContent extends React.Component {
                 >
                   {title}
                 </Headline>
-                {folder && isCanCreate ? (
+                {!isRootFolder && isCanCreate ? (
                   <>
                     <ContextMenuButton
                       className="add-button"
@@ -614,14 +616,13 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { selectedFolder } = state.files;
-  const { parentId } = selectedFolder;
+  const selectedFolder = getSelectedFolder(state);
   const { user } = state.auth;
 
   user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
 
   return {
-    folder: parentId !== 0,
+    isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     parentId: getSelectedFolderParentId(state),
