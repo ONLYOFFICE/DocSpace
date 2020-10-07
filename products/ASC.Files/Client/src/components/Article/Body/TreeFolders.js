@@ -18,6 +18,11 @@ import {
   getDragging,
   getUpdateTree,
   getSelectedFolderId,
+  getIsCommonFolder,
+  getIsShareFolder,
+  getIsMyFolder,
+  getMyFolderId,
+  getShareFolderId,
 } from "../../../store/files/selectors";
 const { isAdmin } = initStore.auth.selectors;
 
@@ -431,28 +436,14 @@ TreeFolders.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder } = state.files;
-
-  const myFolderIndex = 0;
-  const shareFolderIndex = 1;
-  const commonFolderIndex = 2;
-
-  const myId = treeFolders[myFolderIndex].id;
-  const shareId = treeFolders[shareFolderIndex].id;
-  const commonId = treeFolders[commonFolderIndex].id;
-
-  const isMy = selectedFolder.length && selectedFolder.pathParts[0] === myId;
-  const isShare = selectedFolder.length && selectedFolder.pathParts[0] === shareId;
-  const isCommon = selectedFolder.length && selectedFolder.pathParts[0] === commonId;
-
   return {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),
-    isMy,
-    isCommon,
-    isShare,
-    myId,
-    commonId,
+    isMy: getIsMyFolder(state),
+    isCommon: getIsCommonFolder(state),
+    isShare: getIsShareFolder(state),
+    myId: getMyFolderId(state),
+    commonId: getShareFolderId(state),
     currentId: getSelectedFolderId(state),
     isAdmin: isAdmin(state),
     dragging: getDragging(state),
