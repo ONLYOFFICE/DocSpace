@@ -91,7 +91,6 @@ const { FileAction } = constants;
 const linkStyles = {
   isHovered: true,
   type: "action",
-  fontSize: "13px",
   fontWeight: "600",
   color: "#555f65",
   className: "empty-folder_link",
