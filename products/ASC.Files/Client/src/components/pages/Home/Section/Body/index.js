@@ -1263,7 +1263,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onCreateAddTempItem = (items, folderId, fileAction) => {
-    if (items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
     items.unshift({
       id: -1,
       title: "",
