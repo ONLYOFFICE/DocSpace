@@ -9,7 +9,7 @@ import {
   HelpButton,
 } from "asc-web-components";
 import styled from "styled-components";
-import { history, api, store, toastr } from "asc-web-common";
+import { history, api, store, toastr, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import { updateProfileCulture } from "../../../../../../store/profile/actions";
 
@@ -302,25 +302,31 @@ class ProfileInfo extends React.PureComponent {
           <InfoItem>
             <InfoItemLabel>{t("Language")}:</InfoItemLabel>
             <InfoItemValue>
-              <ComboBox
-                options={languages}
-                selectedOption={selectedLanguage}
-                onSelect={this.onLanguageSelect}
-                isDisabled={false}
-                noBorder={true}
-                scaled={false}
-                scaledOptions={false}
-                size="content"
-                className="language-combo"
-              />
-              <HelpButton
-                place="bottom"
-                offsetLeft={50}
-                offsetRight={0}
-                tooltipContent={tooltipLanguage}
-                helpButtonHeaderContent={t("Language")}
-                className="help-icon"
-              />
+              {languages && selectedLanguage ? (
+                <>
+                  <ComboBox
+                    options={languages}
+                    selectedOption={selectedLanguage}
+                    onSelect={this.onLanguageSelect}
+                    isDisabled={false}
+                    noBorder={true}
+                    scaled={false}
+                    scaledOptions={false}
+                    size="content"
+                    className="language-combo"
+                  />
+                  <HelpButton
+                    place="bottom"
+                    offsetLeft={50}
+                    offsetRight={0}
+                    tooltipContent={tooltipLanguage}
+                    helpButtonHeaderContent={t("Language")}
+                    className="help-icon"
+                  />
+                </>
+              ) : (
+                <Loaders.Text />
+              )}
             </InfoItemValue>
           </InfoItem>
         )}

@@ -2,17 +2,17 @@ import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const SectionPagingContent = ({
   fetchPeople,
   filter,
   onLoading,
-  selectedCount
+  selectedCount,
 }) => {
   const { t } = useTranslation();
   const onNextClick = useCallback(
-    e => {
+    (e) => {
       if (!filter.hasNext()) {
         e.preventDefault();
         return;
@@ -29,7 +29,7 @@ const SectionPagingContent = ({
   );
 
   const onPrevClick = useCallback(
-    e => {
+    (e) => {
       if (!filter.hasPrev()) {
         e.preventDefault();
         return;
@@ -47,7 +47,7 @@ const SectionPagingContent = ({
   );
 
   const onChangePageSize = useCallback(
-    pageItem => {
+    (pageItem) => {
       console.log("Paging onChangePageSize", pageItem);
 
       const newFilter = filter.clone();
@@ -61,7 +61,7 @@ const SectionPagingContent = ({
   );
 
   const onChangePage = useCallback(
-    pageItem => {
+    (pageItem) => {
       console.log("Paging onChangePage", pageItem);
 
       const newFilter = filter.clone();
@@ -77,16 +77,16 @@ const SectionPagingContent = ({
     () => [
       {
         key: 25,
-        label: t('CountPerPage', { count: 25 })
+        label: t("CountPerPage", { count: 25 }),
       },
       {
         key: 50,
-        label: t('CountPerPage', { count: 50 })
+        label: t("CountPerPage", { count: 50 }),
       },
       {
         key: 100,
-        label: t('CountPerPage', { count: 100 })
-      }
+        label: t("CountPerPage", { count: 100 }),
+      },
     ],
     [t]
   );
@@ -94,27 +94,30 @@ const SectionPagingContent = ({
   const pageItems = useMemo(() => {
     if (filter.total < filter.pageCount) return [];
     const totalPages = Math.ceil(filter.total / filter.pageCount);
-    return [...Array(totalPages).keys()].map(
-      item => {
-        return { key: item, label: t('PageOfTotalPage', { page: item+1, totalPage: totalPages }) };
-      }
-    );
+    return [...Array(totalPages).keys()].map((item) => {
+      return {
+        key: item,
+        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
+      };
+    });
   }, [filter.total, filter.pageCount, t]);
 
   const emptyPageSelection = {
     key: 0,
-    label: t('PageOfTotalPage', { page: 1, totalPage: 1 })
-  }
+    label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
+  };
 
   const emptyCountSelection = {
     key: 0,
-    label: t('CountPerPage', { count: 25 })
+    label: t("CountPerPage", { count: 25 }),
   };
 
-  const selectedPageItem = pageItems.find(x => x.key === filter.page) || emptyPageSelection;
-  const selectedCountItem = countItems.find(x => x.key === filter.pageCount) || emptyCountSelection;
+  const selectedPageItem =
+    pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
+  const selectedCountItem =
+    countItems.find((x) => x.key === filter.pageCount) || emptyCountSelection;
 
-  console.log("SectionPagingContent render", filter);
+  //console.log("SectionPagingContent render", filter);
 
   return filter.total < filter.pageCount ? (
     <></>
@@ -140,11 +143,8 @@ const SectionPagingContent = ({
 
 function mapStateToProps(state) {
   return {
-    filter: state.people.filter
+    filter: state.people.filter,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { fetchPeople }
-)(SectionPagingContent);
+export default connect(mapStateToProps, { fetchPeople })(SectionPagingContent);

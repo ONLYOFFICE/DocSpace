@@ -11,12 +11,13 @@ import {
   PublicRoute,
   Login,
   Error404,
-  StudioLayout,
   Offline,
   ComingSoon,
+  NavMenu,
+  Main,
+  utils,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
-//import store from "./store/store";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -31,19 +32,9 @@ const {
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
-  removeLoader = () => {
-    const ele = document.getElementById("ipl-progress-indicator");
-    if (ele) {
-      // fade out
-      ele.classList.add("available");
-      setTimeout(() => {
-        // remove from DOM
-        ele.outerHTML = "";
-      }, 2000);
-    }
-  };
-
   componentDidMount() {
+    utils.removeTempContent();
+
     const { getPortalSettings, getUser, getModules, setIsLoaded } = this.props;
 
     const { AUTH_KEY } = constants;
@@ -66,7 +57,7 @@ class App extends React.Component {
         console.log("INIT REQUESTS FAILED", e);
       })
       .finally(() => {
-        this.removeLoader();
+        utils.hideLoader();
         setIsLoaded(true);
       });
   }
@@ -74,7 +65,8 @@ class App extends React.Component {
   render() {
     return navigator.onLine ? (
       <Router history={history}>
-        <StudioLayout>
+        <NavMenu />
+        <Main>
           <Suspense
             fallback={
               <Loader className="pageLoader" type="rombs" size="40px" />
@@ -108,7 +100,7 @@ class App extends React.Component {
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
-        </StudioLayout>
+        </Main>
       </Router>
     ) : (
       <Offline />
@@ -118,11 +110,10 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { modules, isLoaded, settings } = state.auth;
-  const { homepage, organizationName } = settings;
+  const { organizationName } = settings;
   return {
     modules,
     isLoaded,
-    homepage,
     organizationName,
   };
 };

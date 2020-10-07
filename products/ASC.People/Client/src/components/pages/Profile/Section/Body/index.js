@@ -188,7 +188,7 @@ const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user),
+    isAdmin: isAdmin(state),
     viewer: state.auth.user,
   };
 };
