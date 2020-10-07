@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520 } from "asc-web-common";
-
+import { Error403, Error520, store } from "asc-web-common";
 import {
   setUpdateIfExist,
   setStoreOriginal,
@@ -13,7 +12,19 @@ import {
   setSelectedNode,
   setForceSave,
 } from "../../../../../store/files/actions";
+import {
+  getIsLoading,
+  getSettingsSelectedTreeNode,
+  getSettingsTreeStoreOriginalFiles,
+  getSettingsTreeConfirmDelete,
+  getSettingsTreeUpdateIfExist,
+  getSettingsTreeForceSave,
+  getSettingsTreeStoreForceSave,
+  getSettingsTreeEnableThirdParty,
+} from "../../../../../store/files/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+
+const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
@@ -179,27 +190,16 @@ const SectionBodyContent = ({
 };
 
 function mapStateToProps(state) {
-  const { settingsTree, selectedTreeNode, isLoading } = state.files;
-  const { isAdmin } = state.auth.user;
-  const {
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave,
-    storeForceSave,
-    enableThirdParty,
-  } = settingsTree;
-
   return {
-    isAdmin,
-    selectedTreeNode,
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave,
-    storeForceSave,
-    enableThirdParty,
-    isLoading,
+    isAdmin: isAdmin(state),
+    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
+    confirmDelete: getSettingsTreeConfirmDelete(state),
+    updateIfExist: getSettingsTreeUpdateIfExist(state),
+    forceSave: getSettingsTreeForceSave(state),
+    storeForceSave: getSettingsTreeStoreForceSave(state),
+    enableThirdParty: getSettingsTreeEnableThirdParty(state),
+    isLoading: getIsLoading(state),
   };
 }
 
