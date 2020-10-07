@@ -36,7 +36,9 @@ const SectionHeaderContent = (props) => {
   const { type } = match.params;
   const { t } = useTranslation();
 
-  const headerText = type
+  const headerText = avatarEditorIsOpen
+    ? t("EditPhoto")
+    : type
     ? type === "guest"
       ? t("CustomCreation", { user: guestCaption })
       : t("CustomCreation", { user: userCaption })
