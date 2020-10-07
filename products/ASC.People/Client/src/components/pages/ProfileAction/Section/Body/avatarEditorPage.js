@@ -10,6 +10,7 @@ import {
   updateProfile,
   getUserPhoto,
 } from "../../../../../store/profile/actions";
+import { toggleAvatarEditor } from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 
@@ -20,7 +21,7 @@ const AvatarEditorBody = styled.div`
   margin-bottom: 24px;
 `;
 
-class SectionBodyContent extends React.PureComponent {
+class AvatarEditorPage extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -38,12 +39,17 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { match, fetchProfile, t } = this.props;
+    const { match, fetchProfile, t, profile } = this.props;
+    const { avatar } = this.state;
     const { userId } = match.params;
 
     setDocumentTitle(t("ProfileAction"));
-    if (userId) {
+    if (userId && !profile) {
       fetchProfile(userId);
+    }
+
+    if (profile && avatar.image === undefined) {
+      this.setUserPhotoToState();
     }
   }
 
@@ -62,17 +68,13 @@ class SectionBodyContent extends React.PureComponent {
     }
   }
 
-  onBackClick = () => {
-    this.returnToEditor();
-  };
-
   onCancel = () => {
     this.returnToEditor();
   };
 
   returnToEditor = () => {
-    const { profile, settings } = this.props;
-    this.props.history.push(`${settings.homepage}/edit/${profile.userName}`);
+    const { toggleAvatarEditor } = this.props;
+    toggleAvatarEditor(false);
   };
 
   onSaveAvatar = (isUpdate, result) => {
@@ -209,6 +211,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchProfile, updateProfile })(
-  withTranslation()(withRouter(SectionBodyContent))
-);
+export default connect(mapStateToProps, {
+  fetchProfile,
+  updateProfile,
+  toggleAvatarEditor,
+})(withTranslation()(withRouter(AvatarEditorPage)));

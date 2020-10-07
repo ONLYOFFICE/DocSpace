@@ -6,12 +6,13 @@ import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 import {
   SectionHeaderContent,
   CreateUserForm,
-  UpdateUserForm
+  UpdateUserForm,
+  AvatarEditorPage,
 } from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -19,7 +20,7 @@ import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
   page: "ProfileAction",
-  localesPath: "pages/ProfileAction"
+  localesPath: "pages/ProfileAction",
 });
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
@@ -51,7 +52,13 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     let loaded = false;
-    const { profile, isVisitor, match, isAdmin, avatarEditorIsOpen } = this.props;
+    const {
+      profile,
+      isVisitor,
+      match,
+      isAdmin,
+      avatarEditorIsOpen,
+    } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -68,7 +75,7 @@ class ProfileAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
           )}
-          {(!isVisitor && isAdmin) && (
+          {!isVisitor && isAdmin && (
             <PageLayout.ArticleMainButton>
               <ArticleMainButtonContent />
             </PageLayout.ArticleMainButton>
@@ -87,14 +94,16 @@ class ProfileAction extends React.Component {
 
           <PageLayout.SectionBody>
             {loaded ? (
-              type ? (
+              avatarEditorIsOpen ? (
+                <AvatarEditorPage />
+              ) : type ? (
                 <CreateUserForm />
               ) : (
-                  <UpdateUserForm />
-                )
+                <UpdateUserForm />
+              )
             ) : (
-                <Loader className="pageLoader" type="rombs" size="40px" />
-              )}
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            )}
           </PageLayout.SectionBody>
         </PageLayout>
       </I18nextProvider>
@@ -106,12 +115,12 @@ ProfileAction.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };
 
 const ProfileActionTranslate = withTranslation()(ProfileAction);
 
-const ProfileActionContainer = props => {
+const ProfileActionContainer = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -128,11 +137,10 @@ function mapStateToProps(state) {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state.auth.user),
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen
+    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { fetchProfile }
-)(ProfileActionContainer);
+export default connect(mapStateToProps, { fetchProfile })(
+  ProfileActionContainer
+);

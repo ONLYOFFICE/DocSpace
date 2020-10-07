@@ -8,7 +8,6 @@ import Profile from "./components/pages/Profile";
 import ProfileAction from "./components/pages/ProfileAction";
 import GroupAction from "./components/pages/GroupAction";
 import Reassign from "./components/pages/Reassign";
-import AvatarEditor from "./components/pages/AvatarEditor";
 import {
   history,
   PrivateRoute,
@@ -17,7 +16,7 @@ import {
   Error404,
   Error520,
   StudioLayout,
-  Offline
+  Offline,
 } from "asc-web-common";
 import { store as commonStore, constants } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
@@ -32,7 +31,7 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalPasswordSettings,
-  getPortalCultures
+  getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 
@@ -62,7 +61,7 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       finalize,
-      setIsLoaded
+      setIsLoaded,
     } = this.props;
 
     const token = localStorage.getItem(AUTH_KEY);
@@ -79,7 +78,7 @@ class App extends React.Component {
       getPortalPasswordSettings(),
       getPortalCultures(),
       fetchGroups(),
-      fetchPeople()
+      fetchPeople(),
     ];
 
     axios.all(requests).then(() => {
@@ -116,12 +115,6 @@ class App extends React.Component {
                 allowForMe
               />
               <PrivateRoute
-                path={`${homepage}/edit-avatar/:userId`}
-                component={AvatarEditor}
-                restricted
-                allowForMe
-              />
-              <PrivateRoute
                 path={`${homepage}/create/:type`}
                 component={ProfileAction}
                 restricted
@@ -146,7 +139,7 @@ class App extends React.Component {
                 path={[
                   "/login",
                   "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail"
+                  "/login/confirmed-email=:confirmedEmail",
                 ]}
                 component={Login}
               />
@@ -162,13 +155,13 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
@@ -192,11 +185,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
       dispatch(setIsLoaded(true));
     },
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
