@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import { fetchFiles, clearProgressData } from "../../../store/files/actions";
-import store from "../../../store/store";
+import { fetchFiles, setProgressBarData, clearProgressData } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -23,8 +24,9 @@ const EmptyTrashDialogComponent = props => {
     filter,
     currentFolderId,
     setProgressBarData,
-    getProgress,
-    isLoading
+    isLoading,
+    clearProgressData,
+    fetchFiles
   } = props;
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const EmptyTrashDialogComponent = props => {
   const loopEmptyTrash = useCallback(
     id => {
       const successMessage = "Success empty recycle bin";
-      getProgress()
+      api.files.getProgress()
         .then(res => {
           const currentProcess = res.find(x => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
@@ -46,28 +48,28 @@ const EmptyTrashDialogComponent = props => {
             setProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
           } else {
-            fetchFiles(currentFolderId, filter, store.dispatch)
+            fetchFiles(currentFolderId, filter)
               .then(() => {
                 setProgressBarData({
                   visible: true,
                   percent: 100,
                   label: t("DeleteOperation")
                 });
-                setTimeout(() => clearProgressData(store.dispatch), 5000);
+                setTimeout(() => clearProgressData(), 5000);
                 toastr.success(successMessage);
               })
               .catch(err => {
                 toastr.error(err);
-                clearProgressData(store.dispatch);
+                clearProgressData();
               });
           }
         })
         .catch(err => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     },
-    [t, currentFolderId, filter, getProgress, setProgressBarData]
+    [t, currentFolderId, filter, setProgressBarData, clearProgressData, fetchFiles]
   );
 
   const onEmptyTrash = useCallback(() => {
@@ -86,9 +88,9 @@ const EmptyTrashDialogComponent = props => {
       })
       .catch(err => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
-  }, [onClose, loopEmptyTrash, setProgressBarData, t]);
+  }, [onClose, loopEmptyTrash, setProgressBarData, t, clearProgressData]);
 
   return (
     <ModalDialogContainer>
@@ -97,7 +99,6 @@ const EmptyTrashDialogComponent = props => {
         <ModalDialog.Body>
           <Text>{t("EmptyTrashDialogQuestion")}</Text>
           <Text>{t("EmptyTrashDialogMessage")}</Text>
-          <Text>{t("EmptyTrashDialogWarning")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
@@ -130,4 +131,15 @@ const EmptyTrashDialog = props => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-export default EmptyTrashDialog;
+const mapStateToProps = state => {
+  const { selectedFolder, filter, isLoading } = state.files;
+  return {
+    currentFolderId: selectedFolder.id,
+    filter,
+    isLoading
+  };
+};
+
+export default connect(mapStateToProps,
+  { setProgressBarData, clearProgressData, fetchFiles }
+)(withRouter(EmptyTrashDialog));

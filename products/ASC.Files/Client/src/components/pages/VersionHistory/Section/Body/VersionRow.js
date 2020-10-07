@@ -14,8 +14,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { api, toastr } from "asc-web-common";
-import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
-import store from "../../../../../store/store";
+import { setIsLoading } from "../../../../../store/files/actions";
 
 const { tablet } = utils.device;
 

@@ -8,20 +8,26 @@ import {
   Text,
   ToggleContent,
   Checkbox,
-  CustomScrollbarsVirtualList
+  CustomScrollbarsVirtualList,
 } from "asc-web-components";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { utils, toastr } from "asc-web-common";
+import { utils, toastr, constants } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { updateUserStatus } from "../../../store/people/actions";
+import { updateUserStatus, setSelected } from "../../../store/people/actions";
 
 import { createI18N } from "../../../helpers/i18n";
+import {
+  getUsersToActivateIds,
+  getUsersToDisableIds,
+} from "../../../store/people/selectors";
 const i18n = createI18N({
   page: "ChangeUserStatusDialog",
-  localesPath: "dialogs/ChangeUserStatusDialog"
+  localesPath: "dialogs/ChangeUserStatusDialog",
 });
+
+const { EmployeeStatus } = constants;
 
 const { changeLanguage } = utils;
 
@@ -34,11 +40,11 @@ class ChangeUserStatusDialogComponent extends React.Component {
     changeLanguage(i18n);
 
     const listUsers = selectedUsers.map((item, index) => {
-      const disabled = userIds.find(x => x === item.id);
+      const disabled = userIds.find((x) => x === item.id);
       return (selectedUsers[index] = {
         ...selectedUsers[index],
         checked: disabled ? true : false,
-        disabled: disabled ? false : true
+        disabled: disabled ? false : true,
       });
     });
 
@@ -51,13 +57,13 @@ class ChangeUserStatusDialogComponent extends React.Component {
       userStatus,
       t,
       setSelected,
-      onClose
+      onClose,
     } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
       updateUserStatus(userStatus, userIds, true)
         .then(() => toastr.success(t("SuccessChangeUserStatus")))
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
             setSelected("close");
@@ -67,9 +73,9 @@ class ChangeUserStatusDialogComponent extends React.Component {
     });
   };
 
-  onChange = e => {
+  onChange = (e) => {
     const { listUsers } = this.state;
-    const userIndex = listUsers.findIndex(x => x.id === e.target.value);
+    const userIndex = listUsers.findIndex((x) => x.id === e.target.value);
     const newUsersList = listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
 
@@ -137,7 +143,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
             <Text>
               {t("ChangeUserStatusDialog", {
                 status: statusTranslation,
-                userStatus: userStatusTranslation
+                userStatus: userStatusTranslation,
               })}
             </Text>
             <Text>{t("ChangeUserStatusDialogMessage")}</Text>
@@ -177,7 +183,7 @@ const ChangeUserStatusDialogTranslated = withTranslation()(
   ChangeUserStatusDialogComponent
 );
 
-const ChangeUserStatusDialog = props => (
+const ChangeUserStatusDialog = (props) => (
   <ChangeUserStatusDialogTranslated i18n={i18n} {...props} />
 );
 
@@ -186,10 +192,22 @@ ChangeUserStatusDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
   userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired
+  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default connect(
-  null,
-  { updateUserStatus }
-)(withRouter(ChangeUserStatusDialog));
+const mapStateToProps = (state, ownProps) => {
+  const { selection } = state.people;
+  const { userStatus } = ownProps;
+
+  return {
+    userIds:
+      userStatus === EmployeeStatus.Active
+        ? getUsersToActivateIds(state)
+        : getUsersToDisableIds(state),
+    selectedUsers: selection,
+  };
+};
+
+export default connect(mapStateToProps, { updateUserStatus, setSelected })(
+  withRouter(ChangeUserStatusDialog)
+);
