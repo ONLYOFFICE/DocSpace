@@ -2,20 +2,20 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { RequestLoader, Loader } from "asc-web-components";
+import { /*RequestLoader,*/ Loader } from "asc-web-components";
 import { PageLayout, utils, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
-  ArticleMainButtonContent
+  ArticleMainButtonContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
-import { setDocumentTitle } from "../../../helpers/utils";
+//import { setDocumentTitle } from "../../../helpers/utils";
 const i18n = createI18N({
   page: "VersionHistory",
-  localesPath: "pages/VersionHistory"
+  localesPath: "pages/VersionHistory",
 });
 
 const { changeLanguage } = utils;
@@ -29,12 +29,12 @@ class PureVersionHistory extends React.Component {
 
     this.state = {
       fileId,
-      versions: null
+      versions: null,
     };
   }
 
   componentDidMount() {
-    const { match, t } = this.props;
+    const { match } = this.props;
     const { fileId } = match.params;
 
     //setDocumentTitle(t("GroupAction"));
@@ -44,19 +44,29 @@ class PureVersionHistory extends React.Component {
     }
   }
 
-  getFileVersions = fileId => {
+  componentDidUpdate(prevProps) {
+    if (this.props.isLoading !== prevProps.isLoading) {
+      if (this.props.isLoading) {
+        utils.showLoader();
+      } else {
+        utils.hideLoader();
+      }
+    }
+  }
+
+  getFileVersions = (fileId) => {
     api.files
       .getFileVersionInfo(fileId)
-      .then(versions => this.setState({ versions }));
+      .then((versions) => this.setState({ versions }));
   };
 
   render() {
     const { versions } = this.state;
-    const { t, settings, isLoading } = this.props;
+    const { settings } = this.props;
 
     return (
       <>
-        <RequestLoader
+        {/* <RequestLoader
           visible={isLoading}
           zIndex={256}
           loaderSize="16px"
@@ -64,7 +74,7 @@ class PureVersionHistory extends React.Component {
           label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
           fontSize="12px"
           fontColor={"#999"}
-        />
+        /> */}
         {versions ? (
           <PageLayout withBodyScroll={true} withBodyAutoFocus={true}>
             <PageLayout.ArticleHeader>
@@ -72,9 +82,7 @@ class PureVersionHistory extends React.Component {
             </PageLayout.ArticleHeader>
 
             <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent
-                startUpload={this.startUpload}
-              />
+              <ArticleMainButtonContent />
             </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>
@@ -94,24 +102,24 @@ class PureVersionHistory extends React.Component {
             </PageLayout.SectionBody>
           </PageLayout>
         ) : (
-            <PageLayout>
-              <PageLayout.ArticleHeader>
-                <ArticleHeaderContent />
-              </PageLayout.ArticleHeader>
+          <PageLayout>
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
 
-              <PageLayout.ArticleMainButton>
-                <ArticleMainButtonContent />
-              </PageLayout.ArticleMainButton>
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
 
-              <PageLayout.ArticleBody>
-                <ArticleBodyContent />
-              </PageLayout.ArticleBody>
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent />
+            </PageLayout.ArticleBody>
 
-              <PageLayout.SectionBody>
-                <Loader className="pageLoader" type="rombs" size="40px" />
-              </PageLayout.SectionBody>
-            </PageLayout>
-          )}
+            <PageLayout.SectionBody>
+              <Loader className="pageLoader" type="rombs" size="40px" />
+            </PageLayout.SectionBody>
+          </PageLayout>
+        )}
       </>
     );
   }
@@ -119,7 +127,7 @@ class PureVersionHistory extends React.Component {
 
 const VersionHistoryContainer = withTranslation()(PureVersionHistory);
 
-const VersionHistory = props => {
+const VersionHistory = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -132,18 +140,15 @@ const VersionHistory = props => {
 
 VersionHistory.propTypes = {
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
     isLoaded: state.auth.isLoaded,
-    isLoading: state.files.isLoading
+    isLoading: state.files.isLoading,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {}
-)(withRouter(VersionHistory));
+export default connect(mapStateToProps, {})(withRouter(VersionHistory));

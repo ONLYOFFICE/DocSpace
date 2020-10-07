@@ -50,7 +50,7 @@ class PureArticleMainButtonContent extends React.Component {
     this.setState({ dialogVisible: !this.state.dialogVisible });
 
   render() {
-    console.log("People ArticleMainButtonContent render");
+    //console.log("People ArticleMainButtonContent render");
     const { settings, t } = this.props;
     const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;

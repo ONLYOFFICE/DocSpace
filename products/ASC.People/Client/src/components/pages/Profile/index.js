@@ -13,30 +13,24 @@ import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { withRouter } from "react-router";
 
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
 
 class PureProfile extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      queryString: `${props.location.search.slice(1)}`,
-    };
-  }
-
   componentDidMount() {
-    const { match, fetchProfile, profile, t } = this.props;
+    const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
 
-    const queryParams = this.state.queryString.split("&");
+    const queryString = ((location && location.search) || "").slice(1);
+    const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>
       queryParam.split("=")
     );
@@ -104,7 +98,7 @@ class PureProfile extends React.Component {
   }
 }
 
-const ProfileContainer = withTranslation()(PureProfile);
+const ProfileContainer = withTranslation()(withRouter(PureProfile));
 
 const Profile = ({ language, ...rest }) => {
   useEffect(() => {
@@ -129,13 +123,14 @@ Profile.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { cultureName } = state.auth.user;
-  const { culture } = state.auth.settings;
+  const { isLoaded } = state.auth;
+  const { targetUser } = state.profile;
   return {
-    isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user),
-    language: cultureName || culture || "en-US",
+    profile: targetUser,
+    isLoaded,
+    isVisitor: isVisitor(state),
+    isAdmin: isAdmin(state),
+    language: getLanguage(state),
   };
 }
 

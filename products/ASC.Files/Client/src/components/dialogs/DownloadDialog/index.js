@@ -25,7 +25,6 @@ import {
   clearProgressData
 } from "../../../store/files/actions";
 import DownloadContent from "./DownloadContent";
-import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DownloadDialog",
@@ -174,7 +173,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   onDownload = () => {
-    const { onDownloadProgress, onClose, t, setProgressBarData } = this.props;
+    const { onDownloadProgress, onClose, t, setProgressBarData, clearProgressData } = this.props;
 
     const downloadItems = this.getDownloadItems();
     const fileConvertIds = downloadItems[0];
@@ -194,7 +193,7 @@ class DownloadDialogComponent extends React.Component {
         })
         .catch(err => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     }
   };
@@ -623,5 +622,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setProgressBarData }
+  { setProgressBarData, clearProgressData }
 )(withRouter(DownloadDialog));

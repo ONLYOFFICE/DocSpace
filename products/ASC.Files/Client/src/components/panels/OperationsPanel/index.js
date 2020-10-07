@@ -4,17 +4,14 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr } from "asc-web-common";
+import { utils as commonUtils, toastr, api } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
-  copyToFolder,
-  moveToFolder,
   setProgressBarData,
   clearProgressData
 } from "../../../store/files/actions";
 import { checkFolderType } from "../../../store/files/selectors";
-import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "OperationsPanel",
@@ -35,10 +32,9 @@ class OperationsPanelComponent extends React.Component {
       t,
       isCopy,
       selection,
-      copyToFolder,
-      moveToFolder,
       loopFilesOperations,
-      setProgressBarData
+      setProgressBarData,
+      clearProgressData
     } = this.props;
 
     const destFolderId = Number(e);
@@ -64,7 +60,7 @@ class OperationsPanelComponent extends React.Component {
         percent: 0,
         label: t("CopyOperation")
       });
-      copyToFolder(
+      api.files.copyToFolder(
         destFolderId,
         folderIds,
         fileIds,
@@ -77,7 +73,7 @@ class OperationsPanelComponent extends React.Component {
         })
         .catch(err => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     } else {
       setProgressBarData({
@@ -85,7 +81,7 @@ class OperationsPanelComponent extends React.Component {
         percent: 0,
         label: t("MoveToOperation")
       });
-      moveToFolder(
+      api.files.moveToFolder(
         destFolderId,
         folderIds,
         fileIds,
@@ -98,7 +94,7 @@ class OperationsPanelComponent extends React.Component {
         })
         .catch(err => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     }
   };
@@ -172,11 +168,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    copyToFolder,
-    moveToFolder,
-    setProgressBarData
-  }
-)(withRouter(OperationsPanel));
+export default connect(mapStateToProps, { setProgressBarData, clearProgressData })(withRouter(OperationsPanel));

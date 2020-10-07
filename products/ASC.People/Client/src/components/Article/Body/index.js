@@ -11,6 +11,7 @@ import {
   history,
   utils as commonUtils,
   store as initStore,
+  Loaders,
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
@@ -121,7 +122,6 @@ class ArticleBodyContent extends React.Component {
       );
     };
   };
-
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
@@ -138,10 +138,12 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { data, selectedKeys, isAdmin } = this.props;
+    const { isLoaded, data, selectedKeys, isAdmin } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-    return (
+    return !isLoaded ? (
+      <Loaders.TreeFolders />
+    ) : (
       <StyledTreeMenu
         className="people-tree-menu"
         checkable={false}
@@ -227,7 +229,8 @@ const BodyContent = (props) => {
 
 function mapStateToProps(state) {
   const groups = state.people.groups;
-  const { customNames } = state.auth.settings;
+  const { isLoaded, settings } = state.auth;
+  const { customNames } = settings;
   const { groupsCaption } = customNames;
   const { editingForm } = state.people;
 
@@ -237,8 +240,9 @@ function mapStateToProps(state) {
       ? [state.people.selectedGroup]
       : ["root"],
     groups,
-    isAdmin: isAdmin(state.auth.user),
-    editingForm,
+    isAdmin: isAdmin(state),
+    isLoaded,
+	editingForm
   };
 }
 

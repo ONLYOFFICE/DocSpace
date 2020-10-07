@@ -1,5 +1,5 @@
 import { getUserByUserName } from "../people/selectors";
-import { updateUserList } from "../people/actions";
+import { fetchPeople, updateUserList } from "../people/actions";
 import { store, api } from "asc-web-common";
 const { setCurrentUser } = store.auth.actions;
 const { isMe } = store.auth.selectors;
@@ -32,23 +32,17 @@ export function employeeWrapperToMemberModel(profile) {
 
 export function fetchProfile(userName) {
   return (dispatch, getState) => {
-    const { auth, people } = getState();
+    const { auth } = getState();
 
     if (isMe(auth.user, userName)) {
       dispatch(setProfile(auth.user));
     } else {
-      const user = getUserByUserName(people.users, userName);
-      if (!user) {
-        api.people.getUser(userName).then((user) => {
-          dispatch(setProfile(user));
-        });
-      } else {
+      api.people.getUser(userName).then((user) => {
         dispatch(setProfile(user));
-      }
+      });
     }
   };
 }
-
 export function createProfile(profile) {
   return (dispatch, getState) => {
     const { people } = getState();
@@ -87,7 +81,6 @@ export function updateProfile(profile) {
       });
   };
 }
-
 export function updateProfileCulture(id, culture) {
   return (dispatch) => {
     return api.people.updateUserCulture(id, culture).then((user) => {
