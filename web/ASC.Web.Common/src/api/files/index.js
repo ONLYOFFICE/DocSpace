@@ -55,6 +55,7 @@ export function getFoldersTree() {
           id: data.current.id,
           key: `0-${index}`,
           title: data.current.title,
+          rootFolderName: rootFoldersPaths[index],
           folders: index !== trashIndex ? data.folders.map(folder => {
             return {
               id: folder.id,

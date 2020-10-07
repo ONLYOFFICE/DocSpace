@@ -45,9 +45,17 @@ const getCustomModules = isAdmin => {
 
 export const getCurrentUser = state => state.auth.user;
 
+export const getCurrentUserId = state => state.auth.user;
+
 export const getModules = state => state.auth.modules;
 
 export const getSettings = state => state.auth.settings;
+
+export const getSettingsCustomNames = state => state.auth.settings.customNames;
+
+export const getSettingsCustomNamesGroupsCaption = state => state.auth.settings.customNames.groupsCaption;
+
+export const getIsLoaded = state => state.auth.isLoaded;
 
 export const getDefaultPage = createSelector(
   [getSettings],
