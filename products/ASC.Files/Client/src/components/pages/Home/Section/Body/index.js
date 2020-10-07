@@ -1262,10 +1262,19 @@ class SectionBodyContent extends React.Component {
     setSelection([item]);
   };
 
+  onCreateAddTempItem = (items, folderId, fileAction) => {
+    if (items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    items.unshift({
+      id: -1,
+      title: "",
+      parentId: folderId,
+      fileExst: fileAction.extension,
+    });
+  }
+
   render() {
     const {
       files,
-      folders,
       viewer,
       parentId,
       folderId,
@@ -1307,12 +1316,7 @@ class SectionBodyContent extends React.Component {
     const tooltipLabel = this.getTooltipLabel();
     
     if (fileAction && fileAction.type === FileAction.Create) {
-      items.unshift({
-        id: -1,
-        title: "",
-        parentId: folderId,
-        fileExst: fileAction.extension,
-      });
+      this.onCreateAddTempItem(items, folderId, fileAction);
     }
 
     var playlist = [];
