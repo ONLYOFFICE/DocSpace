@@ -1,28 +1,23 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import Text from "../text";
 import { mobile } from "../../utils/device";
 
-const phoneSize = 464;
-
 const EmptyContentBody = styled.div`
   margin: 0 auto;
   padding: 64px 0;
-  overflow-wrap: anywhere;
 
   display: grid;
   grid-template-areas:
-    "img header"
-    ${props => props.subheadingText && `"img subheading"`}
-    ${props => props.descriptionText && `"img desc"`}
+    "img headerText"
+    ${props => props.subheadingText && `"img subheadingText"`}
+    ${props => props.descriptionText && `"img descriptionText"`}
     "img button";
 
   grid-column-gap: 16px;
   grid-row-gap: 12px;
-
-  max-width:  800px; 
-  min-width:343px;
+  max-width: 800px;
 
   .ec-image {
     grid-area: img;
@@ -30,55 +25,46 @@ const EmptyContentBody = styled.div`
   }
 
   .ec-header {
-    grid-area: header;
+    grid-area: headerText;
   }
 
   .ec-subheading {
-    grid-area: subheading;
+    grid-area: subheadingText;
   }
 
   .ec-desc {
-    grid-area: desc;
+    grid-area: descriptionText;
   }
 
   .ec-buttons {
     grid-area: button;
   }
 
-  /* ${props =>
-    props.widthProp <= phoneSize &&
-    css`
-      .ec-image {
-        display: none;
-      }
-    `} */
-
   @media (orientation: portrait) {
     @media (max-width: 738px) {
-
       padding-top: 0px;
       max-width: 496px;
 
-        .ec-header {
-        padding-top:16px;
+      .ec-header {
+        padding-top: 16px;
       }
 
       .ec-image {
         max-height: 100px;
       }
- 
     }
 
     @media ${mobile} {
-    
+      min-width: 343px;
       grid-template-areas:
         "img"
-        "header"
-        ${props => props.subheadingText && `"subheading"`}
-        ${props => props.descriptionText && `"desc"`}
+        "headerText"
+        ${props => props.subheadingText && `"subheadingText"`}
+        ${props => props.descriptionText && `"descriptionText"`}
         "button";
-        .ec-header {
-        padding-top:0px;
+
+      .ec-header {
+        padding-top: 0px;
       }
       .ec-header,
       .ec-subheading,
@@ -86,9 +72,10 @@ const EmptyContentBody = styled.div`
       .ec-buttons {
         padding-left: 16px;
       }
+
       .ec-image {
-       height: 75px;
-       margin-left: 0;
+        height: 75px;
+        margin-left: 0;
       }
     }
   }
