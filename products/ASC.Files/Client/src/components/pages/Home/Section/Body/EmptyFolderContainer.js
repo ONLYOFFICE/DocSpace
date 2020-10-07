@@ -26,6 +26,7 @@ const EmptyFolderWrapper = styled.div`
     }
 
     .empty-folder_container_plus-image {
+      display: flex;
       margin: -8px 8px 0 0;
       line-height: unset;
     }
