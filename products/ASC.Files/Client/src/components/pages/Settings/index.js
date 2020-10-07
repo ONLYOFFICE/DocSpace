@@ -16,6 +16,7 @@ import {
   getFilesSettings,
   setIsLoading,
 } from "../../../store/files/actions";
+import { getIsLoading } from "../../../store/files/selectors";
 
 const i18n = createI18N({
   page: "Settings",
@@ -104,7 +105,7 @@ const Settings = (props) => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading,
+    isLoading: getIsLoading(state),
   };
 }
 
