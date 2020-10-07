@@ -504,8 +504,8 @@ class SectionBodyContent extends React.Component {
             "data-id": item.id,
             "data-version": item.version,
           };
-        case "selector0":
-        case "selector1":
+        case "separator0":
+        case "separator1":
           return { key: option, isSeparator: true };
         case "block-unblock-version":
           return {
