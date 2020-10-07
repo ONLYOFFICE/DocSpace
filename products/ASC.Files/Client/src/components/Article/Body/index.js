@@ -60,7 +60,7 @@ class ArticleBodyContent extends React.Component {
       fetchFiles,
     } = this.props;
 
-    if (selectedTreeNode[0] !== data[0]) {
+    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
       setSelectedNode(data);
       setIsLoading(true);
       const newFilter = filter.clone();
