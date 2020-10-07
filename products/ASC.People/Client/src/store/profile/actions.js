@@ -1,5 +1,4 @@
-import { getUserByUserName } from "../people/selectors";
-import { fetchPeople, updateUserList } from "../people/actions";
+import { updateUserList } from "../people/actions";
 import { store, api } from "asc-web-common";
 const { setCurrentUser } = store.auth.actions;
 const { isMe } = store.auth.selectors;

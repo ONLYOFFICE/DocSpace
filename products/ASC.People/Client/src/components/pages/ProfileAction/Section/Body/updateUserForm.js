@@ -268,7 +268,7 @@ class UpdateUserForm extends React.Component {
 
   onCancel() {
     const { filter, setFilter } = this.props;
-    console.log(document.referrer);
+
     if (document.referrer) {
       this.props.history.goBack();
     } else {
