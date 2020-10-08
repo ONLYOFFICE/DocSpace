@@ -531,6 +531,8 @@ class PureAdminsSettings extends Component {
                       <Link
                         type="action"
                         isHovered={true}
+                        fontWeight="600"
+                        color="#555f65"
                         onClick={this.onResetFilter}
                       >
                         {t("ClearButton")}
