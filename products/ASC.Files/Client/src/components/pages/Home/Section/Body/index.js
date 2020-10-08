@@ -79,7 +79,7 @@ import {
   getIsCommonFolder,
   getIsRecycleBinFolder,
   getIsMyFolder,
-  getMyFolderId,isArchive,
+  getMyFolderId,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
@@ -1243,11 +1243,16 @@ class SectionBodyContent extends React.Component {
 
   onCreateAddTempItem = (items, folderId, fileAction) => {
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    const icon = fileAction.extension
+      ? getFileIcon(`.${fileAction.extension}`, 24)
+      : getFolderIcon(null, 24);
+
     items.unshift({
       id: -1,
       title: "",
       parentId: folderId,
       fileExst: fileAction.extension,
+      icon,
     });
   };
 
