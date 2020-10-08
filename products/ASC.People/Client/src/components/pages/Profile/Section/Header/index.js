@@ -12,7 +12,10 @@ import {
   toEmployeeWrapper,
 } from "../../../../../store/people/selectors";
 import { withTranslation, Trans } from "react-i18next";
-import { updateUserStatus } from "../../../../../store/people/actions";
+import {
+  updateUserStatus,
+  setFilter,
+} from "../../../../../store/people/actions";
 import { updateProfile } from "../../../../../store/profile/actions";
 import {
   fetchProfile,
@@ -405,9 +408,9 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { history, settings } = this.props;
-
-    history.push(settings.homepage);
+    const { filter, setFilter } = this.props;
+    setFilter(filter);
+    //history.push(settings.homepage);
   };
 
   render() {
@@ -519,4 +522,5 @@ export default connect(mapStateToProps, {
   updateUserStatus,
   fetchProfile,
   updateProfile,
+  setFilter,
 })(withRouter(withTranslation()(SectionHeaderContent)));

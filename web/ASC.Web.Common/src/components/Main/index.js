@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledMain = styled.main`
   height: calc(100vh - 56px);
-  /*height: calc(var(--vh, 1vh) * 100 - 56px);*/
+  height: calc(var(--vh, 1vh) * 100 - 56px);
   width: 100vw;
   z-index: 0;
   display: flex;
