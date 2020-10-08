@@ -6,12 +6,12 @@ import AvatarEditorBody from "./sub-components/avatar-editor-body";
 import styled from "styled-components";
 
 const StyledButtonsWrapper = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 8px;
-    min-width: 208px;
-    max-width: 300px;
-    width: max-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 8px;
+  min-width: 208px;
+  max-width: 300px;
+  width: max-content;
 `;
 
 class AvatarEditor extends React.Component {
@@ -59,21 +59,32 @@ class AvatarEditor extends React.Component {
       this.props.onLoadFileError(error);
   };
 
-  onLoadFile = (file, callback) => {
+  onLoadFile = (file, needSave) => {
     if (typeof this.props.onLoadFile === "function")
-      this.props.onLoadFile(file, callback);
+    var fileData = {
+      existImage: this.state.existImage,
+      position: {
+        x: this.state.x,
+        y: this.state.y,
+        width: this.state.width,
+        height: this.state.height
+      },
+      croppedImage: this.state.croppedImage
+    }
+
+    needSave ? this.props.onLoadFile(file, fileData) : this.props.onLoadFile(file); 
 
     if (!this.state.existImage) this.setState({ existImage: true });
   };
 
   onSaveButtonClick = () => {
-    //this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
-    this.saveAvatar();
-  };
+    this.avatarEditorBodyRef.current.onSaveImage();
+    //this.saveAvatar();
+  };;
 
   onCancelButtonClick = () => {
     this.props.onCancel();
-  }
+  };
 
   saveAvatar = () => {
     if (!this.state.existImage) {
@@ -128,54 +139,21 @@ class AvatarEditor extends React.Component {
       cancelButtonLabel
     } = this.props;
 
-    return (
-      useModalDialog ?
-        <ModalDialog
-          visible={this.state.visible}
-          displayType={displayType}
-          scale={false}
-          contentHeight="initial"
-          contentWidth="initial"
-          onClose={this.onClose}
-          className={className}
-          id={id}
-          style={style}
-        >
-          <ModalDialog.Header>{headerLabel}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <AvatarEditorBody
-              ref={this.avatarEditorBodyRef}
-              visible={this.state.visible}
-              onImageChange={this.onImageChange}
-              onPositionChange={this.onPositionChange}
-              onSizeChange={this.onSizeChange}
-              onLoadFileError={this.onLoadFileError}
-              onLoadFile={this.onLoadFile}
-              deleteImage={this.onDeleteImage}
-              saveAvatar={this.saveAvatar}
-              maxSize={maxSize * 1000000} // megabytes to bytes
-              accept={accept}
-              image={image}
-              selectNewPhotoLabel={selectNewPhotoLabel}
-              orDropFileHereLabel={orDropFileHereLabel}
-              unknownTypeError={unknownTypeError}
-              maxSizeFileError={maxSizeFileError}
-              unknownError={unknownError}
-            />
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="SaveBtn"
-              label={saveButtonLabel}
-              isLoading={saveButtonLoading}
-              primary={true}
-              size="big"
-              onClick={this.onSaveButtonClick}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
-      :
-        <>
+
+    return useModalDialog ? (
+      <ModalDialog
+        visible={this.state.visible}
+        displayType={displayType}
+        scale={false}
+        contentHeight="initial"
+        contentWidth="initial"
+        onClose={this.onClose}
+        className={className}
+        id={id}
+        style={style}
+      >
+        <ModalDialog.Header>{headerLabel}</ModalDialog.Header>
+        <ModalDialog.Body>
           <AvatarEditorBody
             ref={this.avatarEditorBodyRef}
             visible={this.state.visible}
@@ -194,27 +172,59 @@ class AvatarEditor extends React.Component {
             unknownTypeError={unknownTypeError}
             maxSizeFileError={maxSizeFileError}
             unknownError={unknownError}
-            useModalDialog={false}
           />
-          <StyledButtonsWrapper>
-            <Button
-              key="SaveBtn"
-              label={saveButtonLabel}
-              isLoading={saveButtonLoading}
-              primary={true}
-              size="big"
-              onClick={this.onSaveButtonClick}
-            />
-            <Button
-              key="CancelBtn"
-              label={cancelButtonLabel}
-              primary={false}
-              size="big"
-              onClick={this.onCancelButtonClick}
-            />
-          </StyledButtonsWrapper>
-          
-        </>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="SaveBtn"
+            label={saveButtonLabel}
+            isLoading={saveButtonLoading}
+            primary={true}
+            size="big"
+            onClick={this.onSaveButtonClick}
+          />
+        </ModalDialog.Footer>
+      </ModalDialog>
+    ) : (
+      <>
+        <AvatarEditorBody
+          ref={this.avatarEditorBodyRef}
+          visible={this.state.visible}
+          onImageChange={this.onImageChange}
+          onPositionChange={this.onPositionChange}
+          onSizeChange={this.onSizeChange}
+          onLoadFileError={this.onLoadFileError}
+          onLoadFile={this.onLoadFile}
+          deleteImage={this.onDeleteImage}
+          saveAvatar={this.saveAvatar}
+          maxSize={maxSize * 1000000} // megabytes to bytes
+          accept={accept}
+          image={image}
+          selectNewPhotoLabel={selectNewPhotoLabel}
+          orDropFileHereLabel={orDropFileHereLabel}
+          unknownTypeError={unknownTypeError}
+          maxSizeFileError={maxSizeFileError}
+          unknownError={unknownError}
+          useModalDialog={false}
+        />
+        <StyledButtonsWrapper>
+          <Button
+            key="SaveBtn"
+            label={saveButtonLabel}
+            isLoading={saveButtonLoading}
+            primary={true}
+            size="big"
+            onClick={this.onSaveButtonClick}
+          />
+          <Button
+            key="CancelBtn"
+            label={cancelButtonLabel}
+            primary={false}
+            size="big"
+            onClick={this.onCancelButtonClick}
+          />
+        </StyledButtonsWrapper>
+      </>
     );
   }
 }

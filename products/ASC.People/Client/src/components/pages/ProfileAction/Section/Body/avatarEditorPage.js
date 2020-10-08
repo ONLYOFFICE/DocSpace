@@ -77,20 +77,20 @@ class AvatarEditorPage extends React.PureComponent {
     toggleAvatarEditor(false);
   };
 
-  onSaveAvatar = (isUpdate, result) => {
+  onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
     const { profile } = this.props;
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(
-          result.x * this.state.avatar.defaultWidth - result.width / 2
+          result.x * avatar.defaultWidth - result.width / 2
         ),
         y: Math.round(
-          result.y * this.state.avatar.defaultHeight - result.height / 2
+          result.y * avatar.defaultHeight - result.height / 2
         ),
         width: result.width,
         height: result.height,
-        tmpFile: this.state.avatar.tmpFile,
+        tmpFile: avatar.tmpFile,
       })
         .then(() => {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
@@ -100,8 +100,12 @@ class AvatarEditorPage extends React.PureComponent {
           toastr.error(error);
           this.setState({ isLoading: false });
         })
-        .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => {
+          this.props.updateProfile(this.props.profile);
+        })
+        .then(() => {
+          this.props.fetchProfile(profile.id);
+        });
     } else {
       deleteAvatar(profile.id)
         .then(() => {
@@ -114,28 +118,39 @@ class AvatarEditorPage extends React.PureComponent {
     }
   };
 
-  onLoadFileAvatar = (file, callback) => {
+  onLoadFileAvatar = (file, fileData) => {
     const { profile } = this.props;
 
     this.setState({ isLoading: true });
     let data = new FormData();
     let _this = this;
+ 
+    if(!file) {
+      _this.onSaveAvatar(false)
+      return;
+    }
+    
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(profile.id, data)
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          var stateCopy = Object.assign({}, _this.state);
-          stateCopy.avatar = {
-            tmpFile: response.data,
-            image: response.data,
-            defaultWidth: img.width,
-            defaultHeight: img.height,
-          };
-          _this.setState(stateCopy);
+          
           _this.setState({ isLoading: false });
-          if (typeof callback === "function") callback();
+          if (fileData) {
+            fileData.avatar = {
+              tmpFile: response.data,
+              image: response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height,
+            }
+            if(!fileData.existImage) {
+              _this.onSaveAvatar(fileData.existImage)  // saving empty avatar
+            } else{
+              _this.onSaveAvatar(fileData.existImage, fileData.position, fileData.avatar)
+            }
+          }
         };
         img.src = response.data;
       })

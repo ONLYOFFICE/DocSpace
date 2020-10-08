@@ -349,7 +349,9 @@ class AvatarEditorBody extends React.Component {
         fetch(data)
           .then(res => res.blob())
           .then(blob => {
-            const file = new File([blob], "File name", { type: "image/jpg" });
+            const file = new File([blob], "File name", {
+              type: "image/jpg"
+            });
             _this.props.onLoadFile(file);
           });
       };
@@ -440,6 +442,7 @@ class AvatarEditorBody extends React.Component {
   };
 
   onWheel = e => {
+    if  (!this.setEditorRef.current) return;
     e = e || window.event;
     const delta = e.deltaY || e.detail || e.wheelDelta;
     let scale =
@@ -506,10 +509,11 @@ class AvatarEditorBody extends React.Component {
     });
   };
 
-  onSaveImage(callback) {
+  onSaveImage() {
     var img = new Image();
     var _this = this;
     img.src = this.state.image;
+    if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
       var canvas = document.createElement("canvas");
       canvas.setAttribute("width", img.height);
@@ -525,8 +529,7 @@ class AvatarEditorBody extends React.Component {
         .then(res => res.blob())
         .then(blob => {
           const file = new File([blob], "File name", { type: "image/jpg" });
-          _this.props.onLoadFile(file, callback);
-          //callback(file);
+          _this.props.onLoadFile(file, true);
         });
     };
   }
@@ -575,7 +578,7 @@ class AvatarEditorBody extends React.Component {
     let editorWidth = 174;
     let editorHeight = 174;
 
-    if(!useModalDialog) {
+    if (!useModalDialog) {
       editorWidth = 270;
       editorHeight = 270;
     }
