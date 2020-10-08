@@ -469,10 +469,10 @@ export const getRootFolderId = (state) => {
 };
 
 export const isCanCreate = createSelector(
-  (getSelectedFolderRootFolderType,
+  getSelectedFolderRootFolderType,
   isAdmin,
   getPathParts,
-  getSelectedFolderAccess),
+  getSelectedFolderAccess,
   (folderType, isAdmin, pathParts, access) => {
     switch (folderType) {
       case FolderType.USER:
@@ -491,7 +491,7 @@ export const isCanCreate = createSelector(
 );
 
 export const isCanBeDeleted = createSelector(
-  (getSelectedFolderRootFolderType, isAdmin),
+  getSelectedFolderRootFolderType, isAdmin,
   (folderType, isAdmin) => {
     switch (folderType) {
       case FolderType.USER:
