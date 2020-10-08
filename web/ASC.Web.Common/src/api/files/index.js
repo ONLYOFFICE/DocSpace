@@ -57,14 +57,14 @@ export function getFoldersTree() {
   return axios.all(requestsArray).then(
     axios.spread((...responses) =>
       responses.map((data, index) => {
-        const trashIndex = 3;
         return {
           id: data.current.id,
           key: `0-${index}`,
           title: data.current.title,
-
-          rootFolderName: rootFoldersPaths[index],          folders:
-            index !== trashIndex
+          rootFolderType: data.current.rootFolderType,
+          rootFolderName: rootFoldersPaths[index],
+          folders:
+            index !== rootFoldersPaths.length - 1
               ? data.folders.map(folder => {
                   return {
                     id: folder.id,
