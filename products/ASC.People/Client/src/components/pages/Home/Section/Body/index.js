@@ -465,7 +465,7 @@ class SectionBodyContent extends React.PureComponent {
         buttons={
           <>
             <Box displayProp="inline-block" marginProp="0 8px 0 0">
-              <Icons.CrossIcon size="small" />
+              <Icons.CrossIcon size="small" isfill={true} color="#657077" />
             </Box>
             <Link
               type="action"
