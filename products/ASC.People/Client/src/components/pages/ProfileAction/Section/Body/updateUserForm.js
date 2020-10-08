@@ -323,26 +323,39 @@ class UpdateUserForm extends React.Component {
     toggleAvatarEditor(true);
   }
 
-  onLoadFileAvatar(file, callback) {
+  onLoadFileAvatar = (file, fileData) => {
+    const { profile } = this.props;
+
     this.setState({ isLoading: true });
     let data = new FormData();
     let _this = this;
+ 
+    if(!file) {
+      _this.onSaveAvatar(false)
+      return;
+    }
+    
     data.append("file", file);
     data.append("Autosave", false);
-    loadAvatar(this.state.profile.id, data)
+    loadAvatar(profile.id, data)
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          var stateCopy = Object.assign({}, _this.state);
-          stateCopy.avatar = {
-            tmpFile: response.data,
-            image: response.data,
-            defaultWidth: img.width,
-            defaultHeight: img.height,
-          };
-          _this.setState(stateCopy);
+          
           _this.setState({ isLoading: false });
-          if (typeof callback === "function") callback();
+          if (fileData) {
+            fileData.avatar = {
+              tmpFile: response.data,
+              image: response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height,
+            }
+            if(!fileData.existImage) {
+              _this.onSaveAvatar(fileData.existImage)  // saving empty avatar
+            } else{
+              _this.onSaveAvatar(fileData.existImage, fileData.position, fileData.avatar)
+            }
+          }
         };
         img.src = response.data;
       })
@@ -350,52 +363,48 @@ class UpdateUserForm extends React.Component {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
-  }
+  };
 
-  onSaveAvatar(isUpdate, result) {
+  onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
+    const { profile } = this.props;
     if (isUpdate) {
-      createThumbnailsAvatar(this.state.profile.id, {
+      createThumbnailsAvatar(profile.id, {
         x: Math.round(
-          result.x * this.state.avatar.defaultWidth - result.width / 2
+          result.x * avatar.defaultWidth - result.width / 2
         ),
         y: Math.round(
-          result.y * this.state.avatar.defaultHeight - result.height / 2
+          result.y * avatar.defaultHeight - result.height / 2
         ),
         width: result.width,
         height: result.height,
-        tmpFile: this.state.avatar.tmpFile,
+        tmpFile: avatar.tmpFile,
       })
-        .then((response) => {
-          let stateCopy = Object.assign({}, this.state);
-          stateCopy.visibleAvatarEditor = false;
-          stateCopy.avatar.tmpFile = "";
-          stateCopy.profile.avatarMax =
-            response.max +
-            "?_=" +
-            Math.floor(Math.random() * Math.floor(10000));
+        .then(() => {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState({ isLoading: false });
-          this.setState(stateCopy);
         })
         .catch((error) => {
           toastr.error(error);
           this.setState({ isLoading: false });
         })
-        .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(this.state.profile.id));
-    } else {
-      deleteAvatar(this.state.profile.id)
-        .then((response) => {
-          let stateCopy = Object.assign({}, this.state);
-          stateCopy.visibleAvatarEditor = false;
-          stateCopy.profile.avatarMax = response.big;
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.setState(stateCopy);
+        .then(() => {
+          this.props.updateProfile(this.props.profile);
         })
-        .catch((error) => toastr.error(error));
+        .then(() => {
+          this.props.fetchProfile(profile.id);
+        });
+    } else {
+      deleteAvatar(profile.id)
+        .then(() => {
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
+          this.setState({ isLoading: false });
+        })
+        .catch((error) => toastr.error(error))
+        .then(() => this.props.updateProfile(this.props.profile))
+        .then(() => this.props.fetchProfile(profile.id));
     }
-  }
+  };
 
   onCloseAvatarEditor() {
     this.setState({
