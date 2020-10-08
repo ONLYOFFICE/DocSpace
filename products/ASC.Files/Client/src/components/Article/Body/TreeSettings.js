@@ -12,6 +12,7 @@ import {
   setExpandSettingsTree,
   setIsErrorSettings,
   getFilesSettings,
+  setSelectedFolder,
 } from "../../../store/files/actions";
 import {
   getIsLoading,
@@ -62,6 +63,7 @@ const PureTreeSettings = ({
   setExpandSettingsTree,
   setIsErrorSettings,
   getFilesSettings,
+  setSelectedFolder,
   t,
 }) => {
   useEffect(() => {
@@ -90,11 +92,13 @@ const PureTreeSettings = ({
 
     if (path === "settings") {
       setSelectedNode(["common"]);
+      setSelectedFolder({ id: "common" });
       setExpandSettingsTree(section);
       return history.push("/products/files/settings/common");
     }
 
     setSelectedNode(section);
+    setSelectedFolder({ id: section[0] });
     return history.push(`/products/files/settings/${path}`);
   };
 
@@ -191,4 +195,5 @@ export default connect(mapStateToProps, {
   setExpandSettingsTree,
   setIsErrorSettings,
   getFilesSettings,
+  setSelectedFolder,
 })(withRouter(TreeSettings));

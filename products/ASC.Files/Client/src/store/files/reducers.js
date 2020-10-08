@@ -116,6 +116,7 @@ const filesReducer = (state = initialState, action) => {
     case SET_SELECTED_FOLDER:
       return Object.assign({}, state, {
         selectedFolder: action.selectedFolder,
+        selectedTreeNode: [action.selectedFolder.id.toString()],
       });
     case SET_TREE_FOLDERS:
       return Object.assign({}, state, {

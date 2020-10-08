@@ -64,7 +64,7 @@ const SectionBodyContent = ({
   useEffect(() => {
     const title = setting[0].toUpperCase() + setting.slice(1);
     setDocumentTitle(t(`${title}`));
-  }, [setting, setDocumentTitle]);
+  }, [setting, t]);
 
   useEffect(() => {
     if (setting !== selectedTreeNode[0]) {
