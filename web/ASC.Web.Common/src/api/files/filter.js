@@ -3,7 +3,7 @@ import { toUrlParams } from "../../utils";
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
-const DEFAULT_SORT_BY = "lastModifiedDate";
+const DEFAULT_SORT_BY = "DateAndTime";
 const DEFAULT_SORT_ORDER = "ascending";
 const DEFAULT_VIEW = "row";
 const DEFAULT_FILTER_TYPE = null;
@@ -12,7 +12,7 @@ const DEFAULT_SEARCH = null;
 const DEFAULT_FOLDER_PATH = [];
 const DEFAULT_AUTHOR_TYPE = null;
 const DEFAULT_SELECTED_ITEM = {};
-const DEFAULT_FOLDER = '@my';
+const DEFAULT_FOLDER = "@my";
 
 // TODO: add next params
 // subjectGroup bool
@@ -79,12 +79,18 @@ class FilesFilter {
       withSubfolders
     } = this;
 
-    const isFilterSet = (filterType || (search ?? "").trim() || authorType) ? withSubfolders : false;
-    const userIdOrGroupId = authorType && authorType.includes('_') ? authorType.slice(authorType.indexOf('_') + 1) : null;
+    const isFilterSet =
+      filterType || (search ?? "").trim() || authorType
+        ? withSubfolders
+        : false;
+    const userIdOrGroupId =
+      authorType && authorType.includes("_")
+        ? authorType.slice(authorType.indexOf("_") + 1)
+        : null;
 
-    let dtoFilter = {
+    const dtoFilter = {
       folder: folder,
-      pagecount: pageCount,
+      count: pageCount,
       startIndex: this.getStartIndex(),
       page: page,
       sortby: sortBy,
@@ -94,8 +100,6 @@ class FilesFilter {
       withSubfolders: isFilterSet,
       userIdOrGroupId
     };
-
-
 
     return dtoFilter;
   };

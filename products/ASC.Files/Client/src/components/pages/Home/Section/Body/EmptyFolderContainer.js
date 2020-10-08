@@ -4,18 +4,20 @@ import { EmptyScreenContainer } from "asc-web-components";
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
-    .ec-image {
-      padding-right: 16px;
-      margin: 0 0 0 auto;
-    }
-
     .empty-folder_link {
-      margin-right: 8px;
+      margin-right: 7px;
     }
 
     .empty-folder_container-links {
+      display: grid;
+      margin: 8px 0;
+      grid-template-columns: 12px 1fr;
+      grid-column-gap: 8px;
+    }
+
+    .flex-wrapper_container {
       display: flex;
-      margin: 12px 0;
+      flex-wrap: wrap;
     }
 
     .empty-folder_container_up-image {
@@ -24,7 +26,8 @@ const EmptyFolderWrapper = styled.div`
     }
 
     .empty-folder_container_plus-image {
-      margin: -8px 8px 0 0;
+      display: flex;
+      margin: -10px 8px 0 0;
       line-height: unset;
     }
 
@@ -36,7 +39,7 @@ const EmptyFolderWrapper = styled.div`
   }
 `;
 
-const EmptyFoldersContainer = props => {
+const EmptyFoldersContainer = (props) => {
   const imageAlt = "Empty folder image";
   const {
     imageSrc,
@@ -44,7 +47,6 @@ const EmptyFoldersContainer = props => {
     subheadingText,
     descriptionText,
     buttons,
-    widthProp
   } = props;
 
   return (
@@ -57,7 +59,6 @@ const EmptyFoldersContainer = props => {
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         buttons={buttons}
-        widthProp={widthProp}
       />
     </EmptyFolderWrapper>
   );
