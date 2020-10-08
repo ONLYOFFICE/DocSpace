@@ -10,6 +10,7 @@ import {
   Link,
   RowContainer,
   utils,
+  Box,
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -43,6 +44,7 @@ const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
 const isRefetchPeople = true;
+
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -462,7 +464,9 @@ class SectionBodyContent extends React.PureComponent {
         descriptionText={t("NotFoundDescription")}
         buttons={
           <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "8px" }} />
+            <Box displayProp="inline-block" marginProp="0 8px 0 0">
+              <Icons.CrossIcon size="small" />
+            </Box>
             <Link
               type="action"
               isHovered={true}
