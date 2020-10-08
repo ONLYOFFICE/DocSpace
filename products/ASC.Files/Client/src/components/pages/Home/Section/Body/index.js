@@ -1389,8 +1389,10 @@ class SectionBodyContent extends React.Component {
                     ? `file_${item.id}`
                     : `folder_${item.id}`;
                   value += draggable ? "_draggable" : "";
-                  const classNameProp =
+                  let classNameProp =
                     isFolder && item.access < 2 ? { className: " dropable" } : {};
+
+                  if(item.draggable) classNameProp.className += " draggable";
 
                   return (
                     <DragAndDrop
@@ -1446,8 +1448,11 @@ class SectionBodyContent extends React.Component {
                         : {};
                     const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
                     const element = this.getItemIcon(item, isEdit || item.id <= 0);
-                    const classNameProp =
-                      isFolder && item.access < 2 ? { className: " dropable" } : {};
+                    let classNameProp =
+                      isFolder && item.access < 2 ? { className: " dropable" } : { className: "" };
+
+                    if(item.draggable) classNameProp.className += " draggable";
+
                     return (
                       <DragAndDrop
                         {...classNameProp}

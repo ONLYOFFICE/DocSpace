@@ -743,10 +743,14 @@ export const getIsRecycleBinFolder = createSelector(
   }
 );
 
+export const getFileActionId = (state) => {
+  return state.files.fileAction.id;
+};
+
 export const getFilesList = (state) => {
   return createSelector(
-    [getItemsList, getSelection, getIsRecycleBinFolder],
-    (items, selection, isRecycleBin) => {
+    [getItemsList, getSelection, getIsRecycleBinFolder, getFileActionId],
+    (items, selection, isRecycleBin, actionId) => {
       return items.map((item) => {
         const {
           access,
@@ -785,7 +789,7 @@ export const getFilesList = (state) => {
 
         const isFolder = selectedItem ? false : fileExst ? false : true;
 
-        const draggable = selectedItem && !isRecycleBin;
+        const draggable = selectedItem && !isRecycleBin && selectedItem.id !== actionId;
 
         let value = fileExst ? `file_${id}` : `folder_${id}`;
 
@@ -834,6 +838,7 @@ export const getFilesList = (state) => {
           viewUrl,
           webUrl,
           providerKey,
+          draggable
         };
       });
     }
@@ -843,10 +848,6 @@ export const getFilesList = (state) => {
 export const getSelectedTreeNode = createSelector(getSelectedFolderId, (id) => {
   if (id) return [id.toString()];
 });
-
-export const getFileActionId = (state) => {
-  return state.files.fileAction.id;
-};
 
 export const getConvertDialogVisible = (state) => {
   return state.files.convertDialogVisible;

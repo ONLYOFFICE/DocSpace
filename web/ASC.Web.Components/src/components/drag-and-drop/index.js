@@ -36,7 +36,7 @@ const DragAndDrop = props => {
   return (
     <StyledDragAndDrop
       {...rest}
-      className={`drag-and-drop draggable${classNameProp}`}
+      className={`drag-and-drop ${classNameProp}`}
       dragging={dragging}
       isDragAccept={isDragActive}
       drag={isDragActive && isDropZone}
