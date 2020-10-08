@@ -1,5 +1,4 @@
-import { getUserByUserName } from "../people/selectors";
-import { fetchPeople } from "../people/actions";
+import { updateUserList } from "../people/actions";
 import { store, api } from "asc-web-common";
 const { setCurrentUser } = store.auth.actions;
 const { isMe } = store.auth.selectors;
@@ -43,7 +42,6 @@ export function fetchProfile(userName) {
     }
   };
 }
-
 export function createProfile(profile) {
   return (dispatch, getState) => {
     const { people } = getState();
@@ -58,7 +56,7 @@ export function createProfile(profile) {
         return dispatch(setProfile(user));
       })
       .then(() => {
-        return fetchPeople(filter, dispatch);
+        return updateUserList(dispatch, filter);
       })
       .then(() => {
         return Promise.resolve(result);
@@ -67,9 +65,7 @@ export function createProfile(profile) {
 }
 
 export function updateProfile(profile) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { filter } = people;
+  return (dispatch) => {
     const member = employeeWrapperToMemberModel(profile);
     let result;
 
@@ -80,14 +76,10 @@ export function updateProfile(profile) {
         return Promise.resolve(dispatch(setProfile(user)));
       })
       .then(() => {
-        return fetchPeople(filter, dispatch);
-      })
-      .then(() => {
         return Promise.resolve(result);
       });
   };
 }
-
 export function updateProfileCulture(id, culture) {
   return (dispatch) => {
     return api.people.updateUserCulture(id, culture).then((user) => {
@@ -99,4 +91,19 @@ export function updateProfileCulture(id, culture) {
 
 export function getUserPhoto(id) {
   return api.people.getUserPhoto(id);
+}
+
+export function updateCreatedAvatar(avatar) {
+  return (dispatch, getState) => {
+    const { big, max, medium, small } = avatar;
+    const { profile } = getState();
+    const newProfile = {
+      ...profile.targetUser,
+      avatarMax: max,
+      avatarMedium: medium,
+      avatar: big,
+      avatarSmall: small,
+    };
+    return dispatch(setProfile(newProfile));
+  };
 }
