@@ -845,8 +845,6 @@ class SectionBodyContent extends React.Component {
             subheadingText={subheadingText}
             descriptionText={favoritesDescription}
             imageSrc="images/empty_screen_favorites.png"
-            //buttons={null}
-            widthProp={widthProp}
           />
         );
       case "Trash":
