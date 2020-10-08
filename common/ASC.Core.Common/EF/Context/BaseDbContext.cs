@@ -39,7 +39,7 @@ namespace ASC.Core.Common.EF
             {
                 var provider = GetProviderByConnectionString();
 
-                var sqlProvider = ProviderContext[provider]();
+                using var sqlProvider = ProviderContext[provider]();
                 sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
                 sqlProvider.LoggerFactory = LoggerFactory;
 

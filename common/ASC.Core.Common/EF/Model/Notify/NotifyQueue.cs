@@ -31,6 +31,8 @@ namespace ASC.Core.Common.EF.Model
         [Column("creation_date")]
         public DateTime CreationDate { get; set; }
         public string Attachments { get; set; }
+
+        [Column("auto_submitted")]
         public string AutoSubmitted { get; set; }
     }
     public static class NotifyQueueExtension

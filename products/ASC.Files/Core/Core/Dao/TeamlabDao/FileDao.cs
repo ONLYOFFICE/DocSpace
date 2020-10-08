@@ -1456,27 +1456,31 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFileDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFileDao<int>, FileDao>();
-            services.TryAddTransient<File<int>>();
+            if (services.TryAddScoped<IFileDao<int>, FileDao>())
+            {
+                services.TryAddTransient<File<int>>();
 
-            return services
-                .AddFilesDbContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalStoreService()
-                .AddGlobalSpaceService()
-                .AddFactoryIndexerFileService()
-                .AddGlobalFolderService()
-                .AddChunkedUploadSessionHolderService()
-                .AddFolderDaoService();
+                return services
+                    .AddFilesDbContextService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService()
+                    .AddGlobalStoreService()
+                    .AddGlobalSpaceService()
+                    .AddFactoryIndexerFileService()
+                    .AddGlobalFolderService()
+                    .AddChunkedUploadSessionHolderService()
+                    .AddFolderDaoService();
+            }
+
+            return services;
         }
     }
 }
