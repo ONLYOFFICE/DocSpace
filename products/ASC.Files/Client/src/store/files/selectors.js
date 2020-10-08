@@ -302,7 +302,7 @@ export const loopTreeFolders = (
         addTreeFolder(folders, newItems, foldersCount);
       } else if (folders.length < foldersLength) {
         removeTreeFolder(folders, newItems, foldersCount);
-      } else if (folders.length > 0 && newItems.folders.length > 0) {
+      } else if (folders.length > 0 && newItems.folders.length > 0 && currentFolder) {
         renameTreeFolder(folders, newItems, currentFolder);
       } else {
         return;

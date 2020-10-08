@@ -289,7 +289,7 @@ class SectionBodyContent extends React.Component {
       filter,
       treeFolders,
       setTreeFolders,
-      currentFolderType,
+      isRecycleBin,
       t,
       setProgressBarData,
       fetchFiles,
@@ -312,7 +312,7 @@ class SectionBodyContent extends React.Component {
         });
         fetchFiles(folderId, filter)
           .then((data) => {
-            if (currentFolderType !== "Trash" && isFolder) {
+            if (!isRecycleBin && isFolder) {
               const path = data.selectedFolder.pathParts.slice(0);
               const newTreeFolders = treeFolders;
               const folders = data.selectedFolder.folders;
@@ -1395,7 +1395,7 @@ class SectionBodyContent extends React.Component {
                     : `folder_${item.id}`;
                   value += draggable ? "_draggable" : "";
                   let classNameProp =
-                    isFolder && item.access < 2 ? { className: " dropable" } : {};
+                    isFolder && item.access < 2 && !isRecycleBin ? { className: " dropable" } : {};
 
                   if(item.draggable) classNameProp.className += " draggable";
 
@@ -1454,7 +1454,7 @@ class SectionBodyContent extends React.Component {
                     const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
                     const element = this.getItemIcon(item, isEdit || item.id <= 0);
                     let classNameProp =
-                      isFolder && item.access < 2 ? { className: " dropable" } : { className: "" };
+                      isFolder && item.access < 2 && !isRecycleBin ? { className: " dropable" } : { className: "" };
 
                     if(item.draggable) classNameProp.className += " draggable";
 

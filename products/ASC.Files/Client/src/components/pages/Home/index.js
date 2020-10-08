@@ -434,7 +434,8 @@ class PureHome extends React.Component {
       progressData,
       viewAs,
       convertDialogVisible,
-      fileActionId
+      fileActionId,
+      isRecycleBin
     } = this.props;
 
     // const progressBarContent = (
@@ -476,7 +477,7 @@ class PureHome extends React.Component {
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
-          uploadFiles
+          uploadFiles={!isRecycleBin}
           onDrop={this.onDrop}
           setSelections={this.setSelections}
           onMouseMove={this.onMouseMove}

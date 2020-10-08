@@ -23,6 +23,7 @@ import {
   getIsMyFolder,
   getMyFolderId,
   getShareFolderId,
+  getRootFolderId,
 } from "../../../store/files/selectors";
 const { isAdmin } = initStore.auth.selectors;
 
@@ -147,14 +148,16 @@ class TreeFolders extends React.Component {
       isAdmin,
       myId,
       commonId,
-      isCommon,
-      isMy,
-      isShare,
+      rootFolderId,
       currentId,
     } = this.props;
     if (item.id === currentId) {
       return false;
     }
+
+    const isMy = rootFolderId === FolderType.USER;
+    const isCommon = rootFolderId === FolderType.COMMON;
+    const isShare = rootFolderId === FolderType.SHARE;
 
     if (
       item.rootFolderType === FolderType.SHARE &&
@@ -439,15 +442,13 @@ function mapStateToProps(state) {
   return {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),
-    isMy: getIsMyFolder(state),
-    isCommon: getIsCommonFolder(state),
-    isShare: getIsShareFolder(state),
     myId: getMyFolderId(state),
     commonId: getShareFolderId(state),
     currentId: getSelectedFolderId(state),
     isAdmin: isAdmin(state),
     dragging: getDragging(state),
     updateTree: getUpdateTree(state),
+    rootFolderId: getRootFolderId(state),
   };
 }
 
