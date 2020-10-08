@@ -617,13 +617,6 @@ export const getSelectedFolderType = (state) => {
   }
 };
 
-// const selectAllDirectories = state => state.files.treeFolders
-
-// export const selectFavoritesDirectoryId = createSelector(
-//   selectAllDirectories,
-//   allDirectories => allDirectories.find(dir => dir.key === "0-3").id
-// )
-
 export const getFileAction = (state) => {
   return state.files.fileAction;
 };
@@ -774,6 +767,7 @@ const getFilesContextOptions = (item, viewer) => {
   const options = [];
 
   const isFile = !!item.fileExst;
+  const isFavorite = item.fileStatus === 32;
   const canOpenPlayer = isMediaOrImage(item.fileExst);
 
   if (item.id <= 0) return [];
@@ -792,6 +786,9 @@ const getFilesContextOptions = (item, viewer) => {
     options.push("finalize-version");
     options.push("block-unblock-version");
     options.push("separator1");
+    if (!isFavorite) {
+      options.push("mark-as-favorite");
+    }
 
     if (canOpenPlayer) {
       options.push("view");
@@ -803,6 +800,7 @@ const getFilesContextOptions = (item, viewer) => {
     options.push("download");
   }
 
+  
   options.push("move");
   options.push("copy");
 
@@ -812,6 +810,11 @@ const getFilesContextOptions = (item, viewer) => {
 
   options.push("rename");
   options.push("delete");
+
+  if (isFavorite) {
+    options.push("separator2");
+    options.push("remove-from-favorites");
+  }
 
   return options;
 };

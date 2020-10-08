@@ -35,6 +35,7 @@ import {
   removeItemFromFavorite,
   fetchFavoritesFolder,
   deselectFile,
+  updateFile,
   fetchFiles,
   selectFile,
   setAction,
@@ -230,13 +231,10 @@ class SectionBodyContent extends React.Component {
       removeItemFromFavorite,
       updateFile,
       fetchFavoritesFolder,
-      selectedTreeNode,
-      favoritesNodeId } = this.props;
+      isFavorites } = this.props;
     const { action,
       id,
       title } = e.currentTarget.dataset;
-
-    const isFavoritesDir = +selectedTreeNode === +favoritesNodeId;
 
     switch (action) {
       case "mark":
@@ -246,7 +244,7 @@ class SectionBodyContent extends React.Component {
           .catch(e => toastr.error(e));
       case "remove":
         return removeItemFromFavorite(+id)
-          .then(() => (isFavoritesDir ? fetchFavoritesFolder() : updateFile(id, title)))
+          .then(() => (isFavorites ? fetchFavoritesFolder() : updateFile(id, title)))
           .then(() => toastr.success("Removed from favorites"))
           .catch(e => toastr.error(e));
       default:
@@ -514,7 +512,6 @@ class SectionBodyContent extends React.Component {
     const { t } = this.props;
 
     const isSharable = item.access !== 1 && item.access !== 0;
-    const isFavorite = item.fileStatus === 32 && true;
 
     return options.map((option) => {
       switch (option) {
@@ -539,7 +536,19 @@ class SectionBodyContent extends React.Component {
           };
         case "separator0":
         case "separator1":
+        case "separator2":
           return { key: option, isSeparator: true };
+        case "mark-as-favorite":
+          return {
+            key: option,
+            label: t("MarkAsFavorite"),
+            icon: "FavoritesIcon",
+            onClick: this.onClickFavorite,
+            disabled: false,
+            "data-action": "mark",
+            "data-id": item.id,
+            "data-title": item.title
+          };
         case "block-unblock-version":
           return {
             key: option,
@@ -644,6 +653,17 @@ class SectionBodyContent extends React.Component {
             icon: "CatalogTrashIcon",
             onClick: this.onClickDelete,
             disabled: false,
+          };
+        case "remove-from-favorites":
+          return {
+            key: option,
+            label: t("RemoveFromFavorites"),
+            icon: "FavoritesIcon",
+            onClick: this.onClickFavorite,
+            disabled: false,
+            "data-action": "remove",
+            "data-id": item.id,
+            "data-title": item.title
           };
         default:
           break;
@@ -1546,6 +1566,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      onClickFavorite={this.onClickFavorite}
                     />
                   </SimpleFilesRow>
                 </DragAndDrop>
@@ -1595,7 +1616,7 @@ const mapStateToProps = (state) => {
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
   const commonFolderIndex = 2;
-  //const favoritesNodeId = selectFavoritesDirectoryId(state);
+  const favoritesFolderIndex = 3;
 
   const myDocumentsId =
     treeFolders.length &&
@@ -1609,8 +1630,13 @@ const mapStateToProps = (state) => {
     treeFolders.length &&
     treeFolders[commonFolderIndex] &&
     treeFolders[commonFolderIndex].id;
+  const favoritesFolderId =
+    treeFolders.length &&
+    treeFolders[favoritesFolderIndex] &&
+    treeFolders[favoritesFolderIndex].id;
   const isShare = pathParts && pathParts[0] === shareFolderId;
   const isCommon = pathParts && pathParts[0] === commonFolderId;
+  const isFavorites = pathParts && pathParts[0] === favoritesFolderId;
 
   return {
     currentFolderCount: getCurrentFolderCount(state),
@@ -1626,6 +1652,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon,
+    isFavorites,
     isLoading: getIsLoading(state),
     isShare,
     mediaViewerVisible: getMediaViewerVisibility(state),
@@ -1646,6 +1673,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   deselectFile,
+  updateFile,
   fetchFiles,
   selectFile,
   setAction,
@@ -1659,4 +1687,7 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setIsLoading,
   clearProgressData,
+  markItemAsFavorite,
+  removeItemFromFavorite,
+  fetchFavoritesFolder
 })(withRouter(withTranslation()(SectionBodyContent)));

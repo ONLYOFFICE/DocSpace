@@ -48,7 +48,9 @@ export function getFoldersTree() {
     "@my",
     "@share",
     "@common",
-    /*'@projects',*/ "@favorites", "@trash"
+    /*'@projects',*/ 
+    "@favorites", 
+    "@trash" // Do not remove @trash from the last position
   ]; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map(path =>
     request({ method: "get", url: `/files/${path}?filterType=2` })
@@ -57,7 +59,7 @@ export function getFoldersTree() {
   return axios.all(requestsArray).then(
     axios.spread((...responses) =>
       responses.map((data, index) => {
-        const trashIndex = 4;
+        const trashIndex = rootFoldersPaths.length - 1;
         return {
           id: data.current.id,
           key: `0-${index}`,
