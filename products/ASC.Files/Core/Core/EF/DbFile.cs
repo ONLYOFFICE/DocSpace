@@ -104,7 +104,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFiles, Provider.MySql)
-                .Add(PgSqlAddDbFiles, Provider.Postrge);
+                .Add(PgSqlAddDbFiles, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFiles(this ModelBuilder modelBuilder)

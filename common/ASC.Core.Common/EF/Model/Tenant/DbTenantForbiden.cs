@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenantForbiden, Provider.MySql)
-                .Add(PgSqlAddDbTenantForbiden, Provider.Postrge)
+                .Add(PgSqlAddDbTenantForbiden, Provider.Postgre)
                 .HasData(
                 new DbTenantForbiden { Address = "controlpanel" },
                 new DbTenantForbiden { Address = "localhost" }

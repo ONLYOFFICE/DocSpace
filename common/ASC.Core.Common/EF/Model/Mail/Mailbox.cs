@@ -97,7 +97,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         {
             modelBuilder
                 .Add(MySqlAddMailbox, Provider.MySql)
-                .Add(PgSqlAddMailbox, Provider.Postrge);
+                .Add(PgSqlAddMailbox, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddMailbox(this ModelBuilder modelBuilder)

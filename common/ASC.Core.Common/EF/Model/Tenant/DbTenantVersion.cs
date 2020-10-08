@@ -20,7 +20,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenantVersion, Provider.MySql)
-                .Add(PgSqlAddDbTenantVersion, Provider.Postrge);
+                .Add(PgSqlAddDbTenantVersion, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)

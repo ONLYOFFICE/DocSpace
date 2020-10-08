@@ -29,7 +29,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddTelegramUsers, Provider.MySql)
-                .Add(PgSqlAddTelegramUsers, Provider.Postrge);
+                .Add(PgSqlAddTelegramUsers, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddTelegramUsers(this ModelBuilder modelBuilder)

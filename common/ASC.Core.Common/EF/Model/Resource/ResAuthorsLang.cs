@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         {
             modelBuilder
                 .Add(MySqlAddResAuthorsLang, Provider.MySql)
-                .Add(PgSqlAddResAuthorsLang, Provider.Postrge);
+                .Add(PgSqlAddResAuthorsLang, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddResAuthorsLang(this ModelBuilder modelBuilder)

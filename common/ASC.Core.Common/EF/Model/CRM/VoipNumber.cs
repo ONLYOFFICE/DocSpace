@@ -20,7 +20,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddVoipNumber, Provider.MySql)
-                .Add(PgSqlAddVoipNumber, Provider.Postrge);
+                .Add(PgSqlAddVoipNumber, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddVoipNumber(this ModelBuilder modelBuilder)

@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddFeedReaded, Provider.MySql)
-                .Add(PgSqlAddFeedReaded, Provider.Postrge);
+                .Add(PgSqlAddFeedReaded, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedReaded(this ModelBuilder modelBuilder)

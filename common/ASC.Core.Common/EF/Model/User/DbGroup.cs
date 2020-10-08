@@ -32,7 +32,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddDbGroup, Provider.MySql)
-                .Add(PgSqlAddDbGroup, Provider.Postrge);
+                .Add(PgSqlAddDbGroup, Provider.Postgre);
             return modelBuilder;
         }
         private static void MySqlAddDbGroup(this ModelBuilder modelBuilder)

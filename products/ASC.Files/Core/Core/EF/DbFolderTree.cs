@@ -33,7 +33,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFolderTree, Provider.MySql)
-                .Add(PgSqlAddDbFolderTree, Provider.Postrge);
+                .Add(PgSqlAddDbFolderTree, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFolderTree(this ModelBuilder modelBuilder)

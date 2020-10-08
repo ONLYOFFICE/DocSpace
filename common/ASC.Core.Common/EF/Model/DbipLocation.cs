@@ -48,7 +48,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbipLocation, Provider.MySql)
-                .Add(PgSqlAddDbipLocation, Provider.Postrge);
+                .Add(PgSqlAddDbipLocation, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbipLocation(this ModelBuilder modelBuilder)

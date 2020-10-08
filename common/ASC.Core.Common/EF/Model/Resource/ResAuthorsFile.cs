@@ -18,7 +18,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         {
             modelBuilder
                 .Add(MySqlAddResAuthorsFile, Provider.MySql)
-                .Add(PgSqlAddResAuthorsFile, Provider.Postrge);
+                .Add(PgSqlAddResAuthorsFile, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddResAuthorsFile(this ModelBuilder modelBuilder)

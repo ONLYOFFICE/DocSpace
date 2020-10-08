@@ -33,7 +33,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserSecurity, Provider.MySql)
-                .Add(PgSqlAddUserSecurity, Provider.Postrge)
+                .Add(PgSqlAddUserSecurity, Provider.Postgre)
                 .HasData(
                 new UserSecurity
                 {

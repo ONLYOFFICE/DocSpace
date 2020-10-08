@@ -43,7 +43,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesTagLink, Provider.MySql)
-                .Add(PgSqlAddDbFilesTagLink, Provider.Postrge);
+                .Add(PgSqlAddDbFilesTagLink, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesTagLink(this ModelBuilder modelBuilder)

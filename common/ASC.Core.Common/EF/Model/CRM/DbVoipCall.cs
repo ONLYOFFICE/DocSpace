@@ -56,7 +56,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbVoipCall, Provider.MySql)
-                .Add(PgSqlAddDbVoipCall, Provider.Postrge);
+                .Add(PgSqlAddDbVoipCall, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbVoipCall(this ModelBuilder modelBuilder)

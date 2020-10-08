@@ -61,7 +61,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddCrmContact, Provider.MySql)
-                .Add(PgSqlAddCrmContact, Provider.Postrge);
+                .Add(PgSqlAddCrmContact, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddCrmContact(this ModelBuilder modelBuilder)

@@ -25,7 +25,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyIdMapping, Provider.MySql)
-                .Add(PgSqlAddDbFilesThirdpartyIdMapping, Provider.Postrge);
+                .Add(PgSqlAddDbFilesThirdpartyIdMapping, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyIdMapping(this ModelBuilder modelBuilder)

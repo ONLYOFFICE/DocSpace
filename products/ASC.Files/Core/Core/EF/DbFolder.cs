@@ -65,7 +65,7 @@ namespace ASC.Files.Core.EF
             {
                 modelBuilder
                     .Add(MySqlAddDbFolder, Provider.MySql)
-                    .Add(PgSqlAddDbFolder, Provider.Postrge);
+                    .Add(PgSqlAddDbFolder, Provider.Postgre);
                 return modelBuilder;
             }
         public static void MySqlAddDbFolder(this ModelBuilder modelBuilder)

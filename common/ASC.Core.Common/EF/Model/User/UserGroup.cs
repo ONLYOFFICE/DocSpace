@@ -36,7 +36,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserGroup, Provider.MySql)
-                .Add(PgSqlAddUserGroup, Provider.Postrge)
+                .Add(PgSqlAddUserGroup, Provider.Postgre)
                 .HasData(
                 new UserGroup
                 {

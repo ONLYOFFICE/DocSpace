@@ -41,7 +41,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddNotifyQueue, Provider.MySql)
-                .Add(PgSqlAddNotifyQueue, Provider.Postrge);
+                .Add(PgSqlAddNotifyQueue, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddNotifyQueue(this ModelBuilder modelBuilder)

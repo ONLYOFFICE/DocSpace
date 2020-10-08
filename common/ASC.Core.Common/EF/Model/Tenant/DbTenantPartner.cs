@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenantPartner, Provider.MySql)
-                .Add(PgSqlAddDbTenantPartner, Provider.Postrge);
+                .Add(PgSqlAddDbTenantPartner, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbTenantPartner(this ModelBuilder modelBuilder)

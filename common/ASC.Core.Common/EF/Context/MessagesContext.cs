@@ -22,7 +22,7 @@ namespace ASC.Core.Common.EF.Context
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlMessagesContext() } ,
-                    { Provider.Postrge, () => new PostgreSqlMessagesContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlMessagesContext() } ,
                 };
             }
         }

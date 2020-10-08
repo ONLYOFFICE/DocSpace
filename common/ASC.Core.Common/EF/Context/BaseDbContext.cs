@@ -11,7 +11,7 @@ namespace ASC.Core.Common.EF
 {
     public enum Provider
     {
-        Postrge,
+        Postgre,
         MySql
     }
 
@@ -61,7 +61,7 @@ namespace ASC.Core.Common.EF
                 case Provider.MySql:
                     optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
                     break;
-                case Provider.Postrge:
+                case Provider.Postgre:
                     optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
             }
@@ -74,7 +74,7 @@ namespace ASC.Core.Common.EF
                 case "MySql.Data.MySqlClient":
                     return Provider.MySql;
                 case "Npgsql":
-                    return Provider.Postrge;
+                    return Provider.Postgre;
                 default:
                     break;
             }

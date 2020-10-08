@@ -38,7 +38,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddFeedAggregate, Provider.MySql)
-                .Add(PgSqlAddFeedAggregate, Provider.Postrge);
+                .Add(PgSqlAddFeedAggregate, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedAggregate(this ModelBuilder modelBuilder)

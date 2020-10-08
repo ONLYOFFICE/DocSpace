@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddDbQuotaRow, Provider.MySql)
-                .Add(PgSqlAddDbQuotaRow, Provider.Postrge);
+                .Add(PgSqlAddDbQuotaRow, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)

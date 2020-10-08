@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddDbTariff, Provider.MySql)
-                .Add(PgSqlAddDbTariff, Provider.Postrge);
+                .Add(PgSqlAddDbTariff, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbTariff(this ModelBuilder modelBuilder)

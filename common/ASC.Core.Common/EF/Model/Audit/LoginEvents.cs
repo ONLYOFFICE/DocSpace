@@ -14,7 +14,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddLoginEvents, Provider.MySql)
-                .Add(PgSqlAddLoginEvents, Provider.Postrge);
+                .Add(PgSqlAddLoginEvents, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)

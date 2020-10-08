@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddMobileAppInstall, Provider.MySql)
-                .Add(PgSqlAddMobileAppInstall, Provider.Postrge);
+                .Add(PgSqlAddMobileAppInstall, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddMobileAppInstall(this ModelBuilder modelBuilder)

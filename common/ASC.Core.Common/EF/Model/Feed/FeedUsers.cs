@@ -23,7 +23,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddFeedUsers, Provider.MySql)
-                .Add(PgSqlAddFeedUsers, Provider.Postrge);
+                .Add(PgSqlAddFeedUsers, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)

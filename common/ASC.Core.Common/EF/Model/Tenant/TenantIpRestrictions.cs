@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddTenantIpRestrictions, Provider.MySql)
-                .Add(PgSqlAddTenantIpRestrictions, Provider.Postrge);
+                .Add(PgSqlAddTenantIpRestrictions, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddTenantIpRestrictions(this ModelBuilder modelBuilder)

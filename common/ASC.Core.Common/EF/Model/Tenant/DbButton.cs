@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddDbButton, Provider.MySql)
-                .Add(PgSqlAddDbButton, Provider.Postrge);
+                .Add(PgSqlAddDbButton, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbButton(this ModelBuilder modelBuilder)

@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserPhoto, Provider.MySql)
-                .Add(PgSqlAddUserPhoto, Provider.Postrge);
+                .Add(PgSqlAddUserPhoto, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddUserPhoto(this ModelBuilder modelBuilder)
