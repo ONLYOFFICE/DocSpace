@@ -48,7 +48,7 @@ export function getFoldersTree() {
     "@my",
     "@share",
     "@common",
-    /*'@projects',*/ @favorites, "@trash"
+    /*'@projects',*/ "@favorites", "@trash"
   ]; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map(path =>
     request({ method: "get", url: `/files/${path}?filterType=2` })
