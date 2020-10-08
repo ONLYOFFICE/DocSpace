@@ -611,11 +611,10 @@ export const isMediaOrImage = (fileExst) => {
   )
 };
 
-const getFilesContextOptions = (item, isRecycleBin) => {
+const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
   const options = [];
 
   const isFile = !!item.fileExst;
-  const canOpenPlayer = isMediaOrImage(item.fileExst);
 
   if (item.id <= 0) return [];
 
@@ -776,8 +775,8 @@ export const getFilesList = (state) => {
           webUrl,
           providerKey,
         } = item;
-
-        const contextOptions = getFilesContextOptions(item, isRecycleBin);
+        const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
+        const contextOptions = getFilesContextOptions(item, isRecycleBin, canOpenPlayer);
         const checked = isFileSelected(selection, id, parentId);
 
         const selectedItem = selection.find(
