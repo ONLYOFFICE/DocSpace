@@ -58,7 +58,9 @@ const ToggleContentContainer = styled.div`
       margin-left: 0px;
     }
   }
-
+  .cross_icon {
+    margin-right: 8px;
+  }
   .people-admin_container {
     margin-right: 16px;
     position: relative;
@@ -525,8 +527,10 @@ class PureAdminsSettings extends Component {
                   buttons={
                     <>
                       <Icons.CrossIcon
+                        className="cross_icon"
                         size="small"
-                        style={{ marginRight: "8px" }}
+                        isfill={true}
+                        color="#657077"
                       />
                       <Link
                         type="action"
