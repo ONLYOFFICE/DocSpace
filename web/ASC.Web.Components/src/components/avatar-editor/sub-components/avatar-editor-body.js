@@ -653,26 +653,8 @@ class AvatarEditorBody extends React.Component {
                           color="#FFFFFF"
                           className="editor-button"
                         />
-                        <IconButton
-                          size="16"
-                          isDisabled={true}
-                          onClick={this.onFlipVerticalClick}
-                          iconName={"FlipVerticalIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                          className="editor-button"
-                        />
-                        <IconButton
-                          size="16"
-                          isDisabled={true}
-                          onClick={this.onFlipHorizontalClick}
-                          iconName={"FlipHorizontalIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                          className="editor-button"
-                        />
+                        <Box></Box>
+                        <Box></Box>
                         <Box></Box>
                         <IconButton
                           size="16"
