@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using ASC.Common;
 using ASC.Common.Logging;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -11,13 +13,15 @@ namespace ASC.Core.Common.EF
     {
         private Dictionary<string, T> Pairs { get; set; }
         private List<T> AsyncList { get; set; }
-        public IOptionsFactory<T> Factory { get; }
-        public IConfiguration Configuration { get; }
-        public BaseDbContextManager(IOptionsFactory<T> factory) : base(factory)
+        private IOptionsFactory<T> Factory { get; }
+        private IConfiguration Configuration { get; }
+
+        public BaseDbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory)
         {
             Pairs = new Dictionary<string, T>();
             AsyncList = new List<T>();
             Factory = factory;
+            Configuration = configuration;
         }
 
         public override T Get(string name)
@@ -64,14 +68,14 @@ namespace ASC.Core.Common.EF
 
     public class DbContextManager<T> : BaseDbContextManager<T> where T : BaseDbContext, new()
     {
-        public DbContextManager(IOptionsFactory<T> factory) : base(factory)
+        public DbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory, configuration)
         {
         }
     }
 
     public class MultiRegionalDbContextManager<T> : BaseDbContextManager<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        public MultiRegionalDbContextManager(IOptionsFactory<MultiRegionalDbContext<T>> factory) : base(factory)
+        public MultiRegionalDbContextManager(IOptionsFactory<MultiRegionalDbContext<T>> factory, IConfiguration configuration) : base(factory, configuration)
         {
         }
     }
