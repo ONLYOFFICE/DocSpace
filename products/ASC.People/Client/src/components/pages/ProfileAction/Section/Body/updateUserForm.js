@@ -24,12 +24,12 @@ import {
   getUserPhoto,
   fetchProfile,
 } from "../../../../../store/profile/actions";
-import { toggleAvatarEditor } from "../../../../../store/people/actions";
 import {
   setFilter,
   updateProfileInUsers,
   setIsVisibleDataLossDialog,
   setIsEditingForm,
+  toggleAvatarEditor,
 } from "../../../../../store/people/actions";
 import {
   MainContainer,
@@ -255,7 +255,8 @@ class UpdateUserForm extends React.Component {
     this.props
       .updateProfile(this.state.profile)
       .then((profile) => {
-        this.props.updateProfileInUsers(profile);        toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        this.props.updateProfileInUsers(profile);
+        toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(
           `${this.props.settings.homepage}/view/${profile.userName}`
         );

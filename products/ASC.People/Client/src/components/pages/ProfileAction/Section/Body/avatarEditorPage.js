@@ -48,7 +48,7 @@ class AvatarEditorPage extends React.PureComponent {
       fetchProfile(userId);
     }
 
-    if (profile && avatar.image === undefined) {
+    if (avatar.image === undefined) {
       this.setUserPhotoToState();
     }
   }
@@ -63,7 +63,7 @@ class AvatarEditorPage extends React.PureComponent {
       fetchProfile(userId);
     }
 
-    if (profile && avatar.image === undefined) {
+    if (avatar.image === undefined) {
       this.setUserPhotoToState();
     }
   }
@@ -162,6 +162,11 @@ class AvatarEditorPage extends React.PureComponent {
 
   setUserPhotoToState = () => {
     const { profile } = this.props;
+
+    if (!profile) {
+      this.setState({ pageIsLoaded: true });
+      return;
+    }
 
     getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {

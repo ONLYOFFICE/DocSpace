@@ -27,6 +27,7 @@ import {
   updateProfileInUsers,
   setIsVisibleDataLossDialog,
   setIsEditingForm,
+  toggleAvatarEditor,
 } from "../../../../../store/people/actions";
 import {
   MainContainer,
@@ -126,9 +127,9 @@ class CreateUserForm extends React.Component {
   }
 
   openAvatarEditorPage() {
-    this.props.history.push(
-      `${this.props.settings.homepage}/edit-avatar/${this.props.profile.userName}`
-    );
+    const { toggleAvatarEditor } = this.props;
+
+    toggleAvatarEditor(true);
   }
 
   onLoadFileAvatar(file) {
@@ -658,4 +659,5 @@ export default connect(mapStateToProps, {
   updateProfileInUsers,
   setIsVisibleDataLossDialog,
   setIsEditingForm,
+  toggleAvatarEditor,
 })(withRouter(withTranslation()(CreateUserForm)));
