@@ -73,10 +73,10 @@ export function changeEmail(userId, email, key) {
   };
 }
 
-export function changePassword(userId, password, key) {
+export function changePassword(userId, passwordHash, key) {
   return (dispatch) => {
     return api.people
-      .changePassword(userId, password, key)
+      .changePassword(userId, passwordHash, key)
       .then(() => logout(dispatch));
   };
 }
