@@ -463,7 +463,7 @@ class SectionBodyContent extends React.PureComponent {
         widthProp={widthProp}
         buttons={
           <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+            <Icons.CrossIcon size="small" style={{ marginRight: "8px" }} />
             <Link type="action" isHovered={true} onClick={this.onResetFilter}>
               {t("ClearButton")}
             </Link>
