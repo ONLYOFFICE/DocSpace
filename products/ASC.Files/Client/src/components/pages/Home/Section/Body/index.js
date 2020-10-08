@@ -80,8 +80,7 @@ import {
   loopTreeFolders,
   getFilesList,
   isMediaOrImage,
-  getMediaViewerFormats,
-  selectFavoritesDirectoryId
+  getMediaViewerFormats
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const { isAdmin } = store.auth.selectors;
@@ -1588,7 +1587,7 @@ const mapStateToProps = (state) => {
   const myFolderIndex = 0;
   const shareFolderIndex = 1;
   const commonFolderIndex = 2;
-  const favoritesNodeId = selectFavoritesDirectoryId(state);
+  //const favoritesNodeId = selectFavoritesDirectoryId(state);
 
   const myDocumentsId =
     treeFolders.length &&
