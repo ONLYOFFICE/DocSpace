@@ -460,7 +460,6 @@ class SectionBodyContent extends React.PureComponent {
         imageAlt="Empty Screen Filter image"
         headerText={t("NotFoundTitle")}
         descriptionText={t("NotFoundDescription")}
-        widthProp={widthProp}
         buttons={
           <>
             <Icons.CrossIcon size="small" style={{ marginRight: "8px" }} />
