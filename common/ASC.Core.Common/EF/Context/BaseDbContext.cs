@@ -9,22 +9,77 @@ using Microsoft.Extensions.Logging;
 
 namespace ASC.Core.Common.EF
 {
+    public enum Provider
+    {
+        Postgre,
+        MySql
+    }
+
     public class BaseDbContext : DbContext
     {
+        public string baseName;
         public BaseDbContext() { }
-
         public BaseDbContext(DbContextOptions options) : base(options)
         {
+
         }
 
         internal ILoggerFactory LoggerFactory { get; set; }
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
+        protected internal Provider Provider { get; set; }
+
+        protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get { return null; }
+        }
+
+        internal void Migrate()
+        {
+            if (ProviderContext != null)
+            {
+                var provider = GetProviderByConnectionString();
+
+                using var sqlProvider = ProviderContext[provider]();
+                sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
+                sqlProvider.LoggerFactory = LoggerFactory;
+
+                sqlProvider.Database.Migrate();
+            }
+            else
+            {
+                Database.Migrate();
+            }
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+            Provider = GetProviderByConnectionString();
+            switch (Provider)
+            {
+                case Provider.MySql:
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+                    break;
+                case Provider.Postgre:
+                    optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                    break;
+            }
+        }
+
+        public Provider GetProviderByConnectionString()
+        {
+            switch (ConnectionStringSettings.ProviderName)
+            {
+                case "MySql.Data.MySqlClient":
+                    return Provider.MySql;
+                case "Npgsql":
+                    return Provider.Postgre;
+                default:
+                    break;
+            }
+
+            return Provider.MySql;
         }
     }
 

@@ -51,16 +51,17 @@ namespace ASC.Common
             return false;
         }
 
-        public DIHelper TryAddScoped<TService, TImplementation>(TService tservice, TImplementation tImplementation) where TService : Type where TImplementation : Type
+        public bool TryAddScoped<TService, TImplementation>(TService tservice, TImplementation tImplementation) where TService : Type where TImplementation : Type
         {
             var serviceName = $"{tservice}{tImplementation}";
             if (!Scoped.Contains(serviceName))
             {
                 Scoped.Add(serviceName);
                 ServiceCollection.TryAddScoped(tservice, tImplementation);
+                return true;
             }
 
-            return this;
+            return false;
         }
 
 
