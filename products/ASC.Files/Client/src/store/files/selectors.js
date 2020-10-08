@@ -3,270 +3,162 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin, getCurrentUser } = store.auth.selectors;
+const { isAdmin } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
   return result === -1 ? false : true;
 };
 
+export const getMediaViewerImageFormats = (state) => {
+  return state.files.mediaViewerFormats.images;
+};
+
+export const getMediaViewerMediaFormats = (state) => {
+  return state.files.mediaViewerFormats.media;
+};
+
+export const getEditedFormats = state => {
+  return state.files.docservice.editedDocs;
+};
+
+export const getConvertedFormats = state => {
+  return state.files.docservice.convertDocs;
+};
+
+export const getArchiveFormats = state => {
+  return state.files.formats.archive;
+};
+
+export const getImageFormats = state => {
+  return state.files.formats.image;
+};
+
+export const getSoundFormats = state => {
+  return state.files.formats.sound;
+};
+
+export const getVideoFormats = state => {
+  return state.files.formats.video;
+};
+
+export const getHtmlFormats = state => {
+  return state.files.formats.html;
+};
+
+export const getEbookFormats = state => {
+  return state.files.formats.ebook;
+};
+
+export const getDocumentFormats = state => {
+  return state.files.formats.document;
+};
+
+export const getPresentationFormats = state => {
+  return state.files.formats.presentation;
+};
+
+export const getSpreadsheetFormats = state => {
+  return state.files.formats.spreadsheet;
+};
+
 export const canWebEdit = (extension) => {
-  const formats = [
-    ".pptx",
-    ".pptm",
-    ".ppt",
-    ".ppsx",
-    ".ppsm",
-    ".pps",
-    ".potx",
-    ".potm",
-    ".pot",
-    ".odp",
-    ".fodp",
-    ".otp",
-    ".xlsx",
-    ".xlsm",
-    ".xls",
-    ".xltx",
-    ".xltm",
-    ".xlt",
-    ".ods",
-    ".fods",
-    ".ots",
-    ".csv",
-    ".docx",
-    ".docm",
-    ".doc",
-    ".dotx",
-    ".dotm",
-    ".dot",
-    ".odt",
-    ".fodt",
-    ".ott",
-    ".txt",
-    ".rtf",
-    ".mht",
-    ".html",
-    ".htm",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getEditedFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const canConvert = (extension) => {
-  const formats = [
-    ".pptm",
-    ".ppt",
-    ".ppsm",
-    ".pps",
-    ".potx",
-    ".potm",
-    ".pot",
-    ".odp",
-    ".fodp",
-    ".otp",
-    ".xlsm",
-    ".xls",
-    ".xltx",
-    ".xltm",
-    ".xlt",
-    ".ods",
-    ".fods",
-    ".ots",
-    ".docm",
-    ".doc",
-    ".dotx",
-    ".dotm",
-    ".dot",
-    ".odt",
-    ".fodt",
-    ".ott",
-    ".rtf",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getConvertedFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isArchive = (extension) => {
-  const formats = [
-    ".zip",
-    ".rar",
-    ".ace",
-    ".arc",
-    ".arj",
-    ".bh",
-    ".cab",
-    ".enc",
-    ".gz",
-    ".ha",
-    ".jar",
-    ".lha",
-    ".lzh",
-    ".pak",
-    ".pk3",
-    ".tar",
-    ".tgz",
-    ".gz",
-    ".uu",
-    ".uue",
-    ".xxe",
-    ".z",
-    ".zoo",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getArchiveFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isImage = (extension) => {
-  const formats = [
-    ".bmp",
-    ".cod",
-    ".gif",
-    ".ief",
-    ".jpe",
-    ".jpg",
-    ".tif",
-    ".cmx",
-    ".ico",
-    ".pnm",
-    ".pbm",
-    ".ppm",
-    ".psd",
-    ".rgb",
-    ".xbm",
-    ".xpm",
-    ".xwd",
-    ".png",
-    ".ai",
-    ".jpeg",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getImageFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isSound = (extension) => {
-  const formats = [
-    ".aac",
-    ".ac3",
-    ".aiff",
-    ".amr",
-    ".ape",
-    ".cda",
-    ".flac",
-    ".m4a",
-    ".mid",
-    ".mka",
-    ".mp3",
-    ".mpc",
-    ".oga",
-    ".ogg",
-    ".pcm",
-    ".ra",
-    ".raw",
-    ".wav",
-    ".wma",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getSoundFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isVideo = (extension) => {
-  const formats = [
-    ".3gp",
-    ".asf",
-    ".avi",
-    ".f4v",
-    ".fla",
-    ".flv",
-    ".m2ts",
-    ".m4v",
-    ".mkv",
-    ".mov",
-    ".mp4",
-    ".mpeg",
-    ".mpg",
-    ".mts",
-    ".ogv",
-    ".svi",
-    ".vob",
-    ".webm",
-    ".wmv",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getVideoFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isHtml = (extension) => {
-  const formats = [".htm", ".mht", ".html"];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getHtmlFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isEbook = (extension) => {
-  const formats = [".fb2", ".ibk", ".prc", ".epub"];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getEbookFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isDocument = (extension) => {
-  const formats = [
-    ".doc",
-    ".docx",
-    ".docm",
-    ".dot",
-    ".dotx",
-    ".dotm",
-    ".odt",
-    ".fodt",
-    ".ott",
-    ".rtf",
-    ".txt",
-    ".html",
-    ".htm",
-    ".mht",
-    ".pdf",
-    ".djvu",
-    ".fb2",
-    ".epub",
-    ".xps",
-    ".doct",
-    ".docy",
-    ".gdoc",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getDocumentFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isPresentation = (extension) => {
-  const formats = [
-    ".pps",
-    ".ppsx",
-    ".ppsm",
-    ".ppt",
-    ".pptx",
-    ".pptm",
-    ".pot",
-    ".potx",
-    ".potm",
-    ".odp",
-    ".fodp",
-    ".otp",
-    ".pptt",
-    ".ppty",
-    ".gslides",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getPresentationFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export const isSpreadsheet = (extension) => {
-  const formats = [
-    ".xls",
-    ".xlsx",
-    ".xlsm",
-    ".xlt",
-    ".xltx",
-    ".xltm",
-    ".ods",
-    ".fods",
-    ".ots",
-    ".csv",
-    ".xlst",
-    ".xlsy",
-    ".xlsb",
-    ".gsheet",
-  ];
-  return presentInArray(formats, extension);
+  return createSelector(
+    getSpreadsheetFormats,
+    (formats) => {
+      return presentInArray(formats, extension);
+    }
+  )
 };
 
 export function getSelectedFile(selection, fileId, parentId) {
@@ -558,18 +450,26 @@ export const getFolderIcon = (providerKey, size = 32) => {
   }
 };
 
-export const getFileIcon = (extension, size = 32) => {
+export const getFileIcon = (
+  extension,
+  size = 32,
+  archive = false,
+  image = false,
+  sound = false,
+  ebook = false,
+  html = false
+) => {
   const folderPath = `images/icons/${size}`;
 
-  if (isArchive(extension)) return `${folderPath}/file_archive.svg`;
+  if (archive) return `${folderPath}/file_archive.svg`;
 
-  if (isImage(extension)) return `${folderPath}/image.svg`;
+  if (image) return `${folderPath}/image.svg`;
 
-  if (isSound(extension)) return `${folderPath}/sound.svg`;
+  if (sound) return `${folderPath}/sound.svg`;
 
-  if (isEbook(extension)) return `${folderPath}/ebook.svg`;
+  if (ebook) return `${folderPath}/ebook.svg`;
 
-  if (isHtml(extension)) return `${folderPath}/html.svg`;
+  if (html) return `${folderPath}/html.svg`;
 
   switch (extension) {
     case ".avi":
@@ -696,57 +596,22 @@ export const getFirstLoad = (state) => {
   return state.files.firstLoad;
 };
 
-export const getMediaViewerFormats = () => {
-  //TODO need add to state
-  const extsMediaPreviewed = [
-    ".aac",
-    ".flac",
-    ".m4a",
-    ".mp3",
-    ".oga",
-    ".ogg",
-    ".wav",
-    ".f4v",
-    ".m4v",
-    ".mov",
-    ".mp4",
-    ".ogv",
-    ".webm",
-    ".avi",
-    ".mpg",
-    ".mpeg",
-    ".wmv",
-  ];
-
-  const extsImagePreviewed = [
-    ".bmp",
-    ".gif",
-    ".jpeg",
-    ".jpg",
-    ".png",
-    ".ico",
-    ".tif",
-    ".tiff",
-    ".webp",
-  ];
-
-  return { extsMediaPreviewed, extsImagePreviewed };
-};
-
 export const isMediaOrImage = (fileExst) => {
-  const formats = getMediaViewerFormats();
-
-  if (
-    formats.extsMediaPreviewed.includes(fileExst) ||
-    formats.extsImagePreviewed.includes(fileExst)
-  ) {
-    return true;
-  }
-
-  return false;
+  return createSelector(
+    [getMediaViewerImageFormats, getMediaViewerMediaFormats],
+    (media, images) => {
+      if (
+        media.includes(fileExst) ||
+        images.includes(fileExst)
+      ) {
+        return true;
+      }
+      return false;
+    }
+  )
 };
 
-const getFilesContextOptions = (item, viewer) => {
+const getFilesContextOptions = (item, isRecycleBin) => {
   const options = [];
 
   const isFile = !!item.fileExst;
@@ -754,41 +619,48 @@ const getFilesContextOptions = (item, viewer) => {
 
   if (item.id <= 0) return [];
 
-  options.push("sharing-settings");
+  if (isRecycleBin) {
+    options.push("download");
+    options.push("download-as");
+    options.push("restore");
+    options.push("separator2");
+    options.push("delete");
+  } else {
+    options.push("sharing-settings");
 
-  if (isFile) {
-    options.push("send-by-email");
-  }
-
-  options.push("link-for-portal-users");
-  options.push("separator0");
-
-  if (isFile) {
-    options.push("show-version-history");
-    options.push("finalize-version");
-    options.push("block-unblock-version");
-    options.push("separator1");
-
-    if (canOpenPlayer) {
-      options.push("view");
-    } else {
-      options.push("edit");
-      options.push("preview");
+    if (isFile) {
+      options.push("send-by-email");
     }
 
-    options.push("download");
+    options.push("link-for-portal-users");
+    options.push("separator0");
+
+    if (isFile) {
+      options.push("show-version-history");
+      options.push("finalize-version");
+      options.push("block-unblock-version");
+      options.push("separator1");
+
+      if (canOpenPlayer) {
+        options.push("view");
+      } else {
+        options.push("edit");
+        options.push("preview");
+      }
+
+      options.push("download");
+    }
+
+    options.push("move");
+    options.push("copy");
+
+    if (isFile) {
+      options.push("duplicate");
+    }
+
+    options.push("rename");
+    options.push("delete");
   }
-
-  options.push("move");
-  options.push("copy");
-
-  if (isFile) {
-    options.push("duplicate");
-  }
-
-  options.push("rename");
-  options.push("delete");
-
   return options;
 };
 
@@ -872,68 +744,102 @@ export const getIsRecycleBinFolder = createSelector(
   }
 );
 
-export const getFilesList = createSelector(
-  [getItemsList, getSelection, getIsRecycleBinFolder, getCurrentUser],
-  (items, selection, isRecycleBin, viewer) => {
-    return items.map((item) => {
-      const {
-        access,
-        contentLength,
-        createdBy,
-        fileExst,
-        filesCount,
-        fileStatus,
-        folderId,
-        foldersCount,
-        id,
-        locked,
-        parentId,
-        title,
-        updated,
-        versionGroup,
-      } = item;
+export const getFilesList = (state) => {
+  return createSelector(
+    [getItemsList, getSelection, getIsRecycleBinFolder],
+    (items, selection, isRecycleBin) => {
+      return items.map((item) => {
+        const {
+          access,
+          comment,
+          contentLength,
+          created,
+          createdBy,
+          fileExst,
+          filesCount,
+          fileStatus,
+          fileType,
+          folderId,
+          foldersCount,
+          id,
+          locked,
+          parentId,
+          pureContentLength,
+          rootFolderType,
+          shared,
+          title,
+          updated,
+          updatedBu,
+          version,
+          versionGroup,
+          viewUrl,
+          webUrl,
+          providerKey,
+        } = item;
 
-      const contextOptions = getFilesContextOptions(item, viewer).filter(
-        (o) => o
-      );
-      const checked = isFileSelected(selection, id, parentId);
+        const contextOptions = getFilesContextOptions(item, isRecycleBin);
+        const checked = isFileSelected(selection, id, parentId);
 
-      const selectedItem = selection.find(
-        (x) => x.id === id && x.fileExst === fileExst
-      );
+        const selectedItem = selection.find(
+          (x) => x.id === id && x.fileExst === fileExst
+        );
 
-      const isFolder = selectedItem ? false : fileExst ? false : true;
+        const isFolder = selectedItem ? false : fileExst ? false : true;
 
-      const draggable = selectedItem && !isRecycleBin;
+        const draggable = selectedItem && !isRecycleBin;
 
-      let value = fileExst ? `file_${id}` : `folder_${id}`;
+        let value = fileExst ? `file_${id}` : `folder_${id}`;
 
-      value += draggable ? "_draggable" : "";
+        const isArchiveItem = isArchive(item.fileExst)(state);
+        const isImageItem = isImage(item.fileExst)(state);
+        const isSoundItem = isSound(item.fileExst)(state);
+        const isEbookItem = isEbook(item.fileExst)(state);
+        const isHtmlItem = isHtml(item.fileExst)(state);
 
-      return {
-        access,
-        checked,
-        contentLength,
-        contextOptions,
-        createdBy,
-        fileExst,
-        filesCount,
-        fileStatus,
-        folderId,
-        foldersCount,
-        id,
-        isFolder,
-        locked,
-        parentId,
-        selectedItem,
-        title,
-        updated,
-        value,
-        versionGroup,
-      };
-    });
-  }
-);
+        const icon = fileExst
+          ? getFileIcon(fileExst, 24, isArchiveItem, isImageItem, isSoundItem, isEbookItem, isHtmlItem)
+          : getFolderIcon(providerKey, 24);
+
+        value += draggable ? "_draggable" : "";
+
+        return {
+          access,
+          checked,
+          comment,
+          contentLength,
+          contextOptions,
+          created,
+          createdBy,
+          fileExst,
+          filesCount,
+          fileStatus,
+          fileType,
+          folderId,
+          foldersCount,
+          icon,
+          id,
+          isFolder,
+          locked,
+          new: item.new,
+          parentId,
+          pureContentLength,
+          rootFolderType,
+          selectedItem,
+          shared,
+          title,
+          updated,
+          updatedBu,
+          value,
+          version,
+          versionGroup,
+          viewUrl,
+          webUrl,
+          providerKey,
+        };
+      });
+    }
+  );
+};
 
 export const getSelectedTreeNode = createSelector(getSelectedFolderId, (id) => {
   if (id) return [id.toString()];
