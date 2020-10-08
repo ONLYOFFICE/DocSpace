@@ -8,8 +8,7 @@ import {
   Text,
   AvatarEditor,
   Link,
-  utils,
-} from "asc-web-components";
+  utils,} from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
   toEmployeeWrapper,
@@ -27,6 +26,12 @@ import {
 } from "../../../../../store/profile/actions";
 import { toggleAvatarEditor } from "../../../../../store/people/actions";
 import {
+  setFilter,
+  updateProfileInUsers,
+  setIsVisibleDataLossDialog,
+  setIsEditingForm,
+} from "../../../../../store/people/actions";
+import {
   MainContainer,
   AvatarContainer,
   MainFieldsContainer,
@@ -39,6 +44,7 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
+import { DataLossWarningDialog } from "../../../../dialogs";
 import { api, toastr } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -80,6 +86,7 @@ class UpdateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onCancelHandler = this.onCancelHandler.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
@@ -164,8 +171,7 @@ class UpdateUserForm extends React.Component {
         [dialogsDataset.changeEmail]: false,
         currentDialog: "",
       },
-      isMobile: isMobile || isTablet,
-    };
+      isMobile: isMobile || isTablet,    };
 
     //Set unique contacts id
     const now = new Date().getTime();
@@ -177,10 +183,16 @@ class UpdateUserForm extends React.Component {
     return newState;
   };
 
+  setIsEdit() {
+    const { editingForm, setIsEditingForm } = this.props;
+    if (!editingForm.isEdit) setIsEditingForm(true);
+  }
+
   onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   toggleDialogsVisible = (e) => {
@@ -200,18 +212,21 @@ class UpdateUserForm extends React.Component {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.isVisitor = event.target.value === "true";
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onBirthdayDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.birthday = value ? value.toJSON() : null;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onWorkFromDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   validate() {
@@ -240,7 +255,7 @@ class UpdateUserForm extends React.Component {
     this.props
       .updateProfile(this.state.profile)
       .then((profile) => {
-        toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        this.props.updateProfileInUsers(profile);        toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(
           `${this.props.settings.homepage}/view/${profile.userName}`
         );
@@ -250,9 +265,24 @@ class UpdateUserForm extends React.Component {
         this.setState({ isLoading: false });
       });
   }
+  onCancelHandler() {
+    const { editingForm, setIsVisibleDataLossDialog } = this.props;
+
+    if (editingForm.isEdit) {
+      setIsVisibleDataLossDialog(true);
+    } else {
+      this.onCancel();
+    }
+  }
 
   onCancel() {
-    this.props.history.goBack();
+    const { filter, setFilter } = this.props;
+
+    if (document.referrer) {
+      this.props.history.goBack();
+    } else {
+      setFilter(filter);
+    }
   }
 
   onContactsItemAdd(item) {
@@ -263,6 +293,7 @@ class UpdateUserForm extends React.Component {
       value: "",
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemTypeChange(item) {
@@ -272,6 +303,7 @@ class UpdateUserForm extends React.Component {
       if (element.id === id) element.type = item.value;
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemTextChange(event) {
@@ -281,6 +313,7 @@ class UpdateUserForm extends React.Component {
       if (element.id === id) element.value = event.target.value;
     });
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onContactsItemRemove(event) {
@@ -291,6 +324,7 @@ class UpdateUserForm extends React.Component {
     });
     stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   openAvatarEditor() {
@@ -337,11 +371,10 @@ class UpdateUserForm extends React.Component {
     
     data.append("file", file);
     data.append("Autosave", false);
-    loadAvatar(profile.id, data)
+    loadAvatar(this.state.profile.id, data)
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          
           _this.setState({ isLoading: false });
           if (fileData) {
             fileData.avatar = {
@@ -349,11 +382,15 @@ class UpdateUserForm extends React.Component {
               image: response.data,
               defaultWidth: img.width,
               defaultHeight: img.height,
-            }
-            if(!fileData.existImage) {
-              _this.onSaveAvatar(fileData.existImage)  // saving empty avatar
-            } else{
-              _this.onSaveAvatar(fileData.existImage, fileData.position, fileData.avatar)
+            };
+            if (!fileData.existImage) {
+              _this.onSaveAvatar(fileData.existImage); // saving empty avatar
+            } else {
+              _this.onSaveAvatar(
+                fileData.existImage,
+                fileData.position,
+                fileData.avatar
+              );
             }
           }
         };
@@ -380,9 +417,10 @@ class UpdateUserForm extends React.Component {
         height: result.height,
         tmpFile: avatar.tmpFile,
       })
-        .then(() => {
+          .then(() => {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState({ isLoading: false });
+          this.setIsEdit();
         })
         .catch((error) => {
           toastr.error(error);
@@ -390,20 +428,19 @@ class UpdateUserForm extends React.Component {
         })
         .then(() => {
           this.props.updateProfile(this.props.profile);
+          this.setState({ isLoading: false });
         })
         .then(() => {
           this.props.fetchProfile(profile.id);
-        });
-    } else {
+        });    } else {
       deleteAvatar(profile.id)
-        .then(() => {
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        .then(() => {          toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState({ isLoading: false });
+          this.setIsEdit();
         })
         .catch((error) => toastr.error(error))
         .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(profile.id));
-    }
+        .then(() => this.props.fetchProfile(profile.id));    }
   };
 
   onCloseAvatarEditor() {
@@ -439,6 +476,7 @@ class UpdateUserForm extends React.Component {
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   onRemoveGroup(id) {
@@ -450,6 +488,7 @@ class UpdateUserForm extends React.Component {
       (option) => option.key !== id
     );
     this.setState(stateCopy);
+    this.setIsEdit();
   }
 
   render() {
@@ -551,6 +590,7 @@ class UpdateUserForm extends React.Component {
     return (
       <>
         <MainContainer>
+          <DataLossWarningDialog onContinue={this.onCancel} />
           <AvatarContainer>
             <Avatar
               size="max"
@@ -779,7 +819,7 @@ class UpdateUserForm extends React.Component {
           />
           <Button
             label={t("CancelButton")}
-            onClick={this.onCancel}
+            onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
             style={{ marginLeft: "8px" }}
@@ -820,11 +860,16 @@ const mapStateToProps = (state) => {
     profile: state.profile.targetUser,
     settings: state.auth.settings,
     groups: state.people.groups,
-  };
+    editingForm: state.people.editingForm,
+    filter: state.people.filter,  };
 };
 
 export default connect(mapStateToProps, {
   updateProfile,
   fetchProfile,
-  toggleAvatarEditor,
+  updateProfileInUsers,
+  setIsVisibleDataLossDialog,
+  setIsEditingForm,
+  setFilter,
+  toggleAvatarEditor
 })(withRouter(withTranslation()(UpdateUserForm)));

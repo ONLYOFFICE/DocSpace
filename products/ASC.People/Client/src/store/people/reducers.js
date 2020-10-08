@@ -9,6 +9,8 @@ import {
   SELECT_GROUP,
   SET_USER,
   SET_SELECTOR_USERS,
+  SET_IS_VISIBLE_DATA_LOSS_DIALOG,
+  SET_IS_EDITING_FORM,
   TOGGLE_AVATAR_EDITOR,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
@@ -26,7 +28,10 @@ const initialState = {
   selector: {
     users: [],
   },
-};
+  editingForm: {
+    isEdit: false,
+    isVisibleDataLossDialog: false,
+  },};
 
 const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -79,11 +84,25 @@ const peopleReducer = (state = initialState, action) => {
           users: action.users,
         }),
       });
+    case SET_IS_VISIBLE_DATA_LOSS_DIALOG:
+      return Object.assign({}, state, {
+        editingForm: {
+          ...state.editingForm,
+          isVisibleDataLossDialog: action.isVisible,
+          callback: action.callback,
+        },
+      });
+    case SET_IS_EDITING_FORM:
+      return Object.assign({}, state, {
+        editingForm: {
+          ...state.editingForm,
+          isEdit: action.isEdit,
+        },
+      });
     case TOGGLE_AVATAR_EDITOR:
       return Object.assign({}, state, {
         avatarEditorIsOpen: action.avatarEditorIsOpen,
-      });
-    default:
+      });    default:
       return state;
   }
 };

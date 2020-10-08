@@ -14,6 +14,7 @@ import {
   UpdateUserForm,
   AvatarEditorPage,} from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
+import { setIsEditingForm } from "../../../store/people/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -27,12 +28,14 @@ const { isAdmin } = store.auth.selectors;
 
 class ProfileAction extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile, t } = this.props;
+    const { match, fetchProfile, isEdit, setIsEditingForm, t } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("ProfileAction"));
     changeLanguage(i18n);
-
+    if (isEdit) {
+      setIsEditingForm(false);
+    }
     if (userId) {
       fetchProfile(userId);
     }
@@ -137,10 +140,11 @@ function mapStateToProps(state) {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state),
+    isEdit: state.people.editingForm.isEdit,
     avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
-export default connect(mapStateToProps, { fetchProfile })(
+export default connect(mapStateToProps, { fetchProfile, setIsEditingForm })(
   ProfileActionContainer
 );

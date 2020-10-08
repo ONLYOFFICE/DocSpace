@@ -4,9 +4,11 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
-import { useTranslation } from "react-i18next";
-import { toggleAvatarEditor } from "../../../../../store/people/actions";
-
+import { useTranslation } from "react-i18next";import {
+  setFilter,
+  setIsVisibleDataLossDialog,
+  toggleAvatarEditor
+} from "../../../../../store/people/actions";
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -29,10 +31,13 @@ const SectionHeaderContent = (props) => {
     history,
     match,
     settings,
+    filter,
+    editingForm,
+    setFilter,
+    setIsVisibleDataLossDialog,
     toggleAvatarEditor,
-    avatarEditorIsOpen,
-  } = props;
-  const { userCaption, guestCaption } = settings.customNames;
+    avatarEditorIsOpen
+  } = props;  const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
   const { t } = useTranslation();
 
@@ -46,14 +51,20 @@ const SectionHeaderContent = (props) => {
     ? `${t("EditUserDialogTitle")} (${profile.displayName})`
     : "";
 
+  const onClickBackHandler = () => {
+    if (editingForm.isEdit) {
+      setIsVisibleDataLossDialog(true, onClickBack);
+    } else {
+      onClickBack();
+    }
+  };
   const onClickBack = useCallback(() => {
     avatarEditorIsOpen
       ? toggleAvatarEditor(false)
-      : !profile
-      ? history.push(settings.homepage)
-      : history.push(`/products/people/view/${profile.userName}`);
-  }, [history, profile, settings.homepage, avatarEditorIsOpen]);
-
+      : !profile || !document.referrer
+      ? setFilter(filter)
+      : history.goBack();
+  }, [history, profile,setFilter, filter, settings.homepage, avatarEditorIsOpen]);
   return (
     <Wrapper>
       <IconButton
@@ -62,7 +73,7 @@ const SectionHeaderContent = (props) => {
         size="17"
         hoverColor="#657077"
         isFill={true}
-        onClick={onClickBack}
+        onClick={onClickBackHandler}
         className="arrow-button"
       />
       <Headline className="header-headline" type="content" truncate={true}>
@@ -76,10 +87,13 @@ function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
     settings: state.auth.settings,
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
-  };
+    filter: state.people.filter,
+    editingForm: state.people.editingForm,
+    avatarEditorIsOpen: state.people.avatarEditorIsOpen,  };
 }
 
-export default connect(mapStateToProps, { toggleAvatarEditor })(
-  withRouter(SectionHeaderContent)
-);
+export default connect(mapStateToProps, {
+  setFilter,
+  setIsVisibleDataLossDialog,
+  toggleAvatarEditor
+})(withRouter(SectionHeaderContent));
