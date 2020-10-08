@@ -463,7 +463,13 @@ class SectionBodyContent extends React.PureComponent {
         buttons={
           <>
             <Icons.CrossIcon size="small" style={{ marginRight: "8px" }} />
-            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+            <Link
+              type="action"
+              isHovered={true}
+              fontWeight="600"
+              color="#555f65"
+              onClick={this.onResetFilter}
+            >
               {t("ClearButton")}
             </Link>
           </>
