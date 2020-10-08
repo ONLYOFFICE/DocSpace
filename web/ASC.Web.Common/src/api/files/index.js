@@ -57,6 +57,7 @@ export function getFoldersTree() {
   return axios.all(requestsArray).then(
     axios.spread((...responses) =>
       responses.map((data, index) => {
+        const isRecycleBinFolder = rootFoldersPaths[index] === '@trash';
         return {
           id: data.current.id,
           key: `0-${index}`,
@@ -64,7 +65,7 @@ export function getFoldersTree() {
           rootFolderType: data.current.rootFolderType,
           rootFolderName: rootFoldersPaths[index],
           folders:
-            index !== rootFoldersPaths.length - 1
+            !isRecycleBinFolder
               ? data.folders.map(folder => {
                   return {
                     id: folder.id,
@@ -77,7 +78,7 @@ export function getFoldersTree() {
                 })
               : null,
           pathParts: data.pathParts,
-          foldersCount: index !== trashIndex ? data.current.foldersCount : null,
+          foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
           newItems: data.new
         };
       })
