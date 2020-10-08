@@ -1297,24 +1297,28 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFolderDao<int>, FolderDao>();
-            services.TryAddTransient<Folder<int>>();
-            services.TryAddTransient<Folder<string>>();
+            if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
+            {
+                services.TryAddTransient<Folder<int>>();
+                services.TryAddTransient<Folder<string>>();
 
-            return services
-                .AddFactoryIndexerService<DbFolder>()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddFilesDbContextService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalSpaceService();
+                return services
+                    .AddFactoryIndexerService<DbFolder>()
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
+                    .AddFilesDbContextService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService()
+                    .AddGlobalSpaceService();
+            }
+
+            return services;
         }
     }
 }

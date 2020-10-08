@@ -139,10 +139,13 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public static DIHelper AddProviderTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ITagDao<string>, ProviderTagDao>();
+            if (services.TryAddScoped<ITagDao<string>, ProviderTagDao>())
+            {
+                return services
+                    .AddProviderDaoBaseService();
+            }
 
-            return services
-                .AddProviderDaoBaseService();
+            return services;
         }
     }
 }
