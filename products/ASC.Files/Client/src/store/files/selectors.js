@@ -838,7 +838,8 @@ export const getFilesList = (state) => {
           viewUrl,
           webUrl,
           providerKey,
-          draggable
+          draggable,
+          canOpenPlayer
         };
       });
     }
