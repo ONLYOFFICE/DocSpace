@@ -28,15 +28,6 @@ class PureEditor extends React.Component {
 
     let docApiUrl = await files.getDocServiceUrl();
 
-    if (window.location.origin === "https://dotnet.onlyoffice.com:8093") {
-      const tempDevUrl =
-        "https://dotnet.onlyoffice.com/ds-vpath/web-apps/apps/api/documents/api.js";
-      console.log(
-        `Replace url to DocAPI from '${docApiUrl}' to '${tempDevUrl}'`
-      );
-      docApiUrl = tempDevUrl;
-    }
-
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("id", "scripDocServiceAddress");
