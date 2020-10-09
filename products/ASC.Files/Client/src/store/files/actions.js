@@ -541,6 +541,7 @@ export function getFilesSettings() {
 
 export const startUpload = (uploadFiles, folderId, t) => {
   return (dispatch, getState) => {
+    const state = getState()
     const newFiles = [];
     let filesSize = 0;
     const convertFiles = [];
@@ -551,7 +552,7 @@ export const startUpload = (uploadFiles, folderId, t) => {
       if (item.size !== 0) {
         const parts = item.name.split(".");
         const ext = parts.length > 1 ? "." + parts.pop() : "";
-        if (canConvert(ext)) {
+        if (canConvert(ext)(state)) {
           convertFiles.push(item);
           convertFilesSize += item.size;
         } else {
