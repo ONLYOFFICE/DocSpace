@@ -155,7 +155,7 @@ class ProfileInfo extends React.PureComponent {
         if (!nameSchemaId) return getModules();
         return (
           axios.all([getModules(), getCurrentCustomSchema(nameSchemaId)]),
-          console.log("Update getModules")
+          console.log("Update getModules", getModules())
         );
       })
       .catch((err) => console.log(err));

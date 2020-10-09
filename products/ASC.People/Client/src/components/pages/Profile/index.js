@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils, store, toastr } from "asc-web-common";
+import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -82,16 +82,12 @@ class PureProfile extends React.Component {
 
         {profile && (
           <PageLayout.SectionHeader>
-            <SectionHeaderContent />
+            {profile ? <SectionHeaderContent /> : <Loaders.Headline />}
           </PageLayout.SectionHeader>
         )}
 
         <PageLayout.SectionBody>
-          {profile ? (
-            <SectionBodyContent />
-          ) : (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          )}
+          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
         </PageLayout.SectionBody>
       </PageLayout>
     );
