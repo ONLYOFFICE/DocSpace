@@ -379,6 +379,14 @@ export function removeItemFromFavorite(id) {
   }
 }
 
+export function getFileInfo(id) {
+  return dispatch => {
+    return files.getFileInfo(id).then(data => {
+      dispatch(setFile(data));
+    });
+  }
+}
+
 export function fetchProjectsFolder(dispatch) {
   return files.getProjectsFolderList().then(data => {
     dispatch(setFolders(data.folders));

@@ -48,6 +48,7 @@ import {
   setSelected,
   setSelection,
   setTreeFolders,
+  getFileInfo
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -229,7 +230,7 @@ class SectionBodyContent extends React.Component {
   onClickFavorite = e => {
     const { markItemAsFavorite,
       removeItemFromFavorite,
-      updateFile,
+      getFileInfo,
       fetchFavoritesFolder,
       isFavorites } = this.props;
     const { action,
@@ -239,12 +240,12 @@ class SectionBodyContent extends React.Component {
     switch (action) {
       case "mark":
         return markItemAsFavorite(+id)
-          .then(() => updateFile(id, title))
+          .then(() => getFileInfo(id))
           .then(() => toastr.success("Added to favorites"))
           .catch(e => toastr.error(e));
       case "remove":
         return removeItemFromFavorite(+id)
-          .then(() => (isFavorites ? fetchFavoritesFolder() : updateFile(id, title)))
+          .then(() => (isFavorites ? fetchFavoritesFolder() : getFileInfo(id)))
           .then(() => toastr.success("Removed from favorites"))
           .catch(e => toastr.error(e));
       default:
@@ -1689,5 +1690,6 @@ export default connect(mapStateToProps, {
   clearProgressData,
   markItemAsFavorite,
   removeItemFromFavorite,
-  fetchFavoritesFolder
+  fetchFavoritesFolder,
+  getFileInfo
 })(withRouter(withTranslation()(SectionBodyContent)));
