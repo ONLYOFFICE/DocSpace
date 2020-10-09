@@ -15,28 +15,46 @@ const { changeLanguage, getObjectByLocation, hideLoader, showLoader } = utils;
 const { files } = api;
 
 class PureEditor extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
+
+    console.log("PureEditor componentDidMount", fileId);
 
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
 
     showLoader();
 
-    files
-      .openEdit(fileId)
-      .then((config) => {
-        if (window.innerWidth < 720) {
-          config.type = "mobile";
-        }
+    const docApiUrl = `${window.location.origin}/ds-vpath/web-apps/apps/api/documents/api.js`; //TODO: Change to API response -> await files.getDocServiceUrl();
 
-        window.DocsAPI.DocEditor("editor", config);
-      })
-      .catch((e) => {
-        console.log(e);
-        hideLoader();
-      });
+    const script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("id", "scripDocServiceAddress");
+
+    script.onload = function () {
+      console.log("PureEditor script.onload", fileId, window.DocsAPI);
+
+      files
+        .openEdit(fileId)
+        .then((config) => {
+          // if (window.innerWidth < 720) {
+          //   config.type = "mobile";
+          // }
+
+          window.DocsAPI.DocEditor("editor", config);
+        })
+        .catch((e) => {
+          console.log(e);
+          hideLoader();
+        });
+    };
+
+    script.src = docApiUrl;
+    script.async = true;
+
+    console.log("PureEditor componentDidMount: added script");
+    document.body.appendChild(script);
   }
 
   render() {
