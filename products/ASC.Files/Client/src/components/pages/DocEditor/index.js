@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
-import { utils, api } from "asc-web-common";
+import { utils, api, toastr } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -26,7 +26,16 @@ class PureEditor extends React.Component {
 
     showLoader();
 
-    const docApiUrl = `${window.location.origin}/ds-vpath/web-apps/apps/api/documents/api.js`; //TODO: Change to API response -> await files.getDocServiceUrl();
+    let docApiUrl = await files.getDocServiceUrl();
+
+    if (window.location.origin === "https://dotnet.onlyoffice.com:8093") {
+      const tempDevUrl =
+        "https://dotnet.onlyoffice.com/ds-vpath/web-apps/apps/api/documents/api.js";
+      console.log(
+        `Replace url to DocAPI from '${docApiUrl}' to '${tempDevUrl}'`
+      );
+      docApiUrl = tempDevUrl;
+    }
 
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
@@ -41,11 +50,14 @@ class PureEditor extends React.Component {
           // if (window.innerWidth < 720) {
           //   config.type = "mobile";
           // }
+          if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
+          console.log("Trying to open file with DocsAPI", fileId);
           window.DocsAPI.DocEditor("editor", config);
         })
         .catch((e) => {
           console.log(e);
+          toastr.error(e);
           hideLoader();
         });
     };
