@@ -186,7 +186,7 @@ class FilesTileContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, canWebEdit } = this.props;
     if (!fileExst) {
       setIsLoading(true);
       const newFilter = filter.clone();
@@ -201,7 +201,7 @@ class FilesTileContent extends React.PureComponent {
         })
         .finally(() => setIsLoading(false));
     } else {
-      if (canWebEdit(fileExst)) {
+      if (canWebEdit) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
       }
 
@@ -385,7 +385,7 @@ class FilesTileContent extends React.PureComponent {
   }
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
   return {
     filter: getFilter(state),
     fileAction: getFileAction(state),
@@ -399,7 +399,8 @@ function mapStateToProps(state) {
     folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
-    isLoading: getIsLoading(state)
+    isLoading: getIsLoading(state),
+    canWebEdit: canWebEdit(props.item.fileExst)(state),
   }
 }
 
