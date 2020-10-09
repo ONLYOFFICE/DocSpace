@@ -42,7 +42,6 @@ import {
   getSelection,
   getSelectedFolderParentId,
   getIsRootFolder,
-  getSelectedFolder,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -356,7 +355,6 @@ class SectionHeaderContent extends React.Component {
       isRootFolder,
       onCheck,
       title,
-      loopFilesOperations,
       isCanCreate,
     } = this.props;
 
@@ -562,7 +560,6 @@ class SectionHeaderContent extends React.Component {
 
         {showDeleteDialog && (
           <DeleteDialog
-            loopFilesOperations={loopFilesOperations}
             isRecycleBin={isRecycleBin}
             visible={showDeleteDialog}
             onClose={this.onDeleteAction}
@@ -572,7 +569,6 @@ class SectionHeaderContent extends React.Component {
 
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
-            loopFilesOperations={loopFilesOperations}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
           />
@@ -587,7 +583,6 @@ class SectionHeaderContent extends React.Component {
 
         {showMoveToPanel && (
           <OperationsPanel
-            loopFilesOperations={loopFilesOperations}
             isCopy={false}
             visible={showMoveToPanel}
             onClose={this.onMoveAction}
@@ -596,7 +591,6 @@ class SectionHeaderContent extends React.Component {
 
         {showCopyPanel && (
           <OperationsPanel
-            loopFilesOperations={loopFilesOperations}
             isCopy={true}
             visible={showCopyPanel}
             onClose={this.onCopyAction}

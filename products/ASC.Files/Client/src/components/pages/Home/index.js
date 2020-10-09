@@ -25,7 +25,6 @@ import {
   setFirstLoad,
   startUpload,
   setSelections,
-  loopFilesOperations,
 } from "../../../store/files/actions";
 import {
   getConvertDialogVisible,
@@ -229,11 +228,6 @@ class PureHome extends React.Component {
     this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
 
   componentDidUpdate(prevProps) {
-    Object.entries(this.props).forEach(
-      ([key, val]) =>
-        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-
     if (this.props.headerVisible !== prevProps.headerVisible) {
       this.renderGroupButtonMenu();
     }
@@ -264,7 +258,6 @@ class PureHome extends React.Component {
       convertDialogVisible,
       fileActionId,
       isRecycleBin,
-      loopFilesOperations,
     } = this.props;
 
     // const progressBarContent = (
@@ -334,7 +327,6 @@ class PureHome extends React.Component {
               onCheck={this.onSectionHeaderContentCheck}
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
-              loopFilesOperations={loopFilesOperations}
             />
           </PageLayout.SectionHeader>
 
@@ -347,7 +339,6 @@ class PureHome extends React.Component {
               isMobile={isMobile}
               selected={selected}
               onChange={this.onRowChange}
-              loopFilesOperations={loopFilesOperations}
               onDropZoneUpload={this.onDrop}
             />
           </PageLayout.SectionBody>
@@ -407,7 +398,6 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
-    loopFilesOperations: (id, destFolderId, isCopy) => dispatch(loopFilesOperations(id, destFolderId, isCopy)),
   };
 };
 

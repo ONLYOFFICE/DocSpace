@@ -9,7 +9,8 @@ import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
-  clearProgressData
+  clearProgressData,
+  loopFilesOperations
 } from "../../../store/files/actions";
 import {
   getTreeFolders,
@@ -171,4 +172,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { setProgressBarData, clearProgressData })(withRouter(OperationsPanel));
+export default connect(mapStateToProps, { setProgressBarData, clearProgressData, loopFilesOperations })(withRouter(OperationsPanel));

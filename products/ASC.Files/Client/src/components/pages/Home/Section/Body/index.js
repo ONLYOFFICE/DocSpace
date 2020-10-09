@@ -44,6 +44,7 @@ import {
   setSelected,
   setSelection,
   setTreeFolders,
+  loopFilesOperations,
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -1274,7 +1275,6 @@ class SectionBodyContent extends React.Component {
       currentMediaFileId,
       viewAs,
       t,
-      loopFilesOperations,
       widthProp,
       isMobile,
       firstLoad,
@@ -1293,7 +1293,6 @@ class SectionBodyContent extends React.Component {
     const operationsPanelProps = {
       setIsLoading,
       isLoading,
-      loopFilesOperations,
     };
 
     const items = filesList;
@@ -1580,4 +1579,5 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setIsLoading,
   clearProgressData,
+  loopFilesOperations
 })(withRouter(withTranslation()(SectionBodyContent)));
