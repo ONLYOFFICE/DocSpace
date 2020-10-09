@@ -901,3 +901,29 @@ export const getEnableThirdParty = (state) => {
 export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
+
+export const getSelectionLength = (state) => {
+  return state.files.selection.length;
+};
+
+export const getHeaderVisible = (state) => {
+  return state.files.selection.length > 0;
+};
+
+export const getHeaderIndeterminate = createSelector(
+  getHeaderVisible,
+  getSelection,
+  getItemsList,
+  (headerVisible, selection, items) => {
+    return headerVisible && selection.length < items.length;
+  }
+);
+
+export const getHeaderChecked = createSelector(
+  getHeaderVisible,
+  getSelection,
+  getItemsList,
+  (headerVisible, selection, items) => {
+    return headerVisible && selection.length === items.length;
+  }
+);

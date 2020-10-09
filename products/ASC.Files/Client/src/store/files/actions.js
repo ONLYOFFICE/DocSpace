@@ -14,7 +14,16 @@ import {
   PREVIEW
 } from "../../helpers/constants";
 import config from "../../../package.json";
-import { createTreeFolders, canConvert, loopTreeFolders } from "./selectors";
+import {
+  createTreeFolders,
+  canConvert,
+  loopTreeFolders,
+  getSelectedFolderId,
+  getFilter,
+  getIsRecycleBinFolder,
+  getProgressData,
+  getTreeFolders,
+} from "./selectors";
 
 const { files, FilesFilter } = api;
 
@@ -857,7 +866,7 @@ export const setDialogVisible = (t) => {
       uploadData.uploadStatus = "cancel";
       dispatch(setUploadData(uploadData));
     }
-  }
+  };
 };
 
 export const onConvert = t => {
@@ -871,5 +880,167 @@ export const onConvert = t => {
     uploadData.uploadStatus = "convert";
     dispatch(setUploadData(uploadData));
     dispatch(setConvertDialogVisible(false));
-  }
-}
+  };
+};
+
+export const setSelections = (items) => {
+  return (dispatch, getState) => {
+    const { selection, folders, files, fileActionId } = getState().files;
+
+    if (selection.length > items.length) {
+      //Delete selection
+      const newSelection = [];
+      let newFile = null;
+      for (let item of items) {
+        if (!item) break; // temporary fall protection selection tile
+
+        item = item.split("_");
+        if (item[0] === "folder") {
+          newFile = selection.find(
+            (x) => x.id === Number(item[1]) && !x.fileExst
+          );
+        } else if (item[0] === "file") {
+          newFile = selection.find(
+            (x) => x.id === Number(item[1]) && x.fileExst
+          );
+        }
+        if (newFile) {
+          newSelection.push(newFile);
+        }
+      }
+
+      for (let item of selection) {
+        const element = newSelection.find(
+          (x) => x.id === item.id && x.fileExst === item.fileExst
+        );
+        if (!element) {
+          dispatch(deselectFile(item));
+        }
+      }
+    } else if (selection.length < items.length) {
+      //Add selection
+      for (let item of items) {
+        if (!item) break; // temporary fall protection selection tile
+
+        let newFile = null;
+        item = item.split("_");
+        if (item[0] === "folder") {
+          newFile = folders.find(
+            (x) => x.id === Number(item[1]) && !x.fileExst
+          );
+        } else if (item[0] === "file") {
+          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+        }
+        if (newFile && fileActionId !== newFile.id) {
+          const existItem = selection.find(
+            (x) => x.id === newFile.id && x.fileExst === newFile.fileExst
+          );
+          !existItem && dispatch(selectFile(newFile));
+        }
+      }
+    } else {
+      return;
+    }
+  };
+};
+
+export const loopFilesOperations = (id, destFolderId, isCopy) => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const currentFolderId = getSelectedFolderId(state);
+    const filter = getFilter(state);
+    const isRecycleBin = getIsRecycleBinFolder(state);
+    const progressData = getProgressData(state);
+    const treeFolders = getTreeFolders(state);
+
+    const loopOperation = () => {
+      api.files
+      .getProgress()
+      .then((res) => {
+        const currentItem = res.find((x) => x.id === id);
+        if (currentItem && currentItem.progress !== 100) {
+          dispatch(
+            setProgressBarData({
+              label: progressData.label,
+              percent: currentItem.progress,
+              visible: true,
+            })
+          );
+          setTimeout(
+            () => loopOperation(),
+            1000
+          );
+        } else {
+          dispatch(
+            setProgressBarData({
+              label: progressData.label,
+              percent: 100,
+              visible: true,
+            })
+          );
+          api.files
+            .getFolder(destFolderId)
+            .then((data) => {
+              let newTreeFolders = treeFolders;
+              let path = data.pathParts.slice(0);
+              let folders = data.folders;
+              let foldersCount = data.current.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+              if (!isCopy || destFolderId === currentFolderId) {
+                dispatch(fetchFiles(currentFolderId, filter))
+                  .then((data) => {
+                    if (!isRecycleBin) {
+                      newTreeFolders = treeFolders;
+                      path = data.selectedFolder.pathParts.slice(0);
+                      folders = data.selectedFolder.folders;
+                      foldersCount = data.selectedFolder.foldersCount;
+                      loopTreeFolders(
+                        path,
+                        newTreeFolders,
+                        folders,
+                        foldersCount
+                      );
+                      dispatch(setUpdateTree(true));
+                      dispatch(setTreeFolders(newTreeFolders));
+                    }
+                  })
+                  .catch((err) => {
+                    console.log("ERROR_1", err);
+                    toastr.error(err);
+                    dispatch(clearProgressData());
+                  })
+                  .finally(() =>
+                    setTimeout(() => dispatch(clearProgressData()), 5000)
+                  );
+              } else {
+                dispatch(
+                  setProgressBarData({
+                    label: progressData.label,
+                    percent: 100,
+                    visible: true,
+                  })
+                );
+                setTimeout(() => dispatch(clearProgressData()), 5000);
+                dispatch(setUpdateTree(true));
+                dispatch(setTreeFolders(newTreeFolders));
+              }
+            })
+            .catch((err) => {
+              console.log("ERROR_2", err);
+              toastr.error(err);
+              dispatch(clearProgressData());
+            });
+        }
+      })
+      .catch((err) => {
+        console.log("ERROR_3", err);
+        toastr.error(err);
+        dispatch(clearProgressData());
+      });
+    }
+
+    loopOperation();
+  };
+};

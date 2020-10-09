@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, toastr, api, store } from "asc-web-common";
+import { PageLayout, utils, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -18,35 +18,29 @@ import {
   SectionPagingContent,
 } from "./Section";
 import {
-  clearProgressData,
-  deselectFile,
   fetchFiles,
-  selectFile,
   setDragging,
-  setFilter,
-  setUpdateTree,
-  setProgressBarData,
   setSelected,
-  setTreeFolders,
   setIsLoading,
   setFirstLoad,
-  startUpload
+  startUpload,
+  setSelections,
+  loopFilesOperations,
 } from "../../../store/files/actions";
 import {
-  loopTreeFolders,
   getConvertDialogVisible,
   getSelectedFolderId,
   getFileActionId,
-  getFiles,
   getFilter,
-  getFolders,
   getProgressData,
   getSelected,
-  getSelection,
   getTreeFolders,
   getViewAs,
   getIsLoading,
-  getIsRecycleBinFolder
+  getIsRecycleBinFolder,
+  getHeaderVisible,
+  getHeaderIndeterminate,
+  getHeaderChecked,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -58,7 +52,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getIsLoaded, getSettingsHomepage } = store.auth.selectors;
+const { getSettingsHomepage } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -108,7 +102,7 @@ class PureHome extends React.Component {
 
     if (!filterObj) return;
 
-    let dataObj = {filter: filterObj};
+    let dataObj = { filter: filterObj };
 
     if (filterObj && filterObj.authorType) {
       const authorType = filterObj.authorType;
@@ -124,7 +118,7 @@ class PureHome extends React.Component {
         };
       } else {
         filterObj.authorType = null;
-        dataObj = {filter: filterObj};
+        dataObj = { filter: filterObj };
       }
     }
 
@@ -174,16 +168,13 @@ class PureHome extends React.Component {
   }
 
   renderGroupButtonMenu = () => {
-    const { files, selection, selected, setSelected, folders } = this.props;
-
-    const headerVisible = selection.length > 0;
-    const headerIndeterminate =
-      headerVisible &&
-      selection.length > 0 &&
-      selection.length < files.length + folders.length;
-    const headerChecked =
-      headerVisible && selection.length === files.length + folders.length;
-
+    const {
+      headerVisible,
+      headerIndeterminate,
+      headerChecked,
+      selected,
+      setSelected,
+    } = this.props;
     let newState = {};
 
     if (headerVisible || selected === "close") {
@@ -216,9 +207,9 @@ class PureHome extends React.Component {
   };
 
   onClose = () => {
-    const { selection, setSelected } = this.props;
+    const { setSelected, headerVisible } = this.props;
 
-    if (!selection.length) {
+    if (!headerVisible) {
       setSelected("none");
       this.setState({ isHeaderVisible: false });
     } else {
@@ -237,176 +228,13 @@ class PureHome extends React.Component {
   onChangeWindowVisible = () =>
     this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
 
-  setNewFilter = () => {
-    const { filter, selection, setFilter } = this.props;
-    const newFilter = filter.clone();
-    for (let item of selection) {
-      const expandedIndex = newFilter.treeFolders.findIndex(
-        (x) => x == item.id
-      );
-      if (expandedIndex !== -1) {
-        newFilter.treeFolders.splice(expandedIndex, 1);
-      }
-    }
-
-    setFilter(newFilter);
-  };
-
-  loopFilesOperations = (id, destFolderId, isCopy) => {
-    const {
-      currentFolderId,
-      filter,
-      isRecycleBin,
-      progressData,
-      setUpdateTree,
-      setProgressBarData,
-      treeFolders,
-      fetchFiles,
-      clearProgressData
-    } = this.props;
-
-    api.files.getProgress()
-      .then((res) => {
-        const currentItem = res.find((x) => x.id === id);
-        if (currentItem && currentItem.progress !== 100) {
-          setProgressBarData({
-            label: progressData.label,
-            percent: currentItem.progress,
-            visible: true,
-          });
-          setTimeout(
-            () => this.loopFilesOperations(id, destFolderId, isCopy),
-            1000
-          );
-        } else {
-          setProgressBarData({
-            label: progressData.label,
-            percent: 100,
-            visible: true,
-          });
-          api.files.getFolder(destFolderId)
-            .then((data) => {
-              let newTreeFolders = treeFolders;
-              let path = data.pathParts.slice(0);
-              let folders = data.folders;
-              let foldersCount = data.current.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
-              if (!isCopy || destFolderId === currentFolderId) {
-                fetchFiles(currentFolderId, filter)
-                  .then((data) => {
-                    if (!isRecycleBin) {
-                      newTreeFolders = treeFolders;
-                      path = data.selectedFolder.pathParts.slice(0);
-                      folders = data.selectedFolder.folders;
-                      foldersCount = data.selectedFolder.foldersCount;
-                      loopTreeFolders(
-                        path,
-                        newTreeFolders,
-                        folders,
-                        foldersCount
-                      );
-                      setUpdateTree(true);
-                      setTreeFolders(newTreeFolders);
-                    }
-                    this.setNewFilter();
-                  })
-                  .catch((err) => {
-                    toastr.error(err);
-                    clearProgressData();
-                  })
-                  .finally(() => setTimeout(() => clearProgressData(), 5000));
-              } else {
-                setProgressBarData({
-                  label: progressData.label,
-                  percent: 100,
-                  visible: true,
-                });
-                setTimeout(() => clearProgressData(), 5000);
-                setUpdateTree(true);
-                setTreeFolders(newTreeFolders);
-              }
-            })
-            .catch((err) => {
-              toastr.error(err);
-              clearProgressData();
-            });
-        }
-      })
-      .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
-      });
-  };
-
-  setSelections = (items) => {
-    const {
-      selection,
-      folders,
-      files,
-      selectFile,
-      deselectFile,
-      fileActionId,
-    } = this.props;
-
-    if (selection.length > items.length) {
-      //Delete selection
-      const newSelection = [];
-      let newFile = null;
-      for (let item of items) {
-        if (!item) break; // temporary fall protection selection tile
-
-        item = item.split("_");
-        if (item[0] === "folder") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
-        } else if (item[0] === "file") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && x.fileExst
-          );
-        }
-        if (newFile) {
-          newSelection.push(newFile);
-        }
-      }
-
-      for (let item of selection) {
-        const element = newSelection.find(
-          (x) => x.id === item.id && x.fileExst === item.fileExst
-        );
-        if (!element) {
-          deselectFile(item);
-        }
-      }
-    } else if (selection.length < items.length) {
-      //Add selection
-      for (let item of items) {
-        if (!item) break; // temporary fall protection selection tile
-
-        let newFile = null;
-        item = item.split("_");
-        if (item[0] === "folder") {
-          newFile = folders.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
-        } else if (item[0] === "file") {
-          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
-        }
-        if (newFile && fileActionId !== newFile.id) {
-          const existItem = selection.find(
-            (x) => x.id === newFile.id && x.fileExst === newFile.fileExst
-          );
-          !existItem && selectFile(newFile);
-        }
-      }
-    } else {
-      return;
-    }
-  };
-
   componentDidUpdate(prevProps) {
-    if (this.props.selection !== prevProps.selection) {
+    Object.entries(this.props).forEach(
+      ([key, val]) =>
+        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+
+    if (this.props.headerVisible !== prevProps.headerVisible) {
       this.renderGroupButtonMenu();
     }
 
@@ -435,7 +263,8 @@ class PureHome extends React.Component {
       viewAs,
       convertDialogVisible,
       fileActionId,
-      isRecycleBin
+      isRecycleBin,
+      loopFilesOperations,
     } = this.props;
 
     // const progressBarContent = (
@@ -461,9 +290,7 @@ class PureHome extends React.Component {
     return (
       <>
         {convertDialogVisible && (
-          <ConvertDialog
-            visible={convertDialogVisible}
-          />
+          <ConvertDialog visible={convertDialogVisible} />
         )}
         {/* <RequestLoader
           visible={isLoading}
@@ -479,7 +306,7 @@ class PureHome extends React.Component {
           withBodyAutoFocus={!isMobile}
           uploadFiles={!isRecycleBin}
           onDrop={this.onDrop}
-          setSelections={this.setSelections}
+          setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
           showProgressBar={progressData.visible}
           progressBarValue={progressData.percent}
@@ -507,7 +334,7 @@ class PureHome extends React.Component {
               onCheck={this.onSectionHeaderContentCheck}
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
-              loopFilesOperations={this.loopFilesOperations}
+              loopFilesOperations={loopFilesOperations}
             />
           </PageLayout.SectionHeader>
 
@@ -520,7 +347,7 @@ class PureHome extends React.Component {
               isMobile={isMobile}
               selected={selected}
               onChange={this.onRowChange}
-              loopFilesOperations={this.loopFilesOperations}
+              loopFilesOperations={loopFilesOperations}
               onDropZoneUpload={this.onDrop}
             />
           </PageLayout.SectionBody>
@@ -548,9 +375,7 @@ const Home = (props) => {
 };
 
 Home.propTypes = {
-  files: PropTypes.array,
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -558,38 +383,31 @@ function mapStateToProps(state) {
     convertDialogVisible: getConvertDialogVisible(state),
     currentFolderId: getSelectedFolderId(state),
     fileActionId: getFileActionId(state),
-    files: getFiles(state),
     filter: getFilter(state),
-    folders: getFolders(state),
-    isLoaded: getIsLoaded(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     progressData: getProgressData(state),
     selected: getSelected(state),
-    selection: getSelection(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
-    homepage: getSettingsHomepage(state)
+    homepage: getSettingsHomepage(state),
+    headerVisible: getHeaderVisible(state),
+    headerIndeterminate: getHeaderIndeterminate(state),
+    headerChecked: getHeaderChecked(state),
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deselectFile: (file) => dispatch(deselectFile(file)),
-    selectFile: (file) => dispatch(selectFile(file)),
     setDragging: (dragging) => dispatch(setDragging(dragging)),
-    setFilter: (filter) => dispatch(setFilter(filter)),
-    setUpdateTree: (updateTree) =>
-      dispatch(setUpdateTree(updateTree)),
-    setProgressBarData: (progressData) =>
-      dispatch(setProgressBarData(progressData)),
     setSelected: (selected) => dispatch(setSelected(selected)),
-    setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-    startUpload: (files, folderId, t) => dispatch(startUpload(files, folderId, t)),
+    startUpload: (files, folderId, t) =>
+      dispatch(startUpload(files, folderId, t)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-    clearProgressData: () => dispatch(clearProgressData())
+    setSelections: (items) => dispatch(setSelections(items)),
+    loopFilesOperations: (id, destFolderId, isCopy) => dispatch(loopFilesOperations(id, destFolderId, isCopy)),
   };
 };
 
