@@ -11,6 +11,7 @@ import {
   SET_SELECTOR_USERS,
   SET_IS_VISIBLE_DATA_LOSS_DIALOG,
   SET_IS_EDITING_FORM,
+  SET_IS_LOADING,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
 import { api } from "asc-web-common";
@@ -30,6 +31,7 @@ const initialState = {
     isEdit: false,
     isVisibleDataLossDialog: false,
   },
+  isLoading: false,
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -97,6 +99,10 @@ const peopleReducer = (state = initialState, action) => {
           ...state.editingForm,
           isEdit: action.isEdit,
         },
+      });
+    case SET_IS_LOADING:
+      return Object.assign({}, state, {
+        isLoading: action.isLoading,
       });
     default:
       return state;

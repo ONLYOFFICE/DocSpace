@@ -49,6 +49,11 @@ export const getModules = state => state.auth.modules;
 
 export const getSettings = state => state.auth.settings;
 
+export const getCustomNames = createSelector(
+  [getSettings],
+  settings => settings.customNames
+);
+
 export const getDefaultPage = createSelector(
   [getSettings],
   settings => (settings && settings.defaultPage) || ""
@@ -168,3 +173,5 @@ export const getTotalNotificationsCount = createSelector(
     return totalNotifications;
   }
 );
+
+export const getIsLoaded = state => state.auth.isLoaded;
