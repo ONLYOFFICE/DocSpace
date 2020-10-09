@@ -31,6 +31,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -268,7 +269,6 @@ namespace ASC.Security.Cryptography
             }
 
             return checkKeyResult;
-        }
         }
     }
 

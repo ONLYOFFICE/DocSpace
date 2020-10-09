@@ -1,9 +1,11 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF.Model.Mail;
+
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -19,7 +21,7 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<GreyListingWhiteList> GreyListingWhiteList { get; set; }
 
         public MailDbContext() { }
-        public MailDbContext(DbContextOptions options) : base(options){}
+        public MailDbContext(DbContextOptions options) : base(options) { }
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get
@@ -33,7 +35,7 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ModelBuilderWrapper
+            _ = ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddMailbox()
                 .AddMailboxProvider()

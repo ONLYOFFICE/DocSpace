@@ -53,8 +53,8 @@ namespace ASC.Core.Common.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLoggerFactory(LoggerFactory);
-            optionsBuilder.EnableSensitiveDataLogging();
+            _ = optionsBuilder.UseLoggerFactory(LoggerFactory);
+            _ = optionsBuilder.EnableSensitiveDataLogging();
             Provider = GetProviderByConnectionString();
             switch (Provider)
             {
@@ -64,8 +64,8 @@ namespace ASC.Core.Common.EF
                 case Provider.Postgre:
                     _ = optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
+            }
         }
-    }
 
         public Provider GetProviderByConnectionString()
         {
