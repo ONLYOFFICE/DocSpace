@@ -3,12 +3,16 @@ import { connect } from "react-redux";
 import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
 import { useTranslation } from "react-i18next";
+import { getFilter } from "../../../../../store/people/selectors";
+import { store, Loaders } from "asc-web-common";
+const { getIsLoaded } = store.auth.selectors;
 
 const SectionPagingContent = ({
   fetchPeople,
   filter,
   onLoading,
   selectedCount,
+  isLoaded,
 }) => {
   const { t } = useTranslation();
   const onNextClick = useCallback(
@@ -119,31 +123,36 @@ const SectionPagingContent = ({
 
   //console.log("SectionPagingContent render", filter);
 
-  return filter.total < filter.pageCount ? (
-    <></>
+  return isLoaded ? (
+    !filter || filter.total < filter.pageCount ? (
+      <></>
+    ) : (
+      <Paging
+        previousLabel={t("PreviousPage")}
+        nextLabel={t("NextPage")}
+        pageItems={pageItems}
+        onSelectPage={onChangePage}
+        countItems={countItems}
+        onSelectCount={onChangePageSize}
+        displayItems={false}
+        disablePrevious={!filter.hasPrev()}
+        disableNext={!filter.hasNext()}
+        previousAction={onPrevClick}
+        nextAction={onNextClick}
+        openDirection="top"
+        selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
+        selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
+      />
+    )
   ) : (
-    <Paging
-      previousLabel={t("PreviousPage")}
-      nextLabel={t("NextPage")}
-      pageItems={pageItems}
-      onSelectPage={onChangePage}
-      countItems={countItems}
-      onSelectCount={onChangePageSize}
-      displayItems={false}
-      disablePrevious={!filter.hasPrev()}
-      disableNext={!filter.hasNext()}
-      previousAction={onPrevClick}
-      nextAction={onNextClick}
-      openDirection="top"
-      selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
-      selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
-    />
+    <Loaders.Filter />
   );
 };
 
 function mapStateToProps(state) {
   return {
-    filter: state.people.filter,
+    filter: getFilter(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

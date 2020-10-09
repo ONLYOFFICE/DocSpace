@@ -10,13 +10,12 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { getFilterByLocation } from "../../../../../helpers/converters";
-import { constants, FilterInput, store } from 'asc-web-common';
+import { constants, FilterInput, store, Loaders } from "asc-web-common";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
 
-const { FilterType } = constants;
 const { getCurrentUser, getSettingsCustomNames } = store.auth.selectors;
+const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -104,7 +103,8 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { t, customNames, user, selectedItem } = this.props;
+    const { t, customNames, user, filter } = this.props;
+    const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
 
     const options = [
@@ -276,16 +276,20 @@ class SectionFilterContent extends React.Component {
       !isEqual(this.props.filter, nextProps.filter) ||
       this.props.selectedFolderId !== nextProps.selectedFolderId ||
       this.state.isReady !== nextState.isReady ||
-      this.props.viewAs !== nextProps.viewAs
+      this.props.viewAs !== nextProps.viewAs ||
+      this.props.firstLoad !== nextProps.firstLoad
     );
   }
 
   render() {
+    console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, i18n } = this.props;
+    const { t, language, firstLoad } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
-    return (
+    return firstLoad ? (
+      <Loaders.Filter />
+    ) : (
       <FilterInput
         getFilterData={this.getData}
         getSortData={this.getSortData}
@@ -297,7 +301,7 @@ class SectionFilterContent extends React.Component {
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
-        language={i18n.language}
+        language={language}
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("AddFilter")}

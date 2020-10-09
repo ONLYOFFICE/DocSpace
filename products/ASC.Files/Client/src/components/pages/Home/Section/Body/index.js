@@ -14,6 +14,7 @@ import {
   Link,
   DragAndDrop,
   Box,
+  Text
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
@@ -123,6 +124,13 @@ const SimpleFilesRow = styled(Row)`
         width: 0px;
       }
   `}
+
+  .share-button:hover {
+      cursor: pointer;
+      div {
+        color: "#657077"
+      }
+    }
 `;
 
 class SectionBodyContent extends React.Component {
@@ -1256,6 +1264,30 @@ class SectionBodyContent extends React.Component {
       icon,
     });
   };
+
+  getSharedButton = () => {
+    return (
+      <Text
+        className="share-button"
+        as='span'
+        title={"Share"}
+        fontSize='12px'
+        fontWeight={400}
+        color='#A3A9AE'
+        display="inline-flex"
+        onClick={this.onClickShare}
+      >
+        <IconButton
+          className="share-button"
+          color='#a3a9ae'
+          hoverColor="#657077"
+          size={16}
+          iconName='CatalogSharedIcon'
+          style={{ marginRight: "8px" }}
+        />
+        Share
+      </Text>)
+  }
 
   render() {
     const {
