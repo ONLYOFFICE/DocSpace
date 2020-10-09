@@ -20,7 +20,6 @@ import {
 import {
   fetchFiles,
   setDragging,
-  setSelected,
   setIsLoading,
   setFirstLoad,
   startUpload,
@@ -37,9 +36,6 @@ import {
   getViewAs,
   getIsLoading,
   getIsRecycleBinFolder,
-  getHeaderVisible,
-  getHeaderIndeterminate,
-  getHeaderChecked,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -58,10 +54,6 @@ class PureHome extends React.Component {
     super(props);
 
     this.state = {
-      isHeaderVisible: false,
-      isHeaderIndeterminate: false,
-      isHeaderChecked: false,
-
       overwriteSetting: false,
       uploadOriginalFormatSetting: false,
       hideWindowSetting: false,
@@ -166,54 +158,12 @@ class PureHome extends React.Component {
       });
   }
 
-  renderGroupButtonMenu = () => {
-    const {
-      headerVisible,
-      headerIndeterminate,
-      headerChecked,
-      selected,
-      setSelected,
-    } = this.props;
-    let newState = {};
-
-    if (headerVisible || selected === "close") {
-      newState.isHeaderVisible = headerVisible;
-      if (selected === "close") {
-        setSelected("none");
-      }
-    }
-
-    newState.isHeaderIndeterminate = headerIndeterminate;
-    newState.isHeaderChecked = headerChecked;
-
-    this.setState(newState);
-  };
-
   onDrop = (files, e, uploadToFolder) => {
     const { t, currentFolderId, startUpload } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
     this.props.setDragging(false);
     startUpload(files, folderId, t);
-  };
-
-  onSectionHeaderContentCheck = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
-  };
-
-  onSectionHeaderContentSelect = (selected) => {
-    this.props.setSelected(selected);
-  };
-
-  onClose = () => {
-    const { setSelected, headerVisible } = this.props;
-
-    if (!headerVisible) {
-      setSelected("none");
-      this.setState({ isHeaderVisible: false });
-    } else {
-      setSelected("close");
-    }
   };
 
   onChangeOverwrite = () =>
@@ -228,10 +178,6 @@ class PureHome extends React.Component {
     this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
 
   componentDidUpdate(prevProps) {
-    if (this.props.headerVisible !== prevProps.headerVisible) {
-      this.renderGroupButtonMenu();
-    }
-
     if (this.props.isLoading !== prevProps.isLoading) {
       if (this.props.isLoading) {
         utils.showLoader();
@@ -244,10 +190,6 @@ class PureHome extends React.Component {
   render() {
     console.log("Home render");
     const {
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      selected,
       // overwriteSetting,
       // uploadOriginalFormatSetting,
       // hideWindowSetting
@@ -320,14 +262,7 @@ class PureHome extends React.Component {
             <ArticleBodyContent onTreeDrop={this.onDrop} />
           </PageLayout.ArticleBody>
           <PageLayout.SectionHeader>
-            <SectionHeaderContent
-              isHeaderVisible={isHeaderVisible}
-              isHeaderIndeterminate={isHeaderIndeterminate}
-              isHeaderChecked={isHeaderChecked}
-              onCheck={this.onSectionHeaderContentCheck}
-              onSelect={this.onSectionHeaderContentSelect}
-              onClose={this.onClose}
-            />
+            <SectionHeaderContent />
           </PageLayout.SectionHeader>
 
           <PageLayout.SectionFilter>
@@ -337,7 +272,6 @@ class PureHome extends React.Component {
           <PageLayout.SectionBody>
             <SectionBodyContent
               isMobile={isMobile}
-              selected={selected}
               onChange={this.onRowChange}
               onDropZoneUpload={this.onDrop}
             />
@@ -377,21 +311,16 @@ function mapStateToProps(state) {
     filter: getFilter(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     progressData: getProgressData(state),
-    selected: getSelected(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
-    headerVisible: getHeaderVisible(state),
-    headerIndeterminate: getHeaderIndeterminate(state),
-    headerChecked: getHeaderChecked(state),
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setDragging: (dragging) => dispatch(setDragging(dragging)),
-    setSelected: (selected) => dispatch(setSelected(selected)),
     startUpload: (files, folderId, t) =>
       dispatch(startUpload(files, folderId, t)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),

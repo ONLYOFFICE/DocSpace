@@ -903,7 +903,7 @@ export const getFilterSelectedItem = (state) => {
 };
 
 export const getHeaderVisible = (state) => {
-  return state.files.selection.length > 0;
+  return state.files.selection.length > 0 || state.files.selected !== "close";
 };
 
 export const getHeaderIndeterminate = createSelector(

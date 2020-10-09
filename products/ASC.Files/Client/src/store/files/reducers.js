@@ -42,7 +42,7 @@ const initialState = {
   filter: FilesFilter.getDefault(),
   folders: null,
   treeFolders: [],
-  selected: "none",
+  selected: "close",
   viewAs: "row",
   selectedFolder: {},
   selection: [],

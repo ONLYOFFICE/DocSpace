@@ -25,6 +25,7 @@ import {
   setProgressBarData,
   clearProgressData,
   setIsLoading,
+  setSelected,
 } from "../../../../../store/files/actions";
 import {
   EmptyTrashDialog,
@@ -42,6 +43,9 @@ import {
   getSelection,
   getSelectedFolderParentId,
   getIsRootFolder,
+  getHeaderVisible,
+  getHeaderIndeterminate,
+  getHeaderChecked,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -334,10 +338,16 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(parentId, filter).finally(() => setIsLoading(false));
   };
 
-  onSelectorSelect = (item) => {
-    const { onSelect } = this.props;
+  onCheck = (checked) => {
+    this.props.setSelected(checked ? "all" : "none");
+  };
 
-    onSelect && onSelect(item.key);
+  onSelect = (item) => {
+    this.props.setSelected(item.key);
+  };
+
+  onClose = () => {
+    this.props.setSelected("close");
   };
 
   render() {
@@ -347,13 +357,11 @@ class SectionHeaderContent extends React.Component {
       t,
       selection,
       isHeaderVisible,
-      onClose,
       isRecycleBin,
       isHeaderChecked,
       isHeaderIndeterminate,
       deleteDialogVisible,
       isRootFolder,
-      onCheck,
       title,
       isCanCreate,
     } = this.props;
@@ -425,7 +433,7 @@ class SectionHeaderContent extends React.Component {
             data-index={8}
           />,
         ],
-        onSelect: this.onSelectorSelect,
+        onSelect: this.onSelect,
       },
       {
         label: t("Share"),
@@ -480,12 +488,12 @@ class SectionHeaderContent extends React.Component {
             <GroupButtonsMenu
               checked={isHeaderChecked}
               isIndeterminate={isHeaderIndeterminate}
-              onChange={onCheck}
+              onChange={this.onCheck}
               menuItems={menuItems}
               visible={isHeaderVisible}
               moreLabel={t("More")}
               closeTitle={t("CloseButton")}
-              onClose={onClose}
+              onClose={this.onClose}
               selected={menuItems[0].label}
             />
           </div>
@@ -621,6 +629,9 @@ const mapStateToProps = (state) => {
     deleteDialogVisible: isCanBeDeleted(state),
     currentFolderId: getSelectedFolderId(state),
     isCanCreate: isCanCreate(state),
+    isHeaderVisible: getHeaderVisible(state),
+    isHeaderIndeterminate: getHeaderIndeterminate(state),
+    isHeaderChecked: getHeaderChecked(state),
   };
 };
 
@@ -630,4 +641,5 @@ export default connect(mapStateToProps, {
   setIsLoading,
   clearProgressData,
   fetchFiles,
+  setSelected,
 })(withTranslation()(withRouter(SectionHeaderContent)));

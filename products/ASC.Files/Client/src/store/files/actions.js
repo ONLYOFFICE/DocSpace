@@ -885,7 +885,7 @@ export const onConvert = t => {
 
 export const setSelections = (items) => {
   return (dispatch, getState) => {
-    const { selection, folders, files, fileActionId } = getState().files;
+    const { selection, folders, files, fileActionId, selected } = getState().files;
 
     if (selection.length > items.length) {
       //Delete selection
@@ -935,7 +935,10 @@ export const setSelections = (items) => {
           const existItem = selection.find(
             (x) => x.id === newFile.id && x.fileExst === newFile.fileExst
           );
-          !existItem && dispatch(selectFile(newFile));
+          if(!existItem) {
+            dispatch(selectFile(newFile));
+            selected !== "none" && dispatch(setSelected("none"));
+          }
         }
       }
     } else {
