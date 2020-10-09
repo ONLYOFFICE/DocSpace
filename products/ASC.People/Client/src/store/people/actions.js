@@ -29,6 +29,14 @@ export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
 export const SET_IS_VISIBLE_DATA_LOSS_DIALOG =
   "SET_IS_VISIBLE_DATA_LOSS_DIALOG";
 export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
+export const SET_IS_LOADING = "SET_IS_LOADING";
+
+export function setIsLoading(isLoading) {
+  return {
+    type: SET_IS_LOADING,
+    isLoading,
+  };
+}
 
 export function setUser(user) {
   return {
