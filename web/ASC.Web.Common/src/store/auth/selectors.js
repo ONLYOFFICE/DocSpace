@@ -173,3 +173,5 @@ export const getTotalNotificationsCount = createSelector(
     return totalNotifications;
   }
 );
+
+export const getIsLoaded = state => state.auth.isLoaded;

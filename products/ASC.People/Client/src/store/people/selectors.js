@@ -434,3 +434,7 @@ export const getUsersToRemoveIds = createSelector(
 );
 
 export const hasUsersToRemove = createSelector([getUsersToRemove], hasAny);
+
+export const getFilter = (state) => state.people.filter;
+
+export const getGroups = (state) => state.people.groups;
