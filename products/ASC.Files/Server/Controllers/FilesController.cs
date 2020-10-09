@@ -235,6 +235,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Create("file/{fileId}/recent", order: int.MaxValue)]
+        public FileWrapper<string> AddToRecent(string fileId)
+        {
+            return FilesControllerHelperString.AddToRecent(fileId);
+        }
+
+        [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
+        public FileWrapper<int> AddToRecent(int fileId)
+        {
+            return FilesControllerHelperInt.AddToRecent(fileId);
+        }
+
         /// <summary>
         /// Returns the detailed list of favorites files
         /// </summary>

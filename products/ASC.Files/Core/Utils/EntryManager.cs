@@ -1116,12 +1116,14 @@ namespace ASC.Web.Files.Utils
             return renamed;
         }
 
-        public void MarkAsRecent<T>(FileEntry<AuthContext> fileEntry)
+        public void MarkAsRecent<T>(File<T> file)
         {
+            if (file.Encrypted || file.ProviderEntry) throw new NotSupportedException();
+
             var tagDao = DaoFactory.GetTagDao<T>();
             var userID = AuthContext.CurrentAccount.ID;
 
-            var tag = Tag.Recent(userID, fileEntry);
+            var tag = Tag.Recent(userID, file);
             _ = tagDao.SaveTags(tag);
         }
 

@@ -42,7 +42,9 @@ namespace ASC.Api.Core.Auth
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             using var scope = ServiceProvider.CreateScope();
-            var emailValidationKeyModel = scope.ServiceProvider.GetService<EmailValidationKeyModel>();
+
+            var emailValidationKeyHelper = scope.ServiceProvider.GetService<EmailValidationKeyModelHelper>();
+            var emailValidationKeyModel = emailValidationKeyHelper.GetModel();
 
             if (!emailValidationKeyModel.Type.HasValue)
             {
@@ -54,7 +56,7 @@ namespace ASC.Api.Core.Auth
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
             try
             {
-                checkKeyResult = emailValidationKeyModel.Validate();
+                checkKeyResult = emailValidationKeyHelper.Validate(emailValidationKeyModel);
             }
             catch (ArgumentNullException)
             {

@@ -39,13 +39,13 @@ namespace ASC.Security.Cryptography
         public PasswordHasher(IConfiguration configuration, MachinePseudoKeys machinePseudoKeys)
         {
             if (!int.TryParse(configuration["core:password:size"], out var size)) size = 256;
-            PasswordHashSize = size;
+            Size = size;
 
             if (!int.TryParse(configuration["core.password.iterations"], out var iterations)) iterations = 100000;
-            PasswordHashIterations = iterations;
+            Iterations = iterations;
 
-            PasswordHashSalt = (configuration["core:password:salt"] ?? "").Trim();
-            if (string.IsNullOrEmpty(PasswordHashSalt))
+            Salt = (configuration["core:password:salt"] ?? "").Trim();
+            if (string.IsNullOrEmpty(Salt))
             {
                 var salt = Hasher.Hash("{9450BEF7-7D9F-4E4F-A18A-971D8681722D}", HashAlg.SHA256);
 
@@ -53,25 +53,25 @@ namespace ASC.Security.Cryptography
                                                    Encoding.UTF8.GetString(machinePseudoKeys.GetMachineConstant()),
                                                    salt,
                                                    KeyDerivationPrf.HMACSHA256,
-                                                   PasswordHashIterations,
-                                                   PasswordHashSize / 8);
-                PasswordHashSalt = BitConverter.ToString(PasswordHashSaltBytes).Replace("-", string.Empty).ToLower();
+                                                   Iterations,
+                                                   Size / 8);
+                Salt = BitConverter.ToString(PasswordHashSaltBytes).Replace("-", string.Empty).ToLower();
             }
         }
 
-        public int PasswordHashSize
+        public int Size
         {
             get;
             private set;
         }
 
-        public int PasswordHashIterations
+        public int Iterations
         {
             get;
             private set;
         }
 
-        public string PasswordHashSalt
+        public string Salt
         {
             get;
             private set;
@@ -81,14 +81,14 @@ namespace ASC.Security.Cryptography
         {
             if (string.IsNullOrWhiteSpace(password)) password = Guid.NewGuid().ToString();
 
-            var salt = new UTF8Encoding(false).GetBytes(PasswordHashSalt);
+            var salt = new UTF8Encoding(false).GetBytes(Salt);
 
             var hashBytes = KeyDerivation.Pbkdf2(
                                password,
                                salt,
                                KeyDerivationPrf.HMACSHA256,
-                               PasswordHashIterations,
-                               PasswordHashSize / 8);
+                               Iterations,
+                               Size / 8);
 
             var hash = BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
 

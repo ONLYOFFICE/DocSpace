@@ -117,11 +117,15 @@ namespace ASC.Web.Files.Core.Search
     {
         public static DIHelper AddFactoryIndexerFileService(this DIHelper services)
         {
-            _ = services.TryAddTransient<DbFile>();
-            _ = services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
+            if (services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>())
+            {
+                services.TryAddTransient<DbFile>();
 
             return services
                 .AddFactoryIndexerService<DbFile>(false);
         }
+
+            return services;
+    }
     }
 }

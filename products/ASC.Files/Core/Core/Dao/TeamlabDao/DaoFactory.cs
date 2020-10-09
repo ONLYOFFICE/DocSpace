@@ -70,7 +70,8 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddDaoFactoryService(this DIHelper services)
         {
-            _ = services.TryAddScoped<IDaoFactory, DaoFactory>();
+            if (services.TryAddScoped<IDaoFactory, DaoFactory>())
+            {
             return services
                 .AddFileDaoService()
                 .AddFolderDaoService()
@@ -83,5 +84,8 @@ namespace ASC.Files.Core.Data
                 .AddProviderFolderDaoService()
                 ;
         }
+
+            return services;
+    }
     }
 }

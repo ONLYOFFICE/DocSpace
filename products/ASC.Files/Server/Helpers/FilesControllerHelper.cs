@@ -351,6 +351,13 @@ namespace ASC.Files.Helpers
             return FileWrapperHelper.Get(file);
         }
 
+        public FileWrapper<T> AddToRecent(T fileId, int version = -1)
+        {
+            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            EntryManager.MarkAsRecent(file);
+            return FileWrapperHelper.Get(file);
+        }
+
         public List<FileEntryWrapper> GetNewItems(T folderId)
         {
             return FileStorageService.GetNewItems(folderId)

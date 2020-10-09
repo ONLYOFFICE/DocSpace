@@ -1284,9 +1284,10 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<IFolderDao<int>, FolderDao>();
-            _ = services.TryAddTransient<Folder<int>>();
-            _ = services.TryAddTransient<Folder<string>>();
+            if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
+            {
+                services.TryAddTransient<Folder<int>>();
+                services.TryAddTransient<Folder<string>>();
 
             return services
                 .AddFactoryIndexerService<DbFolder>()
@@ -1303,5 +1304,8 @@ namespace ASC.Files.Core.Data
                 .AddAuthContextService()
                 .AddGlobalSpaceService();
         }
+
+            return services;
+    }
     }
 }

@@ -289,8 +289,8 @@ namespace ASC.Core
     {
         public static DIHelper AddHostedSolutionService(this DIHelper services)
         {
-            _ = services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>();
-
+            if (services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>())
+            {
             return services
                 .AddUserFormatter()
                 .AddTenantService()
@@ -302,5 +302,8 @@ namespace ASC.Core
                 .AddDbSettingsManagerService()
                 .AddCoreSettingsService();
         }
+
+            return services;
+    }
     }
 }

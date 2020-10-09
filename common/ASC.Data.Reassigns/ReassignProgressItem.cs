@@ -243,16 +243,16 @@ namespace ASC.Data.Reassigns
             Options = options;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, 
+        public void Deconstruct(out TenantManager tenantManager,
             out CoreBaseSettings coreBaseSettings,
             out MessageService messageService,
             out StudioNotifyService studioNotifyService,
             out SecurityContext securityContext,
-            out UserManager userManager, 
+            out UserManager userManager,
             out UserPhotoManager userPhotoManager,
-            out DisplayUserSettingsHelper displayUserSettingsHelper, 
-            out MessageTarget messageTarget, 
-            out IOptionsMonitor<ILog> optionsMonitor )
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out MessageTarget messageTarget,
+            out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             coreBaseSettings = CoreBaseSettings;
@@ -271,10 +271,13 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddReassignProgressItemService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-            _ = services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            _ = services.TryAddScoped<ReassignProgressItemScope>();
-            _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            if (services.TryAddScoped<ReassignProgressItemScope>())
+            {
+                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            }
+
             return services;
         }
     }

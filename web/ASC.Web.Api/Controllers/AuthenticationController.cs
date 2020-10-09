@@ -27,6 +27,7 @@ namespace ASC.Web.Api.Controllers
         private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         private CookiesManager CookiesManager { get; }
         public PasswordHasher PasswordHasher { get; }
+        public EmailValidationKeyModelHelper EmailValidationKeyModelHelper { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -34,7 +35,8 @@ namespace ASC.Web.Api.Controllers
             SecurityContext securityContext,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
             CookiesManager cookiesManager,
-            PasswordHasher passwordHasher)
+            PasswordHasher passwordHasher,
+            EmailValidationKeyModelHelper emailValidationKeyModelHelper)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -42,13 +44,14 @@ namespace ASC.Web.Api.Controllers
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
             CookiesManager = cookiesManager;
             PasswordHasher = passwordHasher;
+            EmailValidationKeyModelHelper = emailValidationKeyModelHelper;
         }
 
         [Create(false)]
         public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
+            var user = GetUser(tenant.TenantId, auth);
 
             try
             {
@@ -79,16 +82,27 @@ namespace ASC.Web.Api.Controllers
         [Create("confirm", false)]
         public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
         {
-            return model.Validate();
+            return EmailValidationKeyModelHelper.Validate(model);
         }
 
-        private UserInfo GetUser(int tenantId, string userName, string password)
+        private UserInfo GetUser(int tenantId, AuthModel memberModel)
         {
-            var passwordHash = PasswordHasher.GetClientPassword(password);
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
             var user = UserManager.GetUsersByPasswordHash(
                 tenantId,
-                userName,
-                passwordHash);
+                memberModel.UserName,
+                memberModel.PasswordHash);
 
             if (user == null || !UserManager.UserExists(user))
             {

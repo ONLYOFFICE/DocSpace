@@ -690,12 +690,12 @@ namespace ASC.Core.Billing
     {
         public static DIHelper AddTariffService(this DIHelper services)
         {
-            _ = services.AddCoreDbContextService();
-
+            if (services.TryAddScoped<ITariffService, TariffService>())
+            {
+                _ = services.AddCoreDbContextService();
             _ = services.TryAddSingleton<TariffServiceStorage>();
-
-            _ = services.TryAddScoped<ITariffService, TariffService>();
-            _ = services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
+                _ = services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
+            }
 
             return services;
         }
