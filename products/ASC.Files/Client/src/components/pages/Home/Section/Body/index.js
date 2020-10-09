@@ -217,7 +217,7 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onEditComplete = (id) => {
+  onEditComplete = (id, isFolder) => {
     const {
       folderId,
       fileAction,
@@ -240,7 +240,7 @@ class SectionBodyContent extends React.Component {
       fetchFiles(folderId, filter)
         .then((data) => {
           const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
-          if (item && !item.fileExst) {
+          if (isFolder) {
             const path = data.selectedFolder.pathParts;
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;

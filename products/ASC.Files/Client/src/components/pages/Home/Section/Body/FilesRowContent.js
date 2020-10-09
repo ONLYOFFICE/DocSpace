@@ -111,7 +111,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    this.props.onEditComplete(id);
+    this.props.onEditComplete(id, !this.props.item.fileExst);
   }
 
   updateItem = (e) => {
