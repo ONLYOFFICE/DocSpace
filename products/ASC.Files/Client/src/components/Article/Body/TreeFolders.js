@@ -18,12 +18,10 @@ import {
   getDragging,
   getUpdateTree,
   getSelectedFolderId,
-  getIsCommonFolder,
-  getIsShareFolder,
-  getIsMyFolder,
   getMyFolderId,
   getShareFolderId,
   getRootFolderId,
+  getDraggableItems,
 } from "../../../store/files/selectors";
 const { isAdmin } = initStore.auth.selectors;
 
@@ -150,10 +148,14 @@ class TreeFolders extends React.Component {
       commonId,
       rootFolderId,
       currentId,
+      draggableItems
     } = this.props;
     if (item.id === currentId) {
       return false;
     }
+
+    if(draggableItems.find(x => x.id === item.id))
+      return false;
 
     const isMy = rootFolderId === FolderType.USER;
     const isCommon = rootFolderId === FolderType.COMMON;
@@ -193,7 +195,7 @@ class TreeFolders extends React.Component {
 
   getItems = (data) => {
     return data.map((item) => {
-      const dragging = this.showDragItems(item);
+      const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
       if (item.folders && item.folders.length > 0) {
         return (
@@ -202,7 +204,7 @@ class TreeFolders extends React.Component {
             key={item.id}
             title={item.title}
             icon={this.getFolderIcon(item)}
-            dragging={this.props.dragging && dragging}
+            dragging={dragging}
           >
             {this.getItems(item.folders)}
           </TreeNode>
@@ -213,7 +215,7 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
-          dragging={this.props.dragging && dragging}
+          dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
         />
@@ -438,7 +440,7 @@ TreeFolders.defaultProps = {
   needUpdate: true,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
   return {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),
@@ -449,6 +451,7 @@ function mapStateToProps(state) {
     dragging: getDragging(state),
     updateTree: getUpdateTree(state),
     rootFolderId: getRootFolderId(state),
+    draggableItems: getDraggableItems(state)
   };
 }
 

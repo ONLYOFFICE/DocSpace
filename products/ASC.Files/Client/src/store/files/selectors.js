@@ -902,10 +902,6 @@ export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
 
-export const getSelectionLength = (state) => {
-  return state.files.selection.length;
-};
-
 export const getHeaderVisible = (state) => {
   return state.files.selection.length > 0;
 };
@@ -927,3 +923,16 @@ export const getHeaderChecked = createSelector(
     return headerVisible && selection.length === items.length;
   }
 );
+
+export const getDraggableItems = createSelector(
+  getSelection,
+  getDragging,
+  (selection, dragging) => {
+    if (dragging) {
+      return selection;
+    } else {
+      return false;
+    }
+  }
+);
+  
