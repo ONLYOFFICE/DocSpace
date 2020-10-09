@@ -1,0 +1,213 @@
+version: "3.4"
+x-service: 
+    &x-service-base
+    build:
+      context: .
+      target: base
+    container_name: base
+    restart: always
+    expose:
+    - ${SERVICE_PORT}
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      KAFKA_HOST: ${KAFKA_HOST}
+    volumes:
+    - app_data:/app/onlyoffice/data/
+    networks:
+      - ${NETWORK_NAME}
+
+services: 
+  onlyoffice-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65535
+        hard: 65535
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    expose:
+      - "9200"
+    networks:
+      - ${NETWORK_NAME}
+
+  onlyoffice-zookeeper:
+    image: zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    expose:
+      - "2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVER: server.1=zookeeper-zookeeper:2888:3888
+    volumes:
+    - zoo_data:/data
+    - zoo_log:/datalog
+    networks:
+      - ${NETWORK_NAME}
+
+  onlyoffice-kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ${KAFKA_HOST}
+    restart: always
+    expose:
+      - "9092"
+    depends_on:
+    - onlyoffice-zookeeper
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
+      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT}
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
+      KAFKA_LOG4J_LOGGERS: ${KAFKA_LOG4J_LOGGERS}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    volumes:
+    - kafka_data:/var/lib/kafka/data
+    networks:
+      - ${NETWORK_NAME}
+
+  onlyoffice-api:
+    <<: *x-service-base
+    build:
+      context: .
+      target: api
+    image: "${REPO}/${STATUS}appserver-api:${SERVICE_VERSION}"
+    container_name: onlyoffice-api
+
+  onlyoffice-api_system:
+    <<: *x-service-base
+    build:
+      context: .
+      target: api_system
+    image: "${REPO}/${STATUS}appserver-api_system:${SERVICE_VERSION}"
+    container_name: onlyoffice-api_system
+     
+  onlyoffice-urlshortener:
+    <<: *x-service-base
+    build:
+      context: .
+      target: urlshortener
+    image: "${REPO}/${STATUS}appserver-urlshortener:${SERVICE_VERSION}"
+    container_name: onlyoffice-urlshortener
+   
+  onlyoffice-studio.notify:
+    <<: *x-service-base
+    build:
+      context: .
+      target: studio.notify
+    image: "${REPO}/${STATUS}appserver-studio.notify:${SERVICE_VERSION}"
+    container_name: onlyoffice-studio.notify
+    
+  onlyoffice-notify:
+    <<: *x-service-base
+    build:
+      context: .
+      target: notify
+    image: "${REPO}/${STATUS}appserver-notify:${SERVICE_VERSION}"
+    container_name: onlyoffice-notify
+
+  onlyoffice-people.server:
+    <<: *x-service-base
+    build:
+      context: .
+      target: people.server
+    image: "${REPO}/${STATUS}appserver-people.server:${SERVICE_VERSION}"
+    container_name: onlyoffice-people.server
+    
+  onlyoffice-files:
+    <<: *x-service-base
+    build:
+      context: .
+      target: files
+    image: "${REPO}/${STATUS}appserver-files:${SERVICE_VERSION}"
+    container_name: onlyoffice-files
+    
+  onlyoffice-files_services:
+    <<: *x-service-base
+    build:
+      context: .
+      target: files_services
+    image: "${REPO}/${STATUS}appserver-files_services:${SERVICE_VERSION}"
+    container_name: onlyoffice-files_services
+    
+  onlyoffice-studio:
+    <<: *x-service-base
+    build:
+      context: .
+      target: studio
+    image: "${REPO}/${STATUS}appserver-studio:${SERVICE_VERSION}"
+    container_name: onlyoffice-studio
+   
+  onlyoffice-backup:
+    <<: *x-service-base
+    build:
+      context: .
+      target: backup
+    image: "${REPO}/${STATUS}appserver-backup:${SERVICE_VERSION}"
+    container_name: onlyoffice-backup
+    
+  onlyoffice-nginx:
+    build:
+      context: .
+      target: web
+    image: "${REPO}/${STATUS}appserver-nginx:${SERVICE_VERSION}"
+    #container_name: onlyoffice-nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - 8092:8092 
+      - 8081:8081
+      - 8099:8099
+    depends_on:
+      - onlyoffice-api
+      - onlyoffice-api_system
+      - onlyoffice-urlshortener
+      - onlyoffice-studio.notify
+      - onlyoffice-notify
+      - onlyoffice-people.server
+      - onlyoffice-files
+      - onlyoffice-files_services
+      - onlyoffice-studio
+      - onlyoffice-backup
+    environment:
+      - SERVICE_API="onlyoffice-api:${SERVICE_PORT}"
+      - SERVICE_API_SYSTEM="onlyoffice-api_system:${SERVICE_PORT}"
+      - SERVICE_URLSHORYENER="onlyoffice-urlshortener:${SERVICE_PORT}"
+      - SERVICE_STUDIO_NOTIFY="onlyoffice-studio.notify:${SERVICE_PORT}"
+      - SERVICE_PEOPLE_SERVER="onlyoffice-people.server:${SERVICE_PORT}"
+      - SERVICE_FILES="onlyoffice-files:${SERVICE_PORT}"
+      - SERVICE_FILES_SERVICES="onlyoffice-files_services:${SERVICE_PORT}"
+      - SERVICE_STUDIO="onlyoffice-studio:${SERVICE_PORT}"
+      - SERVICE_BACKUP="onlyoffice-backup:${SERVICE_PORT}"
+      - SERVICE_PORT=${SERVICE_PORT}
+    volumes:
+      - nginx_log:/var/log/nginx
+    networks:
+     - ${NETWORK_NAME}
+
+networks:
+  onlyoffice:
+    name: ${NETWORK_NAME}
+    driver: 'bridge'
+
+volumes:
+  kafka_data:
+  zoo_data:
+  zoo_log:
+  nginx_log:
+  app_data:
+  es_data:

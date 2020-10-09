@@ -1,0 +1,36 @@
+version: "3.5"
+
+services: 
+  
+  onlyoffice-mysql-server:
+    image: mysql:8.0.18
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: ${MYSQL_HOST}
+    restart: always
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_error:/var/log/mysql/error.log
+      - ./config/mysql/conf.d:/etc/mysql/conf.d
+      - ../../../sql/createdb.sql:/docker-entrypoint-initdb.d/01_createdb.sql
+      #- ../../../sql/app.sql:/docker-entrypoint-initdb.d/02_app.sql
+      #- ../../../sql/app.data.sql:/docker-entrypoint-initdb.d/03_app.data.sql
+      - ../../../sql/alter_priv.sql:/docker-entrypoint-initdb.d/04_alter_priv.sql
+      - ./config/mysql/dotnet_dump.sql:/docker-entrypoint-initdb.d/021_dotnet_dump.sql
+    networks:
+      - ${NETWORK_NAME}
+
+networks:
+  onlyoffice:
+    name: ${NETWORK_NAME}
+    driver: 'bridge'
+
+volumes:
+  mysql_data:
+  mysql_error:
