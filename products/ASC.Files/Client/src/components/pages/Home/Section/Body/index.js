@@ -363,7 +363,7 @@ class SectionBodyContent extends React.Component {
 
     copy(
       isFile
-        ? isMediaOrImage(item.fileExst)
+        ? item.canOpenPlayer
           ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId
           }&preview=${item.id}`
           : item.webUrl
