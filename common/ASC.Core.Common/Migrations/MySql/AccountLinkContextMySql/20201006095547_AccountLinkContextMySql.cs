@@ -7,7 +7,7 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "account_links",
                 columns: table => new
                 {
@@ -27,10 +27,10 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.id, x.uid });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.id, x.uid });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "uid",
                 table: "account_links",
                 column: "uid");
@@ -38,7 +38,7 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "account_links");
         }
     }

@@ -41,7 +41,7 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ModelBuilderWrapper
+            _ = ModelBuilderWrapper
             .From(modelBuilder, Provider)
             .AddSubscriptionMethod()
             .AddUser()

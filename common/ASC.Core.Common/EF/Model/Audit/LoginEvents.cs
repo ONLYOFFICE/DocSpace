@@ -12,70 +12,70 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddLoginEvents(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddLoginEvents, Provider.MySql)
                 .Add(PgSqlAddLoginEvents, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<LoginEvents>(entity =>
+            _ = modelBuilder.Entity<LoginEvents>(entity =>
             {
-                entity.ToTable("login_events");
+                _ = entity.ToTable("login_events");
 
-                entity.HasIndex(e => e.Date)
+                _ = entity.HasIndex(e => e.Date)
                     .HasName("date");
 
-                entity.HasIndex(e => new { e.TenantId, e.UserId })
+                _ = entity.HasIndex(e => new { e.TenantId, e.UserId })
                     .HasName("tenant_id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Action).HasColumnName("action");
+                _ = entity.Property(e => e.Action).HasColumnName("action");
 
-                entity.Property(e => e.Browser)
+                _ = entity.Property(e => e.Browser)
                     .HasColumnName("browser")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Date)
+                _ = entity.Property(e => e.Date)
                     .HasColumnName("date")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Description)
+                _ = entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasColumnType("varchar(500)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Ip)
+                _ = entity.Property(e => e.Ip)
                     .HasColumnName("ip")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Login)
+                _ = entity.Property(e => e.Login)
                     .HasColumnName("login")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Page)
+                _ = entity.Property(e => e.Page)
                     .HasColumnName("page")
                     .HasColumnType("varchar(300)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Platform)
+                _ = entity.Property(e => e.Platform)
                     .HasColumnName("platform")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                entity.Property(e => e.UserId)
+                _ = entity.Property(e => e.UserId)
                     .IsRequired()
                     .HasColumnName("user_id")
                     .HasColumnType("char(38)")
@@ -85,55 +85,55 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddLoginEvents(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<LoginEvents>(entity =>
+            _ = modelBuilder.Entity<LoginEvents>(entity =>
             {
-                entity.ToTable("login_events", "onlyoffice");
+                _ = entity.ToTable("login_events", "onlyoffice");
 
-                entity.HasIndex(e => e.Date)
+                _ = entity.HasIndex(e => e.Date)
                     .HasName("date_login_events");
 
-                entity.HasIndex(e => new { e.UserId, e.TenantId })
+                _ = entity.HasIndex(e => new { e.UserId, e.TenantId })
                     .HasName("tenant_id_login_events");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Action).HasColumnName("action");
+                _ = entity.Property(e => e.Action).HasColumnName("action");
 
-                entity.Property(e => e.Browser)
+                _ = entity.Property(e => e.Browser)
                     .HasColumnName("browser")
                     .HasMaxLength(200)
                     .HasDefaultValueSql("NULL::character varying");
 
-                entity.Property(e => e.Date).HasColumnName("date");
+                _ = entity.Property(e => e.Date).HasColumnName("date");
 
-                entity.Property(e => e.Description)
+                _ = entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasMaxLength(500)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Ip)
+                _ = entity.Property(e => e.Ip)
                     .HasColumnName("ip")
                     .HasMaxLength(50)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Login)
+                _ = entity.Property(e => e.Login)
                     .HasColumnName("login")
                     .HasMaxLength(200)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Page)
+                _ = entity.Property(e => e.Page)
                     .HasColumnName("page")
                     .HasMaxLength(300)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Platform)
+                _ = entity.Property(e => e.Platform)
                     .HasColumnName("platform")
                     .HasMaxLength(200)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                entity.Property(e => e.UserId)
+                _ = entity.Property(e => e.UserId)
                     .IsRequired()
                     .HasColumnName("user_id")
                     .HasMaxLength(38)

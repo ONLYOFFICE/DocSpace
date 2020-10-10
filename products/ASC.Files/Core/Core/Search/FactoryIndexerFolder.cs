@@ -107,7 +107,7 @@ namespace ASC.Web.Files.Core.Search
         {
             if (services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>())
             {
-                services.TryAddTransient<DbFolder>();
+                _ = services.TryAddTransient<DbFolder>();
 
             return services
                 .AddFactoryIndexerService<DbFolder>(false)

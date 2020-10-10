@@ -16,53 +16,53 @@ namespace ASC.Core.Common.EF.Model.Resource
     {
         public static ModelBuilderWrapper AddResAuthorsFile(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddResAuthorsFile, Provider.MySql)
                 .Add(PgSqlAddResAuthorsFile, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ResAuthorsFile>(entity =>
+            _ = modelBuilder.Entity<ResAuthorsFile>(entity =>
             {
-                entity.HasKey(e => new { e.AuthorLogin, e.FileId })
+                _ = entity.HasKey(e => new { e.AuthorLogin, e.FileId })
                     .HasName("PRIMARY");
 
-                entity.ToTable("res_authorsfile");
+                _ = entity.ToTable("res_authorsfile");
 
-                entity.HasIndex(e => e.FileId)
+                _ = entity.HasIndex(e => e.FileId)
                     .HasName("res_authorsfile_FK2");
 
-                entity.Property(e => e.AuthorLogin)
+                _ = entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.FileId).HasColumnName("fileid");
+                _ = entity.Property(e => e.FileId).HasColumnName("fileid");
 
-                entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
+                _ = entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
             });
     }
         public static void PgSqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ResAuthorsFile>(entity =>
+            _ = modelBuilder.Entity<ResAuthorsFile>(entity =>
             {
-                entity.HasKey(e => new { e.AuthorLogin, e.FileId })
+                _ = entity.HasKey(e => new { e.AuthorLogin, e.FileId })
                     .HasName("res_authorsfile_pkey");
 
-                entity.ToTable("res_authorsfile", "onlyoffice");
+                _ = entity.ToTable("res_authorsfile", "onlyoffice");
 
-                entity.HasIndex(e => e.FileId)
+                _ = entity.HasIndex(e => e.FileId)
                     .HasName("res_authorsfile_FK2");
 
-                entity.Property(e => e.AuthorLogin)
+                _ = entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.FileId).HasColumnName("fileid");
+                _ = entity.Property(e => e.FileId).HasColumnName("fileid");
 
-                entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
+                _ = entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
             });
         }
     }

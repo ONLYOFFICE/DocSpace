@@ -273,9 +273,9 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<ReassignProgressItemScope>())
             {
-                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+                _ = services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+                _ = services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+                _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
             }
 
             return services;

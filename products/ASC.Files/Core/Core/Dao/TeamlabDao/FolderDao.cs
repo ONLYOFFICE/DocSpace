@@ -1286,8 +1286,8 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
             {
-                services.TryAddTransient<Folder<int>>();
-                services.TryAddTransient<Folder<string>>();
+                _ = services.TryAddTransient<Folder<int>>();
+                _ = services.TryAddTransient<Folder<string>>();
 
             return services
                 .AddFactoryIndexerService<DbFolder>()

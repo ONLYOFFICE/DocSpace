@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "core_acl",
                 columns: table => new
                 {
@@ -26,10 +26,10 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.subject, x.action, x.@object });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant, x.subject, x.action, x.@object });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_buttons",
                 columns: table => new
                 {
@@ -43,10 +43,10 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tariff_id, x.partner_id });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tariff_id, x.partner_id });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_quota",
                 columns: table => new
                 {
@@ -73,10 +73,10 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.tenant);
+                    _ = table.PrimaryKey("PRIMARY", x => x.tenant);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_quotarow",
                 columns: table => new
                 {
@@ -92,10 +92,10 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.path });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant, x.path });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_tariff",
                 columns: table => new
                 {
@@ -114,10 +114,10 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tenants_tariff", x => x.id);
+                    _ = table.PrimaryKey("PK_tenants_tariff", x => x.id);
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "core_acl",
                 columns: new[] { "tenant", "subject", "action", "object", "acetype" },
                 values: new object[,]
@@ -190,17 +190,17 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                     { -1, "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", "a362fe79-684e-4d43-a599-65bc1f4e167f", "", 0 }
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "tenants_quota",
                 columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "price", "price2", "visible" },
                 values: new object[] { -1, 10000, "0", null, "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", 102400L, 10995116277760L, "default", 0.00m, 0.00m, false });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "last_modified",
                 table: "tenants_quotarow",
                 column: "last_modified");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tenant",
                 table: "tenants_tariff",
                 column: "tenant");
@@ -208,19 +208,19 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "core_acl");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_buttons");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_quota");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_quotarow");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_tariff");
         }
     }

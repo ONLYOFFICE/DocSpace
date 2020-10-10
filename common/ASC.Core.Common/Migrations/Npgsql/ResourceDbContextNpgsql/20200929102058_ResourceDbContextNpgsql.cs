@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
+            _ = migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_authors",
                 schema: "onlyoffice",
                 columns: table => new
@@ -24,10 +24,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("res_authors_pkey", x => x.login);
+                    _ = table.PrimaryKey("res_authors_pkey", x => x.login);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_authorsfile",
                 schema: "onlyoffice",
                 columns: table => new
@@ -38,10 +38,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("res_authorsfile_pkey", x => new { x.authorLogin, x.fileid });
+                    _ = table.PrimaryKey("res_authorsfile_pkey", x => new { x.authorLogin, x.fileid });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_authorslang",
                 schema: "onlyoffice",
                 columns: table => new
@@ -51,10 +51,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("res_authorslang_pkey", x => new { x.authorLogin, x.cultureTitle });
+                    _ = table.PrimaryKey("res_authorslang_pkey", x => new { x.authorLogin, x.cultureTitle });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_cultures",
                 schema: "onlyoffice",
                 columns: table => new
@@ -66,10 +66,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("res_cultures_pkey", x => x.title);
+                    _ = table.PrimaryKey("res_cultures_pkey", x => x.title);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_data",
                 schema: "onlyoffice",
                 columns: table => new
@@ -89,10 +89,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("res_data_pkey", x => new { x.fileid, x.cultureTitle, x.title });
+                    _ = table.PrimaryKey("res_data_pkey", x => new { x.fileid, x.cultureTitle, x.title });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_files",
                 schema: "onlyoffice",
                 columns: table => new
@@ -108,10 +108,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_res_files", x => x.id);
+                    _ = table.PrimaryKey("PK_res_files", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_reserve",
                 schema: "onlyoffice",
                 columns: table => new
@@ -126,41 +126,41 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("res_reserve_pkey", x => new { x.fileid, x.title, x.cultureTitle });
+                    _ = table.PrimaryKey("res_reserve_pkey", x => new { x.fileid, x.title, x.cultureTitle });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "res_authorsfile_FK2",
                 schema: "onlyoffice",
                 table: "res_authorsfile",
                 column: "fileid");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "res_authorslang_FK2",
                 schema: "onlyoffice",
                 table: "res_authorslang",
                 column: "cultureTitle");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "resources_FK2",
                 schema: "onlyoffice",
                 table: "res_data",
                 column: "cultureTitle");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "id_res_data",
                 schema: "onlyoffice",
                 table: "res_data",
                 column: "id",
                 unique: true);
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "dateIndex",
                 schema: "onlyoffice",
                 table: "res_data",
                 column: "timeChanges");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "resname",
                 schema: "onlyoffice",
                 table: "res_files",
@@ -170,31 +170,31 @@ namespace ASC.Core.Common.Migrations.Npgsql.ResourceDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_authors",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_authorsfile",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_authorslang",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_cultures",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_data",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_files",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_reserve",
                 schema: "onlyoffice");
         }

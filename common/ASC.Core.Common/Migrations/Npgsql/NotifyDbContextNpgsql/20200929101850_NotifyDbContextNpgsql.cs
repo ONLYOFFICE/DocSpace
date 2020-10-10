@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
+            _ = migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "notify_info",
                 schema: "onlyoffice",
                 columns: table => new
@@ -24,10 +24,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("notify_info_pkey", x => x.notify_id);
+                    _ = table.PrimaryKey("notify_info_pkey", x => x.notify_id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "notify_queue",
                 schema: "onlyoffice",
                 columns: table => new
@@ -47,10 +47,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("notify_queue_pkey", x => x.notify_id);
+                    _ = table.PrimaryKey("notify_queue_pkey", x => x.notify_id);
                 });
 
-            migrationBuilder.AddColumn<string>(
+            _ = migrationBuilder.AddColumn<string>(
                 name: "auto_submitted",
                 schema: "onlyoffice",
                 table: "notify_queue",
@@ -58,7 +58,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
                 nullable: true,
                 defaultValueSql: "NULL");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "state",
                 schema: "onlyoffice",
                 table: "notify_info",
@@ -67,11 +67,11 @@ namespace ASC.Core.Common.Migrations.Npgsql.NotifyDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "notify_info",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "notify_queue",
                 schema: "onlyoffice");
         }

@@ -18,62 +18,62 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddDbTenantVersion(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddDbTenantVersion, Provider.MySql)
                 .Add(PgSqlAddDbTenantVersion, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenantVersion>(entity =>
+            _ = modelBuilder.Entity<DbTenantVersion>(entity =>
             {
-                entity.ToTable("tenants_version");
+                _ = entity.ToTable("tenants_version");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
+                _ = entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
 
-                entity.Property(e => e.Url)
+                _ = entity.Property(e => e.Url)
                     .IsRequired()
                     .HasColumnName("url")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Version)
+                _ = entity.Property(e => e.Version)
                     .IsRequired()
                     .HasColumnName("version")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Visible).HasColumnName("visible");
+                _ = entity.Property(e => e.Visible).HasColumnName("visible");
             });
 
         }
         public static void PgSqlAddDbTenantVersion(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenantVersion>(entity =>
+            _ = modelBuilder.Entity<DbTenantVersion>(entity =>
             {
-                entity.ToTable("tenants_version", "onlyoffice");
+                _ = entity.ToTable("tenants_version", "onlyoffice");
 
-                entity.Property(e => e.Id)
+                _ = entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
+                _ = entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
 
-                entity.Property(e => e.Url)
+                _ = entity.Property(e => e.Url)
                     .IsRequired()
                     .HasColumnName("url")
                     .HasMaxLength(64);
 
-                entity.Property(e => e.Version)
+                _ = entity.Property(e => e.Version)
                     .IsRequired()
                     .HasColumnName("version")
                     .HasMaxLength(64);
 
-                entity.Property(e => e.Visible).HasColumnName("visible");
+                _ = entity.Property(e => e.Visible).HasColumnName("visible");
             });
 
         }

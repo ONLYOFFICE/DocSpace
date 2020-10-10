@@ -1443,7 +1443,7 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<IFileDao<int>, FileDao>())
             {
-                services.TryAddTransient<File<int>>();
+                _ = services.TryAddTransient<File<int>>();
 
             return services
                 .AddFilesDbContextService()

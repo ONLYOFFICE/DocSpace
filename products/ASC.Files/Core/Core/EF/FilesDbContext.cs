@@ -35,7 +35,7 @@ namespace ASC.Files.Core.EF
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ModelBuilderWrapper
+            _ = ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddDbFiles()
                 .AddDbFolder()

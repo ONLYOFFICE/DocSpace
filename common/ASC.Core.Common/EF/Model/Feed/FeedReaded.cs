@@ -26,59 +26,59 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddFeedReaded(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddFeedReaded, Provider.MySql)
                 .Add(PgSqlAddFeedReaded, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FeedReaded>(entity =>
+            _ = modelBuilder.Entity<FeedReaded>(entity =>
             {
-                entity.HasKey(e => new { e.Tenant, e.UserId, e.Module })
+                _ = entity.HasKey(e => new { e.Tenant, e.UserId, e.Module })
                     .HasName("PRIMARY");
 
-                entity.ToTable("feed_readed");
+                _ = entity.ToTable("feed_readed");
 
-                entity.Property(e => e.Tenant).HasColumnName("tenant_id");
+                _ = entity.Property(e => e.Tenant).HasColumnName("tenant_id");
 
-                entity.Property(e => e.UserId)
+                _ = entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Module)
+                _ = entity.Property(e => e.Module)
                     .HasColumnName("module")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TimeStamp)
+                _ = entity.Property(e => e.TimeStamp)
                     .HasColumnName("timestamp")
                     .HasColumnType("datetime");
             });
     }
         public static void PgSqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FeedReaded>(entity =>
+            _ = modelBuilder.Entity<FeedReaded>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.Tenant, e.Module })
+                _ = entity.HasKey(e => new { e.UserId, e.Tenant, e.Module })
                     .HasName("feed_readed_pkey");
 
-                entity.ToTable("feed_readed", "onlyoffice");
+                _ = entity.ToTable("feed_readed", "onlyoffice");
 
-                entity.Property(e => e.UserId)
+                _ = entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasMaxLength(38);
 
-                entity.Property(e => e.Tenant).HasColumnName("tenant_id");
+                _ = entity.Property(e => e.Tenant).HasColumnName("tenant_id");
 
-                entity.Property(e => e.Module)
+                _ = entity.Property(e => e.Module)
                     .HasColumnName("module")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.TimeStamp).HasColumnName("timestamp");
+                _ = entity.Property(e => e.TimeStamp).HasColumnName("timestamp");
             });
         }
     }

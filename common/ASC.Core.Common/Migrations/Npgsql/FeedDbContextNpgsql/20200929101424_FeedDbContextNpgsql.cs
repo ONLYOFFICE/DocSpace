@@ -7,10 +7,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
+            _ = migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_aggregate",
                 schema: "onlyoffice",
                 columns: table => new
@@ -30,10 +30,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_feed_aggregate", x => x.id);
+                    _ = table.PrimaryKey("PK_feed_aggregate", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_last",
                 schema: "onlyoffice",
                 columns: table => new
@@ -43,10 +43,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("feed_last_pkey", x => x.last_key);
+                    _ = table.PrimaryKey("feed_last_pkey", x => x.last_key);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_readed",
                 schema: "onlyoffice",
                 columns: table => new
@@ -58,10 +58,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("feed_readed_pkey", x => new { x.user_id, x.tenant_id, x.module });
+                    _ = table.PrimaryKey("feed_readed_pkey", x => new { x.user_id, x.tenant_id, x.module });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_users",
                 schema: "onlyoffice",
                 columns: table => new
@@ -71,28 +71,28 @@ namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("feed_users_pkey", x => new { x.feed_id, x.user_id });
+                    _ = table.PrimaryKey("feed_users_pkey", x => new { x.feed_id, x.user_id });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "aggregated_date",
                 schema: "onlyoffice",
                 table: "feed_aggregate",
                 columns: new[] { "tenant", "aggregated_date" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "modified_date",
                 schema: "onlyoffice",
                 table: "feed_aggregate",
                 columns: new[] { "tenant", "modified_date" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "product",
                 schema: "onlyoffice",
                 table: "feed_aggregate",
                 columns: new[] { "tenant", "product" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "user_id_feed_users",
                 schema: "onlyoffice",
                 table: "feed_users",
@@ -101,19 +101,19 @@ namespace ASC.Core.Common.Migrations.Npgsql.FeedDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_aggregate",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_last",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_readed",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_users",
                 schema: "onlyoffice");
         }

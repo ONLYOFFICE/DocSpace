@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_authors",
                 columns: table => new
                 {
@@ -24,10 +24,10 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.login);
+                    _ = table.PrimaryKey("PRIMARY", x => x.login);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_authorsfile",
                 columns: table => new
                 {
@@ -39,10 +39,10 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.authorLogin, x.fileid });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.authorLogin, x.fileid });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_authorslang",
                 columns: table => new
                 {
@@ -55,10 +55,10 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.authorLogin, x.cultureTitle });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.authorLogin, x.cultureTitle });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_cultures",
                 columns: table => new
                 {
@@ -73,10 +73,10 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.title);
+                    _ = table.PrimaryKey("PRIMARY", x => x.title);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_data",
                 columns: table => new
                 {
@@ -109,17 +109,17 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.fileid, x.cultureTitle, x.title, x.id });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.fileid, x.cultureTitle, x.title, x.id });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "id",
                 table: "res_data",
                 column: "id",
                 unique: true);
 
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_files",
                 columns: table => new
                 {
@@ -140,10 +140,10 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_res_files", x => x.id);
+                    _ = table.PrimaryKey("PK_res_files", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "res_reserve",
                 columns: table => new
                 {
@@ -163,41 +163,41 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.fileid, x.title, x.cultureTitle, x.id });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.fileid, x.title, x.cultureTitle, x.id });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "res_authorsfile_FK2",
                 table: "res_authorsfile",
                 column: "fileid");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "res_authorslang_FK2",
                 table: "res_authorslang",
                 column: "cultureTitle");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "resources_FK2",
                 table: "res_data",
                 column: "cultureTitle");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "dateIndex",
                 table: "res_data",
                 column: "timeChanges");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "resname",
                 table: "res_files",
                 column: "resName",
                 unique: true);
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "resources_FK2",
                 table: "res_reserve",
                 column: "cultureTitle");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "id",
                 table: "res_reserve",
                 column: "id",
@@ -206,25 +206,25 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_authors");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_authorsfile");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_authorslang");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_cultures");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_data");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_files");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "res_reserve");
         }
     }

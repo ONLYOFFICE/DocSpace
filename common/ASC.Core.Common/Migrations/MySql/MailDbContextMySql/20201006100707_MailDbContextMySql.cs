@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "api_keys",
                 columns: table => new
                 {
@@ -18,10 +18,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_api_keys", x => x.Id);
+                    _ = table.PrimaryKey("PK_api_keys", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "greylisting_whitelist",
                 columns: table => new
                 {
@@ -30,10 +30,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_greylisting_whitelist", x => x.Comment);
+                    _ = table.PrimaryKey("PK_greylisting_whitelist", x => x.Comment);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "mail_mailbox",
                 columns: table => new
                 {
@@ -89,10 +89,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mail_mailbox", x => x.id);
+                    _ = table.PrimaryKey("PK_mail_mailbox", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "mail_mailbox_provider",
                 columns: table => new
                 {
@@ -113,10 +113,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
+                    _ = table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "mail_mailbox_server",
                 columns: table => new
                 {
@@ -133,10 +133,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mail_mailbox_server", x => x.Id);
+                    _ = table.PrimaryKey("PK_mail_mailbox_server", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "mail_server_server",
                 columns: table => new
                 {
@@ -154,10 +154,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mail_server_server", x => x.id);
+                    _ = table.PrimaryKey("PK_mail_server_server", x => x.id);
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "mail_mailbox_provider",
                 columns: new[] { "id", "display_name", "display_short_name", "documentation", "name" },
                 values: new object[,]
@@ -384,32 +384,32 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                     { 221, "Microsoft Office 365", "Office365", "https://products.office.com", "office365.com" }
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "address_index",
                 table: "mail_mailbox",
                 column: "address");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "main_mailbox_id_in_server_mail_mailbox_server_id",
                 table: "mail_mailbox",
                 column: "id_in_server");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "main_mailbox_id_smtp_server_mail_mailbox_server_id",
                 table: "mail_mailbox",
                 column: "id_smtp_server");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "date_login_delay_expires",
                 table: "mail_mailbox",
                 columns: new[] { "date_checked", "date_login_delay_expires" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "user_id_index",
                 table: "mail_mailbox",
                 columns: new[] { "tenant", "id_user" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "mail_server_server_type_server_type_fk_id",
                 table: "mail_server_server",
                 column: "server_type");
@@ -417,22 +417,22 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "api_keys");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "greylisting_whitelist");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "mail_mailbox");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "mail_mailbox_provider");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "mail_mailbox_server");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "mail_server_server");
         }
     }

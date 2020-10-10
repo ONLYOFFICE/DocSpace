@@ -55,7 +55,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddDbTenant, Provider.MySql)
                 .Add(PgSqlAddDbTenant, Provider.Postgre)
                 .HasData(
@@ -78,39 +78,39 @@ namespace ASC.Core.Common.EF.Model
                 .WithOne(r => r.Tenant)
                 .HasPrincipalKey<DbTenant>(r => new { r.Id });
 
-            modelBuilder.Entity<DbTenant>(entity =>
+            _ = modelBuilder.Entity<DbTenant>(entity =>
             {
-                entity.ToTable("tenants_tenants");
+                _ = entity.ToTable("tenants_tenants");
 
-                entity.HasIndex(e => e.LastModified)
+                _ = entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                entity.HasIndex(e => e.MappedDomain)
+                _ = entity.HasIndex(e => e.MappedDomain)
                     .HasName("mappeddomain");
 
-                entity.HasIndex(e => e.Version)
+                _ = entity.HasIndex(e => e.Version)
                     .HasName("version");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Alias)
+                _ = entity.Property(e => e.Alias)
                     .IsRequired()
                     .HasColumnName("alias")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Calls)
+                _ = entity.Property(e => e.Calls)
                     .HasColumnName("calls")
                     .HasDefaultValueSql("true");
 
-                entity.Property(e => e.CreationDateTime)
+                _ = entity.Property(e => e.CreationDateTime)
                     .HasColumnName("creationdatetime")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Industry).HasColumnName("industry");
+                _ = entity.Property(e => e.Industry).HasColumnName("industry");
 
-                entity.Property(e => e.Language)
+                _ = entity.Property(e => e.Language)
                     .IsRequired()
                     .HasColumnName("language")
                     .HasColumnType("char(10)")
@@ -118,178 +118,178 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.LastModified)
+                _ = entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.MappedDomain)
+                _ = entity.Property(e => e.MappedDomain)
                     .HasColumnName("mappeddomain")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Name)
+                _ = entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.OwnerId)
+                _ = entity.Property(e => e.OwnerId)
                     .HasColumnName("owner_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.PaymentId)
+                _ = entity.Property(e => e.PaymentId)
                     .HasColumnName("payment_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Public).HasColumnName("public");
+                _ = entity.Property(e => e.Public).HasColumnName("public");
 
-                entity.Property(e => e.PublicVisibleProducts)
+                _ = entity.Property(e => e.PublicVisibleProducts)
                     .HasColumnName("publicvisibleproducts")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Spam)
+                _ = entity.Property(e => e.Spam)
                     .HasColumnName("spam")
                     .HasDefaultValueSql("true");
 
-                entity.Property(e => e.Status).HasColumnName("status");
+                _ = entity.Property(e => e.Status).HasColumnName("status");
 
-                entity.Property(e => e.StatusChanged)
+                _ = entity.Property(e => e.StatusChanged)
                     .HasColumnName("statuschanged")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.TimeZone)
+                _ = entity.Property(e => e.TimeZone)
                     .HasColumnName("timezone")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TrustedDomains)
+                _ = entity.Property(e => e.TrustedDomains)
                     .HasColumnName("trusteddomains")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TrustedDomainsEnabled)
+                _ = entity.Property(e => e.TrustedDomainsEnabled)
                     .HasColumnName("trusteddomainsenabled")
                     .HasDefaultValueSql("'1'");
 
-                entity.Property(e => e.Version)
+                _ = entity.Property(e => e.Version)
                     .HasColumnName("version")
                     .HasDefaultValueSql("'2'");
 
-                entity.Property(e => e.VersionChanged)
+                _ = entity.Property(e => e.VersionChanged)
                     .HasColumnName("version_changed")
                     .HasColumnType("datetime");
             });
         }
         public static void PgSqlAddDbTenant(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenant>(entity =>
+            _ = modelBuilder.Entity<DbTenant>(entity =>
             {
-                entity.ToTable("tenants_tenants", "onlyoffice");
+                _ = entity.ToTable("tenants_tenants", "onlyoffice");
 
-                entity.HasIndex(e => e.Alias)
+                _ = entity.HasIndex(e => e.Alias)
                     .HasName("alias")
                     .IsUnique();
 
-                entity.HasIndex(e => e.LastModified)
+                _ = entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified_tenants_tenants");
 
-                entity.HasIndex(e => e.MappedDomain)
+                _ = entity.HasIndex(e => e.MappedDomain)
                     .HasName("mappeddomain");
 
-                entity.HasIndex(e => e.Version)
+                _ = entity.HasIndex(e => e.Version)
                     .HasName("version");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Alias)
+                _ = entity.Property(e => e.Alias)
                     .IsRequired()
                     .HasColumnName("alias")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.Calls)
+                _ = entity.Property(e => e.Calls)
                     .HasColumnName("calls")
                     .HasDefaultValueSql("true");
 
-                entity.Property(e => e.CreationDateTime).HasColumnName("creationdatetime");
+                _ = entity.Property(e => e.CreationDateTime).HasColumnName("creationdatetime");
 
-                entity.Property(e => e.Industry).HasColumnName("industry");
+                _ = entity.Property(e => e.Industry).HasColumnName("industry");
 
-                entity.Property(e => e.Language)
+                _ = entity.Property(e => e.Language)
                     .IsRequired()
                     .HasColumnName("language")
                     .HasMaxLength(10)
                     .IsFixedLength()
                     .HasDefaultValueSql("'en-US'");
 
-                entity.Property(e => e.LastModified)
+                _ = entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.MappedDomain)
+                _ = entity.Property(e => e.MappedDomain)
                     .HasColumnName("mappeddomain")
                     .HasMaxLength(100)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Name)
+                _ = entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.OwnerId)
+                _ = entity.Property(e => e.OwnerId)
                     .HasColumnName("owner_id")
                     .HasMaxLength(38)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.PaymentId)
+                _ = entity.Property(e => e.PaymentId)
                     .HasColumnName("payment_id")
                     .HasMaxLength(38)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Public).HasColumnName("public");
+                _ = entity.Property(e => e.Public).HasColumnName("public");
 
-                entity.Property(e => e.PublicVisibleProducts)
+                _ = entity.Property(e => e.PublicVisibleProducts)
                     .HasColumnName("publicvisibleproducts")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Spam)
+                _ = entity.Property(e => e.Spam)
                     .HasColumnName("spam")
                     .HasDefaultValueSql("true");
 
-                entity.Property(e => e.Status).HasColumnName("status");
+                _ = entity.Property(e => e.Status).HasColumnName("status");
 
-                entity.Property(e => e.StatusChanged).HasColumnName("statuschanged");
+                _ = entity.Property(e => e.StatusChanged).HasColumnName("statuschanged");
 
-                entity.Property(e => e.TimeZone)
+                _ = entity.Property(e => e.TimeZone)
                     .HasColumnName("timezone")
                     .HasMaxLength(50)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.TrustedDomains)
+                _ = entity.Property(e => e.TrustedDomains)
                     .HasColumnName("trusteddomains")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.TrustedDomainsEnabled)
+                _ = entity.Property(e => e.TrustedDomainsEnabled)
                     .HasColumnName("trusteddomainsenabled")
                     .HasDefaultValueSql("1");
 
-                entity.Property(e => e.Version)
+                _ = entity.Property(e => e.Version)
                     .HasColumnName("version")
                     .HasDefaultValueSql("2");
 
-                entity.Property(e => e.VersionChanged).HasColumnName("version_changed");
+                _ = entity.Property(e => e.VersionChanged).HasColumnName("version_changed");
             });
         }
     }

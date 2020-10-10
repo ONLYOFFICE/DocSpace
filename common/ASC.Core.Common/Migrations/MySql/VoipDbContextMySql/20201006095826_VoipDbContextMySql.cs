@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "crm_contact",
                 columns: table => new
                 {
@@ -55,10 +55,10 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_crm_contact", x => x.id);
+                    _ = table.PrimaryKey("PK_crm_contact", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "crm_voip_number",
                 columns: table => new
                 {
@@ -78,10 +78,10 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_crm_voip_number", x => x.id);
+                    _ = table.PrimaryKey("PK_crm_voip_number", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "crm_voip_calls",
                 columns: table => new
                 {
@@ -118,45 +118,45 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_crm_voip_calls", x => x.id);
+                    _ = table.PrimaryKey("PK_crm_voip_calls", x => x.id);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "create_on",
                 table: "crm_contact",
                 column: "create_on");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "last_modifed_on",
                 table: "crm_contact",
                 columns: new[] { "last_modifed_on", "tenant_id" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "company_id",
                 table: "crm_contact",
                 columns: new[] { "tenant_id", "company_id" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "display_name",
                 table: "crm_contact",
                 columns: new[] { "tenant_id", "display_name" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_crm_voip_calls_CrmContactId",
                 table: "crm_voip_calls",
                 column: "CrmContactId");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tenant_id",
                 table: "crm_voip_calls",
                 column: "tenant_id");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "parent_call_id",
                 table: "crm_voip_calls",
                 columns: new[] { "parent_call_id", "tenant_id" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tenant_id",
                 table: "crm_voip_number",
                 column: "tenant_id");
@@ -164,13 +164,13 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "crm_voip_calls");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "crm_voip_number");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "crm_contact");
         }
     }

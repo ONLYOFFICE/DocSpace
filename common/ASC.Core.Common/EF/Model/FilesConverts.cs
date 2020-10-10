@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddFilesConverts(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddFilesConverts, Provider.MySql)
                 .Add(PgSqlAddFilesConverts, Provider.Postgre)
                 .HasData(
@@ -171,20 +171,20 @@ namespace ASC.Core.Common.EF.Model
 
         public static void MySqlAddFilesConverts(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FilesConverts>(entity =>
+            _ = modelBuilder.Entity<FilesConverts>(entity =>
             {
-                entity.HasKey(e => new { e.Input, e.Ouput })
+                _ = entity.HasKey(e => new { e.Input, e.Ouput })
                     .HasName("PRIMARY");
 
-                entity.ToTable("files_converts");
+                _ = entity.ToTable("files_converts");
 
-                entity.Property(e => e.Input)
+                _ = entity.Property(e => e.Input)
                     .HasColumnName("input")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Ouput)
+                _ = entity.Property(e => e.Ouput)
                     .HasColumnName("output")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
@@ -193,18 +193,18 @@ namespace ASC.Core.Common.EF.Model
     }
         public static void PgSqlAddFilesConverts(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FilesConverts>(entity =>
+            _ = modelBuilder.Entity<FilesConverts>(entity =>
             {
-                entity.HasKey(e => new { e.Input, e.Ouput })
+                _ = entity.HasKey(e => new { e.Input, e.Ouput })
                     .HasName("files_converts_pkey");
 
-                entity.ToTable("files_converts", "onlyoffice");
+                _ = entity.ToTable("files_converts", "onlyoffice");
 
-                entity.Property(e => e.Input)
+                _ = entity.Property(e => e.Input)
                     .HasColumnName("input")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Ouput)
+                _ = entity.Property(e => e.Ouput)
                     .HasColumnName("output")
                     .HasMaxLength(50);
             });

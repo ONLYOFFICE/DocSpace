@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF.Model.Mail
     {
         public static ModelBuilderWrapper AddMailboxProvider(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddMailboxProvider, Provider.MySql)
                 .Add(PgSqlAddMailboxProvider, Provider.Postgre)
                 .HasData(
@@ -251,31 +251,31 @@ namespace ASC.Core.Common.EF.Model.Mail
 
         public static void MySqlAddMailboxProvider(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MailboxProvider>(entity =>
+            _ = modelBuilder.Entity<MailboxProvider>(entity =>
             {
-                entity.ToTable("mail_mailbox_provider");
+                _ = entity.ToTable("mail_mailbox_provider");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.DisplayName)
+                _ = entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.DisplayShortName)
+                _ = entity.Property(e => e.DisplayShortName)
                     .HasColumnName("display_short_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Documentation)
+                _ = entity.Property(e => e.Documentation)
                     .HasColumnName("documentation")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Name)
+                _ = entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
@@ -285,28 +285,28 @@ namespace ASC.Core.Common.EF.Model.Mail
         }
         public static void PgSqlAddMailboxProvider(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MailboxProvider>(entity =>
+            _ = modelBuilder.Entity<MailboxProvider>(entity =>
             {
-                entity.ToTable("mail_mailbox_provider", "onlyoffice");
+                _ = entity.ToTable("mail_mailbox_provider", "onlyoffice");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.DisplayName)
+                _ = entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL::character varying");
 
-                entity.Property(e => e.DisplayShortName)
+                _ = entity.Property(e => e.DisplayShortName)
                     .HasColumnName("display_short_name")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Documentation)
+                _ = entity.Property(e => e.Documentation)
                     .HasColumnName("documentation")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Name)
+                _ = entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(255);

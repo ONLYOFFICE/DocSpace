@@ -19,35 +19,35 @@ namespace ASC.Core.Common.EF.Model.Resource
     {
         public static ModelBuilderWrapper AddResAuthors(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddResAuthors, Provider.MySql)
                 .Add(PgSqlAddResAuthors, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddResAuthors(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ResAuthors>(entity =>
+            _ = modelBuilder.Entity<ResAuthors>(entity =>
             {
-                entity.HasKey(e => e.Login)
+                _ = entity.HasKey(e => e.Login)
                     .HasName("PRIMARY");
 
-                entity.ToTable("res_authors");
+                _ = entity.ToTable("res_authors");
 
-                entity.Property(e => e.Login)
+                _ = entity.Property(e => e.Login)
                     .HasColumnName("login")
                     .HasColumnType("varchar(150)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.IsAdmin).HasColumnName("isAdmin");
+                _ = entity.Property(e => e.IsAdmin).HasColumnName("isAdmin");
 
-                entity.Property(e => e.LastVisit)
+                _ = entity.Property(e => e.LastVisit)
                     .HasColumnName("lastVisit")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Online).HasColumnName("online");
+                _ = entity.Property(e => e.Online).HasColumnName("online");
 
-                entity.Property(e => e.Password)
+                _ = entity.Property(e => e.Password)
                     .IsRequired()
                     .HasColumnName("password")
                     .HasColumnType("varchar(50)")
@@ -57,24 +57,24 @@ namespace ASC.Core.Common.EF.Model.Resource
         }
         public static void PgSqlAddResAuthors(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ResAuthors>(entity =>
+            _ = modelBuilder.Entity<ResAuthors>(entity =>
             {
-                entity.HasKey(e => e.Login)
+                _ = entity.HasKey(e => e.Login)
                     .HasName("res_authors_pkey");
 
-                entity.ToTable("res_authors", "onlyoffice");
+                _ = entity.ToTable("res_authors", "onlyoffice");
 
-                entity.Property(e => e.Login)
+                _ = entity.Property(e => e.Login)
                     .HasColumnName("login")
                     .HasMaxLength(150);
 
-                entity.Property(e => e.IsAdmin).HasColumnName("isAdmin");
+                _ = entity.Property(e => e.IsAdmin).HasColumnName("isAdmin");
 
-                entity.Property(e => e.LastVisit).HasColumnName("lastVisit");
+                _ = entity.Property(e => e.LastVisit).HasColumnName("lastVisit");
 
-                entity.Property(e => e.Online).HasColumnName("online");
+                _ = entity.Property(e => e.Online).HasColumnName("online");
 
-                entity.Property(e => e.Password)
+                _ = entity.Property(e => e.Password)
                     .IsRequired()
                     .HasColumnName("password")
                     .HasMaxLength(50);

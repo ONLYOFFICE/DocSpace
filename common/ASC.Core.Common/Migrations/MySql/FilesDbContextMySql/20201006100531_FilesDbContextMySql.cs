@@ -6,7 +6,7 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "files_converts",
                 columns: table => new
                 {
@@ -19,10 +19,10 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.input, x.output });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.input, x.output });
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "files_converts",
                 columns: new[] { "input", "output" },
                 values: new object[,]
@@ -175,7 +175,7 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "files_converts");
         }
     }

@@ -95,273 +95,273 @@ namespace ASC.Core.Common.EF.Model.Mail
     {
         public static ModelBuilderWrapper AddMailbox(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddMailbox, Provider.MySql)
                 .Add(PgSqlAddMailbox, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddMailbox(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Mailbox>(entity =>
+            _ = modelBuilder.Entity<Mailbox>(entity =>
             {
-                entity.ToTable("mail_mailbox");
+                _ = entity.ToTable("mail_mailbox");
 
-                entity.HasIndex(e => e.Address)
+                _ = entity.HasIndex(e => e.Address)
                     .HasName("address_index");
 
-                entity.HasIndex(e => e.IdInServer)
+                _ = entity.HasIndex(e => e.IdInServer)
                     .HasName("main_mailbox_id_in_server_mail_mailbox_server_id");
 
-                entity.HasIndex(e => e.IdSmtpServer)
+                _ = entity.HasIndex(e => e.IdSmtpServer)
                     .HasName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
 
-                entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
+                _ = entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
                     .HasName("date_login_delay_expires");
 
-                entity.HasIndex(e => new { e.Tenant, e.IdUser })
+                _ = entity.HasIndex(e => new { e.Tenant, e.IdUser })
                     .HasName("user_id_index");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Address)
+                _ = entity.Property(e => e.Address)
                     .IsRequired()
                     .HasColumnName("address")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.BeginDate)
+                _ = entity.Property(e => e.BeginDate)
                     .HasColumnName("begin_date")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
-                entity.Property(e => e.DateAuthError)
+                _ = entity.Property(e => e.DateAuthError)
                     .HasColumnName("date_auth_error")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.DateChecked)
+                _ = entity.Property(e => e.DateChecked)
                     .HasColumnName("date_checked")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.DateCreated)
+                _ = entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.DateLoginDelayExpires)
+                _ = entity.Property(e => e.DateLoginDelayExpires)
                     .HasColumnName("date_login_delay_expires")
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
-                entity.Property(e => e.DateModified)
+                _ = entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
-                entity.Property(e => e.DateUserChecked)
+                _ = entity.Property(e => e.DateUserChecked)
                     .HasColumnName("date_user_checked")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.EmailInFolder)
+                _ = entity.Property(e => e.EmailInFolder)
                     .HasColumnName("email_in_folder")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Enabled)
+                _ = entity.Property(e => e.Enabled)
                     .HasColumnName("enabled")
                     .HasDefaultValueSql("'1'");
 
-                entity.Property(e => e.IdInServer).HasColumnName("id_in_server");
+                _ = entity.Property(e => e.IdInServer).HasColumnName("id_in_server");
 
-                entity.Property(e => e.IdSmtpServer).HasColumnName("id_smtp_server");
+                _ = entity.Property(e => e.IdSmtpServer).HasColumnName("id_smtp_server");
 
-                entity.Property(e => e.IdUser)
+                _ = entity.Property(e => e.IdUser)
                     .IsRequired()
                     .HasColumnName("id_user")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Imap).HasColumnName("imap");
+                _ = entity.Property(e => e.Imap).HasColumnName("imap");
 
-                entity.Property(e => e.ImapIntervals)
+                _ = entity.Property(e => e.ImapIntervals)
                     .HasColumnName("imap_intervals")
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.IsDefault).HasColumnName("is_default");
+                _ = entity.Property(e => e.IsDefault).HasColumnName("is_default");
 
-                entity.Property(e => e.IsProcessed).HasColumnName("is_processed");
+                _ = entity.Property(e => e.IsProcessed).HasColumnName("is_processed");
 
-                entity.Property(e => e.IsRemoved).HasColumnName("is_removed");
+                _ = entity.Property(e => e.IsRemoved).HasColumnName("is_removed");
 
-                entity.Property(e => e.IsServerMailbox).HasColumnName("is_server_mailbox");
+                _ = entity.Property(e => e.IsServerMailbox).HasColumnName("is_server_mailbox");
 
-                entity.Property(e => e.LoginDelay)
+                _ = entity.Property(e => e.LoginDelay)
                     .HasColumnName("login_delay")
                     .HasDefaultValueSql("'30'");
 
-                entity.Property(e => e.MsgCountLast).HasColumnName("msg_count_last");
+                _ = entity.Property(e => e.MsgCountLast).HasColumnName("msg_count_last");
 
-                entity.Property(e => e.Name)
+                _ = entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Pop3Password)
+                _ = entity.Property(e => e.Pop3Password)
                     .HasColumnName("pop3_password")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.QuotaError).HasColumnName("quota_error");
+                _ = entity.Property(e => e.QuotaError).HasColumnName("quota_error");
 
-                entity.Property(e => e.SizeLast).HasColumnName("size_last");
+                _ = entity.Property(e => e.SizeLast).HasColumnName("size_last");
 
-                entity.Property(e => e.SmtpPassword)
+                _ = entity.Property(e => e.SmtpPassword)
                     .HasColumnName("smtp_password")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Tenant).HasColumnName("tenant");
+                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                entity.Property(e => e.Token)
+                _ = entity.Property(e => e.Token)
                     .HasColumnName("token")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TokenType).HasColumnName("token_type");
+                _ = entity.Property(e => e.TokenType).HasColumnName("token_type");
 
-                entity.Property(e => e.UserOnline).HasColumnName("user_online");
+                _ = entity.Property(e => e.UserOnline).HasColumnName("user_online");
             });
         }
 
         public static void PgSqlAddMailbox(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Mailbox>(entity =>
+            _ = modelBuilder.Entity<Mailbox>(entity =>
             {
-                entity.ToTable("mail_mailbox", "onlyoffice");
+                _ = entity.ToTable("mail_mailbox", "onlyoffice");
 
-                entity.HasIndex(e => e.Address)
+                _ = entity.HasIndex(e => e.Address)
                     .HasName("address_index");
 
-                entity.HasIndex(e => e.IdInServer)
+                _ = entity.HasIndex(e => e.IdInServer)
                     .HasName("main_mailbox_id_in_server_mail_mailbox_server_id");
 
-                entity.HasIndex(e => e.IdSmtpServer)
+                _ = entity.HasIndex(e => e.IdSmtpServer)
                     .HasName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
 
-                entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
+                _ = entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
                     .HasName("date_login_delay_expires");
 
-                entity.HasIndex(e => new { e.Tenant, e.IdUser })
+                _ = entity.HasIndex(e => new { e.Tenant, e.IdUser })
                     .HasName("user_id_index");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                _ = entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Address)
+                _ = entity.Property(e => e.Address)
                     .IsRequired()
                     .HasColumnName("address")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.BeginDate)
+                _ = entity.Property(e => e.BeginDate)
                     .HasColumnName("begin_date")
                     .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
-                entity.Property(e => e.DateAuthError).HasColumnName("date_auth_error");
+                _ = entity.Property(e => e.DateAuthError).HasColumnName("date_auth_error");
 
-                entity.Property(e => e.DateChecked).HasColumnName("date_checked");
+                _ = entity.Property(e => e.DateChecked).HasColumnName("date_checked");
 
-                entity.Property(e => e.DateCreated).HasColumnName("date_created");
+                _ = entity.Property(e => e.DateCreated).HasColumnName("date_created");
 
-                entity.Property(e => e.DateLoginDelayExpires)
+                _ = entity.Property(e => e.DateLoginDelayExpires)
                     .HasColumnName("date_login_delay_expires")
                     .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
-                entity.Property(e => e.DateModified)
+                _ = entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.DateUserChecked).HasColumnName("date_user_checked");
+                _ = entity.Property(e => e.DateUserChecked).HasColumnName("date_user_checked");
 
-                entity.Property(e => e.EmailInFolder).HasColumnName("email_in_folder");
+                _ = entity.Property(e => e.EmailInFolder).HasColumnName("email_in_folder");
 
-                entity.Property(e => e.Enabled)
+                _ = entity.Property(e => e.Enabled)
                     .HasColumnName("enabled")
                     .HasDefaultValueSql("'1'::smallint");
 
-                entity.Property(e => e.IdInServer).HasColumnName("id_in_server");
+                _ = entity.Property(e => e.IdInServer).HasColumnName("id_in_server");
 
-                entity.Property(e => e.IdSmtpServer).HasColumnName("id_smtp_server");
+                _ = entity.Property(e => e.IdSmtpServer).HasColumnName("id_smtp_server");
 
-                entity.Property(e => e.IdUser)
+                _ = entity.Property(e => e.IdUser)
                     .IsRequired()
                     .HasColumnName("id_user")
                     .HasMaxLength(38);
 
-                entity.Property(e => e.Imap)
+                _ = entity.Property(e => e.Imap)
                     .HasColumnName("imap")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.ImapIntervals).HasColumnName("imap_intervals");
+                _ = entity.Property(e => e.ImapIntervals).HasColumnName("imap_intervals");
 
-                entity.Property(e => e.IsDefault)
+                _ = entity.Property(e => e.IsDefault)
                     .HasColumnName("is_default")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.IsProcessed)
+                _ = entity.Property(e => e.IsProcessed)
                     .HasColumnName("is_processed")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.IsRemoved)
+                _ = entity.Property(e => e.IsRemoved)
                     .HasColumnName("is_removed")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.IsServerMailbox)
+                _ = entity.Property(e => e.IsServerMailbox)
                     .HasColumnName("is_server_mailbox")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.LoginDelay)
+                _ = entity.Property(e => e.LoginDelay)
                     .HasColumnName("login_delay")
                     .HasDefaultValueSql("'30'");
 
-                entity.Property(e => e.MsgCountLast).HasColumnName("msg_count_last");
+                _ = entity.Property(e => e.MsgCountLast).HasColumnName("msg_count_last");
 
-                entity.Property(e => e.Name)
+                _ = entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Pop3Password)
+                _ = entity.Property(e => e.Pop3Password)
                     .HasColumnName("pop3_password")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.QuotaError)
+                _ = entity.Property(e => e.QuotaError)
                     .HasColumnName("quota_error")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.SizeLast).HasColumnName("size_last");
+                _ = entity.Property(e => e.SizeLast).HasColumnName("size_last");
 
-                entity.Property(e => e.SmtpPassword)
+                _ = entity.Property(e => e.SmtpPassword)
                     .HasColumnName("smtp_password")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Tenant).HasColumnName("tenant");
+                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                entity.Property(e => e.Token).HasColumnName("token");
+                _ = entity.Property(e => e.Token).HasColumnName("token");
 
-                entity.Property(e => e.TokenType)
+                _ = entity.Property(e => e.TokenType)
                     .HasColumnName("token_type")
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.UserOnline)
+                _ = entity.Property(e => e.UserOnline)
                     .HasColumnName("user_online")
                     .HasDefaultValueSql("'0'");
             });

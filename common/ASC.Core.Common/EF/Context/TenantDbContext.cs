@@ -38,7 +38,7 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ModelBuilderWrapper
+            _ = ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddUser()
                 .AddDbTenant()

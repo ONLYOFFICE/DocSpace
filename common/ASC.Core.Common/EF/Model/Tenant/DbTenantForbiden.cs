@@ -15,7 +15,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddDbTenantForbiden(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddDbTenantForbiden, Provider.MySql)
                 .Add(PgSqlAddDbTenantForbiden, Provider.Postgre)
                 .HasData(
@@ -27,14 +27,14 @@ namespace ASC.Core.Common.EF.Model
 
         public static void MySqlAddDbTenantForbiden(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenantForbiden>(entity =>
+            _ = modelBuilder.Entity<DbTenantForbiden>(entity =>
             {
-                entity.HasKey(e => e.Address)
+                _ = entity.HasKey(e => e.Address)
                     .HasName("PRIMARY");
 
-                entity.ToTable("tenants_forbiden");
+                _ = entity.ToTable("tenants_forbiden");
 
-                entity.Property(e => e.Address)
+                _ = entity.Property(e => e.Address)
                     .HasColumnName("address")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
@@ -43,14 +43,14 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddDbTenantForbiden(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenantForbiden>(entity =>
+            _ = modelBuilder.Entity<DbTenantForbiden>(entity =>
             {
-                entity.HasKey(e => e.Address)
+                _ = entity.HasKey(e => e.Address)
                     .HasName("tenants_forbiden_pkey");
 
-                entity.ToTable("tenants_forbiden", "onlyoffice");
+                _ = entity.ToTable("tenants_forbiden", "onlyoffice");
 
-                entity.Property(e => e.Address)
+                _ = entity.Property(e => e.Address)
                     .HasColumnName("address")
                     .HasMaxLength(50);
             });

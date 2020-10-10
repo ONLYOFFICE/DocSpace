@@ -7,7 +7,7 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_aggregate",
                 columns: table => new
                 {
@@ -42,10 +42,10 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_feed_aggregate", x => x.id);
+                    _ = table.PrimaryKey("PK_feed_aggregate", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_last",
                 columns: table => new
                 {
@@ -56,10 +56,10 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.last_key);
+                    _ = table.PrimaryKey("PRIMARY", x => x.last_key);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_readed",
                 columns: table => new
                 {
@@ -74,10 +74,10 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.user_id, x.module });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.user_id, x.module });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "feed_users",
                 columns: table => new
                 {
@@ -90,25 +90,25 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.feed_id, x.user_id });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.feed_id, x.user_id });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "aggregated_date",
                 table: "feed_aggregate",
                 columns: new[] { "tenant", "aggregated_date" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "modified_date",
                 table: "feed_aggregate",
                 columns: new[] { "tenant", "modified_date" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "product",
                 table: "feed_aggregate",
                 columns: new[] { "tenant", "product" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "user_id",
                 table: "feed_users",
                 column: "user_id");
@@ -116,16 +116,16 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_aggregate");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_last");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_readed");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "feed_users");
         }
     }

@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
+            _ = migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "audit_events",
                 schema: "onlyoffice",
                 columns: table => new
@@ -32,10 +32,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_audit_events", x => x.id);
+                    _ = table.PrimaryKey("PK_audit_events", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "login_events",
                 schema: "onlyoffice",
                 columns: table => new
@@ -55,10 +55,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_login_events", x => x.id);
+                    _ = table.PrimaryKey("PK_login_events", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_partners",
                 columns: table => new
                 {
@@ -69,8 +69,8 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tenants_partners", x => x.tenant_id);
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("PK_tenants_partners", x => x.tenant_id);
+                    _ = table.ForeignKey(
                         name: "FK_tenants_partners_tenants_tenants_tenant_id",
                         column: x => x.tenant_id,
                         principalSchema: "onlyoffice",
@@ -79,19 +79,19 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "date",
                 schema: "onlyoffice",
                 table: "audit_events",
                 columns: new[] { "tenant_id", "date" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "date_login_events",
                 schema: "onlyoffice",
                 table: "login_events",
                 column: "date");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tenant_id_login_events",
                 schema: "onlyoffice",
                 table: "login_events",
@@ -101,22 +101,22 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_partners");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "audit_events",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "login_events",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "webstudio_settings",
                 schema: "onlyoffice");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_tenants",
                 schema: "onlyoffice");
         }

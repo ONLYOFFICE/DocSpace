@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "core_settings",
                 columns: table => new
                 {
@@ -21,10 +21,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.id });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant, x.id });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "core_user",
                 columns: table => new
                 {
@@ -84,10 +84,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_core_user", x => x.id);
+                    _ = table.PrimaryKey("PK_core_user", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_forbiden",
                 columns: table => new
                 {
@@ -97,10 +97,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.address);
+                    _ = table.PrimaryKey("PRIMARY", x => x.address);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_iprestrictions",
                 columns: table => new
                 {
@@ -113,10 +113,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tenants_iprestrictions", x => x.id);
+                    _ = table.PrimaryKey("PK_tenants_iprestrictions", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_version",
                 columns: table => new
                 {
@@ -133,10 +133,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tenants_version", x => x.id);
+                    _ = table.PrimaryKey("PK_tenants_version", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_tenants",
                 columns: table => new
                 {
@@ -183,10 +183,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tenants_tenants", x => x.id);
+                    _ = table.PrimaryKey("PK_tenants_tenants", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "core_usergroup",
                 columns: table => new
                 {
@@ -203,10 +203,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.userid, x.groupid, x.ref_type });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant, x.userid, x.groupid, x.ref_type });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "core_usersecurity",
                 columns: table => new
                 {
@@ -224,10 +224,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.userid);
+                    _ = table.PrimaryKey("PRIMARY", x => x.userid);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "tenants_partners",
                 columns: table => new
                 {
@@ -244,10 +244,10 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.tenant_id);
+                    _ = table.PrimaryKey("PRIMARY", x => x.tenant_id);
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "core_settings",
                 columns: new[] { "tenant", "id", "value" },
                 values: new object[,]
@@ -257,12 +257,12 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                     { -1, "SmtpSettings", new byte[] { 48, 120, 70, 48, 53, 50, 69, 48, 57, 48, 65, 49, 65, 51, 55, 53, 48, 68, 65, 68, 67, 68, 52, 69, 57, 57, 54, 49, 68, 65, 48, 52, 65, 65, 53, 49, 69, 70, 48, 49, 57, 55, 69, 50, 67, 48, 54, 50, 51, 67, 70, 49, 50, 67, 53, 56, 51, 56, 66, 70, 65, 52, 48, 65, 57, 66, 52, 56, 66, 65, 69, 70, 67, 66, 69, 51, 55, 49, 53, 56, 55, 55, 51, 49, 68, 55, 69, 51, 68, 67, 57, 69, 55, 67, 54, 48, 48, 57, 55, 52, 50, 70, 57, 69, 52, 49, 53, 68, 53, 54, 68, 66, 48, 70, 48, 65, 69, 48, 56, 69, 51, 50, 70, 56, 57, 48, 52, 66, 50, 67, 52, 52, 49, 67, 67, 54, 53, 55, 67, 54, 52, 53, 52, 51, 69, 65, 69, 69, 50, 54, 50, 48, 52, 52, 65, 50, 56, 66, 52, 51, 51, 53, 68, 67, 66, 48, 70, 48, 67, 52, 69, 57, 52, 48, 49, 68, 56, 57, 49, 70, 65, 48, 54, 51, 54, 57, 70, 57, 56, 52, 67, 65, 50, 68, 52, 55, 53, 67, 56, 54, 67, 50, 51, 55, 57, 49, 55, 57, 54, 49, 67, 53, 56, 50, 55, 55, 54, 57, 56, 51, 49, 53, 56, 53, 50, 51, 48, 65, 54, 54, 65, 67, 55, 55, 56, 55, 69, 54, 70, 66, 53, 54, 70, 68, 51, 69, 51, 55, 51, 56, 57, 50, 54, 55, 65, 52, 54, 65 } }
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "core_user",
                 columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate" },
                 values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 0, null, null, null, "", "Administrator", new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(7841), "", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "administrator", new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(6725) });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "tenants_forbiden",
                 column: "address",
                 values: new object[]
@@ -271,67 +271,67 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                     "localhost"
                 });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "tenants_tenants",
                 columns: new[] { "id", "alias", "creationdatetime", "industry", "mappeddomain", "name", "owner_id", "payment_id", "public", "publicvisibleproducts", "status", "statuschanged", "timezone", "trusteddomains", "version_changed" },
                 values: new object[] { 1, "localhost", new DateTime(2020, 10, 6, 10, 14, 35, 606, DateTimeKind.Utc).AddTicks(4422), null, null, "Web Office", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", null, false, null, 0, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "core_usersecurity",
                 columns: new[] { "userid", "pwdhash", "pwdhashsha512", "tenant" },
                 values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", "USubvPlB+ogq0Q1trcSupg==", 1 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "email",
                 table: "core_user",
                 column: "email");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "last_modified",
                 table: "core_user",
                 column: "last_modified");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "username",
                 table: "core_user",
                 columns: new[] { "tenant", "username" });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "last_modified",
                 table: "core_usergroup",
                 column: "last_modified");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_core_usergroup_userid",
                 table: "core_usergroup",
                 column: "userid");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "pwdhash",
                 table: "core_usersecurity",
                 column: "pwdhash");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tenant",
                 table: "core_usersecurity",
                 column: "tenant");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tenant",
                 table: "tenants_iprestrictions",
                 column: "tenant");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "last_modified",
                 table: "tenants_tenants",
                 column: "last_modified");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "mappeddomain",
                 table: "tenants_tenants",
                 column: "mappeddomain");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "version",
                 table: "tenants_tenants",
                 column: "version");
@@ -339,31 +339,31 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "core_settings");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "core_usergroup");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "core_usersecurity");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_forbiden");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_iprestrictions");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_partners");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_version");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "core_user");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "tenants_tenants");
         }
     }

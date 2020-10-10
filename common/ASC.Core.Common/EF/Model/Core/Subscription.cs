@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddSubscription(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder
+            _ = modelBuilder
                 .Add(MySqlAddSubscription, Provider.MySql)
                 .Add(PgSqlAddSubscription, Provider.Postgre)
                 .HasData(
@@ -57,70 +57,70 @@ namespace ASC.Core.Common.EF
 
         public static void MySqlAddSubscription(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Subscription>(entity =>
+            _ = modelBuilder.Entity<Subscription>(entity =>
             {
-                entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient, e.Object })
+                _ = entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient, e.Object })
                     .HasName("PRIMARY");
 
-                entity.ToTable("core_subscription");
+                _ = entity.ToTable("core_subscription");
 
-                entity.Property(e => e.Tenant).HasColumnName("tenant");
+                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                entity.Property(e => e.Source)
+                _ = entity.Property(e => e.Source)
                     .HasColumnName("source")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Action)
+                _ = entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Recipient)
+                _ = entity.Property(e => e.Recipient)
                     .HasColumnName("recipient")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Object)
+                _ = entity.Property(e => e.Object)
                     .HasColumnName("object")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
+                _ = entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
             });
     }
         public static void PgSqlAddSubscription(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Subscription>(entity =>
+            _ = modelBuilder.Entity<Subscription>(entity =>
             {
-                entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient, e.Object })
+                _ = entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient, e.Object })
                     .HasName("core_subscription_pkey");
 
-                entity.ToTable("core_subscription", "onlyoffice");
+                _ = entity.ToTable("core_subscription", "onlyoffice");
 
-                entity.Property(e => e.Tenant).HasColumnName("tenant");
+                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                entity.Property(e => e.Source)
+                _ = entity.Property(e => e.Source)
                     .HasColumnName("source")
                     .HasMaxLength(38);
 
-                entity.Property(e => e.Action)
+                _ = entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasMaxLength(128);
 
-                entity.Property(e => e.Recipient)
+                _ = entity.Property(e => e.Recipient)
                     .HasColumnName("recipient")
                     .HasMaxLength(38);
 
-                entity.Property(e => e.Object)
+                _ = entity.Property(e => e.Object)
                     .HasColumnName("object")
                     .HasMaxLength(128);
 
-                entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
+                _ = entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
             });
         }
     }

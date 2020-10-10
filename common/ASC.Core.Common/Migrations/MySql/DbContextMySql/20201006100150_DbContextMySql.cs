@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "dbip_location",
                 columns: table => new
                 {
@@ -49,10 +49,10 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_dbip_location", x => x.id);
+                    _ = table.PrimaryKey("PK_dbip_location", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "mobile_app_install",
                 columns: table => new
                 {
@@ -65,10 +65,10 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.user_email, x.app_type });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.user_email, x.app_type });
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "regions",
                 columns: table => new
                 {
@@ -78,10 +78,10 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_regions", x => x.Region);
+                    _ = table.PrimaryKey("PK_regions", x => x.Region);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "ip_start",
                 table: "dbip_location",
                 column: "ip_start");
@@ -89,13 +89,13 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "dbip_location");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "mobile_app_install");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "regions");
         }
     }

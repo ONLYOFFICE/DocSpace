@@ -6,7 +6,7 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "telegram_users",
                 columns: table => new
                 {
@@ -18,10 +18,10 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.portal_user_id });
+                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.portal_user_id });
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "tgId",
                 table: "telegram_users",
                 column: "telegram_user_id");
@@ -29,7 +29,7 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "telegram_users");
         }
     }
