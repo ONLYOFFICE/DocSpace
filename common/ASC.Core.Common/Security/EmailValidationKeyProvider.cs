@@ -159,8 +159,10 @@ namespace ASC.Security.Cryptography
         public ConfirmType? Type { get; set; }
         public int? P { get; set; }
 
-        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p) =>
-        (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p)
+        {
+            (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+        }
     }
 
     public class EmailValidationKeyModelHelper
