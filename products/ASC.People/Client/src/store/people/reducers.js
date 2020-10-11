@@ -11,6 +11,7 @@ import {
   SET_SELECTOR_USERS,
   SET_IS_VISIBLE_DATA_LOSS_DIALOG,
   SET_IS_EDITING_FORM,
+  SET_IS_LOADING,
   TOGGLE_AVATAR_EDITOR,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
@@ -31,8 +32,9 @@ const initialState = {
   editingForm: {
     isEdit: false,
     isVisibleDataLossDialog: false,
-  },};
-
+  },
+  isLoading: false,
+};
 const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_GROUPS:
@@ -102,8 +104,12 @@ const peopleReducer = (state = initialState, action) => {
     case TOGGLE_AVATAR_EDITOR:
       return Object.assign({}, state, {
         avatarEditorIsOpen: action.avatarEditorIsOpen,
-      });    default:
-      return state;
+      });
+    case SET_IS_LOADING:
+      return Object.assign({}, state, {
+        isLoading: action.isLoading,
+      });
+    default:      return state;
   }
 };
 
