@@ -23,6 +23,7 @@ import {
   updateProfile,
   getUserPhoto,
   fetchProfile,
+  setAvatarMax,
 } from "../../../../../store/profile/actions";
 import {
   setFilter,
@@ -428,7 +429,7 @@ class UpdateUserForm extends React.Component {
 
   onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
-    const { profile } = this.props;
+    const { profile, setAvatarMax } = this.props;
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(
@@ -443,15 +444,16 @@ class UpdateUserForm extends React.Component {
       })
         .then((response) => {
           let stateCopy = Object.assign({}, this.state);
-          stateCopy.visibleAvatarEditor = false;
-          stateCopy.isLoading = false;
-          stateCopy.avatar.tmpFile = "";
-          stateCopy.profile.avatarMax =
-            response.max +
+          const avatarMax = response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
-            
+
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.isLoading = false;
+          stateCopy.avatar.tmpFile = "";         
           this.setState(stateCopy);
+
+          setAvatarMax(avatarMax);
           this.setIsEdit();
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
         })
@@ -471,9 +473,10 @@ class UpdateUserForm extends React.Component {
         .then((response) => {          
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
-          stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
+
+          setAvatarMax(response.big);
           this.setIsEdit();
         })
         .catch((error) => toastr.error(error))
@@ -542,7 +545,7 @@ class UpdateUserForm extends React.Component {
       dialogsVisible,
       isMobile,
     } = this.state;
-    const { t, i18n, settings } = this.props;
+    const { t, i18n, settings, avatarMax } = this.props;
     const {
       guestCaption,
       userCaption,
@@ -637,7 +640,7 @@ class UpdateUserForm extends React.Component {
             <Avatar
               size="max"
               role={getUserRole(profile)}
-              source={this.state.profile.avatarMax}
+              source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
               editLabel={t("editAvatar")}
@@ -900,10 +903,12 @@ class UpdateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   return {
     profile: state.profile.targetUser,
+    avatarMax: state.profile.avatarMax,
     settings: state.auth.settings,
     groups: state.people.groups,
     editingForm: state.people.editingForm,
-    filter: state.people.filter,  };
+    filter: state.people.filter,
+  };
 };
 
 export default connect(mapStateToProps, {
@@ -913,5 +918,6 @@ export default connect(mapStateToProps, {
   setIsVisibleDataLossDialog,
   setIsEditingForm,
   setFilter,
-  toggleAvatarEditor
+  toggleAvatarEditor,
+  setAvatarMax,
 })(withRouter(withTranslation()(UpdateUserForm)));
