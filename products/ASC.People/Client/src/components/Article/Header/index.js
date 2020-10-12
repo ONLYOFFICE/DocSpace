@@ -5,6 +5,7 @@ import { store, Headline, Loaders } from "asc-web-common";
 const { getCurrentProductName } = store.auth.selectors;
 
 const ArticleHeaderContent = ({ currentModuleName }) => {
+  console.log("CurrentModuleName", currentModuleName);
   return currentModuleName ? (
     <Headline type="menu">{currentModuleName}</Headline>
   ) : (

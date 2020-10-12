@@ -44,33 +44,44 @@ export function getFolder(folderId, filter) {
 }
 
 export function getFoldersTree() {
-  const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@trash', '@recent']; //TODO: need get from settings
-  const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}?filterType=2` }));
+  const rootFoldersPaths = [
+    "@my",
+    "@share",
+    "@common",
+    /*'@projects',*/ "@trash"
+  ]; //TODO: need get from settings
+  const requestsArray = rootFoldersPaths.map(path =>
+    request({ method: "get", url: `/files/${path}?filterType=2` })
+  );
 
-  return axios.all(requestsArray)
-    .then(axios.spread((...responses) =>
+  return axios.all(requestsArray).then(
+    axios.spread((...responses) =>
       responses.map((data, index) => {
         const trashIndex = 3;
         return {
           id: data.current.id,
           key: `0-${index}`,
           title: data.current.title,
-          folders: index !== trashIndex ? data.folders.map(folder => {
-            return {
-              id: folder.id,
-              title: folder.title,
-              access: folder.access,
-              foldersCount: folder.foldersCount,
-              rootFolderType: folder.rootFolderType,
-              newItems: folder.new
-            }
-          }) : null,
+          folders:
+            index !== trashIndex
+              ? data.folders.map(folder => {
+                  return {
+                    id: folder.id,
+                    title: folder.title,
+                    access: folder.access,
+                    foldersCount: folder.foldersCount,
+                    rootFolderType: folder.rootFolderType,
+                    newItems: folder.new
+                  };
+                })
+              : null,
           pathParts: data.pathParts,
           foldersCount: index !== trashIndex ? data.current.foldersCount : null,
           newItems: data.new
-        }
+        };
       })
-    ))
+    )
+  );
 }
 
 export function getMyFolderList(filter = FilesFilter.getDefault()) {
@@ -293,7 +304,11 @@ export function getShareFiles(fileId) {
 
 export function setShareFolder(folderId, share, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
-  return request({ method: "put", url: `/files/folder/${folderId}/share`, data });
+  return request({
+    method: "put",
+    url: `/files/folder/${folderId}/share`,
+    data
+  });
 }
 
 export function setShareFiles(fileId, share, notify, sharingMessage) {
@@ -303,7 +318,11 @@ export function setShareFiles(fileId, share, notify, sharingMessage) {
 
 export function startUploadSession(folderId, fileName, fileSize, relativePath) {
   const data = { fileName, fileSize, relativePath };
-  return request({ method: "post", url: `/files/${folderId}/upload/create_session.json`, data });
+  return request({
+    method: "post",
+    url: `/files/${folderId}/upload/create_session.json`,
+    data
+  });
 }
 
 export function uploadFile(url, data) {
@@ -324,13 +343,37 @@ export function getProgress() {
   return request({ method: "get", url: "/files/fileops" });
 }
 
-export function copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
-  const data = { destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter };
+export function copyToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter
+) {
+  const data = {
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter
+  };
   return request({ method: "put", url: "/files/fileops/copy", data });
 }
 
-export function moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter) {
-  const data = { destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter };
+export function moveToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter
+) {
+  const data = {
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter
+  };
   return request({ method: "put", url: "/files/fileops/move", data });
 }
 
@@ -342,7 +385,7 @@ export function getFileVersionInfo(fileId) {
 }
 
 export function markAsRead(folderIds, fileIds) {
-  const data = { folderIds, fileIds};
+  const data = { folderIds, fileIds };
   return request({ method: "put", url: "/files/fileops/markasread", data });
 }
 
@@ -354,18 +397,24 @@ export function getNewFiles(folderId) {
 }
 
 export function convertFile(fileId) {
-  return request({ method: "put", url: `/files/file/${fileId}/checkconversion` });
+  return request({
+    method: "put",
+    url: `/files/file/${fileId}/checkconversion`
+  });
 }
 
 export function getConvertFile(fileId) {
-  return request({ method: "get", url: `/files/file/${fileId}/checkconversion` });
+  return request({
+    method: "get",
+    url: `/files/file/${fileId}/checkconversion`
+  });
 }
 
 export function finalizeVersion(fileId, version, continueVersion) {
   const data = { fileId, version, continueVersion };
   return request({
     method: "put",
-    url: `/files/file/${fileId}/history`, 
+    url: `/files/file/${fileId}/history`,
     data
   });
 }
@@ -413,7 +462,7 @@ export function storeForceSave(val) {
 export function forceSave(val) {
   const data = { set: val };
   return request({ method: "put", url: "files/forcesave", data });
-} 
+}
 
 export function thirdParty(val) {
   const data = { set: val };
@@ -421,5 +470,9 @@ export function thirdParty(val) {
 }
 
 export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` }); 
+  return request({ method: "get", url: `/files/settings` });
+}
+
+export function getDocServiceUrl() {
+  return request({ method: "get", url: `/files/docservice` });
 }

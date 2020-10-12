@@ -164,7 +164,15 @@ namespace ASC.Web.Files
                     .AddDisplayUserSettingsService()
                     .AddCommonLinkUtilityService()
                     .AddFilesDbContextService()
-                    .AddPathProviderService();
+                    .AddPathProviderService()
+                    .AddFeedDbService()
+                    .AddNotifyDbContext()
+                    .AddDbContextService()
+                    .AddResourceDbService()
+                    .AddVoipDbContextService()
+                    .AddMailDbContextService()
+                    .AddMessagesContextService();
+               
             }
 
             return services;

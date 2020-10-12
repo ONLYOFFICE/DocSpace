@@ -13,6 +13,8 @@ import {
   RowContainer,
   Link,
   DragAndDrop,
+  Box,
+  Text
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
@@ -90,7 +92,8 @@ const { FileAction } = constants;
 const linkStyles = {
   isHovered: true,
   type: "action",
-  fontSize: "14px",
+  fontWeight: "600",
+  color: "#555f65",
   className: "empty-folder_link",
   display: "flex",
 };
@@ -119,6 +122,13 @@ const SimpleFilesRow = styled(Row)`
         width: 0px;
       }
   `}
+
+  .share-button:hover {
+      cursor: pointer;
+      div {
+        color: "#657077"
+      }
+    }
 `;
 
 class SectionBodyContent extends React.Component {
@@ -243,7 +253,7 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       setIsLoading,
       fetchFiles,
-      setUpdateTree
+      setUpdateTree,
     } = this.props;
     const items = [...folders, ...files];
     const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
@@ -309,7 +319,7 @@ class SectionBodyContent extends React.Component {
       t,
       setProgressBarData,
       fetchFiles,
-      setUpdateTree
+      setUpdateTree,
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
@@ -380,13 +390,11 @@ class SectionBodyContent extends React.Component {
     copy(
       isFile
         ? isMediaOrImage(item.fileExst)
-          ? `${window.location.origin + settings.homepage}/filter?folder=${
-              item.folderId
-            }&preview=${item.id}`
+          ? `${window.location.origin + settings.homepage}/filter?folder=${item.folderId
+          }&preview=${item.id}`
           : item.webUrl
-        : `${window.location.origin + settings.homepage}/filter?folder=${
-            item.id
-          }`
+        : `${window.location.origin + settings.homepage}/filter?folder=${item.id
+        }`
     );
 
     toastr.success(t("LinkCopySuccess"));
@@ -502,8 +510,8 @@ class SectionBodyContent extends React.Component {
             "data-id": item.id,
             "data-version": item.version,
           };
-        case "selector0":
-        case "selector1":
+        case "separator0":
+        case "separator1":
           return { key: option, isSeparator: true };
         case "block-unblock-version":
           return {
@@ -519,7 +527,7 @@ class SectionBodyContent extends React.Component {
             label: t("SharingSettings"),
             icon: "CatalogSharedIcon",
             onClick: this.onClickShare,
-            disabled: isSharable
+            disabled: isSharable,
           };
         case "send-by-email":
           return {
@@ -705,7 +713,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { currentFolderType, title, t, widthProp } = this.props;
+    const { currentFolderType, title, t } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -727,16 +735,20 @@ class SectionBodyContent extends React.Component {
           >
             +
           </Link>
-          <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
-            {t("Document")},
-          </Link>
-          <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
-            {t("Spreadsheet")},
-          </Link>
-          <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
-            {t("Presentation")}
-          </Link>
+
+          <Box className="flex-wrapper_container">
+            <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
+              {t("Document")},
+            </Link>
+            <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
+              {t("Spreadsheet")},
+            </Link>
+            <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
+              {t("Presentation")}
+            </Link>
+          </Box>
         </div>
+
         <div className="empty-folder_container-links">
           <Link
             className="empty-folder_container_plus-image"
@@ -778,7 +790,6 @@ class SectionBodyContent extends React.Component {
             descriptionText={myDescription}
             imageSrc="images/empty_screen.png"
             buttons={commonButtons}
-            widthProp={widthProp}
           />
         );
       case "Share":
@@ -788,7 +799,6 @@ class SectionBodyContent extends React.Component {
             subheadingText={subheadingText}
             descriptionText={shareDescription}
             imageSrc="images/empty_screen_forme.png"
-            widthProp={widthProp}
           />
         );
       case "Common":
@@ -799,7 +809,6 @@ class SectionBodyContent extends React.Component {
             descriptionText={commonDescription}
             imageSrc="images/empty_screen_corporate.png"
             buttons={commonButtons}
-            widthProp={widthProp}
           />
         );
       case "Trash":
@@ -810,7 +819,6 @@ class SectionBodyContent extends React.Component {
             descriptionText={trashDescription}
             imageSrc="images/empty_screen_trash.png"
             buttons={trashButtons}
-            widthProp={widthProp}
           />
         );
       case "Recent":
@@ -830,7 +838,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyFolderContainer = () => {
-    const { t, widthProp } = this.props;
+    const { t } = this.props;
     const buttons = (
       <>
         <div className="empty-folder_container-links">
@@ -845,16 +853,20 @@ class SectionBodyContent extends React.Component {
           >
             +
           </Link>
-          <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
-            {t("Document")},
-          </Link>
-          <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
-            {t("Spreadsheet")},
-          </Link>
-          <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
-            {t("Presentation")}
-          </Link>
+
+          <Box className="flex-wrapper_container">
+            <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
+              {t("Document")},
+            </Link>
+            <Link data-format="xlsx" onClick={this.onCreate} {...linkStyles}>
+              {t("Spreadsheet")},
+            </Link>
+            <Link data-format="pptx" onClick={this.onCreate} {...linkStyles}>
+              {t("Presentation")}
+            </Link>
+          </Box>
         </div>
+
         <div className="empty-folder_container-links">
           <Link
             className="empty-folder_container_plus-image"
@@ -870,6 +882,7 @@ class SectionBodyContent extends React.Component {
             {t("Folder")}
           </Link>
         </div>
+
         <div className="empty-folder_container-links">
           <img
             className="empty-folder_container_up-image"
@@ -889,13 +902,12 @@ class SectionBodyContent extends React.Component {
         headerText={t("EmptyFolderHeader")}
         imageSrc="images/empty_screen.png"
         buttons={buttons}
-        widthProp={widthProp}
       />
     );
   };
 
   renderEmptyFilterContainer = () => {
-    const { t, widthProp } = this.props;
+    const { t } = this.props;
     const subheadingText = t("EmptyFilterSubheadingText");
     const descriptionText = t("EmptyFilterDescriptionText");
 
@@ -922,7 +934,6 @@ class SectionBodyContent extends React.Component {
         descriptionText={descriptionText}
         imageSrc="images/empty_screen_filter.png"
         buttons={buttons}
-        widthProp={widthProp}
       />
     );
   };
@@ -986,8 +997,8 @@ class SectionBodyContent extends React.Component {
     const mouseButton = e.which
       ? e.which !== 1
       : e.button
-      ? e.button !== 0
-      : false;
+        ? e.button !== 0
+        : false;
     const label = e.currentTarget.getAttribute("label");
     if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
       return;
@@ -1032,8 +1043,8 @@ class SectionBodyContent extends React.Component {
     const mouseButton = e.which
       ? e.which !== 1
       : e.button
-      ? e.button !== 0
-      : false;
+        ? e.button !== 0
+        : false;
     if (mouseButton || !this.tooltipRef.current || !dragging) {
       return;
     }
@@ -1282,6 +1293,30 @@ class SectionBodyContent extends React.Component {
       parentId: folderId,
       fileExst: fileAction.extension,
     });
+  };
+
+  getSharedButton = () => {
+    return (
+      <Text
+        className="share-button"
+        as='span'
+        title={"Share"}
+        fontSize='12px'
+        fontWeight={400}
+        color='#A3A9AE'
+        display="inline-flex"
+        onClick={this.onClickShare}
+      >
+        <IconButton
+          className="share-button"
+          color='#a3a9ae'
+          hoverColor="#657077"
+          size={16}
+          iconName='CatalogSharedIcon'
+          style={{ marginRight: "8px" }}
+        />
+        Share
+      </Text>)
   }
 
   render() {
@@ -1307,7 +1342,7 @@ class SectionBodyContent extends React.Component {
       isMobile,
       firstLoad,
       filesList,
-      mediaFormats
+      mediaFormats,
     } = this.props;
 
     const {
@@ -1326,7 +1361,7 @@ class SectionBodyContent extends React.Component {
     const items = filesList;
 
     const tooltipLabel = this.getTooltipLabel();
-    
+
     if (fileAction && fileAction.type === FileAction.Create) {
       this.onCreateAddTempItem(items, folderId, fileAction);
     }
@@ -1356,73 +1391,73 @@ class SectionBodyContent extends React.Component {
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
-        this.renderEmptyFolderContainer()
-      )
+          this.renderEmptyFolderContainer()
+        )
     ) : !fileAction.id && items.length === 0 ? (
       firstLoad ? (
         <Loaders.Rows />
       ) : (
-        this.renderEmptyFilterContainer()
-      )
+          this.renderEmptyFilterContainer()
+        )
     ) : (
-      <>
-        {showMoveToPanel && (
-          <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={false}
-            visible={showMoveToPanel}
-            onClose={this.onMoveAction}
-          />
-        )}
+          <>
+            {showMoveToPanel && (
+              <OperationsPanel
+                {...operationsPanelProps}
+                isCopy={false}
+                visible={showMoveToPanel}
+                onClose={this.onMoveAction}
+              />
+            )}
 
-        {showCopyPanel && (
-          <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={true}
-            visible={showCopyPanel}
-            onClose={this.onCopyAction}
-          />
-        )}
-        <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
+            {showCopyPanel && (
+              <OperationsPanel
+                {...operationsPanelProps}
+                isCopy={true}
+                visible={showCopyPanel}
+                onClose={this.onCopyAction}
+              />
+            )}
+            <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
 
-        {viewAs === "tile" ? (
-          <TileContainer
-            className="tileContainer"
-            draggable
-            useReactWindow={false}
-            headingFolders={t("Folders")}
-            headingFiles={t("Files")}
-          >
-            {items.map((item) => {
-              const isEdit =
-                !!fileAction.type &&
-                editingId === item.id &&
-                item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
-              const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
-              const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
-              const element = this.getItemIcon(item, isEdit || item.id <= 0);
+            {viewAs === "tile" ? (
+              <TileContainer
+                className="tileContainer"
+                draggable
+                useReactWindow={false}
+                headingFolders={t("Folders")}
+                headingFiles={t("Files")}
+              >
+                {items.map((item) => {
+                  const isEdit =
+                    !!fileAction.type &&
+                    editingId === item.id &&
+                    item.fileExst === fileAction.extension;
+                  const contextOptions = this.getFilesContextOptions(
+                    item,
+                    viewer
+                  ).filter((o) => o);
+                  const contextOptionsProps =
+                    !contextOptions.length || isEdit ? {} : { contextOptions };
+                  const checked = isFileSelected(selection, item.id, item.parentId);
+                  const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
+                  const element = this.getItemIcon(item, isEdit || item.id <= 0);
 
-              const selectedItem = selection.find(
-                (x) => x.id === item.id && x.fileExst === item.fileExst
-              );
-              const isFolder = selectedItem
-                ? false
-                : item.fileExst
-                ? false
-                : true;
-              const draggable = selectedItem && currentFolderType !== "Trash";
-              let value = item.fileExst
-                ? `file_${item.id}`
-                : `folder_${item.id}`;
-              value += draggable ? "_draggable" : "";
-              const classNameProp =
-                isFolder && item.access < 2 ? { className: " dropable" } : {};
+                  const selectedItem = selection.find(
+                    (x) => x.id === item.id && x.fileExst === item.fileExst
+                  );
+                  const isFolder = selectedItem
+                    ? false
+                    : item.fileExst
+                      ? false
+                      : true;
+                  const draggable = selectedItem && currentFolderType !== "Trash";
+                  let value = item.fileExst
+                    ? `file_${item.id}`
+                    : `folder_${item.id}`;
+                  value += draggable ? "_draggable" : "";
+                  const classNameProp =
+                    isFolder && item.access < 2 ? { className: " dropable" } : {};
 
                   return (
                     <DragAndDrop
@@ -1469,12 +1504,20 @@ class SectionBodyContent extends React.Component {
                       item.fileExst === fileAction.extension;
                     const contextOptionsProps =
                       contextOptions && contextOptions.length > 0
-                        ? { contextOptions: this.getFilesContextOptions(contextOptions, item) }
+                        ? {
+                          contextOptions: this.getFilesContextOptions(
+                            contextOptions,
+                            item
+                          ),
+                        }
                         : {};
                     const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
                     const element = this.getItemIcon(item, isEdit || item.id <= 0);
                     const classNameProp =
                       isFolder && item.access < 2 ? { className: " dropable" } : {};
+                    const sharedButton = this.getSharedButton();
+                    const displayShareButton = widthProp > 500 ? '96px' : '26px';
+
                     return (
                       <DragAndDrop
                         {...classNameProp}
@@ -1490,12 +1533,14 @@ class SectionBodyContent extends React.Component {
                           key={item.id}
                           data={item}
                           element={element}
+                          contentElement={sharedButton}
                           onSelect={this.onContentRowSelect}
                           editing={editingId}
                           {...checkedProps}
                           {...contextOptionsProps}
                           needForUpdate={this.needForUpdate}
                           selectItem={this.onSelectItem.bind(this, item)}
+                          contextButtonSpacerWidth={displayShareButton}
                         >
                           <FilesRowContent
                             widthProp={widthProp}
@@ -1598,7 +1643,7 @@ const mapStateToProps = (state) => {
     viewAs: getViewAs(state),
     viewer: getViewer(state),
     filesList: getFilesList(state),
-    mediaFormats: getMediaViewerFormats(state)
+    mediaFormats: getMediaViewerFormats(state),
   };
 };
 
