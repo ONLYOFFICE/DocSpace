@@ -148,17 +148,17 @@ namespace ASC.Web.Core.WhiteLabel
             switch (type)
             {
                 case WhiteLabelLogoTypeEnum.LightSmall:
-                    IsDefaultLogoLightSmall = value;
-                    break;
+                IsDefaultLogoLightSmall = value;
+                break;
                 case WhiteLabelLogoTypeEnum.Dark:
-                    IsDefaultLogoDark = value;
-                    break;
+                IsDefaultLogoDark = value;
+                break;
                 case WhiteLabelLogoTypeEnum.Favicon:
-                    IsDefaultLogoFavicon = value;
-                    break;
+                IsDefaultLogoFavicon = value;
+                break;
                 case WhiteLabelLogoTypeEnum.DocsEditor:
-                    IsDefaultLogoDocsEditor = value;
-                    break;
+                IsDefaultLogoDocsEditor = value;
+                break;
             }
         }
 
@@ -179,17 +179,17 @@ namespace ASC.Web.Core.WhiteLabel
             switch (type)
             {
                 case WhiteLabelLogoTypeEnum.LightSmall:
-                    LogoLightSmallExt = fileExt;
-                    break;
+                LogoLightSmallExt = fileExt;
+                break;
                 case WhiteLabelLogoTypeEnum.Dark:
-                    LogoDarkExt = fileExt;
-                    break;
+                LogoDarkExt = fileExt;
+                break;
                 case WhiteLabelLogoTypeEnum.Favicon:
-                    LogoFaviconExt = fileExt;
-                    break;
+                LogoFaviconExt = fileExt;
+                break;
                 case WhiteLabelLogoTypeEnum.DocsEditor:
-                    LogoDocsEditorExt = fileExt;
-                    break;
+                LogoDocsEditorExt = fileExt;
+                break;
             }
         }
 
@@ -607,8 +607,7 @@ namespace ASC.Web.Core.WhiteLabel
                     .AddWebImageSupplierService()
                     .AddStorageFactoryService()
                     .AddWhiteLabelHelperService()
-                    .AddSettingsManagerService()
-                    .AddCoreBaseSettingsService();
+                    .AddSettingsManagerService();
             }
 
             return services;
