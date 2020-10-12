@@ -7,7 +7,8 @@ import {
   Textarea,
   AvatarEditor,
   Text,
-  utils} from "asc-web-components";
+  utils,
+} from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
   toEmployeeWrapper,
@@ -132,7 +133,7 @@ class CreateUserForm extends React.Component {
     toggleAvatarEditor(true);
   }
 
-  onLoadFileAvatar(file) {
+  onLoadFileAvatar(file, fileData) {
     let data = new FormData();
     let _this = this;
     data.append("file", file);
@@ -142,32 +143,50 @@ class CreateUserForm extends React.Component {
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          var stateCopy = Object.assign({}, _this.state);
-          stateCopy.avatar = {
-            tmpFile: response.data,
-            image: response.data,
-            defaultWidth: img.width,
-            defaultHeight: img.height,
-          };
-          _this.setState(stateCopy);
-          //if (typeof callback === "function") callback();
+          if (fileData) {
+            fileData.avatar = {
+              tmpFile: response.data,
+              image: response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height,
+            };
+
+            var stateCopy = Object.assign({}, _this.state);
+            stateCopy.avatar = {
+              tmpFile: response.data,
+              image: response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height,
+            };
+            _this.setState(stateCopy);
+
+            if (fileData.existImage) {
+              _this.onSaveAvatar(
+                fileData.existImage,
+                fileData.position,
+                fileData.avatar,
+                fileData.croppedImage
+              );
+            } 
+          }
+
         };
         img.src = response.data;
       })
       .catch((error) => toastr.error(error));
   }
 
-  onSaveAvatar(isUpdate, result, file) {
+  onSaveAvatar(isUpdate, result, avatar, croppedImage) {
     var stateCopy = Object.assign({}, this.state);
 
     stateCopy.visibleAvatarEditor = false;
-    stateCopy.croppedAvatarImage = file;
+    stateCopy.croppedAvatarImage = croppedImage;
     if (isUpdate) {
       stateCopy.avatar.x = Math.round(
-        result.x * this.state.avatar.defaultWidth - result.width / 2
+        result.x * avatar.defaultWidth - result.width / 2
       );
       stateCopy.avatar.y = Math.round(
-        result.y * this.state.avatar.defaultHeight - result.height / 2
+        result.y * avatar.defaultHeight - result.height / 2
       );
       stateCopy.avatar.width = result.width;
       stateCopy.avatar.height = result.height;
