@@ -526,10 +526,12 @@ class PureAdminsSettings extends Component {
                   descriptionText={t("NotFoundDescription")}
                   buttons={
                     <>
-                      <Icons.CrossIcon
+                      <IconButton
                         className="cross_icon"
-                        size="small"
-                        isfill={true}
+                        size="12"
+                        onClick={this.onResetFilter}
+                        iconName="CrossIcon"
+                        isFill
                         color="#657077"
                       />
                       <Link

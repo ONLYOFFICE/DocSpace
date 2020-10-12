@@ -6,7 +6,7 @@ import {
   Row,
   Avatar,
   EmptyScreenContainer,
-  Icons,
+  IconButton,
   Link,
   RowContainer,
   utils,
@@ -465,7 +465,14 @@ class SectionBodyContent extends React.PureComponent {
         buttons={
           <>
             <Box displayProp="inline-block" marginProp="0 8px 0 0">
-              <Icons.CrossIcon size="small" isfill={true} color="#657077" />
+              <IconButton
+                className="empty-folder_container-icon"
+                size="12"
+                onClick={this.onResetFilter}
+                iconName="CrossIcon"
+                isFill
+                color="#657077"
+              />
             </Box>
             <Link
               type="action"
