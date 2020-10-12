@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { PageLayout, utils } from "asc-web-common";
-//import { RequestLoader } from "asc-web-components";
+import { PageLayout, utils, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -28,6 +27,7 @@ const PureSettings = ({
   match,
   t,
   isLoading,
+  settingsTree,
   setIsErrorSettings,
   getFilesSettings,
   setIsLoading,
@@ -53,17 +53,10 @@ const PureSettings = ({
     }
   }, [isLoading]);
 
+  console.log("render settings");
+
   return (
     <>
-      {/* <RequestLoader
-        visible={isLoading}
-        zIndex={256}
-        loaderSize="16px"
-        loaderColor={"#999"}
-        label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-        fontSize="12px"
-        fontColor={"#999"}
-      /> */}
       <PageLayout>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -78,11 +71,19 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent setting={setting} t={t} />
+          {isLoading ? (
+            <Loaders.Headline />
+          ) : (
+            <SectionHeaderContent setting={setting} t={t} />
+          )}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent setting={setting} t={t} />
+          {isLoading ? (
+            <Loaders.SettingsFiles />
+          ) : (
+            <SectionBodyContent setting={setting} t={t} />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     </>
