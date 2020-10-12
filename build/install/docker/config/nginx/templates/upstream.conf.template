@@ -1,0 +1,42 @@
+upstream  service_api {
+  server $SERVICE_API;
+}
+
+upstream  service_api_system {
+  server $SERVICE_API_SYSTEM;
+}
+
+
+upstream  service_urlshortener {
+  server $SERVICE_URLSHORYENER;
+}
+
+
+upstream  service_studio.notify {
+  server $SERVICE_STUDIO_NOTIFY;
+}
+
+
+upstream  service_people.server {
+  server $SERVICE_PEOPLE_SERVER;
+}
+
+
+upstream  service_files {
+  server $SERVICE_FILES;
+}
+
+
+upstream  service_files_services {
+  server $SERVICE_FILES_SERVICES;
+}
+
+
+upstream  service_studio {
+  server $SERVICE_STUDIO;
+}
+
+
+upstream  service_backup {
+  server $SERVICE_BACKUP;
+}

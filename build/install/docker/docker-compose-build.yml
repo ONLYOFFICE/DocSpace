@@ -2,8 +2,9 @@ version: "3.4"
 x-service: 
     &x-service-base
     build:
-      context: .
+      context: ./
       target: base
+      dockerfile: Dockerfile-app
     container_name: base
     restart: always
     expose:
@@ -83,7 +84,8 @@ services:
   onlyoffice-api:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: api
     image: "${REPO}/${STATUS}appserver-api:${SERVICE_VERSION}"
     container_name: onlyoffice-api
@@ -91,7 +93,8 @@ services:
   onlyoffice-api_system:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: api_system
     image: "${REPO}/${STATUS}appserver-api_system:${SERVICE_VERSION}"
     container_name: onlyoffice-api_system
@@ -99,7 +102,8 @@ services:
   onlyoffice-urlshortener:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: urlshortener
     image: "${REPO}/${STATUS}appserver-urlshortener:${SERVICE_VERSION}"
     container_name: onlyoffice-urlshortener
@@ -107,7 +111,8 @@ services:
   onlyoffice-studio.notify:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: studio.notify
     image: "${REPO}/${STATUS}appserver-studio.notify:${SERVICE_VERSION}"
     container_name: onlyoffice-studio.notify
@@ -115,7 +120,8 @@ services:
   onlyoffice-notify:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: notify
     image: "${REPO}/${STATUS}appserver-notify:${SERVICE_VERSION}"
     container_name: onlyoffice-notify
@@ -123,7 +129,8 @@ services:
   onlyoffice-people.server:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: people.server
     image: "${REPO}/${STATUS}appserver-people.server:${SERVICE_VERSION}"
     container_name: onlyoffice-people.server
@@ -131,7 +138,8 @@ services:
   onlyoffice-files:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: files
     image: "${REPO}/${STATUS}appserver-files:${SERVICE_VERSION}"
     container_name: onlyoffice-files
@@ -139,7 +147,8 @@ services:
   onlyoffice-files_services:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: files_services
     image: "${REPO}/${STATUS}appserver-files_services:${SERVICE_VERSION}"
     container_name: onlyoffice-files_services
@@ -147,7 +156,8 @@ services:
   onlyoffice-studio:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: studio
     image: "${REPO}/${STATUS}appserver-studio:${SERVICE_VERSION}"
     container_name: onlyoffice-studio
@@ -155,15 +165,18 @@ services:
   onlyoffice-backup:
     <<: *x-service-base
     build:
-      context: .
+      context: ./
+      dockerfile: Dockerfile-app
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${SERVICE_VERSION}"
     container_name: onlyoffice-backup
     
   onlyoffice-nginx:
     build:
-      context: .
+      context:  ./
+      dockerfile: Dockerfile-app
       target: web
+      dockerfile: Dockerfile-app
     image: "${REPO}/${STATUS}appserver-nginx:${SERVICE_VERSION}"
     #container_name: onlyoffice-nginx
     container_name: nginx
