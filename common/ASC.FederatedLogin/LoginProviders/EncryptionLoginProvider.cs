@@ -97,8 +97,6 @@ namespace ASC.Web.Studio.Core
             if (services.TryAddScoped<EncryptionLoginProvider>())
             {
                 return services
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
                     .AddSecurityContextService()
                     .AddSignatureService()
                     .AddInstanceCryptoService()
