@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { selectGroup } from "../../../store/people/actions";
+import {
+  selectGroup,
+  setIsVisibleDataLossDialog,
+} from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
@@ -100,16 +103,25 @@ class ArticleBodyContent extends React.Component {
 
     return false;
   }
+  onSelectHandler = (data) => {
+    const { editingForm, setIsVisibleDataLossDialog } = this.props;
 
-  onSelect = (data) => {
-    const { selectGroup } = this.props;
-
-    this.changeTitleDocument(data);
-    selectGroup(
-      data && data.length === 1 && data[0] !== "root" ? data[0] : null
-    );
+    if (editingForm.isEdit) {
+      setIsVisibleDataLossDialog(true, this.onSelect(data));
+    } else {
+      this.onSelect(data)();
+    }
   };
+  onSelect = (data) => {
+    return () => {
+      const { selectGroup } = this.props;
 
+      this.changeTitleDocument(data);
+      selectGroup(
+        data && data.length === 1 && data[0] !== "root" ? data[0] : null
+      );
+    };
+  };
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
@@ -141,7 +153,7 @@ class ArticleBodyContent extends React.Component {
         showIcon={true}
         defaultExpandAll={true}
         switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
+        onSelect={this.onSelectHandler}
         selectedKeys={selectedKeys}
         isFullFillSelection={false}
         gapBetweenNodes="22"
@@ -220,6 +232,7 @@ function mapStateToProps(state) {
   const { isLoaded, settings } = state.auth;
   const { customNames } = settings;
   const { groupsCaption } = customNames;
+  const { editingForm } = state.people;
 
   return {
     data: getTreeGroups(groups, groupsCaption),
@@ -229,7 +242,11 @@ function mapStateToProps(state) {
     groups,
     isAdmin: isAdmin(state),
     isLoaded,
+	editingForm
   };
 }
 
-export default connect(mapStateToProps, { selectGroup })(BodyContent);
+export default connect(mapStateToProps, {
+  selectGroup,
+  setIsVisibleDataLossDialog,
+})(BodyContent);

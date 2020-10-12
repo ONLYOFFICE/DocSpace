@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils, store, toastr } from "asc-web-common";
+import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -24,7 +24,7 @@ const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
 
 class PureProfile extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile, t, location } = this.props;
+    const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
@@ -39,8 +39,9 @@ class PureProfile extends React.Component {
     if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t("ChangeEmailSuccess"));
     }
-
-    fetchProfile(userId);
+    if (!profile) {
+      fetchProfile(userId);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -81,16 +82,12 @@ class PureProfile extends React.Component {
 
         {profile && (
           <PageLayout.SectionHeader>
-            <SectionHeaderContent />
+            {profile ? <SectionHeaderContent /> : <Loaders.Headline />}
           </PageLayout.SectionHeader>
         )}
 
         <PageLayout.SectionBody>
-          {profile ? (
-            <SectionBodyContent />
-          ) : (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          )}
+          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
         </PageLayout.SectionBody>
       </PageLayout>
     );

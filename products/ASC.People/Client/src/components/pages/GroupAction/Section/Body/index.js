@@ -14,7 +14,7 @@ import {
   resetGroup,
   updateGroup,
 } from "../../../../../store/group/actions";
-import { selectGroup } from "../../../../../store/people/actions";
+import { selectGroup, setFilter } from "../../../../../store/people/actions";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
@@ -241,10 +241,10 @@ class SectionBodyContent extends React.Component {
   };
 
   onCancel = () => {
-    const { history, resetGroup, settings } = this.props;
+    const { resetGroup, filter, setFilter } = this.props;
 
     resetGroup();
-    history.push(`${settings.homepage}/`);
+    setFilter(filter);
   };
 
   onSelectedItemClose = (member) => {
@@ -490,6 +490,7 @@ function mapStateToProps(state) {
     groupCaption,
     me: getCurrentUser(state),
     currentModuleName,
+    filter: state.people.filter,
   };
 }
 
@@ -498,4 +499,5 @@ export default connect(mapStateToProps, {
   createGroup,
   updateGroup,
   selectGroup,
+  setFilter,
 })(withRouter(withTranslation()(SectionBodyContent)));

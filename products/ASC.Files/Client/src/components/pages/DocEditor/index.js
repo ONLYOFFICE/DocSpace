@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
-import { utils, api } from "asc-web-common";
+import { utils, api, toastr } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -15,28 +15,49 @@ const { changeLanguage, getObjectByLocation, hideLoader, showLoader } = utils;
 const { files } = api;
 
 class PureEditor extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
+
+    console.log("PureEditor componentDidMount", fileId);
 
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
 
     showLoader();
 
-    files
-      .openEdit(fileId)
-      .then((config) => {
-        if (window.innerWidth < 720) {
-          config.type = "mobile";
-        }
+    let docApiUrl = await files.getDocServiceUrl();
 
-        window.DocsAPI.DocEditor("editor", config);
-      })
-      .catch((e) => {
-        console.log(e);
-        hideLoader();
-      });
+    const script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("id", "scripDocServiceAddress");
+
+    script.onload = function () {
+      console.log("PureEditor script.onload", fileId, window.DocsAPI);
+
+      files
+        .openEdit(fileId)
+        .then((config) => {
+          // if (window.innerWidth < 720) {
+          //   config.type = "mobile";
+          // }
+          if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
+
+          console.log("Trying to open file with DocsAPI", fileId);
+          window.DocsAPI.DocEditor("editor", config);
+        })
+        .catch((e) => {
+          console.log(e);
+          toastr.error(e);
+          hideLoader();
+        });
+    };
+
+    script.src = docApiUrl;
+    script.async = true;
+
+    console.log("PureEditor componentDidMount: added script");
+    document.body.appendChild(script);
   }
 
   render() {

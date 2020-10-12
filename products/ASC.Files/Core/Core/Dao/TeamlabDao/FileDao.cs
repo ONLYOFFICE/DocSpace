@@ -1456,7 +1456,8 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFileDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFileDao<int>, FileDao>();
+            if (services.TryAddScoped<IFileDao<int>, FileDao>())
+            {
             services.TryAddTransient<File<int>>();
 
             return services
@@ -1478,5 +1479,8 @@ namespace ASC.Files.Core.Data
                 .AddChunkedUploadSessionHolderService()
                 .AddFolderDaoService();
         }
+
+            return services;
+    }
     }
 }

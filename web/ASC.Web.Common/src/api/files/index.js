@@ -496,3 +496,6 @@ export function removeFromFavorite(ids) {
 
   return request(options);
 }
+
+export function getDocServiceUrl() {
+  return request({ method: "get", url: `/files/docservice` });

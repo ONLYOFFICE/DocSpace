@@ -243,7 +243,7 @@ namespace ASC.Files.Core.Data
                 q = GetFolderQuery()
                     .AsNoTracking()
                     .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => folderIds.Any(q => q == r.folder.ParentId))
+                    .Where(r => folderIds.Any(q => q == r.tree.ParentId))
                     .Select(r => r.folder);
             }
 
@@ -1297,7 +1297,8 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFolderDao<int>, FolderDao>();
+            if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
+            {
             services.TryAddTransient<Folder<int>>();
             services.TryAddTransient<Folder<string>>();
 
@@ -1316,5 +1317,8 @@ namespace ASC.Files.Core.Data
                 .AddAuthContextService()
                 .AddGlobalSpaceService();
         }
+
+            return services;
+    }
     }
 }
