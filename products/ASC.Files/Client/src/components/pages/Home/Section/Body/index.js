@@ -828,8 +828,6 @@ class SectionBodyContent extends React.Component {
             subheadingText={subheadingText}
             descriptionText={recentDescription}
             imageSrc="images/empty_screen_recent.png"
-            //buttons={recentButtons}
-            widthProp={widthProp}
           />
         );
       default:
