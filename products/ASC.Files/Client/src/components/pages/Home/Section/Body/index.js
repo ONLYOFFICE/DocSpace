@@ -1338,13 +1338,9 @@ class SectionBodyContent extends React.Component {
     var playlist = [];
     let id = 0;
 
-    if (files) {
-      files.forEach(function (file, i, files) {
-        if (
-          isImage(file.fileExst) ||
-          isSound(file.fileExst) ||
-          isVideo(file.fileExst)
-        ) {
+    if (items) {
+      items.forEach(function (file, i, files) {
+        if (file.canOpenPlayer) {
           playlist.push({
             id: id,
             fileId: file.id,
