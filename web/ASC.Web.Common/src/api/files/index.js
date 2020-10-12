@@ -463,3 +463,7 @@ export function thirdParty(val) {
 export function getSettingsFiles() {
   return request({ method: "get", url: `/files/settings` });
 }
+
+export function getDocServiceUrl() {
+  return request({ method: "get", url: `/files/docservice` });
+}
