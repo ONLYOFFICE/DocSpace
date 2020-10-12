@@ -120,6 +120,29 @@ class UpdateUserForm extends React.Component {
     }
   }
 
+  updateUserPhotoInState = () => {
+    var profile = toEmployeeWrapper(this.props.profile);
+    getUserPhoto(profile.id).then((userPhotoData) => {
+      if (userPhotoData.original) {
+        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
+        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: avatarDefaultSizes[1],
+              defaultHeight: avatarDefaultSizes[2],
+              image: userPhotoData.original
+                ? userPhotoData.original.indexOf("default_user_photo") !== -1
+                  ? null
+                  : userPhotoData.original
+                : null,
+            },
+          });
+        }
+      }
+    });
+  }
+
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
@@ -360,7 +383,6 @@ class UpdateUserForm extends React.Component {
   }
 
   onLoadFileAvatar = (file, fileData) => {
-    const { profile } = this.props;
 
     this.setState({ isLoading: true });
     let data = new FormData();
@@ -419,9 +441,19 @@ class UpdateUserForm extends React.Component {
         height: result.height,
         tmpFile: avatar.tmpFile,
       })
-        .then(() => {
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        .then((response) => {
+          let stateCopy = Object.assign({}, this.state);
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.isLoading = false;
+          stateCopy.avatar.tmpFile = "";
+          stateCopy.profile.avatarMax =
+            response.max +
+            "?_=" +
+            Math.floor(Math.random() * Math.floor(10000));
+            
+          this.setState(stateCopy);
           this.setIsEdit();
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
         })
         .catch((error) => {
           toastr.error(error);
@@ -431,26 +463,24 @@ class UpdateUserForm extends React.Component {
           this.props.updateProfile(this.props.profile);
         })
         .then(() => {
-          this.setState({
-            isLoading: false,
-            visibleAvatarEditor: false
-          });
+          this.updateUserPhotoInState();
         })
-        .then(() => {
-          this.setState(this.mapPropsToState(this.props));
-        });    
+        .then(() => this.props.fetchProfile(profile.id));    
       } else {
       deleteAvatar(profile.id)
-        .then(() => {          
+        .then((response) => {          
+          let stateCopy = Object.assign({}, this.state);
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.setState({ 
-            isLoading: false,
-            visibleAvatarEditor: false
-          });
+          this.setState(stateCopy);
           this.setIsEdit();
         })
         .catch((error) => toastr.error(error))
         .then(() => this.props.updateProfile(this.props.profile))
+        .then(() => {
+          this.setState(this.mapPropsToState(this.props));
+        })
         .then(() => this.props.fetchProfile(profile.id));    
       }
   };
@@ -607,7 +637,7 @@ class UpdateUserForm extends React.Component {
             <Avatar
               size="max"
               role={getUserRole(profile)}
-              source={profile.avatarMax}
+              source={this.state.profile.avatarMax}
               userName={profile.displayName}
               editing={true}
               editLabel={t("editAvatar")}
