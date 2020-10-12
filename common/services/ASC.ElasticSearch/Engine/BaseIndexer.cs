@@ -641,7 +641,6 @@ namespace ASC.ElasticSearch
                     .AddClientService()
                     .AddWebstudioDbContextService()
                     .AddTenantManagerService()
-                    .AddSearchSettingsHelperService()
                     .AddBaseIndexerHelperService()
                     ;
             }
