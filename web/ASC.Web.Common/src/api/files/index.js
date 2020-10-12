@@ -269,6 +269,17 @@ export function updateFile(fileId, title, lastVersion) {
   return request(options);
 }
 
+export function addFileToRecentlyViewed(fileId) {
+  const data = { fileId };
+  const options = {
+    method: "post",
+    url: `/files/file/${fileId}/recent`,
+    data
+  };
+
+  return request(options);
+}
+
 export function deleteFile(fileId, deleteAfter, immediately) {
   const data = { deleteAfter, immediately };
   const options = {

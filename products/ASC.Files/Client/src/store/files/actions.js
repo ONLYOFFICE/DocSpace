@@ -423,6 +423,12 @@ export function updateFile(fileId, title) {
   };
 }
 
+export function addFileToRecentlyViewed(fileId) {
+  return dispatch => {
+    return files.addFileToRecentlyViewed(fileId);
+  } 
+}
+
 export function renameFolder(folderId, title) {
   return dispatch => {
     return files.renameFolder(folderId, title).then(folder => {

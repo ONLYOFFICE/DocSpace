@@ -45,6 +45,7 @@ import {
   setSelected,
   setSelection,
   setTreeFolders,
+  addFileToRecentlyViewed
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -406,7 +407,12 @@ class SectionBodyContent extends React.Component {
 
   onClickLinkEdit = (e) => {
     const id = e.currentTarget.dataset.id;
-    return window.open(`./doceditor?fileId=${id}`, "_blank");
+    const { addFileToRecentlyViewed } = this.props; 
+
+    return addFileToRecentlyViewed(id)
+    .then(() => console.log("Pushed to recently viewed"))
+    .catch(e => console.error(e))
+    .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
   };
 
   showVersionHistory = (e) => {
@@ -1660,4 +1666,5 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setIsLoading,
   clearProgressData,
+  addFileToRecentlyViewed
 })(withRouter(withTranslation()(SectionBodyContent)));
