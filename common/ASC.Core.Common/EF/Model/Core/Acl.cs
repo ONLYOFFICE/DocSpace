@@ -134,7 +134,7 @@ namespace ASC.Core.Common.EF
 
                 _ = entity.Property(e => e.AceType).HasColumnName("acetype");
             });
-    }
+        }
         public static void PgSqlAddAcl(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<Acl>(entity =>

@@ -44,7 +44,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-    }
+        }
         public static void PgSqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<ResAuthorsLang>(entity =>

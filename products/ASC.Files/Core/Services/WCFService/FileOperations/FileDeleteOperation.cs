@@ -120,7 +120,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DeleteFiles(Files, scope);
             DeleteFolders(Folders, scope);
         }
-        
+
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();

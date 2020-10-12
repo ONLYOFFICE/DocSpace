@@ -439,23 +439,23 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                        {
-                            var address = new MailAddress(email);
-                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
-                            {
-                                StudioNotifyService.SendJoinMsg(email, emplType);
-                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                                return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
-                            }
-
-                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                        }
-                    case TenantTrustedDomainsType.All:
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                             return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
                         }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                    case TenantTrustedDomainsType.All:
+                    {
+                        StudioNotifyService.SendJoinMsg(email, emplType);
+                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                        return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }

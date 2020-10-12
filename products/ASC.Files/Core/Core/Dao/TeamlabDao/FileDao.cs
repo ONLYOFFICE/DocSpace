@@ -1445,27 +1445,27 @@ namespace ASC.Files.Core.Data
             {
                 _ = services.TryAddTransient<File<int>>();
 
-            return services
-                .AddFilesDbContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalStoreService()
-                .AddGlobalSpaceService()
-                .AddFactoryIndexerFileService()
-                .AddGlobalFolderService()
-                .AddChunkedUploadSessionHolderService()
-                .AddFolderDaoService();
-        }
+                return services
+                    .AddFilesDbContextService()
+                    .AddUserManagerService()
+                    .AddTenantManagerService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService()
+                    .AddGlobalStoreService()
+                    .AddGlobalSpaceService()
+                    .AddFactoryIndexerFileService()
+                    .AddGlobalFolderService()
+                    .AddChunkedUploadSessionHolderService()
+                    .AddFolderDaoService();
+            }
 
             return services;
-    }
+        }
     }
 }

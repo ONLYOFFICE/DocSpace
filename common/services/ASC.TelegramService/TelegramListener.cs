@@ -36,7 +36,7 @@ namespace ASC.TelegramService
         private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
         private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
         private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
-        
+
         private TelegramService TelegramService { get; set; }
 
         public TelegramListener(ICacheNotify<NotifyMessage> cacheMessage,
@@ -55,10 +55,10 @@ namespace ASC.TelegramService
 
         public void Start()
         {
-            CacheMessage.Subscribe(n=> SendMessage(n), CacheNotifyAction.Insert);
-            CacheRegisterUser.Subscribe(n=> RegisterUser(n), CacheNotifyAction.Insert);
-            CacheCreateClient.Subscribe(n=> CreateOrUpdateClient(n), CacheNotifyAction.Insert);
-            CacheDisableClient.Subscribe(n=> DisableClient(n), CacheNotifyAction.Insert);
+            CacheMessage.Subscribe(n => SendMessage(n), CacheNotifyAction.Insert);
+            CacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
+            CacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), CacheNotifyAction.Insert);
+            CacheDisableClient.Subscribe(n => DisableClient(n), CacheNotifyAction.Insert);
 
         }
 

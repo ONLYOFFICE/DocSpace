@@ -72,20 +72,20 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<IDaoFactory, DaoFactory>())
             {
-            return services
-                .AddFileDaoService()
-                .AddFolderDaoService()
-                .AddTagDaoService()
-                .AddSecurityDaoService()
-                .AddCachedProviderAccountDaoService()
-                .AddProviderTagDaoService()
-                .AddProviderSecurityDaoService()
-                .AddProviderFileDaoService()
-                .AddProviderFolderDaoService()
-                ;
-        }
+                return services
+                    .AddFileDaoService()
+                    .AddFolderDaoService()
+                    .AddTagDaoService()
+                    .AddSecurityDaoService()
+                    .AddCachedProviderAccountDaoService()
+                    .AddProviderTagDaoService()
+                    .AddProviderSecurityDaoService()
+                    .AddProviderFileDaoService()
+                    .AddProviderFolderDaoService()
+                    ;
+            }
 
             return services;
-    }
+        }
     }
 }

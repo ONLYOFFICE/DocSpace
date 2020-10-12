@@ -121,11 +121,11 @@ namespace ASC.Web.Files.Core.Search
             {
                 _ = services.TryAddTransient<DbFile>();
 
-            return services
-                .AddFactoryIndexerService<DbFile>(false);
-        }
+                return services
+                    .AddFactoryIndexerService<DbFile>(false);
+            }
 
             return services;
-    }
+        }
     }
 }

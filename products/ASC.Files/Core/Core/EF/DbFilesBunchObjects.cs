@@ -2,6 +2,7 @@
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -60,7 +61,7 @@ namespace ASC.Files.Core.EF
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-    }
+        }
         public static void PgSqlAddDbFilesBunchObjects(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbFilesBunchObjects>(entity =>

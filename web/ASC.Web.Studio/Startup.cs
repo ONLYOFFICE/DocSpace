@@ -46,12 +46,12 @@ namespace ASC.Web.Studio
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
+
             _ = app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-            
+
             _ = app.UseRouting();
 
             _ = app.UseCors(builder =>

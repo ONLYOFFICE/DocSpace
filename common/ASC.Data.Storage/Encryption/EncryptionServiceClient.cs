@@ -29,7 +29,7 @@ using ASC.Common.Caching;
 
 namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptionServiceClient :  IEncryptionService
+    public class EncryptionServiceClient : IEncryptionService
     {
 
         private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }

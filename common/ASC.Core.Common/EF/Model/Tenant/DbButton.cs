@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -55,7 +57,7 @@ namespace ASC.Core.Common.EF
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-    }
+        }
         public static void PgSqlAddDbButton(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbButton>(entity =>

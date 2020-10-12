@@ -58,7 +58,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("timestamp")
                     .HasColumnType("datetime");
             });
-    }
+        }
         public static void PgSqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<FeedReaded>(entity =>

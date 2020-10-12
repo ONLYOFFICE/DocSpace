@@ -166,7 +166,7 @@ namespace ASC.Data.Storage
                     var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility (options, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)
@@ -236,8 +236,8 @@ namespace ASC.Data.Storage
 
         public MigrateOperationScope(TenantManager tenantManager,
             SecurityContext securityContext,
-            StorageFactory storageFactory, 
-            IOptionsMonitor<ILog> options, 
+            StorageFactory storageFactory,
+            IOptionsMonitor<ILog> options,
             StorageSettingsHelper storageSettingsHelper,
             SettingsManager settingsManager)
         {
@@ -251,10 +251,10 @@ namespace ASC.Data.Storage
 
         public void Deconstruct(out TenantManager tenantManager,
             out SecurityContext securityContext,
-            out StorageFactory storageFactory, 
+            out StorageFactory storageFactory,
             out IOptionsMonitor<ILog> options,
             out StorageSettingsHelper storageSettingsHelper,
-            out SettingsManager settingsManager )
+            out SettingsManager settingsManager)
         {
             tenantManager = TenantManager;
             securityContext = SecurityContext;

@@ -113,7 +113,7 @@ namespace ASC.Data.Storage
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-                var(tenantManager, staticUploader, _, _, _) = scopeClass;
+                var (tenantManager, staticUploader, _, _, _) = scopeClass;
                 _ = tenantManager.SetCurrentTenant(tenantId);
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql

@@ -56,7 +56,7 @@ namespace ASC.TelegramService
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
-             TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy, false);
+            TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy, false);
         }
     }
 

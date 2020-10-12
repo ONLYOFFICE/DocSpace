@@ -2,6 +2,7 @@
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -58,7 +59,7 @@ namespace ASC.Files.Core.EF
 
                 _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
-    }
+        }
         public static void PgSqlAddDbFilesThirdpartyIdMapping(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbFilesThirdpartyIdMapping>(entity =>

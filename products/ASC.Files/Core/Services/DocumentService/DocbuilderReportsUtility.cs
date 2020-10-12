@@ -150,7 +150,7 @@ namespace ASC.Web.Files.Services.DocumentService
             };
 
         }
-        
+
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
@@ -392,9 +392,9 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector = documentServiceConnector;
         }
 
-        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor, 
-            out TenantManager tenantManager, 
-            out AuthContext authContext, 
+        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantManager tenantManager,
+            out AuthContext authContext,
             out SecurityContext securityContext,
             out DocumentServiceConnector documentServiceConnector)
         {

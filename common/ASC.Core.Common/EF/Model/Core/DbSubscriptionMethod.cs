@@ -102,7 +102,7 @@ namespace ASC.Core.Common.EF
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-    }
+        }
         public static void PgSqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbSubscriptionMethod>(entity =>

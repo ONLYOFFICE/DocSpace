@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -85,7 +86,7 @@ namespace ASC.Files.Core.EF
 
                 _ = entity.Property(e => e.TagCount).HasColumnName("tag_count");
             });
-    }
+        }
         public static void PgSqlAddDbFilesTagLink(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbFilesTagLink>(entity =>

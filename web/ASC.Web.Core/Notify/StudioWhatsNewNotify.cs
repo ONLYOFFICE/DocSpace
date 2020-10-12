@@ -61,7 +61,7 @@ namespace ASC.Web.Studio.Core.Notify
             ServiceProvider = serviceProvider;
             Confuguration = confuguration;
         }
-        
+
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
             var log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
@@ -340,13 +340,13 @@ namespace ASC.Web.Studio.Core.Notify
             out TenantUtil tenantUtil,
             out StudioNotifyHelper studioNotifyHelper,
             out UserManager userManager,
-            out SecurityContext securityContext, 
+            out SecurityContext securityContext,
             out AuthContext authContext,
             out AuthManager authManager,
-            out CommonLinkUtility commonLinkUtility, 
+            out CommonLinkUtility commonLinkUtility,
             out DisplayUserSettingsHelper displayUserSettingsHelper,
             out FeedAggregateDataProvider feedAggregateDataProvider,
-            out CoreSettings coreSettings )
+            out CoreSettings coreSettings)
         {
             tenantManager = TenantManager;
             paymentManager = PaymentManager;

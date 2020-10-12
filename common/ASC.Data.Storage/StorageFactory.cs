@@ -194,7 +194,7 @@ namespace ASC.Data.Storage
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IHttpContextAccessor httpContextAccessor, 
+            IHttpContextAccessor httpContextAccessor,
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory)
         {

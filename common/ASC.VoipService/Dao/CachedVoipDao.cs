@@ -119,16 +119,16 @@ namespace ASC.VoipService.Dao
             {
                 _ = services.TryAddSingleton<VoipDaoCache>();
 
-            return services
-                .AddDbContextManagerService<VoipDbContext>()
-                .AddAuthContextService()
-                .AddTenantUtilService()
-                .AddSecurityContextService()
-                .AddBaseCommonLinkUtilityService()
-                .AddConsumerFactoryService();
-        }
+                return services
+                    .AddDbContextManagerService<VoipDbContext>()
+                    .AddAuthContextService()
+                    .AddTenantUtilService()
+                    .AddSecurityContextService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddConsumerFactoryService();
+            }
 
             return services;
-    }
+        }
     }
 }

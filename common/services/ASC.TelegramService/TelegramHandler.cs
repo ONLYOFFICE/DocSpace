@@ -110,7 +110,7 @@ namespace ASC.TelegramService
 
                 if (token != client.Token || proxy != client.Proxy)
                 {
-                    if (startTelegramService) 
+                    if (startTelegramService)
                     {
                         if (!telegramHelper.TestingClient(newClient)) return;
                     }

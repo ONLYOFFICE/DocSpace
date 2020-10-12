@@ -693,7 +693,7 @@ namespace ASC.Core.Billing
             if (services.TryAddScoped<ITariffService, TariffService>())
             {
                 _ = services.AddCoreDbContextService();
-            _ = services.TryAddSingleton<TariffServiceStorage>();
+                _ = services.TryAddSingleton<TariffServiceStorage>();
                 _ = services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
             }
 

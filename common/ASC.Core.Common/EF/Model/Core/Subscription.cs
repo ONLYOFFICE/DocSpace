@@ -92,7 +92,7 @@ namespace ASC.Core.Common.EF
 
                 _ = entity.Property(e => e.Unsubscribed).HasColumnName("unsubscribed");
             });
-    }
+        }
         public static void PgSqlAddSubscription(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<Subscription>(entity =>

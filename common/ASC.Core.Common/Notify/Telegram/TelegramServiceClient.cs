@@ -61,11 +61,12 @@ namespace ASC.Core.Common.Notify
         public void RegisterUser(string userId, int tenantId, string token)
         {
             Cache.Insert(GetCacheTokenKey(tenantId, userId), token, DateTime.MaxValue);
-            CacheRegisterUser.Publish(new RegisterUserProto() { 
+            CacheRegisterUser.Publish(new RegisterUserProto()
+            {
                 UserId = userId,
                 TenantId = tenantId,
-                Token = token 
-            } , CacheNotifyAction.Insert);
+                Token = token
+            }, CacheNotifyAction.Insert);
         }
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)

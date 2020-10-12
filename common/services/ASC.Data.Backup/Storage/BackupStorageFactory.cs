@@ -76,24 +76,24 @@ namespace ASC.Data.Backup.Storage
             {
                 case BackupStorageType.Documents:
                 case BackupStorageType.ThridpartyDocuments:
-                    {
-                        DocumentsBackupStorage.Init(tenantId, webConfigPath);
-                        return DocumentsBackupStorage;
-                    }
+                {
+                    DocumentsBackupStorage.Init(tenantId, webConfigPath);
+                    return DocumentsBackupStorage;
+                }
                 case BackupStorageType.DataStore:
-                    {
-                        DataStoreBackupStorage.Init(tenantId, webConfigPath);
-                        return DataStoreBackupStorage;
-                    }
+                {
+                    DataStoreBackupStorage.Init(tenantId, webConfigPath);
+                    return DataStoreBackupStorage;
+                }
                 case BackupStorageType.Local:
                     return LocalBackupStorage;
                 case BackupStorageType.ThirdPartyConsumer:
-                    {
-                        if (storageParams == null) return null;
-                        _ = TenantManager.SetCurrentTenant(tenantId);
-                        ConsumerBackupStorage.Init(storageParams);
-                        return ConsumerBackupStorage;
-                    }
+                {
+                    if (storageParams == null) return null;
+                    _ = TenantManager.SetCurrentTenant(tenantId);
+                    ConsumerBackupStorage.Init(storageParams);
+                    return ConsumerBackupStorage;
+                }
                 default:
                     throw new InvalidOperationException("Unknown storage type.");
             }

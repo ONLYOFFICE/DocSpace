@@ -109,12 +109,12 @@ namespace ASC.Web.Files.Core.Search
             {
                 _ = services.TryAddTransient<DbFolder>();
 
-            return services
-                .AddFactoryIndexerService<DbFolder>(false)
-                .AddDaoFactoryService();
-        }
+                return services
+                    .AddFactoryIndexerService<DbFolder>(false)
+                    .AddDaoFactoryService();
+            }
 
             return services;
-    }
+        }
     }
 }

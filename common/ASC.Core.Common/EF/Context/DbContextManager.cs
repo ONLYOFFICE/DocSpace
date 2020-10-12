@@ -36,7 +36,7 @@ namespace ASC.Core.Common.EF
                     if (Configuration["migration:enabled"] == "true")
                     {
                         dbContext.Migrate();
-            }
+                    }
                 }
             }
 

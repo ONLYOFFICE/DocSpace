@@ -633,35 +633,41 @@ namespace ASC.Web.Files.Utils
                     if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
                         cmp = c * (FileUtility.GetFileExtension((x.Title)).CompareTo(FileUtility.GetFileExtension(y.Title)));
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                },
+                }
+                ,
                 SortedByType.Author => (x, y) =>
                 {
                     var cmp = c * string.Compare(x.ModifiedByString, y.ModifiedByString);
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                },
+                }
+                ,
                 SortedByType.Size => (x, y) =>
                 {
                     var cmp = 0;
                     if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
                         cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                },
+                }
+                ,
                 SortedByType.AZ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
                 SortedByType.DateAndTime => (x, y) =>
                 {
-                var cmp = c * DateTime.Compare(x.ModifiedOn, y.ModifiedOn);
-                return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                },
+                    var cmp = c * DateTime.Compare(x.ModifiedOn, y.ModifiedOn);
+                    return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+                }
+                ,
                 SortedByType.DateAndTimeCreation => (x, y) =>
                 {
                     var cmp = c * DateTime.Compare(x.CreateOn, y.CreateOn);
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                },
+                }
+                ,
                 SortedByType.New => (x, y) =>
                 {
                     var isNewSortResult = x.IsNew.CompareTo(y.IsNew);
                     return c * (isNewSortResult == 0 ? DateTime.Compare(x.ModifiedOn, y.ModifiedOn) : isNewSortResult);
-                },
+                }
+                ,
                 _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
             };
             if (orderBy.SortedBy != SortedByType.New)

@@ -65,7 +65,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("value")
                     .HasColumnType("mediumblob");
             });
-    }
+        }
         public static void PgSqlAddCoreSettings(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbCoreSettings>(entity =>

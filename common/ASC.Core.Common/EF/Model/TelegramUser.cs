@@ -54,7 +54,7 @@ namespace ASC.Core.Common.EF.Model
 
                 _ = entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
             });
-    }
+        }
         public static void PgSqlAddTelegramUsers(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<TelegramUser>(entity =>

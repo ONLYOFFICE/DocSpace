@@ -43,7 +43,7 @@ namespace ASC.Core.Common.EF.Model.Resource
 
                 _ = entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
             });
-    }
+        }
         public static void PgSqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<ResAuthorsFile>(entity =>

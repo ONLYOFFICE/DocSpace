@@ -289,34 +289,34 @@ namespace ASC.Feed.Aggregator
     }
 
     public class FeedAggregatorServiceScope
-        {
-            private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-            private TenantManager TenantManager { get; }
-            private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
-            private UserManager UserManager { get; }
-            private SecurityContext SecurityContext { get; }
-            private AuthManager AuthManager { get; }
+    {
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private TenantManager TenantManager { get; }
+        private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private AuthManager AuthManager { get; }
 
-            public FeedAggregatorServiceScope(BaseCommonLinkUtility baseCommonLinkUtility,
-                TenantManager tenantManager,
-                FeedAggregateDataProvider feedAggregateDataProvider,
-                UserManager userManager,
-                SecurityContext securityContext,
-                AuthManager authManager)
-            {
-                BaseCommonLinkUtility = baseCommonLinkUtility;
-                TenantManager = tenantManager;
-                FeedAggregateDataProvider = feedAggregateDataProvider;
-                UserManager = userManager;
-                SecurityContext = securityContext;
-                AuthManager = authManager;
-            }
+        public FeedAggregatorServiceScope(BaseCommonLinkUtility baseCommonLinkUtility,
+            TenantManager tenantManager,
+            FeedAggregateDataProvider feedAggregateDataProvider,
+            UserManager userManager,
+            SecurityContext securityContext,
+            AuthManager authManager)
+        {
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+            TenantManager = tenantManager;
+            FeedAggregateDataProvider = feedAggregateDataProvider;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            AuthManager = authManager;
+        }
 
         public void Deconstruct(out BaseCommonLinkUtility baseCommonLinkUtility,
             out TenantManager tenantManager,
-            out FeedAggregateDataProvider feedAggregateDataProvider, 
-            out UserManager userManager, 
-            out SecurityContext securityContext, 
+            out FeedAggregateDataProvider feedAggregateDataProvider,
+            out UserManager userManager,
+            out SecurityContext securityContext,
             out AuthManager authManager)
         {
             baseCommonLinkUtility = BaseCommonLinkUtility;

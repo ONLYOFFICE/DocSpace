@@ -34,7 +34,7 @@ namespace ASC.Files.Core.EF
 
     public static class DbFilesSecurityExtension
     {
-       public static ModelBuilderWrapper AddDbFilesSecurity(this ModelBuilderWrapper modelBuilder)
+        public static ModelBuilderWrapper AddDbFilesSecurity(this ModelBuilderWrapper modelBuilder)
         {
             _ = modelBuilder
                 .Add(MySqlAddDbFilesSecurity, Provider.MySql)
@@ -87,7 +87,7 @@ namespace ASC.Files.Core.EF
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
             });
-    }
+        }
         public static void PgSqlAddDbFilesSecurity(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<DbFilesSecurity>(entity =>

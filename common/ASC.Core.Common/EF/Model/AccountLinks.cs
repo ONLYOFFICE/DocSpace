@@ -70,7 +70,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });
-    }
+        }
         public static void PgSqlAddAccountLinks(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<AccountLinks>(entity =>

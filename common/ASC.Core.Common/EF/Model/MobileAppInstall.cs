@@ -55,7 +55,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("registered_on")
                     .HasColumnType("datetime");
             });
-    }
+        }
         public static void PgSqlAddMobileAppInstall(this ModelBuilder modelBuilder)
         {
             _ = modelBuilder.Entity<MobileAppInstall>(entity =>
