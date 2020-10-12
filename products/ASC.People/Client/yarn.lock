@@ -2171,7 +2171,7 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../../packages/asc-web-common":
-  version "1.0.250"
+  version "1.0.252"
   dependencies:
     axios "^0.19.1"
     history "4.10.1"
@@ -2186,7 +2186,7 @@ asap@~2.0.6:
     sjcl "^1.0.8"
 
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.459"
+  version "1.0.460"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
